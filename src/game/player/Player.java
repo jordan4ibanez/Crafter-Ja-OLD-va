@@ -415,7 +415,7 @@ public class Player {
         return currentRotDir;
     }
 
-    public static void playerOnTick() {
+    public static void playerOnTick(float delta) {
         float camRot = getCameraRotation().y + 180f;
 
         if(camRot >= 315f || camRot < 45f){
@@ -461,7 +461,7 @@ public class Player {
 
         hasDug = false;
         if (mining && worldSelectionPos != null) {
-            animationTest += 0.01f;
+            animationTest += (10.0f * delta);
             if (animationTest >= 1) {
                 diggingFrame++;
                 if (diggingFrame > 8) {

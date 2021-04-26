@@ -107,7 +107,7 @@ public class Crafter {
             indexLight();
 
             renderGame();
-            
+
             windowUpdate();
 
         }
@@ -291,7 +291,7 @@ public class Crafter {
 
     private static void gameUpdate(float delta) throws Exception {
         testPlayerDiggingAnimation();
-        playerOnTick();
+        playerOnTick(delta);
         updateListenerPosition();
         ItemEntity.onStep();
         TNTEntity.onTNTStep();
