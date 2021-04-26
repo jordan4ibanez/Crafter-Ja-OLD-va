@@ -10,6 +10,8 @@ import org.lwjgl.openal.AL11;
 
 import java.awt.*;
 
+import static engine.Time.calculateDelta;
+import static engine.Time.getDelta;
 import static engine.disk.Disk.*;
 import static engine.disk.SQLite.databaseConnect;
 import static engine.disk.SaveQueue.startSaveThread;
@@ -52,8 +54,6 @@ public class Crafter {
     }
 
     //core game engine elements
-    private static final int TARGET_FPS = 75;
-
     public static void main(String[] args){
         try{
             boolean vSync = true;
@@ -61,6 +61,7 @@ public class Crafter {
             Dimension d = tk.getScreenSize();
 
             initWindow(versionName, d.width/2,d.height/2,vSync);
+
             initRenderer();
             initMouseInput();
             initSoundManager();
@@ -79,51 +80,38 @@ public class Crafter {
         }
     }
 
-    //the game engine elements //todo ------------------------------------------------------------------------------------ START
-
     private static void gameLoop() throws Exception {
-        double elapsedTime;
-        double accumulator = 0d;
+
         boolean running = true;
         while(running && !windowShouldClose()){
 
-            elapsedTime = timerGetElapsedTime();
-            accumulator += elapsedTime;
+            //main delta calculation
+            calculateDelta();
 
             globalChunkSaveToDisk();
+
             input();
-            mouseInput();
-            updateCamera();
-            //while (accumulator >= 1_000_000){
-            gameUpdate();
-            accumulator -= 1_000_000;
-            //}
+
+            mouseInput(getDelta());
+
+            updateCamera(getDelta());
+
+            gameUpdate(getDelta());
 
             countFPS();
+
             updateWorldChunkLoader();
+
             chunkUpdater();
 
             indexLight();
 
             renderGame();
+            
             windowUpdate();
-//            if (isvSync()){
-//                sync();
-//            }
+
         }
     }
-
-//    private static void sync() {
-//        float loopSlot = 1f / TARGET_FPS;
-//        double endTime = timerGetLastLoopTime() + loopSlot;
-//        while(timerGetTime() < endTime){
-//            try {
-//                Thread.sleep(1);
-//            } catch (InterruptedException ignored){
-//            }
-//        }
-//    }
-    //todo ---------------------------------------------------------------------------------------------------------------END
 
 
 
@@ -301,7 +289,7 @@ public class Crafter {
         }
     }
 
-    private static void gameUpdate() throws Exception {
+    private static void gameUpdate(float delta) throws Exception {
         testPlayerDiggingAnimation();
         playerOnTick();
         updateListenerPosition();

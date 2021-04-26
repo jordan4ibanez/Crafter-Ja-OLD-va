@@ -61,7 +61,7 @@ public class MouseInput {
         return displVec;
     }
 
-    public static void mouseInput(){
+    public static void mouseInput(float delta){
 
 
 //        System.out.println(currentPos.x);

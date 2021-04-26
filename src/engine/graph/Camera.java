@@ -63,7 +63,7 @@ public class Camera {
         return rotationVector;
     }
 
-    public static void updateCamera(){
+    public static void updateCamera(float delta){
 
         setCameraPosition(getPlayerPosWithEyeHeight().x, getPlayerPosWithEyeHeight().y + getSneakOffset(), getPlayerPosWithEyeHeight().z);
         moveCameraPosition(getPlayerViewBobbing().x,getPlayerViewBobbing().y, getPlayerViewBobbing().z);
