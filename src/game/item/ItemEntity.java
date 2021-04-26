@@ -5,6 +5,7 @@ import org.joml.Vector3f;
 import java.util.*;
 
 import static engine.FancyMath.*;
+import static engine.Time.getDelta;
 import static engine.sound.SoundAPI.playSound;
 import static game.collision.Collision.applyInertia;
 import static game.item.Item.getCurrentID;
@@ -30,17 +31,25 @@ public class ItemEntity {
 
     private static final Deque<Integer> deletionQueue = new ArrayDeque<>();
 
+    private static final float maxLife = 60 * 5; //5 minutes
+
+    private static final float collectionTime = 3.f;
+
     public static void onStep(){
+        float delta = getDelta();
         for (Item thisItem : items.values()){
-            thisItem.timer += 0.001f;
+
+            thisItem.timer += delta;
 
             //delete items that are too old
-            if (thisItem.timer > 10f){
+            if (thisItem.timer > maxLife){
                 deletionQueue.add(thisItem.ID);
                 continue;
             }
 
-            if (thisItem.timer > 3){
+            //collect items after 3 seconds of being on floor
+            if (thisItem.timer > collectionTime){
+                //collect item if within 3 blocks
                 if (getDistance(thisItem.pos, getPlayerPosWithCollectionHeight()) < 3f){
                     if (!thisItem.collecting){
                         if (addItemToInventory(thisItem.name)) {
@@ -67,15 +76,15 @@ public class ItemEntity {
                 applyInertia(thisItem.pos, thisItem.inertia, false, itemSize, itemSize * 2, true, false, true, false);
             }
 
-            thisItem.rotation.y += 0.1f;
+            thisItem.rotation.y += (90.f * delta);
 
             if (thisItem.floatUp){
-                thisItem.hover += 0.00025f;
+                thisItem.hover += (0.25f * delta);
                 if (thisItem.hover >= 0.5f){
                     thisItem.floatUp = false;
                 }
             } else {
-                thisItem.hover -= 0.00025f;
+                thisItem.hover -= (0.25f * delta);
                 if (thisItem.hover <= 0.0f){
                     thisItem.floatUp = true;
                 }
