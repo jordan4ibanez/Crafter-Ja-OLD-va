@@ -544,7 +544,7 @@ public class Player {
         }
 
         if (mining && worldSelectionPos != null){
-            particleBufferTimer += 0.01f;
+            particleBufferTimer += 6.f * delta;
             if (particleBufferTimer > 0.2f){
                 int randomDir = (int)Math.floor(Math.random()*6f);
                 int block;
