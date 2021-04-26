@@ -10,6 +10,7 @@ import org.lwjgl.openal.AL11;
 
 import java.awt.*;
 
+import static engine.Time.calculateDelta;
 import static engine.disk.Disk.*;
 import static engine.disk.SQLite.databaseConnect;
 import static engine.disk.SaveQueue.startSaveThread;
@@ -86,6 +87,8 @@ public class Crafter {
         double accumulator = 0d;
         boolean running = true;
         while(running && !windowShouldClose()){
+
+            calculateDelta();
 
             elapsedTime = timerGetElapsedTime();
             accumulator += elapsedTime;

@@ -19,10 +19,6 @@ public class Time {
     }
 
     public static float getDelta() {
-        float adjustedDelta = delta;
-        if (adjustedDelta > 0.01f){
-            adjustedDelta = 0.01f;
-        }
         return(delta);
     }
 }
