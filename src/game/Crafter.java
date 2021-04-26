@@ -94,10 +94,10 @@ public class Crafter {
             input();
             mouseInput();
             updateCamera();
-            while (accumulator >= 1_000_000){
-                gameUpdate();
-                accumulator -= 1_000_000;
-            }
+            //while (accumulator >= 1_000_000){
+            gameUpdate();
+            accumulator -= 1_000_000;
+            //}
 
             countFPS();
             updateWorldChunkLoader();
