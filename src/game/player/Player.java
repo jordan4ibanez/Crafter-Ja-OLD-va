@@ -36,7 +36,7 @@ public class Player {
     private static int currentInventorySelection = 0;
     private static boolean inventoryOpen         = false;
     private static Vector3f worldSelectionPos    = null;
-    private static int sneakOffset = 0;
+    private static float sneakOffset = 0.0f;
     private static final int[] currentChunk = {(int)Math.floor(pos.x / 16f),(int)Math.floor(pos.z / 16f)};
 
     public static void resetPlayerInputs(){
@@ -479,14 +479,14 @@ public class Player {
         applyPlayerInertiaBuffer();
 
         if(placeTimer > 0){
-            placeTimer -= 0.003f;
+            placeTimer -= (0.3f * delta);
             if (placeTimer < 0.1){
                 placeTimer = 0;
             }
         }
 
         if(mineTimer > 0){
-            mineTimer -= 0.003f;
+            mineTimer -= (0.3f * delta);
             if (mineTimer < 0.1){
                 mineTimer = 0;
             }
@@ -512,13 +512,22 @@ public class Player {
             returnPlayerViewBobbing();
         }
 
+        //sneaking animation
+        //crouching down
         if (sneaking){
-            if (sneakOffset > -100) {
-                sneakOffset -= 1;
+            if (sneakOffset > -100.0f) {
+                sneakOffset -= (1000.0f * delta);
+                if (sneakOffset < -100.0f) {
+                    sneakOffset = -100.0f;
+                }
             }
+        //standing back up
         } else {
-            if (sneakOffset < 0) {
-                sneakOffset += 1;
+            if (sneakOffset < 0.0f) {
+                sneakOffset += (1000.f * delta);
+                if (sneakOffset > 0.0f){
+                    sneakOffset = 0.0f;
+                }
             }
         }
 
