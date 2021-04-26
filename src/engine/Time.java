@@ -16,10 +16,13 @@ public class Time {
         double time = getTime();
         delta = (float) (time - lastLoopTime);
         lastLoopTime = time;
-        //System.out.println(delta);
     }
 
     public static float getDelta() {
+        float adjustedDelta = delta;
+        if (adjustedDelta > 0.01f){
+            adjustedDelta = 0.01f;
+        }
         return(delta);
     }
 }

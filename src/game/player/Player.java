@@ -5,7 +5,6 @@ import org.joml.*;
 import java.lang.Math;
 
 import static engine.Hud.rebuildMiningMesh;
-import static engine.Time.getDelta;
 import static engine.disk.Disk.loadPlayerPos;
 import static engine.graph.Camera.*;
 import static engine.sound.SoundAPI.playSound;
@@ -37,7 +36,7 @@ public class Player {
     private static int currentInventorySelection = 0;
     private static boolean inventoryOpen         = false;
     private static Vector3f worldSelectionPos    = null;
-    private static float sneakOffset = 0.0f;
+    private static int sneakOffset = 0;
     private static final int[] currentChunk = {(int)Math.floor(pos.x / 16f),(int)Math.floor(pos.z / 16f)};
 
     public static void resetPlayerInputs(){
@@ -133,8 +132,6 @@ public class Player {
             return;
         }
 
-        float delta = getDelta();
-
         if (worldSelectionPos != null && soundTrigger && mining){
             int block = getBlock((int)worldSelectionPos.x, (int)worldSelectionPos.y, (int)worldSelectionPos.z);
             if (block > 0){
@@ -147,17 +144,14 @@ public class Player {
         }
 
         if (handSetUp) {
-            diggingAnimation += 4f * delta;
+            diggingAnimation += 0.00375f;
         }
 
         if ((!diggingAnimationBuffer || diggingAnimation >= 1f) && handSetUp){
             diggingAnimationGo = false;
+            diggingAnimation = 0f;
             soundTrigger = true;
-            if (diggingAnimation != 0.0f){
-                diggingAnimation = 0.0f;
-            } else {
-                return;
-            }
+            return;
         }
 
         if(!handSetUp){
@@ -335,33 +329,31 @@ public class Player {
         return forward || backward || left || right;
     }
 
-    private static float movementSpeed = 50.f;
+    private static float movementSpeed = 1.5f;
 
     public static void setPlayerInertiaBuffer(){
-        float delta = getDelta();
-
         if (forward){
             float yaw = (float)Math.toRadians(getCameraRotation().y) + (float)Math.PI;
-            inertia.x += (float)Math.sin(-yaw) * movementSpeed * delta;
-            inertia.z += (float)Math.cos(yaw)  * movementSpeed * delta;
+            inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementSpeed;
+            inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementSpeed;
         }
         if (backward){
             //no mod needed
             float yaw = (float)Math.toRadians(getCameraRotation().y);
-            inertia.x += (float)Math.sin(-yaw) * movementSpeed * delta;
-            inertia.z += (float)Math.cos(yaw)  * movementSpeed * delta;
+            inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementSpeed;
+            inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementSpeed;
         }
 
         if (right){
             float yaw = (float)Math.toRadians(getCameraRotation().y) - (float)(Math.PI /2);
-            inertia.x += (float)Math.sin(-yaw) * movementSpeed * delta;
-            inertia.z += (float)Math.cos(yaw)  * movementSpeed * delta;
+            inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementSpeed;
+            inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementSpeed;
         }
 
         if (left){
             float yaw = (float)Math.toRadians(getCameraRotation().y) + (float)(Math.PI /2);
-            inertia.x += (float)Math.sin(-yaw) * movementSpeed * delta;
-            inertia.z += (float)Math.cos(yaw)  * movementSpeed * delta;
+            inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementSpeed;
+            inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementSpeed;
         }
 
         if (jump && isPlayerOnGround()){
@@ -370,7 +362,6 @@ public class Player {
     }
 
     private static void applyPlayerInertiaBuffer(){
-
         setPlayerInertiaBuffer();
 
         inertia.x += inertiaBuffer.x;
@@ -381,11 +372,9 @@ public class Player {
         Vector3f inertia2D = new Vector3f(inertia.x, 0, inertia.z);
 
         float maxSpeed = 5f;
-
         if(sneaking){
             maxSpeed = 1f;
         }
-
         if(inertia2D.length() > maxSpeed){
             inertia2D = inertia2D.normalize().mul(maxSpeed);
             inertia.x = inertia2D.x;
@@ -396,6 +385,7 @@ public class Player {
         inertiaBuffer.y = 0f;
         inertiaBuffer.z = 0f;
     }
+
 
 
     public static Boolean isPlayerOnGround(){
@@ -427,8 +417,6 @@ public class Player {
 
     public static void playerOnTick() {
         float camRot = getCameraRotation().y + 180f;
-
-        float delta = getDelta();
 
         if(camRot >= 315f || camRot < 45f){
 //            System.out.println(2);
@@ -473,7 +461,7 @@ public class Player {
 
         hasDug = false;
         if (mining && worldSelectionPos != null) {
-            animationTest += (10.0f * delta);
+            animationTest += 0.01f;
             if (animationTest >= 1) {
                 diggingFrame++;
                 if (diggingFrame > 8) {
@@ -491,14 +479,14 @@ public class Player {
         applyPlayerInertiaBuffer();
 
         if(placeTimer > 0){
-            placeTimer -= (0.3f * delta);
+            placeTimer -= 0.003f;
             if (placeTimer < 0.1){
                 placeTimer = 0;
             }
         }
 
         if(mineTimer > 0){
-            mineTimer -= (0.3f * delta);
+            mineTimer -= 0.003f;
             if (mineTimer < 0.1){
                 mineTimer = 0;
             }
@@ -524,27 +512,18 @@ public class Player {
             returnPlayerViewBobbing();
         }
 
-        //sneaking animation
-        //crouching down
         if (sneaking){
-            if (sneakOffset > -100.0f) {
-                sneakOffset -= (1000.0f * delta);
-                if (sneakOffset < -100.0f) {
-                    sneakOffset = -100.0f;
-                }
+            if (sneakOffset > -100) {
+                sneakOffset -= 1;
             }
-        //standing back up
         } else {
-            if (sneakOffset < 0.0f) {
-                sneakOffset += (1000.f * delta);
-                if (sneakOffset > 0.0f){
-                    sneakOffset = 0.0f;
-                }
+            if (sneakOffset < 0) {
+                sneakOffset += 1;
             }
         }
 
         if (mining && worldSelectionPos != null){
-            particleBufferTimer += 6.f * delta;
+            particleBufferTimer += 0.01f;
             if (particleBufferTimer > 0.2f){
                 int randomDir = (int)Math.floor(Math.random()*6f);
                 int block;

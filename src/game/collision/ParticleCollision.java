@@ -2,21 +2,20 @@ package game.collision;
 
 import org.joml.Vector3f;
 
-import static engine.Time.getDelta;
 import static game.chunk.Chunk.getBlock;
 import static game.blocks.BlockDefinition.*;
 import static game.chunk.Chunk.getBlockRotation;
 import static game.collision.CollisionMath.floorPos;
+import static game.collision.CustomAABB.*;
 import static game.collision.CustomBlockBox.*;
 
 public class ParticleCollision {
+    final private static float gameSpeed = 0.001f;
 
     public static boolean applyParticleInertia(Vector3f pos, Vector3f inertia, boolean onGround, boolean gravity, boolean applyCollision){
 
-        float delta = getDelta();
-
         if(gravity) {
-            inertia.y -= 40f * delta; //gravity
+            inertia.y -= 40f * gameSpeed; //gravity
         }
 
         //limit speed
@@ -29,15 +28,15 @@ public class ParticleCollision {
         if (applyCollision) {
             onGround = collisionDetect(pos, inertia);
         } else {
-            pos.x += inertia.x * delta;
-            pos.y += inertia.y * delta;
-            pos.z += inertia.z * delta;
+            pos.x += inertia.x * gameSpeed;
+            pos.y += inertia.y * gameSpeed;
+            pos.z += inertia.z * gameSpeed;
         }
 
         //apply friction
         if (onGround) {
-            inertia.x += -inertia.x * delta * 10; // do (10 - 9.5f) for slippery!
-            inertia.z += -inertia.z * delta * 10;
+            inertia.x += -inertia.x * gameSpeed * 10; // do (10 - 9.5f) for slippery!
+            inertia.z += -inertia.z * gameSpeed * 10;
         }
 
         return onGround;
@@ -53,9 +52,6 @@ public class ParticleCollision {
     //normal collision
 
     private static boolean collisionDetect(Vector3f pos, Vector3f inertia){
-
-        float delta = getDelta();
-
         onGround = false;
 
         Vector3f oldPos = new Vector3f();
@@ -64,7 +60,7 @@ public class ParticleCollision {
         oldPos.y = pos.y;
         oldPos.z = pos.z;
 
-        pos.y += inertia.y * delta;
+        pos.y += inertia.y * gameSpeed;
 
         fPos = floorPos(new Vector3f(pos));
 
@@ -90,7 +86,7 @@ public class ParticleCollision {
 
 
         //todo: begin X collision detection
-        pos.x += inertia.x * delta;
+        pos.x += inertia.x * gameSpeed;
 
         fPos = floorPos(new Vector3f(pos));
 
@@ -117,7 +113,7 @@ public class ParticleCollision {
 
 
         //todo: Begin Z collision detection
-        pos.z += inertia.z * delta;
+        pos.z += inertia.z * gameSpeed;
         fPos = floorPos(new Vector3f(pos));
 
         positive = inertiaToDir(inertia.z);
