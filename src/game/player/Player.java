@@ -330,7 +330,7 @@ public class Player {
         return forward || backward || left || right;
     }
 
-    private static float movementSpeed = 150.0f;
+    private static float movementSpeed = 50.f;
 
     public static void setPlayerInertiaBuffer(){
         float delta = getDelta();
@@ -376,9 +376,11 @@ public class Player {
         Vector3f inertia2D = new Vector3f(inertia.x, 0, inertia.z);
 
         float maxSpeed = 5f;
+
         if(sneaking){
             maxSpeed = 1f;
         }
+
         if(inertia2D.length() > maxSpeed){
             inertia2D = inertia2D.normalize().mul(maxSpeed);
             inertia.x = inertia2D.x;
