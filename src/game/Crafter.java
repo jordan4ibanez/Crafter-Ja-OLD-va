@@ -80,7 +80,7 @@ public class Crafter {
         }
     }
 
-    //the game engine elements //todo ------------------------------------------------------------------------------------ START
+    //the game engine elements
 
     private static void gameLoop() throws Exception {
         double elapsedTime;
@@ -110,27 +110,8 @@ public class Crafter {
 
             renderGame();
             windowUpdate();
-//            if (isvSync()){
-//                sync();
-//            }
-            float x = 0;
-            while (x < 2090000f) {
-               x += 0.1;
-            }
         }
     }
-
-//    private static void sync() {
-//        float loopSlot = 1f / TARGET_FPS;
-//        double endTime = timerGetLastLoopTime() + loopSlot;
-//        while(timerGetTime() < endTime){
-//            try {
-//                Thread.sleep(1);
-//            } catch (InterruptedException ignored){
-//            }
-//        }
-//    }
-    //todo ---------------------------------------------------------------------------------------------------------------END
 
 
 
