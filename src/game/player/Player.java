@@ -147,7 +147,7 @@ public class Player {
         }
 
         if (handSetUp) {
-            diggingAnimation += 10.0f * delta;
+            diggingAnimation += 4f * delta;
         }
 
         if ((!diggingAnimationBuffer || diggingAnimation >= 1f) && handSetUp){
