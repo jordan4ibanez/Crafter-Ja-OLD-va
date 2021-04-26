@@ -133,6 +133,8 @@ public class Player {
             return;
         }
 
+        float delta = getDelta();
+
         if (worldSelectionPos != null && soundTrigger && mining){
             int block = getBlock((int)worldSelectionPos.x, (int)worldSelectionPos.y, (int)worldSelectionPos.z);
             if (block > 0){
@@ -145,14 +147,17 @@ public class Player {
         }
 
         if (handSetUp) {
-            diggingAnimation += 0.00375f;
+            diggingAnimation += 10.0f * delta;
         }
 
         if ((!diggingAnimationBuffer || diggingAnimation >= 1f) && handSetUp){
             diggingAnimationGo = false;
-            diggingAnimation = 0f;
             soundTrigger = true;
-            return;
+            if (diggingAnimation != 0.0f){
+                diggingAnimation = 0.0f;
+            } else {
+                return;
+            }
         }
 
         if(!handSetUp){
