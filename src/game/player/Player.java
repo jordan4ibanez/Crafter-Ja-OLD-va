@@ -5,6 +5,7 @@ import org.joml.*;
 import java.lang.Math;
 
 import static engine.Hud.rebuildMiningMesh;
+import static engine.Time.getDelta;
 import static engine.disk.Disk.loadPlayerPos;
 import static engine.graph.Camera.*;
 import static engine.sound.SoundAPI.playSound;
@@ -329,31 +330,33 @@ public class Player {
         return forward || backward || left || right;
     }
 
-    private static float movementSpeed = 1.5f;
+    private static float movementSpeed = 150.0f;
 
     public static void setPlayerInertiaBuffer(){
+        float delta = getDelta();
+
         if (forward){
             float yaw = (float)Math.toRadians(getCameraRotation().y) + (float)Math.PI;
-            inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementSpeed;
-            inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementSpeed;
+            inertia.x += (float)Math.sin(-yaw) * movementSpeed * delta;
+            inertia.z += (float)Math.cos(yaw)  * movementSpeed * delta;
         }
         if (backward){
             //no mod needed
             float yaw = (float)Math.toRadians(getCameraRotation().y);
-            inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementSpeed;
-            inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementSpeed;
+            inertia.x += (float)Math.sin(-yaw) * movementSpeed * delta;
+            inertia.z += (float)Math.cos(yaw)  * movementSpeed * delta;
         }
 
         if (right){
             float yaw = (float)Math.toRadians(getCameraRotation().y) - (float)(Math.PI /2);
-            inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementSpeed;
-            inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementSpeed;
+            inertia.x += (float)Math.sin(-yaw) * movementSpeed * delta;
+            inertia.z += (float)Math.cos(yaw)  * movementSpeed * delta;
         }
 
         if (left){
             float yaw = (float)Math.toRadians(getCameraRotation().y) + (float)(Math.PI /2);
-            inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementSpeed;
-            inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementSpeed;
+            inertia.x += (float)Math.sin(-yaw) * movementSpeed * delta;
+            inertia.z += (float)Math.cos(yaw)  * movementSpeed * delta;
         }
 
         if (jump && isPlayerOnGround()){
@@ -362,6 +365,7 @@ public class Player {
     }
 
     private static void applyPlayerInertiaBuffer(){
+
         setPlayerInertiaBuffer();
 
         inertia.x += inertiaBuffer.x;
@@ -385,7 +389,6 @@ public class Player {
         inertiaBuffer.y = 0f;
         inertiaBuffer.z = 0f;
     }
-
 
 
     public static Boolean isPlayerOnGround(){
@@ -415,8 +418,10 @@ public class Player {
         return currentRotDir;
     }
 
-    public static void playerOnTick(float delta) {
+    public static void playerOnTick() {
         float camRot = getCameraRotation().y + 180f;
+
+        float delta = getDelta();
 
         if(camRot >= 315f || camRot < 45f){
 //            System.out.println(2);
