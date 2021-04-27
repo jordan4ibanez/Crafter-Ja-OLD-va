@@ -12,7 +12,6 @@ import java.awt.*;
 
 import static engine.Time.calculateDelta;
 import static engine.disk.Disk.*;
-import static engine.disk.SQLite.databaseConnect;
 import static engine.disk.SaveQueue.startSaveThread;
 import static game.chunk.Chunk.*;
 import static game.chunk.ChunkMesh.generateChunkMesh;
@@ -68,7 +67,6 @@ public class Crafter {
             initSoundManager();
             initGame();
             startSaveThread();
-            databaseConnect();
             gameLoop();
 
         } catch ( Exception excp ){
