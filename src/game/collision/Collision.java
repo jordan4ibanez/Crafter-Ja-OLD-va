@@ -81,9 +81,13 @@ public class Collision {
                 if (isPlayer){
                     setPlayerInWater(true);
                 }
+                
                 //water resistance
-                if (inertia.y > -40f / inWater){
+                if (inertia.y > -50f / inWater){
                     inertia.y -= 1000/inWater * gameSpeed;
+                //slow down if falling too fast
+                } else if (inertia.y <= -50f / inWater){
+                    inertia.y += 2000/inWater * gameSpeed;
                 }
             }else {
                 if (isPlayer){
