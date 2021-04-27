@@ -151,22 +151,22 @@ public class Renderer {
             }
         }
 
-        //render each chunk liquid mesh
-        for (ChunkObject thisChunk : getMap()){
-            if (thisChunk == null){
-                continue;
-            }
-            if (thisChunk.liquidMesh == null){
-                continue;
-            }
-            for (Mesh thisMesh : thisChunk.liquidMesh){
-                if (thisMesh != null){
-                    modelViewMatrix = getModelViewMatrix(viewMatrix);
-                    shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                    thisMesh.render();
-                }
+        //render world selection mesh
+        if (getPlayerWorldSelectionPos() != null){
+
+            Mesh selectionMesh = getWorldSelectionMesh();
+            modelViewMatrix = updateModelViewMatrix(getPlayerWorldSelectionPos(), new Vector3f(0,0,0), viewMatrix);
+            shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            selectionMesh.render();
+
+            if (getDiggingFrame() >= 0) {
+                Mesh crackMesh = getMiningCrackMesh();
+                modelViewMatrix = updateModelViewMatrix(getPlayerWorldSelectionPos(), new Vector3f(0, 0, 0), viewMatrix);
+                shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                crackMesh.render();
             }
         }
+
 
         //render each blockbox mesh
         for (ChunkObject thisChunk : getMap()){
@@ -223,22 +223,6 @@ public class Renderer {
         }
 
 
-        //render world selection mesh
-        if (getPlayerWorldSelectionPos() != null){
-
-            Mesh selectionMesh = getWorldSelectionMesh();
-            modelViewMatrix = updateModelViewMatrix(getPlayerWorldSelectionPos(), new Vector3f(0,0,0), viewMatrix);
-            shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            selectionMesh.render();
-
-            if (getDiggingFrame() >= 0) {
-                Mesh crackMesh = getMiningCrackMesh();
-                modelViewMatrix = updateModelViewMatrix(getPlayerWorldSelectionPos(), new Vector3f(0, 0, 0), viewMatrix);
-                shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                crackMesh.render();
-            }
-        }
-
         //render particles
         for (ParticleObject thisParticle : getAllParticles()){
             Mesh thisMesh = thisParticle.mesh;
@@ -254,6 +238,23 @@ public class Renderer {
             modelViewMatrix = updateParticleViewMatrix(thisRainDrop.pos, new Vector3f(0,getCameraRotation().y,0), viewMatrix);
             shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
             rainDrop.render();
+        }
+
+        //render each chunk liquid mesh
+        for (ChunkObject thisChunk : getMap()){
+            if (thisChunk == null){
+                continue;
+            }
+            if (thisChunk.liquidMesh == null){
+                continue;
+            }
+            for (Mesh thisMesh : thisChunk.liquidMesh){
+                if (thisMesh != null){
+                    modelViewMatrix = getModelViewMatrix(viewMatrix);
+                    shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                    thisMesh.render();
+                }
+            }
         }
 
 
