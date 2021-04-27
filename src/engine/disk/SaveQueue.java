@@ -28,6 +28,13 @@ public class SaveQueue {
                     if (!saveQueue.isEmpty()) {
                         try {
                             thisChunk = saveQueue.pop();
+
+                            //strip out unneeded data
+                            thisChunk.mesh = null;
+                            thisChunk.blockBoxMesh = null;
+                            thisChunk.liquidMesh = null;
+
+
                             mapper.writeValue(new File("Worlds/world1/" + thisChunk.ID + ".chunk"), thisChunk);
                         } catch (IOException e) {
                             e.printStackTrace();

@@ -74,7 +74,6 @@ public class Disk {
         tempPos.z = pos.z;
         try {
             objectMapper.writeValue(new File("Worlds/world1/playerPos.data"), tempPos);
-            System.out.println("SAVED PLAYER POS");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -87,7 +86,6 @@ public class Disk {
         Vector3f thisPos = new Vector3f(0,55,0);
 
         if (!test.canRead()){
-            System.out.println("THIS IS WHERE CRASH HAPPENS");
             return thisPos;
         }
 
@@ -98,7 +96,6 @@ public class Disk {
 
         try {
             tempPos = objectMapper.readValue(test, SpecialSavingVector3f.class);
-            System.out.println("LOADED PLAYER CORRECTLY");
         } catch (IOException e) {
             e.printStackTrace();
         }
