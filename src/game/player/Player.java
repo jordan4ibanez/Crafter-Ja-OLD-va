@@ -609,6 +609,7 @@ public class Player {
             returnPlayerViewBobbing();
         }
 
+        //sneaking offset
         if (sneaking){
             if (sneakOffset > -100) {
                 sneakOffset -= 1;
