@@ -21,7 +21,7 @@ public class Light {
     }
 
     public static void indexLight(){
-//        new Thread(() -> {
+        new Thread(() -> {
             if (!queue.isEmpty()) {
                 Vector3f tempObject = queue.pop();
                 int posX = (int) tempObject.x;
@@ -147,5 +147,6 @@ public class Light {
                 }
                 lightSources.clear();
             }
+        }).start();
     }
 }
