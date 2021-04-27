@@ -47,7 +47,7 @@ public class Disk {
         File test = new File("Worlds/world1/" + key + ".chunk");
 
         if (!test.canRead()){
-            System.out.println("FAILED TO LOAD A CHUNK!");
+            //System.out.println("FAILED TO LOAD A CHUNK!");
             return(null);
         }
 
