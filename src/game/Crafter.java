@@ -99,19 +99,17 @@ public class Crafter {
             input();
             mouseInput();
             updateCamera();
+            countFPS();
+            updateWorldChunkLoader();
+            chunkUpdater();
+            indexLight();
+            renderGame();
+            windowUpdate();
+
             while (accumulator >= 1_000_000){
                 gameUpdate();
                 accumulator -= 1_000_000;
             }
-
-            countFPS();
-            updateWorldChunkLoader();
-            chunkUpdater();
-
-            indexLight();
-
-            renderGame();
-            windowUpdate();
         }
     }
 
