@@ -37,6 +37,7 @@ public class Player {
     private static boolean inventoryOpen         = false;
     private static Vector3f worldSelectionPos    = null;
     private static int sneakOffset = 0;
+    private static boolean playerIsJumping = false;
     private static final int[] currentChunk = {(int)Math.floor(pos.x / 16f),(int)Math.floor(pos.z / 16f)};
 
     public static void resetPlayerInputs(){
@@ -48,6 +49,10 @@ public class Player {
         setPlayerJump(false);
         mining = false;
         placing = false;
+    }
+
+    public static boolean getIfPlayerIsJumping(){
+        return(playerIsJumping);
     }
 
     public static int[] getPlayerCurrentChunk(){
@@ -358,6 +363,7 @@ public class Player {
 
         if (jump && isPlayerOnGround()){
             inertia.y += 10.5f;
+            playerIsJumping = true;
         }
     }
 
@@ -416,6 +422,11 @@ public class Player {
     }
 
     public static void playerOnTick() {
+
+        if (playerIsJumping && isPlayerOnGround()){
+            playerIsJumping = false;
+        }
+
         float camRot = getCameraRotation().y + 180f;
 
         if(camRot >= 315f || camRot < 45f){

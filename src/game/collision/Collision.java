@@ -8,6 +8,7 @@ import static game.chunk.Chunk.getBlockRotation;
 import static game.collision.CollisionMath.floorPos;
 import static game.collision.CustomAABB.*;
 import static game.collision.CustomBlockBox.*;
+import static game.player.Player.getIfPlayerIsJumping;
 
 public class Collision {
     final private static float gameSpeed = 0.001f;
@@ -26,7 +27,8 @@ public class Collision {
         }
 
         if (applyCollision) {
-            if (sneaking) {
+            if (sneaking && !getIfPlayerIsJumping()) {
+
                 Vector3f oldPos = new Vector3f(pos);
 
                 onGround = collisionDetect(pos, inertia, width, height);
