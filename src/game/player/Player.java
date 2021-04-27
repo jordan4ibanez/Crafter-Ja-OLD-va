@@ -603,7 +603,7 @@ public class Player {
         }
 
 
-        if(playerIsMoving() && !sneaking){
+        if(playerIsMoving() && !sneaking && !inWater){
             applyViewBobbing();
         } else {
             returnPlayerViewBobbing();
