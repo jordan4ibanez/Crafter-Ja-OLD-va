@@ -9,6 +9,7 @@ import static engine.disk.Disk.loadPlayerPos;
 import static engine.graph.Camera.*;
 import static engine.sound.SoundAPI.playSound;
 import static game.blocks.BlockDefinition.getBlockDefinition;
+import static game.blocks.BlockDefinition.isBlockLiquid;
 import static game.chunk.Chunk.*;
 import static game.collision.Collision.applyInertia;
 import static game.particle.Particle.createParticle;
@@ -157,6 +158,12 @@ public class Player {
     private static Vector3f wieldHandAnimationRot = new Vector3f(0, 0, 0);
 
     private static float diggingAnimation = 0f;
+
+    private static boolean cameraSubmerged = false;
+
+    public static boolean isCameraSubmerged(){
+        return cameraSubmerged;
+    }
 
 
     public static void resetWieldHandSetupTrigger(){
@@ -478,6 +485,15 @@ public class Player {
     }
 
     public static void playerOnTick() {
+
+        //camera underwater effect trigger
+        Vector3f camPos = getCameraPosition();
+        camPos.y -= 0.02f;
+        if (isBlockLiquid(getBlock((int)camPos.x,(int)camPos.y, (int)camPos.z))){
+            cameraSubmerged = true;
+        } else {
+            cameraSubmerged = false;
+        }
 
         //the player comes to equilibrium with the water's surface
         //if this is not implemented like this

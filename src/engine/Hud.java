@@ -61,6 +61,7 @@ public class Hud {
     private static Texture buttonPushed;
     private static Texture menuBg;
     private static Texture miningCrack;
+    private static Texture globalWaterEffect;
 
 
     private static Mesh thisHotBarMesh;
@@ -83,6 +84,7 @@ public class Hud {
     private static Mesh toggleVsyncMesh;
     private static Mesh quitGameMesh;
     private static Mesh miningCrackMesh;
+    private static Mesh globalWaterEffectMesh;
 
 
     public static void initializeHudAtlas() throws Exception {
@@ -100,6 +102,7 @@ public class Hud {
         buttonPushed = new Texture("textures/button_pushed.png");
         menuBg = new Texture("textures/menu_bg.png");
         miningCrack = new Texture("textures/crack_anylength.png");
+        globalWaterEffect = new Texture("textures/water_overlay.png");
     }
 
     public static Mesh getHotBarMesh(){
@@ -192,6 +195,10 @@ public class Hud {
         return miningCrackMesh;
     }
 
+    public static Mesh getGlobalWaterEffectMesh(){
+        return globalWaterEffectMesh;
+    }
+
     public static void createHud(){
         createDebugHotbar();
         createInventory();
@@ -208,10 +215,95 @@ public class Hud {
         createMenuBg();
         createButtons();
         rebuildMiningMesh(0);
+        createGlobalWaterEffect();
 
         continueMesh = createCustomHudText("CONTINUE", 1,1,1);
         toggleVsyncMesh = createCustomHudText("VSYNC:ON", 1,1,1);
         quitGameMesh = createCustomHudText("QUIT", 1,1,1);
+    }
+
+    private static void createGlobalWaterEffect(){
+        ArrayList positions = new ArrayList();
+        ArrayList textureCoord = new ArrayList();
+        ArrayList indices = new ArrayList();
+        ArrayList light = new ArrayList();
+
+
+        int indicesCount = 0;
+
+
+        //front
+        positions.add(0.5f);
+        positions.add(0.5f);
+        positions.add(0f);
+
+        positions.add(-0.5f);
+        positions.add(0.5f);
+        positions.add(0f);
+
+        positions.add(-0.5f);
+        positions.add(-0.5f);
+        positions.add(0f);
+
+        positions.add(0.5f);
+        positions.add(-0.5f);
+        positions.add(0f);
+        //front
+        float frontLight = 1f;//getLight(x, y, z + 1, chunkX, chunkZ) / maxLight;
+
+        //front
+        for (int i = 0; i < 12; i++) {
+            light.add(frontLight);
+        }
+        //front
+        indices.add(0 + indicesCount);
+        indices.add(1 + indicesCount);
+        indices.add(2 + indicesCount);
+        indices.add(0 + indicesCount);
+        indices.add(2 + indicesCount);
+        indices.add(3 + indicesCount);
+
+        indicesCount += 4;
+
+        //-x +x   -y +y
+        // 0  1    2  3
+
+        //front
+        textureCoord.add(1f);//1
+        textureCoord.add(0f);//2
+        textureCoord.add(0f);//0
+        textureCoord.add(0f);//2
+        textureCoord.add(0f);//0
+        textureCoord.add(1f);//3
+        textureCoord.add(1f);//1
+        textureCoord.add(1f);//3
+
+
+        //convert the position objects into usable array
+        float[] positionsArray = new float[positions.size()];
+        for (int i = 0; i < positions.size(); i++) {
+            positionsArray[i] = (float) positions.get(i);
+        }
+
+        //convert the light objects into usable array
+        float[] lightArray = new float[light.size()];
+        for (int i = 0; i < light.size(); i++) {
+            lightArray[i] = (float) light.get(i);
+        }
+
+        //convert the indices objects into usable array
+        int[] indicesArray = new int[indices.size()];
+        for (int i = 0; i < indices.size(); i++) {
+            indicesArray[i] = (int) indices.get(i);
+        }
+
+        //convert the textureCoord objects into usable array
+        float[] textureCoordArray = new float[textureCoord.size()];
+        for (int i = 0; i < textureCoord.size(); i++) {
+            textureCoordArray[i] = (float) textureCoord.get(i);
+        }
+
+        globalWaterEffectMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, globalWaterEffect);
     }
 
     public static void toggleVsyncMesh(){

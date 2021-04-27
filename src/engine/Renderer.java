@@ -284,6 +284,15 @@ public class Renderer {
         hudShaderProgram.setUniform("texture_sampler", 0);
         resetOrthoProjectionMatrix(); // needed to get current screen size
 
+        //render water effect
+        if (isCameraSubmerged()) {
+            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3f(0,0,0),new Vector3f(0,0,0), new Vector3f(windowScale * 2,windowScale,windowScale));
+            hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            getGlobalWaterEffectMesh().render();
+        }
+
+        glClear(GL_DEPTH_BUFFER_BIT);
+
         {
             //render inverted crosshair
             glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
@@ -291,8 +300,11 @@ public class Renderer {
             hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
             getCrossHairMesh().render();
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
         }
+
+
+
+
 
 
         glClear(GL_DEPTH_BUFFER_BIT);
