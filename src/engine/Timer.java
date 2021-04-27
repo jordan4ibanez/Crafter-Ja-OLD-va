@@ -27,6 +27,12 @@ public class Timer {
     private static double elapsedTime = 0;
     private static int framesPerSecond = 0;
 
+    private static int currentFpsCount = 0;
+
+    public static int getFpsCounted(){
+        return (currentFpsCount);
+    }
+
     public static void countFPS() {
         double time = timerGetTime();
         double currentElapsedTime = time - lastFPSTime;
@@ -36,6 +42,7 @@ public class Timer {
         if (elapsedTime >= 1_000_000_000) {
 //            System.out.println("framerate :" +  framesPerSecond);
             updateWindowTitle(getVersionName() + " | FPS: " + framesPerSecond);
+            currentFpsCount = framesPerSecond;
             framesPerSecond = 0;
             elapsedTime = 0;
         }

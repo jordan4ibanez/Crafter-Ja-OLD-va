@@ -54,8 +54,8 @@ public class Crafter {
     }
 
     //core game engine elements
-    private static final int TARGET_FPS = 75;
 
+    //load everything
     public static void main(String[] args){
         try{
             boolean vSync = true;
@@ -83,6 +83,7 @@ public class Crafter {
 
     //the game engine elements
 
+    //create game loop
     private static void gameLoop() throws Exception {
         double elapsedTime;
         double accumulator = 0d;
