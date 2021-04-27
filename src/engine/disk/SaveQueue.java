@@ -29,13 +29,17 @@ public class SaveQueue {
                         try {
                             thisChunk = saveQueue.pop();
 
-                            //strip out unneeded data
-                            thisChunk.mesh = null;
-                            thisChunk.blockBoxMesh = null;
-                            thisChunk.liquidMesh = null;
+                            ChunkSavingObject savingObject = new ChunkSavingObject();
 
+                            savingObject.ID = thisChunk.ID;
+                            savingObject.x = thisChunk.x;
+                            savingObject.z = thisChunk.z;
+                            savingObject.block = thisChunk.block;
+                            savingObject.rotation = thisChunk.rotation;
+                            savingObject.light = thisChunk.light;
+                            savingObject.heightMap = thisChunk.heightMap;
 
-                            mapper.writeValue(new File("Worlds/world1/" + thisChunk.ID + ".chunk"), thisChunk);
+                            mapper.writeValue(new File("Worlds/world1/" + savingObject.ID + ".chunk"), savingObject);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -53,7 +57,18 @@ public class SaveQueue {
         ObjectMapper mapper = new ObjectMapper();
         try {
             //System.out.println("SAVED WORLD!");
-            mapper.writeValue(new File("Worlds/world1/" + thisChunk.ID + ".chunk"), thisChunk);
+            ChunkSavingObject savingObject = new ChunkSavingObject();
+
+            savingObject.ID = thisChunk.ID;
+            savingObject.x = thisChunk.x;
+            savingObject.z = thisChunk.z;
+            savingObject.block = thisChunk.block;
+            savingObject.rotation = thisChunk.rotation;
+            savingObject.light = thisChunk.light;
+            savingObject.heightMap = thisChunk.heightMap;
+
+
+            mapper.writeValue(new File("Worlds/world1/" + savingObject.ID + ".chunk"), savingObject);
         } catch (IOException e) {
             e.printStackTrace();
         }

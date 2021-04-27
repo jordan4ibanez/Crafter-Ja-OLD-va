@@ -82,7 +82,7 @@ public class ChunkMesh {
         if (thisChunk == null){
             return;
         }
-        if (thisChunk.mesh == null || thisChunk.liquidMesh == null){
+        if (thisChunk.mesh == null || thisChunk.liquidMesh == null) {
             return;
         }
 

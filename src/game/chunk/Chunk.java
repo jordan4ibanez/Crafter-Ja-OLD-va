@@ -539,9 +539,6 @@ public class Chunk {
     private static final byte waterHeight = 50;
 
     public static void genBiome(int chunkX, int chunkZ) {
-        short currBlock;
-        byte height;
-
 
         ChunkObject loadedChunk = loadChunkFromDisk(chunkX, chunkZ);
 
@@ -554,6 +551,9 @@ public class Chunk {
             } else {
                 return;
             }
+
+            short currBlock;
+            byte height;
 
             thisChunk = map.get(chunkX + " " + chunkZ);
 

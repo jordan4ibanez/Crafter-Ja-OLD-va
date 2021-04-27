@@ -2,6 +2,7 @@ package engine.disk;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import engine.graph.Mesh;
+import game.chunk.Chunk;
 import game.chunk.ChunkObject;
 import org.joml.Vector3f;
 
@@ -35,36 +36,38 @@ public class Disk {
 
 
     private static ObjectMapper objectMapper = new ObjectMapper();
-    private static String key;
-    private static ChunkObject thisChunk;
-    private static File test;
 
     public static ChunkObject loadChunkFromDisk(int x, int z){
 
-        thisChunk = null;
         //System.out.println("loading!!");
-        key = x + " " + z;
+        String key = x + " " + z;
 
-        thisChunk = null;
+        ChunkSavingObject thisChunkLoaded = null;
 
-        test = new File("Worlds/world1/" + key + ".chunk");
+        File test = new File("Worlds/world1/" + key + ".chunk");
 
         if (!test.canRead()){
+            System.out.println("FAILED TO LOAD A CHUNK!");
             return(null);
         }
 
         try {
-            thisChunk = objectMapper.readValue(test, ChunkObject.class);
+            thisChunkLoaded = objectMapper.readValue(test, ChunkSavingObject.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        thisChunk.blockBoxMesh = new Mesh[8];
-        thisChunk.liquidMesh = new Mesh[8];
-        thisChunk.mesh = new Mesh[8];
-        thisChunk.modified = true;
+        ChunkObject abstractedChunk = new ChunkObject();
 
-        return(thisChunk);
+        abstractedChunk.ID = thisChunkLoaded.ID;
+        abstractedChunk.x = thisChunkLoaded.x;
+        abstractedChunk.z = thisChunkLoaded.z;
+        abstractedChunk.block = thisChunkLoaded.block;
+        abstractedChunk.rotation = thisChunkLoaded.rotation;
+        abstractedChunk.light = thisChunkLoaded.light;
+        abstractedChunk.heightMap = thisChunkLoaded.heightMap;
+
+        return(abstractedChunk);
     }
 
     public static void savePlayerPos(Vector3f pos){

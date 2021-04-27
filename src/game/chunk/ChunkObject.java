@@ -8,14 +8,14 @@ public class ChunkObject {
     public int x;
     public int z;
 
-    public int [][][] block;
-    public byte[][][] rotation;
-    public byte[][][] light;
-    public byte[][] heightMap;
+    public int [][][] block = new int[128][16][16];
+    public byte[][][] rotation = new byte[128][16][16];
+    public byte[][][] light = new byte[128][16][16];
+    public byte[][] heightMap  = new byte[16][16];
 
-    public Mesh[] mesh;
-    public Mesh[] liquidMesh;
-    public Mesh[] blockBoxMesh;
+    public Mesh[] mesh = new Mesh[8];
+    public Mesh[] liquidMesh = new Mesh[8];
+    public Mesh[] blockBoxMesh = new Mesh[8];
     public boolean modified = false;
 
     public ChunkObject(){
@@ -27,14 +27,5 @@ public class ChunkObject {
 
         this.x = x;
         this.z = z;
-
-        this.block    = new int [128][16][16];
-        this.rotation = new byte[128][16][16];
-        this.light    = new byte[128][16][16];
-        this.heightMap = new byte[16][16];
-
-        this.mesh       = new Mesh[8];
-        this.liquidMesh = new Mesh[8];
-        this.blockBoxMesh = new Mesh[8];
     }
 }
