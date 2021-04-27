@@ -62,7 +62,7 @@ public class Disk {
         thisChunk.blockBoxMesh = new Mesh[8];
         thisChunk.liquidMesh = new Mesh[8];
         thisChunk.mesh = new Mesh[8];
-        thisChunk.modified = false;
+        thisChunk.modified = true;
 
         return(thisChunk);
     }
