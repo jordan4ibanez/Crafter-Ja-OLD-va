@@ -50,7 +50,7 @@ public class Disk {
         test = new File("Worlds/world1/" + key + ".chunk");
 
         if (!test.canRead()){
-            return null;
+            return(null);
         }
 
         try {
@@ -64,7 +64,7 @@ public class Disk {
         thisChunk.mesh = new Mesh[8];
         thisChunk.modified = false;
 
-        return thisChunk;
+        return(thisChunk);
     }
 
     public static void savePlayerPos(Vector3f pos){
