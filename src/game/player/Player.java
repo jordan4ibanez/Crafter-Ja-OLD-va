@@ -40,6 +40,11 @@ public class Player {
     private static boolean playerIsJumping = false;
     private static final int[] currentChunk = {(int)Math.floor(pos.x / 16f),(int)Math.floor(pos.z / 16f)};
 
+    private static float itemRotation = 0f;
+    private static boolean itemRotationEnabled = false;
+
+
+
     public static void resetPlayerInputs(){
         setPlayerForward(false);
         setPlayerBackward(false);
@@ -49,6 +54,32 @@ public class Player {
         setPlayerJump(false);
         mining = false;
         placing = false;
+    }
+
+
+    //these two void are for enabling framerate consistant
+    //item rotation in the hud menu
+    public static void enableItemRotationInHud(){
+        itemRotationEnabled = true;
+    }
+    public static void disableItemRotationInHud(){
+        itemRotationEnabled = false;
+    }
+
+    public static float getItemRotationInHud(){
+        return(itemRotation);
+    }
+
+    private static void checkIfHudItemRotates(){
+        if (!itemRotationEnabled) {
+            itemRotation = 0f;
+        } else {
+            itemRotation += 0.05f;
+            //prevent buffer overflow
+            if (itemRotation > 360f) {
+                itemRotation -= 360f;
+            }
+        }
     }
 
     public static boolean getIfPlayerIsJumping(){
@@ -422,6 +453,8 @@ public class Player {
     }
 
     public static void playerOnTick() {
+
+        checkIfHudItemRotates();
 
         if (playerIsJumping && isPlayerOnGround()){
             playerIsJumping = false;

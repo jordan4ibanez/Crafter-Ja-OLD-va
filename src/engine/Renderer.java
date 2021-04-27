@@ -419,11 +419,15 @@ public class Renderer {
                         }
                     }
                 }
+
+                //this is used for an effect of
+                //rotating the selected item in HUD
                 if (!itemSelected) {
-                    itemRotation = 0f;
+                    disableItemRotationInHud();
                 } else {
-                    itemRotation += 1f;
+                    enableItemRotationInHud();
                 }
+                itemRotation = getItemRotationInHud();
 
 
                 //debug testing for rendered item
