@@ -314,8 +314,9 @@ public class Chunk {
         }
         lightFloodFill(x, y, z);
         thisChunk.modified = true;
-        generateChunkMesh(chunkX,chunkZ,yPillar);//instant update
-        instantUpdateNeighbor(chunkX, chunkZ,blockX,y,blockZ);//instant update
+
+        //generateChunkMesh(chunkX,chunkZ,yPillar);//instant update
+        //instantUpdateNeighbor(chunkX, chunkZ,blockX,y,blockZ);//instant update
     }
 
     public static void placeBlock(int x,int y,int z, int ID, int rot){
