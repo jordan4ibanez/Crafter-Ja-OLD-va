@@ -69,9 +69,9 @@ public class ItemEntity {
             }
 
             if (thisItem.collecting) {
-                applyInertia(thisItem.pos, thisItem.inertia, false, itemSize, itemSize * 2, false, false, false, false);
+                applyInertia(thisItem.pos, thisItem.inertia, false, itemSize, itemSize * 2, false, false, false, false, false);
             } else {
-                applyInertia(thisItem.pos, thisItem.inertia, false, itemSize, itemSize * 2, true, false, true, false);
+                applyInertia(thisItem.pos, thisItem.inertia, false, itemSize, itemSize * 2, true, false, true, false, false);
             }
 
             thisItem.rotation.y += 0.1f;

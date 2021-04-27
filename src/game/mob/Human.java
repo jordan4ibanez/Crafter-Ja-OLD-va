@@ -56,7 +56,7 @@ public class Human {
                 thisObject.animationTimer = 0f;
             }
 
-            boolean onGround = applyInertia(thisObject.pos, thisObject.inertia, false, thisObject.width, thisObject.height, true, false, true, false);
+            boolean onGround = applyInertia(thisObject.pos, thisObject.inertia, false, thisObject.width, thisObject.height, true, false, true, false, false);
 
             if (onGround){
                 thisObject.inertia.y += 10f;

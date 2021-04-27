@@ -65,7 +65,7 @@ public class TNTEntity {
     public static void onTNTStep() throws Exception {
         for (int i = 0; i < totalTNT; i++){
             tntTimer[i] += 0.001f;
-            applyInertia(tntPos[i], tntInertia[i], true, tntSize, tntSize * 2, true, false, true, false);
+            applyInertia(tntPos[i], tntInertia[i], true, tntSize, tntSize * 2, true, false, true, false, false);
 
             if(tntTimer[i]>2.23f){
                 tntScale[i].x += 0.002f;

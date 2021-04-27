@@ -9,17 +9,20 @@ import static game.collision.CollisionMath.floorPos;
 import static game.collision.CustomAABB.*;
 import static game.collision.CustomBlockBox.*;
 import static game.player.Player.getIfPlayerIsJumping;
+import static game.player.Player.setPlayerInWater;
 
 public class Collision {
     final private static float gameSpeed = 0.001f;
 
-    public static boolean applyInertia(Vector3f pos, Vector3f inertia, boolean onGround, float width, float height, boolean gravity, boolean sneaking, boolean applyCollision, boolean airFriction){
+    private static float inWater = 0;
 
-        if(gravity) {
-            inertia.y -= 40f * gameSpeed; //gravity
-        }
+    //this probably definitely absolutely should not take isPlayer as a value
+    //fix this later FIX ME FIX ME - DO OBJECT TYPE MATCHING
+    public static boolean applyInertia(Vector3f pos, Vector3f inertia, boolean onGround, float width, float height, boolean gravity, boolean sneaking, boolean applyCollision, boolean airFriction, boolean isPlayer){
 
-        //limit speed
+        inWater = 0;//reset water detection
+
+        //limit speed (falling or flying) - y axis
         if (inertia.y <= -70f){
             inertia.y = -70f;
         } else if (inertia.y > 70f){
@@ -62,6 +65,33 @@ public class Collision {
         if (onGround || airFriction) {
             inertia.x += -inertia.x * gameSpeed * 10; // do (10 - 9.5f) for slippery!
             inertia.z += -inertia.z * gameSpeed * 10;
+        }
+
+        //water resistance
+        if (inWater > 0.f){
+            inertia.x += -inertia.x * gameSpeed * inWater;
+            inertia.z += -inertia.z * gameSpeed * inWater;
+
+            //inertia.y += -inertia.z * gameSpeed * inWater;
+            //inertia.y = inertia.y / 1.2f;
+        }
+
+        if(gravity) {
+            if (inWater > 0.f){
+                if (isPlayer){
+                    setPlayerInWater(true);
+                }
+                //water resistance
+                if (inertia.y > -40f / inWater){
+                    inertia.y -= 1000/inWater * gameSpeed;
+                }
+            }else {
+                if (isPlayer){
+                    setPlayerInWater(false);
+                }
+                //regular gravity
+                inertia.y -= 40f * gameSpeed;
+            }
         }
 
         return onGround;
@@ -361,7 +391,43 @@ public class Collision {
                     break;
             }
         }
+
+        //water check
+        for (float yy = 0; yy <= height; yy = yy + 0.5f) {
+            for (x = -1; x <= 1; x++) {
+                for (z = -1; z <= 1; z++) {
+                    cachedPos.x = fPos.x + x;
+                    cachedPos.y = yy + pos.y;
+                    cachedPos.z = fPos.z + z;
+                    cachedBlock = detectBlock(floorPos(cachedPos));
+
+                    byte rot =  detectRot(cachedPos);
+
+                    if (cachedBlock > 0 && isBlockLiquid(cachedBlock)){
+                        detectIfInWater((int)fPos.x + x, (int)(yy + pos.y), (int) fPos.z + z, rot, pos, inertia, width, height, cachedBlock);
+                    }
+                }
+            }
+        }
+
         return onGround;
+    }
+
+    //a simple way to check if an object is in the water, only done on x and z passes so you can't stand
+    //next to water and get slowed down
+    private static void detectIfInWater(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3f pos, Vector3f inertia, float width, float height, int blockID){
+        for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
+            setAABB(pos.x, pos.y, pos.z, width, height);
+            setBlockBox(blockPosX,blockPosY,blockPosz,thisBlockBox);
+
+            if (isWithin()) {
+                float localViscosity = getBlockViscosity(blockID);
+
+                if (localViscosity > inWater){
+                    inWater = localViscosity;
+                }
+            }
+        }
     }
 
     private static boolean collideYNegative(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3f pos, Vector3f inertia, float width, float height, boolean onGround, int blockID){

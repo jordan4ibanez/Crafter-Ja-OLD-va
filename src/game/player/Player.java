@@ -18,6 +18,8 @@ import static game.weather.Weather.createRainDrop;
 
 
 public class Player {
+    final private static float gameSpeed = 0.001f;
+
     private static Vector3f pos                  = loadPlayerPos();
     private static final float eyeHeight               = 1.5f;
     private static final float collectionHeight        = 0.7f;
@@ -367,6 +369,20 @@ public class Player {
 
     private static float movementSpeed = 1.5f;
 
+    private static boolean inWater = false;
+
+    private static boolean wasInWater = false;
+
+    private static float wasInWaterTimer = 0f;
+    private static boolean waterLockout = false;
+
+    public static void setPlayerInWater(boolean theTruth){
+        inWater = theTruth;
+        if (theTruth && playerIsJumping){
+            playerIsJumping = false; //reset jumping mechanic
+        }
+    }
+
     public static void setPlayerInertiaBuffer(){
         if (forward){
             float yaw = (float)Math.toRadians(getCameraRotation().y) + (float)Math.PI;
@@ -392,9 +408,19 @@ public class Player {
             inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementSpeed;
         }
 
-        if (jump && isPlayerOnGround()){
+        if (!inWater && jump && isPlayerOnGround()){
             inertia.y += 10.5f;
             playerIsJumping = true;
+        //the player comes to equilibrium with the water's surface
+        // if this is not implemented like this
+        } else if (jump && inWater && !waterLockout){
+            wasInWater = true;
+            if(inertia.y <= 4.f){
+                inertia.y += 100.f * gameSpeed;
+            }
+        }
+        if (wasInWater && !inWater){
+            wasInWaterTimer = 0.2f;
         }
     }
 
@@ -441,7 +467,6 @@ public class Player {
         return diggingFrame;
     }
 
-
     private static float particleBufferTimer = 0f;
 
     private static float rainBuffer = 0f;
@@ -453,6 +478,18 @@ public class Player {
     }
 
     public static void playerOnTick() {
+
+        //the player comes to equilibrium with the water's surface
+        //if this is not implemented like this
+        if (wasInWaterTimer > 0.f){
+            //System.out.println(wasInWaterTimer);
+            waterLockout = true;
+            wasInWaterTimer -= 0.001f;
+            if (wasInWaterTimer <= 0){
+                //System.out.println("turned off lockout");
+                waterLockout = false;
+            }
+        }
 
         checkIfHudItemRotates();
 
@@ -537,7 +574,7 @@ public class Player {
         }
 
 
-        onGround = applyInertia(pos, inertia, true, width, height,true, sneaking, true, true);
+        onGround = applyInertia(pos, inertia, true, width, height,true, sneaking, true, true, true);
 
         if(mining && hasDug) {
             rayCast(getCameraPosition(), getCameraRotationVector(), 4f,  true, false);
