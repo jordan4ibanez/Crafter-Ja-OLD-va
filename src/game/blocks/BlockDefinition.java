@@ -40,6 +40,8 @@ public class BlockDefinition {
     public String placeSound;
     public String digSound;
     public BlockModifier blockModifier;
+    public boolean isRightClickable;
+    public boolean isOnPlaced;
 
     public BlockDefinition(
             int ID,String name,
@@ -56,7 +58,9 @@ public class BlockDefinition {
             boolean isLiquid,
             BlockModifier blockModifier,
             String placeSound,
-            String digSound
+            String digSound,
+            boolean isRightClickable,
+            boolean isOnPlaced
     ){
 
         this.ID   = ID;
@@ -75,6 +79,8 @@ public class BlockDefinition {
         this.blockModifier = blockModifier;
         this.placeSound = placeSound;
         this.digSound = digSound;
+        this.isRightClickable = isRightClickable;
+        this.isOnPlaced = isOnPlaced;
         blockIDs[ID] = this;
 
         registerItem(name, ID);
@@ -124,6 +130,14 @@ public class BlockDefinition {
 
     public static String getBlockName(int ID){
         return blockIDs[ID].name;
+    }
+
+    public static boolean getRightClickable(int ID){
+        return(blockIDs[ID].isRightClickable);
+    }
+
+    public static boolean getIsOnPlaced(int ID){
+        return(blockIDs[ID].isOnPlaced);
     }
 
     public static String getBlockDrawType(int ID){
@@ -267,7 +281,9 @@ public class BlockDefinition {
                 false,
                 null,
                 "",
-                ""
+                "",
+                false,
+                false
         );
 
         new BlockDefinition(
@@ -286,7 +302,9 @@ public class BlockDefinition {
                 false,
                 null,
                 "dirt_1",
-                "dirt_2"
+                "dirt_2",
+                false,
+                false
         );
 
         new BlockDefinition(
@@ -305,7 +323,9 @@ public class BlockDefinition {
                 false,
                 null,
                 "dirt_1",
-                "dirt_2"
+                "dirt_2",
+                false,
+                false
         );
 
         new BlockDefinition(
@@ -324,7 +344,9 @@ public class BlockDefinition {
                 false,
                 null,
                 "stone_1",
-                "stone_2"
+                "stone_2",
+                false,
+                false
         );
 
         new BlockDefinition(
@@ -343,7 +365,9 @@ public class BlockDefinition {
                 false,
                 null,
                 "stone_3",
-                "stone_2"
+                "stone_2",
+                false,
+                false
         );
 
         new BlockDefinition(
@@ -362,7 +386,9 @@ public class BlockDefinition {
                 false,
                 null,
                 "stone_1",
-                "stone_1"
+                "stone_1",
+                false,
+                false
         );
 
 
@@ -390,7 +416,9 @@ public class BlockDefinition {
                 false,
                 kaboom,
                 "dirt_1",
-                "wood_2"
+                "wood_2",
+                false,
+                false
         );
 
         //water thing
@@ -419,7 +447,9 @@ public class BlockDefinition {
                 true,
                 splash,
                 "",
-                ""
+                "",
+                false,
+                false
         );
 
         new BlockDefinition(
@@ -438,7 +468,9 @@ public class BlockDefinition {
                 false,
                 null,
                 "stone_1",
-                "stone_2"
+                "stone_2",
+                false,
+                false
         );
 
         new BlockDefinition(
@@ -457,7 +489,9 @@ public class BlockDefinition {
                 false,
                 null,
                 "stone_1",
-                "stone_2"
+                "stone_2",
+                false,
+                false
         );
 
         new BlockDefinition(
@@ -476,7 +510,9 @@ public class BlockDefinition {
                 false,
                 null,
                 "stone_1",
-                "stone_2"
+                "stone_2",
+                false,
+                false
         );
 
         new BlockDefinition(
@@ -495,7 +531,9 @@ public class BlockDefinition {
                 false,
                 null,
                 "stone_1",
-                "stone_2"
+                "stone_2",
+                false,
+                false
         );
 
         new BlockDefinition(
@@ -514,7 +552,9 @@ public class BlockDefinition {
                 false,
                 null,
                 "stone_1",
-                "stone_2"
+                "stone_2",
+                false,
+                false
         );
 
         new BlockDefinition(
@@ -533,7 +573,9 @@ public class BlockDefinition {
                 false,
                 null,
                 "stone_1",
-                "stone_2"
+                "stone_2",
+                false,
+                false
         );
 
         new BlockDefinition(
@@ -552,7 +594,9 @@ public class BlockDefinition {
                 false,
                 null,
                 "stone_1",
-                "stone_2"
+                "stone_2",
+                false,
+                false
         );
 
         new BlockDefinition(
@@ -571,7 +615,9 @@ public class BlockDefinition {
                 false,
                 null,
                 "stone_1",
-                "stone_2"
+                "stone_2",
+                false,
+                false
         );
 
         new BlockDefinition(
@@ -590,7 +636,9 @@ public class BlockDefinition {
                 false,
                 null,
                 "stone_3",
-                "stone_2"
+                "stone_2",
+                false,
+                false
         );
 
 
@@ -610,7 +658,9 @@ public class BlockDefinition {
                 false,
                 null,
                 "wood_1",
-                "wood_2"
+                "wood_2",
+                false,
+                false
         );
         new BlockDefinition(
                 18,
@@ -628,7 +678,9 @@ public class BlockDefinition {
                 false,
                 null,
                 "wood_1",
-                "wood_2"
+                "wood_2",
+                false,
+                false
         );
         new BlockDefinition(
                 19,
@@ -646,7 +698,9 @@ public class BlockDefinition {
                 false,
                 null,
                 "wood_1",
-                "wood_2"
+                "wood_2",
+                false,
+                false
         );
 
         //falling sand
@@ -655,7 +709,7 @@ public class BlockDefinition {
             public void onPlace(Vector3f pos) {
                 if (getBlock((int)pos.x, (int)pos.y - 1, (int)pos.z) == 0) {
                     digBlock((int) pos.x, (int) pos.y, (int) pos.z);
-                    addFallingEntity(new Vector3f(pos.x + 0.5f, pos.y, pos.z + 0.5f), new Vector3f(0, 0, 0), 23);
+                    addFallingEntity(new Vector3f(pos.x + 0.5f, pos.y, pos.z + 0.5f), new Vector3f(0, 0, 0), 20);
                 }
             }
         };
@@ -675,7 +729,9 @@ public class BlockDefinition {
                 false,
                 fallSand,
                 "sand_1",
-                "sand_2"
+                "sand_2",
+                false,
+                false
         );
 
         blockShapeMap.put("door_open",
@@ -722,7 +778,9 @@ public class BlockDefinition {
                     }
                 },
                 "wood_1",
-                "wood_1"
+                "wood_1",
+                true,
+                false
         );
 
         new BlockDefinition(
@@ -760,7 +818,9 @@ public class BlockDefinition {
                     }
                 },
                 "wood_1",
-                "wood_1"
+                "wood_1",
+                true,
+                false
         );
 
         blockShapeMap.put("door_closed",
@@ -806,7 +866,9 @@ public class BlockDefinition {
                     }
                 },
                 "wood_1",
-                "wood_1"
+                "wood_1",
+                true,
+                false
         );
 
         new BlockDefinition(
@@ -844,7 +906,9 @@ public class BlockDefinition {
                     }
                 },
                 "wood_1",
-                "wood_1"
+                "wood_1",
+                true,
+                false
         );
     }
 
@@ -862,7 +926,7 @@ public class BlockDefinition {
     }
 
     public static boolean blockHasOnRightClickCall(int ID){
-        return blockIDs[ID].blockModifier != null;
+        return(blockIDs[ID].isRightClickable && blockIDs[ID].blockModifier != null);
     }
 
     public static float[] getFrontTexturePoints(int ID, byte rotation){

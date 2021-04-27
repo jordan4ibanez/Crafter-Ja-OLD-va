@@ -8,12 +8,10 @@ import static game.collision.Collision.wouldCollidePlacing;
 import static game.collision.CustomAABB.setAABB;
 import static game.collision.CustomBlockBox.setBlockBox;
 import static game.item.ItemDefinition.getItemModifier;
-import static game.mob.Mob.spawnMob;
 import static game.particle.Particle.createParticle;
 import static game.player.Inventory.getItemInInventorySlot;
 import static game.player.Inventory.removeItemFromInventory;
 import static game.player.Player.*;
-import static game.weather.Weather.createRainDrop;
 
 public class Ray {
     public static void rayCast(Vector3f pos, Vector3f dir, float length, boolean mining, boolean placing) {
@@ -36,9 +34,12 @@ public class Ray {
             if(mining) {
                 destroyBlock(finalPos);
             } else if (placing && lastPos != null){
+
                 //todo: make this call on punched
                 if (!isPlayerSneaking() && blockHasOnRightClickCall(getBlock((int)finalPos.x,(int)finalPos.y,(int)finalPos.z))) {
+
                     getBlockDefinition(getBlock((int) finalPos.x, (int) finalPos.y, (int) finalPos.z)).blockModifier.onRightClick(finalPos);
+
                 } else {
                     setAABB(getPlayerPos().x, getPlayerPos().y, getPlayerPos().z, getPlayerWidth(), getPlayerHeight());
                     setBlockBox((int) lastPos.x, (int) lastPos.y, (int) lastPos.z, getBlockShape(1, (byte) 0)[0]); //TODO: make this check the actual block shapes
@@ -49,6 +50,8 @@ public class Ray {
                         if (getItemModifier(getItemInInventorySlot(getPlayerInventorySelection(), 0).name) != null) {
                             getItemModifier(getItemInInventorySlot(getPlayerInventorySelection(), 0).name).onPlace(lastPos);
                         }
+                    } else{
+                        System.out.println("test3");
                     }
                 }
             }
@@ -74,8 +77,11 @@ public class Ray {
         }
     }
     private static void rayPlaceBlock(Vector3f flooredPos, int ID) {
+
         placeBlock((int) flooredPos.x, (int) flooredPos.y, (int) flooredPos.z, ID, getPlayerDir());
+
         onPlaceCall(ID, flooredPos);
+
         removeItemFromInventory(getCurrentInventorySelection(), 0);
     }
 }

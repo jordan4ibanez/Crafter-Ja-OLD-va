@@ -20,10 +20,12 @@ public class ItemDefinition {
     private final static Map<String, ItemDefinition> definitions = new HashMap<>();
 
     public final String name;
-    public final int blockID;
+    public int blockID;
     public final Mesh mesh;
     public final boolean isTool;
     public final ItemModifier itemModifier;
+    public boolean isRightClickable;
+    public boolean isOnPlaced;
 
     public ItemDefinition(String name, int blockID){
         this.name = name;
@@ -31,11 +33,12 @@ public class ItemDefinition {
         this.mesh = createBlockObjectMesh(blockID);
         this.isTool = false;
         this.itemModifier = null;
+        this.isRightClickable = getRightClickable(blockID);
+        this.isOnPlaced = getIsOnPlaced(blockID);
     }
 
     public ItemDefinition(String name, String texturePath, ItemModifier itemModifier){
         this.name = name;
-        this.blockID = -1;
         this.mesh = createItemObjectMesh(texturePath);
         this.isTool = true;
         this.itemModifier = itemModifier;

@@ -7,11 +7,11 @@ public interface BlockModifier {
 //        System.out.println("digging interface worked");
     }
 
-    default public void onPlace(Vector3f pos) throws Exception {
-//        System.out.println("placing interface worked");
+    default public void onPlace(Vector3f pos) {
+
     }
 
     default public void onRightClick(Vector3f pos){
-        System.out.println("on rightclick works :>");
+
     }
 }
