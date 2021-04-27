@@ -19,9 +19,16 @@ public class ItemEntity {
         items.put(getCurrentID(), new Item(name, pos, stack));
     }
 
+    public static void createItem(String name, Vector3f pos, int stack, float life){
+        items.put(getCurrentID(), new Item(name, pos, stack, life));
+    }
 
     public static void createItem(String name, Vector3f pos, Vector3f inertia, int stack){
         items.put(getCurrentID(), new Item(name, pos, inertia, stack));
+    }
+
+    public static void createItem(String name, Vector3f pos, Vector3f inertia, int stack, float life){
+        items.put(getCurrentID(), new Item(name, pos, inertia, stack, life));
     }
 
     public static Collection<Item> getAllItems(){
@@ -35,12 +42,12 @@ public class ItemEntity {
             thisItem.timer += 0.001f;
 
             //delete items that are too old
-            if (thisItem.timer > 10f){
+            if (thisItem.timer > 100f){
                 deletionQueue.add(thisItem.ID);
                 continue;
             }
 
-            if (thisItem.timer > 3){
+            if (thisItem.timer > 3f){
                 if (getDistance(thisItem.pos, getPlayerPosWithCollectionHeight()) < 3f){
                     if (!thisItem.collecting){
                         if (addItemToInventory(thisItem.name)) {

@@ -51,6 +51,25 @@ public class Item {
         currentID++;
     }
 
+    //item being mined with life
+    public Item(String name, Vector3f pos, int stack, float life) {
+        this.name = name;
+        this.pos = pos;
+        this.definition = getItemDefinition(name);
+        this.stack = stack;
+        this.inertia = new Vector3f(randomForceValue(9f), (float) Math.random() * 10f, randomForceValue(9f));
+        this.rotation = new Vector3f(0, 0, 0);
+        this.hover = 0f;
+        this.floatUp = true;
+        this.exists = true;
+        this.collecting = false;
+        this.scale = 1f;
+        this.timer = life;
+        this.ID = currentID;
+        this.mesh = getItemDefinition(name).mesh;
+        currentID++;
+    }
+
     //item with inertia vector when spawned (mined, blown up, etc)
     public Item(String name, Vector3f pos, Vector3f inertia, int stack) {
         this.name = name;
@@ -65,6 +84,25 @@ public class Item {
         this.collecting = false;
         this.scale = 1f;
         this.timer = 0f;
+        this.ID = currentID;
+        this.mesh = getItemDefinition(name).mesh;
+        currentID++;
+    }
+
+    //item with inertia vector when spawned (mined, blown up, etc)
+    public Item(String name, Vector3f pos, Vector3f inertia, int stack, float life) {
+        this.name = name;
+        this.pos = pos;
+        this.definition = getItemDefinition(name);
+        this.stack = stack;
+        this.inertia = inertia;
+        this.rotation = new Vector3f(0, 0, 0);
+        this.hover = 0f;
+        this.floatUp = true;
+        this.exists = true;
+        this.collecting = false;
+        this.scale = 1f;
+        this.timer = life;
         this.ID = currentID;
         this.mesh = getItemDefinition(name).mesh;
         currentID++;

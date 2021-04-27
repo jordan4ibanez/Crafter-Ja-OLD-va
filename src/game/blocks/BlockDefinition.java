@@ -1,15 +1,13 @@
 package game.blocks;
 
-import game.item.Item;
 import org.joml.Vector3f;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import static game.chunk.Chunk.*;
 import static game.falling.FallingEntity.addFallingEntity;
-import static game.item.Item.getCurrentID;
+
 import static game.item.ItemDefinition.registerItem;
 import static game.item.ItemEntity.createItem;
 import static game.tnt.TNTEntity.createTNT;
@@ -85,7 +83,7 @@ public class BlockDefinition {
     public static void onDigCall(int ID, Vector3f pos) {
         if(blockIDs[ID] != null){
             if(blockIDs[ID].dropsItem){
-                createItem(blockIDs[ID].name, pos.add(0.5f,0.5f,0.5f), 1);
+                createItem(blockIDs[ID].name, pos.add(0.5f,0.5f,0.5f), 1, 2.5f);
             }
             if(blockIDs[ID].blockModifier != null){
                 try {

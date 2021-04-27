@@ -33,6 +33,7 @@ import static game.blocks.BlockDefinition.initializeBlocks;
 import static game.item.ItemRegistration.registerTools;
 import static game.player.Inventory.*;
 import static game.player.Player.*;
+import static game.weather.Weather.rainDropsOnTick;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Crafter {
@@ -298,7 +299,7 @@ public class Crafter {
         hudOnStepTest();
         particlesOnStep();
         fallingEntityOnStep();
-//        rainDropsOnTick();
+        //rainDropsOnTick();
         mobsOnTick();
     }
 
