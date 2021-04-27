@@ -23,7 +23,8 @@ public class Ray {
         for(float step = 0; step <= length ; step += 0.01f) {
             cachePos = new Vector3f(dir.x * step, dir.y * step, dir.z * step);
             newPos = new Vector3f((float)Math.floor(pos.x + cachePos.x), (float)Math.floor(pos.y + cachePos.y), (float)Math.floor(pos.z + cachePos.z));
-            if (getBlock((int)newPos.x, (int)newPos.y, (int)newPos.z) > 0){
+            int foundBlock = getBlock((int)newPos.x, (int)newPos.y, (int)newPos.z);
+            if (foundBlock > 0 && isBlockPointable(foundBlock)){
                 finalPos = newPos;
                 break;
             }
