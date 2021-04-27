@@ -773,7 +773,7 @@ public class BlockDefinition {
                             byte rot = getBlockRotation((int)pos.x, (int)pos.y, (int)pos.z);
                             setBlock((int)pos.x, (int)pos.y, (int)pos.z, 23,rot);
                             setBlock((int)pos.x, (int)pos.y - 1, (int)pos.z, 24,rot);
-                            playSound("door_close", pos);
+                            playSound("door_close", new Vector3f(pos.x + 0.5f, pos.y + 0.5f, pos.z + 0.5f));
                         }
                     }
                 },
@@ -813,7 +813,7 @@ public class BlockDefinition {
                             byte rot = getBlockRotation((int)pos.x, (int)pos.y, (int)pos.z);
                             setBlock((int)pos.x, (int)pos.y + 1, (int)pos.z, 23,rot);
                             setBlock((int)pos.x, (int)pos.y, (int)pos.z, 24,rot);
-                            playSound("door_close", pos);
+                            playSound("door_close", new Vector3f(pos.x + 0.5f, pos.y + 0.5f, pos.z + 0.5f));
                         }
                     }
                 },
@@ -861,7 +861,7 @@ public class BlockDefinition {
                             byte rot = getBlockRotation((int)pos.x, (int)pos.y, (int)pos.z);
                             setBlock((int)pos.x, (int)pos.y, (int)pos.z, 21,rot);
                             setBlock((int)pos.x, (int)pos.y - 1, (int)pos.z, 22,rot);
-                            playSound("door_open", pos);
+                            playSound("door_open", new Vector3f(pos.x + 0.5f, pos.y + 0.5f, pos.z + 0.5f));
                         }
                     }
                 },
@@ -901,7 +901,7 @@ public class BlockDefinition {
                             byte rot = getBlockRotation((int)pos.x, (int)pos.y, (int)pos.z);
                             setBlock((int)pos.x, (int)pos.y + 1, (int)pos.z, 21,rot);
                             setBlock((int)pos.x, (int)pos.y, (int)pos.z, 22,rot);
-                            playSound("door_open", pos);
+                            playSound("door_open", new Vector3f(pos.x + 0.5f, pos.y + 0.5f, pos.z + 0.5f));
                         }
                     }
                 },
