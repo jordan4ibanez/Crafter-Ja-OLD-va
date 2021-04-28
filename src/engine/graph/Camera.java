@@ -31,11 +31,13 @@ public class Camera {
         }
 
         if ( offsetX != 0) {
-            position.x += (float)Math.sin(Math.toRadians(rotation.y - 90)) * -1.0f * offsetX;
-            position.z += (float)Math.cos(Math.toRadians(rotation.y - 90)) * offsetX;
+            position.x += (float)Math.sin(Math.toRadians(rotation.y - 90f)) * -1.0f * offsetX;
+            position.z += (float)Math.cos(Math.toRadians(rotation.y - 90f)) * offsetX;
         }
 
-        position.y += offsetY;
+        if (offsetY != 0) {
+            position.y += offsetY;
+        }
     }
 
     public static Vector3f getCameraRotation(){
@@ -81,10 +83,10 @@ public class Camera {
         }
 //        loop camera yaw
         if (getCameraRotation().y < -180f){
-            moveCameraRotation(0,360, 0);
+            moveCameraRotation(0,360f, 0);
         }
         if (getCameraRotation().y > 180f){
-            moveCameraRotation(0,-360, 0);
+            moveCameraRotation(0,-360f, 0);
         }
     }
 }

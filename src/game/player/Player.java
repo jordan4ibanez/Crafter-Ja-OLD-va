@@ -487,7 +487,7 @@ public class Player {
     public static void playerOnTick() {
 
         //camera underwater effect trigger
-        Vector3f camPos = getCameraPosition();
+        Vector3f camPos = new Vector3f(getCameraPosition());
         camPos.y -= 0.02f;
         int cameraCheckBlock = getBlock((int)camPos.x,(int)camPos.y, (int)camPos.z);
 
@@ -589,16 +589,6 @@ public class Player {
 
 
         onGround = applyInertia(pos, inertia, true, width, height,true, sneaking, true, true, true);
-
-        if(mining && hasDug) {
-            rayCast(getCameraPosition(), getCameraRotationVector(), 3.5f,  true, false);
-            mineTimer = 0.5f;
-        } else if (placing && placeTimer <= 0){
-            rayCast(getCameraPosition(), getCameraRotationVector(), 3.5f,  false, true);
-            placeTimer = 0.5f;
-        } else {
-            rayCast(getCameraPosition(), getCameraRotationVector(), 3.5f,  false, false);
-        }
 
 
         if(playerIsMoving() && !sneaking && !inWater){
@@ -724,6 +714,16 @@ public class Player {
                 }
                 particleBufferTimer = 0f;
             }
+        }
+
+        if(mining && hasDug) {
+            rayCast(getCameraPosition(), getCameraRotationVector(), 3.5f,  true, false);
+            mineTimer = 0.5f;
+        } else if (placing && placeTimer <= 0){
+            rayCast(getCameraPosition(), getCameraRotationVector(), 3.5f,  false, true);
+            placeTimer = 0.5f;
+        } else {
+            rayCast(getCameraPosition(), getCameraRotationVector(), 3.5f,  false, false);
         }
     }
 

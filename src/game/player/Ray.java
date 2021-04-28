@@ -15,6 +15,7 @@ import static game.player.Player.*;
 
 public class Ray {
     public static void rayCast(Vector3f pos, Vector3f dir, float length, boolean mining, boolean placing) {
+
         Vector3f finalPos = new Vector3f();
 
         Vector3f newPos   = new Vector3f();
@@ -25,7 +26,7 @@ public class Ray {
 
         int foundBlock = -1;
 
-        for(float step = 0; step <= length ; step += 0.001f) {
+        for(float step = 0f; step <= length ; step += 0.001f) {
 
             cachePos.x = dir.x * step;
             cachePos.y = dir.y * step;
