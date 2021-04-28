@@ -16,18 +16,32 @@ import static game.player.Player.*;
 public class Ray {
     public static void rayCast(Vector3f pos, Vector3f dir, float length, boolean mining, boolean placing) {
         Vector3f finalPos = null;
+
         Vector3f newPos   = null;
+
         Vector3f lastPos  = null;
+
         Vector3f cachePos = null;
 
-        for(float step = 0; step <= length ; step += 0.01f) {
+
+        for(float step = 0; step <= length ; step += 0.001f) {
+
             cachePos = new Vector3f(dir.x * step, dir.y * step, dir.z * step);
+
             newPos = new Vector3f((float)Math.floor(pos.x + cachePos.x), (float)Math.floor(pos.y + cachePos.y), (float)Math.floor(pos.z + cachePos.z));
-            int foundBlock = getBlock((int)newPos.x, (int)newPos.y, (int)newPos.z);
-            if (foundBlock > 0 && isBlockPointable(foundBlock)){
-                finalPos = newPos;
-                break;
+
+            //stop wasting cpu resources
+            if (lastPos != null) {
+                if (newPos.x != lastPos.x || newPos.y != lastPos.y || newPos.z != lastPos.z) {
+                    int foundBlock = getBlock((int) newPos.x, (int) newPos.y, (int) newPos.z);
+
+                    if (foundBlock > 0 && isBlockPointable(foundBlock)) {
+                        finalPos = newPos;
+                        break;
+                    }
+                }
             }
+
             lastPos = new Vector3f(newPos);
         }
 
