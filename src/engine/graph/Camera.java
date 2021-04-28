@@ -56,9 +56,9 @@ public class Camera {
 
     public static Vector3f getCameraRotationVector(){
         Vector3f rotationVector = new Vector3f();
-        float xzLen = (float)Math.cos(Math.toRadians(rotation.x + 180));
+        float xzLen = (float)Math.cos(Math.toRadians(rotation.x + 180f));
         rotationVector.z = xzLen * (float)Math.cos(Math.toRadians(rotation.y));
-        rotationVector.y = (float)Math.sin(Math.toRadians(rotation.x + 180));
+        rotationVector.y = (float)Math.sin(Math.toRadians(rotation.x + 180f));
         rotationVector.x = xzLen * (float)Math.sin(Math.toRadians(-rotation.y));
         return rotationVector;
     }
