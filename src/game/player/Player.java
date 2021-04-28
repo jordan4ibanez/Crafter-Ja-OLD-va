@@ -489,11 +489,9 @@ public class Player {
         //camera underwater effect trigger
         Vector3f camPos = getCameraPosition();
         camPos.y -= 0.02f;
-        if (isBlockLiquid(getBlock((int)camPos.x,(int)camPos.y, (int)camPos.z))){
-            cameraSubmerged = true;
-        } else {
-            cameraSubmerged = false;
-        }
+        int cameraCheckBlock = getBlock((int)camPos.x,(int)camPos.y, (int)camPos.z);
+
+        cameraSubmerged = cameraCheckBlock > 0 && isBlockLiquid(cameraCheckBlock);
 
         //the player comes to equilibrium with the water's surface
         //if this is not implemented like this
