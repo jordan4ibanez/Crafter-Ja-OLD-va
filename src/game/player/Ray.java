@@ -23,6 +23,8 @@ public class Ray {
 
         Vector3f cachePos = new Vector3f();
 
+        int foundBlock = -1;
+
         for(float step = 0; step <= length ; step += 0.001f) {
 
             cachePos.x = dir.x * step;
@@ -36,7 +38,7 @@ public class Ray {
             //stop wasting cpu resources
             if (lastPos != null) {
                 if (newPos.x != lastPos.x || newPos.y != lastPos.y || newPos.z != lastPos.z) {
-                    int foundBlock = getBlock((int) newPos.x, (int) newPos.y, (int) newPos.z);
+                    foundBlock = getBlock((int) newPos.x, (int) newPos.y, (int) newPos.z);
 
                     if (foundBlock > 0 && isBlockPointable(foundBlock)) {
                         finalPos = newPos;
@@ -48,15 +50,15 @@ public class Ray {
             lastPos = new Vector3f(newPos);
         }
 
-        if(finalPos != null) {
+        if(finalPos != null && foundBlock > 0) {
             if(mining) {
                 destroyBlock(finalPos);
             } else if (placing && lastPos != null){
 
                 //todo: make this call on punched
-                if (!isPlayerSneaking() && blockHasOnRightClickCall(getBlock((int)finalPos.x,(int)finalPos.y,(int)finalPos.z))) {
+                if (!isPlayerSneaking() && blockHasOnRightClickCall(foundBlock)) {
 
-                    getBlockDefinition(getBlock((int) finalPos.x, (int) finalPos.y, (int) finalPos.z)).blockModifier.onRightClick(finalPos);
+                    getBlockDefinition(foundBlock).blockModifier.onRightClick(finalPos);
 
                 } else {
                     setAABB(getPlayerPos().x, getPlayerPos().y, getPlayerPos().z, getPlayerWidth(), getPlayerHeight());
