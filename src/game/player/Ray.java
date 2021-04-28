@@ -15,20 +15,23 @@ import static game.player.Player.*;
 
 public class Ray {
     public static void rayCast(Vector3f pos, Vector3f dir, float length, boolean mining, boolean placing) {
-        Vector3f finalPos = null;
+        Vector3f finalPos = new Vector3f();
 
-        Vector3f newPos   = null;
+        Vector3f newPos   = new Vector3f();
 
-        Vector3f lastPos  = null;
+        Vector3f lastPos  = new Vector3f();
 
-        Vector3f cachePos = null;
-
+        Vector3f cachePos = new Vector3f();
 
         for(float step = 0; step <= length ; step += 0.001f) {
 
-            cachePos = new Vector3f(dir.x * step, dir.y * step, dir.z * step);
+            cachePos.x = dir.x * step;
+            cachePos.y = dir.y * step;
+            cachePos.z = dir.z * step;
 
-            newPos = new Vector3f((float)Math.floor(pos.x + cachePos.x), (float)Math.floor(pos.y + cachePos.y), (float)Math.floor(pos.z + cachePos.z));
+            newPos.x = (float)Math.floor(pos.x + cachePos.x);
+            newPos.y = (float)Math.floor(pos.y + cachePos.y);
+            newPos.z = (float)Math.floor(pos.z + cachePos.z);
 
             //stop wasting cpu resources
             if (lastPos != null) {
