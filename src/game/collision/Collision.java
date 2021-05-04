@@ -438,10 +438,9 @@ public class Collision {
         for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
             setAABB(pos.x, pos.y, pos.z, width, height);
             setBlockBox(blockPosX,blockPosY,blockPosz,thisBlockBox);
-
-            //this is not affected by float precision issues
+            //this coordinate is not within enough distance to get affected by floating point precision
             if (isWithin() && BlockBoxGetTop() > AABBGetBottom() && AABBGetBottom() - BlockBoxGetTop() > -0.1f) {
-                pos.y = BlockBoxGetTop(); //player's position constantly changes if this has an adder
+                pos.y = BlockBoxGetTop() + 0.001f; //players position needs to constantly change or else this breaks stairs/slabs
                 inertia.y = 0;
                 onGround = true;
             }
@@ -453,8 +452,8 @@ public class Collision {
         for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
             setAABB(pos.x, pos.y, pos.z, width, height);
             setBlockBox(blockPosX, blockPosY, blockPosz,thisBlockBox);
+            //this coordinate is not within enough distance to get affected by floating point precision
             //head detection
-            //this is not affected by float precision issues
             if (isWithin() && BlockBoxGetBottom() < AABBGetTop() && AABBGetTop() - BlockBoxGetBottom() < 0.1f) {
                 pos.y = BlockBoxGetBottom() - height - 0.001f;
                 inertia.y = 0;
@@ -497,7 +496,7 @@ public class Collision {
             setBlockBox(blockPosX, blockPosY, blockPosz, thisBlockBox);
             if (isWithin() && BlockBoxGetRight() > AABBGetLeft() && BlockBoxGetRight() - AABBGetLeft() < 0.1f) {
                 if (isSteppable(blockID) && AABBGetBottom() - BlockBoxGetTop() < -0.48f) {
-                    pos.y = BlockBoxGetTop();
+                    pos.y = BlockBoxGetTop() + 0.0001f;
                 }else {
                     pos.x = BlockBoxGetRight() + width + 0.001f;
                     inertia.x = 0;
