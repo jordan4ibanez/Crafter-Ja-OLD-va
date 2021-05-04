@@ -21,7 +21,7 @@ public class Explosion {
                         //don't destroy bedrock
                         if(currentBlock != 5) {
                             setBlock(x, y, z, 0, 0);
-                            if (currentBlock > 0 && currentBlock != 6 && Math.random() > 0.98) {
+                            if (currentBlock > 0 && currentBlock != 6 && Math.random() > 0.994) {
                                 createItem(getBlockDefinition(currentBlock).name, new Vector3f(x,y,z), 1);
                             } else if (currentBlock == 6){
                                 createTNT(new Vector3f(x, y, z), (float)(1f+Math.random()), false);
