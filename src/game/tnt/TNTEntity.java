@@ -20,7 +20,7 @@ public class TNTEntity {
     //TODO: pseudo object holder
     private static Mesh mesh;
     private static Vector3d[] tntPos = new Vector3d[MAX_ID_AMOUNT];
-    private static Vector3f tntScale[] = new Vector3f[MAX_ID_AMOUNT];
+    private static Vector3d tntScale[] = new Vector3d[MAX_ID_AMOUNT];
     private static float[] tntTimer =    new float[MAX_ID_AMOUNT];
     private static boolean[] tntExists =    new boolean[MAX_ID_AMOUNT];
     private static Vector3f[] tntInertia = new Vector3f[MAX_ID_AMOUNT];
@@ -37,7 +37,7 @@ public class TNTEntity {
         tntInertia[totalTNT] = new Vector3f(randomForceValue(15f),(float)Math.random()*7f,randomForceValue(15f));
         tntExists[totalTNT] = true;
         tntTimer[totalTNT] = 0f;
-        tntScale[totalTNT] = new Vector3f(1,1,1);
+        tntScale[totalTNT] = new Vector3d(1,1,1);
         totalTNT++;
         System.out.println("Created new TNT. Total TNT: " + totalTNT);
     }
@@ -58,7 +58,7 @@ public class TNTEntity {
         tntInertia[totalTNT] = new Vector3f(randomForceValue(15f),tntJump,randomForceValue(15f));
         tntExists[totalTNT] = true;
         tntTimer[totalTNT] = timer;
-        tntScale[totalTNT] = new Vector3f(1,1,1);
+        tntScale[totalTNT] = new Vector3d(1d,1d,1d);
         totalTNT++;
 //        System.out.println("Created new TNT. Total TNT: " + totalTNT);
     }
@@ -118,7 +118,7 @@ public class TNTEntity {
 //        System.out.println("A TNT was Deleted. Remaining: " + totalTNT);
     }
 
-    public static Vector3f getTNTScale(int ID){
+    public static Vector3d getTNTScale(int ID){
         return tntScale[ID];
     }
 

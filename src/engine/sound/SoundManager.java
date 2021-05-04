@@ -2,6 +2,7 @@ package engine.sound;
 
 import engine.graph.Camera;
 import engine.graph.Transformation;
+import org.joml.Matrix4d;
 import org.joml.Matrix4f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
@@ -30,7 +31,7 @@ public class SoundManager {
 
     private static SoundSource[] soundSourceArray = new SoundSource[maxSounds];
 
-    private static final Matrix4f cameraMatrix = new Matrix4f();
+    private static final Matrix4d cameraMatrix = new Matrix4d();
 
     public static void initSoundManager() {
         device = alcOpenDevice((ByteBuffer) null);
@@ -84,20 +85,12 @@ public class SoundManager {
 
     public static void updateListenerPosition() {
 
-        Vector3d camPosDouble = new Vector3d(getCameraPosition());
-
-        Vector3f camPosFloat = new Vector3f();
-
-        camPosFloat.x = (float)camPosDouble.x;
-        camPosFloat.y = (float)camPosDouble.y;
-        camPosFloat.z = (float)camPosDouble.z;
-
         // Update camera matrix with camera data
-        Transformation.updateGenericViewMatrix(camPosFloat, getCameraRotation(), cameraMatrix);
-        listener.setPosition(camPosFloat);
-        Vector3f at = new Vector3f();
+        Transformation.updateGenericViewMatrix(getCameraPosition(), getCameraRotation(), cameraMatrix);
+        listener.setPosition(getCameraPosition());
+        Vector3d at = new Vector3d();
         cameraMatrix.positiveZ(at).negate();
-        Vector3f up = new Vector3f();
+        Vector3d up = new Vector3d();
         cameraMatrix.positiveY(up);
         listener.setOrientation(at, up);
     }

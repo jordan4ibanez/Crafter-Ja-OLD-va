@@ -261,8 +261,14 @@ public class Player {
 
     }
 
-    public static Vector3f getWieldHandAnimationPos(){
-        return wieldHandAnimationPos;
+    public static Vector3d getWieldHandAnimationPos(){
+        Vector3d doubledHandAnimationPos = new Vector3d();
+
+        doubledHandAnimationPos.x = wieldHandAnimationPos.x;
+        doubledHandAnimationPos.y = wieldHandAnimationPos.y;
+        doubledHandAnimationPos.z = wieldHandAnimationPos.z;
+
+        return doubledHandAnimationPos;
     }
 
     public static Vector3f getWieldHandAnimationRot(){

@@ -126,7 +126,7 @@ public class Crafter {
         createTNTEntityMesh();
 
         setAttenuationModel(AL11.AL_LINEAR_DISTANCE);
-        setListener(new SoundListener(new Vector3f()));
+        setListener(new SoundListener(new Vector3d()));
         createHud();
 
         registerTools();

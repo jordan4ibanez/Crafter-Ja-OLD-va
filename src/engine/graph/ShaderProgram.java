@@ -1,5 +1,6 @@
 package engine.graph;
 
+import org.joml.Matrix4d;
 import org.joml.Matrix4f;
 import org.lwjgl.system.MemoryStack;
 
@@ -35,7 +36,7 @@ public class ShaderProgram {
         uniforms.put(uniformName, uniformLocation);
     }
 
-    public void setUniform(String uniformName, Matrix4f value){
+    public void setUniform(String uniformName, Matrix4d value){
         // dump the matrix into a float buffer
         try(MemoryStack stack = MemoryStack.stackPush()){
             glUniformMatrix4fv(uniforms.get(uniformName), false,
