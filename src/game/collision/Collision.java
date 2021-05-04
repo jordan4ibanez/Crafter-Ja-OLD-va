@@ -220,7 +220,7 @@ public class Collision {
 
         int up = 0;
 
-        //todo: begin Y collision detection
+        //todo: begin Y collision detection -- YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
         switch (inertiaToDir(inertia.y)){
             case -1:
                 y = (int)fPos.y;
@@ -274,127 +274,69 @@ public class Collision {
         }
 
 
-        //todo: begin X collision detection
+        //todo: begin X collision detection -- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+        //add inertia
         pos.x += inertia.x * gameSpeed;
 
+        //must clone the vector object
         fPos = floorPos(new Vector3f(pos));
 
-        boolean doIt = true;
+        //this must start at -1f (loops through every position
+        for (float yy = -1f; yy <= height + 1f; yy = yy + 1f) {
+            for (x = -1; x <= 1; x++) {
+                for (z = -1; z <= 1; z++) {
+                    //update to polling position
+                    cachedPos.x = fPos.x + x;
+                    cachedPos.y = pos.y + yy;
+                    cachedPos.z = fPos.z + z;
 
-        int positive = 0;
+                    //get block ID
+                    cachedBlock = detectBlock(floorPos(cachedPos));
 
-        switch (inertiaToDir(inertia.x)){
-            case -1:
-                x = (int)Math.floor(pos.x - width);
-                break;
-            case 1:
-                x = (int)Math.floor(pos.x + width);
-                positive = 1;
-                break;
-            default:
-                doIt = false;
-                break;
-        }
+                    //get rotation
+                    byte rot = detectRot(cachedPos);
 
-        if (doIt) {
-            switch (positive){
-                case 1:
-                    for (float yy = 0; yy <= height; yy = yy + 0.5f) {
-                        for (z = -1; z <= 1; z++) {
-                            cachedPos.x = x;
-                            cachedPos.y = yy + pos.y;
-                            cachedPos.z = fPos.z + z;
+                    //never collide with air (block ID 0)
+                    if (cachedBlock > 0 && isWalkable(cachedBlock)) {
 
-                            cachedBlock = detectBlock(floorPos(cachedPos));
-
-                            byte rot =  detectRot(cachedPos);
-
-                            if (cachedBlock > 0 && isWalkable(cachedBlock)) {
-                                collideXPositive(x, (int)(yy + pos.y), (int) fPos.z + z, rot, pos, inertia, oldPos, width, height, cachedBlock);
-                            }
-                        }
+                        collideX((int)cachedPos.x, (int) (yy + pos.y), (int) cachedPos.z, rot, pos, inertia, oldPos, width, height, cachedBlock);
                     }
-                    break;
-                case 0:
-                    for (float yy = 0; yy <= height; yy = yy + 0.5f) {
-                        for (z = -1; z <= 1; z++) {
-                            cachedPos.x = x;
-                            cachedPos.y = yy + pos.y;
-                            cachedPos.z = fPos.z + z;
-
-                            cachedBlock = detectBlock(floorPos(cachedPos));
-
-                            byte rot =  detectRot(cachedPos);
-
-                            if (cachedBlock > 0 && isWalkable(cachedBlock)) {
-                                collideXNegative(x, (int)(yy + pos.y), (int) fPos.z + z, rot, pos, inertia, oldPos, width, height, cachedBlock);
-                            }
-                        }
-                    }
-                    break;
+                }
             }
         }
 
 
-        //todo: Begin Z collision detection
+        //todo: Begin Z collision detection -- ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ
 
         pos.z += inertia.z * gameSpeed;
 
         fPos = floorPos(new Vector3f(pos));
 
-        doIt = true;
+        //this must start at -1f (loops through every position
+        for (float yy = -1f; yy <= height + 1f; yy = yy + 1f) {
+            for (x = -1; x <= 1; x++) {
+                for (z = -1; z <= 1; z++) {
+                    //update to polling position
+                    cachedPos.x = fPos.x + x;
+                    cachedPos.y = pos.y + yy;
+                    cachedPos.z = fPos.z + z;
 
-        positive = 0;
+                    //get block ID
+                    cachedBlock = detectBlock(floorPos(cachedPos));
 
-        switch (inertiaToDir(inertia.z)){
-            case -1:
-                z = (int)Math.floor(pos.z - width);
-                break;
-            case 1:
-                z = (int)Math.floor(pos.z + width);
-                positive = 1;
-                break;
-            default:
-                doIt = false;
-                break;
-        }
+                    //get rotation
+                    byte rot = detectRot(cachedPos);
 
-        if (doIt) {
-            switch (positive){
-                case 1:
-                    for (float yy = 0; yy <= height; yy = yy + 0.5f) {
-                        for (x = -1; x <= 1; x++) {
-                            cachedPos.x = fPos.x + x;
-                            cachedPos.y = yy + pos.y;
-                            cachedPos.z = z;
-                            cachedBlock = detectBlock(floorPos(cachedPos));
-
-                            byte rot =  detectRot(cachedPos);
-
-                            if (cachedBlock > 0 && isWalkable(cachedBlock)) {
-                                collideZPositive((int)fPos.x + x, (int)(yy + pos.y), z, rot, pos, inertia, oldPos, width, height, cachedBlock);
-                            }
-                        }
+                    //never collide with air (block ID 0)
+                    if (cachedBlock > 0 && isWalkable(cachedBlock)) {
+                        collideZ((int)cachedPos.x, (int) (yy + pos.y), (int) cachedPos.z, rot, pos, inertia, oldPos, width, height, cachedBlock);
                     }
-                    break;
-                case 0:
-                    for (float yy = 0; yy <= height; yy = yy + 0.5f) {
-                        for (x = -1; x <= 1; x++) {
-                            cachedPos.x = fPos.x + x;
-                            cachedPos.y = yy + pos.y;
-                            cachedPos.z = z;
-                            cachedBlock = detectBlock(floorPos(cachedPos));
-
-                            byte rot =  detectRot(cachedPos);
-
-                            if (cachedBlock > 0 && isWalkable(cachedBlock)) {
-                                collideZNegative((int)fPos.x + x, (int)(yy + pos.y), z, rot, pos, inertia, oldPos, width, height, cachedBlock);
-                            }
-                        }
-                    }
-                    break;
+                }
             }
         }
+
+
 
         //water check
         for (float yy = 0; yy <= height; yy = yy + 0.5f) {
@@ -461,115 +403,138 @@ public class Collision {
         }
     }
 
-    private static void collideXPositive(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3f pos, Vector3f inertia, Vector3f oldPos, float width, float height, int blockID){
 
+    //TODO ----------------------------------XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+    private static void collideX(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3f pos, Vector3f inertia, Vector3f oldPos, float width, float height, int blockID){
+        //run through X collisions
         for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
             setAABB(pos.x, pos.y, pos.z, width, height);
-            setBlockBox(blockPosX, blockPosY, blockPosz, thisBlockBox);
-            if (isWithin() && BlockBoxGetLeft() < AABBGetRight() && BlockBoxGetLeft() - AABBGetRight() > -0.1f) {
-                if (isSteppable(blockID) && AABBGetBottom() - BlockBoxGetTop() < -0.48f) {
-                    pos.y = BlockBoxGetTop() + 0.0001f;
-                } else {
-                    pos.x = BlockBoxGetLeft() - width - 0.001f;
-                    inertia.x = 0;
+            setBlockBox(blockPosX, blockPosY, blockPosZ, thisBlockBox);
+
+            //collide X negative
+            if ((float)blockPosX + 0.5f <= pos.x) {
+                if (isWithin() && BlockBoxGetRight() > AABBGetLeft() && BlockBoxGetRight() - AABBGetLeft() < 0.01f) {
+                    if (isSteppable(blockID) && AABBGetBottom() - BlockBoxGetTop() < -0.48f) {
+                        //steppable
+                        pos.y = BlockBoxGetTop() + 0.0001f;
+                    } else {
+                        //not steppable
+                        pos.x = BlockBoxGetRight() + width + 0.001f;
+                        inertia.x /= 2f;
+                    }
+                }
+            }
+            //collide X positive
+            if ((float)blockPosX + 0.5f >= pos.x) {
+                if (isWithin() && BlockBoxGetLeft() < AABBGetRight() && BlockBoxGetLeft() - AABBGetRight() > -0.01f) {
+                    if (isSteppable(blockID) && AABBGetBottom() - BlockBoxGetTop() < -0.48f) {
+                        //steppable
+                        pos.y = BlockBoxGetTop() + 0.0001f;
+                    } else {
+                        //not steppable
+                        pos.x = BlockBoxGetLeft() - width - 0.001f;
+                        inertia.x /= 2f;
+                    }
                 }
             }
         }
 
+
         //correction for the sides of stairs
-        if (pos.y - oldPos.y > 0.51) {
+        if (isSteppable(blockID) && pos.y - oldPos.y > 0.51) {
+
             pos.y = oldPos.y;
-            for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
-                setAABB(pos.x, pos.y, pos.z, width, height);
-                setBlockBox(blockPosX, blockPosY, blockPosz, thisBlockBox);
-                if (isWithin() && BlockBoxGetLeft() < AABBGetRight() && BlockBoxGetLeft() - AABBGetRight() > -0.1f) {
-                    pos.x = BlockBoxGetLeft() - width - 0.001f;
-                    inertia.x = 0;
+
+            //collide X negative
+            if ((float)blockPosX + 0.5f <= pos.x) {
+                for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
+                    setAABB(pos.x, pos.y, pos.z, width, height);
+                    setBlockBox(blockPosX, blockPosY, blockPosZ, thisBlockBox);
+                    if (isWithin() && BlockBoxGetRight() > AABBGetLeft() && BlockBoxGetRight() - AABBGetLeft() < 0.01f) {
+                        pos.x = BlockBoxGetRight() + width + 0.001f;
+                        inertia.x /= 2f;
+                    }
+                }
+            }
+
+            //collide X positive
+            if ((float)blockPosX + 0.5f >= pos.x) {
+                for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
+                    setAABB(pos.x, pos.y, pos.z, width, height);
+                    setBlockBox(blockPosX, blockPosY, blockPosZ, thisBlockBox);
+                    if (isWithin() && BlockBoxGetLeft() < AABBGetRight() && BlockBoxGetLeft() - AABBGetRight() > -0.01f) {
+                        pos.x = BlockBoxGetLeft() - width - 0.001f;
+                        inertia.x /= 2f;
+                    }
                 }
             }
         }
     }
 
-    private static void collideXNegative(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3f pos, Vector3f inertia, Vector3f oldPos, float width, float height, int blockID){
+
+    //TODO ----------------------------------ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ
+
+    private static void collideZ(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3f pos, Vector3f inertia, Vector3f oldPos, float width, float height, int blockID){
+        //run through Z collisions
         for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
             setAABB(pos.x, pos.y, pos.z, width, height);
-            setBlockBox(blockPosX, blockPosY, blockPosz, thisBlockBox);
-            if (isWithin() && BlockBoxGetRight() > AABBGetLeft() && BlockBoxGetRight() - AABBGetLeft() < 0.1f) {
-                if (isSteppable(blockID) && AABBGetBottom() - BlockBoxGetTop() < -0.48f) {
-                    pos.y = BlockBoxGetTop() + 0.0001f;
-                }else {
-                    pos.x = BlockBoxGetRight() + width + 0.001f;
-                    inertia.x = 0;
+            setBlockBox(blockPosX, blockPosY, blockPosZ, thisBlockBox);
+
+            //collide Z negative
+            if ((float)blockPosZ + 0.5f <= pos.z) {
+                if (isWithin() && BlockBoxGetBack() > AABBGetFront() && BlockBoxGetBack() - AABBGetFront() < 0.01f) {
+                    if (isSteppable(blockID) && AABBGetBottom() - BlockBoxGetTop() < -0.48f) {
+                        //steppable
+                        pos.y = BlockBoxGetTop() + 0.0001f;
+                    }else {
+                        //not steppable
+                        pos.z = BlockBoxGetBack() + width + 0.001f;
+                        inertia.z /= 2f;
+                    }
+                }
+            }
+            //collide Z positive
+            if ((float)blockPosZ + 0.5f >= pos.z) {
+                if (isWithin() && BlockBoxGetFront() < AABBGetBack() && BlockBoxGetFront() - AABBGetBack() > -0.01f) {
+                    if (isSteppable(blockID) && AABBGetBottom() - BlockBoxGetTop() < -0.48f) {
+                        //steppable
+                        pos.y = BlockBoxGetTop() + 0.0001f;
+                    } else {
+                        //not steppable
+                        pos.z = BlockBoxGetFront() - width - 0.001f;
+                        inertia.z /= 2f;
+                    }
                 }
             }
         }
 
         //correction for the sides of stairs
         if (pos.y - oldPos.y > 0.51) {
+
             pos.y = oldPos.y;
-            for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
-                setAABB(pos.x, pos.y, pos.z, width, height);
-                setBlockBox(blockPosX, blockPosY, blockPosz, thisBlockBox);
-                if (isWithin() && BlockBoxGetRight() > AABBGetLeft() && BlockBoxGetRight() - AABBGetLeft() < 0.1f) {
-                    pos.x = BlockBoxGetRight() + width + 0.001f;
-                    inertia.x = 0;
+
+            //collide Z negative
+            if ((float)blockPosZ + 0.5f <= pos.z) {
+                for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
+                    setAABB(pos.x, pos.y, pos.z, width, height);
+                    setBlockBox(blockPosX, blockPosY, blockPosZ, thisBlockBox);
+                    if (isWithin() && BlockBoxGetBack() > AABBGetFront() && BlockBoxGetBack() - AABBGetFront() < 0.01f) {
+                        pos.z = BlockBoxGetBack() + width + 0.001f;
+                        inertia.z /= 2f;
+                    }
                 }
             }
-        }
-    }
 
-
-    private static void collideZPositive(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3f pos, Vector3f inertia, Vector3f oldPos, float width, float height, int blockID){
-        for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
-            setAABB(pos.x, pos.y, pos.z, width, height);
-            setBlockBox(blockPosX, blockPosY, blockPosz, thisBlockBox);
-            if (isWithin() && BlockBoxGetFront() < AABBGetBack() && BlockBoxGetFront() - AABBGetBack() > -0.1f) {
-                if (isSteppable(blockID) && AABBGetBottom() - BlockBoxGetTop() < -0.48f) {
-                    pos.y = BlockBoxGetTop() + 0.0001f;
-                }else {
-                    pos.z = BlockBoxGetFront() - width - 0.001f;
-                    inertia.z = 0;
-                }
-            }
-        }
-
-        //correction for the sides of stairs
-        if (pos.y - oldPos.y > 0.51) {
-            pos.y = oldPos.y;
-            for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
-                setAABB(pos.x, pos.y, pos.z, width, height);
-                setBlockBox(blockPosX, blockPosY, blockPosz, thisBlockBox);
-                if (isWithin() && BlockBoxGetFront() < AABBGetBack() && BlockBoxGetFront() - AABBGetBack() > -0.1f) {
-                    pos.z = BlockBoxGetFront() - width - 0.001f;
-                    inertia.z = 0;
-                }
-            }
-        }
-    }
-
-    private static void collideZNegative(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3f pos, Vector3f inertia, Vector3f oldPos, float width, float height, int blockID){
-        for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
-            setAABB(pos.x, pos.y, pos.z, width, height);
-            setBlockBox(blockPosX, blockPosY, blockPosz, thisBlockBox);
-            if (isWithin() && BlockBoxGetBack() > AABBGetFront() && BlockBoxGetBack() - AABBGetFront() < 0.1f) {
-                if (isSteppable(blockID) && AABBGetBottom() - BlockBoxGetTop() < -0.48f) {
-                    pos.y = BlockBoxGetTop() + 0.0001f;
-                }else {
-                    pos.z = BlockBoxGetBack() + width + 0.001f;
-                    inertia.z = 0;
-                }
-            }
-        }
-
-        //correction for the sides of stairs
-        if (pos.y - oldPos.y > 0.51) {
-            pos.y = oldPos.y;
-            for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
-                setAABB(pos.x, pos.y, pos.z, width, height);
-                setBlockBox(blockPosX, blockPosY, blockPosz, thisBlockBox);
-                if (isWithin() && BlockBoxGetBack() > AABBGetFront() && BlockBoxGetBack() - AABBGetFront() < 0.1f) {
-                    pos.z = BlockBoxGetBack() + width + 0.001f;
-                    inertia.z = 0;
+            //collide Z positive
+            if ((float)blockPosZ + 0.5f >= pos.z) {
+                for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
+                    setAABB(pos.x, pos.y, pos.z, width, height);
+                    setBlockBox(blockPosX, blockPosY, blockPosZ, thisBlockBox);
+                    if (isWithin() && BlockBoxGetFront() < AABBGetBack() && BlockBoxGetFront() - AABBGetBack() > -0.01f) {
+                        pos.z = BlockBoxGetFront() - width - 0.001f;
+                        inertia.z /= 2f;
+                    }
                 }
             }
         }
