@@ -15,7 +15,6 @@ import static game.collision.Collision.applyInertia;
 import static game.particle.Particle.createParticle;
 import static game.player.Inventory.getItemInInventorySlot;
 import static game.player.Ray.rayCast;
-import static game.weather.Weather.createRainDrop;
 
 
 public class Player {
@@ -374,7 +373,13 @@ public class Player {
         return forward || backward || left || right;
     }
 
-    private static float movementSpeed = 1.5f;
+    final private static float movementAcceleration = 0.75f;
+
+    final private static float maxWalkSpeed = 4.f;
+
+    final private static float maxRunSpeed = 6.f;
+
+    final private static float maxSneakSpeed = 1.f;
 
     private static boolean inWater = false;
 
@@ -393,26 +398,26 @@ public class Player {
     public static void setPlayerInertiaBuffer(){
         if (forward){
             float yaw = (float)Math.toRadians(getCameraRotation().y) + (float)Math.PI;
-            inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementSpeed;
-            inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementSpeed;
+            inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementAcceleration;
+            inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementAcceleration;
         }
         if (backward){
             //no mod needed
             float yaw = (float)Math.toRadians(getCameraRotation().y);
-            inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementSpeed;
-            inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementSpeed;
+            inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementAcceleration;
+            inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementAcceleration;
         }
 
         if (right){
             float yaw = (float)Math.toRadians(getCameraRotation().y) - (float)(Math.PI /2);
-            inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementSpeed;
-            inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementSpeed;
+            inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementAcceleration;
+            inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementAcceleration;
         }
 
         if (left){
             float yaw = (float)Math.toRadians(getCameraRotation().y) + (float)(Math.PI /2);
-            inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementSpeed;
-            inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementSpeed;
+            inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementAcceleration;
+            inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementAcceleration;
         }
 
         if (!inWater && jump && isPlayerOnGround()){
@@ -441,9 +446,13 @@ public class Player {
         //max speed todo: make this call from a player object's maxSpeed!
         Vector3f inertia2D = new Vector3f(inertia.x, 0, inertia.z);
 
-        float maxSpeed = 5f;
+
+        float maxSpeed = 1f;
+
         if(sneaking){
-            maxSpeed = 1f;
+            maxSpeed = maxSneakSpeed;
+        } else {
+            maxSpeed = maxWalkSpeed;
         }
         if(inertia2D.length() > maxSpeed){
             inertia2D = inertia2D.normalize().mul(maxSpeed);
