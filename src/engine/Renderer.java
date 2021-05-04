@@ -144,7 +144,7 @@ public class Renderer {
             }
             for (Mesh thisMesh : thisChunk.mesh){
                 if (thisMesh != null){
-                    modelViewMatrix = getModelViewMatrix(viewMatrix);
+                    modelViewMatrix = updateModelViewMatrix(new Vector3d(thisChunk.x * 16d, 0, thisChunk.z * 16d), new Vector3f(0,0,0), viewMatrix);
                     shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                     thisMesh.render();
                 }
@@ -179,7 +179,7 @@ public class Renderer {
             }
             for (Mesh thisMesh : thisChunk.blockBoxMesh){
                 if (thisMesh != null){
-                    modelViewMatrix = getModelViewMatrix(viewMatrix);
+                    modelViewMatrix = updateModelViewMatrix(new Vector3d(thisChunk.x * 16d, 0, thisChunk.z * 16d), new Vector3f(0,0,0), viewMatrix);
                     shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                     thisMesh.render();
                 }
@@ -251,7 +251,7 @@ public class Renderer {
             }
             for (Mesh thisMesh : thisChunk.liquidMesh){
                 if (thisMesh != null){
-                    modelViewMatrix = getModelViewMatrix(viewMatrix);
+                    modelViewMatrix = updateModelViewMatrix(new Vector3d(thisChunk.x * 16d, 0, thisChunk.z * 16d), new Vector3f(0,0,0), viewMatrix);
                     shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                     thisMesh.render();
                 }

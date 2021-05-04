@@ -26,9 +26,6 @@ public class ChunkMesh {
 
 
     //normal block stuff
-    private static float offsetX;
-    private static float offsetZ;
-
     private static float[] positions = new float[50_824];
     private static int positionsCount = 0;
 
@@ -86,9 +83,6 @@ public class ChunkMesh {
             return;
         }
 
-        offsetX = chunkX * 16;
-        offsetZ = chunkZ * 16;
-
         positionsCount = 0;
         textureCoordCount = 0;
         indicesTableCount = 0;
@@ -123,21 +117,21 @@ public class ChunkMesh {
 
                             if (neighborBlock >= 0 && !getBlockDrawType(neighborBlock).equals("normal")) {
                                 //front
-                                liquidPositions[liquidPositionsCount + 0] = (1f + x + offsetX);
+                                liquidPositions[liquidPositionsCount + 0] = (1f + x);
                                 liquidPositions[liquidPositionsCount + 1] = (1f + y);
-                                liquidPositions[liquidPositionsCount + 2] = (1f + z + offsetZ);
+                                liquidPositions[liquidPositionsCount + 2] = (1f + z);
 
-                                liquidPositions[liquidPositionsCount + 3] = (0f + x + offsetX);
+                                liquidPositions[liquidPositionsCount + 3] = (0f + x);
                                 liquidPositions[liquidPositionsCount + 4] = (1f + y);
-                                liquidPositions[liquidPositionsCount + 5] = (1f + z + offsetZ);
+                                liquidPositions[liquidPositionsCount + 5] = (1f + z);
 
-                                liquidPositions[liquidPositionsCount + 6] = (0f + x + offsetX);
+                                liquidPositions[liquidPositionsCount + 6] = (0f + x);
                                 liquidPositions[liquidPositionsCount + 7] = (0f + y);
-                                liquidPositions[liquidPositionsCount + 8] = (1f + z + offsetZ);
+                                liquidPositions[liquidPositionsCount + 8] = (1f + z);
 
-                                liquidPositions[liquidPositionsCount + 9] = (1f + x + offsetX);
+                                liquidPositions[liquidPositionsCount + 9] = (1f + x);
                                 liquidPositions[liquidPositionsCount + 10] = (0f + y);
-                                liquidPositions[liquidPositionsCount + 11] = (1f + z + offsetZ);
+                                liquidPositions[liquidPositionsCount + 11] = (1f + z);
 
                                 liquidPositionsCount += 12;
 
@@ -180,21 +174,21 @@ public class ChunkMesh {
                             neighborBlock = getBlock(realX, y, realZ - 1);
                             if (neighborBlock >= 0 && !getBlockDrawType(neighborBlock).equals("normal")) {
                                 //back
-                                liquidPositions[liquidPositionsCount + 0] = (0f + x + offsetX);
+                                liquidPositions[liquidPositionsCount + 0] = (0f + x);
                                 liquidPositions[liquidPositionsCount + 1] = (1f + y);
-                                liquidPositions[liquidPositionsCount + 2] = (0f + z + offsetZ);
+                                liquidPositions[liquidPositionsCount + 2] = (0f + z);
 
-                                liquidPositions[liquidPositionsCount + 3] = (1f + x + offsetX);
+                                liquidPositions[liquidPositionsCount + 3] = (1f + x);
                                 liquidPositions[liquidPositionsCount + 4] = (1f + y);
-                                liquidPositions[liquidPositionsCount + 5] = (0f + z + offsetZ);
+                                liquidPositions[liquidPositionsCount + 5] = (0f + z);
 
-                                liquidPositions[liquidPositionsCount + 6] = (1f + x + offsetX);
+                                liquidPositions[liquidPositionsCount + 6] = (1f + x);
                                 liquidPositions[liquidPositionsCount + 7] = (0f + y);
-                                liquidPositions[liquidPositionsCount + 8] = (0f + z + offsetZ);
+                                liquidPositions[liquidPositionsCount + 8] = (0f + z);
 
-                                liquidPositions[liquidPositionsCount + 9] = (0f + x + offsetX);
+                                liquidPositions[liquidPositionsCount + 9] = (0f + x);
                                 liquidPositions[liquidPositionsCount + 10] = (0f + y);
-                                liquidPositions[liquidPositionsCount + 11] = (0f + z + offsetZ);
+                                liquidPositions[liquidPositionsCount + 11] = (0f + z);
 
                                 liquidPositionsCount += 12;
 
@@ -235,21 +229,21 @@ public class ChunkMesh {
 
                             if (neighborBlock >= 0 && !getBlockDrawType(neighborBlock).equals("normal")) {
                                 //right
-                                liquidPositions[liquidPositionsCount + 0] = (1f + x + offsetX);
+                                liquidPositions[liquidPositionsCount + 0] = (1f + x);
                                 liquidPositions[liquidPositionsCount + 1] = (1f + y);
-                                liquidPositions[liquidPositionsCount + 2] = (0f + z + offsetZ);
+                                liquidPositions[liquidPositionsCount + 2] = (0f + z);
 
-                                liquidPositions[liquidPositionsCount + 3] = (1f + x + offsetX);
+                                liquidPositions[liquidPositionsCount + 3] = (1f + x);
                                 liquidPositions[liquidPositionsCount + 4] = (1f + y);
-                                liquidPositions[liquidPositionsCount + 5] = (1f + z + offsetZ);
+                                liquidPositions[liquidPositionsCount + 5] = (1f + z);
 
-                                liquidPositions[liquidPositionsCount + 6] = (1f + x + offsetX);
+                                liquidPositions[liquidPositionsCount + 6] = (1f + x);
                                 liquidPositions[liquidPositionsCount + 7] = (0f + y);
-                                liquidPositions[liquidPositionsCount + 8] = (1f + z + offsetZ);
+                                liquidPositions[liquidPositionsCount + 8] = (1f + z);
 
-                                liquidPositions[liquidPositionsCount + 9] = (1f + x + offsetX);
+                                liquidPositions[liquidPositionsCount + 9] = (1f + x);
                                 liquidPositions[liquidPositionsCount + 10] = (0f + y);
-                                liquidPositions[liquidPositionsCount + 11] = (0f + z + offsetZ);
+                                liquidPositions[liquidPositionsCount + 11] = (0f + z);
 
                                 liquidPositionsCount += 12;
 
@@ -290,21 +284,21 @@ public class ChunkMesh {
 
                             if (neighborBlock >= 0 && !getBlockDrawType(neighborBlock).equals("normal")) {
                                 //left
-                                liquidPositions[liquidPositionsCount + 0] = (0f + x + offsetX);
+                                liquidPositions[liquidPositionsCount + 0] = (0f + x);
                                 liquidPositions[liquidPositionsCount + 1] = (1f + y);
-                                liquidPositions[liquidPositionsCount + 2] = (1f + z + offsetZ);
+                                liquidPositions[liquidPositionsCount + 2] = (1f + z);
 
-                                liquidPositions[liquidPositionsCount + 3] = (0f + x + offsetX);
+                                liquidPositions[liquidPositionsCount + 3] = (0f + x);
                                 liquidPositions[liquidPositionsCount + 4] = (1f + y);
-                                liquidPositions[liquidPositionsCount + 5] = (0f + z + offsetZ);
+                                liquidPositions[liquidPositionsCount + 5] = (0f + z);
 
-                                liquidPositions[liquidPositionsCount + 6] = (0f + x + offsetX);
+                                liquidPositions[liquidPositionsCount + 6] = (0f + x);
                                 liquidPositions[liquidPositionsCount + 7] = (0f + y);
-                                liquidPositions[liquidPositionsCount + 8] = (0f + z + offsetZ);
+                                liquidPositions[liquidPositionsCount + 8] = (0f + z);
 
-                                liquidPositions[liquidPositionsCount + 9] = (0f + x + offsetX);
+                                liquidPositions[liquidPositionsCount + 9] = (0f + x);
                                 liquidPositions[liquidPositionsCount + 10] = (0f + y);
-                                liquidPositions[liquidPositionsCount + 11] = (1f + z + offsetZ);
+                                liquidPositions[liquidPositionsCount + 11] = (1f + z);
 
                                 liquidPositionsCount += 12;
 
@@ -345,21 +339,21 @@ public class ChunkMesh {
 
                             if (y == 127 || (neighborBlock >= 0 && !getBlockDrawType(neighborBlock).equals("normal"))) {
                                 //top
-                                liquidPositions[liquidPositionsCount + 0] = (0f + x + offsetX);
+                                liquidPositions[liquidPositionsCount + 0] = (0f + x);
                                 liquidPositions[liquidPositionsCount + 1] = (1f + y);
-                                liquidPositions[liquidPositionsCount + 2] = (0f + z + offsetZ);
+                                liquidPositions[liquidPositionsCount + 2] = (0f + z);
 
-                                liquidPositions[liquidPositionsCount + 3] = (0f + x + offsetX);
+                                liquidPositions[liquidPositionsCount + 3] = (0f + x);
                                 liquidPositions[liquidPositionsCount + 4] = (1f + y);
-                                liquidPositions[liquidPositionsCount + 5] = (1f + z + offsetZ);
+                                liquidPositions[liquidPositionsCount + 5] = (1f + z);
 
-                                liquidPositions[liquidPositionsCount + 6] = (1f + x + offsetX);
+                                liquidPositions[liquidPositionsCount + 6] = (1f + x);
                                 liquidPositions[liquidPositionsCount + 7] = (1f + y);
-                                liquidPositions[liquidPositionsCount + 8] = (1f + z + offsetZ);
+                                liquidPositions[liquidPositionsCount + 8] = (1f + z);
 
-                                liquidPositions[liquidPositionsCount + 9] = (1f + x + offsetX);
+                                liquidPositions[liquidPositionsCount + 9] = (1f + x);
                                 liquidPositions[liquidPositionsCount + 10] = (1f + y);
-                                liquidPositions[liquidPositionsCount + 11] = (0f + z + offsetZ);
+                                liquidPositions[liquidPositionsCount + 11] = (0f + z);
 
                                 liquidPositionsCount += 12;
 
@@ -400,21 +394,21 @@ public class ChunkMesh {
 
                             if (neighborBlock >= 0 && !getBlockDrawType(neighborBlock).equals("normal") && y != 0) {
                                 //bottom
-                                liquidPositions[liquidPositionsCount + 0] = (0f + x + offsetX);
+                                liquidPositions[liquidPositionsCount + 0] = (0f + x);
                                 liquidPositions[liquidPositionsCount + 1] = (0f + y);
-                                liquidPositions[liquidPositionsCount + 2] = (1f + z + offsetZ);
+                                liquidPositions[liquidPositionsCount + 2] = (1f + z);
 
-                                liquidPositions[liquidPositionsCount + 3] = (0f + x + offsetX);
+                                liquidPositions[liquidPositionsCount + 3] = (0f + x);
                                 liquidPositions[liquidPositionsCount + 4] = (0f + y);
-                                liquidPositions[liquidPositionsCount + 5] = (0f + z + offsetZ);
+                                liquidPositions[liquidPositionsCount + 5] = (0f + z);
 
-                                liquidPositions[liquidPositionsCount + 6] = (1f + x + offsetX);
+                                liquidPositions[liquidPositionsCount + 6] = (1f + x);
                                 liquidPositions[liquidPositionsCount + 7] = (0f + y);
-                                liquidPositions[liquidPositionsCount + 8] = (0f + z + offsetZ);
+                                liquidPositions[liquidPositionsCount + 8] = (0f + z);
 
-                                liquidPositions[liquidPositionsCount + 9] = (1f + x + offsetX);
+                                liquidPositions[liquidPositionsCount + 9] = (1f + x);
                                 liquidPositions[liquidPositionsCount + 10] = (0f + y);
-                                liquidPositions[liquidPositionsCount + 11] = (1f + z + offsetZ);
+                                liquidPositions[liquidPositionsCount + 11] = (1f + z);
 
                                 liquidPositionsCount += 12;
 
@@ -459,21 +453,21 @@ public class ChunkMesh {
 
                             if (neighborBlock >= 0 && (!getBlockDrawType(neighborBlock).equals("normal") || getIfLiquid(neighborBlock))) {
                                 //front
-                                positions[positionsCount + 0] = (1f + x + offsetX);
+                                positions[positionsCount + 0] = (1f + x);
                                 positions[positionsCount + 1] = (1f + y);
-                                positions[positionsCount + 2] = (1f + z + offsetZ);
+                                positions[positionsCount + 2] = (1f + z);
 
-                                positions[positionsCount + 3] = (0f + x + offsetX);
+                                positions[positionsCount + 3] = (0f + x);
                                 positions[positionsCount + 4] = (1f + y);
-                                positions[positionsCount + 5] = (1f + z + offsetZ);
+                                positions[positionsCount + 5] = (1f + z);
 
-                                positions[positionsCount + 6] = (0f + x + offsetX);
+                                positions[positionsCount + 6] = (0f + x);
                                 positions[positionsCount + 7] = (0f + y);
-                                positions[positionsCount + 8] = (1f + z + offsetZ);
+                                positions[positionsCount + 8] = (1f + z);
 
-                                positions[positionsCount + 9] = (1f + x + offsetX);
+                                positions[positionsCount + 9] = (1f + x);
                                 positions[positionsCount + 10] = (0f + y);
-                                positions[positionsCount + 11] = (1f + z + offsetZ);
+                                positions[positionsCount + 11] = (1f + z);
 
                                 positionsCount += 12;
 
@@ -518,21 +512,21 @@ public class ChunkMesh {
                             neighborBlock = getBlock(realX, y, realZ - 1);
                             if (neighborBlock >= 0 && (!getBlockDrawType(neighborBlock).equals("normal") || getIfLiquid(neighborBlock))) {
                                 //back
-                                positions[positionsCount + 0] = (0f + x + offsetX);
+                                positions[positionsCount + 0] = (0f + x);
                                 positions[positionsCount + 1] = (1f + y);
-                                positions[positionsCount + 2] = (0f + z + offsetZ);
+                                positions[positionsCount + 2] = (0f + z);
 
-                                positions[positionsCount + 3] = (1f + x + offsetX);
+                                positions[positionsCount + 3] = (1f + x);
                                 positions[positionsCount + 4] = (1f + y);
-                                positions[positionsCount + 5] = (0f + z + offsetZ);
+                                positions[positionsCount + 5] = (0f + z);
 
-                                positions[positionsCount + 6] = (1f + x + offsetX);
+                                positions[positionsCount + 6] = (1f + x);
                                 positions[positionsCount + 7] = (0f + y);
-                                positions[positionsCount + 8] = (0f + z + offsetZ);
+                                positions[positionsCount + 8] = (0f + z);
 
-                                positions[positionsCount + 9] = (0f + x + offsetX);
+                                positions[positionsCount + 9] = (0f + x);
                                 positions[positionsCount + 10] = (0f + y);
-                                positions[positionsCount + 11] = (0f + z + offsetZ);
+                                positions[positionsCount + 11] = (0f + z);
 
                                 positionsCount += 12;
 
@@ -572,21 +566,21 @@ public class ChunkMesh {
                             neighborBlock = getBlock(realX + 1, y, realZ);
                             if (neighborBlock >= 0 && (!getBlockDrawType(neighborBlock).equals("normal") || getIfLiquid(neighborBlock))) {
                                 //right
-                                positions[positionsCount + 0] = (1f + x + offsetX);
+                                positions[positionsCount + 0] = (1f + x);
                                 positions[positionsCount + 1] = (1f + y);
-                                positions[positionsCount + 2] = (0f + z + offsetZ);
+                                positions[positionsCount + 2] = (0f + z);
 
-                                positions[positionsCount + 3] = (1f + x + offsetX);
+                                positions[positionsCount + 3] = (1f + x);
                                 positions[positionsCount + 4] = (1f + y);
-                                positions[positionsCount + 5] = (1f + z + offsetZ);
+                                positions[positionsCount + 5] = (1f + z);
 
-                                positions[positionsCount + 6] = (1f + x + offsetX);
+                                positions[positionsCount + 6] = (1f + x);
                                 positions[positionsCount + 7] = (0f + y);
-                                positions[positionsCount + 8] = (1f + z + offsetZ);
+                                positions[positionsCount + 8] = (1f + z);
 
-                                positions[positionsCount + 9] = (1f + x + offsetX);
+                                positions[positionsCount + 9] = (1f + x);
                                 positions[positionsCount + 10] = (0f + y);
-                                positions[positionsCount + 11] = (0f + z + offsetZ);
+                                positions[positionsCount + 11] = (0f + z);
 
                                 positionsCount += 12;
 
@@ -626,21 +620,21 @@ public class ChunkMesh {
                             neighborBlock = getBlock(realX - 1, y, realZ);
                             if (neighborBlock >= 0 && (!getBlockDrawType(neighborBlock).equals("normal") || getIfLiquid(neighborBlock))) {
                                 //left
-                                positions[positionsCount + 0] = (0f + x + offsetX);
+                                positions[positionsCount + 0] = (0f + x);
                                 positions[positionsCount + 1] = (1f + y);
-                                positions[positionsCount + 2] = (1f + z + offsetZ);
+                                positions[positionsCount + 2] = (1f + z);
 
-                                positions[positionsCount + 3] = (0f + x + offsetX);
+                                positions[positionsCount + 3] = (0f + x);
                                 positions[positionsCount + 4] = (1f + y);
-                                positions[positionsCount + 5] = (0f + z + offsetZ);
+                                positions[positionsCount + 5] = (0f + z);
 
-                                positions[positionsCount + 6] = (0f + x + offsetX);
+                                positions[positionsCount + 6] = (0f + x);
                                 positions[positionsCount + 7] = (0f + y);
-                                positions[positionsCount + 8] = (0f + z + offsetZ);
+                                positions[positionsCount + 8] = (0f + z);
 
-                                positions[positionsCount + 9] = (0f + x + offsetX);
+                                positions[positionsCount + 9] = (0f + x);
                                 positions[positionsCount + 10] = (0f + y);
-                                positions[positionsCount + 11] = (1f + z + offsetZ);
+                                positions[positionsCount + 11] = (1f + z);
 
                                 positionsCount += 12;
 
@@ -680,21 +674,21 @@ public class ChunkMesh {
                             neighborBlock = getBlock(realX, y + 1, realZ);
                             if (y == 127 || (neighborBlock >= 0 && !getBlockDrawType(neighborBlock).equals("normal") || getIfLiquid(neighborBlock))) {
                                 //top
-                                positions[positionsCount + 0] = (0f + x + offsetX);
+                                positions[positionsCount + 0] = (0f + x);
                                 positions[positionsCount + 1] = (1f + y);
-                                positions[positionsCount + 2] = (0f + z + offsetZ);
+                                positions[positionsCount + 2] = (0f + z);
 
-                                positions[positionsCount + 3] = (0f + x + offsetX);
+                                positions[positionsCount + 3] = (0f + x);
                                 positions[positionsCount + 4] = (1f + y);
-                                positions[positionsCount + 5] = (1f + z + offsetZ);
+                                positions[positionsCount + 5] = (1f + z);
 
-                                positions[positionsCount + 6] = (1f + x + offsetX);
+                                positions[positionsCount + 6] = (1f + x);
                                 positions[positionsCount + 7] = (1f + y);
-                                positions[positionsCount + 8] = (1f + z + offsetZ);
+                                positions[positionsCount + 8] = (1f + z);
 
-                                positions[positionsCount + 9] = (1f + x + offsetX);
+                                positions[positionsCount + 9] = (1f + x);
                                 positions[positionsCount + 10] = (1f + y);
-                                positions[positionsCount + 11] = (0f + z + offsetZ);
+                                positions[positionsCount + 11] = (0f + z);
 
                                 positionsCount += 12;
 
@@ -734,21 +728,21 @@ public class ChunkMesh {
                             neighborBlock = getBlock(realX, y - 1, realZ);
                             if (neighborBlock >= 0 && (!getBlockDrawType(neighborBlock).equals("normal") || getIfLiquid(neighborBlock)) && y != 0) {
                                 //bottom
-                                positions[positionsCount + 0] = (0f + x + offsetX);
+                                positions[positionsCount + 0] = (0f + x);
                                 positions[positionsCount + 1] = (0f + y);
-                                positions[positionsCount + 2] = (1f + z + offsetZ);
+                                positions[positionsCount + 2] = (1f + z);
 
-                                positions[positionsCount + 3] = (0f + x + offsetX);
+                                positions[positionsCount + 3] = (0f + x);
                                 positions[positionsCount + 4] = (0f + y);
-                                positions[positionsCount + 5] = (0f + z + offsetZ);
+                                positions[positionsCount + 5] = (0f + z);
 
-                                positions[positionsCount + 6] = (1f + x + offsetX);
+                                positions[positionsCount + 6] = (1f + x);
                                 positions[positionsCount + 7] = (0f + y);
-                                positions[positionsCount + 8] = (0f + z + offsetZ);
+                                positions[positionsCount + 8] = (0f + z);
 
-                                positions[positionsCount + 9] = (1f + x + offsetX);
+                                positions[positionsCount + 9] = (1f + x);
                                 positions[positionsCount + 10] = (0f + y);
-                                positions[positionsCount + 11] = (1f + z + offsetZ);
+                                positions[positionsCount + 11] = (1f + z);
 
                                 positionsCount += 12;
 
@@ -792,21 +786,21 @@ public class ChunkMesh {
                                 // 0, 0, 0, 1, 1, 1
 
                                 //front
-                                blockBoxPositions[blockBoxPositionsCount + 0] = (thisBlockBox[3] + x + offsetX);
+                                blockBoxPositions[blockBoxPositionsCount + 0] = (thisBlockBox[3] + x);
                                 blockBoxPositions[blockBoxPositionsCount + 1] = (thisBlockBox[4] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 2] = (thisBlockBox[5] + z + offsetZ);
+                                blockBoxPositions[blockBoxPositionsCount + 2] = (thisBlockBox[5] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 3] = (thisBlockBox[0] + x + offsetX);
+                                blockBoxPositions[blockBoxPositionsCount + 3] = (thisBlockBox[0] + x);
                                 blockBoxPositions[blockBoxPositionsCount + 4] = (thisBlockBox[4] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 5] = (thisBlockBox[5] + z + offsetZ);
+                                blockBoxPositions[blockBoxPositionsCount + 5] = (thisBlockBox[5] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 6] = (thisBlockBox[0] + x + offsetX);
+                                blockBoxPositions[blockBoxPositionsCount + 6] = (thisBlockBox[0] + x);
                                 blockBoxPositions[blockBoxPositionsCount + 7] = (thisBlockBox[1] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 8] = (thisBlockBox[5] + z + offsetZ);
+                                blockBoxPositions[blockBoxPositionsCount + 8] = (thisBlockBox[5] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 9] = (thisBlockBox[3] + x + offsetX);
+                                blockBoxPositions[blockBoxPositionsCount + 9] = (thisBlockBox[3] + x);
                                 blockBoxPositions[blockBoxPositionsCount + 10] = (thisBlockBox[1] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 11] = (thisBlockBox[5] + z + offsetZ);
+                                blockBoxPositions[blockBoxPositionsCount + 11] = (thisBlockBox[5] + z);
 
                                 blockBoxPositionsCount += 12;
 
@@ -852,21 +846,21 @@ public class ChunkMesh {
 
 
                                 //back
-                                blockBoxPositions[blockBoxPositionsCount + 0] = (thisBlockBox[0] + x + offsetX);
+                                blockBoxPositions[blockBoxPositionsCount + 0] = (thisBlockBox[0] + x);
                                 blockBoxPositions[blockBoxPositionsCount + 1] = (thisBlockBox[4] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 2] = (thisBlockBox[2] + z + offsetZ);
+                                blockBoxPositions[blockBoxPositionsCount + 2] = (thisBlockBox[2] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 3] = (thisBlockBox[3] + x + offsetX);
+                                blockBoxPositions[blockBoxPositionsCount + 3] = (thisBlockBox[3] + x);
                                 blockBoxPositions[blockBoxPositionsCount + 4] = (thisBlockBox[4] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 5] = (thisBlockBox[2] + z + offsetZ);
+                                blockBoxPositions[blockBoxPositionsCount + 5] = (thisBlockBox[2] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 6] = (thisBlockBox[3] + x + offsetX);
+                                blockBoxPositions[blockBoxPositionsCount + 6] = (thisBlockBox[3] + x);
                                 blockBoxPositions[blockBoxPositionsCount + 7] = (thisBlockBox[1] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 8] = (thisBlockBox[2] + z + offsetZ);
+                                blockBoxPositions[blockBoxPositionsCount + 8] = (thisBlockBox[2] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 9] = (thisBlockBox[0] + x + offsetX);
+                                blockBoxPositions[blockBoxPositionsCount + 9] = (thisBlockBox[0] + x);
                                 blockBoxPositions[blockBoxPositionsCount + 10] = (thisBlockBox[1] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 11] = (thisBlockBox[2] + z + offsetZ);
+                                blockBoxPositions[blockBoxPositionsCount + 11] = (thisBlockBox[2] + z);
 
                                 blockBoxPositionsCount += 12;
 
@@ -915,21 +909,21 @@ public class ChunkMesh {
 
 
                                 //right
-                                blockBoxPositions[blockBoxPositionsCount + 0] = (thisBlockBox[3] + x + offsetX);
+                                blockBoxPositions[blockBoxPositionsCount + 0] = (thisBlockBox[3] + x);
                                 blockBoxPositions[blockBoxPositionsCount + 1] = (thisBlockBox[4] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 2] = (thisBlockBox[2] + z + offsetZ);
+                                blockBoxPositions[blockBoxPositionsCount + 2] = (thisBlockBox[2] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 3] = (thisBlockBox[3] + x + offsetX);
+                                blockBoxPositions[blockBoxPositionsCount + 3] = (thisBlockBox[3] + x);
                                 blockBoxPositions[blockBoxPositionsCount + 4] = (thisBlockBox[4] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 5] = (thisBlockBox[5] + z + offsetZ);
+                                blockBoxPositions[blockBoxPositionsCount + 5] = (thisBlockBox[5] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 6] = (thisBlockBox[3] + x + offsetX);
+                                blockBoxPositions[blockBoxPositionsCount + 6] = (thisBlockBox[3] + x);
                                 blockBoxPositions[blockBoxPositionsCount + 7] = (thisBlockBox[1] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 8] = (thisBlockBox[5] + z + offsetZ);
+                                blockBoxPositions[blockBoxPositionsCount + 8] = (thisBlockBox[5] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 9] = (thisBlockBox[3] + x + offsetX);
+                                blockBoxPositions[blockBoxPositionsCount + 9] = (thisBlockBox[3] + x);
                                 blockBoxPositions[blockBoxPositionsCount + 10] = (thisBlockBox[1] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 11] = (thisBlockBox[2] + z + offsetZ);
+                                blockBoxPositions[blockBoxPositionsCount + 11] = (thisBlockBox[2] + z);
 
                                 blockBoxPositionsCount += 12;
 
@@ -977,21 +971,21 @@ public class ChunkMesh {
 
 
                                 //left
-                                blockBoxPositions[blockBoxPositionsCount + 0] = (thisBlockBox[0] + x + offsetX);
+                                blockBoxPositions[blockBoxPositionsCount + 0] = (thisBlockBox[0] + x);
                                 blockBoxPositions[blockBoxPositionsCount + 1] = (thisBlockBox[4] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 2] = (thisBlockBox[5] + z + offsetZ);
+                                blockBoxPositions[blockBoxPositionsCount + 2] = (thisBlockBox[5] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 3] = (thisBlockBox[0] + x + offsetX);
+                                blockBoxPositions[blockBoxPositionsCount + 3] = (thisBlockBox[0] + x);
                                 blockBoxPositions[blockBoxPositionsCount + 4] = (thisBlockBox[4] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 5] = (thisBlockBox[2] + z + offsetZ);
+                                blockBoxPositions[blockBoxPositionsCount + 5] = (thisBlockBox[2] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 6] = (thisBlockBox[0] + x + offsetX);
+                                blockBoxPositions[blockBoxPositionsCount + 6] = (thisBlockBox[0] + x);
                                 blockBoxPositions[blockBoxPositionsCount + 7] = (thisBlockBox[1] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 8] = (thisBlockBox[2] + z + offsetZ);
+                                blockBoxPositions[blockBoxPositionsCount + 8] = (thisBlockBox[2] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 9] = (thisBlockBox[0] + x + offsetX);
+                                blockBoxPositions[blockBoxPositionsCount + 9] = (thisBlockBox[0] + x);
                                 blockBoxPositions[blockBoxPositionsCount + 10] = (thisBlockBox[1] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 11] = (thisBlockBox[5] + z + offsetZ);
+                                blockBoxPositions[blockBoxPositionsCount + 11] = (thisBlockBox[5] + z);
 
                                 blockBoxPositionsCount += 12;
 
@@ -1030,21 +1024,21 @@ public class ChunkMesh {
 
 
                                 //top
-                                blockBoxPositions[blockBoxPositionsCount + 0] = (thisBlockBox[0] + x + offsetX);
+                                blockBoxPositions[blockBoxPositionsCount + 0] = (thisBlockBox[0] + x);
                                 blockBoxPositions[blockBoxPositionsCount + 1] = (thisBlockBox[4] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 2] = (thisBlockBox[2] + z + offsetZ);
+                                blockBoxPositions[blockBoxPositionsCount + 2] = (thisBlockBox[2] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 3] = (thisBlockBox[0] + x + offsetX);
+                                blockBoxPositions[blockBoxPositionsCount + 3] = (thisBlockBox[0] + x);
                                 blockBoxPositions[blockBoxPositionsCount + 4] = (thisBlockBox[4] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 5] = (thisBlockBox[5] + z + offsetZ);
+                                blockBoxPositions[blockBoxPositionsCount + 5] = (thisBlockBox[5] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 6] = (thisBlockBox[3] + x + offsetX);
+                                blockBoxPositions[blockBoxPositionsCount + 6] = (thisBlockBox[3] + x);
                                 blockBoxPositions[blockBoxPositionsCount + 7] = (thisBlockBox[4] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 8] = (thisBlockBox[5] + z + offsetZ);
+                                blockBoxPositions[blockBoxPositionsCount + 8] = (thisBlockBox[5] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 9] = (thisBlockBox[3] + x + offsetX);
+                                blockBoxPositions[blockBoxPositionsCount + 9] = (thisBlockBox[3] + x);
                                 blockBoxPositions[blockBoxPositionsCount + 10]= (thisBlockBox[4] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 11]= (thisBlockBox[2] + z + offsetZ);
+                                blockBoxPositions[blockBoxPositionsCount + 11]= (thisBlockBox[2] + z);
 
                                 blockBoxPositionsCount += 12;
 
@@ -1090,21 +1084,21 @@ public class ChunkMesh {
 
 
                                 //bottom
-                                blockBoxPositions[blockBoxPositionsCount + 0] = (thisBlockBox[0] + x + offsetX);
+                                blockBoxPositions[blockBoxPositionsCount + 0] = (thisBlockBox[0] + x);
                                 blockBoxPositions[blockBoxPositionsCount + 1] = (thisBlockBox[1] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 2] = (thisBlockBox[5] + z + offsetZ);
+                                blockBoxPositions[blockBoxPositionsCount + 2] = (thisBlockBox[5] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 3] = (thisBlockBox[0] + x + offsetX);
+                                blockBoxPositions[blockBoxPositionsCount + 3] = (thisBlockBox[0] + x);
                                 blockBoxPositions[blockBoxPositionsCount + 4] = (thisBlockBox[1] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 5] = (thisBlockBox[2] + z + offsetZ);
+                                blockBoxPositions[blockBoxPositionsCount + 5] = (thisBlockBox[2] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 6] = (thisBlockBox[3] + x + offsetX);
+                                blockBoxPositions[blockBoxPositionsCount + 6] = (thisBlockBox[3] + x);
                                 blockBoxPositions[blockBoxPositionsCount + 7] = (thisBlockBox[1] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 8] = (thisBlockBox[2] + z + offsetZ);
+                                blockBoxPositions[blockBoxPositionsCount + 8] = (thisBlockBox[2] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 9] = (thisBlockBox[3] + x + offsetX);
+                                blockBoxPositions[blockBoxPositionsCount + 9] = (thisBlockBox[3] + x);
                                 blockBoxPositions[blockBoxPositionsCount + 10]= (thisBlockBox[1] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 11]= (thisBlockBox[5] + z + offsetZ);
+                                blockBoxPositions[blockBoxPositionsCount + 11]= (thisBlockBox[5] + z);
 
                                 blockBoxPositionsCount += 12;
 
