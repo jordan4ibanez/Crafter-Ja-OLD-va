@@ -800,37 +800,24 @@ public class Player {
             }
         }
 
-        if(xBobPos == 0){
-            yPositive = true;
-        }
+        yBobPos = Math.abs(xBobPos);
 
-        if (yPositive){
-            yBobPos += viewBobbingAddition;
-        } else {
-            yBobPos -= viewBobbingAddition;
-        }
-
-        if (yBobPos < 0){
-            yBobPos = 0;
-        }
-
-        viewBobbing.x = xBobPos/15000f;
-        viewBobbing.y = yBobPos/15000f;
+        viewBobbing.x = xBobPos/18000f;
+        viewBobbing.y = yBobPos/20000f;
     }
 
     private static void returnPlayerViewBobbing(){
+
         if (xBobPos > 0){
-            xBobPos -= 1;
+            xBobPos -= 10;
         } else if (xBobPos < 0){
-            xBobPos += 1;
+            xBobPos += 10;
         }
-        if (yBobPos > 0){
-            yBobPos -= 1;
-        } else if (yBobPos < 0){
-            yBobPos += 1;
-        }
-        viewBobbing.x = xBobPos/2000f;
-        viewBobbing.y = yBobPos/2000f;
+
+        yBobPos = Math.abs(xBobPos);
+
+        viewBobbing.x = xBobPos/18000f;
+        viewBobbing.y = yBobPos/20000f;
     }
 
     public static void changeScrollSelection(int i){
