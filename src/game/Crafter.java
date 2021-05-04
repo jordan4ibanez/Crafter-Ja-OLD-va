@@ -157,7 +157,7 @@ public class Crafter {
 //        tntFillErUp();
     }
 
-    private static void input(){
+    private static void input() {
         if (!isPlayerInventoryOpen() && !isPaused()) {
             if (isKeyPressed(GLFW_KEY_W)) {
                 setPlayerForward(true);
@@ -194,6 +194,14 @@ public class Crafter {
             }
         }
 
+
+        if (isKeyPressed(GLFW_KEY_R)) {
+            setPlayerRunning(true);
+        } else {
+            setPlayerRunning(false);
+        }
+
+        /* OLD INVENTORY CYCLING DEBUG
         if (isKeyPressed(GLFW_KEY_R)) {
             if (!rButtonPushed) {
                 rButtonPushed = true;
@@ -203,6 +211,9 @@ public class Crafter {
         } else if (!isKeyPressed(GLFW_KEY_R)){
             rButtonPushed = false;
         }
+
+         */
+
 
         if (isKeyPressed(GLFW_KEY_Q)) {
             if (!qButtonPushed) {

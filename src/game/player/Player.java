@@ -33,7 +33,6 @@ public class Player {
     private static float placeTimer              = 0;
     private static final float accelerationMultiplier  = 0.07f;
     private static final String name                   = "singleplayer";
-    private static boolean sneaking              = false;
     private static final Vector3f viewBobbing          = new Vector3f(0,0,0);
     private static int currentInventorySelection = 0;
     private static boolean inventoryOpen         = false;
@@ -45,6 +44,8 @@ public class Player {
     private static float itemRotation = 0f;
     private static boolean itemRotationEnabled = false;
 
+    private static boolean sneaking              = false;
+    private static boolean running               = false;
 
 
     public static void resetPlayerInputs(){
@@ -369,6 +370,15 @@ public class Player {
         sneaking = isSneaking;
     }
 
+    public static void setPlayerRunning(boolean isRunning){
+        if (!sneaking && isRunning) {
+            running = isRunning;
+        }
+        else {
+            running = false;
+        }
+    }
+
     private static boolean playerIsMoving(){
         return forward || backward || left || right;
     }
@@ -447,10 +457,12 @@ public class Player {
         Vector3f inertia2D = new Vector3f(inertia.x, 0, inertia.z);
 
 
-        float maxSpeed = 1f;
+        float maxSpeed; //this should probably be cached
 
         if(sneaking){
             maxSpeed = maxSneakSpeed;
+        } else if (running){
+            maxSpeed = maxRunSpeed;
         } else {
             maxSpeed = maxWalkSpeed;
         }
@@ -764,16 +776,24 @@ public class Player {
     private static int yBobPos = 0;
 
     private static void applyViewBobbing() {
+
+        int viewBobbingAddition = 10;
+        if (running){
+            viewBobbingAddition = 16;
+        }
+
         if (xPositive) {
-            xBobPos += 1;
-            if (xBobPos >= 200){
+            xBobPos += viewBobbingAddition;
+            if (xBobPos >= 2000){
+                xBobPos = 2000;
                 xPositive = false;
                 yPositive = false;
                 playSound("dirt_" + (int)(Math.ceil(Math.random()*3)));
             }
         } else {
-            xBobPos -= 1;
-            if (xBobPos <= -200){
+            xBobPos -= viewBobbingAddition;
+            if (xBobPos <= -2000){
+                xBobPos = -2000;
                 xPositive = true;
                 yPositive = false;
                 playSound("dirt_"  + (int)(Math.ceil(Math.random()*3)));
@@ -785,17 +805,17 @@ public class Player {
         }
 
         if (yPositive){
-            yBobPos += 1;
+            yBobPos += viewBobbingAddition;
         } else {
-            yBobPos -= 1;
+            yBobPos -= viewBobbingAddition;
         }
 
         if (yBobPos < 0){
             yBobPos = 0;
         }
 
-        viewBobbing.x = xBobPos/2000f;
-        viewBobbing.y = yBobPos/2000f;
+        viewBobbing.x = xBobPos/15000f;
+        viewBobbing.y = yBobPos/15000f;
     }
 
     private static void returnPlayerViewBobbing(){
