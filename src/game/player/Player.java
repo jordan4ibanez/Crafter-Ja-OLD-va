@@ -20,7 +20,7 @@ import static game.player.Ray.rayCast;
 public class Player {
     final private static float gameSpeed = 0.001f;
 
-    private static Vector3f pos                  = loadPlayerPos();
+    private static Vector3d pos                  = loadPlayerPos();
     private static final float eyeHeight               = 1.5f;
     private static final float collectionHeight        = 0.7f;
     private static final Vector3f inertia              = new Vector3f(0,0,0);
@@ -36,7 +36,7 @@ public class Player {
     private static final Vector3f viewBobbing          = new Vector3f(0,0,0);
     private static int currentInventorySelection = 0;
     private static boolean inventoryOpen         = false;
-    private static Vector3f worldSelectionPos    = null;
+    private static Vector3d worldSelectionPos    = null;
     private static int sneakOffset = 0;
     private static boolean playerIsJumping = false;
     private static final int[] currentChunk = {(int)Math.floor(pos.x / 16f),(int)Math.floor(pos.z / 16f)};
@@ -97,7 +97,7 @@ public class Player {
         return sneakOffset / 900f;
     }
 
-    public static void setPlayerWorldSelectionPos(Vector3f thePos){
+    public static void setPlayerWorldSelectionPos(Vector3d thePos){
         worldSelectionPos = thePos;
     }
 
@@ -105,7 +105,7 @@ public class Player {
         worldSelectionPos = null;
     }
 
-    public static Vector3f getPlayerWorldSelectionPos(){
+    public static Vector3d getPlayerWorldSelectionPos(){
         return worldSelectionPos;
     }
 
@@ -293,24 +293,24 @@ public class Player {
         return placing;
     }
 
-    public static Vector3f getPlayerPos() {
+    public static Vector3d getPlayerPos() {
         return pos;
     }
 
-    public static Vector3f getPlayerPosWithEyeHeight(){
-        return new Vector3f(pos.x, pos.y + eyeHeight, pos.z);
+    public static Vector3d getPlayerPosWithEyeHeight(){
+        return new Vector3d(pos.x, pos.y + eyeHeight, pos.z);
     }
 
 
-    public static Vector3f getPlayerPosWithViewBobbing(){
-        return new Vector3f(pos.x, pos.y + eyeHeight, pos.z);
+    public static Vector3d getPlayerPosWithViewBobbing(){
+        return new Vector3d(pos.x, pos.y + eyeHeight, pos.z);
     }
 
-    public static Vector3f getPlayerPosWithCollectionHeight(){
-        return new Vector3f(pos.x, pos.y + collectionHeight, pos.z);
+    public static Vector3d getPlayerPosWithCollectionHeight(){
+        return new Vector3d(pos.x, pos.y + collectionHeight, pos.z);
     }
 
-    public static void setPlayerPos(Vector3f newPos) {
+    public static void setPlayerPos(Vector3d newPos) {
         pos = newPos;
     }
 
@@ -508,7 +508,7 @@ public class Player {
     public static void playerOnTick() {
 
         //camera underwater effect trigger
-        Vector3f camPos = new Vector3f(getCameraPosition());
+        Vector3d camPos = new Vector3d(getCameraPosition());
         camPos.y -= 0.02f;
         int cameraCheckBlock = getBlock((int)camPos.x,(int)camPos.y, (int)camPos.z);
 
@@ -639,7 +639,7 @@ public class Player {
                     case 0:
                         block = getBlock((int)worldSelectionPos.x+1, (int)worldSelectionPos.y, (int)worldSelectionPos.z);
                         if (block == 0){
-                            Vector3f particlePos = new Vector3f(worldSelectionPos);
+                            Vector3d particlePos = new Vector3d(worldSelectionPos);
                             particlePos.x += 1.1f;
                             particlePos.z += Math.random();
                             particlePos.y += Math.random();
@@ -655,7 +655,7 @@ public class Player {
                     case 1:
                         block = getBlock((int)worldSelectionPos.x-1, (int)worldSelectionPos.y, (int)worldSelectionPos.z);
                         if (block == 0){
-                            Vector3f particlePos = new Vector3f(worldSelectionPos);
+                            Vector3d particlePos = new Vector3d(worldSelectionPos);
                             particlePos.x -= 0.1f;
                             particlePos.z += Math.random();
                             particlePos.y += Math.random();
@@ -671,7 +671,7 @@ public class Player {
                     case 2:
                         block = getBlock((int)worldSelectionPos.x, (int)worldSelectionPos.y+1, (int)worldSelectionPos.z);
                         if (block == 0){
-                            Vector3f particlePos = new Vector3f(worldSelectionPos);
+                            Vector3d particlePos = new Vector3d(worldSelectionPos);
                             particlePos.y += 1.1f;
                             particlePos.z += Math.random();
                             particlePos.x += Math.random();
@@ -687,7 +687,7 @@ public class Player {
                     case 3:
                         block = getBlock((int)worldSelectionPos.x, (int)worldSelectionPos.y-1, (int)worldSelectionPos.z);
                         if (block == 0){
-                            Vector3f particlePos = new Vector3f(worldSelectionPos);
+                            Vector3d particlePos = new Vector3d(worldSelectionPos);
                             particlePos.y -= 0.1f;
                             particlePos.z += Math.random();
                             particlePos.x += Math.random();
@@ -703,7 +703,7 @@ public class Player {
                     case 4:
                         block = getBlock((int)worldSelectionPos.x, (int)worldSelectionPos.y, (int)worldSelectionPos.z+1);
                         if (block == 0){
-                            Vector3f particlePos = new Vector3f(worldSelectionPos);
+                            Vector3d particlePos = new Vector3d(worldSelectionPos);
                             particlePos.z += 1.1f;
                             particlePos.x += Math.random();
                             particlePos.y += Math.random();
@@ -719,7 +719,7 @@ public class Player {
                     case 5:
                         block = getBlock((int)worldSelectionPos.x, (int)worldSelectionPos.y, (int)worldSelectionPos.z-1);
                         if (block == 0){
-                            Vector3f particlePos = new Vector3f(worldSelectionPos);
+                            Vector3d particlePos = new Vector3d(worldSelectionPos);
                             particlePos.z -= 0.1f;
                             particlePos.x += Math.random();
                             particlePos.y += Math.random();

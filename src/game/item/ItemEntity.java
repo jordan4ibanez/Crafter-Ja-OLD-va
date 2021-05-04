@@ -1,5 +1,6 @@
 package game.item;
 
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import java.util.*;
@@ -15,19 +16,19 @@ public class ItemEntity {
     private final static Map<Integer, Item> items = new HashMap<>();
     private final static float itemSize = 0.4f;
 
-    public static void createItem(String name, Vector3f pos, int stack){
+    public static void createItem(String name, Vector3d pos, int stack){
         items.put(getCurrentID(), new Item(name, pos, stack));
     }
 
-    public static void createItem(String name, Vector3f pos, int stack, float life){
+    public static void createItem(String name, Vector3d pos, int stack, float life){
         items.put(getCurrentID(), new Item(name, pos, stack, life));
     }
 
-    public static void createItem(String name, Vector3f pos, Vector3f inertia, int stack){
+    public static void createItem(String name, Vector3d pos, Vector3f inertia, int stack){
         items.put(getCurrentID(), new Item(name, pos, inertia, stack));
     }
 
-    public static void createItem(String name, Vector3f pos, Vector3f inertia, int stack, float life){
+    public static void createItem(String name, Vector3d pos, Vector3f inertia, int stack, float life){
         items.put(getCurrentID(), new Item(name, pos, inertia, stack, life));
     }
 
@@ -56,9 +57,15 @@ public class ItemEntity {
                         }
                     }
                     if (thisItem.collecting) {
-                        Vector3f normalizedPos = new Vector3f(getPlayerPosWithCollectionHeight());
+                        Vector3d normalizedPos = new Vector3d(getPlayerPosWithCollectionHeight());
                         normalizedPos.sub(thisItem.pos).normalize().mul(15f);
-                        thisItem.inertia = normalizedPos;
+
+                        Vector3f normalizedDirection = new Vector3f();
+                        normalizedDirection.x = (float)normalizedPos.x;
+                        normalizedDirection.y = (float)normalizedPos.y;
+                        normalizedDirection.z = (float)normalizedPos.z;
+
+                        thisItem.inertia = normalizedDirection;
                     }
                 }
 

@@ -5,6 +5,7 @@ import game.chunk.Chunk;
 import game.item.ItemDefinition;
 import game.item.ItemEntity;
 import game.tnt.TNTEntity;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.lwjgl.openal.AL11;
 
@@ -153,8 +154,8 @@ public class Crafter {
         }
 
 //        createToolDebugInventory();
-//        generateRandomInventory();
-        tntFillErUp();
+        generateRandomInventory();
+//        tntFillErUp();
     }
 
     private static void input() {
@@ -268,7 +269,7 @@ public class Crafter {
 
         //spawn human mob
         if (isKeyPressed(GLFW_KEY_T)) {
-            spawnMob("human", new Vector3f(getPlayerPos()), new Vector3f(0,0,0));
+            spawnMob("human", new Vector3d(getPlayerPos()), new Vector3f(0,0,0));
         }
 
 

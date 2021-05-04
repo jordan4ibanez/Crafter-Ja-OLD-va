@@ -1,6 +1,7 @@
 package engine.graph;
 
 import org.joml.Vector2f;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import static engine.MouseInput.getMouseDisplVec;
@@ -8,17 +9,17 @@ import static game.player.Player.*;
 
 public class Camera {
 
-    private static final Vector3f position = new Vector3f();
+    private static final Vector3d position = new Vector3d();
 
     private static final Vector3f rotation = new Vector3f();
 
     private static final float   MOUSE_SENSITIVITY   = 0.09f;
 
-    public static Vector3f getCameraPosition(){
+    public static Vector3d getCameraPosition(){
         return position;
     }
 
-    public static void setCameraPosition(float x, float y, float z){
+    public static void setCameraPosition(double x, double y, double z){
         position.x = x;
         position.y = y;
         position.z = z;

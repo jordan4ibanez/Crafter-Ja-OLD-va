@@ -9,6 +9,7 @@ import game.particle.ParticleObject;
 import game.weather.RainDropEntity;
 import org.joml.Matrix4f;
 import org.joml.Vector2d;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import java.util.Collection;
@@ -155,6 +156,7 @@ public class Renderer {
         if (getPlayerWorldSelectionPos() != null){
 
             Mesh selectionMesh = getWorldSelectionMesh();
+
             modelViewMatrix = updateModelViewMatrix(getPlayerWorldSelectionPos(), new Vector3f(0,0,0), viewMatrix);
             shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
             selectionMesh.render();
@@ -187,7 +189,7 @@ public class Renderer {
 
 //        render each item entity
         for (Item thisItem : getAllItems()){
-            modelViewMatrix = updateModelViewMatrix(new Vector3f(thisItem.pos).add(0,thisItem.hover,0), thisItem.rotation, viewMatrix);
+            modelViewMatrix = updateModelViewMatrix(new Vector3d(thisItem.pos).add(0,thisItem.hover,0), thisItem.rotation, viewMatrix);
             shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
             thisItem.mesh.render();
         }
@@ -215,7 +217,7 @@ public class Renderer {
         for (MobObject thisMob : getAllMobs()){
             int offsetIndex = 0;
             for (Mesh thisMesh : thisMob.meshes) {
-                modelViewMatrix = getMobMatrix(new Vector3f(thisMob.pos), thisMob.bodyOffsets[offsetIndex], new Vector3f(0, thisMob.smoothRotation, 0), new Vector3f(thisMob.bodyRotations[offsetIndex]), new Vector3f(1f, 1f, 1f), viewMatrix);
+                modelViewMatrix = getMobMatrix(new Vector3d(thisMob.pos), thisMob.bodyOffsets[offsetIndex], new Vector3f(0, thisMob.smoothRotation, 0), new Vector3f(thisMob.bodyRotations[offsetIndex]), new Vector3f(1f, 1f, 1f), viewMatrix);
                 shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 thisMesh.render();
                 offsetIndex++;

@@ -3,6 +3,7 @@ package game.weather;
 import engine.graph.Mesh;
 import engine.graph.Texture;
 import game.particle.ParticleObject;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import java.util.*;
@@ -29,7 +30,7 @@ public class Weather {
         }
     }
 
-    public static void createRainDrop(Vector3f pos, Vector3f inertia){
+    public static void createRainDrop(Vector3d pos, Vector3f inertia){
         rainDrops.put(currentID, new RainDropEntity(pos, inertia, currentID));
         currentID++;
     }

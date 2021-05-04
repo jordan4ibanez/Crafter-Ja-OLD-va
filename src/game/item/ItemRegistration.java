@@ -1,5 +1,6 @@
 package game.item;
 
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import static engine.sound.SoundAPI.playSound;
@@ -19,7 +20,7 @@ public class ItemRegistration {
 
         ItemModifier test = new ItemModifier() {
             @Override
-            public void onPlace(Vector3f pos) {
+            public void onPlace(Vector3d pos) {
                 if (isWalkable(getBlock((int)pos.x,(int)pos.y - 1, (int) pos.z))) {
                     byte rot = getPlayerDir();
                     setBlock((int) pos.x, (int) pos.y + 1, (int) pos.z, 23, rot);

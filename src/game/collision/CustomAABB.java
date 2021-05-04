@@ -4,11 +4,11 @@ import org.joml.Vector3f;
 
 public class CustomAABB {
 
-    private static float[] aabb = new float[6];
-    private static float width = 0f;
-    private static float height = 0f;
+    final private static double[] aabb = new double[6];
+    final private static float width = 0f;
+    final private static float height = 0f;
 
-    public static void setAABB(float x, float y, float z, float width, float height){
+    public static void setAABB(double x, double y, double z, float width, float height){
         aabb[0] = x-width;
         aabb[1] = y;
         aabb[2] = z-width;
@@ -26,31 +26,34 @@ public class CustomAABB {
         aabb[5] = pos.z+width;
     }
 
+    /*
     public static void updateWidth(float newWidth){
         width = newWidth;
     }
 
-    public static float AABBGetLeft(){
+     */
+
+    public static double AABBGetLeft(){
         return aabb[0];
     }
 
-    public static float AABBGetBottom(){
+    public static double AABBGetBottom(){
         return aabb[1];
     }
 
-    public static float AABBGetFront(){
+    public static double AABBGetFront(){
         return aabb[2];
     }
 
-    public static float AABBGetRight(){
+    public static double AABBGetRight(){
         return aabb[3];
     }
 
-    public static float AABBGetTop(){
+    public static double AABBGetTop(){
         return aabb[4];
     }
 
-    public static float AABBGetBack(){
+    public static double AABBGetBack(){
         return aabb[5];
     }
 }

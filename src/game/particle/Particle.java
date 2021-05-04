@@ -2,6 +2,7 @@ package game.particle;
 
 import engine.graph.Mesh;
 import engine.graph.Texture;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public class Particle {
 
     private static int currentID = 0;
 
-    public static void createParticle(Vector3f pos, Vector3f inertia, int blockID){
+    public static void createParticle(Vector3d pos, Vector3f inertia, int blockID){
         particles.put(currentID, new ParticleObject(pos, inertia, createParticleMesh(blockID), currentID));
         currentID++;
     }

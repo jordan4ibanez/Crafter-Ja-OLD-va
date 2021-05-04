@@ -2,6 +2,7 @@ package game.mob;
 
 import engine.graph.Mesh;
 import engine.graph.Texture;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -64,7 +65,7 @@ public class Human {
 
             thisObject.smoothRotation = (float)Math.toDegrees(Math.atan2(thisObject.lastPos.z - thisObject.pos.z, thisObject.lastPos.x - thisObject.pos.x)) - 90f;
 
-            thisObject.lastPos = new Vector3f(thisObject.pos);
+            thisObject.lastPos = new Vector3d(thisObject.pos);
         }
     };
 

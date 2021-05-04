@@ -1,5 +1,6 @@
 package game.falling;
 
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import java.util.Collection;
@@ -17,7 +18,7 @@ public class FallingEntity {
     private final static Map<Integer, FallingEntityObject> objects = new HashMap<>();
     private static int currentID = 0;
 
-    public static void addFallingEntity(Vector3f pos, Vector3f inertia, int blockID){
+    public static void addFallingEntity(Vector3d pos, Vector3f inertia, int blockID){
         objects.put(currentID, new FallingEntityObject(pos, inertia, getItemDefinition(getBlockName(blockID)).mesh, currentID));
         currentID++;
     }

@@ -1,5 +1,6 @@
 package game.mob;
 
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import java.util.ArrayDeque;
@@ -30,7 +31,7 @@ public class Mob {
         registerHumanMob();
     }
 
-    public static void spawnMob(String name, Vector3f pos, Vector3f inertia){
+    public static void spawnMob(String name, Vector3d pos, Vector3f inertia){
         System.out.println("spawning mob! ID: " + currentID);
         System.out.println("pos y:" + pos.y);
         mobs.put(currentID, new MobObject(pos,inertia,name,currentID));

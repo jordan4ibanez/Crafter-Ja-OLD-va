@@ -1,10 +1,8 @@
 package engine.disk;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import engine.graph.Mesh;
-import game.chunk.Chunk;
 import game.chunk.ChunkObject;
-import org.joml.Vector3f;
+import org.joml.Vector3d;
 
 import java.io.File;
 import java.io.IOException;
@@ -70,8 +68,8 @@ public class Disk {
         return(abstractedChunk);
     }
 
-    public static void savePlayerPos(Vector3f pos){
-        SpecialSavingVector3f tempPos = new SpecialSavingVector3f();
+    public static void savePlayerPos(Vector3d pos){
+        SpecialSavingVector3d tempPos = new SpecialSavingVector3d();
         tempPos.x = pos.x;
         tempPos.y = pos.y;
         tempPos.z = pos.z;
@@ -82,11 +80,11 @@ public class Disk {
         }
     }
 
-    public static Vector3f loadPlayerPos(){
+    public static Vector3d loadPlayerPos(){
 
         File test = new File("Worlds/world1/playerPos.data");
 
-        Vector3f thisPos = new Vector3f(0,55,0);
+        Vector3d thisPos = new Vector3d(0,55,0);
 
         if (!test.canRead()){
             return thisPos;
@@ -95,10 +93,10 @@ public class Disk {
         //this needs a special object class because
         //vector3f has a 4th variable which jackson cannot
         //understand
-        SpecialSavingVector3f tempPos = null;
+        SpecialSavingVector3d tempPos = null;
 
         try {
-            tempPos = objectMapper.readValue(test, SpecialSavingVector3f.class);
+            tempPos = objectMapper.readValue(test, SpecialSavingVector3d.class);
         } catch (IOException e) {
             e.printStackTrace();
         }

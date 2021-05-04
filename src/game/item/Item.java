@@ -1,6 +1,7 @@
 package game.item;
 
 import engine.graph.Mesh;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import static engine.FancyMath.randomForceValue;
@@ -12,7 +13,7 @@ public class Item {
     public String name;
     public int stack;
     public ItemDefinition definition;
-    public Vector3f pos;
+    public Vector3d pos;
     public float scale;
     public float timer;
     public float hover;
@@ -33,7 +34,7 @@ public class Item {
     }
 
     //item being mined
-    public Item(String name, Vector3f pos, int stack) {
+    public Item(String name, Vector3d pos, int stack) {
         this.name = name;
         this.pos = pos;
         this.definition = getItemDefinition(name);
@@ -52,7 +53,7 @@ public class Item {
     }
 
     //item being mined with life
-    public Item(String name, Vector3f pos, int stack, float life) {
+    public Item(String name, Vector3d pos, int stack, float life) {
         this.name = name;
         this.pos = pos;
         this.definition = getItemDefinition(name);
@@ -71,7 +72,7 @@ public class Item {
     }
 
     //item with inertia vector when spawned (mined, blown up, etc)
-    public Item(String name, Vector3f pos, Vector3f inertia, int stack) {
+    public Item(String name, Vector3d pos, Vector3f inertia, int stack) {
         this.name = name;
         this.pos = pos;
         this.definition = getItemDefinition(name);
@@ -90,7 +91,7 @@ public class Item {
     }
 
     //item with inertia vector when spawned (mined, blown up, etc)
-    public Item(String name, Vector3f pos, Vector3f inertia, int stack, float life) {
+    public Item(String name, Vector3d pos, Vector3f inertia, int stack, float life) {
         this.name = name;
         this.pos = pos;
         this.definition = getItemDefinition(name);

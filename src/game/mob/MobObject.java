@@ -1,13 +1,14 @@
 package game.mob;
 
 import engine.graph.Mesh;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import static game.mob.Mob.getMobDefinition;
 
 public class MobObject {
-    public Vector3f pos;
-    public Vector3f lastPos;
+    public Vector3d pos;
+    public Vector3d lastPos;
     public Vector3f inertia;
     public int mobTableKey;
     public String mobDefinitionKey;
@@ -22,9 +23,9 @@ public class MobObject {
     public final Mesh[] meshes;
 
 
-    public MobObject(Vector3f pos, Vector3f inertia, String mobDefinitionKey, int mobTableKey){
+    public MobObject(Vector3d pos, Vector3f inertia, String mobDefinitionKey, int mobTableKey){
         this.pos = pos;
-        this.lastPos = new Vector3f(pos);
+        this.lastPos = new Vector3d(pos);
         this.inertia = inertia;
         this.mobDefinitionKey = mobDefinitionKey;
         this.mobTableKey = mobTableKey;

@@ -2,6 +2,7 @@ package game.tnt;
 
 import engine.graph.Mesh;
 import engine.graph.Texture;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public class TNTEntity {
     private static int totalTNT = 0;
     //TODO: pseudo object holder
     private static Mesh mesh;
-    private static Vector3f[] tntPos = new Vector3f[MAX_ID_AMOUNT];
+    private static Vector3d[] tntPos = new Vector3d[MAX_ID_AMOUNT];
     private static Vector3f tntScale[] = new Vector3f[MAX_ID_AMOUNT];
     private static float[] tntTimer =    new float[MAX_ID_AMOUNT];
     private static boolean[] tntExists =    new boolean[MAX_ID_AMOUNT];
@@ -28,11 +29,11 @@ public class TNTEntity {
         return totalTNT;
     }
 
-    public static void createTNT(Vector3f pos){
+    public static void createTNT(Vector3d pos){
         pos.x += 0.5f;
         pos.y += 0.5f;
         pos.z += 0.5f;
-        tntPos[totalTNT] = new Vector3f(pos);
+        tntPos[totalTNT] = new Vector3d(pos);
         tntInertia[totalTNT] = new Vector3f(randomForceValue(15f),(float)Math.random()*7f,randomForceValue(15f));
         tntExists[totalTNT] = true;
         tntTimer[totalTNT] = 0f;
@@ -41,11 +42,11 @@ public class TNTEntity {
         System.out.println("Created new TNT. Total TNT: " + totalTNT);
     }
 
-    public static void createTNT(Vector3f pos, float timer, boolean punched) throws Exception {
+    public static void createTNT(Vector3d pos, float timer, boolean punched) throws Exception {
         pos.x += 0.5f;
         pos.y += 0.5f;
         pos.z += 0.5f;
-        tntPos[totalTNT] = new Vector3f(pos);
+        tntPos[totalTNT] = new Vector3d(pos);
         float tntJump;
         if (punched){
             tntJump = (float)Math.random()*10f;
@@ -142,7 +143,7 @@ public class TNTEntity {
         return tntExists[ID];
     }
 
-    public static Vector3f getTNTPosition(int ID){
+    public static Vector3d getTNTPosition(int ID){
         return tntPos[ID];
     }
 

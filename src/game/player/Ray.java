@@ -1,5 +1,6 @@
 package game.player;
 
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import static game.chunk.Chunk.*;
@@ -14,15 +15,15 @@ import static game.player.Inventory.removeItemFromInventory;
 import static game.player.Player.*;
 
 public class Ray {
-    public static void rayCast(Vector3f pos, Vector3f dir, float length, boolean mining, boolean placing) {
+    public static void rayCast(Vector3d pos, Vector3f dir, float length, boolean mining, boolean placing) {
 
-        Vector3f finalPos = new Vector3f();
+        Vector3d finalPos = new Vector3d();
 
-        Vector3f newPos   = new Vector3f();
+        Vector3d newPos   = new Vector3d();
 
-        Vector3f lastPos  = new Vector3f();
+        Vector3d lastPos  = new Vector3d();
 
-        Vector3f cachePos = new Vector3f();
+        Vector3d cachePos = new Vector3d();
 
         int foundBlock = -1;
 
@@ -48,7 +49,7 @@ public class Ray {
                 }
             }
 
-            lastPos = new Vector3f(newPos);
+            lastPos = new Vector3d(newPos);
         }
 
         if(finalPos != null && foundBlock > 0) {
@@ -85,7 +86,7 @@ public class Ray {
         }
     }
 
-    private static void destroyBlock(Vector3f flooredPos) {
+    private static void destroyBlock(Vector3d flooredPos) {
         int thisBlock = getBlock((int)flooredPos.x, (int)flooredPos.y, (int)flooredPos.z);
         if (thisBlock < 0){
             return;
@@ -94,10 +95,10 @@ public class Ray {
         onDigCall(thisBlock, flooredPos);
 
         for (int i = 0; i < 20; i++) {
-            createParticle(new Vector3f(flooredPos.x + ((float)Math.random()-0.5f), flooredPos.y + ((float)Math.random()-0.5f), flooredPos.z + ((float)Math.random()-0.5f)), new Vector3f((float)(Math.random()-0.5f) * 2f, (float)Math.ceil(Math.random()*5f), (float)(Math.random()-0.5f) * 2f), thisBlock);
+            createParticle(new Vector3d(flooredPos.x + (Math.random()-0.5d), flooredPos.y + (Math.random()-0.5d), flooredPos.z + (Math.random()-0.5d)), new Vector3f((float)(Math.random()-0.5f) * 2f, (float)Math.ceil(Math.random()*5f), (float)(Math.random()-0.5f) * 2f), thisBlock);
         }
     }
-    private static void rayPlaceBlock(Vector3f flooredPos, int ID) {
+    private static void rayPlaceBlock(Vector3d flooredPos, int ID) {
 
         placeBlock((int) flooredPos.x, (int) flooredPos.y, (int) flooredPos.z, ID, getPlayerDir());
 

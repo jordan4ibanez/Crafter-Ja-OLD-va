@@ -1,5 +1,6 @@
 package game.blocks;
 
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import java.util.HashMap;
@@ -93,10 +94,10 @@ public class BlockDefinition {
         registerItem(name, ID);
     }
 
-    public static void onDigCall(int ID, Vector3f pos) {
+    public static void onDigCall(int ID, Vector3d pos) {
         if(blockIDs[ID] != null){
             if(blockIDs[ID].dropsItem){
-                createItem(blockIDs[ID].name, pos.add(0.5f,0.5f,0.5f), 1, 2.5f);
+                createItem(blockIDs[ID].name, pos.add(0.5d,0.5d,0.5d), 1, 2.5f);
             }
             if(blockIDs[ID].blockModifier != null){
                 try {
@@ -111,7 +112,7 @@ public class BlockDefinition {
         }
     }
 
-    public static void onPlaceCall(int ID, Vector3f pos) {
+    public static void onPlaceCall(int ID, Vector3d pos) {
         if(blockIDs[ID] != null && blockIDs[ID].blockModifier != null) {
             try {
                 blockIDs[ID].blockModifier.onPlace(pos);
@@ -414,7 +415,7 @@ public class BlockDefinition {
         //tnt explosion
         BlockModifier kaboom = new BlockModifier() {
             @Override
-            public void onDig(Vector3f pos) throws Exception {
+            public void onDig(Vector3d pos) throws Exception {
                 createTNT(pos, 0, true);
             }
         };
@@ -755,10 +756,10 @@ public class BlockDefinition {
         //falling sand
         BlockModifier fallSand = new BlockModifier() {
             @Override
-            public void onPlace(Vector3f pos) {
+            public void onPlace(Vector3d pos) {
                 if (getBlock((int)pos.x, (int)pos.y - 1, (int)pos.z) == 0) {
                     digBlock((int) pos.x, (int) pos.y, (int) pos.z);
-                    addFallingEntity(new Vector3f(pos.x + 0.5f, pos.y, pos.z + 0.5f), new Vector3f(0, 0, 0), 20);
+                    addFallingEntity(new Vector3d(pos.x + 0.5d, pos.y, pos.z + 0.5d), new Vector3f(0, 0, 0), 20);
                 }
             }
         };
@@ -811,20 +812,20 @@ public class BlockDefinition {
                 false,
                 new BlockModifier() {
                     @Override
-                    public void onDig(Vector3f pos) throws Exception {
+                    public void onDig(Vector3d pos) throws Exception {
                         if (getBlock((int)pos.x, (int)pos.y - 1, (int)pos.z) == 22) {
                             setBlock((int)pos.x, (int)pos.y - 1, (int)pos.z, 0, 0);
-                            createItem("door", pos.add(0.5f,0.5f,0.5f), 1);
+                            createItem("door", pos.add(0.5d,0.5d,0.5d), 1);
                         }
                     }
 
                     @Override
-                    public void onRightClick(Vector3f pos) {
+                    public void onRightClick(Vector3d pos) {
                         if (getBlock((int)pos.x, (int)pos.y - 1, (int)pos.z) == 22) {
                             byte rot = getBlockRotation((int)pos.x, (int)pos.y, (int)pos.z);
                             setBlock((int)pos.x, (int)pos.y, (int)pos.z, 23,rot);
                             setBlock((int)pos.x, (int)pos.y - 1, (int)pos.z, 24,rot);
-                            playSound("door_close", new Vector3f(pos.x + 0.5f, pos.y + 0.5f, pos.z + 0.5f));
+                            playSound("door_close", new Vector3d(pos.x + 0.5d, pos.y + 0.5d, pos.z + 0.5d));
                         }
                     }
                 },
@@ -853,20 +854,20 @@ public class BlockDefinition {
                 new BlockModifier() {
 
                     @Override
-                    public void onDig(Vector3f pos) throws Exception {
+                    public void onDig(Vector3d pos) throws Exception {
                         if (getBlock((int)pos.x, (int)pos.y + 1, (int)pos.z) == 21) {
                             setBlock((int)pos.x, (int)pos.y + 1, (int)pos.z, 0, 0);
-                            createItem("door", pos.add(0.5f,0.5f,0.5f), 1);
+                            createItem("door", pos.add(0.5d,0.5d,0.5d), 1);
                         }
                     }
 
                     @Override
-                    public void onRightClick(Vector3f pos) {
+                    public void onRightClick(Vector3d pos) {
                         if (getBlock((int)pos.x, (int)pos.y + 1, (int)pos.z) == 21) {
                             byte rot = getBlockRotation((int)pos.x, (int)pos.y, (int)pos.z);
                             setBlock((int)pos.x, (int)pos.y + 1, (int)pos.z, 23,rot);
                             setBlock((int)pos.x, (int)pos.y, (int)pos.z, 24,rot);
-                            playSound("door_close", new Vector3f(pos.x + 0.5f, pos.y + 0.5f, pos.z + 0.5f));
+                            playSound("door_close", new Vector3d(pos.x + 0.5d, pos.y + 0.5d, pos.z + 0.5d));
                         }
                     }
                 },
@@ -903,20 +904,20 @@ public class BlockDefinition {
                 new BlockModifier() {
 
                     @Override
-                    public void onDig(Vector3f pos) throws Exception {
+                    public void onDig(Vector3d pos) throws Exception {
                         if (getBlock((int)pos.x, (int)pos.y - 1, (int)pos.z) == 24) {
                             setBlock((int)pos.x, (int)pos.y - 1, (int)pos.z, 0, 0);
-                            createItem("door", pos.add(0.5f,0.5f,0.5f), 1);
+                            createItem("door", pos.add(0.5d,0.5d,0.5d), 1);
                         }
                     }
 
                     @Override
-                    public void onRightClick(Vector3f pos) {
+                    public void onRightClick(Vector3d pos) {
                         if (getBlock((int)pos.x, (int)pos.y - 1, (int)pos.z) == 24) {
                             byte rot = getBlockRotation((int)pos.x, (int)pos.y, (int)pos.z);
                             setBlock((int)pos.x, (int)pos.y, (int)pos.z, 21,rot);
                             setBlock((int)pos.x, (int)pos.y - 1, (int)pos.z, 22,rot);
-                            playSound("door_open", new Vector3f(pos.x + 0.5f, pos.y + 0.5f, pos.z + 0.5f));
+                            playSound("door_open", new Vector3d(pos.x + 0.5d, pos.y + 0.5d, pos.z + 0.5d));
                         }
                     }
                 },
@@ -945,20 +946,20 @@ public class BlockDefinition {
                 new BlockModifier() {
 
                     @Override
-                    public void onDig(Vector3f pos) throws Exception {
+                    public void onDig(Vector3d pos) throws Exception {
                         if (getBlock((int)pos.x, (int)pos.y + 1, (int)pos.z) == 23) {
                             setBlock((int)pos.x, (int)pos.y + 1, (int)pos.z, 0, 0);
-                            createItem("door", pos.add(0.5f,0.5f,0.5f), 1);
+                            createItem("door", pos.add(0.5d,0.5d,0.5d), 1);
                         }
                     }
 
                     @Override
-                    public void onRightClick(Vector3f pos) {
+                    public void onRightClick(Vector3d pos) {
                         if (getBlock((int)pos.x, (int)pos.y + 1, (int)pos.z) == 23) {
                             byte rot = getBlockRotation((int)pos.x, (int)pos.y, (int)pos.z);
                             setBlock((int)pos.x, (int)pos.y + 1, (int)pos.z, 21,rot);
                             setBlock((int)pos.x, (int)pos.y, (int)pos.z, 22,rot);
-                            playSound("door_open", new Vector3f(pos.x + 0.5f, pos.y + 0.5f, pos.z + 0.5f));
+                            playSound("door_open", new Vector3d(pos.x + 0.5d, pos.y + 0.5d, pos.z + 0.5d));
                         }
                     }
                 },

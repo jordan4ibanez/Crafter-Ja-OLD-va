@@ -3,6 +3,7 @@ package engine.sound;
 import engine.graph.Camera;
 import engine.graph.Transformation;
 import org.joml.Matrix4f;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.ALC;
@@ -82,9 +83,18 @@ public class SoundManager {
     }
 
     public static void updateListenerPosition() {
+
+        Vector3d camPosDouble = new Vector3d(getCameraPosition());
+
+        Vector3f camPosFloat = new Vector3f();
+
+        camPosFloat.x = (float)camPosDouble.x;
+        camPosFloat.y = (float)camPosDouble.y;
+        camPosFloat.z = (float)camPosDouble.z;
+
         // Update camera matrix with camera data
-        Transformation.updateGenericViewMatrix(getCameraPosition(), getCameraRotation(), cameraMatrix);
-        listener.setPosition(getCameraPosition());
+        Transformation.updateGenericViewMatrix(camPosFloat, getCameraRotation(), cameraMatrix);
+        listener.setPosition(camPosFloat);
         Vector3f at = new Vector3f();
         cameraMatrix.positiveZ(at).negate();
         Vector3f up = new Vector3f();

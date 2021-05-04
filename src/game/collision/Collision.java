@@ -1,5 +1,6 @@
 package game.collision;
 
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import static game.chunk.Chunk.getBlock;
@@ -18,7 +19,7 @@ public class Collision {
 
     //this probably definitely absolutely should not take isPlayer as a value
     //fix this later FIX ME FIX ME - DO OBJECT TYPE MATCHING
-    public static boolean applyInertia(Vector3f pos, Vector3f inertia, boolean onGround, float width, float height, boolean gravity, boolean sneaking, boolean applyCollision, boolean airFriction, boolean isPlayer){
+    public static boolean applyInertia(Vector3d pos, Vector3f inertia, boolean onGround, float width, float height, boolean gravity, boolean sneaking, boolean applyCollision, boolean airFriction, boolean isPlayer){
 
         inWater = 0;//reset water detection
 
@@ -32,7 +33,7 @@ public class Collision {
         if (applyCollision) {
             if (sneaking && !getIfPlayerIsJumping()) {
 
-                Vector3f oldPos = new Vector3f(pos);
+                Vector3d oldPos = new Vector3d(pos);
 
                 onGround = collisionDetect(pos, inertia, width, height);
 
@@ -102,34 +103,34 @@ public class Collision {
     }
 
     //these are class/method caches!! NOT FIELDS!
-    private static Vector3f fPos;
+    private static Vector3d fPos;
     private static boolean onGround;
     private static int x,y,z;
     private static int cachedBlock;
-    private static Vector3f cachedPos = new Vector3f(0,0,0);
+    private static Vector3d cachedPos = new Vector3d(0d,0d,0d);
 
 
 
     //sneaking stuff
 
-    private static int sneakCollisionDetect(Vector3f pos, Vector3f inertia, float width, float height){
+    private static int sneakCollisionDetect(Vector3d pos, Vector3f inertia, float width, float height){
 
         int binaryReturn = 0;
 
         boolean onGround = false;
 
         Vector3f clonedInertia = new Vector3f(inertia);
-        Vector3f clonedPos = new Vector3f(pos);
+        Vector3d clonedPos = new Vector3d(pos);
         //todo: begin X collision detection
         clonedPos.y -= 0.05f;
         clonedPos.x += 0.1f * inertiaToDir(clonedInertia.x);
 
-        fPos = floorPos(new Vector3f(clonedPos));
+        fPos = floorPos(new Vector3d(clonedPos));
 
         for (x = -1; x <= 1; x++) {
             for (z = -1; z <= 1; z++) {
 
-                Vector3f cachedPos = new Vector3f();
+                Vector3d cachedPos = new Vector3d();
                 cachedPos.x = fPos.x + x;
                 cachedPos.y = fPos.y;
                 cachedPos.z = fPos.z + z;
@@ -149,7 +150,7 @@ public class Collision {
         }
 
         //reset position vectors
-        clonedPos = new Vector3f(pos);
+        clonedPos = new Vector3d(pos);
         clonedInertia = new Vector3f(inertia);
 
         onGround = false;
@@ -158,12 +159,12 @@ public class Collision {
         clonedPos.y -= 0.05f;
         clonedPos.z += 0.1f * inertiaToDir(clonedInertia.z);
 
-        fPos = floorPos(new Vector3f(clonedPos));
+        fPos = floorPos(new Vector3d(clonedPos));
 
         for (x = -1; x <= 1; x++) {
             for (z = -1; z <= 1; z++) {
 
-                Vector3f cachedPos = new Vector3f();
+                Vector3d cachedPos = new Vector3d();
                 cachedPos.x = fPos.x + x;
                 cachedPos.y = fPos.y;
                 cachedPos.z = fPos.z + z;
@@ -187,7 +188,7 @@ public class Collision {
         return binaryReturn;
     }
 
-    private static boolean sneakCollideYNegative(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3f pos, Vector3f inertia, float width, float height, boolean onGround, int blockID){
+    private static boolean sneakCollideYNegative(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, float width, float height, boolean onGround, int blockID){
         for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
             setAABB(pos.x, pos.y, pos.z, width, height);
             setBlockBox(blockPosX,blockPosY,blockPosz,thisBlockBox);
@@ -205,10 +206,10 @@ public class Collision {
 
     //normal collision
 
-    private static boolean collisionDetect(Vector3f pos, Vector3f inertia, float width, float height){
+    private static boolean collisionDetect(Vector3d pos, Vector3f inertia, float width, float height){
         onGround = false;
 
-        Vector3f oldPos = new Vector3f();
+        Vector3d oldPos = new Vector3d();
 
         oldPos.x = pos.x;
         oldPos.y = pos.y;
@@ -216,7 +217,7 @@ public class Collision {
 
         pos.y += inertia.y * gameSpeed;
 
-        fPos = floorPos(new Vector3f(pos));
+        fPos = floorPos(new Vector3d(pos));
 
         int up = 0;
 
@@ -280,7 +281,7 @@ public class Collision {
         pos.x += inertia.x * gameSpeed;
 
         //must clone the vector object
-        fPos = floorPos(new Vector3f(pos));
+        fPos = floorPos(new Vector3d(pos));
 
         //this must start at -1f (loops through every position
         for (float yy = -1f; yy <= height + 1f; yy = yy + 1f) {
@@ -311,7 +312,7 @@ public class Collision {
 
         pos.z += inertia.z * gameSpeed;
 
-        fPos = floorPos(new Vector3f(pos));
+        fPos = floorPos(new Vector3d(pos));
 
         //this must start at -1f (loops through every position
         for (float yy = -1f; yy <= height + 1f; yy = yy + 1f) {
@@ -361,7 +362,7 @@ public class Collision {
 
     //a simple way to check if an object is in the water, only done on x and z passes so you can't stand
     //next to water and get slowed down
-    private static void detectIfInWater(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3f pos, Vector3f inertia, float width, float height, int blockID){
+    private static void detectIfInWater(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, float width, float height, int blockID){
         for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
             setAABB(pos.x, pos.y, pos.z, width, height);
             setBlockBox(blockPosX,blockPosY,blockPosz,thisBlockBox);
@@ -376,7 +377,7 @@ public class Collision {
         }
     }
 
-    private static boolean collideYNegative(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3f pos, Vector3f inertia, float width, float height, boolean onGround, int blockID){
+    private static boolean collideYNegative(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, float width, float height, boolean onGround, int blockID){
         for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
             setAABB(pos.x, pos.y, pos.z, width, height);
             setBlockBox(blockPosX,blockPosY,blockPosz,thisBlockBox);
@@ -390,7 +391,7 @@ public class Collision {
         return onGround;
     }
 
-    private static void collideYPositive(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3f pos, Vector3f inertia, float width, float height, int blockID){
+    private static void collideYPositive(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, float width, float height, int blockID){
         for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
             setAABB(pos.x, pos.y, pos.z, width, height);
             setBlockBox(blockPosX, blockPosY, blockPosz,thisBlockBox);
@@ -406,7 +407,7 @@ public class Collision {
 
     //TODO ----------------------------------XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-    private static void collideX(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3f pos, Vector3f inertia, Vector3f oldPos, float width, float height, int blockID){
+    private static void collideX(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, Vector3d oldPos, float width, float height, int blockID){
         //run through X collisions
         for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
             setAABB(pos.x, pos.y, pos.z, width, height);
@@ -475,7 +476,7 @@ public class Collision {
 
     //TODO ----------------------------------ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ
 
-    private static void collideZ(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3f pos, Vector3f inertia, Vector3f oldPos, float width, float height, int blockID){
+    private static void collideZ(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, Vector3d oldPos, float width, float height, int blockID){
         //run through Z collisions
         for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
             setAABB(pos.x, pos.y, pos.z, width, height);
@@ -550,11 +551,11 @@ public class Collision {
                  AABBGetBack() < BlockBoxGetFront());
     }
 
-    private static int detectBlock(Vector3f flooredPos){
+    private static int detectBlock(Vector3d flooredPos){
         return getBlock((int)flooredPos.x, (int)flooredPos.y, (int)flooredPos.z);
     }
 
-    private static byte detectRot(Vector3f flooredPos){
+    private static byte detectRot(Vector3d flooredPos){
         return getBlockRotation((int)flooredPos.x, (int)flooredPos.y, (int)flooredPos.z);
     }
 

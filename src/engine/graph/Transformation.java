@@ -1,6 +1,7 @@
 package engine.graph;
 
 import org.joml.Matrix4f;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import static engine.Renderer.getWindowSize;
@@ -18,13 +19,13 @@ public class Transformation {
     private static final Matrix4f orthoModelMatrix = new Matrix4f();
 
     public static final Matrix4f getViewMatrix(){
-        Vector3f cameraPos = getCameraPosition();
+        Vector3d cameraPos = getCameraPosition();
         Vector3f rotation = getCameraRotation();
         viewMatrix.identity();
         //first do the rotation so the camera rotates over it's position
         viewMatrix.rotate((float)Math.toRadians(rotation.x), new Vector3f(1,0,0)).rotate((float)Math.toRadians(rotation.y), new Vector3f(0,1,0));
         //then do the translation
-        viewMatrix.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
+        viewMatrix.translate((float)-cameraPos.x, (float)-cameraPos.y, (float)-cameraPos.z);
         return viewMatrix;
     }
 
@@ -37,7 +38,17 @@ public class Transformation {
 
 
     public static Matrix4f getTNTModelViewMatrix(int ID, Matrix4f viewMatrix){
-        modelViewMatrix.identity().translate(getTNTPosition(ID)).
+
+        Vector3d tntPosDoublePos = new Vector3d(getTNTPosition(ID));
+
+        //translate this to a float
+        Vector3f floatedPos = new Vector3f();
+
+        floatedPos.x = (float)tntPosDoublePos.x;
+        floatedPos.y = (float)tntPosDoublePos.y;
+        floatedPos.z = (float)tntPosDoublePos.z;
+
+        modelViewMatrix.identity().translate(floatedPos).
                 rotateX((float)Math.toRadians(0)).
                 rotateY((float)Math.toRadians(0)).
                 rotateZ((float)Math.toRadians(0)).
@@ -76,6 +87,24 @@ public class Transformation {
         return new Matrix4f(matrix).mul(modelViewMatrix);
     }
 
+    public static  Matrix4f updateModelViewMatrix(Vector3d position, Vector3f rotation, Matrix4f matrix) {
+        //translate this to a float
+        Vector3f floatedPos = new Vector3f();
+
+        floatedPos.x = (float)position.x;
+        floatedPos.y = (float)position.y;
+        floatedPos.z = (float)position.z;
+
+        // First do the rotation so camera rotates over its position
+        modelViewMatrix.identity().identity().translate(floatedPos).
+
+                rotateY((float)Math.toRadians(-rotation.y)).
+                rotateZ((float)Math.toRadians(-rotation.z)).
+                rotateX((float)Math.toRadians(-rotation.x)).
+                scale(1f);
+        return new Matrix4f(matrix).mul(modelViewMatrix);
+    }
+
     public static  Matrix4f updateParticleViewMatrix(Vector3f position, Vector3f rotation, Matrix4f matrix) {
         // First do the rotation so camera rotates over its position
         modelViewMatrix.identity().identity().translate(position).
@@ -86,8 +115,33 @@ public class Transformation {
         return new Matrix4f(matrix).mul(modelViewMatrix);
     }
 
+    public static  Matrix4f updateParticleViewMatrix(Vector3d position, Vector3f rotation, Matrix4f matrix) {
+        //translate this to a float
+        Vector3f floatedPos = new Vector3f();
+
+        floatedPos.x = (float)position.x;
+        floatedPos.y = (float)position.y;
+        floatedPos.z = (float)position.z;
+
+        // First do the rotation so camera rotates over its position
+        modelViewMatrix.identity().identity().translate(floatedPos).
+                rotateY((float)Math.toRadians(-rotation.y)).
+                rotateZ((float)Math.toRadians(-rotation.z)).
+                rotateX((float)Math.toRadians(-rotation.x)).
+                scale(1f);
+        return new Matrix4f(matrix).mul(modelViewMatrix);
+    }
+
     public static Matrix4f getGenericMatrixWithPosRotationScale(Vector3f position, Vector3f rotation,Vector3f scale, Matrix4f matrix){
         modelViewMatrix.identity().identity().translate(position.x, position.y, position.z).
+                rotateX((float)Math.toRadians(-rotation.x)).
+                rotateY((float)Math.toRadians(-rotation.y)).
+                rotateZ((float)Math.toRadians(-rotation.z)).scale(scale);
+        return new Matrix4f(matrix).mul(modelViewMatrix);
+    }
+
+    public static Matrix4f getGenericMatrixWithPosRotationScale(Vector3d position, Vector3f rotation,Vector3f scale, Matrix4f matrix){
+        modelViewMatrix.identity().identity().translate((float)position.x, (float)position.y, (float)position.z).
                 rotateX((float)Math.toRadians(-rotation.x)).
                 rotateY((float)Math.toRadians(-rotation.y)).
                 rotateZ((float)Math.toRadians(-rotation.z)).scale(scale);
@@ -109,6 +163,20 @@ public class Transformation {
         return new Matrix4f(matrix).mul(modelViewMatrix);
     }
 
+    public static Matrix4f getMobMatrix(Vector3d basePos, Vector3f offsetPos, Vector3f bodyYaw,Vector3f bodyPartRotation,Vector3f scale, Matrix4f matrix){
+        modelViewMatrix.identity().identity().
+                //main rotation (positioning)
+                        translate((float)basePos.x, (float)basePos.y, (float)basePos.z).
+                rotateX((float)Math.toRadians(-bodyYaw.x)).
+                rotateY((float)Math.toRadians(-bodyYaw.y)).
+                rotateZ((float)Math.toRadians(-bodyYaw.z)).scale(scale)
+                //animation translation
+                .translate(offsetPos).
+                rotateY((float)Math.toRadians(-bodyPartRotation.y)).
+                rotateX((float)Math.toRadians(-bodyPartRotation.x)).
+                rotateZ((float)Math.toRadians(-bodyPartRotation.z));
+        return new Matrix4f(matrix).mul(modelViewMatrix);
+    }
 
 
     //TODO--begin ortho creation
