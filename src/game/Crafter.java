@@ -154,7 +154,7 @@ public class Crafter {
 
 //        createToolDebugInventory();
 //        generateRandomInventory();
-//        tntFillErUp();
+        tntFillErUp();
     }
 
     private static void input() {

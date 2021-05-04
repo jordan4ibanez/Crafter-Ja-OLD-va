@@ -738,13 +738,13 @@ public class Player {
         }
 
         if(mining && hasDug) {
-            rayCast(getCameraPosition(), getCameraRotationVector(), 3.5f,  true, false);
+            rayCast(getCameraPosition(), getCameraRotationVector(), 4f,  true, false);
             mineTimer = 0.5f;
         } else if (placing && placeTimer <= 0){
-            rayCast(getCameraPosition(), getCameraRotationVector(), 3.5f,  false, true);
+            rayCast(getCameraPosition(), getCameraRotationVector(), 4f,  false, true);
             placeTimer = 0.5f;
         } else {
-            rayCast(getCameraPosition(), getCameraRotationVector(), 3.5f,  false, false);
+            rayCast(getCameraPosition(), getCameraRotationVector(), 4f,  false, false);
         }
     }
 
