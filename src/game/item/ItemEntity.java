@@ -7,8 +7,10 @@ import java.util.*;
 
 import static engine.FancyMath.*;
 import static engine.sound.SoundAPI.playSound;
+import static game.chunk.Chunk.getLight;
 import static game.collision.Collision.applyInertia;
 import static game.item.Item.getCurrentID;
+import static game.item.Item.lightUpdateTimer;
 import static game.player.Inventory.addItemToInventory;
 import static game.player.Player.getPlayerPosWithCollectionHeight;
 
@@ -40,7 +42,17 @@ public class ItemEntity {
 
     public static void onStep(){
         for (Item thisItem : items.values()){
+
             thisItem.timer += 0.001f;
+            lightUpdateTimer += 0.001f;
+
+            //poll local light every half second
+            if (lightUpdateTimer >= 0.5f){
+                thisItem.light = getLight((int)thisItem.pos.x, (int)thisItem.pos.y, (int)thisItem.pos.z);
+                lightUpdateTimer = 0f;
+            }
+            //System.out.println(lightUpdateTimer);
+            //System.out.println(thisItem.light);
 
             //delete items that are too old
             if (thisItem.timer > 50f){

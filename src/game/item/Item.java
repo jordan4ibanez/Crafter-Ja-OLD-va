@@ -24,6 +24,8 @@ public class Item {
     public Vector3f inertia;
     public int ID;
     public final Mesh mesh;
+    public byte light = 0;
+    public static float lightUpdateTimer = 1f;
 
     //inventory item
     public Item(String name, int stack){

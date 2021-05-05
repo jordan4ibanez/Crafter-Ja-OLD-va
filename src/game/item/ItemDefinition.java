@@ -30,7 +30,7 @@ public class ItemDefinition {
     public ItemDefinition(String name, int blockID){
         this.name = name;
         this.blockID = blockID;
-        this.mesh = createBlockObjectMesh(blockID);
+        this.mesh = createItemInventoryMesh(blockID);
         this.isTool = false;
         this.itemModifier = null;
         this.isRightClickable = getRightClickable(blockID);
@@ -60,7 +60,8 @@ public class ItemDefinition {
         return definitions.get(name);
     }
 
-    public static Mesh createBlockObjectMesh(int blockID) {
+    public static Mesh createItemInventoryMesh(int blockID) {
+
         int indicesCount = 0;
 
         ArrayList positions     = new ArrayList();
