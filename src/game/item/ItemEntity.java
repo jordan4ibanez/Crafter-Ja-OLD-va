@@ -16,8 +16,8 @@ import static game.player.Player.getPlayerPosWithCollectionHeight;
 
 public class ItemEntity {
     private final static Map<Integer, Item> items = new HashMap<>();
-
-    private final static float itemSize = 0.4f;
+    
+    private final static float itemCollisionWidth = 0.2f;
 
     public static void createItem(String name, Vector3d pos, int stack){
         items.put(getCurrentID(), new Item(name, pos, stack));
@@ -104,9 +104,9 @@ public class ItemEntity {
             }
 
             if (thisItem.collecting) {
-                applyInertia(thisItem.pos, thisItem.inertia, false, itemSize, itemSize * 2, false, false, false, false, false);
+                applyInertia(thisItem.pos, thisItem.inertia, false, itemCollisionWidth, itemCollisionWidth, false, false, false, false, false);
             } else {
-                applyInertia(thisItem.pos, thisItem.inertia, false, itemSize, itemSize * 2, true, false, true, false, false);
+                applyInertia(thisItem.pos, thisItem.inertia, false, itemCollisionWidth, itemCollisionWidth, true, false, true, false, false);
             }
 
             thisItem.rotation.y += 0.1f;
