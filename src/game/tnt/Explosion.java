@@ -25,7 +25,7 @@ public class Explosion {
                             if (currentBlock > 0 && currentBlock != 6 && Math.random() > 0.994) {
                                 createItem(getBlockDefinition(currentBlock).name, new Vector3d(x,y,z), 1);
                             } else if (currentBlock == 6){
-                                createTNT(new Vector3d(x, y, z), (float)(1f+Math.random()), false);
+                                createTNT(new Vector3d(x, y, z), (float)(Math.random() * 1f) + 1.0f, false);
                             }
                         }
                     }

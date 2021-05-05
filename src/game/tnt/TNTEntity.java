@@ -34,7 +34,7 @@ public class TNTEntity {
         pos.y += 0.5f;
         pos.z += 0.5f;
         tntPos[totalTNT] = new Vector3d(pos);
-        tntInertia[totalTNT] = new Vector3f(randomForceValue(15f),(float)Math.random()*7f,randomForceValue(15f));
+        tntInertia[totalTNT] = new Vector3f(randomForceValue(3),(float)Math.random()*7f,randomForceValue(3f));
         tntExists[totalTNT] = true;
         tntTimer[totalTNT] = 0f;
         tntScale[totalTNT] = new Vector3d(1,1,1);
@@ -50,17 +50,15 @@ public class TNTEntity {
         float tntJump;
         if (punched){
             tntJump = (float)Math.random()*10f;
-//            soundMgr.playSoundSource(Crafter.Sounds.TNTHISS.toString());
             playSound("tnt_ignite", pos);
         } else {
             tntJump = 0f;
         }
-        tntInertia[totalTNT] = new Vector3f(randomForceValue(15f),tntJump,randomForceValue(15f));
+        tntInertia[totalTNT] = new Vector3f(randomForceValue(3f),tntJump,randomForceValue(3f));
         tntExists[totalTNT] = true;
         tntTimer[totalTNT] = timer;
         tntScale[totalTNT] = new Vector3d(1d,1d,1d);
         totalTNT++;
-//        System.out.println("Created new TNT. Total TNT: " + totalTNT);
     }
 
     public static void onTNTStep() throws Exception {
