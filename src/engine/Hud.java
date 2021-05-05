@@ -14,6 +14,7 @@ import static engine.Renderer.getWindowSize;
 import static engine.Window.*;
 import static engine.sound.SoundAPI.playSound;
 import static game.Crafter.getVersionName;
+import static game.chunk.ChunkMesh.convertLight;
 import static game.player.Inventory.*;
 import static game.player.Player.*;
 import static org.lwjgl.glfw.GLFW.*;
@@ -1778,7 +1779,7 @@ public class Hud {
 
     private static void createWieldHandMesh(byte lightLevel){
 
-        float floatedLight = (float)lightLevel/15f;
+        float floatedLight = convertLight((float)lightLevel/15f);
 
         float[][] oneBlockyBoi = new float[][]{
 //                //right arm

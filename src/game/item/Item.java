@@ -8,6 +8,7 @@ import org.joml.Vector3i;
 import java.util.Arrays;
 
 import static engine.FancyMath.randomForceValue;
+import static game.chunk.ChunkMesh.convertLight;
 import static game.chunk.ChunkMesh.getTextureAtlas;
 import static game.item.ItemDefinition.getItemDefinition;
 
@@ -142,7 +143,7 @@ public class Item {
         float[] newLightArray = new float[temp.lightArray.length];
 
         //convert the 0-15 light value to 0.0-1.0
-        float floatedLightValue = (float)self.light/15f;
+        float floatedLightValue = convertLight((float)self.light/15f);
         //System.out.println(self.light);
 
         Arrays.fill(newLightArray, floatedLightValue);

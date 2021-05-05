@@ -46,7 +46,6 @@ public class Inventory {
             //update item
             if (!newItemName.equals(oldItemName)){
                 wieldInventory = new Item(newItemName, 1);
-                System.out.println("changed to " + newItemName);
             }
             //update light level
             wieldInventory.light = light;

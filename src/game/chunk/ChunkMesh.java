@@ -1278,7 +1278,7 @@ public class ChunkMesh {
         }
     }
 
-    private static float convertLight(float lightByte){
+    public static float convertLight(float lightByte){
         return (float) Math.pow(Math.pow(lightByte, 1.5), 1.5);
     }
 }
