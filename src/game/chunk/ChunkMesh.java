@@ -102,9 +102,9 @@ public class ChunkMesh {
         blockBoxLightCount = 0;
 
         for (int x = 0; x < 16; x++) {
-            int realX = (int)Math.floor(chunkX * 16f) + x;
+            int realX = (chunkX * 16) + x;
             for (int z = 0; z < 16; z++) {
-                int realZ = (int)Math.floor(chunkZ * 16f) + z;
+                int realZ = (chunkZ * 16) + z;
                 for (int y = yHeight * 16; y < (yHeight+1) * 16; y++) {
 
                     thisBlock = thisChunk.block[y][x][z];
@@ -672,7 +672,7 @@ public class ChunkMesh {
                             }
 
                             neighborBlock = getBlock(realX, y + 1, realZ);
-                            if (y == 127 || (neighborBlock >= 0 && !getBlockDrawType(neighborBlock).equals("normal") || getIfLiquid(neighborBlock))) {
+                            if (neighborBlock > -1 && (y == 127 || (neighborBlock >= 0 && !getBlockDrawType(neighborBlock).equals("normal") || getIfLiquid(neighborBlock)))) {
                                 //top
                                 positions[positionsCount + 0] = (0f + x);
                                 positions[positionsCount + 1] = (1f + y);
@@ -780,27 +780,27 @@ public class ChunkMesh {
                             }
                             //todo: ---------------------------------------------------------- the block box draw type
                         } else {
-                            for (float[] thisBlockBox : getBlockShape(thisBlock, thisRotation)) {
+                            for (double[] thisBlockBox : getBlockShape(thisBlock, thisRotation)) {
                                 // 0, 1, 2, 3, 4, 5
                                 //-x,-y,-z, x, y, z
                                 // 0, 0, 0, 1, 1, 1
 
                                 //front
-                                blockBoxPositions[blockBoxPositionsCount + 0] = (thisBlockBox[3] + x);
-                                blockBoxPositions[blockBoxPositionsCount + 1] = (thisBlockBox[4] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 2] = (thisBlockBox[5] + z);
+                                blockBoxPositions[blockBoxPositionsCount + 0] = ((float)thisBlockBox[3] + x);
+                                blockBoxPositions[blockBoxPositionsCount + 1] = ((float)thisBlockBox[4] + y);
+                                blockBoxPositions[blockBoxPositionsCount + 2] = ((float)thisBlockBox[5] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 3] = (thisBlockBox[0] + x);
-                                blockBoxPositions[blockBoxPositionsCount + 4] = (thisBlockBox[4] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 5] = (thisBlockBox[5] + z);
+                                blockBoxPositions[blockBoxPositionsCount + 3] = ((float)thisBlockBox[0] + x);
+                                blockBoxPositions[blockBoxPositionsCount + 4] = ((float)thisBlockBox[4] + y);
+                                blockBoxPositions[blockBoxPositionsCount + 5] = ((float)thisBlockBox[5] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 6] = (thisBlockBox[0] + x);
-                                blockBoxPositions[blockBoxPositionsCount + 7] = (thisBlockBox[1] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 8] = (thisBlockBox[5] + z);
+                                blockBoxPositions[blockBoxPositionsCount + 6] = ((float)thisBlockBox[0] + x);
+                                blockBoxPositions[blockBoxPositionsCount + 7] = ((float)thisBlockBox[1] + y);
+                                blockBoxPositions[blockBoxPositionsCount + 8] = ((float)thisBlockBox[5] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 9] = (thisBlockBox[3] + x);
-                                blockBoxPositions[blockBoxPositionsCount + 10] = (thisBlockBox[1] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 11] = (thisBlockBox[5] + z);
+                                blockBoxPositions[blockBoxPositionsCount + 9] = ((float)thisBlockBox[3] + x);
+                                blockBoxPositions[blockBoxPositionsCount + 10] = ((float)thisBlockBox[1] + y);
+                                blockBoxPositions[blockBoxPositionsCount + 11] = ((float)thisBlockBox[5] + z);
 
                                 blockBoxPositionsCount += 12;
 
@@ -832,35 +832,35 @@ public class ChunkMesh {
                                 float[] textureFront = getFrontTexturePoints(thisBlock,thisRotation);
 
                                 //front
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 0] = (textureFront[1] - ((1 - thisBlockBox[3]) / 32f)); //x positive
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 1] = (textureFront[2] + ((1 - thisBlockBox[4]) / 32f)); //y positive
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 2] = (textureFront[0] - ((0 - thisBlockBox[0]) / 32f)); //x negative
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 3] = (textureFront[2] + ((1 - thisBlockBox[4]) / 32f)); //y positive
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 0] = (textureFront[1] - ((1 - (float)thisBlockBox[3]) / 32f)); //x positive
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 1] = (textureFront[2] + ((1 - (float)thisBlockBox[4]) / 32f)); //y positive
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 2] = (textureFront[0] - ((0 - (float)thisBlockBox[0]) / 32f)); //x negative
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 3] = (textureFront[2] + ((1 - (float)thisBlockBox[4]) / 32f)); //y positive
 
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 4] = (textureFront[0] - ((0 - thisBlockBox[0]) / 32f)); //x negative
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 5] = (textureFront[3] - ((thisBlockBox[1]) / 32f));   //y negative
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 6] = (textureFront[1] - ((1 - thisBlockBox[3]) / 32f)); //x positive
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 7] = (textureFront[3] - ((thisBlockBox[1]) / 32f));   //y negative
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 4] = (textureFront[0] - ((0 - (float)thisBlockBox[0]) / 32f)); //x negative
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 5] = (textureFront[3] - (((float)thisBlockBox[1]) / 32f));   //y negative
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 6] = (textureFront[1] - ((1 - (float)thisBlockBox[3]) / 32f)); //x positive
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 7] = (textureFront[3] - (((float)thisBlockBox[1]) / 32f));   //y negative
 
                                 blockBoxTextureCoordCount += 8;
 
 
                                 //back
-                                blockBoxPositions[blockBoxPositionsCount + 0] = (thisBlockBox[0] + x);
-                                blockBoxPositions[blockBoxPositionsCount + 1] = (thisBlockBox[4] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 2] = (thisBlockBox[2] + z);
+                                blockBoxPositions[blockBoxPositionsCount + 0] = ((float)thisBlockBox[0] + x);
+                                blockBoxPositions[blockBoxPositionsCount + 1] = ((float)thisBlockBox[4] + y);
+                                blockBoxPositions[blockBoxPositionsCount + 2] = ((float)thisBlockBox[2] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 3] = (thisBlockBox[3] + x);
-                                blockBoxPositions[blockBoxPositionsCount + 4] = (thisBlockBox[4] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 5] = (thisBlockBox[2] + z);
+                                blockBoxPositions[blockBoxPositionsCount + 3] = ((float)thisBlockBox[3] + x);
+                                blockBoxPositions[blockBoxPositionsCount + 4] = ((float)thisBlockBox[4] + y);
+                                blockBoxPositions[blockBoxPositionsCount + 5] = ((float)thisBlockBox[2] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 6] = (thisBlockBox[3] + x);
-                                blockBoxPositions[blockBoxPositionsCount + 7] = (thisBlockBox[1] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 8] = (thisBlockBox[2] + z);
+                                blockBoxPositions[blockBoxPositionsCount + 6] = ((float)thisBlockBox[3] + x);
+                                blockBoxPositions[blockBoxPositionsCount + 7] = ((float)thisBlockBox[1] + y);
+                                blockBoxPositions[blockBoxPositionsCount + 8] = ((float)thisBlockBox[2] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 9] = (thisBlockBox[0] + x);
-                                blockBoxPositions[blockBoxPositionsCount + 10] = (thisBlockBox[1] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 11] = (thisBlockBox[2] + z);
+                                blockBoxPositions[blockBoxPositionsCount + 9] = ((float)thisBlockBox[0] + x);
+                                blockBoxPositions[blockBoxPositionsCount + 10] = ((float)thisBlockBox[1] + y);
+                                blockBoxPositions[blockBoxPositionsCount + 11] = ((float)thisBlockBox[2] + z);
 
                                 blockBoxPositionsCount += 12;
 
@@ -896,34 +896,34 @@ public class ChunkMesh {
 
 
                                 //back
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 0] = (textureBack[1] - ((1 - thisBlockBox[0]) / 32f));
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 1] = (textureBack[2] + ((1 - thisBlockBox[4]) / 32f));
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 2] = (textureBack[0] - ((0 - thisBlockBox[3]) / 32f));
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 3] = (textureBack[2] + ((1 - thisBlockBox[4]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 0] = (textureBack[1] - ((1 - (float)thisBlockBox[0]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 1] = (textureBack[2] + ((1 - (float)thisBlockBox[4]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 2] = (textureBack[0] - ((0 - (float)thisBlockBox[3]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 3] = (textureBack[2] + ((1 - (float)thisBlockBox[4]) / 32f));
 
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 4] = (textureBack[0] - ((0 - thisBlockBox[3]) / 32f));
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 5] = (textureBack[3] - ((thisBlockBox[1]) / 32f));
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 6] = (textureBack[1] - ((1 - thisBlockBox[0]) / 32f));
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 7] = (textureBack[3] - ((thisBlockBox[1]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 4] = (textureBack[0] - ((0 - (float)thisBlockBox[3]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 5] = (textureBack[3] - (((float)thisBlockBox[1]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 6] = (textureBack[1] - ((1 - (float)thisBlockBox[0]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 7] = (textureBack[3] - (((float)thisBlockBox[1]) / 32f));
                                 blockBoxTextureCoordCount += 8;
 
 
                                 //right
-                                blockBoxPositions[blockBoxPositionsCount + 0] = (thisBlockBox[3] + x);
-                                blockBoxPositions[blockBoxPositionsCount + 1] = (thisBlockBox[4] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 2] = (thisBlockBox[2] + z);
+                                blockBoxPositions[blockBoxPositionsCount + 0] = ((float)thisBlockBox[3] + x);
+                                blockBoxPositions[blockBoxPositionsCount + 1] = ((float)thisBlockBox[4] + y);
+                                blockBoxPositions[blockBoxPositionsCount + 2] = ((float)thisBlockBox[2] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 3] = (thisBlockBox[3] + x);
-                                blockBoxPositions[blockBoxPositionsCount + 4] = (thisBlockBox[4] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 5] = (thisBlockBox[5] + z);
+                                blockBoxPositions[blockBoxPositionsCount + 3] = ((float)thisBlockBox[3] + x);
+                                blockBoxPositions[blockBoxPositionsCount + 4] = ((float)thisBlockBox[4] + y);
+                                blockBoxPositions[blockBoxPositionsCount + 5] = ((float)thisBlockBox[5] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 6] = (thisBlockBox[3] + x);
-                                blockBoxPositions[blockBoxPositionsCount + 7] = (thisBlockBox[1] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 8] = (thisBlockBox[5] + z);
+                                blockBoxPositions[blockBoxPositionsCount + 6] = ((float)thisBlockBox[3] + x);
+                                blockBoxPositions[blockBoxPositionsCount + 7] = ((float)thisBlockBox[1] + y);
+                                blockBoxPositions[blockBoxPositionsCount + 8] = ((float)thisBlockBox[5] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 9] = (thisBlockBox[3] + x);
-                                blockBoxPositions[blockBoxPositionsCount + 10] = (thisBlockBox[1] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 11] = (thisBlockBox[2] + z);
+                                blockBoxPositions[blockBoxPositionsCount + 9] = ((float)thisBlockBox[3] + x);
+                                blockBoxPositions[blockBoxPositionsCount + 10] = ((float)thisBlockBox[1] + y);
+                                blockBoxPositions[blockBoxPositionsCount + 11] = ((float)thisBlockBox[2] + z);
 
                                 blockBoxPositionsCount += 12;
 
@@ -958,34 +958,34 @@ public class ChunkMesh {
 
                                 float[] textureRight = getRightTexturePoints(thisBlock,thisRotation);
                                 //right
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 0] = (textureRight[1] - ((1 - thisBlockBox[2]) / 32f));
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 1] = (textureRight[2] + ((1 - thisBlockBox[4]) / 32f));
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 2] = (textureRight[0] - ((0 - thisBlockBox[5]) / 32f));
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 3] = (textureRight[2] + ((1 - thisBlockBox[4]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 0] = (textureRight[1] - ((1 - (float)thisBlockBox[2]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 1] = (textureRight[2] + ((1 - (float)thisBlockBox[4]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 2] = (textureRight[0] - ((0 - (float)thisBlockBox[5]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 3] = (textureRight[2] + ((1 - (float)thisBlockBox[4]) / 32f));
 
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 4] = (textureRight[0] - ((0 - thisBlockBox[5]) / 32f));
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 5] = (textureRight[3] - ((thisBlockBox[1]) / 32f));
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 6] = (textureRight[1] - ((1 - thisBlockBox[2]) / 32f));
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 7] = (textureRight[3] - ((thisBlockBox[1]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 4] = (textureRight[0] - ((0 - (float)thisBlockBox[5]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 5] = (textureRight[3] - (((float)thisBlockBox[1]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 6] = (textureRight[1] - ((1 - (float)thisBlockBox[2]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 7] = (textureRight[3] - (((float)thisBlockBox[1]) / 32f));
                                 blockBoxTextureCoordCount += 8;
 
 
                                 //left
-                                blockBoxPositions[blockBoxPositionsCount + 0] = (thisBlockBox[0] + x);
-                                blockBoxPositions[blockBoxPositionsCount + 1] = (thisBlockBox[4] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 2] = (thisBlockBox[5] + z);
+                                blockBoxPositions[blockBoxPositionsCount + 0] = ((float)thisBlockBox[0] + x);
+                                blockBoxPositions[blockBoxPositionsCount + 1] = ((float)thisBlockBox[4] + y);
+                                blockBoxPositions[blockBoxPositionsCount + 2] = ((float)thisBlockBox[5] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 3] = (thisBlockBox[0] + x);
-                                blockBoxPositions[blockBoxPositionsCount + 4] = (thisBlockBox[4] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 5] = (thisBlockBox[2] + z);
+                                blockBoxPositions[blockBoxPositionsCount + 3] = ((float)thisBlockBox[0] + x);
+                                blockBoxPositions[blockBoxPositionsCount + 4] = ((float)thisBlockBox[4] + y);
+                                blockBoxPositions[blockBoxPositionsCount + 5] = ((float)thisBlockBox[2] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 6] = (thisBlockBox[0] + x);
-                                blockBoxPositions[blockBoxPositionsCount + 7] = (thisBlockBox[1] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 8] = (thisBlockBox[2] + z);
+                                blockBoxPositions[blockBoxPositionsCount + 6] = ((float)thisBlockBox[0] + x);
+                                blockBoxPositions[blockBoxPositionsCount + 7] = ((float)thisBlockBox[1] + y);
+                                blockBoxPositions[blockBoxPositionsCount + 8] = ((float)thisBlockBox[2] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 9] = (thisBlockBox[0] + x);
-                                blockBoxPositions[blockBoxPositionsCount + 10] = (thisBlockBox[1] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 11] = (thisBlockBox[5] + z);
+                                blockBoxPositions[blockBoxPositionsCount + 9] = ((float)thisBlockBox[0] + x);
+                                blockBoxPositions[blockBoxPositionsCount + 10] = ((float)thisBlockBox[1] + y);
+                                blockBoxPositions[blockBoxPositionsCount + 11] = ((float)thisBlockBox[5] + z);
 
                                 blockBoxPositionsCount += 12;
 
@@ -1011,34 +1011,34 @@ public class ChunkMesh {
 
                                 float[] textureLeft = getLeftTexturePoints(thisBlock,thisRotation);
                                 //left
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 0] = (textureLeft[1] - ((1 - thisBlockBox[5]) / 32f));
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 1] = (textureLeft[2] + ((1 - thisBlockBox[4]) / 32f));
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 2] = (textureLeft[0] - ((0 - thisBlockBox[2]) / 32f));
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 3] = (textureLeft[2] + ((1 - thisBlockBox[4]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 0] = (textureLeft[1] - ((1 - (float)thisBlockBox[5]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 1] = (textureLeft[2] + ((1 - (float)thisBlockBox[4]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 2] = (textureLeft[0] - ((0 - (float)thisBlockBox[2]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 3] = (textureLeft[2] + ((1 - (float)thisBlockBox[4]) / 32f));
 
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 4] = (textureLeft[0] - ((0 - thisBlockBox[2]) / 32f));
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 5] = (textureLeft[3] - ((thisBlockBox[1]) / 32f));
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 6] = (textureLeft[1] - ((1 - thisBlockBox[5]) / 32f));
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 7] = (textureLeft[3] - ((thisBlockBox[1]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 4] = (textureLeft[0] - ((0 - (float)thisBlockBox[2]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 5] = (textureLeft[3] - (((float)thisBlockBox[1]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 6] = (textureLeft[1] - ((1 - (float)thisBlockBox[5]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 7] = (textureLeft[3] - (((float)thisBlockBox[1]) / 32f));
                                 blockBoxTextureCoordCount += 8;
 
 
                                 //top
-                                blockBoxPositions[blockBoxPositionsCount + 0] = (thisBlockBox[0] + x);
-                                blockBoxPositions[blockBoxPositionsCount + 1] = (thisBlockBox[4] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 2] = (thisBlockBox[2] + z);
+                                blockBoxPositions[blockBoxPositionsCount + 0] = ((float)thisBlockBox[0] + x);
+                                blockBoxPositions[blockBoxPositionsCount + 1] = ((float)thisBlockBox[4] + y);
+                                blockBoxPositions[blockBoxPositionsCount + 2] = ((float)thisBlockBox[2] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 3] = (thisBlockBox[0] + x);
-                                blockBoxPositions[blockBoxPositionsCount + 4] = (thisBlockBox[4] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 5] = (thisBlockBox[5] + z);
+                                blockBoxPositions[blockBoxPositionsCount + 3] = ((float)thisBlockBox[0] + x);
+                                blockBoxPositions[blockBoxPositionsCount + 4] = ((float)thisBlockBox[4] + y);
+                                blockBoxPositions[blockBoxPositionsCount + 5] = ((float)thisBlockBox[5] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 6] = (thisBlockBox[3] + x);
-                                blockBoxPositions[blockBoxPositionsCount + 7] = (thisBlockBox[4] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 8] = (thisBlockBox[5] + z);
+                                blockBoxPositions[blockBoxPositionsCount + 6] = ((float)thisBlockBox[3] + x);
+                                blockBoxPositions[blockBoxPositionsCount + 7] = ((float)thisBlockBox[4] + y);
+                                blockBoxPositions[blockBoxPositionsCount + 8] = ((float)thisBlockBox[5] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 9] = (thisBlockBox[3] + x);
-                                blockBoxPositions[blockBoxPositionsCount + 10]= (thisBlockBox[4] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 11]= (thisBlockBox[2] + z);
+                                blockBoxPositions[blockBoxPositionsCount + 9] = ((float)thisBlockBox[3] + x);
+                                blockBoxPositions[blockBoxPositionsCount + 10]= ((float)thisBlockBox[4] + y);
+                                blockBoxPositions[blockBoxPositionsCount + 11]= ((float)thisBlockBox[2] + z);
 
                                 blockBoxPositionsCount += 12;
 
@@ -1071,34 +1071,34 @@ public class ChunkMesh {
 
                                 float[] textureTop = getTopTexturePoints(thisBlock);
                                 //top
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 0] = (textureTop[1] - ((1 - thisBlockBox[5]) / 32f));
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 1] = (textureTop[2] + ((1 - thisBlockBox[0]) / 32f));
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 2] = (textureTop[0] - ((0 - thisBlockBox[2]) / 32f));
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 3] = (textureTop[2] + ((1 - thisBlockBox[0]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 0] = (textureTop[1] - ((1 - (float)thisBlockBox[5]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 1] = (textureTop[2] + ((1 - (float)thisBlockBox[0]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 2] = (textureTop[0] - ((0 - (float)thisBlockBox[2]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 3] = (textureTop[2] + ((1 - (float)thisBlockBox[0]) / 32f));
 
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 4] = (textureTop[0] - ((0 - thisBlockBox[2]) / 32f));
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 5] = (textureTop[3] - ((thisBlockBox[3]) / 32f));
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 6] = (textureTop[1] - ((1 - thisBlockBox[5]) / 32f));
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 7] = (textureTop[3] - ((thisBlockBox[3]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 4] = (textureTop[0] - ((0 - (float)thisBlockBox[2]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 5] = (textureTop[3] - (((float)thisBlockBox[3]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 6] = (textureTop[1] - ((1 - (float)thisBlockBox[5]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 7] = (textureTop[3] - (((float)thisBlockBox[3]) / 32f));
                                 blockBoxTextureCoordCount += 8;
 
 
                                 //bottom
-                                blockBoxPositions[blockBoxPositionsCount + 0] = (thisBlockBox[0] + x);
-                                blockBoxPositions[blockBoxPositionsCount + 1] = (thisBlockBox[1] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 2] = (thisBlockBox[5] + z);
+                                blockBoxPositions[blockBoxPositionsCount + 0] = ((float)thisBlockBox[0] + x);
+                                blockBoxPositions[blockBoxPositionsCount + 1] = ((float)thisBlockBox[1] + y);
+                                blockBoxPositions[blockBoxPositionsCount + 2] = ((float)thisBlockBox[5] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 3] = (thisBlockBox[0] + x);
-                                blockBoxPositions[blockBoxPositionsCount + 4] = (thisBlockBox[1] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 5] = (thisBlockBox[2] + z);
+                                blockBoxPositions[blockBoxPositionsCount + 3] = ((float)thisBlockBox[0] + x);
+                                blockBoxPositions[blockBoxPositionsCount + 4] = ((float)thisBlockBox[1] + y);
+                                blockBoxPositions[blockBoxPositionsCount + 5] = ((float)thisBlockBox[2] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 6] = (thisBlockBox[3] + x);
-                                blockBoxPositions[blockBoxPositionsCount + 7] = (thisBlockBox[1] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 8] = (thisBlockBox[2] + z);
+                                blockBoxPositions[blockBoxPositionsCount + 6] = ((float)thisBlockBox[3] + x);
+                                blockBoxPositions[blockBoxPositionsCount + 7] = ((float)thisBlockBox[1] + y);
+                                blockBoxPositions[blockBoxPositionsCount + 8] = ((float)thisBlockBox[2] + z);
 
-                                blockBoxPositions[blockBoxPositionsCount + 9] = (thisBlockBox[3] + x);
-                                blockBoxPositions[blockBoxPositionsCount + 10]= (thisBlockBox[1] + y);
-                                blockBoxPositions[blockBoxPositionsCount + 11]= (thisBlockBox[5] + z);
+                                blockBoxPositions[blockBoxPositionsCount + 9] = ((float)thisBlockBox[3] + x);
+                                blockBoxPositions[blockBoxPositionsCount + 10]= ((float)thisBlockBox[1] + y);
+                                blockBoxPositions[blockBoxPositionsCount + 11]= ((float)thisBlockBox[5] + z);
 
                                 blockBoxPositionsCount += 12;
 
@@ -1132,15 +1132,15 @@ public class ChunkMesh {
 
                                 float[] textureBottom = getBottomTexturePoints(thisBlock);
                                 //bottom
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 0] = (textureBottom[1] - ((1 - thisBlockBox[5]) / 32f));
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 1] = (textureBottom[2] + ((1 - thisBlockBox[0]) / 32f));
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 2] = (textureBottom[0] - ((0 - thisBlockBox[2]) / 32f));
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 3] = (textureBottom[2] + ((1 - thisBlockBox[0]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 0] = (textureBottom[1] - ((1 - (float)thisBlockBox[5]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 1] = (textureBottom[2] + ((1 - (float)thisBlockBox[0]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 2] = (textureBottom[0] - ((0 - (float)thisBlockBox[2]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 3] = (textureBottom[2] + ((1 - (float)thisBlockBox[0]) / 32f));
 
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 4] = (textureBottom[0] - ((0 - thisBlockBox[2]) / 32f));
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 5] = (textureBottom[3] - ((thisBlockBox[3]) / 32f));
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 6] = (textureBottom[1] - ((1 - thisBlockBox[5]) / 32f));
-                                blockBoxTextureCoord[blockBoxTextureCoordCount + 7] = (textureBottom[3] - ((thisBlockBox[3]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 4] = (textureBottom[0] - ((0 - (float)thisBlockBox[2]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 5] = (textureBottom[3] - (((float)thisBlockBox[3]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 6] = (textureBottom[1] - ((1 - (float)thisBlockBox[5]) / 32f));
+                                blockBoxTextureCoord[blockBoxTextureCoordCount + 7] = (textureBottom[3] - (((float)thisBlockBox[3]) / 32f));
                                 blockBoxTextureCoordCount += 8;
                             }
                         }

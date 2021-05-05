@@ -1,10 +1,10 @@
 package game.blocks;
 
 public class BlockShape {
-    private float[][] boxes;
+    private double[][] boxes;
 
-    public BlockShape(float[][] thisBox){
-        for (float[] thisCheck : thisBox) {
+    public BlockShape(double[][] thisBox){
+        for (double[] thisCheck : thisBox) {
             if (thisCheck.length != 6) {
                 throw new IllegalStateException("Error creating new Block Shape! Needs exactly 6 dimensions to work!");
             }
@@ -12,7 +12,7 @@ public class BlockShape {
         this.boxes = thisBox;
     }
 
-    public float[][] getBoxes() {
+    public double[][] getBoxes() {
         return boxes;
     }
 }

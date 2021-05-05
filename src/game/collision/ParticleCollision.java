@@ -140,7 +140,7 @@ public class ParticleCollision {
     }
 
     private static boolean collideYNegative(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, boolean onGround, int blockID){
-        for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
+        for (double[] thisBlockBox : getBlockShape(blockID, rot)) {
             setBlockBox(blockPosX,blockPosY,blockPosz,thisBlockBox);
             if (isWithin(pos)) {
                 pos.y = BlockBoxGetTop() + 0.0001f;
@@ -152,7 +152,7 @@ public class ParticleCollision {
     }
 
     private static void collideYPositive(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, int blockID){
-        for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
+        for (double[] thisBlockBox : getBlockShape(blockID, rot)) {
             setBlockBox(blockPosX, blockPosY, blockPosz,thisBlockBox);
             //head detection
             if (isWithin(pos)) {
@@ -163,7 +163,7 @@ public class ParticleCollision {
     }
 
     private static void collideXPositive(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, Vector3d oldPos, int blockID){
-        for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
+        for (double[] thisBlockBox : getBlockShape(blockID, rot)) {
             setBlockBox(blockPosX, blockPosY, blockPosz, thisBlockBox);
             if (isWithin(pos)) {
                 pos.x = BlockBoxGetLeft() - 0.001f;
@@ -173,7 +173,7 @@ public class ParticleCollision {
     }
 
     private static void collideXNegative(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, Vector3d oldPos, int blockID){
-        for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
+        for (double[] thisBlockBox : getBlockShape(blockID, rot)) {
             setBlockBox(blockPosX, blockPosY, blockPosz, thisBlockBox);
             if (isWithin(pos)) {
                 pos.x = BlockBoxGetRight() + 0.001f;
@@ -184,7 +184,7 @@ public class ParticleCollision {
 
 
     private static void collideZPositive(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, Vector3d oldPos, int blockID){
-        for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
+        for (double[] thisBlockBox : getBlockShape(blockID, rot)) {
             setBlockBox(blockPosX, blockPosY, blockPosz, thisBlockBox);
             if (isWithin(pos)) {
                 pos.z = BlockBoxGetFront() - 0.001f;
@@ -194,7 +194,7 @@ public class ParticleCollision {
     }
 
     private static void collideZNegative(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, Vector3d oldPos, int blockID){
-        for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
+        for (double[] thisBlockBox : getBlockShape(blockID, rot)) {
             setBlockBox(blockPosX, blockPosY, blockPosz, thisBlockBox);
             if (isWithin(pos)) {
                 pos.z = BlockBoxGetBack() + 0.001f;

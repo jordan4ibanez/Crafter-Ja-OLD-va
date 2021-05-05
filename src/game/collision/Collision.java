@@ -189,7 +189,7 @@ public class Collision {
     }
 
     private static boolean sneakCollideYNegative(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, float width, float height, boolean onGround, int blockID){
-        for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
+        for (double[] thisBlockBox : getBlockShape(blockID, rot)) {
             setAABB(pos.x, pos.y, pos.z, width, height);
             setBlockBox(blockPosX,blockPosY,blockPosz,thisBlockBox);
 
@@ -363,7 +363,7 @@ public class Collision {
     //a simple way to check if an object is in the water, only done on x and z passes so you can't stand
     //next to water and get slowed down
     private static void detectIfInWater(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, float width, float height, int blockID){
-        for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
+        for (double[] thisBlockBox : getBlockShape(blockID, rot)) {
             setAABB(pos.x, pos.y, pos.z, width, height);
             setBlockBox(blockPosX,blockPosY,blockPosz,thisBlockBox);
 
@@ -378,7 +378,7 @@ public class Collision {
     }
 
     private static boolean collideYNegative(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, float width, float height, boolean onGround, int blockID){
-        for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
+        for (double[] thisBlockBox : getBlockShape(blockID, rot)) {
             setAABB(pos.x, pos.y, pos.z, width, height);
             setBlockBox(blockPosX,blockPosY,blockPosz,thisBlockBox);
             //this coordinate is not within enough distance to get affected by floating point precision
@@ -392,7 +392,7 @@ public class Collision {
     }
 
     private static void collideYPositive(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, float width, float height, int blockID){
-        for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
+        for (double[] thisBlockBox : getBlockShape(blockID, rot)) {
             setAABB(pos.x, pos.y, pos.z, width, height);
             setBlockBox(blockPosX, blockPosY, blockPosz,thisBlockBox);
             //this coordinate is not within enough distance to get affected by floating point precision
@@ -409,7 +409,7 @@ public class Collision {
 
     private static void collideX(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, Vector3d oldPos, float width, float height, int blockID){
         //run through X collisions
-        for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
+        for (double[] thisBlockBox : getBlockShape(blockID, rot)) {
             setAABB(pos.x, pos.y, pos.z, width, height);
             setBlockBox(blockPosX, blockPosY, blockPosZ, thisBlockBox);
 
@@ -449,7 +449,7 @@ public class Collision {
 
             //collide X negative
             if ((float)blockPosX + 0.5f <= pos.x) {
-                for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
+                for (double[] thisBlockBox : getBlockShape(blockID, rot)) {
                     setAABB(pos.x, pos.y, pos.z, width, height);
                     setBlockBox(blockPosX, blockPosY, blockPosZ, thisBlockBox);
                     if (isWithin() && BlockBoxGetRight() > AABBGetLeft() && BlockBoxGetRight() - AABBGetLeft() < 0.01f) {
@@ -461,7 +461,7 @@ public class Collision {
 
             //collide X positive
             if ((float)blockPosX + 0.5f >= pos.x) {
-                for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
+                for (double[] thisBlockBox : getBlockShape(blockID, rot)) {
                     setAABB(pos.x, pos.y, pos.z, width, height);
                     setBlockBox(blockPosX, blockPosY, blockPosZ, thisBlockBox);
                     if (isWithin() && BlockBoxGetLeft() < AABBGetRight() && BlockBoxGetLeft() - AABBGetRight() > -0.01f) {
@@ -478,7 +478,7 @@ public class Collision {
 
     private static void collideZ(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, Vector3d oldPos, float width, float height, int blockID){
         //run through Z collisions
-        for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
+        for (double[] thisBlockBox : getBlockShape(blockID, rot)) {
             setAABB(pos.x, pos.y, pos.z, width, height);
             setBlockBox(blockPosX, blockPosY, blockPosZ, thisBlockBox);
 
@@ -517,7 +517,7 @@ public class Collision {
 
             //collide Z negative
             if ((float)blockPosZ + 0.5f <= pos.z) {
-                for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
+                for (double[] thisBlockBox : getBlockShape(blockID, rot)) {
                     setAABB(pos.x, pos.y, pos.z, width, height);
                     setBlockBox(blockPosX, blockPosY, blockPosZ, thisBlockBox);
                     if (isWithin() && BlockBoxGetBack() > AABBGetFront() && BlockBoxGetBack() - AABBGetFront() < 0.01f) {
@@ -529,7 +529,7 @@ public class Collision {
 
             //collide Z positive
             if ((float)blockPosZ + 0.5f >= pos.z) {
-                for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
+                for (double[] thisBlockBox : getBlockShape(blockID, rot)) {
                     setAABB(pos.x, pos.y, pos.z, width, height);
                     setBlockBox(blockPosX, blockPosY, blockPosZ, thisBlockBox);
                     if (isWithin() && BlockBoxGetFront() < AABBGetBack() && BlockBoxGetFront() - AABBGetBack() > -0.01f) {

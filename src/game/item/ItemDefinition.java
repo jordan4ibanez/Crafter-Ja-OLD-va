@@ -74,23 +74,23 @@ public class ItemDefinition {
 
 
 
-        for (float[] thisBlockBox : getBlockShape(blockID, (byte) 0)) {
+        for (double[] thisBlockBox : getBlockShape(blockID, (byte) 0)) {
             //front
-            positions.add((thisBlockBox[3] - 0.5f) * itemSize);
-            positions.add((thisBlockBox[4] - 0.5f) * itemSize + (itemSize/2));
-            positions.add((thisBlockBox[5] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[3] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[4] - 0.5f) * itemSize + (itemSize/2));
+            positions.add(((float)thisBlockBox[5] - 0.5f) * itemSize);
 
-            positions.add((thisBlockBox[0] - 0.5f) * itemSize);
-            positions.add((thisBlockBox[4] - 0.5f) * itemSize+ (itemSize/2));
-            positions.add((thisBlockBox[5] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[0] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[4] - 0.5f) * itemSize+ (itemSize/2));
+            positions.add(((float)thisBlockBox[5] - 0.5f) * itemSize);
 
-            positions.add((thisBlockBox[0] - 0.5f) * itemSize);
-            positions.add((thisBlockBox[1] - 0.5f) * itemSize+ (itemSize/2));
-            positions.add((thisBlockBox[5] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[0] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[1] - 0.5f) * itemSize+ (itemSize/2));
+            positions.add(((float)thisBlockBox[5] - 0.5f) * itemSize);
 
-            positions.add((thisBlockBox[3] - 0.5f) * itemSize);
-            positions.add((thisBlockBox[1] - 0.5f) * itemSize+ (itemSize/2));
-            positions.add((thisBlockBox[5] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[3] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[1] - 0.5f) * itemSize+ (itemSize/2));
+            positions.add(((float)thisBlockBox[5] - 0.5f) * itemSize);
 
             //front
             for (int i = 0; i < 12; i++) {
@@ -108,34 +108,34 @@ public class ItemDefinition {
             float[] textureFront = getFrontTexturePoints(blockID, (byte) 0);
 
             //front
-            textureCoord.add(textureFront[1] - ((1-thisBlockBox[3])/32f)); //x positive
-            textureCoord.add(textureFront[2] + ((1-thisBlockBox[4])/32f)); //y positive
-            textureCoord.add(textureFront[0] - ((0-thisBlockBox[0])/32f)); //x negative
-            textureCoord.add(textureFront[2] + ((1-thisBlockBox[4])/32f)); //y positive
+            textureCoord.add(textureFront[1] - ((1-(float)thisBlockBox[3])/32f)); //x positive
+            textureCoord.add(textureFront[2] + ((1-(float)thisBlockBox[4])/32f)); //y positive
+            textureCoord.add(textureFront[0] - ((0-(float)thisBlockBox[0])/32f)); //x negative
+            textureCoord.add(textureFront[2] + ((1-(float)thisBlockBox[4])/32f)); //y positive
 
-            textureCoord.add(textureFront[0] - ((0-thisBlockBox[0])/32f)); //x negative
-            textureCoord.add(textureFront[3] - ((thisBlockBox[1])/32f));   //y negative
-            textureCoord.add(textureFront[1] - ((1-thisBlockBox[3])/32f)); //x positive
-            textureCoord.add(textureFront[3] - ((thisBlockBox[1])/32f));   //y negative
+            textureCoord.add(textureFront[0] - ((0-(float)thisBlockBox[0])/32f)); //x negative
+            textureCoord.add(textureFront[3] - (((float)thisBlockBox[1])/32f));   //y negative
+            textureCoord.add(textureFront[1] - ((1-(float)thisBlockBox[3])/32f)); //x positive
+            textureCoord.add(textureFront[3] - (((float)thisBlockBox[1])/32f));   //y negative
 
 
 
             //back
-            positions.add((thisBlockBox[0] - 0.5f) * itemSize);
-            positions.add((thisBlockBox[4] - 0.5f) * itemSize+ (itemSize/2));
-            positions.add((thisBlockBox[2] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[0] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[4] - 0.5f) * itemSize+ (itemSize/2));
+            positions.add(((float)thisBlockBox[2] - 0.5f) * itemSize);
 
-            positions.add((thisBlockBox[3] - 0.5f) * itemSize);
-            positions.add((thisBlockBox[4] - 0.5f) * itemSize+ (itemSize/2));
-            positions.add((thisBlockBox[2] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[3] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[4] - 0.5f) * itemSize+ (itemSize/2));
+            positions.add(((float)thisBlockBox[2] - 0.5f) * itemSize);
 
-            positions.add((thisBlockBox[3] - 0.5f) * itemSize);
-            positions.add((thisBlockBox[1] - 0.5f) * itemSize+ (itemSize/2));
-            positions.add((thisBlockBox[2] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[3] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[1] - 0.5f) * itemSize+ (itemSize/2));
+            positions.add(((float)thisBlockBox[2] - 0.5f) * itemSize);
 
-            positions.add((thisBlockBox[0] - 0.5f) * itemSize);
-            positions.add((thisBlockBox[1] - 0.5f) * itemSize+ (itemSize/2));
-            positions.add((thisBlockBox[2] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[0] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[1] - 0.5f) * itemSize+ (itemSize/2));
+            positions.add(((float)thisBlockBox[2] - 0.5f) * itemSize);
 
 
             //back
@@ -154,36 +154,36 @@ public class ItemDefinition {
             float[] textureBack = getBackTexturePoints(blockID,(byte) 0);
 
             //back
-            textureCoord.add(textureBack[1] - ((1-thisBlockBox[0])/32f));
-            textureCoord.add(textureBack[2] + ((1-thisBlockBox[4])/32f));
-            textureCoord.add(textureBack[0] - ((0-thisBlockBox[3])/32f));
-            textureCoord.add(textureBack[2] + ((1-thisBlockBox[4])/32f));
+            textureCoord.add(textureBack[1] - ((1-(float)thisBlockBox[0])/32f));
+            textureCoord.add(textureBack[2] + ((1-(float)thisBlockBox[4])/32f));
+            textureCoord.add(textureBack[0] - ((0-(float)thisBlockBox[3])/32f));
+            textureCoord.add(textureBack[2] + ((1-(float)thisBlockBox[4])/32f));
 
-            textureCoord.add(textureBack[0] - ((0-thisBlockBox[3])/32f));
-            textureCoord.add(textureBack[3] - ((  thisBlockBox[1])/32f));
-            textureCoord.add(textureBack[1] - ((1-thisBlockBox[0])/32f));
-            textureCoord.add(textureBack[3] - ((  thisBlockBox[1])/32f));
+            textureCoord.add(textureBack[0] - ((0-(float)thisBlockBox[3])/32f));
+            textureCoord.add(textureBack[3] - ((  (float)thisBlockBox[1])/32f));
+            textureCoord.add(textureBack[1] - ((1-(float)thisBlockBox[0])/32f));
+            textureCoord.add(textureBack[3] - ((  (float)thisBlockBox[1])/32f));
 
 
 
 
 
             //right
-            positions.add((thisBlockBox[3] - 0.5f) * itemSize);
-            positions.add((thisBlockBox[4] - 0.5f) * itemSize+ (itemSize/2));
-            positions.add((thisBlockBox[2] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[3] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[4] - 0.5f) * itemSize+ (itemSize/2));
+            positions.add(((float)thisBlockBox[2] - 0.5f) * itemSize);
 
-            positions.add((thisBlockBox[3] - 0.5f) * itemSize);
-            positions.add((thisBlockBox[4] - 0.5f) * itemSize+ (itemSize/2));
-            positions.add((thisBlockBox[5] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[3] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[4] - 0.5f) * itemSize+ (itemSize/2));
+            positions.add(((float)thisBlockBox[5] - 0.5f) * itemSize);
 
-            positions.add((thisBlockBox[3] - 0.5f) * itemSize);
-            positions.add((thisBlockBox[1] - 0.5f) * itemSize+ (itemSize/2));
-            positions.add((thisBlockBox[5] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[3] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[1] - 0.5f) * itemSize+ (itemSize/2));
+            positions.add(((float)thisBlockBox[5] - 0.5f) * itemSize);
 
-            positions.add((thisBlockBox[3] - 0.5f) * itemSize);
-            positions.add((thisBlockBox[1] - 0.5f) * itemSize+ (itemSize/2));
-            positions.add((thisBlockBox[2] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[3] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[1] - 0.5f) * itemSize+ (itemSize/2));
+            positions.add(((float)thisBlockBox[2] - 0.5f) * itemSize);
 
             //right
             for (int i = 0; i < 12; i++) {
@@ -202,35 +202,35 @@ public class ItemDefinition {
 
             float[] textureRight = getRightTexturePoints(blockID,(byte) 0);
             //right
-            textureCoord.add(textureRight[1] - ((1-thisBlockBox[2])/32f));
-            textureCoord.add(textureRight[2] + ((1-thisBlockBox[4])/32f));
-            textureCoord.add(textureRight[0] - ((0-thisBlockBox[5])/32f));
-            textureCoord.add(textureRight[2] + ((1-thisBlockBox[4])/32f));
+            textureCoord.add(textureRight[1] - ((1-(float)thisBlockBox[2])/32f));
+            textureCoord.add(textureRight[2] + ((1-(float)thisBlockBox[4])/32f));
+            textureCoord.add(textureRight[0] - ((0-(float)thisBlockBox[5])/32f));
+            textureCoord.add(textureRight[2] + ((1-(float)thisBlockBox[4])/32f));
 
-            textureCoord.add(textureRight[0] - ((0-thisBlockBox[5])/32f));
-            textureCoord.add(textureRight[3] - ((  thisBlockBox[1])/32f));
-            textureCoord.add(textureRight[1] - ((1-thisBlockBox[2])/32f));
-            textureCoord.add(textureRight[3] - ((  thisBlockBox[1])/32f));
+            textureCoord.add(textureRight[0] - ((0-(float)thisBlockBox[5])/32f));
+            textureCoord.add(textureRight[3] - ((  (float)thisBlockBox[1])/32f));
+            textureCoord.add(textureRight[1] - ((1-(float)thisBlockBox[2])/32f));
+            textureCoord.add(textureRight[3] - ((  (float)thisBlockBox[1])/32f));
 
 
 
 
             //left
-            positions.add((thisBlockBox[0] - 0.5f) * itemSize);
-            positions.add((thisBlockBox[4] - 0.5f) * itemSize+ (itemSize/2));
-            positions.add((thisBlockBox[5] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[0] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[4] - 0.5f) * itemSize+ (itemSize/2));
+            positions.add(((float)thisBlockBox[5] - 0.5f) * itemSize);
 
-            positions.add((thisBlockBox[0] - 0.5f) * itemSize);
-            positions.add((thisBlockBox[4] - 0.5f) * itemSize+ (itemSize/2));
-            positions.add((thisBlockBox[2] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[0] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[4] - 0.5f) * itemSize+ (itemSize/2));
+            positions.add(((float)thisBlockBox[2] - 0.5f) * itemSize);
 
-            positions.add((thisBlockBox[0] - 0.5f) * itemSize);
-            positions.add((thisBlockBox[1] - 0.5f) * itemSize+ (itemSize/2));
-            positions.add((thisBlockBox[2] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[0] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[1] - 0.5f) * itemSize+ (itemSize/2));
+            positions.add(((float)thisBlockBox[2] - 0.5f) * itemSize);
 
-            positions.add((thisBlockBox[0] - 0.5f) * itemSize);
-            positions.add((thisBlockBox[1] - 0.5f) * itemSize+ (itemSize/2));
-            positions.add((thisBlockBox[5] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[0] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[1] - 0.5f) * itemSize+ (itemSize/2));
+            positions.add(((float)thisBlockBox[5] - 0.5f) * itemSize);
 
             //left
             for (int i = 0; i < 12; i++) {
@@ -247,35 +247,35 @@ public class ItemDefinition {
 
             float[] textureLeft = getLeftTexturePoints(blockID,(byte) 0);
             //left
-            textureCoord.add(textureLeft[1] - ((1-thisBlockBox[5])/32f));
-            textureCoord.add(textureLeft[2] + ((1-thisBlockBox[4])/32f));
-            textureCoord.add(textureLeft[0] - ((0-thisBlockBox[2])/32f));
-            textureCoord.add(textureLeft[2] + ((1-thisBlockBox[4])/32f));
+            textureCoord.add(textureLeft[1] - ((1-(float)thisBlockBox[5])/32f));
+            textureCoord.add(textureLeft[2] + ((1-(float)thisBlockBox[4])/32f));
+            textureCoord.add(textureLeft[0] - ((0-(float)thisBlockBox[2])/32f));
+            textureCoord.add(textureLeft[2] + ((1-(float)thisBlockBox[4])/32f));
 
-            textureCoord.add(textureLeft[0] - ((0-thisBlockBox[2])/32f));
-            textureCoord.add(textureLeft[3] - ((thisBlockBox[1])/32f));
-            textureCoord.add(textureLeft[1] - ((1-thisBlockBox[5])/32f));
-            textureCoord.add(textureLeft[3] - ((thisBlockBox[1])/32f));
+            textureCoord.add(textureLeft[0] - ((0-(float)thisBlockBox[2])/32f));
+            textureCoord.add(textureLeft[3] - (((float)thisBlockBox[1])/32f));
+            textureCoord.add(textureLeft[1] - ((1-(float)thisBlockBox[5])/32f));
+            textureCoord.add(textureLeft[3] - (((float)thisBlockBox[1])/32f));
 
 
 
 
             //top
-            positions.add((thisBlockBox[0] - 0.5f) * itemSize);
-            positions.add((thisBlockBox[4] - 0.5f) * itemSize+ (itemSize/2));
-            positions.add((thisBlockBox[2] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[0] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[4] - 0.5f) * itemSize+ (itemSize/2));
+            positions.add(((float)thisBlockBox[2] - 0.5f) * itemSize);
 
-            positions.add((thisBlockBox[0] - 0.5f) * itemSize);
-            positions.add((thisBlockBox[4] - 0.5f) * itemSize+ (itemSize/2));
-            positions.add((thisBlockBox[5] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[0] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[4] - 0.5f) * itemSize+ (itemSize/2));
+            positions.add(((float)thisBlockBox[5] - 0.5f) * itemSize);
 
-            positions.add((thisBlockBox[3] - 0.5f) * itemSize);
-            positions.add((thisBlockBox[4] - 0.5f) * itemSize+ (itemSize/2));
-            positions.add((thisBlockBox[5] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[3] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[4] - 0.5f) * itemSize+ (itemSize/2));
+            positions.add(((float)thisBlockBox[5] - 0.5f) * itemSize);
 
-            positions.add((thisBlockBox[3] - 0.5f) * itemSize);
-            positions.add((thisBlockBox[4] - 0.5f) * itemSize+ (itemSize/2));
-            positions.add((thisBlockBox[2] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[3] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[4] - 0.5f) * itemSize+ (itemSize/2));
+            positions.add(((float)thisBlockBox[2] - 0.5f) * itemSize);
 
             //top
             for (int i = 0; i < 12; i++) {
@@ -299,34 +299,34 @@ public class ItemDefinition {
 
             float[] textureTop = getTopTexturePoints(blockID);
             //top
-            textureCoord.add(textureTop[1] - ((1-thisBlockBox[5])/32f));
-            textureCoord.add(textureTop[2] + ((1-thisBlockBox[0])/32f));
-            textureCoord.add(textureTop[0] - ((0-thisBlockBox[2])/32f));
-            textureCoord.add(textureTop[2] + ((1-thisBlockBox[0])/32f));
+            textureCoord.add(textureTop[1] - ((1-(float)thisBlockBox[5])/32f));
+            textureCoord.add(textureTop[2] + ((1-(float)thisBlockBox[0])/32f));
+            textureCoord.add(textureTop[0] - ((0-(float)thisBlockBox[2])/32f));
+            textureCoord.add(textureTop[2] + ((1-(float)thisBlockBox[0])/32f));
 
-            textureCoord.add(textureTop[0] - ((0-thisBlockBox[2])/32f));
-            textureCoord.add(textureTop[3] - ((  thisBlockBox[3])/32f));
-            textureCoord.add(textureTop[1] - ((1-thisBlockBox[5])/32f));
-            textureCoord.add(textureTop[3] - ((  thisBlockBox[3])/32f));
+            textureCoord.add(textureTop[0] - ((0-(float)thisBlockBox[2])/32f));
+            textureCoord.add(textureTop[3] - ((  (float)thisBlockBox[3])/32f));
+            textureCoord.add(textureTop[1] - ((1-(float)thisBlockBox[5])/32f));
+            textureCoord.add(textureTop[3] - ((  (float)thisBlockBox[3])/32f));
 
 
 
             //bottom
-            positions.add((thisBlockBox[0] - 0.5f) * itemSize);
-            positions.add((thisBlockBox[1] - 0.5f) * itemSize+ (itemSize/2));
-            positions.add((thisBlockBox[5] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[0] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[1] - 0.5f) * itemSize+ (itemSize/2));
+            positions.add(((float)thisBlockBox[5] - 0.5f) * itemSize);
 
-            positions.add((thisBlockBox[0] - 0.5f) * itemSize);
-            positions.add((thisBlockBox[1] - 0.5f) * itemSize+ (itemSize/2));
-            positions.add((thisBlockBox[2] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[0] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[1] - 0.5f) * itemSize+ (itemSize/2));
+            positions.add(((float)thisBlockBox[2] - 0.5f) * itemSize);
 
-            positions.add((thisBlockBox[3] - 0.5f) * itemSize);
-            positions.add((thisBlockBox[1] - 0.5f) * itemSize+ (itemSize/2));
-            positions.add((thisBlockBox[2] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[3] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[1] - 0.5f) * itemSize+ (itemSize/2));
+            positions.add(((float)thisBlockBox[2] - 0.5f) * itemSize);
 
-            positions.add((thisBlockBox[3] - 0.5f) * itemSize);
-            positions.add((thisBlockBox[1] - 0.5f) * itemSize+ (itemSize/2));
-            positions.add((thisBlockBox[5] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[3] - 0.5f) * itemSize);
+            positions.add(((float)thisBlockBox[1] - 0.5f) * itemSize+ (itemSize/2));
+            positions.add(((float)thisBlockBox[5] - 0.5f) * itemSize);
 
             //bottom
             for (int i = 0; i < 12; i++) {
@@ -351,15 +351,15 @@ public class ItemDefinition {
 
             float[] textureBottom = getBottomTexturePoints(blockID);
             //bottom
-            textureCoord.add(textureBottom[1] - ((1-thisBlockBox[5])/32f));
-            textureCoord.add(textureBottom[2] + ((1-thisBlockBox[0])/32f));
-            textureCoord.add(textureBottom[0] - ((0-thisBlockBox[2])/32f));
-            textureCoord.add(textureBottom[2] + ((1-thisBlockBox[0])/32f));
+            textureCoord.add(textureBottom[1] - ((1-(float)thisBlockBox[5])/32f));
+            textureCoord.add(textureBottom[2] + ((1-(float)thisBlockBox[0])/32f));
+            textureCoord.add(textureBottom[0] - ((0-(float)thisBlockBox[2])/32f));
+            textureCoord.add(textureBottom[2] + ((1-(float)thisBlockBox[0])/32f));
 
-            textureCoord.add(textureBottom[0] - ((0-thisBlockBox[2])/32f));
-            textureCoord.add(textureBottom[3] - ((  thisBlockBox[3])/32f));
-            textureCoord.add(textureBottom[1] - ((1-thisBlockBox[5])/32f));
-            textureCoord.add(textureBottom[3] - ((  thisBlockBox[3])/32f));
+            textureCoord.add(textureBottom[0] - ((0-(float)thisBlockBox[2])/32f));
+            textureCoord.add(textureBottom[3] - ((  (float)thisBlockBox[3])/32f));
+            textureCoord.add(textureBottom[1] - ((1-(float)thisBlockBox[5])/32f));
+            textureCoord.add(textureBottom[3] - ((  (float)thisBlockBox[3])/32f));
 
         }
         //todo: ------------------------------------------------------------------------------------------------=-=-=-=

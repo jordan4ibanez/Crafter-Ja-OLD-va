@@ -159,19 +159,16 @@ public class BlockDefinition {
         return blockIDs[ID].isLiquid;
     }
 
-    public static float[][] getBlockShape(int ID, byte rot){
+    public static double[][] getBlockShape(int ID, byte rot){
 
-
-
-
-        float[][] newBoxes = new float[blockShapeMap.get(blockIDs[ID].drawType).getBoxes().length][6];
+        double[][] newBoxes = new double[blockShapeMap.get(blockIDs[ID].drawType).getBoxes().length][6];
 
 
         int index = 0;
 
         //automated as base, since it's the same
         if (rot == 0) {
-            for (float[] thisShape : blockShapeMap.get(blockIDs[ID].drawType).getBoxes()) {
+            for (double[] thisShape : blockShapeMap.get(blockIDs[ID].drawType).getBoxes()) {
                 for (int i = 0; i < 6; i++) {
                     newBoxes[index][i] = thisShape[i];
                 }
@@ -180,13 +177,13 @@ public class BlockDefinition {
         }
 
         if (rot == 2){
-            for (float[] thisShape : blockShapeMap.get(blockIDs[ID].drawType).getBoxes()) {
+            for (double[] thisShape : blockShapeMap.get(blockIDs[ID].drawType).getBoxes()) {
 
-                float blockDiffZ =  1f - thisShape[5];
-                float widthZ = thisShape[5] - thisShape[2];
+                double blockDiffZ =  1d - thisShape[5];
+                double widthZ = thisShape[5] - thisShape[2];
 
-                float blockDiffX =  1f - thisShape[3];
-                float widthX = thisShape[3] - thisShape[0];
+                double blockDiffX =  1d - thisShape[3];
+                double widthX = thisShape[3] - thisShape[0];
 
                 newBoxes[index][0] = blockDiffX;
                 newBoxes[index][1] = thisShape[1];//-y
@@ -201,10 +198,10 @@ public class BlockDefinition {
 
 
         if (rot == 1){
-            for (float[] thisShape : blockShapeMap.get(blockIDs[ID].drawType).getBoxes()) {
+            for (double[] thisShape : blockShapeMap.get(blockIDs[ID].drawType).getBoxes()) {
 
-                float blockDiffZ =  1f - thisShape[5];
-                float widthZ = thisShape[5] - thisShape[2];
+                double blockDiffZ =  1d - thisShape[5];
+                double widthZ = thisShape[5] - thisShape[2];
 
                 newBoxes[index][0] = blockDiffZ;
                 newBoxes[index][1] = thisShape[1];//-y
@@ -219,9 +216,9 @@ public class BlockDefinition {
 
 
         if (rot == 3){
-            for (float[] thisShape : blockShapeMap.get(blockIDs[ID].drawType).getBoxes()) {
-                float blockDiffX =  1f - thisShape[3];
-                float widthX = thisShape[3] - thisShape[0];
+            for (double[] thisShape : blockShapeMap.get(blockIDs[ID].drawType).getBoxes()) {
+                double blockDiffX =  1d - thisShape[3];
+                double widthX = thisShape[3] - thisShape[0];
 
                 newBoxes[index][0] = thisShape[2];
                 newBoxes[index][1] = thisShape[1];//-y
@@ -248,16 +245,16 @@ public class BlockDefinition {
     public static void initializeBlocks() throws Exception {
 
         blockShapeMap.put("air",
-                new BlockShape(new float[][]{{0f,0f,0f,1f,1f,1f}})
+                new BlockShape(new double[][]{{0f,0f,0f,1f,1f,1f}})
         );
 
         blockShapeMap.put("normal",
-                new BlockShape(new float[][]{{0f,0f,0f,1f,1f,1f}})
+                new BlockShape(new double[][]{{0f,0f,0f,1f,1f,1f}})
         );
 
         blockShapeMap.put("stair",
                 new BlockShape(
-                        new float[][]{
+                        new double[][]{
                                 {0f,0f,0f,1f,0.5f,1f},
                                 {0f,0f,0f,1f,1f,0.5f}
                         }
@@ -266,7 +263,7 @@ public class BlockDefinition {
 
         blockShapeMap.put("slab",
                 new BlockShape(
-                        new float[][]{
+                        new double[][]{
                                 {0f,0f,0f,1f,0.5f,1f}
                         }
                 )
@@ -788,7 +785,7 @@ public class BlockDefinition {
 
         blockShapeMap.put("door_open",
                 new BlockShape(
-                        new float[][]{
+                        new double[][]{
                                 {0f,0f,0f,2f/16f,1f,1f}
                         }
                 )
@@ -881,7 +878,7 @@ public class BlockDefinition {
 
         blockShapeMap.put("door_closed",
                 new BlockShape(
-                        new float[][]{
+                        new double[][]{
                                 {0f,0f,14f/16f,1f,1f,1f}
                         }
                 )
