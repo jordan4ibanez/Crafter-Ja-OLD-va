@@ -13,15 +13,10 @@ import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
 
 public class Mesh {
     private int vaoId;
-
     private int posVboId;
-
     private int colorVboId;
-
     private int textureVboId;
-
     private int idxVboId;
-
     private int vertexCount;
 
     private Texture texture;
@@ -36,20 +31,16 @@ public class Mesh {
     }
 
     public Mesh(float[] positions, float[] colors, int[] indices, float[] textCoords, Texture texture) {
-
         try{
+
             this.texture = texture;
-
             vertexCount = indices.length;
-
             vaoId = glGenVertexArrays();
             glBindVertexArray(vaoId);
 
             //position VBO
             posVboId = glGenBuffers();
-
             posBuffer = MemoryUtil.memAllocFloat(positions.length);
-
             posBuffer.put(positions).flip();
 
             glBindBuffer(GL_ARRAY_BUFFER, posVboId);
@@ -59,7 +50,6 @@ public class Mesh {
 
             // color VBO
             colorVboId = glGenBuffers();
-
             colorBuffer = MemoryUtil.memAllocFloat(colors.length);
 
 
@@ -71,10 +61,7 @@ public class Mesh {
 
             //texture coordinates vbo
             textureVboId = glGenBuffers();
-
             textCoordsBuffer = MemoryUtil.memAllocFloat(textCoords.length);
-
-
 
             textCoordsBuffer.put(textCoords).flip();
             glBindBuffer(GL_ARRAY_BUFFER, textureVboId);
@@ -85,7 +72,6 @@ public class Mesh {
 
             //index vbo
             idxVboId = glGenBuffers();
-
             indicesBuffer = MemoryUtil.memAllocInt(indices.length);
 
             indicesBuffer.put(indices).flip();
