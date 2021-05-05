@@ -27,15 +27,15 @@ public class Ray {
 
         int foundBlock = -1;
 
-        for(float step = 0f; step <= length ; step += 0.001f) {
+        for(float step = 0f; step <= length ; step += 0.001d) {
 
             cachePos.x = dir.x * step;
             cachePos.y = dir.y * step;
             cachePos.z = dir.z * step;
 
-            newPos.x = (float)Math.floor(pos.x + cachePos.x);
-            newPos.y = (float)Math.floor(pos.y + cachePos.y);
-            newPos.z = (float)Math.floor(pos.z + cachePos.z);
+            newPos.x = Math.floor(pos.x + cachePos.x);
+            newPos.y = Math.floor(pos.y + cachePos.y);
+            newPos.z = Math.floor(pos.z + cachePos.z);
 
             //stop wasting cpu resources
             if (lastPos != null) {
