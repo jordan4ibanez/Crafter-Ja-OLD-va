@@ -146,10 +146,10 @@ public class Chunk {
     }
 
     public static int getHeightMap(int x, int z){
-        int chunkX = (int)Math.floor(x/16f);
-        int chunkZ = (int)Math.floor(z/16f);
-        int blockX = (int)(x - (16f*chunkX));
-        int blockZ = (int)(z - (16f*chunkZ));
+        int chunkX = (int)Math.floor(x/16d);
+        int chunkZ = (int)Math.floor(z/16d);
+        int blockX = (int)(x - (16d*chunkX));
+        int blockZ = (int)(z - (16d*chunkZ));
         String key = chunkX + " " + chunkZ;
         ChunkObject thisChunk = map.get(key);
         if (thisChunk == null){
@@ -166,10 +166,10 @@ public class Chunk {
         if (y > 127 || y < 0){
             return false;
         }
-        int chunkX = (int)Math.floor(x/16f);
-        int chunkZ = (int)Math.floor(z/16f);
-        int blockX = (int)(x - (16f*chunkX));
-        int blockZ = (int)(z - (16f*chunkZ));
+        int chunkX = (int)Math.floor(x/16d);
+        int chunkZ = (int)Math.floor(z/16d);
+        int blockX = (int)(x - (16d*chunkX));
+        int blockZ = (int)(z - (16d*chunkZ));
         String key = chunkX + " " + chunkZ;
         ChunkObject thisChunk = map.get(key);
         if (thisChunk == null){
@@ -186,10 +186,10 @@ public class Chunk {
         if (y > 127 || y < 0){
             return -1;
         }
-        int chunkX = (int)Math.floor(x/16f);
-        int chunkZ = (int)Math.floor(z/16f);
-        int blockX = (int)(x - (16f*chunkX));
-        int blockZ = (int)(z - (16f*chunkZ));
+        int chunkX = (int)Math.floor(x/16d);
+        int chunkZ = (int)Math.floor(z/16d);
+        int blockX = (int)(x - (16d*chunkX));
+        int blockZ = (int)(z - (16d*chunkZ));
         String key = chunkX + " " + chunkZ;
         ChunkObject thisChunk = map.get(key);
         if (thisChunk == null){
@@ -205,10 +205,10 @@ public class Chunk {
         if (y > 127 || y < 0){
             return -1;
         }
-        int chunkX = (int)Math.floor(x/16f);
-        int chunkZ = (int)Math.floor(z/16f);
-        int blockX = (int)(x - (16f*chunkX));
-        int blockZ = (int)(z - (16f*chunkZ));
+        int chunkX = (int)Math.floor(x/16d);
+        int chunkZ = (int)Math.floor(z/16d);
+        int blockX = (int)(x - (16d*chunkX));
+        int blockZ = (int)(z - (16d*chunkZ));
         String key = chunkX + " " + chunkZ;
         ChunkObject thisChunk = map.get(key);
         if (thisChunk == null){
@@ -224,11 +224,11 @@ public class Chunk {
         if (y > 127 || y < 0){
             return;
         }
-        int yPillar = (int)Math.floor(y/16f);
-        int chunkX = (int)Math.floor(x/16f);
-        int chunkZ = (int)Math.floor(z/16f);
-        int blockX = (int)(x - (16f*chunkX));
-        int blockZ = (int)(z - (16f*chunkZ));
+        int yPillar = (int)Math.floor(y/16d);
+        int chunkX = (int)Math.floor(x/16d);
+        int chunkZ = (int)Math.floor(z/16d);
+        int blockX = (int)(x - (16d*chunkX));
+        int blockZ = (int)(z - (16d*chunkZ));
         String key = chunkX + " " + chunkZ;
         ChunkObject thisChunk = map.get(key);
 
@@ -263,11 +263,11 @@ public class Chunk {
         if (y > 127 || y < 0){
             return;
         }
-        int yPillar = (int)Math.floor(y/16f);
-        int chunkX = (int)Math.floor(x/16f);
-        int chunkZ = (int)Math.floor(z/16f);
-        int blockX = (int)(x - (16f*chunkX));
-        int blockZ = (int)(z - (16f*chunkZ));
+        int yPillar = (int)Math.floor(y/16d);
+        int chunkX = (int)Math.floor(x/16d);
+        int chunkZ = (int)Math.floor(z/16d);
+        int blockX = (int)(x - (16d*chunkX));
+        int blockZ = (int)(z - (16d*chunkZ));
         String key = chunkX + " " + chunkZ;
         ChunkObject thisChunk = map.get(key);
 
@@ -287,11 +287,11 @@ public class Chunk {
         if (y > 127 || y < 0){
             return;
         }
-        int yPillar = (int)Math.floor(y/16f);
-        int chunkX = (int)Math.floor(x/16f);
-        int chunkZ = (int)Math.floor(z/16f);
-        int blockX = (int)(x - (16f*chunkX));
-        int blockZ = (int)(z - (16f*chunkZ));
+        int yPillar = (int)Math.floor(y/16d);
+        int chunkX = (int)Math.floor(x/16d);
+        int chunkZ = (int)Math.floor(z/16d);
+        int blockX = (int)(x - (16d*chunkX));
+        int blockZ = (int)(z - (16d*chunkZ));
         String key = chunkX + " " + chunkZ;
         ChunkObject thisChunk = map.get(key);
 
@@ -323,11 +323,12 @@ public class Chunk {
         if (y > 127 || y < 0){
             return;
         }
-        int yPillar = (int)Math.floor(y/16f);
-        int chunkX = (int)Math.floor(x/16f);
-        int chunkZ = (int)Math.floor(z/16f);
-        int blockX = (int)(x - (16f*chunkX));
-        int blockZ = (int)(z - (16f*chunkZ));
+        int yPillar = (int)Math.floor(y/16d);
+        int chunkX = (int)Math.floor(x/16d);
+        int chunkZ = (int)Math.floor(z/16d);
+
+        int blockX = (x - (16*chunkX));
+        int blockZ = (z - (16*chunkZ));
         String key = chunkX + " " + chunkZ;
         ChunkObject thisChunk = map.get(key);
 
@@ -337,12 +338,14 @@ public class Chunk {
         if (thisChunk.block == null){
             return;
         }
+
         thisChunk.block[y][blockX][blockZ] = ID;
         thisChunk.rotation[y][blockX][blockZ] = (byte) rot;
 
         if (thisChunk.heightMap[blockX][blockZ] < y){
             thisChunk.heightMap[blockX][blockZ] = (byte) y;
         }
+
         lightFloodFill(x, y, z);
         thisChunk.modified = true;
         generateChunkMesh(chunkX,chunkZ,yPillar);//instant update
@@ -353,10 +356,10 @@ public class Chunk {
         if (y > 127 || y < 0){
             return 0;
         }
-        int chunkX = (int)Math.floor(x/16f);
-        int chunkZ = (int)Math.floor(z/16f);
-        int blockX = (int)(x - (16f*chunkX));
-        int blockZ = (int)(z - (16f*chunkZ));
+        int chunkX = (int)Math.floor(x/16d);
+        int chunkZ = (int)Math.floor(z/16d);
+        int blockX = (int)(x - (16d*chunkX));
+        int blockZ = (int)(z - (16d*chunkZ));
         String key = chunkX + " " + chunkZ;
         ChunkObject thisChunk = map.get(key);
         if (thisChunk == null){
@@ -372,7 +375,7 @@ public class Chunk {
         if (y > 127 || y < 0){
             return;
         }
-        int yPillar = (int)Math.floor(y/16f);
+        int yPillar = (int)Math.floor(y/16d);
         switch (y){
             case 112:
             case 96:
@@ -411,7 +414,7 @@ public class Chunk {
         if (y > 127 || y < 0){
             return;
         }
-        int yPillar = (int)Math.floor(y/16f);
+        int yPillar = (int)Math.floor(y/16d);
         switch (y){
             case 112:
             case 96:
@@ -564,7 +567,7 @@ public class Chunk {
                     boolean gennedSand = false;
                     boolean gennedWater = false;
                     boolean gennedGrass = false;
-                    float dirtHeightRandom = (float) Math.floor(Math.random() * 2f);
+                    double dirtHeightRandom =  Math.floor(Math.random() * 2d);
 
                     height = (byte) (Math.abs(noise.GetCubicFractal((chunkX * 16) + x, (chunkZ * 16) + z)) * 127 + heightAdder);
 
