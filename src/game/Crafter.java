@@ -149,6 +149,7 @@ public class Crafter {
             }
         }
 
+        /*
         for (x = -chunkRenderDistance + currentChunk[0]; x < chunkRenderDistance + currentChunk[0]; x++){
             for (z = -chunkRenderDistance + currentChunk[1]; z< chunkRenderDistance + currentChunk[1]; z++){
                 for (int y = 0; y < 8; y++){
@@ -156,6 +157,8 @@ public class Crafter {
                 }
             }
         }
+
+         */
 
 //        createToolDebugInventory();
         generateRandomInventory();
