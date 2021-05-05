@@ -46,6 +46,8 @@ public class Player {
     private static float itemRotation = 0f;
     private static boolean itemRotationEnabled = false;
 
+    private static final float reach = 3.575f;
+
     private static boolean sneaking              = false;
     private static boolean running               = false;
 
@@ -749,13 +751,13 @@ public class Player {
         }
 
         if(mining && hasDug) {
-            rayCast(getCameraPosition(), getCameraRotationVector(), 4f,  true, false);
+            rayCast(getCameraPosition(), getCameraRotationVector(), reach,  true, false);
             mineTimer = 0.5f;
         } else if (placing && placeTimer <= 0){
-            rayCast(getCameraPosition(), getCameraRotationVector(), 4f,  false, true);
+            rayCast(getCameraPosition(), getCameraRotationVector(), reach,  false, true);
             placeTimer = 0.5f;
         } else {
-            rayCast(getCameraPosition(), getCameraRotationVector(), 4f,  false, false);
+            rayCast(getCameraPosition(), getCameraRotationVector(), reach,  false, false);
         }
 
 
