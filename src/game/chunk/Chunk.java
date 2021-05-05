@@ -55,7 +55,7 @@ public class Chunk {
     public static void globalChunkSaveToDisk(){
         saveTimer += 0.001f;
 
-        if (saveTimer >= 0.5f){
+        if (saveTimer >= 3f){
             savePlayerPos(getPlayerPos());
             for (ChunkObject thisChunk : map.values()){
                 if (thisChunk.modified) {

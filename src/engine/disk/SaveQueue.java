@@ -18,31 +18,26 @@ public class SaveQueue {
     public static void startSaveThread(){
         new Thread(() -> {
             final ObjectMapper mapper = new ObjectMapper();
-            float timer = 0f;
             ChunkObject thisChunk;
             saveQueue = new ArrayDeque<>();
             while(!windowShouldClose()) {
-                timer += 0.01f;
-                if (timer >= 3f) {
-                    timer = 0f;
-                    if (!saveQueue.isEmpty()) {
-                        try {
-                            thisChunk = saveQueue.pop();
+                if (!saveQueue.isEmpty()) {
+                    try {
+                        thisChunk = saveQueue.pop();
 
-                            ChunkSavingObject savingObject = new ChunkSavingObject();
+                        ChunkSavingObject savingObject = new ChunkSavingObject();
 
-                            savingObject.ID = thisChunk.ID;
-                            savingObject.x = thisChunk.x;
-                            savingObject.z = thisChunk.z;
-                            savingObject.block = thisChunk.block;
-                            savingObject.rotation = thisChunk.rotation;
-                            savingObject.light = thisChunk.light;
-                            savingObject.heightMap = thisChunk.heightMap;
+                        savingObject.ID = thisChunk.ID;
+                        savingObject.x = thisChunk.x;
+                        savingObject.z = thisChunk.z;
+                        savingObject.block = thisChunk.block;
+                        savingObject.rotation = thisChunk.rotation;
+                        savingObject.light = thisChunk.light;
+                        savingObject.heightMap = thisChunk.heightMap;
 
-                            mapper.writeValue(new File("Worlds/world1/" + savingObject.ID + ".chunk"), savingObject);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        mapper.writeValue(new File("Worlds/world1/" + savingObject.ID + ".chunk"), savingObject);
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 }
             }
