@@ -14,6 +14,7 @@ import static game.Crafter.getChunkRenderDistance;
 import static game.chunk.ChunkMath.posToIndex;
 import static game.chunk.ChunkMesh.generateChunkMesh;
 import static game.chunk.ChunkUpdateHandler.chunkUpdate;
+import static game.light.Light.getImmediateLight;
 import static game.light.Light.lightFloodFill;
 import static game.player.Player.getPlayerPos;
 
@@ -332,6 +333,8 @@ public class Chunk {
         lightFloodFill(x, y, z);
         thisChunk.modified = true;
 
+        thisChunk.light[posToIndex(blockX, y, blockZ)] = getImmediateLight(x,y,z);
+
         generateChunkMesh(chunkX,chunkZ,yPillar);//instant update
         instantUpdateNeighbor(chunkX, chunkZ,blockX,y,blockZ);//instant update
     }
@@ -366,7 +369,7 @@ public class Chunk {
 
         lightFloodFill(x, y, z);
         thisChunk.modified = true;
-        
+
         generateChunkMesh(chunkX,chunkZ,yPillar);//instant update
         instantUpdateNeighbor(chunkX, chunkZ,blockX,y,blockZ);//instant update
     }

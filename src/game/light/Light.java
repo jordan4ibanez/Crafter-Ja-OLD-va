@@ -15,6 +15,54 @@ public class Light {
     private static final byte lightDistance = 15;
     private static final byte max = (lightDistance * 2) + 1;
 
+    public static byte getImmediateLight(int x, int y, int z){
+        int theBlock = getBlock(x, y, z);
+        if (theBlock == 0 && underSunLight(x, y, z)){
+            return 15;
+        }
+
+        byte maxLight = 0;
+
+        if (getBlock(x + 1, y, z) == 0) {
+            byte gottenLight = getLight(x + 1, y, z);
+            if (gottenLight > maxLight + 1){
+                maxLight = (byte)(gottenLight - 1);
+            }
+        }
+        if (getBlock(x - 1, y, z) == 0) {
+            byte gottenLight = getLight(x - 1, y, z);
+            if (gottenLight > maxLight + 1){
+                maxLight = (byte)(gottenLight - 1);
+            }
+        }
+        if (getBlock(x, y + 1, z) == 0) {
+            byte gottenLight = getLight(x, y + 1, z);
+            if (gottenLight > maxLight + 1){
+                maxLight = (byte)(gottenLight - 1);
+            }
+        }
+        if (getBlock(x, y - 1, z) == 0) {
+            byte gottenLight = getLight(x, y - 1, z);
+            if (gottenLight > maxLight + 1){
+                maxLight = (byte)(gottenLight - 1);
+            }
+        }
+        if (getBlock(x, y, z + 1) == 0) {
+            byte gottenLight = getLight(x, y, z + 1);
+            if (gottenLight > maxLight + 1){
+                maxLight = (byte)(gottenLight - 1);
+            }
+        }
+        if (getBlock(x, y, z - 1) == 0) {
+            byte gottenLight = getLight(x, y, z - 1);
+            if (gottenLight > maxLight + 1){
+                maxLight = (byte)(gottenLight - 1);
+            }
+        }
+
+        return maxLight;
+    }
+
     public static void lightFloodFill(int posX, int posY, int posZ) {
         queue.add(new Vector3i(posX, posY, posZ));
     }
