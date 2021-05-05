@@ -265,14 +265,15 @@ public class Renderer {
 
         //draw wield hand or item
         {
+            //wield hand
             if (getItemInInventorySlot(getPlayerInventorySelection(),0) == null){
                 Mesh thisMesh = getWieldHandMesh();
                 modelViewMatrix = getGenericMatrixWithPosRotationScale(getWieldHandAnimationPos(), getWieldHandAnimationRot(), new Vector3d(5d, 5d, 5d), new Matrix4d());
                 hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 thisMesh.render();
-            } else {
-
-                Mesh thisMesh = getItemInInventorySlot(getPlayerInventorySelection(),0).mesh;
+            //block/item
+            } else if (getWieldInventory() != null){
+                Mesh thisMesh = getWieldInventory().mesh;
                 modelViewMatrix = getGenericMatrixWithPosRotationScale(getWieldHandAnimationPos(), getWieldHandAnimationRot(), new Vector3d(20d, 20d, 20d), new Matrix4d());
                 hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 thisMesh.render();

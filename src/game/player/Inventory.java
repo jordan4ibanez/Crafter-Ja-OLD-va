@@ -16,6 +16,50 @@ public class Inventory {
 
     private static Item mouseInventory;
 
+    //special pseudo inventory for wielding item
+    private static Item wieldInventory;
+
+    private static int oldSelectionPos = 0;
+    private static String oldItemName = "";
+    private static float updateTimer = 0f;
+    private static byte oldLight = 15;
+
+    public static Item getWieldInventory() {
+        return wieldInventory;
+    }
+
+    public static void updateWieldInventory(byte light){
+
+        int newSelectionPos = getCurrentInventorySelection();
+        Item newItem = getItemInInventorySlot(newSelectionPos, 0);
+
+        //don't update if wieldhand
+        if (newItem == null){
+            return;
+        }
+
+        String newItemName = newItem.name;
+
+        updateTimer += 0.001f;
+
+        if (oldLight != light || newSelectionPos != oldSelectionPos || !newItemName.equals(oldItemName) || updateTimer > 0.5f){
+            //update item
+            if (!newItemName.equals(oldItemName)){
+                wieldInventory = new Item(newItemName, 1);
+                System.out.println("changed to " + newItemName);
+            }
+            //update light level
+            wieldInventory.light = light;
+            wieldInventory.rebuildLightMesh(wieldInventory);
+
+            updateTimer = 0f;
+        }
+
+        oldLight = light;
+        oldSelectionPos = newSelectionPos;
+        oldItemName = newItemName;
+    }
+
     public static void generateRandomInventory(){
         for (int x = 0; x < 9; x++){
             for (int y = 0; y < 4; y++){

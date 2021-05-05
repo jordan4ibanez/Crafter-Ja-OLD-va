@@ -15,6 +15,7 @@ import static game.chunk.Chunk.*;
 import static game.collision.Collision.applyInertia;
 import static game.particle.Particle.createParticle;
 import static game.player.Inventory.getItemInInventorySlot;
+import static game.player.Inventory.updateWieldInventory;
 import static game.player.Ray.rayCast;
 
 
@@ -771,8 +772,12 @@ public class Player {
             if (newLightLevel != lightLevel){
                 lightLevel = newLightLevel;
                 rebuildWieldHandMesh(lightLevel);
+
             }
         }
+
+        //do the same for the literal wield inventory
+        updateWieldInventory(lightLevel);
 
         oldPos = newFlooredPos;
     }
