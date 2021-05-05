@@ -2,6 +2,7 @@ package game.chunk;
 
 import engine.FastNoise;
 import engine.graph.Mesh;
+import org.joml.Vector3i;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,6 +13,8 @@ import static engine.disk.Disk.*;
 import static engine.disk.SaveQueue.instantSave;
 import static engine.disk.SaveQueue.saveChunk;
 import static game.Crafter.getChunkRenderDistance;
+import static game.chunk.ChunkMath.indexToPos;
+import static game.chunk.ChunkMath.posToIndex;
 import static game.chunk.ChunkMesh.generateChunkMesh;
 import static game.chunk.ChunkUpdateHandler.chunkUpdate;
 import static game.light.Light.lightFloodFill;
@@ -306,6 +309,13 @@ public class Chunk {
         thisChunk.block[y][blockX][blockZ] = 0;
         thisChunk.rotation[y][blockX][blockZ] = 0;
 
+        System.out.println("------");
+        System.out.println(posToIndex(blockX, y, blockZ));
+        Vector3i testPos = indexToPos(posToIndex(blockX,y,blockZ));
+        System.out.println(testPos.x + " " + testPos.y + " " + testPos.z);
+        System.out.println(blockX + " " + y + " " + blockZ + "<- real");
+        System.out.println("------");
+
         if (thisChunk.heightMap[blockX][blockZ] == y){
             for (int yCheck = thisChunk.heightMap[blockX][blockZ]; yCheck > 0; yCheck--){
                 if (thisChunk.block[yCheck][blockX][blockZ] != 0){
@@ -331,6 +341,14 @@ public class Chunk {
 
         int blockX = (x - (16*chunkX));
         int blockZ = (z - (16*chunkZ));
+
+        System.out.println("------");
+        System.out.println(posToIndex(blockX, y, blockZ));
+        Vector3i testPos = indexToPos(posToIndex(blockX,y,blockZ));
+        System.out.println(testPos.x + " " + testPos.y + " " + testPos.z);
+        System.out.println(blockX + " " + y + " " + blockZ + "<- real");
+        System.out.println("------");
+
         String key = chunkX + " " + chunkZ;
         ChunkObject thisChunk = map.get(key);
 
