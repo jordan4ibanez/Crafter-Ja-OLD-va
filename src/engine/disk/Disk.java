@@ -55,6 +55,10 @@ public class Disk {
             e.printStackTrace();
         }
 
+        if (thisChunkLoaded != null && thisChunkLoaded.block == null){
+            return null;
+        }
+
         ChunkObject abstractedChunk = new ChunkObject();
 
         abstractedChunk.ID = thisChunkLoaded.ID;

@@ -23,7 +23,9 @@ public class Light {
     public static void indexLight(){
         new Thread(() -> {
             if (!queue.isEmpty()) {
+
                 Vector3f tempObject = queue.pop();
+
                 int posX = (int) tempObject.x;
                 int posY = (int) tempObject.y;
                 int posZ = (int) tempObject.z;
@@ -65,12 +67,12 @@ public class Light {
                     }
                 }
 
+                int[] crawlerPos;
+
                 while (!lightSources.isEmpty()) {
                     LightUpdate thisUpdate = lightSources.pop();
 
                     Deque<LightUpdate> lightSteps = new ArrayDeque<>();
-
-                    int[] crawlerPos;
 
                     lightSteps.push(new LightUpdate(thisUpdate.x, thisUpdate.y, thisUpdate.z, maxLightLevel));
 

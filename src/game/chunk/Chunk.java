@@ -22,6 +22,8 @@ import static game.player.Player.getPlayerPos;
 
 public class Chunk {
 
+    private static final int chunkArrayLength = 128 * 16 * 16;
+
     private static final ConcurrentHashMap<String, ChunkObject> map = new ConcurrentHashMap<>();
 
     public static Collection<ChunkObject> getMap(){
@@ -53,7 +55,7 @@ public class Chunk {
     public static void globalChunkSaveToDisk(){
         saveTimer += 0.001f;
 
-        if (saveTimer >= 10f){
+        if (saveTimer >= 0.5f){
             savePlayerPos(getPlayerPos());
             for (ChunkObject thisChunk : map.values()){
                 if (thisChunk.modified) {
@@ -77,13 +79,9 @@ public class Chunk {
         if (thisChunk == null || thisChunk.block == null){
             return false;
         }
-        for (int y = yHeight * 16; y < (yHeight+1) * 16; y++) {
-            for (int x = 0; x < 16; x++) {
-                for (int z = 0; z < 16; z++) {
-                    if (thisChunk.block[y][x][z] != 0){
-                        return true;
-                    }
-                }
+        for (int i = 0; i < chunkArrayLength; i++) {
+            if (thisChunk.block[i] != 0){
+                return true;
             }
         }
         return false;
@@ -174,11 +172,15 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
+
         String key = chunkX + " " + chunkZ;
+
         ChunkObject thisChunk = map.get(key);
+
         if (thisChunk == null){
             return false;
         }
+
         if (thisChunk.block == null){
             return false;
         }
@@ -194,15 +196,19 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
+
         String key = chunkX + " " + chunkZ;
+
         ChunkObject thisChunk = map.get(key);
         if (thisChunk == null){
             return -1;
         }
+
         if (thisChunk.block == null){
             return -1;
         }
-        return thisChunk.block[y][blockX][blockZ];
+
+        return thisChunk.block[posToIndex(blockX, y, blockZ)];
     }
 
     public static byte getBlockRotation(int x, int y, int z){
@@ -221,7 +227,7 @@ public class Chunk {
         if (thisChunk.block == null){
             return 0;
         }
-        return thisChunk.rotation[y][blockX][blockZ];
+        return thisChunk.rotation[posToIndex(blockX, y, blockZ)];
     }
 
     public static void setBlock(int x,int y,int z, int newBlock, int rot){
@@ -242,12 +248,14 @@ public class Chunk {
         if (thisChunk.block == null){
             return;
         }
-        thisChunk.block[y][blockX][blockZ] = newBlock;
-        thisChunk.rotation[y][blockX][blockZ] = (byte)rot;
+
+        thisChunk.block[posToIndex(blockX, y, blockZ)] = newBlock;
+        thisChunk.rotation[posToIndex(blockX, y, blockZ)] = (byte)rot;
+
         if (newBlock == 0){
             if (thisChunk.heightMap[blockX][blockZ] == y){
                 for (int yCheck = thisChunk.heightMap[blockX][blockZ]; yCheck > 0; yCheck--){
-                    if (thisChunk.block[yCheck][blockX][blockZ] != 0){
+                    if (thisChunk.block[posToIndex(blockX, yCheck, blockZ)] != 0){
                         thisChunk.heightMap[blockX][blockZ] = (byte) yCheck;
                         break;
                     }
@@ -258,7 +266,9 @@ public class Chunk {
                 thisChunk.heightMap[blockX][blockZ] = (byte) y;
             }
         }
+
         thisChunk.modified = true;
+
         chunkUpdate(chunkX,chunkZ,yPillar);
         updateNeighbor(chunkX, chunkZ,blockX,y,blockZ);
     }
@@ -282,7 +292,7 @@ public class Chunk {
         if (thisChunk.block == null){
             return;
         }
-        thisChunk.light[y][blockX][blockZ] = newLight;
+        thisChunk.light[posToIndex(blockX, y, blockZ)] = newLight;
         chunkUpdate(chunkX,chunkZ,yPillar);
         updateNeighbor(chunkX, chunkZ,blockX,y,blockZ);
     }
@@ -292,11 +302,14 @@ public class Chunk {
         if (y > 127 || y < 0){
             return;
         }
+
         int yPillar = (int)Math.floor(y/16d);
+
         int chunkX = (int)Math.floor(x/16d);
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
+
         String key = chunkX + " " + chunkZ;
         ChunkObject thisChunk = map.get(key);
 
@@ -306,19 +319,14 @@ public class Chunk {
         if (thisChunk.block == null){
             return;
         }
-        thisChunk.block[y][blockX][blockZ] = 0;
-        thisChunk.rotation[y][blockX][blockZ] = 0;
-
-        System.out.println("------");
-        System.out.println(posToIndex(blockX, y, blockZ));
-        Vector3i testPos = indexToPos(posToIndex(blockX,y,blockZ));
-        System.out.println(testPos.x + " " + testPos.y + " " + testPos.z);
-        System.out.println(blockX + " " + y + " " + blockZ + "<- real");
-        System.out.println("------");
+        thisChunk.block[posToIndex(blockX, y, blockZ)] = 0;
+        thisChunk.rotation[posToIndex(blockX, y, blockZ)] = 0;
 
         if (thisChunk.heightMap[blockX][blockZ] == y){
+
             for (int yCheck = thisChunk.heightMap[blockX][blockZ]; yCheck > 0; yCheck--){
-                if (thisChunk.block[yCheck][blockX][blockZ] != 0){
+
+                if (thisChunk.block[posToIndex(blockX, yCheck, blockZ)] != 0){
                     thisChunk.heightMap[blockX][blockZ] = (byte) yCheck;
                     break;
                 }
@@ -342,13 +350,6 @@ public class Chunk {
         int blockX = (x - (16*chunkX));
         int blockZ = (z - (16*chunkZ));
 
-        System.out.println("------");
-        System.out.println(posToIndex(blockX, y, blockZ));
-        Vector3i testPos = indexToPos(posToIndex(blockX,y,blockZ));
-        System.out.println(testPos.x + " " + testPos.y + " " + testPos.z);
-        System.out.println(blockX + " " + y + " " + blockZ + "<- real");
-        System.out.println("------");
-
         String key = chunkX + " " + chunkZ;
         ChunkObject thisChunk = map.get(key);
 
@@ -359,8 +360,8 @@ public class Chunk {
             return;
         }
 
-        thisChunk.block[y][blockX][blockZ] = ID;
-        thisChunk.rotation[y][blockX][blockZ] = (byte) rot;
+        thisChunk.block[posToIndex(blockX, y, blockZ)] = ID;
+        thisChunk.rotation[posToIndex(blockX, y, blockZ)] = (byte) rot;
 
         if (thisChunk.heightMap[blockX][blockZ] < y){
             thisChunk.heightMap[blockX][blockZ] = (byte) y;
@@ -380,7 +381,9 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
+
         String key = chunkX + " " + chunkZ;
+
         ChunkObject thisChunk = map.get(key);
         if (thisChunk == null){
             return 0;
@@ -388,7 +391,8 @@ public class Chunk {
         if (thisChunk.light == null){
             return 0;
         }
-        return thisChunk.light[y][blockX][blockZ];
+
+        return thisChunk.light[posToIndex(blockX, y, blockZ)];
     }
 
     private static void instantUpdateNeighbor(int chunkX, int chunkZ, int x, int y, int z){
@@ -637,7 +641,7 @@ public class Chunk {
                             }
                         }
 
-                        thisChunk.block[y][x][z] = currBlock;
+                        thisChunk.block[posToIndex(x, y, z)] = currBlock;
 
                         if (height >= waterHeight) {
                             thisChunk.heightMap[x][z] = height;
@@ -646,9 +650,9 @@ public class Chunk {
                         }
 
                         if (gennedSand || gennedGrass) {
-                            thisChunk.light[y][x][z] = 0;
+                            thisChunk.light[posToIndex(x, y, z)] = 0;
                         } else {
-                            thisChunk.light[y][x][z] = 15;
+                            thisChunk.light[posToIndex(x, y, z)] = 15;
                         }
                     }
                 }

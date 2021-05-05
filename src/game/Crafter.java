@@ -101,9 +101,9 @@ public class Crafter {
             countFPS();
             updateWorldChunkLoader();
             chunkUpdater();
-            indexLight();
             renderGame();
             windowUpdate();
+            indexLight();
             updateListenerPosition();
 
             while (accumulator >= 1_000_000){
@@ -203,7 +203,7 @@ public class Crafter {
             setPlayerRunning(false);
         }
 
-        /* OLD INVENTORY CYCLING DEBUG
+
         if (isKeyPressed(GLFW_KEY_R)) {
             if (!rButtonPushed) {
                 rButtonPushed = true;
@@ -213,8 +213,6 @@ public class Crafter {
         } else if (!isKeyPressed(GLFW_KEY_R)){
             rButtonPushed = false;
         }
-
-         */
 
 
         if (isKeyPressed(GLFW_KEY_Q)) {

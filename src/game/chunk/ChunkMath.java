@@ -15,29 +15,18 @@ public class ChunkMath {
     private static final int zStride = 16 * 128;
 
     public static int posToIndex(int x, int y, int z){
-        int index;
-        index = z * zStride +
+        return z * zStride +
                 y * yStride +
-                x + 1;
-        return index;
+                x;
     }
 
     public static Vector3i indexToPos(int i){
-
         Vector3i position = new Vector3i();
-
-        i -= 1;
-
         position.z = (i / zStride);
-
         i %= zStride;
-
         position.y = (i / yStride);
-
         i %= yStride;
-
         position.x = i;
-
         return position;
     }
 }
