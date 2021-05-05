@@ -21,26 +21,39 @@ public class ItemDefinition {
 
     public final String name;
     public int blockID;
-    public final Mesh mesh;
+
     public final boolean isTool;
     public final ItemModifier itemModifier;
     public boolean isRightClickable;
     public boolean isOnPlaced;
 
+    //public Mesh mesh = new Mesh();
+
+    //overhead variable constants
+    public String texturePath;
+    public Texture texture;
+    public float[] positionsArray;
+    public float[] lightArray;
+    public int[] indicesArray;
+    public float[] textureCoordArray;
+
+    //block item
     public ItemDefinition(String name, int blockID){
         this.name = name;
         this.blockID = blockID;
-        this.mesh = createItemInventoryMesh(blockID);
+        createItemBlockMesh(blockID, this);
         this.isTool = false;
         this.itemModifier = null;
         this.isRightClickable = getRightClickable(blockID);
         this.isOnPlaced = getIsOnPlaced(blockID);
     }
 
+    //tool item
     public ItemDefinition(String name, String texturePath, ItemModifier itemModifier){
         this.name = name;
-        this.mesh = createItemObjectMesh(texturePath);
+        this.texturePath = texturePath;
         this.isTool = true;
+        createItemToolMesh(texturePath, this);
         this.itemModifier = itemModifier;
     }
 
@@ -60,7 +73,7 @@ public class ItemDefinition {
         return definitions.get(name);
     }
 
-    public static Mesh createItemInventoryMesh(int blockID) {
+    public static void createItemBlockMesh(int blockID, ItemDefinition self) {
 
         int indicesCount = 0;
 
@@ -390,11 +403,18 @@ public class ItemDefinition {
             textureCoordArray[i] = (float)textureCoord.get(i);
         }
 
-       return new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, getTextureAtlas());
+        self.texture = getTextureAtlas();
+
+        self.positionsArray = positionsArray;
+        self.lightArray = lightArray;
+        self.indicesArray = indicesArray;
+        self.textureCoordArray = textureCoordArray;
+
+       //return new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, getTextureAtlas());
     }
 
 
-    public static Mesh createItemObjectMesh(String texturePath){
+    public static void createItemToolMesh(String texturePath, ItemDefinition self){
         int indicesCount = 0;
 
         ArrayList positions     = new ArrayList();
@@ -761,8 +781,14 @@ public class ItemDefinition {
             e.printStackTrace();
         }
 
+        self.texture = thisTexture;
 
-        return new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, thisTexture);
+        self.positionsArray = positionsArray;
+        self.lightArray = lightArray;
+        self.indicesArray = indicesArray;
+        self.textureCoordArray = textureCoordArray;
+
+        //return new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, thisTexture);
     }
 
     public static ItemDefinition getRandomItemDefinition(){
@@ -773,9 +799,9 @@ public class ItemDefinition {
 
     public static void cleanUp(){
         for (ItemDefinition thisDefinition : definitions.values()){
-            if (thisDefinition.mesh != null){
-                thisDefinition.mesh.cleanUp(true);
-            }
+            //if (thisDefinition.mesh != null){
+                //thisDefinition.mesh.cleanUp(true);
+            //}
         }
     }
 }

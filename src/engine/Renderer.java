@@ -272,7 +272,7 @@ public class Renderer {
                 thisMesh.render();
             } else {
 
-                Mesh thisMesh = getItemInInventorySlot(getPlayerInventorySelection(),0).definition.mesh;
+                Mesh thisMesh = getItemInInventorySlot(getPlayerInventorySelection(),0).mesh;
                 modelViewMatrix = getGenericMatrixWithPosRotationScale(getWieldHandAnimationPos(), getWieldHandAnimationRot(), new Vector3d(20d, 20d, 20d), new Matrix4d());
                 hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 thisMesh.render();
@@ -378,7 +378,7 @@ public class Renderer {
                                 modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d((x - 5) * (windowScale / 9.5d), ((y + 0.3d) * (windowScale / 9.5d)) - (windowScale / 55d), 0), new Vector3f(45, 45, 0), new Vector3d(windowScale / 8d, windowScale / 8d, windowScale / 8d));
                             }
                             hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                            getItemInInventorySlot(x - 1, ((y * -1) - 1)).definition.mesh.render();
+                            getItemInInventorySlot(x - 1, ((y * -1) - 1)).mesh.render();
 
 
                             if (getItemInInventorySlot(x - 1, ((y * -1) - 1)).stack > 1) {
@@ -414,7 +414,7 @@ public class Renderer {
                         }
 
                         hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                        getItemInInventorySlot(x - 1, 0).definition.mesh.render();
+                        getItemInInventorySlot(x - 1, 0).mesh.render();
 
                         glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -460,7 +460,8 @@ public class Renderer {
 
                         modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d((float) mousePos.x, (float) mousePos.y - (windowScale / 55d), 0), new Vector3f(45, 45, 0), new Vector3d(windowScale / 8d, windowScale / 8d, windowScale / 8d));
                         hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                        getItemDefinition(getMouseInventory().name).mesh.render();
+
+                        getMouseInventory().mesh.render();
 
                         glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -599,7 +600,7 @@ public class Renderer {
 
                         modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((x - 5d) * (windowScale / 9.1d)),  (-windowSize.y / 2d) + (windowScale / 24d), 0), new Vector3f(45, 45, 0), new Vector3d(windowScale / 8d, windowScale / 8d, windowScale / 8d));
                         hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                        getItemInInventorySlot(x - 1, 0).definition.mesh.render();
+                        getItemInInventorySlot(x - 1, 0).mesh.render();
 
 
                         glClear(GL_DEPTH_BUFFER_BIT);

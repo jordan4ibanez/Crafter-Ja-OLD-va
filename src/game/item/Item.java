@@ -3,8 +3,12 @@ package game.item;
 import engine.graph.Mesh;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
+import org.joml.Vector3i;
+
+import java.util.Arrays;
 
 import static engine.FancyMath.randomForceValue;
+import static game.chunk.ChunkMesh.getTextureAtlas;
 import static game.item.ItemDefinition.getItemDefinition;
 
 public class Item {
@@ -23,16 +27,20 @@ public class Item {
     public Vector3f rotation;
     public Vector3f inertia;
     public int ID;
-    public final Mesh mesh;
-    public byte light = 0;
-    public static float lightUpdateTimer = 1f;
+
+    public Mesh mesh;
+    public byte light = 15;
+    public float lightUpdateTimer = 1f;
+    public Vector3i oldFlooredPos = new Vector3i(0,0,0);
+
 
     //inventory item
     public Item(String name, int stack){
         this.name = name;
         this.definition = getItemDefinition(name);
         this.stack = stack;
-        this.mesh = getItemDefinition(name).mesh;
+
+        rebuildLightMesh(this);
     }
 
     //item being mined
@@ -50,7 +58,9 @@ public class Item {
         this.scale = 1f;
         this.timer = 0f;
         this.ID = currentID;
-        this.mesh = getItemDefinition(name).mesh;
+
+        rebuildLightMesh(this);
+
         currentID++;
     }
 
@@ -69,7 +79,8 @@ public class Item {
         this.scale = 1f;
         this.timer = life;
         this.ID = currentID;
-        this.mesh = getItemDefinition(name).mesh;
+
+        rebuildLightMesh(this);
         currentID++;
     }
 
@@ -88,7 +99,8 @@ public class Item {
         this.scale = 1f;
         this.timer = 0f;
         this.ID = currentID;
-        this.mesh = getItemDefinition(name).mesh;
+
+        rebuildLightMesh(this);
         currentID++;
     }
 
@@ -107,8 +119,35 @@ public class Item {
         this.scale = 1f;
         this.timer = life;
         this.ID = currentID;
-        this.mesh = getItemDefinition(name).mesh;
+
+        rebuildLightMesh(this);
         currentID++;
+    }
+
+
+    public void rebuildLightMesh(Item self) {
+        ItemDefinition temp = getItemDefinition(self.name);
+
+        //clean up old mesh - this causes a texture null pointer
+        /*
+        if (self.mesh != null){
+            //don't delete the world texture
+            boolean cleanUpTexture = (temp.texture != getTextureAtlas());
+            System.out.println(cleanUpTexture);
+            self.mesh.cleanUp(cleanUpTexture);
+        }
+         */
+
+        //clone the light array
+        float[] newLightArray = new float[temp.lightArray.length];
+
+        //convert the 0-15 light value to 0.0-1.0
+        float floatedLightValue = (float)self.light/15f;
+        //System.out.println(self.light);
+
+        Arrays.fill(newLightArray, floatedLightValue);
+
+        self.mesh = new Mesh(temp.positionsArray, newLightArray, temp.indicesArray, temp.textureCoordArray, temp.texture);
     }
 
     //this is for the ItemEntity class to create

@@ -2,6 +2,7 @@ package game.item;
 
 import org.joml.Vector3d;
 import org.joml.Vector3f;
+import org.joml.Vector3i;
 
 import java.util.*;
 
@@ -10,12 +11,12 @@ import static engine.sound.SoundAPI.playSound;
 import static game.chunk.Chunk.getLight;
 import static game.collision.Collision.applyInertia;
 import static game.item.Item.getCurrentID;
-import static game.item.Item.lightUpdateTimer;
 import static game.player.Inventory.addItemToInventory;
 import static game.player.Player.getPlayerPosWithCollectionHeight;
 
 public class ItemEntity {
     private final static Map<Integer, Item> items = new HashMap<>();
+
     private final static float itemSize = 0.4f;
 
     public static void createItem(String name, Vector3d pos, int stack){
@@ -44,13 +45,26 @@ public class ItemEntity {
         for (Item thisItem : items.values()){
 
             thisItem.timer += 0.001f;
-            lightUpdateTimer += 0.001f;
+            thisItem.lightUpdateTimer += 0.001f;
+
+            Vector3i currentFlooredPos = new Vector3i((int)Math.floor(thisItem.pos.x), (int)Math.floor(thisItem.pos.y), (int)Math.floor(thisItem.pos.z));
 
             //poll local light every half second
-            if (lightUpdateTimer >= 0.5f){
-                thisItem.light = getLight((int)thisItem.pos.x, (int)thisItem.pos.y, (int)thisItem.pos.z);
-                lightUpdateTimer = 0f;
+            if (thisItem.lightUpdateTimer >= 0.5f || !currentFlooredPos.equals(thisItem.oldFlooredPos)){
+
+                byte newLight = getLight(currentFlooredPos.x, currentFlooredPos.y, currentFlooredPos.z);
+
+                //don't do extra work if nothing changed
+                if (newLight != thisItem.light){
+                    thisItem.light = newLight;
+                    //System.out.println("rebuild light mesh");
+                    thisItem.rebuildLightMesh(thisItem);
+                }
+
+                thisItem.lightUpdateTimer = 0f;
             }
+
+            thisItem.oldFlooredPos = currentFlooredPos;
 
             //System.out.println(lightUpdateTimer);
             //System.out.println(thisItem.light);

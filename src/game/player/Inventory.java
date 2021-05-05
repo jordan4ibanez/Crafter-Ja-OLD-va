@@ -125,6 +125,7 @@ public class Inventory {
     }
 
     public static void setMouseInventory(Item newItem){
+        System.out.println("clean up old item mesh");
         mouseInventory = newItem;
     }
 

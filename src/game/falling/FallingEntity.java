@@ -19,7 +19,8 @@ public class FallingEntity {
     private static int currentID = 0;
 
     public static void addFallingEntity(Vector3d pos, Vector3f inertia, int blockID){
-        objects.put(currentID, new FallingEntityObject(pos, inertia, getItemDefinition(getBlockName(blockID)).mesh, currentID));
+        System.out.println("falling entities are disabled, fix this");
+        //objects.put(currentID, new FallingEntityObject(pos, inertia, getItemDefinition(getBlockName(blockID)).mesh, currentID));
         currentID++;
     }
 
