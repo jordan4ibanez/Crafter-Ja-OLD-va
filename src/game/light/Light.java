@@ -1,13 +1,14 @@
 package game.light;
 
 import org.joml.Vector3f;
+import org.joml.Vector3i;
 
 import java.util.*;
 
 import static game.chunk.Chunk.*;
 
 public class Light {
-    private static final Deque<Vector3f> queue = new ArrayDeque<>();
+    private static final Deque<Vector3i> queue = new ArrayDeque<>();
     private static final Deque<LightUpdate> lightSources = new ArrayDeque<>();
 
     private static final byte maxLightLevel = 15;
@@ -17,18 +18,18 @@ public class Light {
     private static final byte[][][] memoryMap = new byte[(lightDistance * 2) + 1][(lightDistance * 2) + 1][(lightDistance * 2) + 1];
 
     public static void lightFloodFill(int posX, int posY, int posZ) {
-        queue.add(new Vector3f(posX, posY, posZ));
+        queue.add(new Vector3i(posX, posY, posZ));
     }
 
     public static void indexLight(){
         new Thread(() -> {
             if (!queue.isEmpty()) {
 
-                Vector3f tempObject = queue.pop();
+                Vector3i tempObject = queue.pop();
 
-                int posX = (int) tempObject.x;
-                int posY = (int) tempObject.y;
-                int posZ = (int) tempObject.z;
+                int posX = tempObject.x;
+                int posY = tempObject.y;
+                int posZ = tempObject.z;
 
                 for (int x = posX - lightDistance; x <= posX + lightDistance; x++) {
                     for (int y = posY - lightDistance; y <= posY + lightDistance; y++) {
