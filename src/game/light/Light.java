@@ -9,8 +9,7 @@ import static game.chunk.Chunk.*;
 
 public class Light {
     private static final Deque<Vector3i> queue = new ArrayDeque<>();
-    private static final Deque<LightUpdate> lightSources = new ArrayDeque<>();
-
+    
     private static final byte maxLightLevel = 15;
     private static final byte blockIndicator = 127;
     private static final byte lightDistance = 15;
@@ -23,7 +22,10 @@ public class Light {
 
     public static void indexLight(){
         new Thread(() -> {
-            if (!queue.isEmpty()) {
+            //double check
+            while (!queue.isEmpty()) {
+
+                final Deque<LightUpdate> lightSources = new ArrayDeque<>();
 
                 Vector3i tempObject = queue.pop();
 
