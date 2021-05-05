@@ -104,6 +104,7 @@ public class Crafter {
             indexLight();
             renderGame();
             windowUpdate();
+            updateListenerPosition();
 
             while (accumulator >= 1_000_000){
                 gameUpdate();
@@ -302,7 +303,6 @@ public class Crafter {
     private static void gameUpdate() throws Exception {
         testPlayerDiggingAnimation();
         playerOnTick();
-        updateListenerPosition();
         ItemEntity.onStep();
         TNTEntity.onTNTStep();
         hudOnStepTest();

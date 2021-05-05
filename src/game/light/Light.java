@@ -8,7 +8,7 @@ import static game.chunk.Chunk.*;
 
 public class Light {
     private static final Deque<Vector3f> queue = new ArrayDeque<>();
-    private static final Deque<LightUpdate> lightSources = new ArrayDeque<>();;
+    private static final Deque<LightUpdate> lightSources = new ArrayDeque<>();
 
     private static final byte maxLightLevel = 15;
     private static final byte blockIndicator = 127;

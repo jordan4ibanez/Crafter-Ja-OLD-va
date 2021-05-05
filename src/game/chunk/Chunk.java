@@ -6,6 +6,7 @@ import engine.graph.Mesh;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static engine.disk.Disk.*;
 import static engine.disk.SaveQueue.instantSave;
@@ -18,7 +19,7 @@ import static game.player.Player.getPlayerPos;
 
 public class Chunk {
 
-    private static final Map<String, ChunkObject> map = new HashMap<>();
+    private static final ConcurrentHashMap<String, ChunkObject> map = new ConcurrentHashMap<>();
 
     public static Collection<ChunkObject> getMap(){
         return map.values();
@@ -268,6 +269,7 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
+
         String key = chunkX + " " + chunkZ;
         ChunkObject thisChunk = map.get(key);
 
@@ -375,6 +377,7 @@ public class Chunk {
         if (y > 127 || y < 0){
             return;
         }
+
         int yPillar = (int)Math.floor(y/16d);
         switch (y){
             case 112:
