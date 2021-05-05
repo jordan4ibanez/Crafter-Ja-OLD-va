@@ -17,13 +17,12 @@ public class Light {
 
     public static void lightFloodFill(int posX, int posY, int posZ) {
         queue.add(new Vector3i(posX, posY, posZ));
-        indexLight();
     }
 
     public static void indexLight(){
         new Thread(() -> {
             //double check
-            if (!queue.isEmpty()) {
+            while (!queue.isEmpty()) {
 
                 final Deque<LightUpdate> lightSources = new ArrayDeque<>();
                 final byte[][][] memoryMap = new byte[(lightDistance * 2) + 1][(lightDistance * 2) + 1][(lightDistance * 2) + 1];

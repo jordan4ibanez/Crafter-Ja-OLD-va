@@ -16,6 +16,7 @@ import static engine.disk.Disk.*;
 import static engine.disk.SaveQueue.startSaveThread;
 import static game.chunk.Chunk.*;
 import static game.chunk.ChunkMesh.generateChunkMesh;
+import static game.chunk.ChunkMesh.popChunkMeshQueue;
 import static game.chunk.ChunkUpdateHandler.chunkUpdater;
 import static engine.Hud.*;
 import static engine.MouseInput.*;
@@ -101,10 +102,11 @@ public class Crafter {
             updateCamera();
             countFPS();
             updateWorldChunkLoader();
+            indexLight();
             chunkUpdater();
             renderGame();
             windowUpdate();
-            //indexLight();
+            popChunkMeshQueue();
             updateListenerPosition();
 
             while (accumulator >= 1_000_000){
