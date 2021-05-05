@@ -2,18 +2,15 @@ package game.chunk;
 
 import engine.FastNoise;
 import engine.graph.Mesh;
-import org.joml.Vector3i;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static engine.disk.Disk.*;
 import static engine.disk.SaveQueue.instantSave;
 import static engine.disk.SaveQueue.saveChunk;
 import static game.Crafter.getChunkRenderDistance;
-import static game.chunk.ChunkMath.indexToPos;
 import static game.chunk.ChunkMath.posToIndex;
 import static game.chunk.ChunkMesh.generateChunkMesh;
 import static game.chunk.ChunkUpdateHandler.chunkUpdate;
@@ -562,11 +559,23 @@ public class Chunk {
     }
 
     private static final FastNoise noise = new FastNoise();
-    private static final int heightAdder = 40;
+    private static final double heightAdder = 40;
     private static final byte dirtHeight = 4;
     private static final byte waterHeight = 50;
 
+
+
     public static void genBiome(int chunkX, int chunkZ) {
+
+        double dirtHeightRandom;
+        boolean gennedSand;
+        boolean gennedWater;
+        boolean gennedGrass;
+        byte generationX;
+        byte generationY;
+        byte generationZ;
+        short currBlock;
+        byte height;
 
         ChunkObject loadedChunk = loadChunkFromDisk(chunkX, chunkZ);
 
@@ -580,31 +589,33 @@ public class Chunk {
                 return;
             }
 
-            short currBlock;
-            byte height;
-
             thisChunk = map.get(chunkX + " " + chunkZ);
 
             thisChunk.modified = true;
 
-            for (int x = 0; x < 16; x++) {
-                for (int z = 0; z < 16; z++) {
-                    boolean gennedSand = false;
-                    boolean gennedWater = false;
-                    boolean gennedGrass = false;
-                    double dirtHeightRandom =  Math.floor(Math.random() * 2d);
+            for (generationX = 0; generationX < 16; generationX++) {
+                for (generationZ = 0; generationZ < 16; generationZ++) {
+                    gennedSand = false;
+                    gennedWater = false;
+                    gennedGrass = false;
+                    dirtHeightRandom =  Math.floor(Math.random() * 2d);
 
-                    height = (byte) (Math.abs(noise.GetCubicFractal((chunkX * 16) + x, (chunkZ * 16) + z)) * 127 + heightAdder);
+                    //this casting is all over the place todo: fix this
+                    height = (byte) (Math.abs(noise.GetPerlin((float)((chunkX * 16d) + (double) generationX), (float)((chunkZ * 16d) + (double) generationZ)) * 127 + heightAdder));
 
-                    for (int y = 127; y >= 0; y--) {
+                    if (height < 6){
+                        height = 6;
+                    }
+
+                    for (generationY = 127; generationY >= 0; generationY--) {
 
                         //bedrock
-                        if (y <= 0 + dirtHeightRandom) {
+                        if (generationY <= 0 + dirtHeightRandom) {
                             currBlock = 5;
                             //grass gen
-                        } else if (y == height && y >= waterHeight) {
+                        } else if (generationY == height && generationY >= waterHeight) {
 
-                            if (y <= waterHeight + 1) {
+                            if (generationY <= waterHeight + 1) {
                                 currBlock = 20;
                                 gennedSand = true;
                             } else {
@@ -612,7 +623,7 @@ public class Chunk {
                                 gennedGrass = true;
                             }
                             //dirt/sand gen
-                        } else if (y < height && y >= height - dirtHeight - dirtHeightRandom) {
+                        } else if (generationY < height && generationY >= height - dirtHeight - dirtHeightRandom) {
                             if (gennedSand || gennedWater) {
                                 gennedSand = true;
                                 currBlock = 20;
@@ -621,8 +632,8 @@ public class Chunk {
                             }
 
                             //stone gen
-                        } else if (y < height - dirtHeight) {
-                            if (y <= 30 && y > 0) {
+                        } else if (generationY < height - dirtHeight) {
+                            if (generationY <= 30 && generationY > 0) {
                                 if (Math.random() > 0.95) {
                                     currBlock = (short) Math.floor(8 + (Math.random() * 8));
                                 } else {
@@ -633,7 +644,7 @@ public class Chunk {
                             }
                             //water gen
                         } else {
-                            if (y <= waterHeight) {
+                            if (generationY <= waterHeight) {
                                 currBlock = 7;
                                 gennedWater = true;
                             } else {
@@ -641,18 +652,18 @@ public class Chunk {
                             }
                         }
 
-                        thisChunk.block[posToIndex(x, y, z)] = currBlock;
+                        thisChunk.block[posToIndex(generationX, generationY, generationZ)] = currBlock;
 
                         if (height >= waterHeight) {
-                            thisChunk.heightMap[x][z] = height;
+                            thisChunk.heightMap[generationX][generationZ] = height;
                         } else {
-                            thisChunk.heightMap[x][z] = waterHeight;
+                            thisChunk.heightMap[generationX][generationZ] = waterHeight;
                         }
 
                         if (gennedSand || gennedGrass) {
-                            thisChunk.light[posToIndex(x, y, z)] = 0;
+                            thisChunk.light[posToIndex(generationX, generationY, generationZ)] = 0;
                         } else {
-                            thisChunk.light[posToIndex(x, y, z)] = 15;
+                            thisChunk.light[posToIndex(generationX, generationY, generationZ)] = 15;
                         }
                     }
                 }
