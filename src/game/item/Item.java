@@ -9,7 +9,6 @@ import java.util.Arrays;
 
 import static engine.FancyMath.randomForceValue;
 import static game.chunk.ChunkMesh.convertLight;
-import static game.chunk.ChunkMesh.getTextureAtlas;
 import static game.item.ItemDefinition.getItemDefinition;
 
 public class Item {

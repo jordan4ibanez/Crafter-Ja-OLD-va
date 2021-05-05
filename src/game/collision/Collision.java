@@ -105,7 +105,7 @@ public class Collision {
     //these are class/method caches!! NOT FIELDS!
     private static Vector3d fPos;
     private static boolean onGround;
-    private static int x,y,z;
+    private static double x,y,z;
     private static int cachedBlock;
     private static Vector3d cachedPos = new Vector3d(0d,0d,0d);
 
@@ -140,7 +140,7 @@ public class Collision {
                 byte rot =  detectRot(cachedPos);
 
                 if (cachedBlock > 0 && isWalkable(cachedBlock)) {
-                    onGround = sneakCollideYNegative((int) fPos.x + x, (int)fPos.y, (int) fPos.z + z, rot, clonedPos, clonedInertia, width, height, onGround, cachedBlock);
+                    onGround = sneakCollideYNegative((int)(fPos.x + x), (int)fPos.y, (int)(fPos.z + z), rot, clonedPos, clonedInertia, width, height, onGround, cachedBlock);
                 }
             }
         }
@@ -174,7 +174,7 @@ public class Collision {
                 byte rot =  detectRot(cachedPos);
 
                 if (cachedBlock > 0 && isWalkable(cachedBlock)) {
-                    onGround = sneakCollideYNegative((int) fPos.x + x, (int)fPos.y, (int) fPos.z + z, rot, clonedPos, clonedInertia, width, height, onGround, cachedBlock);
+                    onGround = sneakCollideYNegative((int)(fPos.x + x), (int)fPos.y, (int)(fPos.z + z), rot, clonedPos, clonedInertia, width, height, onGround, cachedBlock);
                 }
             }
         }
@@ -249,7 +249,7 @@ public class Collision {
                             byte rot =  detectRot(cachedPos);
 
                             if (cachedBlock > 0 && isWalkable(cachedBlock)) {
-                                onGround = collideYNegative((int) fPos.x + x, y, (int) fPos.z + z, rot, pos, inertia, width, height, onGround, cachedBlock);
+                                onGround = collideYNegative((int)(fPos.x + x), (int)y, (int)(fPos.z + z), rot, pos, inertia, width, height, onGround, cachedBlock);
                             }
                         }
                     }
@@ -266,7 +266,7 @@ public class Collision {
                             byte rot =  detectRot(cachedPos);
 
                             if (cachedBlock > 0 && isWalkable(cachedBlock)) {
-                                collideYPositive((int) fPos.x + x, y, (int) fPos.z + z, rot, pos, inertia, width, height, cachedBlock);
+                                collideYPositive((int)(fPos.x + x), (int)y, (int)(fPos.z + z), rot, pos, inertia, width, height, cachedBlock);
                             }
                         }
                     }
@@ -284,13 +284,14 @@ public class Collision {
         fPos = floorPos(new Vector3d(pos));
 
         //this must start at -1f (loops through every position
-        for (float yy = -1f; yy <= height + 1f; yy = yy + 1f) {
+        for (float yy =-1; yy <= height + 1; yy++) {
             for (x = -1; x <= 1; x++) {
                 for (z = -1; z <= 1; z++) {
+
                     //update to polling position
-                    cachedPos.x = fPos.x + x;
-                    cachedPos.y = pos.y + yy;
-                    cachedPos.z = fPos.z + z;
+                    cachedPos.x = Math.floor(fPos.x + x);
+                    cachedPos.y = Math.floor(pos.y + yy);
+                    cachedPos.z = Math.floor(fPos.z + z);
 
                     //get block ID
                     cachedBlock = detectBlock(floorPos(cachedPos));
@@ -315,13 +316,13 @@ public class Collision {
         fPos = floorPos(new Vector3d(pos));
 
         //this must start at -1f (loops through every position
-        for (float yy = -1f; yy <= height + 1f; yy = yy + 1f) {
+        for (float yy =-1; yy <= height + 1; yy++) {
             for (x = -1; x <= 1; x++) {
                 for (z = -1; z <= 1; z++) {
                     //update to polling position
-                    cachedPos.x = fPos.x + x;
-                    cachedPos.y = pos.y + yy;
-                    cachedPos.z = fPos.z + z;
+                    cachedPos.x = Math.floor(fPos.x + x);
+                    cachedPos.y = Math.floor(pos.y + yy);
+                    cachedPos.z = Math.floor(fPos.z + z);
 
                     //get block ID
                     cachedBlock = detectBlock(floorPos(cachedPos));
@@ -351,7 +352,7 @@ public class Collision {
                     byte rot =  detectRot(cachedPos);
 
                     if (cachedBlock > 0 && isBlockLiquid(cachedBlock)){
-                        detectIfInWater((int)fPos.x + x, (int)(yy + pos.y), (int) fPos.z + z, rot, pos, inertia, width, height, cachedBlock);
+                        detectIfInWater((int)(fPos.x + x), (int)(yy + pos.y), (int)(fPos.z + z), rot, pos, inertia, width, height, cachedBlock);
                     }
                 }
             }
@@ -383,7 +384,7 @@ public class Collision {
             setBlockBox(blockPosX,blockPosY,blockPosz,thisBlockBox);
             //this coordinate is not within enough distance to get affected by floating point precision
             if (isWithin() && BlockBoxGetTop() > AABBGetBottom() && AABBGetBottom() - BlockBoxGetTop() > -0.1d) {
-                pos.y = BlockBoxGetTop() + 0.001d; //players position needs to constantly change or else this breaks stairs/slabs
+                pos.y = BlockBoxGetTop() + 0.0001d; //players position needs to constantly change or else this breaks stairs/slabs
                 inertia.y = 0;
                 onGround = true;
             }
