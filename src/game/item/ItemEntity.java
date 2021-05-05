@@ -51,6 +51,7 @@ public class ItemEntity {
                 thisItem.light = getLight((int)thisItem.pos.x, (int)thisItem.pos.y, (int)thisItem.pos.z);
                 lightUpdateTimer = 0f;
             }
+
             //System.out.println(lightUpdateTimer);
             //System.out.println(thisItem.light);
 
@@ -60,6 +61,7 @@ public class ItemEntity {
                 continue;
             }
 
+            //collect items after 3 seconds
             if (thisItem.timer > 3f){
                 if (getDistance(thisItem.pos, getPlayerPosWithCollectionHeight()) < 3f){
                     if (!thisItem.collecting){
