@@ -20,6 +20,7 @@ import static game.chunk.ChunkUpdateHandler.chunkUpdater;
 import static engine.Hud.*;
 import static engine.MouseInput.*;
 import static game.falling.FallingEntity.fallingEntityOnStep;
+import static game.item.ItemEntity.clearItems;
 import static game.light.Light.indexLight;
 import static game.mob.Mob.*;
 import static game.particle.Particle.particlesOnStep;
@@ -196,6 +197,10 @@ public class Crafter {
             }
         }
 
+
+        if (isKeyPressed(GLFW_KEY_G)) {
+            clearItems();
+        }
 
         if (isKeyPressed(GLFW_KEY_R)) {
             setPlayerRunning(true);
