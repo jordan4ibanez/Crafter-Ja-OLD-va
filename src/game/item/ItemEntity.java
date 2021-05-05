@@ -43,7 +43,7 @@ public class ItemEntity {
             thisItem.timer += 0.001f;
 
             //delete items that are too old
-            if (thisItem.timer > 100f){
+            if (thisItem.timer > 50f){
                 deletionQueue.add(thisItem.ID);
                 continue;
             }
