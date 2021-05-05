@@ -382,8 +382,8 @@ public class Collision {
             setAABB(pos.x, pos.y, pos.z, width, height);
             setBlockBox(blockPosX,blockPosY,blockPosz,thisBlockBox);
             //this coordinate is not within enough distance to get affected by floating point precision
-            if (isWithin() && BlockBoxGetTop() > AABBGetBottom() && AABBGetBottom() - BlockBoxGetTop() > -0.1f) {
-                pos.y = BlockBoxGetTop() + 0.001f; //players position needs to constantly change or else this breaks stairs/slabs
+            if (isWithin() && BlockBoxGetTop() > AABBGetBottom() && AABBGetBottom() - BlockBoxGetTop() > -0.1d) {
+                pos.y = BlockBoxGetTop() + 0.001d; //players position needs to constantly change or else this breaks stairs/slabs
                 inertia.y = 0;
                 onGround = true;
             }
@@ -397,8 +397,8 @@ public class Collision {
             setBlockBox(blockPosX, blockPosY, blockPosz,thisBlockBox);
             //this coordinate is not within enough distance to get affected by floating point precision
             //head detection
-            if (isWithin() && BlockBoxGetBottom() < AABBGetTop() && AABBGetTop() - BlockBoxGetBottom() < 0.1f) {
-                pos.y = BlockBoxGetBottom() - height - 0.001f;
+            if (isWithin() && BlockBoxGetBottom() < AABBGetTop() && AABBGetTop() - BlockBoxGetBottom() < 0.1d) {
+                pos.y = BlockBoxGetBottom() - height - 0.001d;
                 inertia.y = 0;
             }
         }
@@ -414,27 +414,27 @@ public class Collision {
             setBlockBox(blockPosX, blockPosY, blockPosZ, thisBlockBox);
 
             //collide X negative
-            if ((float)blockPosX + 0.5f <= pos.x) {
-                if (isWithin() && BlockBoxGetRight() > AABBGetLeft() && BlockBoxGetRight() - AABBGetLeft() < 0.01f) {
-                    if (isSteppable(blockID) && AABBGetBottom() - BlockBoxGetTop() < -0.48f) {
+            if (blockPosX + 0.5d <= pos.x) {
+                if (isWithin() && BlockBoxGetRight() > AABBGetLeft() && BlockBoxGetRight() - AABBGetLeft() < 0.01d) {
+                    if (isSteppable(blockID) && AABBGetBottom() - BlockBoxGetTop() < -0.48d) {
                         //steppable
-                        pos.y = BlockBoxGetTop() + 0.0001f;
+                        pos.y = BlockBoxGetTop() + 0.0001d;
                     } else {
                         //not steppable
-                        pos.x = BlockBoxGetRight() + width + 0.001f;
+                        pos.x = BlockBoxGetRight() + width + 0.001d;
                         inertia.x /= 2f;
                     }
                 }
             }
             //collide X positive
-            if ((float)blockPosX + 0.5f >= pos.x) {
-                if (isWithin() && BlockBoxGetLeft() < AABBGetRight() && BlockBoxGetLeft() - AABBGetRight() > -0.01f) {
-                    if (isSteppable(blockID) && AABBGetBottom() - BlockBoxGetTop() < -0.48f) {
+            if (blockPosX + 0.5d >= pos.x) {
+                if (isWithin() && BlockBoxGetLeft() < AABBGetRight() && BlockBoxGetLeft() - AABBGetRight() > -0.01d) {
+                    if (isSteppable(blockID) && AABBGetBottom() - BlockBoxGetTop() < -0.48d) {
                         //steppable
-                        pos.y = BlockBoxGetTop() + 0.0001f;
+                        pos.y = BlockBoxGetTop() + 0.0001d;
                     } else {
                         //not steppable
-                        pos.x = BlockBoxGetLeft() - width - 0.001f;
+                        pos.x = BlockBoxGetLeft() - width - 0.001d;
                         inertia.x /= 2f;
                     }
                 }
@@ -443,29 +443,29 @@ public class Collision {
 
 
         //correction for the sides of stairs
-        if (isSteppable(blockID) && pos.y - oldPos.y > 0.51) {
+        if (isSteppable(blockID) && pos.y - oldPos.y > 0.51d) {
 
             pos.y = oldPos.y;
 
             //collide X negative
-            if ((float)blockPosX + 0.5f <= pos.x) {
+            if (blockPosX + 0.5d <= pos.x) {
                 for (double[] thisBlockBox : getBlockShape(blockID, rot)) {
                     setAABB(pos.x, pos.y, pos.z, width, height);
                     setBlockBox(blockPosX, blockPosY, blockPosZ, thisBlockBox);
-                    if (isWithin() && BlockBoxGetRight() > AABBGetLeft() && BlockBoxGetRight() - AABBGetLeft() < 0.01f) {
-                        pos.x = BlockBoxGetRight() + width + 0.001f;
+                    if (isWithin() && BlockBoxGetRight() > AABBGetLeft() && BlockBoxGetRight() - AABBGetLeft() < 0.01d) {
+                        pos.x = BlockBoxGetRight() + width + 0.001d;
                         inertia.x /= 2f;
                     }
                 }
             }
 
             //collide X positive
-            if ((float)blockPosX + 0.5f >= pos.x) {
+            if (blockPosX + 0.5d >= pos.x) {
                 for (double[] thisBlockBox : getBlockShape(blockID, rot)) {
                     setAABB(pos.x, pos.y, pos.z, width, height);
                     setBlockBox(blockPosX, blockPosY, blockPosZ, thisBlockBox);
-                    if (isWithin() && BlockBoxGetLeft() < AABBGetRight() && BlockBoxGetLeft() - AABBGetRight() > -0.01f) {
-                        pos.x = BlockBoxGetLeft() - width - 0.001f;
+                    if (isWithin() && BlockBoxGetLeft() < AABBGetRight() && BlockBoxGetLeft() - AABBGetRight() > -0.01d) {
+                        pos.x = BlockBoxGetLeft() - width - 0.001d;
                         inertia.x /= 2f;
                     }
                 }
@@ -483,27 +483,27 @@ public class Collision {
             setBlockBox(blockPosX, blockPosY, blockPosZ, thisBlockBox);
 
             //collide Z negative
-            if ((float)blockPosZ + 0.5f <= pos.z) {
-                if (isWithin() && BlockBoxGetBack() > AABBGetFront() && BlockBoxGetBack() - AABBGetFront() < 0.01f) {
-                    if (isSteppable(blockID) && AABBGetBottom() - BlockBoxGetTop() < -0.48f) {
+            if (blockPosZ + 0.5d <= pos.z) {
+                if (isWithin() && BlockBoxGetBack() > AABBGetFront() && BlockBoxGetBack() - AABBGetFront() < 0.01d) {
+                    if (isSteppable(blockID) && AABBGetBottom() - BlockBoxGetTop() < -0.48d) {
                         //steppable
-                        pos.y = BlockBoxGetTop() + 0.0001f;
+                        pos.y = BlockBoxGetTop() + 0.0001d;
                     }else {
                         //not steppable
-                        pos.z = BlockBoxGetBack() + width + 0.001f;
+                        pos.z = BlockBoxGetBack() + width + 0.001d;
                         inertia.z /= 2f;
                     }
                 }
             }
             //collide Z positive
-            if ((float)blockPosZ + 0.5f >= pos.z) {
-                if (isWithin() && BlockBoxGetFront() < AABBGetBack() && BlockBoxGetFront() - AABBGetBack() > -0.01f) {
-                    if (isSteppable(blockID) && AABBGetBottom() - BlockBoxGetTop() < -0.48f) {
+            if (blockPosZ + 0.5d >= pos.z) {
+                if (isWithin() && BlockBoxGetFront() < AABBGetBack() && BlockBoxGetFront() - AABBGetBack() > -0.01d) {
+                    if (isSteppable(blockID) && AABBGetBottom() - BlockBoxGetTop() < -0.48d) {
                         //steppable
-                        pos.y = BlockBoxGetTop() + 0.0001f;
+                        pos.y = BlockBoxGetTop() + 0.0001d;
                     } else {
                         //not steppable
-                        pos.z = BlockBoxGetFront() - width - 0.001f;
+                        pos.z = BlockBoxGetFront() - width - 0.001d;
                         inertia.z /= 2f;
                     }
                 }
@@ -511,29 +511,29 @@ public class Collision {
         }
 
         //correction for the sides of stairs
-        if (pos.y - oldPos.y > 0.51) {
+        if (pos.y - oldPos.y > 0.51d) {
 
             pos.y = oldPos.y;
 
             //collide Z negative
-            if ((float)blockPosZ + 0.5f <= pos.z) {
+            if (blockPosZ + 0.5d <= pos.z) {
                 for (double[] thisBlockBox : getBlockShape(blockID, rot)) {
                     setAABB(pos.x, pos.y, pos.z, width, height);
                     setBlockBox(blockPosX, blockPosY, blockPosZ, thisBlockBox);
-                    if (isWithin() && BlockBoxGetBack() > AABBGetFront() && BlockBoxGetBack() - AABBGetFront() < 0.01f) {
-                        pos.z = BlockBoxGetBack() + width + 0.001f;
+                    if (isWithin() && BlockBoxGetBack() > AABBGetFront() && BlockBoxGetBack() - AABBGetFront() < 0.01d) {
+                        pos.z = BlockBoxGetBack() + width + 0.001d;
                         inertia.z /= 2f;
                     }
                 }
             }
 
             //collide Z positive
-            if ((float)blockPosZ + 0.5f >= pos.z) {
+            if (blockPosZ + 0.5d >= pos.z) {
                 for (double[] thisBlockBox : getBlockShape(blockID, rot)) {
                     setAABB(pos.x, pos.y, pos.z, width, height);
                     setBlockBox(blockPosX, blockPosY, blockPosZ, thisBlockBox);
-                    if (isWithin() && BlockBoxGetFront() < AABBGetBack() && BlockBoxGetFront() - AABBGetBack() > -0.01f) {
-                        pos.z = BlockBoxGetFront() - width - 0.001f;
+                    if (isWithin() && BlockBoxGetFront() < AABBGetBack() && BlockBoxGetFront() - AABBGetBack() > -0.01d) {
+                        pos.z = BlockBoxGetFront() - width - 0.001d;
                         inertia.z /= 2f;
                     }
                 }

@@ -143,7 +143,7 @@ public class ParticleCollision {
         for (double[] thisBlockBox : getBlockShape(blockID, rot)) {
             setBlockBox(blockPosX,blockPosY,blockPosz,thisBlockBox);
             if (isWithin(pos)) {
-                pos.y = BlockBoxGetTop() + 0.0001f;
+                pos.y = BlockBoxGetTop() + 0.0001d;
                 inertia.y = 0;
                 onGround = true;
             }
@@ -156,7 +156,7 @@ public class ParticleCollision {
             setBlockBox(blockPosX, blockPosY, blockPosz,thisBlockBox);
             //head detection
             if (isWithin(pos)) {
-                pos.y = BlockBoxGetBottom() - 0.001f;
+                pos.y = BlockBoxGetBottom() - 0.001d;
                 inertia.y = 0;
             }
         }
@@ -166,7 +166,7 @@ public class ParticleCollision {
         for (double[] thisBlockBox : getBlockShape(blockID, rot)) {
             setBlockBox(blockPosX, blockPosY, blockPosz, thisBlockBox);
             if (isWithin(pos)) {
-                pos.x = BlockBoxGetLeft() - 0.001f;
+                pos.x = BlockBoxGetLeft() - 0.001d;
                 inertia.x = 0;
             }
         }
@@ -176,7 +176,7 @@ public class ParticleCollision {
         for (double[] thisBlockBox : getBlockShape(blockID, rot)) {
             setBlockBox(blockPosX, blockPosY, blockPosz, thisBlockBox);
             if (isWithin(pos)) {
-                pos.x = BlockBoxGetRight() + 0.001f;
+                pos.x = BlockBoxGetRight() + 0.001d;
                 inertia.x = 0;
             }
         }
@@ -187,7 +187,7 @@ public class ParticleCollision {
         for (double[] thisBlockBox : getBlockShape(blockID, rot)) {
             setBlockBox(blockPosX, blockPosY, blockPosz, thisBlockBox);
             if (isWithin(pos)) {
-                pos.z = BlockBoxGetFront() - 0.001f;
+                pos.z = BlockBoxGetFront() - 0.001d;
                 inertia.z = 0;
             }
         }
@@ -197,7 +197,7 @@ public class ParticleCollision {
         for (double[] thisBlockBox : getBlockShape(blockID, rot)) {
             setBlockBox(blockPosX, blockPosY, blockPosz, thisBlockBox);
             if (isWithin(pos)) {
-                pos.z = BlockBoxGetBack() + 0.001f;
+                pos.z = BlockBoxGetBack() + 0.001d;
                 inertia.z = 0;
             }
         }

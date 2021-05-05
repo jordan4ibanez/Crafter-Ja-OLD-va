@@ -22,8 +22,8 @@ public class FancyMath {
         return randomNumber(x) * randomDirFloat();
     }
 
-    public static float getDistance(Vector3d pos1, Vector3d pos2){
-        return (float)Math.hypot((pos1.x - pos2.x), Math.hypot((pos1.y - pos2.y), (pos1.z - pos2.z)));
+    public static double getDistance(Vector3d pos1, Vector3d pos2){
+        return Math.hypot((pos1.x - pos2.x), Math.hypot((pos1.y - pos2.y), (pos1.z - pos2.z)));
     }
 
     public static double getDistance(double x1, double y1, double z1, double x2, double y2, double z2){
