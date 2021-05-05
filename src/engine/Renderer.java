@@ -234,12 +234,14 @@ public class Renderer {
         }
 
         //render rain drops
+        /*
         Mesh rainDrop = getRainDropMesh();
         for (RainDropEntity thisRainDrop : getRainDrops()){
             modelViewMatrix = updateParticleViewMatrix(thisRainDrop.pos, new Vector3f(0,getCameraRotation().y,0), viewMatrix);
             shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
             rainDrop.render();
         }
+         */
 
         //render each chunk liquid mesh
         for (ChunkObject thisChunk : getMap()){
