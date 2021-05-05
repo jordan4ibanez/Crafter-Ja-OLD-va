@@ -104,7 +104,7 @@ public class Crafter {
             chunkUpdater();
             renderGame();
             windowUpdate();
-            indexLight();
+            //indexLight();
             updateListenerPosition();
 
             while (accumulator >= 1_000_000){
