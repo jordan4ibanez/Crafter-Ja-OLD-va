@@ -52,7 +52,7 @@ public class Ray {
             lastPos = new Vector3d(newPos);
         }
 
-        if(finalPos != null && foundBlock > 0) {
+        if(finalPos != null && foundBlock > 0 && getBlockDefinition(foundBlock).pointable) {
             if(mining) {
                 destroyBlock(finalPos);
             } else if (placing && lastPos != null){
