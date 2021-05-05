@@ -31,7 +31,7 @@ public class TNTEntity {
 
     public static void createTNT(Vector3d pos){
         pos.x += 0.5f;
-        pos.y += 0.5f;
+        //pos.y += 0.5f;
         pos.z += 0.5f;
         tntPos[totalTNT] = new Vector3d(pos);
         tntInertia[totalTNT] = new Vector3f(randomForceValue(3),(float)Math.random()*7f,randomForceValue(3f));
@@ -44,7 +44,7 @@ public class TNTEntity {
 
     public static void createTNT(Vector3d pos, float timer, boolean punched) throws Exception {
         pos.x += 0.5f;
-        pos.y += 0.5f;
+        //pos.y += 0.5f;
         pos.z += 0.5f;
         tntPos[totalTNT] = new Vector3d(pos);
         float tntJump;
