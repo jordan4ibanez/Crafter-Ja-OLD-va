@@ -37,16 +37,25 @@ public class ChunkMesh {
         if (!queue.isEmpty()) {
             ChunkMeshDataObject newChunkMeshData = queue.pop();
 
+            //regular type
             if (!newChunkMeshData.regularIsNull){
                 setChunkMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, new Mesh(newChunkMeshData.positionsArray, newChunkMeshData.lightArray, newChunkMeshData.indicesArray, newChunkMeshData.textureCoordArray, textureAtlas));
             } else {
                 setChunkMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, null);
             }
 
+            //liquid type
             if (!newChunkMeshData.liquidIsNull){
                 setChunkLiquidMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, new Mesh(newChunkMeshData.liquidPositionsArray, newChunkMeshData.liquidLightArray, newChunkMeshData.liquidIndicesArray, newChunkMeshData.liquidTextureCoordArray, textureAtlas));
             } else {
                 setChunkLiquidMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, null);
+            }
+
+            //blockbox type
+            if (!newChunkMeshData.blockBoxesIsNull){
+                setChunkBlockBoxMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, new Mesh(newChunkMeshData.blockBoxPositionsArray, newChunkMeshData.blockBoxLightArray, newChunkMeshData.blockBoxIndicesArray, newChunkMeshData.blockBoxTextureCoordArray, textureAtlas));
+            } else {
+                setChunkBlockBoxMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, null);
             }
 
         }
