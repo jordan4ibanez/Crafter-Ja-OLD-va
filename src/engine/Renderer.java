@@ -277,7 +277,6 @@ public class Renderer {
                 hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 thisMesh.render();
             }
-
         }
 
         shaderProgram.unbind();

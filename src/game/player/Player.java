@@ -5,6 +5,7 @@ import org.joml.*;
 import java.lang.Math;
 
 import static engine.Hud.rebuildMiningMesh;
+import static engine.Hud.rebuildWieldHandMesh;
 import static engine.disk.Disk.loadPlayerPos;
 import static engine.graph.Camera.*;
 import static engine.sound.SoundAPI.playSound;
@@ -47,6 +48,9 @@ public class Player {
     private static boolean sneaking              = false;
     private static boolean running               = false;
 
+    private static float lightCheckTimer = 0f;
+    private static byte lightLevel = 0;
+    private static Vector3i oldPos = new Vector3i(0,0,0);
 
     public static void resetPlayerInputs(){
         setPlayerForward(false);
@@ -752,6 +756,25 @@ public class Player {
         } else {
             rayCast(getCameraPosition(), getCameraRotationVector(), 4f,  false, false);
         }
+
+
+        //update light level for the wield item
+        lightCheckTimer += 0.001f;
+        Vector3i newFlooredPos = new Vector3i((int)Math.floor(camPos.x), (int)Math.floor(camPos.y), (int)Math.floor(camPos.z));
+
+        //System.out.println(lightCheckTimer);
+        if (lightCheckTimer >= 0.5f || !newFlooredPos.equals(oldPos)){
+            lightCheckTimer = 0f;
+
+            byte newLightLevel = getLight(newFlooredPos.x, newFlooredPos.y, newFlooredPos.z);
+
+            if (newLightLevel != lightLevel){
+                lightLevel = newLightLevel;
+                rebuildWieldHandMesh(lightLevel);
+            }
+        }
+
+        oldPos = newFlooredPos;
     }
 
     public static void updateWorldChunkLoader(){

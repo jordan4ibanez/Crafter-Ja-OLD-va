@@ -209,7 +209,7 @@ public class Hud {
         versionInfoTextShadow = createCustomHudText(getVersionName(), 0,0,0);
         createPlayerMesh();
         createInventorySelection();
-        createWieldHandMesh();
+        createWieldHandMesh((byte)15);
         createInventorySlot();
         createInventorySlotSelected();
         createMenuBg();
@@ -1771,7 +1771,15 @@ public class Hud {
         return texturePoints;
     }
 
-    private static void createWieldHandMesh(){
+    //public to interface with rest of it
+    public static void rebuildWieldHandMesh(byte lightLevel){
+        createWieldHandMesh(lightLevel);
+    }
+
+    private static void createWieldHandMesh(byte lightLevel){
+
+        float floatedLight = (float)lightLevel/15f;
+
         float[][] oneBlockyBoi = new float[][]{
 //                //right arm
                 {   -0.45f,
@@ -1827,12 +1835,10 @@ public class Hud {
             positions.add(thisBlockBox[3]);
             positions.add(thisBlockBox[1]);
             positions.add(thisBlockBox[5]);
-            //front
-            float frontLight = 1f;
 
             //front
             for (int i = 0; i < 12; i++) {
-                light.add(frontLight);
+                light.add(floatedLight);
             }
             //front
             indices.add(0 + indicesCount);
@@ -1882,12 +1888,10 @@ public class Hud {
             positions.add(thisBlockBox[1]);
             positions.add(thisBlockBox[2]);
 
-            //back
-            float backLight = 1f;
 
             //back
             for (int i = 0; i < 12; i++) {
-                light.add(backLight);
+                light.add(floatedLight);
             }
             //back
             indices.add(0 + indicesCount);
@@ -1939,12 +1943,10 @@ public class Hud {
             positions.add(thisBlockBox[3]);
             positions.add(thisBlockBox[1]);
             positions.add(thisBlockBox[2]);
-            //right
-            float rightLight = 1f;
 
             //right
             for (int i = 0; i < 12; i++) {
-                light.add(rightLight);
+                light.add(floatedLight);
             }
             //right
             indices.add(0 + indicesCount);
@@ -1997,11 +1999,8 @@ public class Hud {
             positions.add(thisBlockBox[5]);
 
             //left
-            float leftLight = 1f;
-
-            //left
             for (int i = 0; i < 12; i++) {
-                light.add(leftLight);
+                light.add(floatedLight);
             }
             //left
             indices.add(0 + indicesCount);
@@ -2043,12 +2042,10 @@ public class Hud {
             positions.add(thisBlockBox[3]);
             positions.add(thisBlockBox[4]);
             positions.add(thisBlockBox[2]);
-            //top
-            float topLight = 1f;
 
             //top
             for (int i = 0; i < 12; i++) {
-                light.add(topLight);
+                light.add(floatedLight);
             }
             //top
             indices.add(0 + indicesCount);
@@ -2097,12 +2094,10 @@ public class Hud {
             positions.add(thisBlockBox[3]);
             positions.add(thisBlockBox[1]);
             positions.add(thisBlockBox[5]);
-            //bottom
-            float bottomLight = 1f;
 
             //bottom
             for (int i = 0; i < 12; i++) {
-                light.add(bottomLight);
+                light.add(floatedLight);
             }
             //bottom
             indices.add(0 + indicesCount);
