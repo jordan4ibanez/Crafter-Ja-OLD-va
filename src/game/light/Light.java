@@ -9,12 +9,11 @@ import static game.chunk.Chunk.*;
 
 public class Light {
     private static final Deque<Vector3i> queue = new ArrayDeque<>();
-    
+
     private static final byte maxLightLevel = 15;
     private static final byte blockIndicator = 127;
     private static final byte lightDistance = 15;
     private static final byte max = (lightDistance * 2) + 1;
-    private static final byte[][][] memoryMap = new byte[(lightDistance * 2) + 1][(lightDistance * 2) + 1][(lightDistance * 2) + 1];
 
     public static void lightFloodFill(int posX, int posY, int posZ) {
         queue.add(new Vector3i(posX, posY, posZ));
@@ -26,6 +25,7 @@ public class Light {
             while (!queue.isEmpty()) {
 
                 final Deque<LightUpdate> lightSources = new ArrayDeque<>();
+                final byte[][][] memoryMap = new byte[(lightDistance * 2) + 1][(lightDistance * 2) + 1][(lightDistance * 2) + 1];
 
                 Vector3i tempObject = queue.pop();
 
