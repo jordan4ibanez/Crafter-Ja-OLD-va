@@ -2,11 +2,7 @@ package game.chunk;
 
 import engine.graph.Mesh;
 import engine.graph.Texture;
-import org.joml.Vector3i;
 
-import java.lang.reflect.Array;
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static game.chunk.Chunk.*;
@@ -35,7 +31,7 @@ public class ChunkMesh {
     private final static float maxLight = 15;
 
     public static void popChunkMeshQueue(){
-        
+
         if (!queue.isEmpty()) {
 
             ChunkMeshDataObject newChunkMeshData = queue.get(queue.keySet().toArray()[0]);
