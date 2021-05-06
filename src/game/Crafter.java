@@ -70,6 +70,7 @@ public class Crafter {
             initSoundManager();
             initGame();
             startSaveThread();
+
             gameLoop();
 
         } catch ( Exception excp ){
@@ -104,9 +105,9 @@ public class Crafter {
             updateWorldChunkLoader();
             indexLight();
             chunkUpdater();
+            popChunkMeshQueue();
             renderGame();
             windowUpdate();
-            popChunkMeshQueue();
             updateListenerPosition();
 
             while (accumulator >= 1_000_000){
@@ -115,7 +116,6 @@ public class Crafter {
             }
         }
     }
-
 
 
     public static int getChunkRenderDistance(){

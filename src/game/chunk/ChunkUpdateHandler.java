@@ -18,6 +18,7 @@ public class ChunkUpdateHandler {
 
     public static void chunkUpdater() {
         if (!queue.isEmpty()){
+
             String key = "";
             ChunkUpdate thisUpdate = queue.get(queue.keySet().toArray()[0]);
             if (!chunkStackContainsBlock(thisUpdate.x, thisUpdate.z, thisUpdate.y)){

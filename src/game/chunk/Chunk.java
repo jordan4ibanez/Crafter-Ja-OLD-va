@@ -35,7 +35,9 @@ public class Chunk {
     public static void setChunkMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
         ChunkObject thisChunk = map.get(chunkX + " " + chunkZ);
         if (thisChunk == null){
-            newMesh.cleanUp(false);
+            if (newMesh != null) {
+                newMesh.cleanUp(false);
+            }
             return;
         }
         if (thisChunk.mesh == null){
@@ -88,7 +90,9 @@ public class Chunk {
     public static void setChunkLiquidMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
         ChunkObject thisChunk = map.get(chunkX + " " + chunkZ);
         if (thisChunk == null){
-            newMesh.cleanUp(false);
+            if(newMesh != null) {
+                newMesh.cleanUp(false);
+            }
             return;
         }
         if (thisChunk.liquidMesh == null){
@@ -104,7 +108,9 @@ public class Chunk {
     public static void setChunkBlockBoxMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
         ChunkObject thisChunk = map.get(chunkX + " " + chunkZ);
         if (thisChunk == null){
-            newMesh.cleanUp(false);
+            if (newMesh != null) {
+                newMesh.cleanUp(false);
+            }
             return;
         }
         if (thisChunk.blockBoxMesh == null){

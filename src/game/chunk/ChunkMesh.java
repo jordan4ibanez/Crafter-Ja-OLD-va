@@ -4,8 +4,10 @@ import engine.graph.Mesh;
 import engine.graph.Texture;
 import org.joml.Vector3i;
 
+import java.lang.reflect.Array;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static game.chunk.Chunk.*;
 import static game.blocks.BlockDefinition.*;
@@ -13,7 +15,7 @@ import static game.chunk.ChunkMath.posToIndex;
 
 public class ChunkMesh {
 
-    private static final Deque<ChunkMeshDataObject> queue = new ArrayDeque<>();
+    private static final ConcurrentHashMap<String, ChunkMeshDataObject> queue = new ConcurrentHashMap<>();
 
 
     private static Texture textureAtlas;
@@ -32,10 +34,15 @@ public class ChunkMesh {
 
     private final static float maxLight = 15;
 
-
     public static void popChunkMeshQueue(){
+        
         if (!queue.isEmpty()) {
-            ChunkMeshDataObject newChunkMeshData = queue.pop();
+
+            ChunkMeshDataObject newChunkMeshData = queue.get(queue.keySet().toArray()[0]);
+
+            String keyName = newChunkMeshData.chunkX + " " + newChunkMeshData.chunkZ + " " + newChunkMeshData.yHeight;
+
+            queue.remove(keyName);
 
             //regular type
             if (!newChunkMeshData.regularIsNull){
@@ -1349,8 +1356,9 @@ public class ChunkMesh {
                 newChunkData.blockBoxesIsNull = true;
             }
 
+            String keyName = chunkX + " " + chunkZ + " " + yHeight;
             //finally add it into the queue to be popped
-            queue.add(newChunkData);
+            queue.put(keyName, newChunkData);
 
             //done, thread dies
         }).start();
