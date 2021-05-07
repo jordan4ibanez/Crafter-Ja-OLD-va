@@ -40,8 +40,8 @@ public class Collision {
         }
 
         //limit speed on y axis
-        if (inertia.y <= -30f) {
-            inertia.y = -30f;
+        if (inertia.y <= -50f) {
+            inertia.y = -50f;
         } else if (inertia.y > 30f) {
             inertia.y = 30f;
         }
