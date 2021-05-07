@@ -4,6 +4,9 @@ import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
+import java.util.Random;
+import java.util.stream.IntStream;
+
 import static game.chunk.Chunk.*;
 import static game.blocks.BlockDefinition.*;
 import static game.collision.Collision.wouldCollidePlacing;
@@ -95,8 +98,10 @@ public class Ray {
         digBlock((int)flooredPos.x, (int)flooredPos.y, (int)flooredPos.z);
         onDigCall(thisBlock, flooredPos);
 
-        for (int i = 0; i < 20; i++) {
-            createParticle(new Vector3d(flooredPos.x + (Math.random()-0.5d), flooredPos.y + (Math.random()-0.5d), flooredPos.z + (Math.random()-0.5d)), new Vector3f((float)(Math.random()-0.5f) * 2f, (float)Math.ceil(Math.random()*5f), (float)(Math.random()-0.5f) * 2f), thisBlock);
+
+
+        for (int i = 0; i < 40 + (int)(Math.random() * 15); i++) {
+            createParticle(new Vector3d(flooredPos.x + (Math.random()-0.5d), flooredPos.y + (Math.random()-0.5d), flooredPos.z + (Math.random()-0.5d)), new Vector3f((float)(Math.random()-0.5f) * 2f, 0f, (float)(Math.random()-0.5f) * 2f), thisBlock);
         }
     }
     private static void rayPlaceBlock(Vector3d flooredPos, int ID) {

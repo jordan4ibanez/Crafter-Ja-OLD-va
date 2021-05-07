@@ -644,13 +644,11 @@ public class Player {
         onGround = applyInertia(pos, inertia, true, width, height,true, sneaking, true, true, true);
 
 
-        /* TODO: UNCOMMENT VIEW BOBBING
         if(playerIsMoving() && !sneaking && !inWater){
             applyViewBobbing();
         } else {
             returnPlayerViewBobbing();
         }
-         */
 
         //sneaking offset
         if (sneaking){
@@ -664,14 +662,14 @@ public class Player {
         }
 
         if (mining && worldSelectionPos != null){
-            particleBufferTimer += 0.01f;
-            if (particleBufferTimer > 0.2f){
+            particleBufferTimer += delta;
+            if (particleBufferTimer > 0.001f){
                 int randomDir = (int)Math.floor(Math.random()*6f);
                 int block;
-                int miningBlock = getBlock((int)worldSelectionPos.x, (int)worldSelectionPos.y, (int)worldSelectionPos.z);
+                int miningBlock = getBlock(worldSelectionPos.x, worldSelectionPos.y, worldSelectionPos.z);
                 switch (randomDir){
                     case 0:
-                        block = getBlock((int)worldSelectionPos.x+1, (int)worldSelectionPos.y, (int)worldSelectionPos.z);
+                        block = getBlock(worldSelectionPos.x+1, worldSelectionPos.y, worldSelectionPos.z);
                         if (block == 0){
                             Vector3d particlePos = new Vector3d(worldSelectionPos);
                             particlePos.x += 1.1f;
@@ -687,7 +685,7 @@ public class Player {
                         }
                         break;
                     case 1:
-                        block = getBlock((int)worldSelectionPos.x-1, (int)worldSelectionPos.y, (int)worldSelectionPos.z);
+                        block = getBlock(worldSelectionPos.x-1, worldSelectionPos.y, worldSelectionPos.z);
                         if (block == 0){
                             Vector3d particlePos = new Vector3d(worldSelectionPos);
                             particlePos.x -= 0.1f;
@@ -703,7 +701,7 @@ public class Player {
                         }
                         break;
                     case 2:
-                        block = getBlock((int)worldSelectionPos.x, (int)worldSelectionPos.y+1, (int)worldSelectionPos.z);
+                        block = getBlock(worldSelectionPos.x, worldSelectionPos.y+1, worldSelectionPos.z);
                         if (block == 0){
                             Vector3d particlePos = new Vector3d(worldSelectionPos);
                             particlePos.y += 1.1f;
@@ -719,7 +717,7 @@ public class Player {
                         }
                         break;
                     case 3:
-                        block = getBlock((int)worldSelectionPos.x, (int)worldSelectionPos.y-1, (int)worldSelectionPos.z);
+                        block = getBlock(worldSelectionPos.x, worldSelectionPos.y-1, worldSelectionPos.z);
                         if (block == 0){
                             Vector3d particlePos = new Vector3d(worldSelectionPos);
                             particlePos.y -= 0.1f;
@@ -735,7 +733,7 @@ public class Player {
                         }
                         break;
                     case 4:
-                        block = getBlock((int)worldSelectionPos.x, (int)worldSelectionPos.y, (int)worldSelectionPos.z+1);
+                        block = getBlock(worldSelectionPos.x, worldSelectionPos.y, worldSelectionPos.z+1);
                         if (block == 0){
                             Vector3d particlePos = new Vector3d(worldSelectionPos);
                             particlePos.z += 1.1f;
@@ -751,7 +749,7 @@ public class Player {
                         }
                         break;
                     case 5:
-                        block = getBlock((int)worldSelectionPos.x, (int)worldSelectionPos.y, (int)worldSelectionPos.z-1);
+                        block = getBlock(worldSelectionPos.x, worldSelectionPos.y, worldSelectionPos.z-1);
                         if (block == 0){
                             Vector3d particlePos = new Vector3d(worldSelectionPos);
                             particlePos.z -= 0.1f;
