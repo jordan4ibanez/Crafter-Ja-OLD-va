@@ -156,13 +156,16 @@ public class Renderer {
 
             Mesh selectionMesh = getWorldSelectionMesh();
 
-            modelViewMatrix = updateModelViewMatrix(getPlayerWorldSelectionPos(), new Vector3f(0,0,0), viewMatrix);
+            Vector3i tempPos = getPlayerWorldSelectionPos();
+            Vector3d actualPos = new Vector3d(tempPos.x, tempPos.y, tempPos.z);
+
+            modelViewMatrix = updateModelViewMatrix(actualPos, new Vector3f(0,0,0), viewMatrix);
             shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
             selectionMesh.render();
 
             if (getDiggingFrame() >= 0) {
                 Mesh crackMesh = getMiningCrackMesh();
-                modelViewMatrix = updateModelViewMatrix(getPlayerWorldSelectionPos(), new Vector3f(0, 0, 0), viewMatrix);
+                modelViewMatrix = updateModelViewMatrix(actualPos, new Vector3f(0, 0, 0), viewMatrix);
                 shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 crackMesh.render();
             }

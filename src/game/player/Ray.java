@@ -2,6 +2,7 @@ package game.player;
 
 import org.joml.Vector3d;
 import org.joml.Vector3f;
+import org.joml.Vector3i;
 
 import static game.chunk.Chunk.*;
 import static game.blocks.BlockDefinition.*;
@@ -78,7 +79,7 @@ public class Ray {
                 }
             }
             else {
-                setPlayerWorldSelectionPos(finalPos);
+                setPlayerWorldSelectionPos(new Vector3i((int)finalPos.x, (int)finalPos.y, (int)finalPos.z));
             }
         }
         else {

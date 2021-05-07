@@ -37,7 +37,8 @@ public class Player {
     private static final Vector3f viewBobbing          = new Vector3f(0,0,0);
     private static int currentInventorySelection = 0;
     private static boolean inventoryOpen         = false;
-    private static Vector3d worldSelectionPos    = null;
+    private static Vector3i oldWorldSelectionPos = new Vector3i();
+    private static Vector3i worldSelectionPos    = new Vector3i();
     private static int sneakOffset = 0;
     private static boolean playerIsJumping = false;
     private static final int[] currentChunk = {(int)Math.floor(pos.x / 16f),(int)Math.floor(pos.z / 16f)};
@@ -103,7 +104,10 @@ public class Player {
         return sneakOffset / 900f;
     }
 
-    public static void setPlayerWorldSelectionPos(Vector3d thePos){
+    public static void setPlayerWorldSelectionPos(Vector3i thePos){
+        if (worldSelectionPos != null) {
+            oldWorldSelectionPos = new Vector3i(worldSelectionPos);
+        }
         worldSelectionPos = thePos;
     }
 
@@ -111,7 +115,7 @@ public class Player {
         worldSelectionPos = null;
     }
 
-    public static Vector3d getPlayerWorldSelectionPos(){
+    public static Vector3i getPlayerWorldSelectionPos(){
         return worldSelectionPos;
     }
 
@@ -390,6 +394,8 @@ public class Player {
         sneaking = isSneaking;
     }
 
+
+
     public static void setPlayerRunning(boolean isRunning){
         if (!sneaking && isRunning) {
             running = isRunning;
@@ -602,6 +608,12 @@ public class Player {
 
         //mining timer
         hasDug = false;
+        //reset mining timer
+        if (mining && worldSelectionPos != null && !worldSelectionPos.equals(oldWorldSelectionPos)){
+            diggingFrame = 0;
+            animationTest = 0f;
+            rebuildMiningMesh(diggingFrame);
+        }
         if (mining && worldSelectionPos != null) {
             animationTest += delta;
             if (animationTest >= 0.1f) {
