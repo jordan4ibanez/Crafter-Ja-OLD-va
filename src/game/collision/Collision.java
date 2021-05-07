@@ -263,57 +263,60 @@ public class Collision {
         int up = 0;
 
         //todo: begin Y collision detection -- YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
-        switch (inertiaToDir(inertia.y)){
+        switch (inertiaToDir(inertia.y)) {
             case -1:
-                y = (int)fPos.y;
+                y = (int) fPos.y;
                 break;
             case 1:
-                y = (int)Math.floor(pos.y + height);
+                y = (int) Math.floor(pos.y + height);
                 up = 1;
                 break;
             default:
                 y = 777;
                 break;
         }
-
         if (y != 777) {
-            switch (up){
+            switch (up) {
                 case 0:
+                    //y negative (falling)
                     for (x = -1; x <= 1; x++) {
                         for (z = -1; z <= 1; z++) {
                             cachedPos.x = fPos.x + x;
-                            cachedPos.y = y;
+                            cachedPos.y = fPos.y;
                             cachedPos.z = fPos.z + z;
 
                             cachedBlock = detectBlock(cachedPos);
 
-                            byte rot =  detectRot(cachedPos);
+                            byte rot = detectRot(cachedPos);
 
                             if (cachedBlock > 0 && isWalkable(cachedBlock)) {
-                                onGround = collideYNegative((int)(fPos.x + x), (int)y, (int)(fPos.z + z), rot, pos, inertia, width, height, onGround, cachedBlock);
+                                onGround = collideYNegative((int) (fPos.x + x), (int) cachedPos.y, (int) (fPos.z + z), rot, pos, inertia, width, height, onGround, cachedBlock);
                             }
                         }
                     }
                     break;
                 case 1:
+                    //y positive (falling up)
                     for (x = -1; x <= 1; x++) {
                         for (z = -1; z <= 1; z++) {
                             cachedPos.x = fPos.x + x;
-                            cachedPos.y = y;
+                            cachedPos.y = Math.floor(pos.y + height);
+                            ;
                             cachedPos.z = fPos.z + z;
 
                             cachedBlock = detectBlock(cachedPos);
 
-                            byte rot =  detectRot(cachedPos);
+                            byte rot = detectRot(cachedPos);
 
                             if (cachedBlock > 0 && isWalkable(cachedBlock)) {
-                                collideYPositive((int)(fPos.x + x), (int)y, (int)(fPos.z + z), rot, pos, inertia, width, height, cachedBlock);
+                                collideYPositive((int) (fPos.x + x), (int) cachedPos.y, (int) (fPos.z + z), rot, pos, inertia, width, height, cachedBlock);
                             }
                         }
                     }
                     break;
             }
         }
+
 
 
         //todo: begin X collision detection -- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -424,11 +427,14 @@ public class Collision {
             setAABB(pos.x, pos.y, pos.z, width, height);
             setBlockBox(blockPosX,blockPosY,blockPosz,thisBlockBox);
             //this coordinate is not within enough distance to get affected by floating point precision
-            if (isWithin() && BlockBoxGetTop() > AABBGetBottom() && AABBGetBottom() - BlockBoxGetTop() > -0.1d) {
-                pos.y = BlockBoxGetTop() + 0.0001d; //players position needs to constantly change or else this breaks stairs/slabs
+            if (isWithin() && BlockBoxGetTop() >= AABBGetBottom() && AABBGetBottom() - BlockBoxGetTop() > -0.1d) {
+                //players position needs to constantly change or else this breaks stairs/slabs
+                //this needs extreme precision for 1000+fps
+                pos.y = BlockBoxGetTop() + 0.000000001d;
                 inertia.y = 0;
                 onGround = true;
             }
+
         }
         return onGround;
     }

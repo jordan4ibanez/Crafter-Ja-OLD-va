@@ -718,8 +718,7 @@ public class Player {
 
         updatePlayerHandInertia();
 
-        //todo: fix this so that onGround works right
-        if(playerIsMoving() && !sneaking && !inWater){
+        if(onGround && playerIsMoving() && !sneaking && !inWater){
             applyViewBobbing();
         } else {
             returnPlayerViewBobbing();
@@ -728,11 +727,11 @@ public class Player {
         //sneaking offset
         if (sneaking){
             if (sneakOffset > -100) {
-                sneakOffset -= 1;
+                sneakOffset -= delta;
             }
         } else {
             if (sneakOffset < 0) {
-                sneakOffset += 1;
+                sneakOffset += delta;
             }
         }
 
