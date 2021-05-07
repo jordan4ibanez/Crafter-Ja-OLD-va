@@ -2,6 +2,7 @@ package game.chunk;
 
 import engine.FastNoise;
 import engine.graph.Mesh;
+import org.joml.Vector2i;
 import org.joml.Vector3i;
 
 import java.util.Arrays;
@@ -577,7 +578,6 @@ public class Chunk {
 
     private final static int seed = 532_444_432;
 
-
     public static void genBiome(int chunkX, int chunkZ) {
 
         new Thread(() -> {
@@ -595,7 +595,7 @@ public class Chunk {
             byte generationX;
             byte generationY;
             byte generationZ;
-            short currBlock;
+            int currBlock;
             byte height;
 
             ChunkObject loadedChunk = loadChunkFromDisk(chunkX, chunkZ);
@@ -621,6 +621,10 @@ public class Chunk {
 
                 thisChunk.modified = true;
 
+                //biome max 64 trees
+                Vector3i[] treePosArray = new Vector3i[128];
+                byte treeIndex = 0;
+
                 for (generationX = 0; generationX < 16; generationX++) {
                     for (generationZ = 0; generationZ < 16; generationZ++) {
                         gennedSand = false;
@@ -628,14 +632,21 @@ public class Chunk {
                         gennedGrass = false;
                         dirtHeightRandom = Math.floor(Math.random() * 2d);
 
-                        //this casting is all over the place todo: fix this
-                        height = (byte) (Math.abs(noise.GetPerlin((float) ((chunkX * 16d) + (double) generationX), (float) ((chunkZ * 16d) + (double) generationZ)) * 50 + heightAdder));
+                        float realPosX = (float)((chunkX * 16d) + (double) generationX);
+                        float realPosZ = (float)((chunkZ * 16d) + (double) generationZ);
 
+                        height = (byte) (Math.abs(noise.GetPerlin(realPosX, realPosZ) * 50 + heightAdder));
+
+                        //catch ultra deep oceans
                         if (height < 6) {
                             height = 6;
                         }
 
+                        //y column
                         for (generationY = 127; generationY >= 0; generationY--) {
+
+                            //don't overwrite
+                            currBlock = thisChunk.block[posToIndex(generationX, generationY, generationZ)];
 
                             //bedrock
                             if (generationY <= 0 + dirtHeightRandom) {
@@ -649,6 +660,16 @@ public class Chunk {
                                 } else {
                                     currBlock = 2;
                                     gennedGrass = true;
+                                }
+                                //tree gen
+                            }else if (generationY == height + 1 && generationY > waterHeight + 1){
+
+                                float noiseTest2 = Math.abs(noise.GetWhiteNoise(realPosX, generationY,realPosZ));
+
+                                //add tree to queue
+                                if (noiseTest2 > 0.98f){
+                                    treePosArray[treeIndex] = new Vector3i(generationX, generationY, generationZ);
+                                    treeIndex++;
                                 }
                                 //dirt/sand gen
                             } else if (generationY < height && generationY >= height - dirtHeight - dirtHeightRandom) {
@@ -675,8 +696,6 @@ public class Chunk {
                                 if (generationY <= waterHeight) {
                                     currBlock = 7;
                                     gennedWater = true;
-                                } else {
-                                    currBlock = 0;
                                 }
                             }
 
@@ -693,6 +712,16 @@ public class Chunk {
                             } else {
                                 thisChunk.light[posToIndex(generationX, generationY, generationZ)] = getCurrentGlobalLightLevel();
                             }
+                        }
+                    }
+                }
+
+                for (int i = 0; i < treeIndex; i++){
+                    //generate stumps
+                    for (int y = 0; y < 4; y++){
+                        //stay within borders
+                        if (y + treePosArray[i].y < 127){
+                            thisChunk.block[posToIndex(treePosArray[i].x,treePosArray[i].y + y, treePosArray[i].z)] = 25;
                         }
                     }
                 }
