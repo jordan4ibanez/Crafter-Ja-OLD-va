@@ -718,8 +718,8 @@ public class Player {
 
         updatePlayerHandInertia();
 
-
-        if(onGround && playerIsMoving() && !sneaking && !inWater && getDistance(pos.x, 0, pos.z,oldRealPos.x, 0, oldRealPos.z) >= 0.01f){
+        //todo: fix this so that onGround works right
+        if(inertia.y <= 0.f && inertia.y >= -0.05f  && playerIsMoving() && !sneaking && !inWater){
             applyViewBobbing();
         } else {
             returnPlayerViewBobbing();
@@ -907,8 +907,10 @@ public class Player {
     private static void applyViewBobbing() {
 
         float delta = getDelta();
-        
+
         float viewBobbingAddition = delta  * 250f;
+
+        //System.out.println(viewBobbingAddition);
 
         if (running){
             viewBobbingAddition = delta * 290f;

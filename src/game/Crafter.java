@@ -105,7 +105,6 @@ public class Crafter {
             calculateDelta();
 
             indexLight();
-            input();
             mouseInput();
             updateCamera();
             countFPS();
@@ -116,6 +115,7 @@ public class Crafter {
             updateListenerPosition();
             chunkUpdater();
             globalChunkSaveToDisk(); //add in a getDelta argument into this!
+            input();
 
             //testLightLevel(getDelta());
             gameUpdate();
