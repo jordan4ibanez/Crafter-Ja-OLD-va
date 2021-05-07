@@ -7,6 +7,7 @@ import org.joml.Vector3i;
 import java.util.*;
 
 import static engine.FancyMath.*;
+import static engine.Time.getDelta;
 import static engine.sound.SoundAPI.playSound;
 import static game.chunk.Chunk.getLight;
 import static game.collision.Collision.applyInertia;
@@ -42,15 +43,16 @@ public class ItemEntity {
     private static final Deque<Integer> deletionQueue = new ArrayDeque<>();
 
     public static void onStep(){
+        float delta = getDelta();
         for (Item thisItem : items.values()){
 
-            thisItem.timer += 0.001f;
-            thisItem.lightUpdateTimer += 0.001f;
+            thisItem.timer += delta;
+            thisItem.lightUpdateTimer += delta;
 
             Vector3i currentFlooredPos = new Vector3i((int)Math.floor(thisItem.pos.x), (int)Math.floor(thisItem.pos.y), (int)Math.floor(thisItem.pos.z));
 
             //poll local light every half second
-            if (thisItem.lightUpdateTimer >= 0.5f || !currentFlooredPos.equals(thisItem.oldFlooredPos)){
+            if (thisItem.lightUpdateTimer >= 0.25f || !currentFlooredPos.equals(thisItem.oldFlooredPos)){
 
                 byte newLight = getLight(currentFlooredPos.x, currentFlooredPos.y, currentFlooredPos.z);
 
@@ -109,15 +111,15 @@ public class ItemEntity {
                 applyInertia(thisItem.pos, thisItem.inertia, false, itemCollisionWidth, itemCollisionWidth, true, false, true, false, false);
             }
 
-            thisItem.rotation.y += 0.1f;
+            thisItem.rotation.y += delta * 50;
 
             if (thisItem.floatUp){
-                thisItem.hover += 0.00025f;
+                thisItem.hover += delta / 10;
                 if (thisItem.hover >= 0.5f){
                     thisItem.floatUp = false;
                 }
             } else {
-                thisItem.hover -= 0.00025f;
+                thisItem.hover -= delta / 10;
                 if (thisItem.hover <= 0.0f){
                     thisItem.floatUp = true;
                 }
