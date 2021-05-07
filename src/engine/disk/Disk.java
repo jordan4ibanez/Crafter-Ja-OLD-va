@@ -89,7 +89,7 @@ public class Disk {
 
         File test = new File("Worlds/world1/playerPos.data");
 
-        Vector3d thisPos = new Vector3d(0,55,0);
+        Vector3d thisPos = new Vector3d(0,100,0);
 
         if (!test.canRead()){
             return thisPos;
