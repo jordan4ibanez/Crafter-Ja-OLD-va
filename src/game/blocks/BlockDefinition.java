@@ -967,6 +967,52 @@ public class BlockDefinition {
                 0,
                 true
         );
+
+        new BlockDefinition(
+                25,
+                "Tree",
+                true,
+                new int[]{26,0}, //front
+                new int[]{26,0}, //back
+                new int[]{26,0}, //right
+                new int[]{26,0}, //left
+                new int[]{27,0}, //top
+                new int[]{27,0},  //bottom
+                "normal",
+                true,
+                false,
+                false,
+                null,
+                "wood_1",
+                "wood_2",
+                false,
+                false,
+                0,
+                true
+        );
+
+        new BlockDefinition(
+                26,
+                "Leaves",
+                true,
+                new int[]{28,0}, //front
+                new int[]{28,0}, //back
+                new int[]{28,0}, //right
+                new int[]{28,0}, //left
+                new int[]{28,0}, //top
+                new int[]{28,0},  //bottom
+                "normal",
+                true,
+                false,
+                false,
+                null,
+                "wood_1",
+                "wood_2",
+                false,
+                false,
+                0,
+                true
+        );
     }
 
     public static BlockDefinition getBlockDefinition(int ID){
