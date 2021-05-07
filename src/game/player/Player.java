@@ -4,6 +4,7 @@ import org.joml.*;
 
 import java.lang.Math;
 
+import static engine.FancyMath.getDistance;
 import static engine.Hud.rebuildMiningMesh;
 import static engine.Hud.rebuildWieldHandMesh;
 import static engine.Time.getDelta;
@@ -54,6 +55,7 @@ public class Player {
     private static float lightCheckTimer = 0f;
     private static byte lightLevel = 0;
     private static Vector3i oldPos = new Vector3i(0,0,0);
+    private static Vector3d oldRealPos = new Vector3d(0,0,0);
 
     public static void resetPlayerInputs(){
         setPlayerForward(false);
@@ -493,6 +495,7 @@ public class Player {
         } else {
             maxSpeed = maxWalkSpeed;
         }
+
         if(inertia2D.length() > maxSpeed){
             inertia2D = inertia2D.normalize().mul(maxSpeed);
             inertia.x = inertia2D.x;
@@ -644,7 +647,7 @@ public class Player {
         onGround = applyInertia(pos, inertia, true, width, height,true, sneaking, true, true, true);
 
 
-        if(playerIsMoving() && !sneaking && !inWater){
+        if(onGround && playerIsMoving() && !sneaking && !inWater && getDistance(pos.x, 0, pos.z,oldRealPos.x, 0, oldRealPos.z) >= 0.01f){
             applyViewBobbing();
         } else {
             returnPlayerViewBobbing();
@@ -800,6 +803,7 @@ public class Player {
         updateWieldInventory(lightLevel);
 
         oldPos = newFlooredPos;
+        oldRealPos = new Vector3d(pos);
     }
 
     public static void updateWorldChunkLoader(){
@@ -825,53 +829,58 @@ public class Player {
     }
 
     private static boolean xPositive = true;
-    private static boolean yPositive = true;
-    private static int xBobPos = 0;
-    private static int yBobPos = 0;
+    private static float xBobPos = 0;
+    private static float yBobPos = 0;
 
     private static void applyViewBobbing() {
 
-        int viewBobbingAddition = 10;
+        float delta = getDelta();
+        float viewBobbingAddition = delta  * 250f;
+
         if (running){
-            viewBobbingAddition = 16;
+            viewBobbingAddition = delta * 290f;
         }
 
         if (xPositive) {
             xBobPos += viewBobbingAddition;
-            if (xBobPos >= 2000){
-                xBobPos = 2000;
+            if (xBobPos >= 50f){
+                xBobPos = 50f;
                 xPositive = false;
-                yPositive = false;
                 playSound("dirt_" + (int)(Math.ceil(Math.random()*3)));
             }
         } else {
             xBobPos -= viewBobbingAddition;
-            if (xBobPos <= -2000){
-                xBobPos = -2000;
+            if (xBobPos <= -50f){
+                xBobPos = -50f;
                 xPositive = true;
-                yPositive = false;
                 playSound("dirt_"  + (int)(Math.ceil(Math.random()*3)));
             }
         }
 
         yBobPos = Math.abs(xBobPos);
 
-        viewBobbing.x = xBobPos/18000f;
-        viewBobbing.y = yBobPos/20000f;
+        viewBobbing.x = xBobPos/1000f;
+        viewBobbing.y = yBobPos/1200f;
     }
 
     private static void returnPlayerViewBobbing(){
 
+        float delta = getDelta();
+
         if (xBobPos > 0){
-            xBobPos -= 10;
+            xBobPos -= 300 * delta;
         } else if (xBobPos < 0){
-            xBobPos += 10;
+            xBobPos += 300 * delta;
         }
 
+        if ((Math.abs(xBobPos)) <= 50 * delta){
+            xBobPos = 0;
+        }
+        
         yBobPos = Math.abs(xBobPos);
 
-        viewBobbing.x = xBobPos/18000f;
-        viewBobbing.y = yBobPos/20000f;
+        viewBobbing.x = xBobPos/1000f;
+        viewBobbing.y = yBobPos/1200f;
     }
 
     public static void changeScrollSelection(int i){
