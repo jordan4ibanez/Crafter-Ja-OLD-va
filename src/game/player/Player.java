@@ -40,7 +40,7 @@ public class Player {
     private static boolean inventoryOpen         = false;
     private static Vector3i oldWorldSelectionPos = new Vector3i();
     private static Vector3i worldSelectionPos    = new Vector3i();
-    private static int sneakOffset = 0;
+    private static float sneakOffset = 0;
     private static boolean playerIsJumping = false;
     private static final int[] currentChunk = {(int)Math.floor(pos.x / 16f),(int)Math.floor(pos.z / 16f)};
 
@@ -726,12 +726,18 @@ public class Player {
 
         //sneaking offset
         if (sneaking){
-            if (sneakOffset > -100) {
-                sneakOffset -= delta;
+            if (sneakOffset > -100.f) {
+                sneakOffset -= delta * 1000f;
+                if (sneakOffset <= -100.f){
+                    sneakOffset = -100.f;
+                }
             }
         } else {
-            if (sneakOffset < 0) {
-                sneakOffset += delta;
+            if (sneakOffset < 0.f) {
+                sneakOffset += delta * 1000f;
+                if (sneakOffset > 0.f){
+                    sneakOffset = 0.f;
+                }
             }
         }
 
