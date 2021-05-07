@@ -6,6 +6,8 @@ public class ChunkSavingObject {
     public int x;
     public int z;
 
+    public byte lightLevel;
+
     public int [] block;
     public byte[] rotation;
     public byte[] light;

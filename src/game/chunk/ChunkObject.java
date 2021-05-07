@@ -8,6 +8,8 @@ public class ChunkObject {
     public int x;
     public int z;
 
+    public byte lightLevel = 15;
+
     public int [] block = new int[128 * 16 * 16];
     public byte[] rotation = new byte[128 * 16 * 16];
     public byte[] light = new byte[128 * 16 * 16];

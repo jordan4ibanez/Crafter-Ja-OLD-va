@@ -32,7 +32,10 @@ public class ChunkMesh {
 
     public static void popChunkMeshQueue(){
 
+        //int count = 0;
+
         if (!queue.isEmpty()) {
+            //count ++;
 
             ChunkMeshDataObject newChunkMeshData = queue.get(queue.keySet().toArray()[0]);
 
@@ -62,11 +65,15 @@ public class ChunkMesh {
             }
 
         }
+
+        //if (count > 0) {
+        //    System.out.println("amount of chunk meshes created:" + count);
+        //}
     }
 
     public static void generateChunkMesh(int chunkX, int chunkZ, int yHeight) {
         //let's use all the cpu threads to the limit
-        new Thread(() -> {
+        //new Thread(() -> {
             //normal block stuff
             final float[] positions = new float[50_824];
             int positionsCount = 0;
@@ -1357,7 +1364,7 @@ public class ChunkMesh {
             queue.put(keyName, newChunkData);
 
             //done, thread dies
-        }).start();
+        //}).start();
     }
 
     public static float convertLight(float lightByte){

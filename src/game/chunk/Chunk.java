@@ -2,7 +2,9 @@ package game.chunk;
 
 import engine.FastNoise;
 import engine.graph.Mesh;
+import org.joml.Vector3i;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,11 +13,11 @@ import static engine.disk.Disk.*;
 import static engine.disk.SaveQueue.instantSave;
 import static engine.disk.SaveQueue.saveChunk;
 import static game.Crafter.getChunkRenderDistance;
+import static game.chunk.ChunkMath.indexToPos;
 import static game.chunk.ChunkMath.posToIndex;
 import static game.chunk.ChunkMesh.generateChunkMesh;
 import static game.chunk.ChunkUpdateHandler.chunkUpdate;
-import static game.light.Light.getImmediateLight;
-import static game.light.Light.lightFloodFill;
+import static game.light.Light.*;
 import static game.player.Player.getPlayerPos;
 
 public class Chunk {
@@ -41,9 +43,12 @@ public class Chunk {
             return;
         }
         if (thisChunk.mesh == null){
-            newMesh.cleanUp(false);
+            if (newMesh != null) {
+                newMesh.cleanUp(false);
+            }
             return;
         }
+
         if (thisChunk.mesh[yHeight] != null){
             thisChunk.mesh[yHeight].cleanUp(false);
             thisChunk.mesh[yHeight] = null;
@@ -64,6 +69,45 @@ public class Chunk {
                 }
             }
             saveTimer = 0f;
+        }
+    }
+
+    //this is for testing the day/night cycle
+    public static void testLightCycleFlood(){
+        byte currentLightLevel = getCurrentGlobalLightLevel();
+
+        for (ChunkObject thisChunk : map.values()){
+
+            if (thisChunk.lightLevel != currentLightLevel){
+
+                floodChunkWithNewGlobalLight(thisChunk, thisChunk.lightLevel, currentLightLevel);
+
+                thisChunk.lightLevel = currentLightLevel;
+
+            }
+        }
+    }
+
+    //this is for testing the day/night cycle
+    private static void floodChunkWithNewGlobalLight(ChunkObject thisChunk, byte oldLight, byte newLight){
+
+        /* this causes SERIOUS lag
+            Vector3i thisPos = indexToPos(i);
+
+            int blockX = (int)(thisPos.x + (16d*thisChunk.x));
+            int blockZ = (int)(thisPos.z + (16d*thisChunk.z));
+
+            if (thisChunk.block[i] == 0 && !underSunLight(blockX, thisPos.y, blockZ)) {
+                lightFloodFill(blockX, thisPos.y, blockZ);
+            }
+             */
+        //if (thisChunk.light[i] == oldLight) {
+        //  System.out.println("somtthing brkun");
+        //}
+        Arrays.fill(thisChunk.light, newLight);
+
+        for (int y = 0; y < 8; y++) {
+            generateChunkMesh(thisChunk.x, thisChunk.z, y);
         }
     }
 
@@ -572,7 +616,7 @@ public class Chunk {
 
     public static void genBiome(int chunkX, int chunkZ) {
 
-        new Thread(() -> {
+        //new Thread(() -> {
             final double heightAdder = 40;
             final byte dirtHeight = 4;
             final byte waterHeight = 50;
@@ -595,7 +639,8 @@ public class Chunk {
 
                 //dump everything into the chunk updater
                 for (int i = 0; i < 8; i++) {
-                    chunkUpdate(loadedChunk.x, loadedChunk.z, i);
+                    //generateChunkMesh(loadedChunk.x, loadedChunk.z, i); //instant
+                    chunkUpdate(loadedChunk.x, loadedChunk.z, i); //delayed
                 }
 
             } else {
@@ -680,7 +725,7 @@ public class Chunk {
                             if (gennedSand || gennedGrass) {
                                 thisChunk.light[posToIndex(generationX, generationY, generationZ)] = 0;
                             } else {
-                                thisChunk.light[posToIndex(generationX, generationY, generationZ)] = 15;
+                                thisChunk.light[posToIndex(generationX, generationY, generationZ)] = getCurrentGlobalLightLevel();
                             }
                         }
                     }
@@ -688,11 +733,12 @@ public class Chunk {
 
                 //dump everything into the chunk updater
                 for (int i = 0; i < 8; i++) {
-                    chunkUpdate(thisChunk.x, thisChunk.z, i);
+                    //generateChunkMesh(thisChunk.x, thisChunk.z, i); //instant
+                    chunkUpdate(thisChunk.x, thisChunk.z, i); //delayed
                 }
 
             }
-        }).start();
+        //}).start();
     }
 
     public static void cleanUp(){

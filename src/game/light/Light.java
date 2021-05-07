@@ -5,6 +5,7 @@ import org.joml.Vector3i;
 
 import java.util.*;
 
+import static engine.Window.windowShouldClose;
 import static game.chunk.Chunk.*;
 
 public class Light {
@@ -15,10 +16,47 @@ public class Light {
     private static final byte lightDistance = 15;
     private static final byte max = (lightDistance * 2) + 1;
 
+    private static byte currentLightLevel = 15;
+    private static boolean goUp = false;
+    private static float dayLightTimer = 0.f;
+
+    public static byte getCurrentGlobalLightLevel(){
+        return currentLightLevel;
+    }
+
+    public static void testLightLevel(float delta){
+        dayLightTimer += delta;
+
+        if (dayLightTimer >= 0.5f){
+            //System.out.println("CurrentLight:" + currentLightLevel);
+            dayLightTimer = 0;
+
+            if (goUp){
+
+                currentLightLevel += 1;
+
+                if (currentLightLevel == maxLightLevel){
+                    goUp = false;
+                }
+            } else {
+
+                currentLightLevel -= 1;
+
+                if (currentLightLevel == 0){
+                    goUp = true;
+                }
+            }
+
+            System.out.println(currentLightLevel);
+
+            testLightCycleFlood();
+        }
+    }
+
     public static byte getImmediateLight(int x, int y, int z){
         int theBlock = getBlock(x, y, z);
         if (theBlock == 0 && underSunLight(x, y, z)){
-            return 15;
+            return currentLightLevel;
         }
 
         byte maxLight = 0;
@@ -68,10 +106,8 @@ public class Light {
     }
 
     public static void indexLight(){
-        new Thread(() -> {
-            //double check
-            while (!queue.isEmpty()) {
-
+        //new Thread(() -> {
+            if (!queue.isEmpty()) {
                 final Deque<LightUpdate> lightSources = new ArrayDeque<>();
                 final byte[][][] memoryMap = new byte[(lightDistance * 2) + 1][(lightDistance * 2) + 1][(lightDistance * 2) + 1];
 
@@ -87,28 +123,28 @@ public class Light {
                             int theBlock = getBlock(x, y, z);
                             if (theBlock == 0 && underSunLight(x, y, z)) {
                                 int skipCheck = 0;
-                                if (getBlock(x + 1, y, z) == 0 && underSunLight(x + 1, y, z) && getLight(x + 1, y, z) == maxLightLevel) {
+                                if (getBlock(x + 1, y, z) == 0 && underSunLight(x + 1, y, z) && getLight(x + 1, y, z) == currentLightLevel) {
                                     skipCheck++;
                                 }
-                                if (getBlock(x - 1, y, z) == 0 && underSunLight(x - 1, y, z) && getLight(x - 1, y, z) == maxLightLevel) {
+                                if (getBlock(x - 1, y, z) == 0 && underSunLight(x - 1, y, z) && getLight(x - 1, y, z) == currentLightLevel) {
                                     skipCheck++;
                                 }
-                                if (getBlock(x, y + 1, z) == 0 && underSunLight(x, y + 1, z) && getLight(x, y + 1, z) == maxLightLevel) {
+                                if (getBlock(x, y + 1, z) == 0 && underSunLight(x, y + 1, z) && getLight(x, y + 1, z) == currentLightLevel) {
                                     skipCheck++;
                                 }
-                                if (getBlock(x, y - 1, z) == 0 && underSunLight(x, y - 1, z) && getLight(x, y - 1, z) == maxLightLevel) {
+                                if (getBlock(x, y - 1, z) == 0 && underSunLight(x, y - 1, z) && getLight(x, y - 1, z) == currentLightLevel) {
                                     skipCheck++;
                                 }
-                                if (getBlock(x, y, z + 1) == 0 && underSunLight(x, y, z + 1) && getLight(x, y, z + 1) == maxLightLevel) {
+                                if (getBlock(x, y, z + 1) == 0 && underSunLight(x, y, z + 1) && getLight(x, y, z + 1) == currentLightLevel) {
                                     skipCheck++;
                                 }
-                                if (getBlock(x, y, z - 1) == 0 && underSunLight(x, y, z - 1) && getLight(x, y, z - 1) == maxLightLevel) {
+                                if (getBlock(x, y, z - 1) == 0 && underSunLight(x, y, z - 1) && getLight(x, y, z - 1) == currentLightLevel) {
                                     skipCheck++;
                                 }
                                 if (skipCheck < 6) {
                                     lightSources.add(new LightUpdate(x - posX + lightDistance, y - posY + lightDistance, z - posZ + lightDistance));
                                 }
-                                memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance] = maxLightLevel;
+                                memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance] = currentLightLevel;
                             } else if (theBlock == 0) {
                                 memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance] = 0;
                             } else {
@@ -125,7 +161,7 @@ public class Light {
 
                     Deque<LightUpdate> lightSteps = new ArrayDeque<>();
 
-                    lightSteps.push(new LightUpdate(thisUpdate.x, thisUpdate.y, thisUpdate.z, maxLightLevel));
+                    lightSteps.push(new LightUpdate(thisUpdate.x, thisUpdate.y, thisUpdate.z, currentLightLevel));
 
                     while (!lightSteps.isEmpty()) {
                         LightUpdate newUpdate = lightSteps.pop();
@@ -200,6 +236,6 @@ public class Light {
                 }
                 lightSources.clear();
             }
-        }).start();
+        //}).start();
     }
 }

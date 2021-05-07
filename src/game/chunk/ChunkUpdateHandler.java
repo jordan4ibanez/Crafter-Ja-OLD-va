@@ -1,5 +1,7 @@
 package game.chunk;
 
+import java.lang.reflect.Array;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static game.chunk.Chunk.chunkStackContainsBlock;
@@ -16,11 +18,16 @@ public class ChunkUpdateHandler {
         }
     }
 
+    private static final Random random = new Random();
+
     public static void chunkUpdater() {
         if (!queue.isEmpty()){
-
             String key = "";
-            ChunkUpdate thisUpdate = queue.get(queue.keySet().toArray()[0]);
+
+            Object[] queueAsArray = queue.keySet().toArray();
+            Object thisKey = queueAsArray[random.nextInt(queueAsArray.length)];
+
+            ChunkUpdate thisUpdate = queue.get(thisKey);
             if (!chunkStackContainsBlock(thisUpdate.x, thisUpdate.z, thisUpdate.y)){
                 key = thisUpdate.key;
             } else {

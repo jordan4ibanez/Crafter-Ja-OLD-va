@@ -12,6 +12,7 @@ import org.lwjgl.openal.AL11;
 import java.awt.*;
 
 import static engine.Time.calculateDelta;
+import static engine.Time.getDelta;
 import static engine.disk.Disk.*;
 import static engine.disk.SaveQueue.startSaveThread;
 import static game.chunk.Chunk.*;
@@ -22,7 +23,7 @@ import static engine.Hud.*;
 import static engine.MouseInput.*;
 import static game.falling.FallingEntity.fallingEntityOnStep;
 import static game.item.ItemEntity.clearItems;
-import static game.light.Light.indexLight;
+import static game.light.Light.*;
 import static game.mob.Mob.*;
 import static game.particle.Particle.particlesOnStep;
 import static game.tnt.TNTEntity.createTNTEntityMesh;
@@ -55,6 +56,10 @@ public class Crafter {
         return versionName;
     }
 
+    public static int getRenderDistance(){
+        return chunkRenderDistance;
+    }
+
     //core game engine elements
 
     //load everything
@@ -70,7 +75,7 @@ public class Crafter {
             initSoundManager();
             initGame();
             startSaveThread();
-
+            assistantThread();
             gameLoop();
 
         } catch ( Exception excp ){
@@ -81,6 +86,16 @@ public class Crafter {
             savePlayerPos(getPlayerPos());
             cleanup();
         }
+    }
+
+    //assistant thread
+    private static void assistantThread(){
+        new Thread(() -> {
+            while(!windowShouldClose()){
+                //heavy
+
+            }
+        }).start();
     }
 
     //the game engine elements
@@ -97,23 +112,32 @@ public class Crafter {
             elapsedTime = timerGetElapsedTime();
             accumulator += elapsedTime;
 
-            globalChunkSaveToDisk();
+
+            indexLight();
             input();
             mouseInput();
             updateCamera();
             countFPS();
             updateWorldChunkLoader();
-            indexLight();
-            chunkUpdater();
-            popChunkMeshQueue();
+            popChunkMeshQueue(); //this actually transmits the data from the other threads into main thread
             renderGame();
             windowUpdate();
             updateListenerPosition();
+            chunkUpdater();
+            globalChunkSaveToDisk(); //add in a getDelta argument into this!
 
-            while (accumulator >= 1_000_000){
-                gameUpdate();
+            //testLightLevel(getDelta());
+            gameUpdate();
+
+
+            long count = 0;
+
+            /*
+            while (accumulator >= 1_000_000 && count < 1_000_000_000_000_000L){
                 accumulator -= 1_000_000;
+                count++;
             }
+             */
         }
     }
 
