@@ -25,7 +25,6 @@ public class Collision {
 
         //the precision goal for delta is 0.001f, this adjusts it to be so
         //the side effect, is the lower your FPS, the more it has to loop
-
         int loops = 1;
 
         if (delta >  0.001f){

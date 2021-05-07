@@ -125,7 +125,7 @@ public class Crafter {
 
             long count = 0;
 
-            boolean debugLowFPS = false;
+            boolean debugLowFPS = true; //this sets my machine (jordan4ibanez) to 7-9FPS
 
             if (debugLowFPS) {
                 while (count < 500_000_000L) {
