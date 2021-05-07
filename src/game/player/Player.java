@@ -283,8 +283,8 @@ public class Player {
     public static Vector3d getWieldHandAnimationPos(){
         Vector3d doubledHandAnimationPos = new Vector3d();
 
-        doubledHandAnimationPos.x = wieldHandAnimationPos.x;
-        doubledHandAnimationPos.y = wieldHandAnimationPos.y;
+        doubledHandAnimationPos.x = wieldHandAnimationPos.x + handInertia.x;
+        doubledHandAnimationPos.y = wieldHandAnimationPos.y + handInertia.y;
         doubledHandAnimationPos.z = wieldHandAnimationPos.z;
 
         return doubledHandAnimationPos;
@@ -424,6 +424,73 @@ public class Player {
 
     private static float wasInWaterTimer = 0f;
     private static boolean waterLockout = false;
+
+    private static Vector3d handInertia = new Vector3d(0,0,0);
+
+    private static float oldYaw = 0;
+
+    private static final float doublePi = (float)Math.PI * 2f;
+
+    private static void updatePlayerHandInertia(){
+
+        float delta = getDelta();
+
+        float yaw = (float)Math.toRadians(getCameraRotation().y) + (float)Math.PI;
+
+        float diff = yaw - oldYaw;
+
+        //correct for radians overflow
+        if (diff > Math.PI){
+            diff -= doublePi;
+        } else if (diff < -Math.PI){
+            diff += doublePi;
+        }
+
+        handInertia.x -= diff;
+
+        //limit
+        if (handInertia.x < -5f){
+            handInertia.x = -5f;
+        } else if (handInertia.x > 5f){
+            handInertia.x = 5f;
+        }
+
+        if (Math.abs(diff) < 0.01f) {
+            //rubberband hand back to center
+            if (handInertia.x > 0) {
+                handInertia.x -= 20 * delta;
+            } else if (handInertia.x < 0) {
+                handInertia.x += 20 * delta;
+            }
+
+            if (Math.abs(handInertia.x) < 20f * delta){
+                handInertia.x = 0f;
+            }
+        }
+
+        float yDiff = inertia.y;
+
+        if (Math.abs(yDiff) > 1f) {
+            handInertia.y -= yDiff / 100f;
+        }
+
+
+        //limit
+        if (handInertia.y < -5f){
+            handInertia.y = -5f;
+        } else if (handInertia.y > 5f){
+            handInertia.y = 5f;
+        }
+
+        //rubberband hand back to center
+        if (handInertia.y > 0) {
+            handInertia.y -= 5 * delta;
+        } else if (handInertia.y < 0) {
+            handInertia.y += 5 * delta;
+        }
+
+        oldYaw = yaw;
+    }
 
     public static void setPlayerInWater(boolean theTruth){
         inWater = theTruth;
@@ -640,11 +707,12 @@ public class Player {
             }
         }
 
-
         //values for application of inertia
         applyPlayerInertiaBuffer();
 
         onGround = applyInertia(pos, inertia, true, width, height,true, sneaking, true, true, true);
+
+        updatePlayerHandInertia();
 
 
         if(onGround && playerIsMoving() && !sneaking && !inWater && getDistance(pos.x, 0, pos.z,oldRealPos.x, 0, oldRealPos.z) >= 0.01f){
@@ -859,8 +927,8 @@ public class Player {
 
         yBobPos = Math.abs(xBobPos);
 
-        viewBobbing.x = xBobPos/1000f;
-        viewBobbing.y = yBobPos/1200f;
+        viewBobbing.x = xBobPos/700f;
+        viewBobbing.y = yBobPos/800f;
     }
 
     private static void returnPlayerViewBobbing(){
@@ -879,8 +947,8 @@ public class Player {
 
         yBobPos = Math.abs(xBobPos);
 
-        viewBobbing.x = xBobPos/1000f;
-        viewBobbing.y = yBobPos/1200f;
+        viewBobbing.x = xBobPos/700f;
+        viewBobbing.y = yBobPos/800f;
     }
 
     public static void changeScrollSelection(int i){
