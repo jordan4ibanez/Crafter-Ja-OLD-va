@@ -6,6 +6,7 @@ import java.lang.Math;
 
 import static engine.Hud.rebuildMiningMesh;
 import static engine.Hud.rebuildWieldHandMesh;
+import static engine.Time.getDelta;
 import static engine.disk.Disk.loadPlayerPos;
 import static engine.graph.Camera.*;
 import static engine.sound.SoundAPI.playSound;
@@ -20,7 +21,6 @@ import static game.player.Ray.rayCast;
 
 
 public class Player {
-    final private static float gameSpeed = 0.001f;
 
     private static Vector3d pos                  = loadPlayerPos();
     private static final float eyeHeight               = 1.5f;
@@ -196,7 +196,7 @@ public class Player {
         }
 
         if (handSetUp) {
-            diggingAnimation += 0.00375f;
+            diggingAnimation += getDelta() * 3.75f;
         }
 
         if ((!diggingAnimationBuffer || diggingAnimation >= 1f) && handSetUp){
@@ -396,7 +396,7 @@ public class Player {
         return forward || backward || left || right;
     }
 
-    final private static float movementAcceleration = 0.75f;
+    final private static float movementAcceleration = 1000.f;
 
     final private static float maxWalkSpeed = 4.f;
 
@@ -419,39 +419,41 @@ public class Player {
     }
 
     public static void setPlayerInertiaBuffer(){
+        float delta = getDelta();
+
         if (forward){
             float yaw = (float)Math.toRadians(getCameraRotation().y) + (float)Math.PI;
-            inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementAcceleration;
-            inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementAcceleration;
+            inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementAcceleration * delta;
+            inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementAcceleration * delta;
         }
         if (backward){
             //no mod needed
             float yaw = (float)Math.toRadians(getCameraRotation().y);
-            inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementAcceleration;
-            inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementAcceleration;
+            inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementAcceleration * delta;
+            inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementAcceleration * delta;
         }
 
         if (right){
             float yaw = (float)Math.toRadians(getCameraRotation().y) - (float)(Math.PI /2);
-            inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementAcceleration;
-            inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementAcceleration;
+            inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementAcceleration * delta;
+            inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementAcceleration * delta;
         }
 
         if (left){
             float yaw = (float)Math.toRadians(getCameraRotation().y) + (float)(Math.PI /2);
-            inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementAcceleration;
-            inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementAcceleration;
+            inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementAcceleration * delta;
+            inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementAcceleration * delta;
         }
 
         if (!inWater && jump && isPlayerOnGround()){
-            inertia.y += 10.5f;
+            inertia.y += 10.5f; //do not get delta for this
             playerIsJumping = true;
         //the player comes to equilibrium with the water's surface
         // if this is not implemented like this
         } else if (jump && inWater && !waterLockout){
             wasInWater = true;
             if(inertia.y <= 4.f){
-                inertia.y += 100.f * gameSpeed;
+                inertia.y += 100.f * getDelta();
             }
         }
         if (wasInWater && !inWater){
@@ -520,6 +522,8 @@ public class Player {
 
     public static void playerOnTick() {
 
+        float delta = getDelta();
+
         //camera underwater effect trigger
         Vector3d camPos = new Vector3d(getCameraPosition());
         camPos.y -= 0.02f;
@@ -532,7 +536,7 @@ public class Player {
         if (wasInWaterTimer > 0.f){
             //System.out.println(wasInWaterTimer);
             waterLockout = true;
-            wasInWaterTimer -= 0.001f;
+            wasInWaterTimer -= delta;
             if (wasInWaterTimer <= 0){
                 //System.out.println("turned off lockout");
                 waterLockout = false;
@@ -561,7 +565,8 @@ public class Player {
             currentRotDir = 1;
         }
 
-//        rainBuffer += 0.001f;
+        //this is a minor hack which allows it to "rain"
+//        rainBuffer += delta;
 //        if (rainBuffer >= 0.1f) {
 //            rainBuffer = 0f;
 //
@@ -588,10 +593,11 @@ public class Player {
 
 
 
+        //digging timers
         hasDug = false;
         if (mining && worldSelectionPos != null) {
-            animationTest += 0.01f;
-            if (animationTest >= 1) {
+            animationTest += delta;
+            if (animationTest >= 0.1f) {
                 diggingFrame++;
                 if (diggingFrame > 8) {
                     diggingFrame = 0;
@@ -605,22 +611,25 @@ public class Player {
             rebuildMiningMesh(0);
         }
 
-        applyPlayerInertiaBuffer();
-
+        //place timers
         if(placeTimer > 0){
-            placeTimer -= 0.003f;
-            if (placeTimer < 0.1){
+            placeTimer -= delta;
+            if (placeTimer < 0){
                 placeTimer = 0;
             }
         }
 
+        //mining timer
         if(mineTimer > 0){
-            mineTimer -= 0.003f;
-            if (mineTimer < 0.1){
+            mineTimer -= delta;
+            if (mineTimer < 0){
                 mineTimer = 0;
             }
         }
 
+
+        //values for application of inertia
+        applyPlayerInertiaBuffer();
 
         onGround = applyInertia(pos, inertia, true, width, height,true, sneaking, true, true, true);
 
@@ -762,7 +771,7 @@ public class Player {
 
 
         //update light level for the wield item
-        lightCheckTimer += 0.001f;
+        lightCheckTimer += delta;
         Vector3i newFlooredPos = new Vector3i((int)Math.floor(camPos.x), (int)Math.floor(camPos.y), (int)Math.floor(camPos.z));
 
         //System.out.println(lightCheckTimer);

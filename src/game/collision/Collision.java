@@ -3,6 +3,7 @@ package game.collision;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
+import static engine.Time.getDelta;
 import static game.chunk.Chunk.getBlock;
 import static game.blocks.BlockDefinition.*;
 import static game.chunk.Chunk.getBlockRotation;
@@ -13,13 +14,14 @@ import static game.player.Player.getIfPlayerIsJumping;
 import static game.player.Player.setPlayerInWater;
 
 public class Collision {
-    final private static float gameSpeed = 0.001f;
-
     private static float inWater = 0;
 
     //this probably definitely absolutely should not take isPlayer as a value
     //fix this later FIX ME FIX ME - DO OBJECT TYPE MATCHING
     public static boolean applyInertia(Vector3d pos, Vector3f inertia, boolean onGround, float width, float height, boolean gravity, boolean sneaking, boolean applyCollision, boolean airFriction, boolean isPlayer){
+
+
+        float delta = getDelta();
 
         inWater = 0;//reset water detection
 
@@ -57,21 +59,21 @@ public class Collision {
             }
 
         } else {
-            pos.x += inertia.x * gameSpeed;
-            pos.y += inertia.y * gameSpeed;
-            pos.z += inertia.z * gameSpeed;
+            pos.x += inertia.x * delta;
+            pos.y += inertia.y * delta;
+            pos.z += inertia.z * delta;
         }
 
         //apply friction
         if (onGround || airFriction) {
-            inertia.x += -inertia.x * gameSpeed * 10; // do (10 - 9.5f) for slippery!
-            inertia.z += -inertia.z * gameSpeed * 10;
+            inertia.x += -inertia.x * delta * 10; // do (10 - 9.5f) for slippery!
+            inertia.z += -inertia.z * delta * 10;
         }
 
         //water resistance
         if (inWater > 0.f){
-            inertia.x += -inertia.x * gameSpeed * inWater;
-            inertia.z += -inertia.z * gameSpeed * inWater;
+            inertia.x += -inertia.x * delta * inWater;
+            inertia.z += -inertia.z * delta * inWater;
 
             //inertia.y += -inertia.z * gameSpeed * inWater;
             //inertia.y = inertia.y / 1.2f;
@@ -85,17 +87,17 @@ public class Collision {
 
                 //water resistance
                 if (inertia.y > -50f / inWater){
-                    inertia.y -= 1000/inWater * gameSpeed;
+                    inertia.y -= 1000/inWater * delta;
                 //slow down if falling too fast
                 } else if (inertia.y <= -50f / inWater){
-                    inertia.y += 2000/inWater * gameSpeed;
+                    inertia.y += 2000/inWater * delta;
                 }
             }else {
                 if (isPlayer){
                     setPlayerInWater(false);
                 }
                 //regular gravity
-                inertia.y -= 40f * gameSpeed;
+                inertia.y -= 40f * delta;
             }
         }
 
@@ -207,6 +209,9 @@ public class Collision {
     //normal collision
 
     private static boolean collisionDetect(Vector3d pos, Vector3f inertia, float width, float height){
+
+        float delta = getDelta();
+
         onGround = false;
 
         Vector3d oldPos = new Vector3d();
@@ -215,7 +220,7 @@ public class Collision {
         oldPos.y = pos.y;
         oldPos.z = pos.z;
 
-        pos.y += inertia.y * gameSpeed;
+        pos.y += inertia.y * delta;
 
         fPos = floorPos(new Vector3d(pos));
 
@@ -278,7 +283,7 @@ public class Collision {
         //todo: begin X collision detection -- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
         //add inertia
-        pos.x += inertia.x * gameSpeed;
+        pos.x += inertia.x * delta;
 
         //must clone the vector object
         fPos = floorPos(new Vector3d(pos));
@@ -311,7 +316,7 @@ public class Collision {
 
         //todo: Begin Z collision detection -- ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ
 
-        pos.z += inertia.z * gameSpeed;
+        pos.z += inertia.z * delta;
 
         fPos = floorPos(new Vector3d(pos));
 
