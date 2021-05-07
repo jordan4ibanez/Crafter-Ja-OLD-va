@@ -3,6 +3,8 @@ package engine;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
+import java.util.Random;
+
 import static engine.FancyMath.randomForceValue;
 
 public class FancyMath {
@@ -10,8 +12,11 @@ public class FancyMath {
         return  -1 + ((int)(Math.random()*2f) * 2);
     }
 
+    private static final Random random = new Random();
+    private static final int[] dirArray = new int[]{-1,1};
+
     public static float randomDirFloat(){
-        return  -1f + ((int)(Math.random()*2f) * 2);
+        return dirArray[random.nextInt(2)];
     }
 
     public static float randomNumber(float x){

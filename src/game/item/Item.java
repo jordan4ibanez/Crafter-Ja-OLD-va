@@ -49,7 +49,7 @@ public class Item {
         this.pos = pos;
         this.definition = getItemDefinition(name);
         this.stack = stack;
-        this.inertia = new Vector3f(randomForceValue(9f), (float) Math.random() * 10f, randomForceValue(9f));
+        this.inertia = new Vector3f(randomForceValue(2f), (float) Math.random() * 4f, randomForceValue(2f));
         this.rotation = new Vector3f(0, 0, 0);
         this.hover = 0f;
         this.floatUp = true;
@@ -70,7 +70,7 @@ public class Item {
         this.pos = pos;
         this.definition = getItemDefinition(name);
         this.stack = stack;
-        this.inertia = new Vector3f(randomForceValue(9f), (float) Math.random() * 10f, randomForceValue(9f));
+        this.inertia = new Vector3f(randomForceValue(2f), (float) Math.random() * 4f, randomForceValue(2f));
         this.rotation = new Vector3f(0, 0, 0);
         this.hover = 0f;
         this.floatUp = true;
