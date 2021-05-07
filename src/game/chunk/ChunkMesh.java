@@ -79,11 +79,10 @@ public class ChunkMesh {
             final float[] light = new float[152_472];
             int lightCount = 0;
 
-            ChunkObject thisChunk;
             int thisBlock;
             byte thisRotation;
 
-            thisChunk = getChunk(chunkX, chunkZ);
+            ChunkObject thisChunk = getChunk(chunkX, chunkZ);
 
             if (thisChunk == null) {
                 return;
@@ -92,10 +91,13 @@ public class ChunkMesh {
                 return;
             }
 
+            int realX;
+            int realZ;
+
             for (int x = 0; x < 16; x++) {
-                int realX = (chunkX * 16) + x;
+                realX = (chunkX * 16) + x;
                 for (int z = 0; z < 16; z++) {
-                    int realZ = (chunkZ * 16) + z;
+                    realZ = (chunkZ * 16) + z;
                     for (int y = yHeight * 16; y < (yHeight + 1) * 16; y++) {
 
                         thisBlock = thisChunk.block[posToIndex(x, y, z)];
@@ -133,10 +135,18 @@ public class ChunkMesh {
 
                                     positionsCount += 12;
 
-                                    //front
-                                    float frontLight = getLight(realX, y, realZ + 1) / maxLight;
 
-                                    frontLight = convertLight(frontLight);
+                                    //front
+
+                                    float frontLight;
+
+                                    if (z + 1 > 15) {
+                                        frontLight = getLight(realX, y, realZ + 1);
+                                    } else {
+                                        frontLight = thisChunk.light[posToIndex(x,y,z + 1)];
+                                    }
+
+                                    frontLight = convertLight(frontLight / maxLight);
 
                                     //front
                                     for (int i = 0; i < 12; i++) {
@@ -196,8 +206,15 @@ public class ChunkMesh {
                                     positionsCount += 12;
 
                                     //back
-                                    float backLight = getLight(realX, y, realZ - 1) / maxLight;
-                                    backLight = convertLight(backLight);
+                                    float backLight;
+
+                                    if (z - 1 < 0) {
+                                        backLight = getLight(realX, y, realZ - 1);
+                                    } else {
+                                        backLight = thisChunk.light[posToIndex(x,y,z - 1)];
+                                    }
+
+                                    backLight = convertLight(backLight / maxLight);
                                     //back
                                     for (int i = 0; i < 12; i++) {
                                         light[lightCount + i] = (backLight);
@@ -255,8 +272,16 @@ public class ChunkMesh {
                                     positionsCount += 12;
 
                                     //right
-                                    float rightLight = getLight(realX + 1, y, realZ) / maxLight;
-                                    rightLight = convertLight(rightLight);
+
+                                    float rightLight;
+
+                                    if (x + 1 > 15) {
+                                        rightLight = getLight(realX + 1, y, realZ);
+                                    } else {
+                                        rightLight = thisChunk.light[posToIndex(x+1,y,z)];
+                                    }
+
+                                    rightLight = convertLight(rightLight / maxLight);
                                     //right
                                     for (int i = 0; i < 12; i++) {
                                         light[lightCount + i] = (rightLight);
@@ -314,8 +339,16 @@ public class ChunkMesh {
                                     positionsCount += 12;
 
                                     //left
-                                    float leftLight = getLight(realX - 1, y, realZ) / maxLight;
-                                    leftLight = convertLight(leftLight);
+
+                                    float leftLight;
+
+                                    if (x - 1 < 0) {
+                                        leftLight = getLight(realX - 1, y, realZ);
+                                    } else {
+                                        leftLight = thisChunk.light[posToIndex(x - 1, y, z)];
+                                    }
+
+                                    leftLight = convertLight(leftLight / maxLight);
                                     //left
                                     for (int i = 0; i < 12; i++) {
                                         light[lightCount + i] = (leftLight);
@@ -372,8 +405,16 @@ public class ChunkMesh {
                                     positionsCount += 12;
 
                                     //top
-                                    float topLight = getLight(realX, y + 1, realZ) / maxLight;
-                                    topLight = convertLight(topLight);
+                                    float topLight;
+
+                                    //y doesn't need a check since it has no neighbors
+                                    if (y + 1 < 128) {
+                                        topLight = thisChunk.light[posToIndex(x, y + 1, z)];
+                                    } else {
+                                        topLight = maxLight;
+                                    }
+
+                                    topLight = convertLight(topLight / maxLight);
                                     //top
                                     for (int i = 0; i < 12; i++) {
                                         light[lightCount + i] = (topLight);
@@ -431,8 +472,17 @@ public class ChunkMesh {
                                     positionsCount += 12;
 
                                     //bottom
-                                    float bottomLight = getLight(realX, y - 1, realZ) / maxLight;
-                                    bottomLight = convertLight(bottomLight);
+
+                                    float bottomLight;
+
+                                    //doesn't need a neighbor chunk, chunks are 2D
+                                    if (y - 1 > 0) {
+                                        bottomLight = thisChunk.light[posToIndex(x, y - 1, z)];
+                                    } else {
+                                        bottomLight = 0;
+                                    }
+
+                                    bottomLight = convertLight(bottomLight / maxLight);
                                     //bottom
                                     for (int i = 0; i < 12; i++) {
                                         light[lightCount + i] = (bottomLight);
@@ -464,7 +514,7 @@ public class ChunkMesh {
                                 }
                             }
 
-                            //todo --------------------------------------- THE NORMAL DRAWTYPE
+                            //todo --------------------------------------- THE NORMAL DRAWTYPE (standard blocks)
                             else if (getBlockDrawType(thisBlock).equals("normal")) {
 
                                 int neighborBlock;
@@ -496,9 +546,15 @@ public class ChunkMesh {
                                     positionsCount += 12;
 
                                     //front
-                                    float frontLight = getLight(realX, y, realZ + 1) / maxLight;
+                                    float frontLight;
 
-                                    frontLight = convertLight(frontLight);
+                                    if (z + 1 > 15) {
+                                        frontLight = getLight(realX, y, realZ + 1);
+                                    } else {
+                                        frontLight = thisChunk.light[posToIndex(x, y, z + 1)];
+                                    }
+
+                                    frontLight = convertLight(frontLight / maxLight);
 
                                     //front
                                     for (int i = 0; i < 12; i++) {
@@ -537,6 +593,7 @@ public class ChunkMesh {
                                 } else {
                                     neighborBlock = thisChunk.block[posToIndex(x, y, z - 1)];
                                 }
+
                                 if (neighborBlock >= 0 && (!getBlockDrawType(neighborBlock).equals("normal") || getIfLiquid(neighborBlock))) {
                                     //back
                                     positions[positionsCount + 0] = (0f + x);
@@ -558,8 +615,15 @@ public class ChunkMesh {
                                     positionsCount += 12;
 
                                     //back
-                                    float backLight = getLight(realX, y, realZ - 1) / maxLight;
-                                    backLight = convertLight(backLight);
+                                    float backLight;
+
+                                    if (z - 1 < 0) {
+                                        backLight = getLight(realX, y, realZ - 1);
+                                    } else {
+                                        backLight = thisChunk.light[posToIndex(x, y, z - 1)];
+                                    }
+
+                                    backLight = convertLight(backLight / maxLight);
                                     //back
                                     for (int i = 0; i < 12; i++) {
                                         light[i + lightCount] = (backLight);
@@ -617,8 +681,15 @@ public class ChunkMesh {
                                     positionsCount += 12;
 
                                     //right
-                                    float rightLight = getLight(realX + 1, y, realZ) / maxLight;
-                                    rightLight = convertLight(rightLight);
+                                    float rightLight;
+
+                                    if (x + 1 > 15) {
+                                        rightLight = getLight(realX + 1, y, realZ);
+                                    } else {
+                                        rightLight = thisChunk.light[posToIndex(x + 1, y, z)];
+                                    }
+
+                                    rightLight = convertLight(rightLight / maxLight);
                                     //right
                                     for (int i = 0; i < 12; i++) {
                                         light[i + lightCount] = (rightLight);
@@ -676,8 +747,15 @@ public class ChunkMesh {
                                     positionsCount += 12;
 
                                     //left
-                                    float leftLight = getLight(realX - 1, y, realZ) / maxLight;
-                                    leftLight = convertLight(leftLight);
+                                    float leftLight;
+
+                                    if (x - 1 < 0) {
+                                        leftLight = getLight(realX - 1, y, realZ);
+                                    } else {
+                                        leftLight = thisChunk.light[posToIndex(x - 1, y, z)];
+                                    }
+
+                                    leftLight = convertLight(leftLight / maxLight);
                                     //left
                                     for (int i = 0; i < 12; i++) {
                                         light[i + lightCount] = (leftLight);
@@ -733,8 +811,16 @@ public class ChunkMesh {
                                     positionsCount += 12;
 
                                     //top
-                                    float topLight = getLight(realX, y + 1, realZ) / maxLight;
-                                    topLight = convertLight(topLight);
+                                    float topLight;
+
+                                    if (y + 1 < 128) {
+                                        topLight = thisChunk.light[posToIndex(x, y + 1, z)];
+                                    } else {
+                                        topLight = maxLight;
+                                    }
+
+                                    topLight = convertLight(topLight / maxLight);
+
                                     //top
                                     for (int i = 0; i < 12; i++) {
                                         light[i + lightCount] = (topLight);
@@ -768,6 +854,7 @@ public class ChunkMesh {
                                 if (y - 1 > 0) {
                                     neighborBlock = thisChunk.block[posToIndex(x, y - 1, z)];
                                 }
+
                                 if (y != 0 && neighborBlock >= 0 && (!getBlockDrawType(neighborBlock).equals("normal") || getIfLiquid(neighborBlock))) {
                                     //bottom
                                     positions[positionsCount + 0] = (0f + x);
@@ -789,8 +876,15 @@ public class ChunkMesh {
                                     positionsCount += 12;
 
                                     //bottom
-                                    float bottomLight = getLight(realX, y - 1, realZ) / maxLight;
-                                    bottomLight = convertLight(bottomLight);
+                                    float bottomLight;
+
+                                    if (y - 1 > 0) {
+                                        bottomLight = thisChunk.light[posToIndex(x, y - 1, z)];
+                                    } else {
+                                        bottomLight = 0;
+                                    }
+
+                                    bottomLight = convertLight(bottomLight / maxLight);
                                     //bottom
                                     for (int i = 0; i < 12; i++) {
                                         light[i + lightCount] = (bottomLight);
@@ -847,9 +941,9 @@ public class ChunkMesh {
                                     positionsCount += 12;
 
                                     //front
-                                    float frontLight = getLight(realX, y, realZ + 1) / maxLight;
+                                    float frontLight = getLight(realX, y, realZ + 1);
 
-                                    frontLight = convertLight(frontLight);
+                                    frontLight = convertLight(frontLight / maxLight);
 
                                     //front
                                     for (int i = 0; i < 12; i++) {
@@ -908,8 +1002,8 @@ public class ChunkMesh {
 
 
                                     //back
-                                    float backLight = getLight(realX, y, realZ - 1) / maxLight;
-                                    backLight = convertLight(backLight);
+                                    float backLight = getLight(realX, y, realZ - 1);
+                                    backLight = convertLight(backLight / maxLight);
                                     //back
                                     for (int i = 0; i < 12; i++) {
                                         light[lightCount + i] = (backLight);
@@ -970,8 +1064,8 @@ public class ChunkMesh {
                                     positionsCount += 12;
 
                                     //right
-                                    float rightLight = getLight(realX + 1, y, realZ) / maxLight;
-                                    rightLight = convertLight(rightLight);
+                                    float rightLight = getLight(realX + 1, y, realZ);
+                                    rightLight = convertLight(rightLight / maxLight);
                                     //right
                                     for (int i = 0; i < 12; i++) {
                                         light[lightCount + i] = (rightLight);
@@ -1032,8 +1126,8 @@ public class ChunkMesh {
                                     positionsCount += 12;
 
                                     //left
-                                    float leftLight = getLight(realX - 1, y, realZ) / maxLight;
-                                    leftLight = convertLight(leftLight);
+                                    float leftLight = getLight(realX - 1, y, realZ);
+                                    leftLight = convertLight(leftLight / maxLight);
                                     //left
                                     for (int i = 0; i < 12; i++) {
                                         light[lightCount + i] = (leftLight);
@@ -1085,8 +1179,8 @@ public class ChunkMesh {
                                     positionsCount += 12;
 
                                     //top
-                                    float topLight = getLight(realX, y + 1, realZ) / maxLight;
-                                    topLight = convertLight(topLight);
+                                    float topLight = getLight(realX, y + 1, realZ);
+                                    topLight = convertLight(topLight / maxLight);
                                     //top
                                     for (int i = 0; i < 12; i++) {
                                         light[lightCount + i] = (topLight);
@@ -1145,8 +1239,8 @@ public class ChunkMesh {
                                     positionsCount += 12;
 
                                     //bottom
-                                    float bottomLight = getLight(realX, y - 1, realZ) / maxLight;
-                                    bottomLight = convertLight(bottomLight);
+                                    float bottomLight = getLight(realX, y - 1, realZ);
+                                    bottomLight = convertLight(bottomLight / maxLight);
                                     //bottom
                                     for (int i = 0; i < 12; i++) {
                                         light[lightCount + i] = (bottomLight);
