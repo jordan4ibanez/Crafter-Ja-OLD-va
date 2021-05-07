@@ -117,7 +117,7 @@ public class Crafter {
             globalChunkSaveToDisk(); //add in a getDelta argument into this!
             input();
 
-            //testLightLevel(getDelta());
+            //testLightLevel();
             gameUpdate();
 
 

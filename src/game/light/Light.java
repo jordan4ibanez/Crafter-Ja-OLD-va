@@ -5,6 +5,7 @@ import org.joml.Vector3i;
 
 import java.util.*;
 
+import static engine.Time.getDelta;
 import static engine.Window.windowShouldClose;
 import static game.chunk.Chunk.*;
 
@@ -24,10 +25,11 @@ public class Light {
         return currentLightLevel;
     }
 
-    public static void testLightLevel(float delta){
+    public static void testLightLevel(){
+        float delta = getDelta();
         dayLightTimer += delta;
 
-        if (dayLightTimer >= 0.5f){
+        if (dayLightTimer >= 5.f){
             //System.out.println("CurrentLight:" + currentLightLevel);
             dayLightTimer = 0;
 
