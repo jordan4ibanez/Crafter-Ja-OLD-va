@@ -23,6 +23,8 @@ public class ParticleCollision {
         if (delta >  0.001f){
             loops = (int)Math.floor(delta / 0.001f);
             adjustedDelta = (delta/(float)loops);
+        } else {
+            adjustedDelta = delta;
         }
 
 

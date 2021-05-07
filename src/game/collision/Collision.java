@@ -30,6 +30,8 @@ public class Collision {
         if (delta >  0.001f){
             loops = (int)Math.floor(delta / 0.001f);
             adjustedDelta = (delta/(float)loops);
+        } else {
+            adjustedDelta = delta;
         }
 
         for (int i = 0; i < loops; i++) {
