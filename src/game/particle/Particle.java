@@ -30,7 +30,7 @@ public class Particle {
         for (ParticleObject thisParticle : particles.values()){
             applyParticleInertia(thisParticle.pos, thisParticle.inertia, true,true,true);
             thisParticle.timer += delta;
-            if (thisParticle.timer > 10f){
+            if (thisParticle.timer > 1f){
                 particles.remove(thisParticle.key);
                 return;
             }
