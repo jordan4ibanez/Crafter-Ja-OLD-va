@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import static engine.Time.getDelta;
 import static game.blocks.BlockDefinition.*;
 import static game.chunk.ChunkMesh.getTextureAtlas;
 import static game.collision.ParticleCollision.applyParticleInertia;
@@ -25,9 +26,10 @@ public class Particle {
     }
 
     public static void particlesOnStep(){
+        float delta = getDelta();
         for (ParticleObject thisParticle : particles.values()){
             applyParticleInertia(thisParticle.pos, thisParticle.inertia, true,true,true);
-            thisParticle.timer += 0.01f;
+            thisParticle.timer += delta;
             if (thisParticle.timer > 10f){
                 particles.remove(thisParticle.key);
                 return;

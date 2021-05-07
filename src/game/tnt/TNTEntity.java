@@ -77,7 +77,7 @@ public class TNTEntity {
             if (tntTimer[i] > 2.6f){
 
                 boom(tntPos[i], 5);
-                
+
                 playSound("tnt_explode", tntPos[i]);
 
                 deleteTNT(i);

@@ -39,37 +39,29 @@ public class Collision {
 
         }
 
-        //limit speed on y axis
-        if (inertia.y <= -50f) {
-            inertia.y = -50f;
-        } else if (inertia.y > 30f) {
-            inertia.y = 30f;
-        }
-
-        //limit speed on x axis
-        if (inertia.x <= -30f) {
-            inertia.x = -30f;
-        } else if (inertia.x > 30f) {
-            inertia.x = 30f;
-        }
-
-        //limit speed (falling or flying) - y axis
-        if (inertia.y <= -30f) {
-            inertia.y = -30f;
-        } else if (inertia.y > 30f) {
-            inertia.y = 30f;
-        }
-
-        //limit speed on z axis
-        if (inertia.z <= -30f) {
-            inertia.z = -30f;
-        } else if (inertia.z > 30f) {
-            inertia.z = 30f;
-        }
-
         for (int i = 0; i < loops; i++) {
             inWater = 0;//reset water detection
 
+            //limit speed on y axis
+            if (inertia.y <= -50f) {
+                inertia.y = -50f;
+            } else if (inertia.y > 30f) {
+                inertia.y = 30f;
+            }
+
+            //limit speed on x axis
+            if (inertia.x <= -30f) {
+                inertia.x = -30f;
+            } else if (inertia.x > 30f) {
+                inertia.x = 30f;
+            }
+
+            //limit speed on z axis
+            if (inertia.z <= -30f) {
+                inertia.z = -30f;
+            } else if (inertia.z > 30f) {
+                inertia.z = 30f;
+            }
 
 
             if (applyCollision) {

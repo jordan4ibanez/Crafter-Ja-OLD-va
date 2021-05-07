@@ -3,6 +3,7 @@ package game.collision;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
+import static engine.Time.getDelta;
 import static game.chunk.Chunk.getBlock;
 import static game.blocks.BlockDefinition.*;
 import static game.chunk.Chunk.getBlockRotation;
@@ -11,33 +12,61 @@ import static game.collision.CustomAABB.*;
 import static game.collision.CustomBlockBox.*;
 
 public class ParticleCollision {
-    final private static float gameSpeed = 0.001f;
+
+    private static float adjustedDelta;
 
     public static boolean applyParticleInertia(Vector3d pos, Vector3f inertia, boolean onGround, boolean gravity, boolean applyCollision){
 
-        if(gravity) {
-            inertia.y -= 40f * gameSpeed; //gravity
-        }
+        float delta = getDelta();
 
-        //limit speed
-        if (inertia.y <= -70f){
-            inertia.y = -70f;
-        } else if (inertia.y > 70f){
-            inertia.y = 70f;
-        }
+        int loops = 1;
 
-        if (applyCollision) {
-            onGround = collisionDetect(pos, inertia);
-        } else {
-            pos.x += inertia.x * gameSpeed;
-            pos.y += inertia.y * gameSpeed;
-            pos.z += inertia.z * gameSpeed;
+        if (delta >  0.001f){
+            loops = (int)Math.floor(delta / 0.001f);
+            adjustedDelta = (delta/(float)loops);
         }
+        
 
-        //apply friction
-        if (onGround) {
-            inertia.x += -inertia.x * gameSpeed * 10; // do (10 - 9.5f) for slippery!
-            inertia.z += -inertia.z * gameSpeed * 10;
+        for (int i = 0; i < loops; i++) {
+
+            if(gravity) {
+                inertia.y -= 40f * adjustedDelta; //gravity
+            }
+
+            //limit speed on x axis
+            if (inertia.x <= -30f) {
+                inertia.x = -30f;
+            } else if (inertia.x > 30f) {
+                inertia.x = 30f;
+            }
+
+            //limit speed on y axis
+            if (inertia.y <= -50f) {
+                inertia.y = -50f;
+            } else if (inertia.y > 30f) {
+                inertia.y = 30f;
+            }
+
+            //limit speed on z axis
+            if (inertia.z <= -30f) {
+                inertia.z = -30f;
+            } else if (inertia.z > 30f) {
+                inertia.z = 30f;
+            }
+
+            if (applyCollision) {
+                onGround = collisionDetect(pos, inertia);
+            } else {
+                pos.x += inertia.x * adjustedDelta;
+                pos.y += inertia.y * adjustedDelta;
+                pos.z += inertia.z * adjustedDelta;
+            }
+
+            //apply friction
+            if (onGround) {
+                inertia.x += -inertia.x * adjustedDelta * 10; // do (10 - 9.5f) for slippery!
+                inertia.z += -inertia.z * adjustedDelta * 10;
+            }
         }
 
         return onGround;
@@ -61,7 +90,7 @@ public class ParticleCollision {
         oldPos.y = pos.y;
         oldPos.z = pos.z;
 
-        pos.y += inertia.y * gameSpeed;
+        pos.y += inertia.y * adjustedDelta;
 
         fPos = floorPos(new Vector3d(pos));
 
@@ -87,7 +116,7 @@ public class ParticleCollision {
 
 
         //todo: begin X collision detection
-        pos.x += inertia.x * gameSpeed;
+        pos.x += inertia.x * adjustedDelta;
 
         fPos = floorPos(new Vector3d(pos));
 
@@ -114,7 +143,7 @@ public class ParticleCollision {
 
 
         //todo: Begin Z collision detection
-        pos.z += inertia.z * gameSpeed;
+        pos.z += inertia.z * adjustedDelta;
         fPos = floorPos(new Vector3d(pos));
 
         positive = inertiaToDir(inertia.z);
