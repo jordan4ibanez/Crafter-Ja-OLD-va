@@ -131,42 +131,6 @@ public class Chunk {
         return false;
     }
 
-    public static void setChunkLiquidMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
-        ChunkObject thisChunk = map.get(chunkX + " " + chunkZ);
-        if (thisChunk == null){
-            if(newMesh != null) {
-                newMesh.cleanUp(false);
-            }
-            return;
-        }
-        if (thisChunk.liquidMesh == null){
-            newMesh.cleanUp(false);
-            return;
-        }
-        if (thisChunk.liquidMesh[yHeight] != null){
-            thisChunk.liquidMesh[yHeight].cleanUp(false);
-        }
-        thisChunk.liquidMesh[yHeight] = newMesh;
-    }
-
-    public static void setChunkBlockBoxMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
-        ChunkObject thisChunk = map.get(chunkX + " " + chunkZ);
-        if (thisChunk == null){
-            if (newMesh != null) {
-                newMesh.cleanUp(false);
-            }
-            return;
-        }
-        if (thisChunk.blockBoxMesh == null){
-            newMesh.cleanUp(false);
-            return;
-        }
-        if (thisChunk.blockBoxMesh[yHeight] != null){
-            thisChunk.blockBoxMesh[yHeight].cleanUp(false);
-        }
-        thisChunk.blockBoxMesh[yHeight] = newMesh;
-    }
-
     public static Mesh getChunkMesh(int chunkX, int chunkZ, int yHeight){
         ChunkObject thisChunk = map.get(chunkX + " " + chunkZ);
         if (thisChunk == null){
@@ -181,19 +145,6 @@ public class Chunk {
         return null;
     }
 
-    public static Mesh getChunkLiquidMesh(int chunkX, int chunkZ, int yHeight){
-        ChunkObject thisChunk = map.get(chunkX + " " + chunkZ);
-        if (thisChunk == null){
-            return null;
-        }
-        if (thisChunk.liquidMesh == null){
-            return null;
-        }
-        if (thisChunk.liquidMesh[yHeight] != null){
-            return thisChunk.liquidMesh[yHeight];
-        }
-        return null;
-    }
 
     public static int getHeightMap(int x, int z){
         int chunkX = (int)Math.floor(x/16d);

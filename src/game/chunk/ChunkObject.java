@@ -16,8 +16,6 @@ public class ChunkObject {
     public byte[][] heightMap  = new byte[16][16];
 
     public Mesh[] mesh = new Mesh[8];
-    public Mesh[] liquidMesh = new Mesh[8];
-    public Mesh[] blockBoxMesh = new Mesh[8];
     public boolean modified = false;
 
     public ChunkObject(){

@@ -171,24 +171,6 @@ public class Renderer {
             }
         }
 
-
-        //render each blockbox mesh
-        for (ChunkObject thisChunk : getMap()){
-            if (thisChunk == null){
-                continue;
-            }
-            if (thisChunk.blockBoxMesh == null){
-                continue;
-            }
-            for (Mesh thisMesh : thisChunk.blockBoxMesh){
-                if (thisMesh != null){
-                    modelViewMatrix = updateModelViewMatrix(new Vector3d(thisChunk.x * 16d, 0, thisChunk.z * 16d), new Vector3f(0,0,0), viewMatrix);
-                    shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                    thisMesh.render();
-                }
-            }
-        }
-
 //        render each item entity
         for (Item thisItem : getAllItems()){
             modelViewMatrix = updateModelViewMatrix(new Vector3d(thisItem.pos).add(0,thisItem.hover,0), thisItem.rotation, viewMatrix);
@@ -245,23 +227,6 @@ public class Renderer {
             rainDrop.render();
         }
          */
-
-        //render each chunk liquid mesh
-        for (ChunkObject thisChunk : getMap()){
-            if (thisChunk == null){
-                continue;
-            }
-            if (thisChunk.liquidMesh == null){
-                continue;
-            }
-            for (Mesh thisMesh : thisChunk.liquidMesh){
-                if (thisMesh != null){
-                    modelViewMatrix = updateModelViewMatrix(new Vector3d(thisChunk.x * 16d, 0, thisChunk.z * 16d), new Vector3f(0,0,0), viewMatrix);
-                    shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                    thisMesh.render();
-                }
-            }
-        }
 
 
         glClear(GL_DEPTH_BUFFER_BIT);

@@ -50,27 +50,11 @@ public class ChunkMesh {
 
             queue.remove(keyName);
 
-            //regular type
-            if (!newChunkMeshData.regularIsNull){
+            if (!newChunkMeshData.meshIsNull){
                 setChunkMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, new Mesh(newChunkMeshData.positionsArray, newChunkMeshData.lightArray, newChunkMeshData.indicesArray, newChunkMeshData.textureCoordArray, textureAtlas));
             } else {
                 setChunkMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, null);
             }
-
-            //liquid type
-            if (!newChunkMeshData.liquidIsNull){
-                setChunkLiquidMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, new Mesh(newChunkMeshData.liquidPositionsArray, newChunkMeshData.liquidLightArray, newChunkMeshData.liquidIndicesArray, newChunkMeshData.liquidTextureCoordArray, textureAtlas));
-            } else {
-                setChunkLiquidMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, null);
-            }
-
-            //blockbox type
-            if (!newChunkMeshData.blockBoxesIsNull){
-                setChunkBlockBoxMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, new Mesh(newChunkMeshData.blockBoxPositionsArray, newChunkMeshData.blockBoxLightArray, newChunkMeshData.blockBoxIndicesArray, newChunkMeshData.blockBoxTextureCoordArray, textureAtlas));
-            } else {
-                setChunkBlockBoxMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, null);
-            }
-
         }
 
         //if (count > 0) {
@@ -82,88 +66,36 @@ public class ChunkMesh {
         //let's use all the cpu threads to the limit
         //new Thread(() -> {
             //normal block stuff
-            final float[] positions = new float[50_824];
+            final float[] positions = new float[152_472];
             int positionsCount = 0;
 
-            final float[] textureCoord = new float[50_824];
+            final float[] textureCoord = new float[152_472];
             int textureCoordCount = 0;
 
-            final int[] indices = new int[50_824];
+            final int[] indices = new int[152_472];
             int indicesTableCount = 0;
             int indicesCount = 0;
 
-            final float[] light = new float[50_824];
+            final float[] light = new float[152_472];
             int lightCount = 0;
-
-            //liquid stuff
-            final float[] liquidPositions = new float[50_824];
-            int liquidPositionsCount = 0;
-
-            final float[] liquidTextureCoord = new float[50_824];
-            int liquidTextureCoordCount = 0;
-
-            final int[] liquidIndices = new int[50_824];
-            int liquidIndicesCount = 0;
-            int liquidIndicesTableCount = 0;
-
-            final float[] liquidLight = new float[10_824];
-            int liquidLightCount = 0;
-
-
-            //blockBox stuff
-            final float[] blockBoxPositions = new float[50_824];
-            int blockBoxPositionsCount = 0;
-
-            final float[] blockBoxTextureCoord = new float[50_824];
-            int blockBoxTextureCoordCount = 0;
-
-            final int[] blockBoxIndices = new int[50_824];
-            int blockBoxIndicesTableCount = 0;
-            int blockBoxIndicesCount = 0;
-
-            final float[] blockBoxLight = new float[50_824];
-            int blockBoxLightCount = 0;
 
             ChunkObject thisChunk;
             int thisBlock;
             byte thisRotation;
-
 
             thisChunk = getChunk(chunkX, chunkZ);
 
             if (thisChunk == null) {
                 return;
             }
-            if (thisChunk.mesh == null || thisChunk.liquidMesh == null) {
+            if (thisChunk.mesh == null) {
                 return;
             }
 
-            positionsCount = 0;
-            textureCoordCount = 0;
-            indicesTableCount = 0;
-            indicesCount = 0;
-            lightCount = 0;
-
-            liquidPositionsCount = 0;
-            liquidTextureCoordCount = 0;
-            liquidIndicesCount = 0;
-            liquidIndicesTableCount = 0;
-            liquidLightCount = 0;
-
-            blockBoxPositionsCount = 0;
-            blockBoxTextureCoordCount = 0;
-            blockBoxIndicesTableCount = 0;
-            blockBoxIndicesCount = 0;
-            blockBoxLightCount = 0;
-
             for (int x = 0; x < 16; x++) {
-
                 int realX = (chunkX * 16) + x;
-
                 for (int z = 0; z < 16; z++) {
-
                     int realZ = (chunkZ * 16) + z;
-
                     for (int y = yHeight * 16; y < (yHeight + 1) * 16; y++) {
 
                         thisBlock = thisChunk.block[posToIndex(x, y, z)];
@@ -183,23 +115,23 @@ public class ChunkMesh {
 
                                 if (neighborBlock >= 0 && !getBlockDrawType(neighborBlock).equals("normal")) {
                                     //front
-                                    liquidPositions[liquidPositionsCount + 0] = (1f + x);
-                                    liquidPositions[liquidPositionsCount + 1] = (1f + y);
-                                    liquidPositions[liquidPositionsCount + 2] = (1f + z);
+                                    positions[positionsCount + 0] = (1f + x);
+                                    positions[positionsCount + 1] = (1f + y);
+                                    positions[positionsCount + 2] = (1f + z);
 
-                                    liquidPositions[liquidPositionsCount + 3] = (0f + x);
-                                    liquidPositions[liquidPositionsCount + 4] = (1f + y);
-                                    liquidPositions[liquidPositionsCount + 5] = (1f + z);
+                                    positions[positionsCount + 3] = (0f + x);
+                                    positions[positionsCount + 4] = (1f + y);
+                                    positions[positionsCount + 5] = (1f + z);
 
-                                    liquidPositions[liquidPositionsCount + 6] = (0f + x);
-                                    liquidPositions[liquidPositionsCount + 7] = (0f + y);
-                                    liquidPositions[liquidPositionsCount + 8] = (1f + z);
+                                    positions[positionsCount + 6] = (0f + x);
+                                    positions[positionsCount + 7] = (0f + y);
+                                    positions[positionsCount + 8] = (1f + z);
 
-                                    liquidPositions[liquidPositionsCount + 9] = (1f + x);
-                                    liquidPositions[liquidPositionsCount + 10] = (0f + y);
-                                    liquidPositions[liquidPositionsCount + 11] = (1f + z);
+                                    positions[positionsCount + 9] = (1f + x);
+                                    positions[positionsCount + 10] = (0f + y);
+                                    positions[positionsCount + 11] = (1f + z);
 
-                                    liquidPositionsCount += 12;
+                                    positionsCount += 12;
 
                                     //front
                                     float frontLight = getLight(realX, y, realZ + 1) / maxLight;
@@ -208,32 +140,32 @@ public class ChunkMesh {
 
                                     //front
                                     for (int i = 0; i < 12; i++) {
-                                        liquidLight[liquidLightCount + i] = (frontLight);
+                                        light[lightCount + i] = (frontLight);
                                     }
 
-                                    liquidLightCount += 12;
+                                    lightCount += 12;
 
                                     //front
-                                    liquidIndices[liquidIndicesTableCount + 0] = (0 + liquidIndicesCount);
-                                    liquidIndices[liquidIndicesTableCount + 1] = (1 + liquidIndicesCount);
-                                    liquidIndices[liquidIndicesTableCount + 2] = (2 + liquidIndicesCount);
-                                    liquidIndices[liquidIndicesTableCount + 3] = (0 + liquidIndicesCount);
-                                    liquidIndices[liquidIndicesTableCount + 4] = (2 + liquidIndicesCount);
-                                    liquidIndices[liquidIndicesTableCount + 5] = (3 + liquidIndicesCount);
-                                    liquidIndicesCount += 4;
-                                    liquidIndicesTableCount += 6;
+                                    indices[indicesTableCount + 0] = (0 + indicesCount);
+                                    indices[indicesTableCount + 1] = (1 + indicesCount);
+                                    indices[indicesTableCount + 2] = (2 + indicesCount);
+                                    indices[indicesTableCount + 3] = (0 + indicesCount);
+                                    indices[indicesTableCount + 4] = (2 + indicesCount);
+                                    indices[indicesTableCount + 5] = (3 + indicesCount);
+                                    indicesCount += 4;
+                                    indicesTableCount += 6;
 
                                     float[] textureFront = getFrontTexturePoints(thisBlock, thisRotation);
                                     //front
-                                    liquidTextureCoord[liquidTextureCoordCount + 0] = (textureFront[1]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 1] = (textureFront[2]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 2] = (textureFront[0]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 3] = (textureFront[2]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 4] = (textureFront[0]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 5] = (textureFront[3]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 6] = (textureFront[1]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 7] = (textureFront[3]);
-                                    liquidTextureCoordCount += 8;
+                                    textureCoord[textureCoordCount + 0] = (textureFront[1]);
+                                    textureCoord[textureCoordCount + 1] = (textureFront[2]);
+                                    textureCoord[textureCoordCount + 2] = (textureFront[0]);
+                                    textureCoord[textureCoordCount + 3] = (textureFront[2]);
+                                    textureCoord[textureCoordCount + 4] = (textureFront[0]);
+                                    textureCoord[textureCoordCount + 5] = (textureFront[3]);
+                                    textureCoord[textureCoordCount + 6] = (textureFront[1]);
+                                    textureCoord[textureCoordCount + 7] = (textureFront[3]);
+                                    textureCoordCount += 8;
                                 }
 
 
@@ -245,55 +177,55 @@ public class ChunkMesh {
 
                                 if (neighborBlock >= 0 && !getBlockDrawType(neighborBlock).equals("normal")) {
                                     //back
-                                    liquidPositions[liquidPositionsCount + 0] = (0f + x);
-                                    liquidPositions[liquidPositionsCount + 1] = (1f + y);
-                                    liquidPositions[liquidPositionsCount + 2] = (0f + z);
+                                    positions[positionsCount + 0] = (0f + x);
+                                    positions[positionsCount + 1] = (1f + y);
+                                    positions[positionsCount + 2] = (0f + z);
 
-                                    liquidPositions[liquidPositionsCount + 3] = (1f + x);
-                                    liquidPositions[liquidPositionsCount + 4] = (1f + y);
-                                    liquidPositions[liquidPositionsCount + 5] = (0f + z);
+                                    positions[positionsCount + 3] = (1f + x);
+                                    positions[positionsCount + 4] = (1f + y);
+                                    positions[positionsCount + 5] = (0f + z);
 
-                                    liquidPositions[liquidPositionsCount + 6] = (1f + x);
-                                    liquidPositions[liquidPositionsCount + 7] = (0f + y);
-                                    liquidPositions[liquidPositionsCount + 8] = (0f + z);
+                                    positions[positionsCount + 6] = (1f + x);
+                                    positions[positionsCount + 7] = (0f + y);
+                                    positions[positionsCount + 8] = (0f + z);
 
-                                    liquidPositions[liquidPositionsCount + 9] = (0f + x);
-                                    liquidPositions[liquidPositionsCount + 10] = (0f + y);
-                                    liquidPositions[liquidPositionsCount + 11] = (0f + z);
+                                    positions[positionsCount + 9] = (0f + x);
+                                    positions[positionsCount + 10] = (0f + y);
+                                    positions[positionsCount + 11] = (0f + z);
 
-                                    liquidPositionsCount += 12;
+                                    positionsCount += 12;
 
                                     //back
                                     float backLight = getLight(realX, y, realZ - 1) / maxLight;
                                     backLight = convertLight(backLight);
                                     //back
                                     for (int i = 0; i < 12; i++) {
-                                        liquidLight[liquidLightCount + i] = (backLight);
+                                        light[lightCount + i] = (backLight);
                                     }
 
-                                    liquidLightCount += 12;
+                                    lightCount += 12;
 
                                     //back
-                                    liquidIndices[liquidIndicesTableCount + 0] = (0 + liquidIndicesCount);
-                                    liquidIndices[liquidIndicesTableCount + 1] = (1 + liquidIndicesCount);
-                                    liquidIndices[liquidIndicesTableCount + 2] = (2 + liquidIndicesCount);
-                                    liquidIndices[liquidIndicesTableCount + 3] = (0 + liquidIndicesCount);
-                                    liquidIndices[liquidIndicesTableCount + 4] = (2 + liquidIndicesCount);
-                                    liquidIndices[liquidIndicesTableCount + 5] = (3 + liquidIndicesCount);
-                                    liquidIndicesCount += 4;
-                                    liquidIndicesTableCount += 6;
+                                    indices[indicesTableCount + 0] = (0 + indicesCount);
+                                    indices[indicesTableCount + 1] = (1 + indicesCount);
+                                    indices[indicesTableCount + 2] = (2 + indicesCount);
+                                    indices[indicesTableCount + 3] = (0 + indicesCount);
+                                    indices[indicesTableCount + 4] = (2 + indicesCount);
+                                    indices[indicesTableCount + 5] = (3 + indicesCount);
+                                    indicesCount += 4;
+                                    indicesTableCount += 6;
 
                                     float[] textureBack = getBackTexturePoints(thisBlock, thisRotation);
                                     //back
-                                    liquidTextureCoord[liquidTextureCoordCount + 0] = (textureBack[1]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 1] = (textureBack[2]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 2] = (textureBack[0]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 3] = (textureBack[2]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 4] = (textureBack[0]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 5] = (textureBack[3]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 6] = (textureBack[1]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 7] = (textureBack[3]);
-                                    liquidTextureCoordCount += 8;
+                                    textureCoord[textureCoordCount + 0] = (textureBack[1]);
+                                    textureCoord[textureCoordCount + 1] = (textureBack[2]);
+                                    textureCoord[textureCoordCount + 2] = (textureBack[0]);
+                                    textureCoord[textureCoordCount + 3] = (textureBack[2]);
+                                    textureCoord[textureCoordCount + 4] = (textureBack[0]);
+                                    textureCoord[textureCoordCount + 5] = (textureBack[3]);
+                                    textureCoord[textureCoordCount + 6] = (textureBack[1]);
+                                    textureCoord[textureCoordCount + 7] = (textureBack[3]);
+                                    textureCoordCount += 8;
                                 }
 
                                 if (x + 1 > 15) {
@@ -304,55 +236,55 @@ public class ChunkMesh {
 
                                 if (neighborBlock >= 0 && !getBlockDrawType(neighborBlock).equals("normal")) {
                                     //right
-                                    liquidPositions[liquidPositionsCount + 0] = (1f + x);
-                                    liquidPositions[liquidPositionsCount + 1] = (1f + y);
-                                    liquidPositions[liquidPositionsCount + 2] = (0f + z);
+                                    positions[positionsCount + 0] = (1f + x);
+                                    positions[positionsCount + 1] = (1f + y);
+                                    positions[positionsCount + 2] = (0f + z);
 
-                                    liquidPositions[liquidPositionsCount + 3] = (1f + x);
-                                    liquidPositions[liquidPositionsCount + 4] = (1f + y);
-                                    liquidPositions[liquidPositionsCount + 5] = (1f + z);
+                                    positions[positionsCount + 3] = (1f + x);
+                                    positions[positionsCount + 4] = (1f + y);
+                                    positions[positionsCount + 5] = (1f + z);
 
-                                    liquidPositions[liquidPositionsCount + 6] = (1f + x);
-                                    liquidPositions[liquidPositionsCount + 7] = (0f + y);
-                                    liquidPositions[liquidPositionsCount + 8] = (1f + z);
+                                    positions[positionsCount + 6] = (1f + x);
+                                    positions[positionsCount + 7] = (0f + y);
+                                    positions[positionsCount + 8] = (1f + z);
 
-                                    liquidPositions[liquidPositionsCount + 9] = (1f + x);
-                                    liquidPositions[liquidPositionsCount + 10] = (0f + y);
-                                    liquidPositions[liquidPositionsCount + 11] = (0f + z);
+                                    positions[positionsCount + 9] = (1f + x);
+                                    positions[positionsCount + 10] = (0f + y);
+                                    positions[positionsCount + 11] = (0f + z);
 
-                                    liquidPositionsCount += 12;
+                                    positionsCount += 12;
 
                                     //right
                                     float rightLight = getLight(realX + 1, y, realZ) / maxLight;
                                     rightLight = convertLight(rightLight);
                                     //right
                                     for (int i = 0; i < 12; i++) {
-                                        liquidLight[liquidLightCount + i] = (rightLight);
+                                        light[lightCount + i] = (rightLight);
                                     }
 
-                                    liquidLightCount += 12;
+                                    lightCount += 12;
 
                                     //right
-                                    liquidIndices[liquidIndicesTableCount + 0] = (0 + liquidIndicesCount);
-                                    liquidIndices[liquidIndicesTableCount + 1] = (1 + liquidIndicesCount);
-                                    liquidIndices[liquidIndicesTableCount + 2] = (2 + liquidIndicesCount);
-                                    liquidIndices[liquidIndicesTableCount + 3] = (0 + liquidIndicesCount);
-                                    liquidIndices[liquidIndicesTableCount + 4] = (2 + liquidIndicesCount);
-                                    liquidIndices[liquidIndicesTableCount + 5] = (3 + liquidIndicesCount);
-                                    liquidIndicesCount += 4;
-                                    liquidIndicesTableCount += 6;
+                                    indices[indicesTableCount + 0] = (0 + indicesCount);
+                                    indices[indicesTableCount + 1] = (1 + indicesCount);
+                                    indices[indicesTableCount + 2] = (2 + indicesCount);
+                                    indices[indicesTableCount + 3] = (0 + indicesCount);
+                                    indices[indicesTableCount + 4] = (2 + indicesCount);
+                                    indices[indicesTableCount + 5] = (3 + indicesCount);
+                                    indicesCount += 4;
+                                    indicesTableCount += 6;
 
                                     float[] textureRight = getRightTexturePoints(thisBlock, thisRotation);
                                     //right
-                                    liquidTextureCoord[liquidTextureCoordCount + 0] = (textureRight[1]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 1] = (textureRight[2]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 2] = (textureRight[0]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 3] = (textureRight[2]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 4] = (textureRight[0]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 5] = (textureRight[3]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 6] = (textureRight[1]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 7] = (textureRight[3]);
-                                    liquidTextureCoordCount += 8;
+                                    textureCoord[textureCoordCount + 0] = (textureRight[1]);
+                                    textureCoord[textureCoordCount + 1] = (textureRight[2]);
+                                    textureCoord[textureCoordCount + 2] = (textureRight[0]);
+                                    textureCoord[textureCoordCount + 3] = (textureRight[2]);
+                                    textureCoord[textureCoordCount + 4] = (textureRight[0]);
+                                    textureCoord[textureCoordCount + 5] = (textureRight[3]);
+                                    textureCoord[textureCoordCount + 6] = (textureRight[1]);
+                                    textureCoord[textureCoordCount + 7] = (textureRight[3]);
+                                    textureCoordCount += 8;
                                 }
 
                                 if (x - 1 < 0) {
@@ -363,55 +295,55 @@ public class ChunkMesh {
 
                                 if (neighborBlock >= 0 && !getBlockDrawType(neighborBlock).equals("normal")) {
                                     //left
-                                    liquidPositions[liquidPositionsCount + 0] = (0f + x);
-                                    liquidPositions[liquidPositionsCount + 1] = (1f + y);
-                                    liquidPositions[liquidPositionsCount + 2] = (1f + z);
+                                    positions[positionsCount + 0] = (0f + x);
+                                    positions[positionsCount + 1] = (1f + y);
+                                    positions[positionsCount + 2] = (1f + z);
 
-                                    liquidPositions[liquidPositionsCount + 3] = (0f + x);
-                                    liquidPositions[liquidPositionsCount + 4] = (1f + y);
-                                    liquidPositions[liquidPositionsCount + 5] = (0f + z);
+                                    positions[positionsCount + 3] = (0f + x);
+                                    positions[positionsCount + 4] = (1f + y);
+                                    positions[positionsCount + 5] = (0f + z);
 
-                                    liquidPositions[liquidPositionsCount + 6] = (0f + x);
-                                    liquidPositions[liquidPositionsCount + 7] = (0f + y);
-                                    liquidPositions[liquidPositionsCount + 8] = (0f + z);
+                                    positions[positionsCount + 6] = (0f + x);
+                                    positions[positionsCount + 7] = (0f + y);
+                                    positions[positionsCount + 8] = (0f + z);
 
-                                    liquidPositions[liquidPositionsCount + 9] = (0f + x);
-                                    liquidPositions[liquidPositionsCount + 10] = (0f + y);
-                                    liquidPositions[liquidPositionsCount + 11] = (1f + z);
+                                    positions[positionsCount + 9] = (0f + x);
+                                    positions[positionsCount + 10] = (0f + y);
+                                    positions[positionsCount + 11] = (1f + z);
 
-                                    liquidPositionsCount += 12;
+                                    positionsCount += 12;
 
                                     //left
                                     float leftLight = getLight(realX - 1, y, realZ) / maxLight;
                                     leftLight = convertLight(leftLight);
                                     //left
                                     for (int i = 0; i < 12; i++) {
-                                        liquidLight[liquidLightCount + i] = (leftLight);
+                                        light[lightCount + i] = (leftLight);
                                     }
 
-                                    liquidLightCount += 12;
+                                    lightCount += 12;
 
                                     //left
-                                    liquidIndices[liquidIndicesTableCount + 0] = (0 + liquidIndicesCount);
-                                    liquidIndices[liquidIndicesTableCount + 1] = (1 + liquidIndicesCount);
-                                    liquidIndices[liquidIndicesTableCount + 2] = (2 + liquidIndicesCount);
-                                    liquidIndices[liquidIndicesTableCount + 3] = (0 + liquidIndicesCount);
-                                    liquidIndices[liquidIndicesTableCount + 4] = (2 + liquidIndicesCount);
-                                    liquidIndices[liquidIndicesTableCount + 5] = (3 + liquidIndicesCount);
-                                    liquidIndicesCount += 4;
-                                    liquidIndicesTableCount += 6;
+                                    indices[indicesTableCount + 0] = (0 + indicesCount);
+                                    indices[indicesTableCount + 1] = (1 + indicesCount);
+                                    indices[indicesTableCount + 2] = (2 + indicesCount);
+                                    indices[indicesTableCount + 3] = (0 + indicesCount);
+                                    indices[indicesTableCount + 4] = (2 + indicesCount);
+                                    indices[indicesTableCount + 5] = (3 + indicesCount);
+                                    indicesCount += 4;
+                                    indicesTableCount += 6;
 
                                     float[] textureLeft = getLeftTexturePoints(thisBlock, thisRotation);
                                     //left
-                                    liquidTextureCoord[liquidTextureCoordCount + 0] = (textureLeft[1]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 1] = (textureLeft[2]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 2] = (textureLeft[0]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 3] = (textureLeft[2]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 4] = (textureLeft[0]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 5] = (textureLeft[3]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 6] = (textureLeft[1]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 7] = (textureLeft[3]);
-                                    liquidTextureCoordCount += 8;
+                                    textureCoord[textureCoordCount + 0] = (textureLeft[1]);
+                                    textureCoord[textureCoordCount + 1] = (textureLeft[2]);
+                                    textureCoord[textureCoordCount + 2] = (textureLeft[0]);
+                                    textureCoord[textureCoordCount + 3] = (textureLeft[2]);
+                                    textureCoord[textureCoordCount + 4] = (textureLeft[0]);
+                                    textureCoord[textureCoordCount + 5] = (textureLeft[3]);
+                                    textureCoord[textureCoordCount + 6] = (textureLeft[1]);
+                                    textureCoord[textureCoordCount + 7] = (textureLeft[3]);
+                                    textureCoordCount += 8;
                                 }
 
                                 //y doesn't need a check since it has no neighbors
@@ -421,55 +353,55 @@ public class ChunkMesh {
 
                                 if (y == 127 || (neighborBlock >= 0 && !getBlockDrawType(neighborBlock).equals("normal"))) {
                                     //top
-                                    liquidPositions[liquidPositionsCount + 0] = (0f + x);
-                                    liquidPositions[liquidPositionsCount + 1] = (1f + y);
-                                    liquidPositions[liquidPositionsCount + 2] = (0f + z);
+                                    positions[positionsCount + 0] = (0f + x);
+                                    positions[positionsCount + 1] = (1f + y);
+                                    positions[positionsCount + 2] = (0f + z);
 
-                                    liquidPositions[liquidPositionsCount + 3] = (0f + x);
-                                    liquidPositions[liquidPositionsCount + 4] = (1f + y);
-                                    liquidPositions[liquidPositionsCount + 5] = (1f + z);
+                                    positions[positionsCount + 3] = (0f + x);
+                                    positions[positionsCount + 4] = (1f + y);
+                                    positions[positionsCount + 5] = (1f + z);
 
-                                    liquidPositions[liquidPositionsCount + 6] = (1f + x);
-                                    liquidPositions[liquidPositionsCount + 7] = (1f + y);
-                                    liquidPositions[liquidPositionsCount + 8] = (1f + z);
+                                    positions[positionsCount + 6] = (1f + x);
+                                    positions[positionsCount + 7] = (1f + y);
+                                    positions[positionsCount + 8] = (1f + z);
 
-                                    liquidPositions[liquidPositionsCount + 9] = (1f + x);
-                                    liquidPositions[liquidPositionsCount + 10] = (1f + y);
-                                    liquidPositions[liquidPositionsCount + 11] = (0f + z);
+                                    positions[positionsCount + 9] = (1f + x);
+                                    positions[positionsCount + 10] = (1f + y);
+                                    positions[positionsCount + 11] = (0f + z);
 
-                                    liquidPositionsCount += 12;
+                                    positionsCount += 12;
 
                                     //top
                                     float topLight = getLight(realX, y + 1, realZ) / maxLight;
                                     topLight = convertLight(topLight);
                                     //top
                                     for (int i = 0; i < 12; i++) {
-                                        liquidLight[liquidLightCount + i] = (topLight);
+                                        light[lightCount + i] = (topLight);
                                     }
 
-                                    liquidLightCount += 12;
+                                    lightCount += 12;
 
                                     //top
-                                    liquidIndices[liquidIndicesTableCount + 0] = (0 + liquidIndicesCount);
-                                    liquidIndices[liquidIndicesTableCount + 1] = (1 + liquidIndicesCount);
-                                    liquidIndices[liquidIndicesTableCount + 2] = (2 + liquidIndicesCount);
-                                    liquidIndices[liquidIndicesTableCount + 3] = (0 + liquidIndicesCount);
-                                    liquidIndices[liquidIndicesTableCount + 4] = (2 + liquidIndicesCount);
-                                    liquidIndices[liquidIndicesTableCount + 5] = (3 + liquidIndicesCount);
-                                    liquidIndicesCount += 4;
-                                    liquidIndicesTableCount += 6;
+                                    indices[indicesTableCount + 0] = (0 + indicesCount);
+                                    indices[indicesTableCount + 1] = (1 + indicesCount);
+                                    indices[indicesTableCount + 2] = (2 + indicesCount);
+                                    indices[indicesTableCount + 3] = (0 + indicesCount);
+                                    indices[indicesTableCount + 4] = (2 + indicesCount);
+                                    indices[indicesTableCount + 5] = (3 + indicesCount);
+                                    indicesCount += 4;
+                                    indicesTableCount += 6;
 
                                     float[] textureTop = getTopTexturePoints(thisBlock);
                                     //top
-                                    liquidTextureCoord[liquidTextureCoordCount + 0] = (textureTop[1]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 1] = (textureTop[2]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 2] = (textureTop[0]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 3] = (textureTop[2]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 4] = (textureTop[0]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 5] = (textureTop[3]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 6] = (textureTop[1]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 7] = (textureTop[3]);
-                                    liquidTextureCoordCount += 8;
+                                    textureCoord[textureCoordCount + 0] = (textureTop[1]);
+                                    textureCoord[textureCoordCount + 1] = (textureTop[2]);
+                                    textureCoord[textureCoordCount + 2] = (textureTop[0]);
+                                    textureCoord[textureCoordCount + 3] = (textureTop[2]);
+                                    textureCoord[textureCoordCount + 4] = (textureTop[0]);
+                                    textureCoord[textureCoordCount + 5] = (textureTop[3]);
+                                    textureCoord[textureCoordCount + 6] = (textureTop[1]);
+                                    textureCoord[textureCoordCount + 7] = (textureTop[3]);
+                                    textureCoordCount += 8;
                                 }
 
                                 //doesn't need a neighbor chunk, chunks are 2D
@@ -480,55 +412,55 @@ public class ChunkMesh {
                                 //don't render bottom of world
                                 if (y != 0 && neighborBlock >= 0 && !getBlockDrawType(neighborBlock).equals("normal")) {
                                     //bottom
-                                    liquidPositions[liquidPositionsCount + 0] = (0f + x);
-                                    liquidPositions[liquidPositionsCount + 1] = (0f + y);
-                                    liquidPositions[liquidPositionsCount + 2] = (1f + z);
+                                    positions[positionsCount + 0] = (0f + x);
+                                    positions[positionsCount + 1] = (0f + y);
+                                    positions[positionsCount + 2] = (1f + z);
 
-                                    liquidPositions[liquidPositionsCount + 3] = (0f + x);
-                                    liquidPositions[liquidPositionsCount + 4] = (0f + y);
-                                    liquidPositions[liquidPositionsCount + 5] = (0f + z);
+                                    positions[positionsCount + 3] = (0f + x);
+                                    positions[positionsCount + 4] = (0f + y);
+                                    positions[positionsCount + 5] = (0f + z);
 
-                                    liquidPositions[liquidPositionsCount + 6] = (1f + x);
-                                    liquidPositions[liquidPositionsCount + 7] = (0f + y);
-                                    liquidPositions[liquidPositionsCount + 8] = (0f + z);
+                                    positions[positionsCount + 6] = (1f + x);
+                                    positions[positionsCount + 7] = (0f + y);
+                                    positions[positionsCount + 8] = (0f + z);
 
-                                    liquidPositions[liquidPositionsCount + 9] = (1f + x);
-                                    liquidPositions[liquidPositionsCount + 10] = (0f + y);
-                                    liquidPositions[liquidPositionsCount + 11] = (1f + z);
+                                    positions[positionsCount + 9] = (1f + x);
+                                    positions[positionsCount + 10] = (0f + y);
+                                    positions[positionsCount + 11] = (1f + z);
 
-                                    liquidPositionsCount += 12;
+                                    positionsCount += 12;
 
                                     //bottom
                                     float bottomLight = getLight(realX, y - 1, realZ) / maxLight;
                                     bottomLight = convertLight(bottomLight);
                                     //bottom
                                     for (int i = 0; i < 12; i++) {
-                                        liquidLight[liquidLightCount + i] = (bottomLight);
+                                        light[lightCount + i] = (bottomLight);
                                     }
 
-                                    liquidLightCount += 12;
+                                    lightCount += 12;
 
                                     //bottom
-                                    liquidIndices[liquidIndicesTableCount + 0] = (0 + liquidIndicesCount);
-                                    liquidIndices[liquidIndicesTableCount + 1] = (1 + liquidIndicesCount);
-                                    liquidIndices[liquidIndicesTableCount + 2] = (2 + liquidIndicesCount);
-                                    liquidIndices[liquidIndicesTableCount + 3] = (0 + liquidIndicesCount);
-                                    liquidIndices[liquidIndicesTableCount + 4] = (2 + liquidIndicesCount);
-                                    liquidIndices[liquidIndicesTableCount + 5] = (3 + liquidIndicesCount);
-                                    liquidIndicesCount += 4;
-                                    liquidIndicesTableCount += 6;
+                                    indices[indicesTableCount + 0] = (0 + indicesCount);
+                                    indices[indicesTableCount + 1] = (1 + indicesCount);
+                                    indices[indicesTableCount + 2] = (2 + indicesCount);
+                                    indices[indicesTableCount + 3] = (0 + indicesCount);
+                                    indices[indicesTableCount + 4] = (2 + indicesCount);
+                                    indices[indicesTableCount + 5] = (3 + indicesCount);
+                                    indicesCount += 4;
+                                    indicesTableCount += 6;
 
                                     float[] textureBottom = getBottomTexturePoints(thisBlock);
                                     //bottom
-                                    liquidTextureCoord[liquidTextureCoordCount + 0] = (textureBottom[1]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 1] = (textureBottom[2]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 2] = (textureBottom[0]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 3] = (textureBottom[2]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 4] = (textureBottom[0]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 5] = (textureBottom[3]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 6] = (textureBottom[1]);
-                                    liquidTextureCoord[liquidTextureCoordCount + 7] = (textureBottom[3]);
-                                    liquidTextureCoordCount += 8;
+                                    textureCoord[textureCoordCount + 0] = (textureBottom[1]);
+                                    textureCoord[textureCoordCount + 1] = (textureBottom[2]);
+                                    textureCoord[textureCoordCount + 2] = (textureBottom[0]);
+                                    textureCoord[textureCoordCount + 3] = (textureBottom[2]);
+                                    textureCoord[textureCoordCount + 4] = (textureBottom[0]);
+                                    textureCoord[textureCoordCount + 5] = (textureBottom[3]);
+                                    textureCoord[textureCoordCount + 6] = (textureBottom[1]);
+                                    textureCoord[textureCoordCount + 7] = (textureBottom[3]);
+                                    textureCoordCount += 8;
                                 }
                             }
 
@@ -896,23 +828,23 @@ public class ChunkMesh {
                                     // 0, 0, 0, 1, 1, 1
 
                                     //front
-                                    blockBoxPositions[blockBoxPositionsCount + 0] = ((float) thisBlockBox[3] + x);
-                                    blockBoxPositions[blockBoxPositionsCount + 1] = ((float) thisBlockBox[4] + y);
-                                    blockBoxPositions[blockBoxPositionsCount + 2] = ((float) thisBlockBox[5] + z);
+                                    positions[positionsCount + 0] = ((float) thisBlockBox[3] + x);
+                                    positions[positionsCount + 1] = ((float) thisBlockBox[4] + y);
+                                    positions[positionsCount + 2] = ((float) thisBlockBox[5] + z);
 
-                                    blockBoxPositions[blockBoxPositionsCount + 3] = ((float) thisBlockBox[0] + x);
-                                    blockBoxPositions[blockBoxPositionsCount + 4] = ((float) thisBlockBox[4] + y);
-                                    blockBoxPositions[blockBoxPositionsCount + 5] = ((float) thisBlockBox[5] + z);
+                                    positions[positionsCount + 3] = ((float) thisBlockBox[0] + x);
+                                    positions[positionsCount + 4] = ((float) thisBlockBox[4] + y);
+                                    positions[positionsCount + 5] = ((float) thisBlockBox[5] + z);
 
-                                    blockBoxPositions[blockBoxPositionsCount + 6] = ((float) thisBlockBox[0] + x);
-                                    blockBoxPositions[blockBoxPositionsCount + 7] = ((float) thisBlockBox[1] + y);
-                                    blockBoxPositions[blockBoxPositionsCount + 8] = ((float) thisBlockBox[5] + z);
+                                    positions[positionsCount + 6] = ((float) thisBlockBox[0] + x);
+                                    positions[positionsCount + 7] = ((float) thisBlockBox[1] + y);
+                                    positions[positionsCount + 8] = ((float) thisBlockBox[5] + z);
 
-                                    blockBoxPositions[blockBoxPositionsCount + 9] = ((float) thisBlockBox[3] + x);
-                                    blockBoxPositions[blockBoxPositionsCount + 10] = ((float) thisBlockBox[1] + y);
-                                    blockBoxPositions[blockBoxPositionsCount + 11] = ((float) thisBlockBox[5] + z);
+                                    positions[positionsCount + 9] = ((float) thisBlockBox[3] + x);
+                                    positions[positionsCount + 10] = ((float) thisBlockBox[1] + y);
+                                    positions[positionsCount + 11] = ((float) thisBlockBox[5] + z);
 
-                                    blockBoxPositionsCount += 12;
+                                    positionsCount += 12;
 
                                     //front
                                     float frontLight = getLight(realX, y, realZ + 1) / maxLight;
@@ -921,20 +853,20 @@ public class ChunkMesh {
 
                                     //front
                                     for (int i = 0; i < 12; i++) {
-                                        blockBoxLight[blockBoxLightCount + i] = (frontLight);
+                                        light[lightCount + i] = (frontLight);
                                     }
 
-                                    blockBoxLightCount += 12;
+                                    lightCount += 12;
 
                                     //front
-                                    blockBoxIndices[blockBoxIndicesTableCount + 0] = (0 + blockBoxIndicesCount);
-                                    blockBoxIndices[blockBoxIndicesTableCount + 1] = (1 + blockBoxIndicesCount);
-                                    blockBoxIndices[blockBoxIndicesTableCount + 2] = (2 + blockBoxIndicesCount);
-                                    blockBoxIndices[blockBoxIndicesTableCount + 3] = (0 + blockBoxIndicesCount);
-                                    blockBoxIndices[blockBoxIndicesTableCount + 4] = (2 + blockBoxIndicesCount);
-                                    blockBoxIndices[blockBoxIndicesTableCount + 5] = (3 + blockBoxIndicesCount);
-                                    blockBoxIndicesCount += 4;
-                                    blockBoxIndicesTableCount += 6;
+                                    indices[indicesTableCount + 0] = (0 + indicesCount);
+                                    indices[indicesTableCount + 1] = (1 + indicesCount);
+                                    indices[indicesTableCount + 2] = (2 + indicesCount);
+                                    indices[indicesTableCount + 3] = (0 + indicesCount);
+                                    indices[indicesTableCount + 4] = (2 + indicesCount);
+                                    indices[indicesTableCount + 5] = (3 + indicesCount);
+                                    indicesCount += 4;
+                                    indicesTableCount += 6;
 
                                     // 0, 1,  2, 3
                                     //-x,+x, -y,+y
@@ -942,37 +874,37 @@ public class ChunkMesh {
                                     float[] textureFront = getFrontTexturePoints(thisBlock, thisRotation);
 
                                     //front
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 0] = (textureFront[1] - ((1 - (float) thisBlockBox[3]) / 32f)); //x positive
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 1] = (textureFront[2] + ((1 - (float) thisBlockBox[4]) / 32f)); //y positive
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 2] = (textureFront[0] - ((0 - (float) thisBlockBox[0]) / 32f)); //x negative
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 3] = (textureFront[2] + ((1 - (float) thisBlockBox[4]) / 32f)); //y positive
+                                    textureCoord[textureCoordCount + 0] = (textureFront[1] - ((1 - (float) thisBlockBox[3]) / 32f)); //x positive
+                                    textureCoord[textureCoordCount + 1] = (textureFront[2] + ((1 - (float) thisBlockBox[4]) / 32f)); //y positive
+                                    textureCoord[textureCoordCount + 2] = (textureFront[0] - ((0 - (float) thisBlockBox[0]) / 32f)); //x negative
+                                    textureCoord[textureCoordCount + 3] = (textureFront[2] + ((1 - (float) thisBlockBox[4]) / 32f)); //y positive
 
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 4] = (textureFront[0] - ((0 - (float) thisBlockBox[0]) / 32f)); //x negative
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 5] = (textureFront[3] - (((float) thisBlockBox[1]) / 32f));   //y negative
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 6] = (textureFront[1] - ((1 - (float) thisBlockBox[3]) / 32f)); //x positive
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 7] = (textureFront[3] - (((float) thisBlockBox[1]) / 32f));   //y negative
+                                    textureCoord[textureCoordCount + 4] = (textureFront[0] - ((0 - (float) thisBlockBox[0]) / 32f)); //x negative
+                                    textureCoord[textureCoordCount + 5] = (textureFront[3] - (((float) thisBlockBox[1]) / 32f));   //y negative
+                                    textureCoord[textureCoordCount + 6] = (textureFront[1] - ((1 - (float) thisBlockBox[3]) / 32f)); //x positive
+                                    textureCoord[textureCoordCount + 7] = (textureFront[3] - (((float) thisBlockBox[1]) / 32f));   //y negative
 
-                                    blockBoxTextureCoordCount += 8;
+                                    textureCoordCount += 8;
 
 
                                     //back
-                                    blockBoxPositions[blockBoxPositionsCount + 0] = ((float) thisBlockBox[0] + x);
-                                    blockBoxPositions[blockBoxPositionsCount + 1] = ((float) thisBlockBox[4] + y);
-                                    blockBoxPositions[blockBoxPositionsCount + 2] = ((float) thisBlockBox[2] + z);
+                                    positions[positionsCount + 0] = ((float) thisBlockBox[0] + x);
+                                    positions[positionsCount + 1] = ((float) thisBlockBox[4] + y);
+                                    positions[positionsCount + 2] = ((float) thisBlockBox[2] + z);
 
-                                    blockBoxPositions[blockBoxPositionsCount + 3] = ((float) thisBlockBox[3] + x);
-                                    blockBoxPositions[blockBoxPositionsCount + 4] = ((float) thisBlockBox[4] + y);
-                                    blockBoxPositions[blockBoxPositionsCount + 5] = ((float) thisBlockBox[2] + z);
+                                    positions[positionsCount + 3] = ((float) thisBlockBox[3] + x);
+                                    positions[positionsCount + 4] = ((float) thisBlockBox[4] + y);
+                                    positions[positionsCount + 5] = ((float) thisBlockBox[2] + z);
 
-                                    blockBoxPositions[blockBoxPositionsCount + 6] = ((float) thisBlockBox[3] + x);
-                                    blockBoxPositions[blockBoxPositionsCount + 7] = ((float) thisBlockBox[1] + y);
-                                    blockBoxPositions[blockBoxPositionsCount + 8] = ((float) thisBlockBox[2] + z);
+                                    positions[positionsCount + 6] = ((float) thisBlockBox[3] + x);
+                                    positions[positionsCount + 7] = ((float) thisBlockBox[1] + y);
+                                    positions[positionsCount + 8] = ((float) thisBlockBox[2] + z);
 
-                                    blockBoxPositions[blockBoxPositionsCount + 9] = ((float) thisBlockBox[0] + x);
-                                    blockBoxPositions[blockBoxPositionsCount + 10] = ((float) thisBlockBox[1] + y);
-                                    blockBoxPositions[blockBoxPositionsCount + 11] = ((float) thisBlockBox[2] + z);
+                                    positions[positionsCount + 9] = ((float) thisBlockBox[0] + x);
+                                    positions[positionsCount + 10] = ((float) thisBlockBox[1] + y);
+                                    positions[positionsCount + 11] = ((float) thisBlockBox[2] + z);
 
-                                    blockBoxPositionsCount += 12;
+                                    positionsCount += 12;
 
 
                                     //back
@@ -980,20 +912,20 @@ public class ChunkMesh {
                                     backLight = convertLight(backLight);
                                     //back
                                     for (int i = 0; i < 12; i++) {
-                                        blockBoxLight[blockBoxLightCount + i] = (backLight);
+                                        light[lightCount + i] = (backLight);
                                     }
 
-                                    blockBoxLightCount += 12;
+                                    lightCount += 12;
 
                                     //back
-                                    blockBoxIndices[blockBoxIndicesTableCount + 0] = (0 + blockBoxIndicesCount);
-                                    blockBoxIndices[blockBoxIndicesTableCount + 1] = (1 + blockBoxIndicesCount);
-                                    blockBoxIndices[blockBoxIndicesTableCount + 2] = (2 + blockBoxIndicesCount);
-                                    blockBoxIndices[blockBoxIndicesTableCount + 3] = (0 + blockBoxIndicesCount);
-                                    blockBoxIndices[blockBoxIndicesTableCount + 4] = (2 + blockBoxIndicesCount);
-                                    blockBoxIndices[blockBoxIndicesTableCount + 5] = (3 + blockBoxIndicesCount);
-                                    blockBoxIndicesCount += 4;
-                                    blockBoxIndicesTableCount += 6;
+                                    indices[indicesTableCount + 0] = (0 + indicesCount);
+                                    indices[indicesTableCount + 1] = (1 + indicesCount);
+                                    indices[indicesTableCount + 2] = (2 + indicesCount);
+                                    indices[indicesTableCount + 3] = (0 + indicesCount);
+                                    indices[indicesTableCount + 4] = (2 + indicesCount);
+                                    indices[indicesTableCount + 5] = (3 + indicesCount);
+                                    indicesCount += 4;
+                                    indicesTableCount += 6;
 
                                     float[] textureBack = getBackTexturePoints(thisBlock, thisRotation);
 
@@ -1006,56 +938,56 @@ public class ChunkMesh {
 
 
                                     //back
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 0] = (textureBack[1] - ((1 - (float) thisBlockBox[0]) / 32f));
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 1] = (textureBack[2] + ((1 - (float) thisBlockBox[4]) / 32f));
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 2] = (textureBack[0] - ((0 - (float) thisBlockBox[3]) / 32f));
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 3] = (textureBack[2] + ((1 - (float) thisBlockBox[4]) / 32f));
+                                    textureCoord[textureCoordCount + 0] = (textureBack[1] - ((1 - (float) thisBlockBox[0]) / 32f));
+                                    textureCoord[textureCoordCount + 1] = (textureBack[2] + ((1 - (float) thisBlockBox[4]) / 32f));
+                                    textureCoord[textureCoordCount + 2] = (textureBack[0] - ((0 - (float) thisBlockBox[3]) / 32f));
+                                    textureCoord[textureCoordCount + 3] = (textureBack[2] + ((1 - (float) thisBlockBox[4]) / 32f));
 
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 4] = (textureBack[0] - ((0 - (float) thisBlockBox[3]) / 32f));
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 5] = (textureBack[3] - (((float) thisBlockBox[1]) / 32f));
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 6] = (textureBack[1] - ((1 - (float) thisBlockBox[0]) / 32f));
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 7] = (textureBack[3] - (((float) thisBlockBox[1]) / 32f));
-                                    blockBoxTextureCoordCount += 8;
+                                    textureCoord[textureCoordCount + 4] = (textureBack[0] - ((0 - (float) thisBlockBox[3]) / 32f));
+                                    textureCoord[textureCoordCount + 5] = (textureBack[3] - (((float) thisBlockBox[1]) / 32f));
+                                    textureCoord[textureCoordCount + 6] = (textureBack[1] - ((1 - (float) thisBlockBox[0]) / 32f));
+                                    textureCoord[textureCoordCount + 7] = (textureBack[3] - (((float) thisBlockBox[1]) / 32f));
+                                    textureCoordCount += 8;
 
 
                                     //right
-                                    blockBoxPositions[blockBoxPositionsCount + 0] = ((float) thisBlockBox[3] + x);
-                                    blockBoxPositions[blockBoxPositionsCount + 1] = ((float) thisBlockBox[4] + y);
-                                    blockBoxPositions[blockBoxPositionsCount + 2] = ((float) thisBlockBox[2] + z);
+                                    positions[positionsCount + 0] = ((float) thisBlockBox[3] + x);
+                                    positions[positionsCount + 1] = ((float) thisBlockBox[4] + y);
+                                    positions[positionsCount + 2] = ((float) thisBlockBox[2] + z);
 
-                                    blockBoxPositions[blockBoxPositionsCount + 3] = ((float) thisBlockBox[3] + x);
-                                    blockBoxPositions[blockBoxPositionsCount + 4] = ((float) thisBlockBox[4] + y);
-                                    blockBoxPositions[blockBoxPositionsCount + 5] = ((float) thisBlockBox[5] + z);
+                                    positions[positionsCount + 3] = ((float) thisBlockBox[3] + x);
+                                    positions[positionsCount + 4] = ((float) thisBlockBox[4] + y);
+                                    positions[positionsCount + 5] = ((float) thisBlockBox[5] + z);
 
-                                    blockBoxPositions[blockBoxPositionsCount + 6] = ((float) thisBlockBox[3] + x);
-                                    blockBoxPositions[blockBoxPositionsCount + 7] = ((float) thisBlockBox[1] + y);
-                                    blockBoxPositions[blockBoxPositionsCount + 8] = ((float) thisBlockBox[5] + z);
+                                    positions[positionsCount + 6] = ((float) thisBlockBox[3] + x);
+                                    positions[positionsCount + 7] = ((float) thisBlockBox[1] + y);
+                                    positions[positionsCount + 8] = ((float) thisBlockBox[5] + z);
 
-                                    blockBoxPositions[blockBoxPositionsCount + 9] = ((float) thisBlockBox[3] + x);
-                                    blockBoxPositions[blockBoxPositionsCount + 10] = ((float) thisBlockBox[1] + y);
-                                    blockBoxPositions[blockBoxPositionsCount + 11] = ((float) thisBlockBox[2] + z);
+                                    positions[positionsCount + 9] = ((float) thisBlockBox[3] + x);
+                                    positions[positionsCount + 10] = ((float) thisBlockBox[1] + y);
+                                    positions[positionsCount + 11] = ((float) thisBlockBox[2] + z);
 
-                                    blockBoxPositionsCount += 12;
+                                    positionsCount += 12;
 
                                     //right
                                     float rightLight = getLight(realX + 1, y, realZ) / maxLight;
                                     rightLight = convertLight(rightLight);
                                     //right
                                     for (int i = 0; i < 12; i++) {
-                                        blockBoxLight[blockBoxLightCount + i] = (rightLight);
+                                        light[lightCount + i] = (rightLight);
                                     }
 
-                                    blockBoxLightCount += 12;
+                                    lightCount += 12;
 
                                     //right
-                                    blockBoxIndices[blockBoxIndicesTableCount + 0] = (0 + blockBoxIndicesCount);
-                                    blockBoxIndices[blockBoxIndicesTableCount + 1] = (1 + blockBoxIndicesCount);
-                                    blockBoxIndices[blockBoxIndicesTableCount + 2] = (2 + blockBoxIndicesCount);
-                                    blockBoxIndices[blockBoxIndicesTableCount + 3] = (0 + blockBoxIndicesCount);
-                                    blockBoxIndices[blockBoxIndicesTableCount + 4] = (2 + blockBoxIndicesCount);
-                                    blockBoxIndices[blockBoxIndicesTableCount + 5] = (3 + blockBoxIndicesCount);
-                                    blockBoxIndicesCount += 4;
-                                    blockBoxIndicesTableCount += 6;
+                                    indices[indicesTableCount + 0] = (0 + indicesCount);
+                                    indices[indicesTableCount + 1] = (1 + indicesCount);
+                                    indices[indicesTableCount + 2] = (2 + indicesCount);
+                                    indices[indicesTableCount + 3] = (0 + indicesCount);
+                                    indices[indicesTableCount + 4] = (2 + indicesCount);
+                                    indices[indicesTableCount + 5] = (3 + indicesCount);
+                                    indicesCount += 4;
+                                    indicesTableCount += 6;
 
 
                                     // 0, 1, 2, 3, 4, 5
@@ -1068,109 +1000,109 @@ public class ChunkMesh {
 
                                     float[] textureRight = getRightTexturePoints(thisBlock, thisRotation);
                                     //right
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 0] = (textureRight[1] - ((1 - (float) thisBlockBox[2]) / 32f));
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 1] = (textureRight[2] + ((1 - (float) thisBlockBox[4]) / 32f));
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 2] = (textureRight[0] - ((0 - (float) thisBlockBox[5]) / 32f));
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 3] = (textureRight[2] + ((1 - (float) thisBlockBox[4]) / 32f));
+                                    textureCoord[textureCoordCount + 0] = (textureRight[1] - ((1 - (float) thisBlockBox[2]) / 32f));
+                                    textureCoord[textureCoordCount + 1] = (textureRight[2] + ((1 - (float) thisBlockBox[4]) / 32f));
+                                    textureCoord[textureCoordCount + 2] = (textureRight[0] - ((0 - (float) thisBlockBox[5]) / 32f));
+                                    textureCoord[textureCoordCount + 3] = (textureRight[2] + ((1 - (float) thisBlockBox[4]) / 32f));
 
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 4] = (textureRight[0] - ((0 - (float) thisBlockBox[5]) / 32f));
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 5] = (textureRight[3] - (((float) thisBlockBox[1]) / 32f));
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 6] = (textureRight[1] - ((1 - (float) thisBlockBox[2]) / 32f));
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 7] = (textureRight[3] - (((float) thisBlockBox[1]) / 32f));
-                                    blockBoxTextureCoordCount += 8;
+                                    textureCoord[textureCoordCount + 4] = (textureRight[0] - ((0 - (float) thisBlockBox[5]) / 32f));
+                                    textureCoord[textureCoordCount + 5] = (textureRight[3] - (((float) thisBlockBox[1]) / 32f));
+                                    textureCoord[textureCoordCount + 6] = (textureRight[1] - ((1 - (float) thisBlockBox[2]) / 32f));
+                                    textureCoord[textureCoordCount + 7] = (textureRight[3] - (((float) thisBlockBox[1]) / 32f));
+                                    textureCoordCount += 8;
 
 
                                     //left
-                                    blockBoxPositions[blockBoxPositionsCount + 0] = ((float) thisBlockBox[0] + x);
-                                    blockBoxPositions[blockBoxPositionsCount + 1] = ((float) thisBlockBox[4] + y);
-                                    blockBoxPositions[blockBoxPositionsCount + 2] = ((float) thisBlockBox[5] + z);
+                                    positions[positionsCount + 0] = ((float) thisBlockBox[0] + x);
+                                    positions[positionsCount + 1] = ((float) thisBlockBox[4] + y);
+                                    positions[positionsCount + 2] = ((float) thisBlockBox[5] + z);
 
-                                    blockBoxPositions[blockBoxPositionsCount + 3] = ((float) thisBlockBox[0] + x);
-                                    blockBoxPositions[blockBoxPositionsCount + 4] = ((float) thisBlockBox[4] + y);
-                                    blockBoxPositions[blockBoxPositionsCount + 5] = ((float) thisBlockBox[2] + z);
+                                    positions[positionsCount + 3] = ((float) thisBlockBox[0] + x);
+                                    positions[positionsCount + 4] = ((float) thisBlockBox[4] + y);
+                                    positions[positionsCount + 5] = ((float) thisBlockBox[2] + z);
 
-                                    blockBoxPositions[blockBoxPositionsCount + 6] = ((float) thisBlockBox[0] + x);
-                                    blockBoxPositions[blockBoxPositionsCount + 7] = ((float) thisBlockBox[1] + y);
-                                    blockBoxPositions[blockBoxPositionsCount + 8] = ((float) thisBlockBox[2] + z);
+                                    positions[positionsCount + 6] = ((float) thisBlockBox[0] + x);
+                                    positions[positionsCount + 7] = ((float) thisBlockBox[1] + y);
+                                    positions[positionsCount + 8] = ((float) thisBlockBox[2] + z);
 
-                                    blockBoxPositions[blockBoxPositionsCount + 9] = ((float) thisBlockBox[0] + x);
-                                    blockBoxPositions[blockBoxPositionsCount + 10] = ((float) thisBlockBox[1] + y);
-                                    blockBoxPositions[blockBoxPositionsCount + 11] = ((float) thisBlockBox[5] + z);
+                                    positions[positionsCount + 9] = ((float) thisBlockBox[0] + x);
+                                    positions[positionsCount + 10] = ((float) thisBlockBox[1] + y);
+                                    positions[positionsCount + 11] = ((float) thisBlockBox[5] + z);
 
-                                    blockBoxPositionsCount += 12;
+                                    positionsCount += 12;
 
                                     //left
                                     float leftLight = getLight(realX - 1, y, realZ) / maxLight;
                                     leftLight = convertLight(leftLight);
                                     //left
                                     for (int i = 0; i < 12; i++) {
-                                        blockBoxLight[blockBoxLightCount + i] = (leftLight);
+                                        light[lightCount + i] = (leftLight);
                                     }
 
-                                    blockBoxLightCount += 12;
+                                    lightCount += 12;
 
                                     //left
-                                    blockBoxIndices[blockBoxIndicesTableCount + 0] = (0 + blockBoxIndicesCount);
-                                    blockBoxIndices[blockBoxIndicesTableCount + 1] = (1 + blockBoxIndicesCount);
-                                    blockBoxIndices[blockBoxIndicesTableCount + 2] = (2 + blockBoxIndicesCount);
-                                    blockBoxIndices[blockBoxIndicesTableCount + 3] = (0 + blockBoxIndicesCount);
-                                    blockBoxIndices[blockBoxIndicesTableCount + 4] = (2 + blockBoxIndicesCount);
-                                    blockBoxIndices[blockBoxIndicesTableCount + 5] = (3 + blockBoxIndicesCount);
-                                    blockBoxIndicesCount += 4;
-                                    blockBoxIndicesTableCount += 6;
+                                    indices[indicesTableCount + 0] = (0 + indicesCount);
+                                    indices[indicesTableCount + 1] = (1 + indicesCount);
+                                    indices[indicesTableCount + 2] = (2 + indicesCount);
+                                    indices[indicesTableCount + 3] = (0 + indicesCount);
+                                    indices[indicesTableCount + 4] = (2 + indicesCount);
+                                    indices[indicesTableCount + 5] = (3 + indicesCount);
+                                    indicesCount += 4;
+                                    indicesTableCount += 6;
 
                                     float[] textureLeft = getLeftTexturePoints(thisBlock, thisRotation);
                                     //left
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 0] = (textureLeft[1] - ((1 - (float) thisBlockBox[5]) / 32f));
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 1] = (textureLeft[2] + ((1 - (float) thisBlockBox[4]) / 32f));
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 2] = (textureLeft[0] - ((0 - (float) thisBlockBox[2]) / 32f));
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 3] = (textureLeft[2] + ((1 - (float) thisBlockBox[4]) / 32f));
+                                    textureCoord[textureCoordCount + 0] = (textureLeft[1] - ((1 - (float) thisBlockBox[5]) / 32f));
+                                    textureCoord[textureCoordCount + 1] = (textureLeft[2] + ((1 - (float) thisBlockBox[4]) / 32f));
+                                    textureCoord[textureCoordCount + 2] = (textureLeft[0] - ((0 - (float) thisBlockBox[2]) / 32f));
+                                    textureCoord[textureCoordCount + 3] = (textureLeft[2] + ((1 - (float) thisBlockBox[4]) / 32f));
 
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 4] = (textureLeft[0] - ((0 - (float) thisBlockBox[2]) / 32f));
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 5] = (textureLeft[3] - (((float) thisBlockBox[1]) / 32f));
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 6] = (textureLeft[1] - ((1 - (float) thisBlockBox[5]) / 32f));
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 7] = (textureLeft[3] - (((float) thisBlockBox[1]) / 32f));
-                                    blockBoxTextureCoordCount += 8;
+                                    textureCoord[textureCoordCount + 4] = (textureLeft[0] - ((0 - (float) thisBlockBox[2]) / 32f));
+                                    textureCoord[textureCoordCount + 5] = (textureLeft[3] - (((float) thisBlockBox[1]) / 32f));
+                                    textureCoord[textureCoordCount + 6] = (textureLeft[1] - ((1 - (float) thisBlockBox[5]) / 32f));
+                                    textureCoord[textureCoordCount + 7] = (textureLeft[3] - (((float) thisBlockBox[1]) / 32f));
+                                    textureCoordCount += 8;
 
 
                                     //top
-                                    blockBoxPositions[blockBoxPositionsCount + 0] = ((float) thisBlockBox[0] + x);
-                                    blockBoxPositions[blockBoxPositionsCount + 1] = ((float) thisBlockBox[4] + y);
-                                    blockBoxPositions[blockBoxPositionsCount + 2] = ((float) thisBlockBox[2] + z);
+                                    positions[positionsCount + 0] = ((float) thisBlockBox[0] + x);
+                                    positions[positionsCount + 1] = ((float) thisBlockBox[4] + y);
+                                    positions[positionsCount + 2] = ((float) thisBlockBox[2] + z);
 
-                                    blockBoxPositions[blockBoxPositionsCount + 3] = ((float) thisBlockBox[0] + x);
-                                    blockBoxPositions[blockBoxPositionsCount + 4] = ((float) thisBlockBox[4] + y);
-                                    blockBoxPositions[blockBoxPositionsCount + 5] = ((float) thisBlockBox[5] + z);
+                                    positions[positionsCount + 3] = ((float) thisBlockBox[0] + x);
+                                    positions[positionsCount + 4] = ((float) thisBlockBox[4] + y);
+                                    positions[positionsCount + 5] = ((float) thisBlockBox[5] + z);
 
-                                    blockBoxPositions[blockBoxPositionsCount + 6] = ((float) thisBlockBox[3] + x);
-                                    blockBoxPositions[blockBoxPositionsCount + 7] = ((float) thisBlockBox[4] + y);
-                                    blockBoxPositions[blockBoxPositionsCount + 8] = ((float) thisBlockBox[5] + z);
+                                    positions[positionsCount + 6] = ((float) thisBlockBox[3] + x);
+                                    positions[positionsCount + 7] = ((float) thisBlockBox[4] + y);
+                                    positions[positionsCount + 8] = ((float) thisBlockBox[5] + z);
 
-                                    blockBoxPositions[blockBoxPositionsCount + 9] = ((float) thisBlockBox[3] + x);
-                                    blockBoxPositions[blockBoxPositionsCount + 10] = ((float) thisBlockBox[4] + y);
-                                    blockBoxPositions[blockBoxPositionsCount + 11] = ((float) thisBlockBox[2] + z);
+                                    positions[positionsCount + 9] = ((float) thisBlockBox[3] + x);
+                                    positions[positionsCount + 10] = ((float) thisBlockBox[4] + y);
+                                    positions[positionsCount + 11] = ((float) thisBlockBox[2] + z);
 
-                                    blockBoxPositionsCount += 12;
+                                    positionsCount += 12;
 
                                     //top
                                     float topLight = getLight(realX, y + 1, realZ) / maxLight;
                                     topLight = convertLight(topLight);
                                     //top
                                     for (int i = 0; i < 12; i++) {
-                                        blockBoxLight[blockBoxLightCount + i] = (topLight);
+                                        light[lightCount + i] = (topLight);
                                     }
 
-                                    blockBoxLightCount += 12;
+                                    lightCount += 12;
 
                                     //top
-                                    blockBoxIndices[blockBoxIndicesTableCount + 0] = (0 + blockBoxIndicesCount);
-                                    blockBoxIndices[blockBoxIndicesTableCount + 1] = (1 + blockBoxIndicesCount);
-                                    blockBoxIndices[blockBoxIndicesTableCount + 2] = (2 + blockBoxIndicesCount);
-                                    blockBoxIndices[blockBoxIndicesTableCount + 3] = (0 + blockBoxIndicesCount);
-                                    blockBoxIndices[blockBoxIndicesTableCount + 4] = (2 + blockBoxIndicesCount);
-                                    blockBoxIndices[blockBoxIndicesTableCount + 5] = (3 + blockBoxIndicesCount);
-                                    blockBoxIndicesCount += 4;
-                                    blockBoxIndicesTableCount += 6;
+                                    indices[indicesTableCount + 0] = (0 + indicesCount);
+                                    indices[indicesTableCount + 1] = (1 + indicesCount);
+                                    indices[indicesTableCount + 2] = (2 + indicesCount);
+                                    indices[indicesTableCount + 3] = (0 + indicesCount);
+                                    indices[indicesTableCount + 4] = (2 + indicesCount);
+                                    indices[indicesTableCount + 5] = (3 + indicesCount);
+                                    indicesCount += 4;
+                                    indicesTableCount += 6;
 
                                     // 0, 1, 2, 3, 4, 5
                                     //-x,-y,-z, x, y, z
@@ -1181,56 +1113,56 @@ public class ChunkMesh {
 
                                     float[] textureTop = getTopTexturePoints(thisBlock);
                                     //top
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 0] = (textureTop[1] - ((1 - (float) thisBlockBox[5]) / 32f));
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 1] = (textureTop[2] + ((1 - (float) thisBlockBox[0]) / 32f));
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 2] = (textureTop[0] - ((0 - (float) thisBlockBox[2]) / 32f));
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 3] = (textureTop[2] + ((1 - (float) thisBlockBox[0]) / 32f));
+                                    textureCoord[textureCoordCount + 0] = (textureTop[1] - ((1 - (float) thisBlockBox[5]) / 32f));
+                                    textureCoord[textureCoordCount + 1] = (textureTop[2] + ((1 - (float) thisBlockBox[0]) / 32f));
+                                    textureCoord[textureCoordCount + 2] = (textureTop[0] - ((0 - (float) thisBlockBox[2]) / 32f));
+                                    textureCoord[textureCoordCount + 3] = (textureTop[2] + ((1 - (float) thisBlockBox[0]) / 32f));
 
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 4] = (textureTop[0] - ((0 - (float) thisBlockBox[2]) / 32f));
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 5] = (textureTop[3] - (((float) thisBlockBox[3]) / 32f));
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 6] = (textureTop[1] - ((1 - (float) thisBlockBox[5]) / 32f));
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 7] = (textureTop[3] - (((float) thisBlockBox[3]) / 32f));
-                                    blockBoxTextureCoordCount += 8;
+                                    textureCoord[textureCoordCount + 4] = (textureTop[0] - ((0 - (float) thisBlockBox[2]) / 32f));
+                                    textureCoord[textureCoordCount + 5] = (textureTop[3] - (((float) thisBlockBox[3]) / 32f));
+                                    textureCoord[textureCoordCount + 6] = (textureTop[1] - ((1 - (float) thisBlockBox[5]) / 32f));
+                                    textureCoord[textureCoordCount + 7] = (textureTop[3] - (((float) thisBlockBox[3]) / 32f));
+                                    textureCoordCount += 8;
 
 
                                     //bottom
-                                    blockBoxPositions[blockBoxPositionsCount + 0] = ((float) thisBlockBox[0] + x);
-                                    blockBoxPositions[blockBoxPositionsCount + 1] = ((float) thisBlockBox[1] + y);
-                                    blockBoxPositions[blockBoxPositionsCount + 2] = ((float) thisBlockBox[5] + z);
+                                    positions[positionsCount + 0] = ((float) thisBlockBox[0] + x);
+                                    positions[positionsCount + 1] = ((float) thisBlockBox[1] + y);
+                                    positions[positionsCount + 2] = ((float) thisBlockBox[5] + z);
 
-                                    blockBoxPositions[blockBoxPositionsCount + 3] = ((float) thisBlockBox[0] + x);
-                                    blockBoxPositions[blockBoxPositionsCount + 4] = ((float) thisBlockBox[1] + y);
-                                    blockBoxPositions[blockBoxPositionsCount + 5] = ((float) thisBlockBox[2] + z);
+                                    positions[positionsCount + 3] = ((float) thisBlockBox[0] + x);
+                                    positions[positionsCount + 4] = ((float) thisBlockBox[1] + y);
+                                    positions[positionsCount + 5] = ((float) thisBlockBox[2] + z);
 
-                                    blockBoxPositions[blockBoxPositionsCount + 6] = ((float) thisBlockBox[3] + x);
-                                    blockBoxPositions[blockBoxPositionsCount + 7] = ((float) thisBlockBox[1] + y);
-                                    blockBoxPositions[blockBoxPositionsCount + 8] = ((float) thisBlockBox[2] + z);
+                                    positions[positionsCount + 6] = ((float) thisBlockBox[3] + x);
+                                    positions[positionsCount + 7] = ((float) thisBlockBox[1] + y);
+                                    positions[positionsCount + 8] = ((float) thisBlockBox[2] + z);
 
-                                    blockBoxPositions[blockBoxPositionsCount + 9] = ((float) thisBlockBox[3] + x);
-                                    blockBoxPositions[blockBoxPositionsCount + 10] = ((float) thisBlockBox[1] + y);
-                                    blockBoxPositions[blockBoxPositionsCount + 11] = ((float) thisBlockBox[5] + z);
+                                    positions[positionsCount + 9] = ((float) thisBlockBox[3] + x);
+                                    positions[positionsCount + 10] = ((float) thisBlockBox[1] + y);
+                                    positions[positionsCount + 11] = ((float) thisBlockBox[5] + z);
 
-                                    blockBoxPositionsCount += 12;
+                                    positionsCount += 12;
 
                                     //bottom
                                     float bottomLight = getLight(realX, y - 1, realZ) / maxLight;
                                     bottomLight = convertLight(bottomLight);
                                     //bottom
                                     for (int i = 0; i < 12; i++) {
-                                        blockBoxLight[blockBoxLightCount + i] = (bottomLight);
+                                        light[lightCount + i] = (bottomLight);
                                     }
 
-                                    blockBoxLightCount += 12;
+                                    lightCount += 12;
 
                                     //bottom
-                                    blockBoxIndices[blockBoxIndicesTableCount + 0] = (0 + blockBoxIndicesCount);
-                                    blockBoxIndices[blockBoxIndicesTableCount + 1] = (1 + blockBoxIndicesCount);
-                                    blockBoxIndices[blockBoxIndicesTableCount + 2] = (2 + blockBoxIndicesCount);
-                                    blockBoxIndices[blockBoxIndicesTableCount + 3] = (0 + blockBoxIndicesCount);
-                                    blockBoxIndices[blockBoxIndicesTableCount + 4] = (2 + blockBoxIndicesCount);
-                                    blockBoxIndices[blockBoxIndicesTableCount + 5] = (3 + blockBoxIndicesCount);
-                                    blockBoxIndicesCount += 4;
-                                    blockBoxIndicesTableCount += 6;
+                                    indices[indicesTableCount + 0] = (0 + indicesCount);
+                                    indices[indicesTableCount + 1] = (1 + indicesCount);
+                                    indices[indicesTableCount + 2] = (2 + indicesCount);
+                                    indices[indicesTableCount + 3] = (0 + indicesCount);
+                                    indices[indicesTableCount + 4] = (2 + indicesCount);
+                                    indices[indicesTableCount + 5] = (3 + indicesCount);
+                                    indicesCount += 4;
+                                    indicesTableCount += 6;
 
 
                                     // 0, 1, 2, 3, 4, 5
@@ -1242,16 +1174,16 @@ public class ChunkMesh {
 
                                     float[] textureBottom = getBottomTexturePoints(thisBlock);
                                     //bottom
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 0] = (textureBottom[1] - ((1 - (float) thisBlockBox[5]) / 32f));
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 1] = (textureBottom[2] + ((1 - (float) thisBlockBox[0]) / 32f));
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 2] = (textureBottom[0] - ((0 - (float) thisBlockBox[2]) / 32f));
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 3] = (textureBottom[2] + ((1 - (float) thisBlockBox[0]) / 32f));
+                                    textureCoord[textureCoordCount + 0] = (textureBottom[1] - ((1 - (float) thisBlockBox[5]) / 32f));
+                                    textureCoord[textureCoordCount + 1] = (textureBottom[2] + ((1 - (float) thisBlockBox[0]) / 32f));
+                                    textureCoord[textureCoordCount + 2] = (textureBottom[0] - ((0 - (float) thisBlockBox[2]) / 32f));
+                                    textureCoord[textureCoordCount + 3] = (textureBottom[2] + ((1 - (float) thisBlockBox[0]) / 32f));
 
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 4] = (textureBottom[0] - ((0 - (float) thisBlockBox[2]) / 32f));
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 5] = (textureBottom[3] - (((float) thisBlockBox[3]) / 32f));
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 6] = (textureBottom[1] - ((1 - (float) thisBlockBox[5]) / 32f));
-                                    blockBoxTextureCoord[blockBoxTextureCoordCount + 7] = (textureBottom[3] - (((float) thisBlockBox[3]) / 32f));
-                                    blockBoxTextureCoordCount += 8;
+                                    textureCoord[textureCoordCount + 4] = (textureBottom[0] - ((0 - (float) thisBlockBox[2]) / 32f));
+                                    textureCoord[textureCoordCount + 5] = (textureBottom[3] - (((float) thisBlockBox[3]) / 32f));
+                                    textureCoord[textureCoordCount + 6] = (textureBottom[1] - ((1 - (float) thisBlockBox[5]) / 32f));
+                                    textureCoord[textureCoordCount + 7] = (textureBottom[3] - (((float) thisBlockBox[3]) / 32f));
+                                    textureCoordCount += 8;
                                 }
                             }
                         }
@@ -1294,77 +1226,9 @@ public class ChunkMesh {
             } else {
                 //setChunkMesh(chunkX, chunkZ, yHeight, null);
                 //inform the container object that this chunk is null for this part of it
-                newChunkData.regularIsNull = true;
+                newChunkData.meshIsNull = true;
             }
 
-            //do the same thing for liquids
-
-            if (liquidPositionsCount > 0) {
-//        convert the position objects into usable array
-                float[] liquidPositionsArray = new float[liquidPositionsCount];
-                if (liquidPositionsCount >= 0)
-                    System.arraycopy(liquidPositions, 0, liquidPositionsArray, 0, liquidPositionsCount);
-
-                //convert the light objects into usable array
-                float[] liquidLightArray = new float[liquidLightCount];
-                if (liquidLightCount >= 0) System.arraycopy(liquidLight, 0, liquidLightArray, 0, liquidLightCount);
-
-                //convert the indices objects into usable array
-                int[] liquidIndicesArray = new int[liquidIndicesTableCount];
-                if (liquidIndicesTableCount >= 0)
-                    System.arraycopy(liquidIndices, 0, liquidIndicesArray, 0, liquidIndicesTableCount);
-
-                //convert the textureCoord objects into usable array
-                float[] liquidTextureCoordArray = new float[liquidTextureCoordCount];
-                if (liquidTextureCoordCount >= 0)
-                    System.arraycopy(liquidTextureCoord, 0, liquidTextureCoordArray, 0, liquidTextureCoordCount);
-
-                //pass data to container object
-                newChunkData.liquidPositionsArray = liquidPositionsArray;
-                newChunkData.liquidLightArray = liquidLightArray;
-                newChunkData.liquidIndicesArray = liquidIndicesArray;
-                newChunkData.liquidTextureCoordArray = liquidTextureCoordArray;
-
-                //setChunkLiquidMesh(chunkX, chunkZ, yHeight, new Mesh(liquidPositionsArray, liquidLightArray, liquidIndicesArray, liquidTextureCoordArray, textureAtlas));
-            } else {
-                //setChunkLiquidMesh(chunkX, chunkZ, yHeight, null);
-                //inform the container object that this chunk is null for this part of it
-                newChunkData.liquidIsNull = true;
-            }
-
-            //do the same thing for blockboxes
-            if (blockBoxPositionsCount > 0) {
-//          convert the position objects into usable array
-                float[] positionsArray = new float[blockBoxPositionsCount];
-                if (blockBoxPositionsCount >= 0)
-                    System.arraycopy(blockBoxPositions, 0, positionsArray, 0, blockBoxPositionsCount);
-
-                //convert the light objects into usable array
-                float[] lightArray = new float[blockBoxLightCount];
-                if (blockBoxLightCount >= 0) System.arraycopy(blockBoxLight, 0, lightArray, 0, blockBoxLightCount);
-
-                //convert the indices objects into usable array
-                int[] indicesArray = new int[blockBoxIndicesTableCount];
-                if (blockBoxIndicesTableCount >= 0)
-                    System.arraycopy(blockBoxIndices, 0, indicesArray, 0, blockBoxIndicesTableCount);
-
-                //convert the textureCoord objects into usable array
-                float[] textureCoordArray = new float[blockBoxTextureCoordCount];
-                if (blockBoxTextureCoordCount >= 0)
-                    System.arraycopy(blockBoxTextureCoord, 0, textureCoordArray, 0, blockBoxTextureCoordCount);
-
-                //pass data to container object
-                newChunkData.blockBoxPositionsArray = positionsArray;
-                newChunkData.blockBoxLightArray = lightArray;
-                newChunkData.blockBoxIndicesArray = indicesArray;
-                newChunkData.blockBoxTextureCoordArray = textureCoordArray;
-
-                //setChunkBlockBoxMesh(chunkX, chunkZ, yHeight, new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, textureAtlas));
-            } else {
-                //setChunkBlockBoxMesh(chunkX, chunkZ, yHeight, null);
-                //inform the container object that this chunk is null for this part of it
-                newChunkData.blockBoxesIsNull = true;
-            }
 
             String keyName = chunkX + " " + chunkZ + " " + yHeight;
             //finally add it into the queue to be popped

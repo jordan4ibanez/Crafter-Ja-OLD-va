@@ -12,7 +12,6 @@ import org.lwjgl.openal.AL11;
 import java.awt.*;
 
 import static engine.Time.calculateDelta;
-import static engine.Time.getDelta;
 import static engine.disk.Disk.*;
 import static engine.disk.SaveQueue.startSaveThread;
 import static game.chunk.Chunk.*;
@@ -36,7 +35,6 @@ import static game.blocks.BlockDefinition.initializeBlocks;
 import static game.item.ItemRegistration.registerTools;
 import static game.player.Inventory.*;
 import static game.player.Player.*;
-import static game.weather.Weather.rainDropsOnTick;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Crafter {
