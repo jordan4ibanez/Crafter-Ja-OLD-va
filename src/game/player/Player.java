@@ -666,7 +666,7 @@ public class Player {
 
         if (mining && worldSelectionPos != null){
             particleBufferTimer += delta;
-            if (particleBufferTimer > 0.001f){
+            if (particleBufferTimer > 0.01f){
                 int randomDir = (int)Math.floor(Math.random()*6f);
                 int block;
                 int miningBlock = getBlock(worldSelectionPos.x, worldSelectionPos.y, worldSelectionPos.z);
@@ -876,7 +876,7 @@ public class Player {
         if ((Math.abs(xBobPos)) <= 50 * delta){
             xBobPos = 0;
         }
-        
+
         yBobPos = Math.abs(xBobPos);
 
         viewBobbing.x = xBobPos/1000f;
