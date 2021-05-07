@@ -196,7 +196,7 @@ public class Player {
         }
 
         if (worldSelectionPos != null && soundTrigger && mining){
-            int block = getBlock((int)worldSelectionPos.x, (int)worldSelectionPos.y, (int)worldSelectionPos.z);
+            int block = getBlock(worldSelectionPos.x, worldSelectionPos.y, worldSelectionPos.z);
             if (block > 0){
                 String digSound = getBlockDefinition(block).digSound;
                 if (!digSound.equals("")) {
@@ -209,7 +209,7 @@ public class Player {
         if (handSetUp) {
             diggingAnimation += getDelta() * 3.75f;
         }
-        
+
         if ((!diggingAnimationBuffer || diggingAnimation >= 1f) && handSetUp){
             diggingAnimationGo = false;
             diggingAnimation = 0f;
