@@ -283,8 +283,8 @@ public class Player {
     public static Vector3d getWieldHandAnimationPos(){
         Vector3d doubledHandAnimationPos = new Vector3d();
 
-        doubledHandAnimationPos.x = wieldHandAnimationPos.x + handInertia.x;
-        doubledHandAnimationPos.y = wieldHandAnimationPos.y + handInertia.y;
+        doubledHandAnimationPos.x = wieldHandAnimationPos.x + handInertia.x - (viewBobbing.x * 10f);
+        doubledHandAnimationPos.y = wieldHandAnimationPos.y + handInertia.y + (viewBobbing.y * 10f);
         doubledHandAnimationPos.z = wieldHandAnimationPos.z;
 
         return doubledHandAnimationPos;
@@ -463,30 +463,34 @@ public class Player {
                 handInertia.x += 20 * delta;
             }
 
+            //reset hand x
             if (Math.abs(handInertia.x) < 20f * delta){
                 handInertia.x = 0f;
             }
         }
 
-        float yDiff = inertia.y;
+        float yDiff = (float)(oldRealPos.y - pos.y) * 10f;
 
-        if (Math.abs(yDiff) > 1f) {
-            handInertia.y -= yDiff / 100f;
-        }
+        handInertia.y += yDiff;
 
 
         //limit
-        if (handInertia.y < -5f){
-            handInertia.y = -5f;
-        } else if (handInertia.y > 5f){
-            handInertia.y = 5f;
+        if (handInertia.y < -2.5f){
+            handInertia.y = -2.5f;
+        } else if (handInertia.y > 2.5f){
+            handInertia.y = 2.5f;
         }
 
         //rubberband hand back to center
         if (handInertia.y > 0) {
-            handInertia.y -= 5 * delta;
+            handInertia.y -= 20 * delta;
         } else if (handInertia.y < 0) {
-            handInertia.y += 5 * delta;
+            handInertia.y += 20 * delta;
+        }
+
+        //reset hand y
+        if (Math.abs(handInertia.y) < 20f * delta){
+            handInertia.y = 0f;
         }
 
         oldYaw = yaw;
@@ -903,6 +907,7 @@ public class Player {
     private static void applyViewBobbing() {
 
         float delta = getDelta();
+        
         float viewBobbingAddition = delta  * 250f;
 
         if (running){
