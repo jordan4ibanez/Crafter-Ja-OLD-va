@@ -719,7 +719,7 @@ public class Player {
         updatePlayerHandInertia();
 
         //todo: fix this so that onGround works right
-        if(inertia.y <= 0.f && inertia.y >= -0.05f  && playerIsMoving() && !sneaking && !inWater){
+        if(playerIsMoving() && !sneaking && !inWater){
             applyViewBobbing();
         } else {
             returnPlayerViewBobbing();

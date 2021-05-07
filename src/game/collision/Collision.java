@@ -39,28 +39,6 @@ public class Collision {
         for (int i = 0; i < loops; i++) {
             inWater = 0;//reset water detection
 
-            if (gravity) {
-                if (inWater > 0.f) {
-                    if (isPlayer) {
-                        setPlayerInWater(true);
-                    }
-
-                    //water resistance
-                    if (inertia.y > -50f / inWater) {
-                        inertia.y -= 1000 / inWater * adjustedDelta;
-                        //slow down if falling too fast
-                    } else if (inertia.y <= -50f / inWater) {
-                        inertia.y += 2000 / inWater * adjustedDelta;
-                    }
-                } else {
-                    if (isPlayer) {
-                        setPlayerInWater(false);
-                    }
-                    //regular gravity
-                    inertia.y -= 40f * adjustedDelta;
-                }
-            }
-
             //limit speed on y axis
             if (inertia.y <= -50f) {
                 inertia.y = -50f;
@@ -134,6 +112,28 @@ public class Collision {
 
                 //inertia.y += -inertia.z * gameSpeed * inWater;
                 //inertia.y = inertia.y / 1.2f;
+            }
+
+            if (gravity) {
+                if (inWater > 0.f) {
+                    if (isPlayer) {
+                        setPlayerInWater(true);
+                    }
+
+                    //water resistance
+                    if (inertia.y > -50f / inWater) {
+                        inertia.y -= 1000 / inWater * adjustedDelta;
+                        //slow down if falling too fast
+                    } else if (inertia.y <= -50f / inWater) {
+                        inertia.y += 2000 / inWater * adjustedDelta;
+                    }
+                } else {
+                    if (isPlayer) {
+                        setPlayerInWater(false);
+                    }
+                    //regular gravity
+                    inertia.y -= 40f * adjustedDelta;
+                }
             }
 
 
