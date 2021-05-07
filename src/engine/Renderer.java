@@ -134,23 +134,6 @@ public class Renderer {
 
         Matrix4d modelViewMatrix;
 
-        //render each chunk (standard blocks)
-        for (ChunkObject thisChunk : getMap()){
-            if (thisChunk == null){
-                continue;
-            }
-            if (thisChunk.mesh == null){
-                continue;
-            }
-            for (Mesh thisMesh : thisChunk.mesh){
-                if (thisMesh != null){
-                    modelViewMatrix = updateModelViewMatrix(new Vector3d(thisChunk.x * 16d, 0, thisChunk.z * 16d), new Vector3f(0,0,0), viewMatrix);
-                    shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                    thisMesh.render();
-                }
-            }
-        }
-
         //render world selection mesh
         if (getPlayerWorldSelectionPos() != null){
 
@@ -228,6 +211,27 @@ public class Renderer {
         }
          */
 
+
+        //render each chunk column -- THIS NEEDS TO BE LAST
+        for (ChunkObject thisChunk : getMap()){
+            if (thisChunk == null){
+                continue;
+            }
+            if (thisChunk.mesh == null){
+                continue;
+            }
+            for (Mesh thisMesh : thisChunk.mesh){
+                if (thisMesh != null){
+                    modelViewMatrix = updateModelViewMatrix(new Vector3d(thisChunk.x * 16d, 0, thisChunk.z * 16d), new Vector3f(0,0,0), viewMatrix);
+                    shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                    thisMesh.render();
+                }
+            }
+        }
+
+
+
+        //BEGIN HUD
 
         glClear(GL_DEPTH_BUFFER_BIT);
 
