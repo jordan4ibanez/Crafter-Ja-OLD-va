@@ -132,12 +132,13 @@ public class Crafter {
 
             long count = 0;
 
-            /*
-            while (accumulator >= 1_000_000 && count < 1_000_000_000_000_000L){
-                accumulator -= 1_000_000;
-                count++;
+            boolean debugLowFPS = false;
+
+            if (debugLowFPS) {
+                while (count < 1_000_000_000L) {
+                    count++;
+                }
             }
-             */
         }
     }
 
