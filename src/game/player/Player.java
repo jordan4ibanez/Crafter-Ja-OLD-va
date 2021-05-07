@@ -634,11 +634,13 @@ public class Player {
         onGround = applyInertia(pos, inertia, true, width, height,true, sneaking, true, true, true);
 
 
+        /* TODO: UNCOMMENT VIEW BOBBING
         if(playerIsMoving() && !sneaking && !inWater){
             applyViewBobbing();
         } else {
             returnPlayerViewBobbing();
         }
+         */
 
         //sneaking offset
         if (sneaking){

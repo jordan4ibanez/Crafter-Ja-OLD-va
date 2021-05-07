@@ -16,88 +16,107 @@ import static game.player.Player.setPlayerInWater;
 public class Collision {
     private static float inWater = 0;
 
+    private static float adjustedDelta;
+
     //this probably definitely absolutely should not take isPlayer as a value
     //fix this later FIX ME FIX ME - DO OBJECT TYPE MATCHING
     public static boolean applyInertia(Vector3d pos, Vector3f inertia, boolean onGround, float width, float height, boolean gravity, boolean sneaking, boolean applyCollision, boolean airFriction, boolean isPlayer){
-
-
         float delta = getDelta();
 
-        inWater = 0;//reset water detection
+        //the precision goal for delta is 0.001f, this adjusts it to be so
+        //the side effect, is the lower your FPS, the more it has to loop
 
-        //limit speed (falling or flying) - y axis
-        if (inertia.y <= -70f){
-            inertia.y = -70f;
-        } else if (inertia.y > 70f){
-            inertia.y = 70f;
+        int loops = 1;
+
+        if (delta >  0.001f){
+            /*
+            System.out.println("-------");
+            System.out.println("Delta is: " + delta);
+            System.out.println("Loops modulo is: " + Math.floor(delta / 0.001f));
+            */
+            loops = (int)Math.floor(delta / 0.001f);
+            //System.out.println("adjustedDelta is: " + (delta/(float)loops));
+            adjustedDelta = (delta/(float)loops);
+
         }
 
-        if (applyCollision) {
-            if (sneaking && !getIfPlayerIsJumping()) {
+        for (int i = 0; i < loops; i++) {
+            inWater = 0;//reset water detection
 
-                Vector3d oldPos = new Vector3d(pos);
+            //limit speed (falling or flying) - y axis
+            if (inertia.y <= -10f) {
+                inertia.y = -10f;
+            } else if (inertia.y > 10f) {
+                inertia.y = 10f;
+            }
 
-                onGround = collisionDetect(pos, inertia, width, height);
+            if (applyCollision) {
+                if (sneaking && !getIfPlayerIsJumping()) {
 
-                int axisFallingOff = sneakCollisionDetect(pos, inertia, width, height);
+                    Vector3d oldPos = new Vector3d(pos);
 
-                if(axisFallingOff == 1){
-                    pos.x = oldPos.x;
-                    inertia.x = 0;
-                } else if (axisFallingOff == 2) {
-                    pos.z = oldPos.z;
-                    inertia.z = 0;
-                } else if (axisFallingOff == 3){
-                    pos.x = oldPos.x;
-                    inertia.x = 0;
-                    pos.z = oldPos.z;
-                    inertia.z = 0;
+                    onGround = collisionDetect(pos, inertia, width, height);
+
+                    int axisFallingOff = sneakCollisionDetect(pos, inertia, width, height);
+
+                    if (axisFallingOff == 1) {
+                        pos.x = oldPos.x;
+                        inertia.x = 0;
+                    } else if (axisFallingOff == 2) {
+                        pos.z = oldPos.z;
+                        inertia.z = 0;
+                    } else if (axisFallingOff == 3) {
+                        pos.x = oldPos.x;
+                        inertia.x = 0;
+                        pos.z = oldPos.z;
+                        inertia.z = 0;
+                    }
+
+                } else {
+                    onGround = collisionDetect(pos, inertia, width, height);
                 }
 
             } else {
-                onGround = collisionDetect(pos, inertia, width, height);
+                pos.x += inertia.x * adjustedDelta;
+                pos.y += inertia.y * adjustedDelta;
+                pos.z += inertia.z * adjustedDelta;
             }
 
-        } else {
-            pos.x += inertia.x * delta;
-            pos.y += inertia.y * delta;
-            pos.z += inertia.z * delta;
-        }
+            //apply friction
+            if (onGround || airFriction) {
+                inertia.x += -inertia.x * adjustedDelta * 10; // do (10 - 9.5f) for slippery!
+                inertia.z += -inertia.z * adjustedDelta * 10;
+            }
 
-        //apply friction
-        if (onGround || airFriction) {
-            inertia.x += -inertia.x * delta * 10; // do (10 - 9.5f) for slippery!
-            inertia.z += -inertia.z * delta * 10;
-        }
+            //water resistance
+            if (inWater > 0.f) {
+                inertia.x += -inertia.x * adjustedDelta * inWater;
+                inertia.z += -inertia.z * adjustedDelta * inWater;
 
-        //water resistance
-        if (inWater > 0.f){
-            inertia.x += -inertia.x * delta * inWater;
-            inertia.z += -inertia.z * delta * inWater;
+                //inertia.y += -inertia.z * gameSpeed * inWater;
+                //inertia.y = inertia.y / 1.2f;
+            }
 
-            //inertia.y += -inertia.z * gameSpeed * inWater;
-            //inertia.y = inertia.y / 1.2f;
-        }
+            if (gravity) {
+                if (inWater > 0.f) {
+                    if (isPlayer) {
+                        setPlayerInWater(true);
+                    }
 
-        if(gravity) {
-            if (inWater > 0.f){
-                if (isPlayer){
-                    setPlayerInWater(true);
+                    //water resistance
+                    if (inertia.y > -50f / inWater) {
+                        inertia.y -= 1000 / inWater * adjustedDelta;
+                        //slow down if falling too fast
+                    } else if (inertia.y <= -50f / inWater) {
+                        inertia.y += 2000 / inWater * adjustedDelta;
+                    }
+                } else {
+                    if (isPlayer) {
+                        setPlayerInWater(false);
+                    }
+                    //regular gravity
+                    inertia.y -= 40f * adjustedDelta;
                 }
-
-                //water resistance
-                if (inertia.y > -50f / inWater){
-                    inertia.y -= 1000/inWater * delta;
-                //slow down if falling too fast
-                } else if (inertia.y <= -50f / inWater){
-                    inertia.y += 2000/inWater * delta;
-                }
-            }else {
-                if (isPlayer){
-                    setPlayerInWater(false);
-                }
-                //regular gravity
-                inertia.y -= 40f * delta;
             }
         }
 
@@ -210,8 +229,6 @@ public class Collision {
 
     private static boolean collisionDetect(Vector3d pos, Vector3f inertia, float width, float height){
 
-        float delta = getDelta();
-
         onGround = false;
 
         Vector3d oldPos = new Vector3d();
@@ -220,7 +237,7 @@ public class Collision {
         oldPos.y = pos.y;
         oldPos.z = pos.z;
 
-        pos.y += inertia.y * delta;
+        pos.y += inertia.y * adjustedDelta;
 
         fPos = floorPos(new Vector3d(pos));
 
@@ -283,7 +300,7 @@ public class Collision {
         //todo: begin X collision detection -- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
         //add inertia
-        pos.x += inertia.x * delta;
+        pos.x += inertia.x * adjustedDelta;
 
         //must clone the vector object
         fPos = floorPos(new Vector3d(pos));
@@ -316,7 +333,7 @@ public class Collision {
 
         //todo: Begin Z collision detection -- ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ
 
-        pos.z += inertia.z * delta;
+        pos.z += inertia.z * adjustedDelta;
 
         fPos = floorPos(new Vector3d(pos));
 
@@ -388,7 +405,7 @@ public class Collision {
             setAABB(pos.x, pos.y, pos.z, width, height);
             setBlockBox(blockPosX,blockPosY,blockPosz,thisBlockBox);
             //this coordinate is not within enough distance to get affected by floating point precision
-            if (isWithin() && BlockBoxGetTop() > AABBGetBottom() && AABBGetBottom() - BlockBoxGetTop() > -0.1d) {
+            if (isWithin() && BlockBoxGetTop() > AABBGetBottom() && AABBGetBottom() - BlockBoxGetTop() > -0.01d) {
                 pos.y = BlockBoxGetTop() + 0.0001d; //players position needs to constantly change or else this breaks stairs/slabs
                 inertia.y = 0;
                 onGround = true;
@@ -403,7 +420,7 @@ public class Collision {
             setBlockBox(blockPosX, blockPosY, blockPosz,thisBlockBox);
             //this coordinate is not within enough distance to get affected by floating point precision
             //head detection
-            if (isWithin() && BlockBoxGetBottom() < AABBGetTop() && AABBGetTop() - BlockBoxGetBottom() < 0.1d) {
+            if (isWithin() && BlockBoxGetBottom() < AABBGetTop() && AABBGetTop() - BlockBoxGetBottom() < 0.01d) {
                 pos.y = BlockBoxGetBottom() - height - 0.001d;
                 inertia.y = 0;
             }

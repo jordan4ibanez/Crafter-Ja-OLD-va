@@ -128,7 +128,7 @@ public class Crafter {
             boolean debugLowFPS = false;
 
             if (debugLowFPS) {
-                while (count < 1_000_000_000L) {
+                while (count < 500_000_000L) {
                     count++;
                 }
             }
