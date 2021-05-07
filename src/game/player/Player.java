@@ -84,7 +84,7 @@ public class Player {
         if (!itemRotationEnabled) {
             itemRotation = 0f;
         } else {
-            itemRotation += 0.05f;
+            itemRotation += getDelta() * 50f;
             //prevent buffer overflow
             if (itemRotation > 360f) {
                 itemRotation -= 360f;
