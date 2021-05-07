@@ -34,6 +34,8 @@ public class Collision {
             adjustedDelta = delta;
         }
 
+        boolean onGroundLock = false;
+
         for (int i = 0; i < loops; i++) {
             inWater = 0;//reset water detection
 
@@ -58,13 +60,16 @@ public class Collision {
                 inertia.z = 30f;
             }
 
-
             if (applyCollision) {
                 if (sneaking && !getIfPlayerIsJumping()) {
 
                     Vector3d oldPos = new Vector3d(pos);
 
                     onGround = collisionDetect(pos, inertia, width, height);
+
+                    if (onGround){
+                        onGroundLock = true;
+                    }
 
                     int axisFallingOff = sneakCollisionDetect(pos, inertia, width, height);
 
@@ -83,6 +88,9 @@ public class Collision {
 
                 } else {
                     onGround = collisionDetect(pos, inertia, width, height);
+                    if (onGround){
+                        onGroundLock = true;
+                    }
                 }
 
             } else {
@@ -129,7 +137,7 @@ public class Collision {
             }
         }
 
-        return onGround;
+        return onGroundLock;
     }
 
     //these are class/method caches!! NOT FIELDS!
