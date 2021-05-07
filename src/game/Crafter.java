@@ -75,7 +75,7 @@ public class Crafter {
             initSoundManager();
             initGame();
             startSaveThread();
-            assistantThread();
+            //assistantThread();
             gameLoop();
 
         } catch ( Exception excp ){
@@ -100,18 +100,11 @@ public class Crafter {
 
     //the game engine elements
 
-    //create game loop
+    //main game loop
     private static void gameLoop() throws Exception {
-        double elapsedTime;
-        double accumulator = 0d;
-        boolean running = true;
-        while(running && !windowShouldClose()){
+        while(!windowShouldClose()){
 
             calculateDelta();
-
-            elapsedTime = timerGetElapsedTime();
-            accumulator += elapsedTime;
-
 
             indexLight();
             input();
