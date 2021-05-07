@@ -502,7 +502,11 @@ public class Chunk {
 
 
     public static void generateNewChunks(int currentChunkX, int currentChunkZ, int dirX, int dirZ){
+        //long startTime = System.nanoTime();
+
+
         HashMap<Integer, int[]> neighborQueue = new HashMap<>();
+
         int neighborQueueCount = 0;
         if (dirX != 0){
             for (int z = -getChunkRenderDistance() + currentChunkZ; z < getChunkRenderDistance() + currentChunkZ; z++){
@@ -523,6 +527,7 @@ public class Chunk {
             }
         }
 
+
         for (int[] thisArray : neighborQueue.values()){
             for (int y = 0; y < 8; y++) {
                 chunkUpdate(thisArray[0], thisArray[1], y);
@@ -530,7 +535,14 @@ public class Chunk {
             fullNeighborUpdate(thisArray[0], thisArray[1]);
         }
 
+
+
         deleteOldChunks(currentChunkX+dirX, currentChunkZ+dirZ);
+
+        //long endTime = System.nanoTime();
+        //double duration = (double)(endTime - startTime) /  1_000_000_000d;  //divide by 1000000 to get milliseconds.
+
+        //System.out.println("This took: " + duration + " seconds");
     }
 
     private final static HashMap<Integer, String> deletionQueue = new HashMap<>();
@@ -553,7 +565,6 @@ public class Chunk {
                 }
 
                 deletionQueue.put(queueCounter, thisChunk.x + " " + thisChunk.z);
-                thisChunk = null;
                 queueCounter++;
             }
         }
@@ -567,7 +578,7 @@ public class Chunk {
 
     public static void genBiome(int chunkX, int chunkZ) {
 
-        //new Thread(() -> {
+        new Thread(() -> {
             final double heightAdder = 40;
             final byte dirtHeight = 4;
             final byte waterHeight = 50;
@@ -689,7 +700,7 @@ public class Chunk {
                 }
 
             }
-        //}).start();
+        }).start();
     }
 
     public static void cleanUp(){

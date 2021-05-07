@@ -21,7 +21,9 @@ public class ChunkUpdateHandler {
     private static final Random random = new Random();
 
     public static void chunkUpdater() {
-        while (!queue.isEmpty()){
+        byte count = 0;
+        while (!queue.isEmpty() && count < 10){
+            count++;
             String key = "";
 
             Object[] queueAsArray = queue.keySet().toArray();
