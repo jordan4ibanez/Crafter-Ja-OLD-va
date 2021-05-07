@@ -3,6 +3,7 @@ package game.chunk;
 import engine.graph.Mesh;
 import engine.graph.Texture;
 
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static game.chunk.Chunk.*;
@@ -30,14 +31,20 @@ public class ChunkMesh {
 
     private final static float maxLight = 15;
 
+    private static final Random random = new Random();
+
     public static void popChunkMeshQueue(){
 
-        //int count = 0;
+        int count = 0;
 
-        if (!queue.isEmpty()) {
-            //count ++;
+        while (!queue.isEmpty() && count < 10) {
+            count ++;
 
-            ChunkMeshDataObject newChunkMeshData = queue.get(queue.keySet().toArray()[0]);
+
+            Object[] queueAsArray = queue.keySet().toArray();
+            Object thisKey = queueAsArray[random.nextInt(queueAsArray.length)];
+
+            ChunkMeshDataObject newChunkMeshData = queue.get(thisKey);
 
             String keyName = newChunkMeshData.chunkX + " " + newChunkMeshData.chunkZ + " " + newChunkMeshData.yHeight;
 

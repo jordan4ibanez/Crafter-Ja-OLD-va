@@ -30,7 +30,6 @@ public class Player {
     private static final float width                   = 0.3f;
     private static boolean onGround              =  false;
     private static boolean mining                = false;
-    private static float mineTimer               = 0;
     private static boolean placing               = false;
     private static float placeTimer              = 0;
     private static final float accelerationMultiplier  = 0.07f;
@@ -593,7 +592,7 @@ public class Player {
 
 
 
-        //digging timers
+        //mining timer
         hasDug = false;
         if (mining && worldSelectionPos != null) {
             animationTest += delta;
@@ -616,14 +615,6 @@ public class Player {
             placeTimer -= delta;
             if (placeTimer < 0){
                 placeTimer = 0;
-            }
-        }
-
-        //mining timer
-        if(mineTimer > 0){
-            mineTimer -= delta;
-            if (mineTimer < 0){
-                mineTimer = 0;
             }
         }
 
@@ -763,10 +754,9 @@ public class Player {
 
         if(mining && hasDug) {
             rayCast(getCameraPosition(), getCameraRotationVector(), reach,  true, false);
-            mineTimer = 0.5f;
         } else if (placing && placeTimer <= 0){
             rayCast(getCameraPosition(), getCameraRotationVector(), reach,  false, true);
-            placeTimer = 0.5f;
+            placeTimer = 0.1f; // every quarter second you can place
         } else {
             rayCast(getCameraPosition(), getCameraRotationVector(), reach,  false, false);
         }

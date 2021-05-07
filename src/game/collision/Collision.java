@@ -39,15 +39,38 @@ public class Collision {
 
         }
 
+        //limit speed on y axis
+        if (inertia.y <= -30f) {
+            inertia.y = -30f;
+        } else if (inertia.y > 30f) {
+            inertia.y = 30f;
+        }
+
+        //limit speed on x axis
+        if (inertia.x <= -30f) {
+            inertia.x = -30f;
+        } else if (inertia.x > 30f) {
+            inertia.x = 30f;
+        }
+
+        //limit speed (falling or flying) - y axis
+        if (inertia.y <= -30f) {
+            inertia.y = -30f;
+        } else if (inertia.y > 30f) {
+            inertia.y = 30f;
+        }
+
+        //limit speed on z axis
+        if (inertia.z <= -30f) {
+            inertia.z = -30f;
+        } else if (inertia.z > 30f) {
+            inertia.z = 30f;
+        }
+
         for (int i = 0; i < loops; i++) {
             inWater = 0;//reset water detection
 
-            //limit speed (falling or flying) - y axis
-            if (inertia.y <= -10f) {
-                inertia.y = -10f;
-            } else if (inertia.y > 10f) {
-                inertia.y = 10f;
-            }
+
 
             if (applyCollision) {
                 if (sneaking && !getIfPlayerIsJumping()) {
@@ -404,7 +427,7 @@ public class Collision {
             setAABB(pos.x, pos.y, pos.z, width, height);
             setBlockBox(blockPosX,blockPosY,blockPosz,thisBlockBox);
             //this coordinate is not within enough distance to get affected by floating point precision
-            if (isWithin() && BlockBoxGetTop() > AABBGetBottom() && AABBGetBottom() - BlockBoxGetTop() > -0.01d) {
+            if (isWithin() && BlockBoxGetTop() > AABBGetBottom() && AABBGetBottom() - BlockBoxGetTop() > -0.1d) {
                 pos.y = BlockBoxGetTop() + 0.0001d; //players position needs to constantly change or else this breaks stairs/slabs
                 inertia.y = 0;
                 onGround = true;
@@ -419,7 +442,7 @@ public class Collision {
             setBlockBox(blockPosX, blockPosY, blockPosz,thisBlockBox);
             //this coordinate is not within enough distance to get affected by floating point precision
             //head detection
-            if (isWithin() && BlockBoxGetBottom() < AABBGetTop() && AABBGetTop() - BlockBoxGetBottom() < 0.01d) {
+            if (isWithin() && BlockBoxGetBottom() < AABBGetTop() && AABBGetTop() - BlockBoxGetBottom() < 0.1d) {
                 pos.y = BlockBoxGetBottom() - height - 0.001d;
                 inertia.y = 0;
             }
