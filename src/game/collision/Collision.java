@@ -28,15 +28,8 @@ public class Collision {
         int loops = 1;
 
         if (delta >  0.001f){
-            /*
-            System.out.println("-------");
-            System.out.println("Delta is: " + delta);
-            System.out.println("Loops modulo is: " + Math.floor(delta / 0.001f));
-            */
             loops = (int)Math.floor(delta / 0.001f);
-            //System.out.println("adjustedDelta is: " + (delta/(float)loops));
             adjustedDelta = (delta/(float)loops);
-
         }
 
         for (int i = 0; i < loops; i++) {
