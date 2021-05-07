@@ -191,7 +191,7 @@ public class Player {
     private static boolean soundTrigger = true;
 
     public static void testPlayerDiggingAnimation(){
-        if (!diggingAnimationGo && handSetUp){
+        if (!diggingAnimationGo && handSetUp && diggingAnimation == 0f){
             return;
         }
 
@@ -209,12 +209,11 @@ public class Player {
         if (handSetUp) {
             diggingAnimation += getDelta() * 3.75f;
         }
-
+        
         if ((!diggingAnimationBuffer || diggingAnimation >= 1f) && handSetUp){
             diggingAnimationGo = false;
             diggingAnimation = 0f;
             soundTrigger = true;
-            return;
         }
 
         if(!handSetUp){
