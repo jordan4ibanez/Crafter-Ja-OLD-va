@@ -575,14 +575,18 @@ public class Chunk {
     }
 
 
+    private final static int seed = 532_444_432;
+
 
     public static void genBiome(int chunkX, int chunkZ) {
 
         new Thread(() -> {
-            final double heightAdder = 40;
+            final double heightAdder = 70;
             final byte dirtHeight = 4;
             final byte waterHeight = 50;
             final FastNoise noise = new FastNoise();
+
+            noise.SetSeed(seed);
 
             double dirtHeightRandom;
             boolean gennedSand;
@@ -625,7 +629,7 @@ public class Chunk {
                         dirtHeightRandom = Math.floor(Math.random() * 2d);
 
                         //this casting is all over the place todo: fix this
-                        height = (byte) (Math.abs(noise.GetPerlin((float) ((chunkX * 16d) + (double) generationX), (float) ((chunkZ * 16d) + (double) generationZ)) * 127 + heightAdder));
+                        height = (byte) (Math.abs(noise.GetPerlin((float) ((chunkX * 16d) + (double) generationX), (float) ((chunkZ * 16d) + (double) generationZ)) * 50 + heightAdder));
 
                         if (height < 6) {
                             height = 6;
