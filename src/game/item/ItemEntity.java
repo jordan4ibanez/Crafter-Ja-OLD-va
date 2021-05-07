@@ -116,7 +116,7 @@ public class ItemEntity {
             if (thisItem.rotation.y > 360f) {
                 thisItem.rotation.y -= 360f;
             }
-            
+
             if (thisItem.floatUp){
                 thisItem.hover += delta / 10;
                 if (thisItem.hover >= 0.5f){

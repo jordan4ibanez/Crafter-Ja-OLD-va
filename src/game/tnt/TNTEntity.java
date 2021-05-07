@@ -8,6 +8,7 @@ import org.joml.Vector3f;
 import java.util.ArrayList;
 
 import static engine.FancyMath.*;
+import static engine.Time.getDelta;
 import static engine.sound.SoundAPI.playSound;
 import static game.blocks.BlockDefinition.*;
 import static game.collision.Collision.applyInertia;
@@ -62,21 +63,21 @@ public class TNTEntity {
     }
 
     public static void onTNTStep() throws Exception {
+        float delta = getDelta();
         for (int i = 0; i < totalTNT; i++){
-            tntTimer[i] += 0.001f;
+            tntTimer[i] += delta;
             applyInertia(tntPos[i], tntInertia[i], true, tntSize, tntSize * 2, true, false, true, false, false);
 
             if(tntTimer[i]>2.23f){
-                tntScale[i].x += 0.002f;
-                tntScale[i].y += 0.00075f;
-                tntScale[i].z += 0.002f;
+                tntScale[i].x += delta;
+                tntScale[i].y += delta/2f;
+                tntScale[i].z += delta;
             }
 
             if (tntTimer[i] > 2.6f){
 
                 boom(tntPos[i], 5);
-
-//                soundMgr.playSoundSource(Crafter.Sounds.TNT.toString());
+                
                 playSound("tnt_explode", tntPos[i]);
 
                 deleteTNT(i);
