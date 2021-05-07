@@ -144,8 +144,16 @@ public class Player {
     }
 
 
+    private static boolean wasPlacing = false;
+
     public static void setPlayerPlacing( boolean isPlacing) {
+        wasPlacing = placing;
         placing = isPlacing;
+
+        //allow players to spam click to place
+        if (!wasPlacing && isPlacing){
+            placeTimer = 0.f;
+        }
     }
 
 
@@ -756,7 +764,7 @@ public class Player {
             rayCast(getCameraPosition(), getCameraRotationVector(), reach,  true, false);
         } else if (placing && placeTimer <= 0){
             rayCast(getCameraPosition(), getCameraRotationVector(), reach,  false, true);
-            placeTimer = 0.1f; // every quarter second you can place
+            placeTimer = 0.25f; // every quarter second you can place
         } else {
             rayCast(getCameraPosition(), getCameraRotationVector(), reach,  false, false);
         }
