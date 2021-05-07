@@ -63,7 +63,7 @@ public class ChunkMesh {
     }
 
     public static void generateChunkMesh(int chunkX, int chunkZ, int yHeight) {
-        long startTime = System.nanoTime();
+        //long startTime = System.nanoTime();
         //let's use all the cpu threads to the limit
         new Thread(() -> {
             //normal block stuff
@@ -1326,9 +1326,9 @@ public class ChunkMesh {
             //finally add it into the queue to be popped
             queue.put(keyName, newChunkData);
 
-            long endTime = System.nanoTime();
-            double duration = (double)(endTime - startTime) /  1_000_000_000d;  //divide by 1000000 to get milliseconds.
-            System.out.println("This took: " + duration + " seconds");
+            //long endTime = System.nanoTime();
+            //double duration = (double)(endTime - startTime) /  1_000_000_000d;  //divide by 1000000 to get milliseconds.
+            //System.out.println("This took: " + duration + " seconds");
             //done, thread dies
         }).start();
     }
