@@ -8,7 +8,6 @@ import static game.chunk.Chunk.getBlock;
 import static game.blocks.BlockDefinition.*;
 import static game.chunk.Chunk.getBlockRotation;
 import static game.collision.CollisionMath.floorPos;
-import static game.collision.CustomAABB.*;
 import static game.collision.CustomBlockBox.*;
 
 public class ParticleCollision {
@@ -25,7 +24,7 @@ public class ParticleCollision {
             loops = (int)Math.floor(delta / 0.001f);
             adjustedDelta = (delta/(float)loops);
         }
-        
+
 
         for (int i = 0; i < loops; i++) {
 
