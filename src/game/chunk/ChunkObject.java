@@ -8,6 +8,8 @@ public class ChunkObject {
     public int x;
     public int z;
 
+    public boolean blank = true;
+
     public byte lightLevel = 15;
 
     public int [] block = new int[128 * 16 * 16];

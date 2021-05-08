@@ -716,22 +716,56 @@ public class Chunk {
                     }
                 }
 
+                //generate tree cores
                 for (int i = 0; i < treeIndex; i++){
+                    Vector3i basePos = treePosArray[i];
                     //generate stumps
                     for (int y = 0; y < 4; y++){
                         //stay within borders
                         if (y + treePosArray[i].y < 127){
-                            thisChunk.block[posToIndex(treePosArray[i].x,treePosArray[i].y + y, treePosArray[i].z)] = 25;
+                            thisChunk.block[posToIndex(basePos.x,basePos.y + y, basePos.z)] = 25;
                         }
                     }
                 }
+
+                //generate tree leaves
+                for (int i = 0; i < treeIndex; i++){
+                    Vector3i basePos = treePosArray[i];
+                    byte treeWidth = 0;
+                    for (int y = 5; y > 1; y--){
+                        for (int x = -treeWidth; x <= treeWidth; x++){
+
+                            for (int z = -treeWidth; z <= treeWidth; z++) {
+
+                                if (    basePos.x + x >= 0 && basePos.x + x <= 15 &&
+                                        basePos.y + y >= 0 && basePos.y + y <= 127 &&
+                                        basePos.z + z >= 0 && basePos.z + z <= 15) {
+
+                                    int index = posToIndex(basePos.x + x, basePos.y + y, basePos.z + z);
+
+                                    if (thisChunk.block[index] == 0) {
+                                        thisChunk.block[index] = 3;
+                                    }
+                                }
+
+                            }
+                        }
+                        if (treeWidth < 2) {
+                            treeWidth++;
+                        }
+                    }
+
+                }
+
+                thisChunk.blank = false;
+
+                //todo: add in blank chunk boolean
 
                 //dump everything into the chunk updater
                 for (int i = 0; i < 8; i++) {
                     //generateChunkMesh(thisChunk.x, thisChunk.z, i); //instant
                     chunkUpdate(thisChunk.x, thisChunk.z, i); //delayed
                 }
-
             }
         }).start();
     }
