@@ -6,12 +6,13 @@ import game.falling.FallingEntityObject;
 import game.item.Item;
 import game.mob.MobObject;
 import game.particle.ParticleObject;
-import game.weather.RainDropEntity;
 import org.joml.*;
 
 import java.lang.Math;
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
+import static engine.FancyMath.getDistance;
 import static engine.MouseInput.getMousePos;
 import static engine.Timer.getFpsCounted;
 import static engine.graph.Camera.*;
@@ -19,18 +20,14 @@ import static engine.graph.Transformation.*;
 import static engine.graph.Transformation.buildOrthoProjModelMatrix;
 import static engine.Hud.*;
 import static game.falling.FallingEntity.getFallingEntities;
-import static game.item.ItemDefinition.getItemDefinition;
 import static game.item.ItemEntity.*;
 import static game.mob.Mob.getAllMobs;
-import static game.mob.Mob.getMobDefinition;
 import static game.particle.Particle.getAllParticles;
 import static game.tnt.TNTEntity.*;
 import static engine.Window.*;
 import static game.chunk.Chunk.*;
 import static game.player.Inventory.*;
 import static game.player.Player.*;
-import static game.weather.Weather.getRainDropMesh;
-import static game.weather.Weather.getRainDrops;
 import static org.lwjgl.opengl.GL11.*;
 
 public class Renderer {
@@ -213,13 +210,55 @@ public class Renderer {
 
 
         //render each chunk column -- THIS NEEDS TO BE LAST
+        Vector3d camPos = getCameraPosition();
+
+        HashMap<Double, ChunkObject> chunkHash = new HashMap<Double, ChunkObject>();
+
+        //get all distances
         for (ChunkObject thisChunk : getMap()){
+            double currentDistance = getDistance((thisChunk.x * 16d) + 8d, 0,(thisChunk.z * 16d) + 8d, camPos.x, 0, camPos.z);
+            chunkHash.put(currentDistance, thisChunk);
+        }
+
+        ChunkObject[] chunkArraySorted = new ChunkObject[chunkHash.size()];
+
+        int arrayIndex = 0;
+
+        //sort all distances
+        while (!chunkHash.isEmpty()){
+
+            //System.out.println(chunkHash.size());
+
+            AtomicReference<Double> maxDistance = new AtomicReference<>(0d);
+
+            chunkHash.forEach((distancer,y) ->{
+                if(maxDistance.get() <= distancer) {
+                    maxDistance.set(distancer);
+                }
+            });
+
+            double maxDistancePrimitive = maxDistance.get();
+
+            //link
+            chunkArraySorted[arrayIndex] = chunkHash.get(maxDistancePrimitive);
+
+            arrayIndex++;
+
+            //remove
+            chunkHash.remove(maxDistancePrimitive);
+        }
+
+        for (int i = 0; i < arrayIndex; i++){
+
+            ChunkObject thisChunk = chunkArraySorted[i];
+
             if (thisChunk == null){
                 continue;
             }
             if (thisChunk.mesh == null){
                 continue;
             }
+
             for (Mesh thisMesh : thisChunk.mesh){
                 if (thisMesh != null){
                     modelViewMatrix = updateModelViewMatrix(new Vector3d(thisChunk.x * 16d, 0, thisChunk.z * 16d), new Vector3f(0,0,0), viewMatrix);
@@ -228,8 +267,6 @@ public class Renderer {
                 }
             }
         }
-
-
 
         //BEGIN HUD
 
