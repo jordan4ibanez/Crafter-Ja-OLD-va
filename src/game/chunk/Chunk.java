@@ -580,11 +580,12 @@ public class Chunk {
 
     public static void genBiome(int chunkX, int chunkZ) {
 
-        new Thread(() -> {
+        //new Thread(() -> {
             final double heightAdder = 70;
             final byte dirtHeight = 4;
             final byte waterHeight = 50;
             final FastNoise noise = new FastNoise();
+            final int noiseMultiplier = 50;
 
             noise.SetSeed(seed);
 
@@ -605,26 +606,25 @@ public class Chunk {
 
                 //dump everything into the chunk updater
                 for (int i = 0; i < 8; i++) {
-                    //generateChunkMesh(loadedChunk.x, loadedChunk.z, i); //instant
                     chunkUpdate(loadedChunk.x, loadedChunk.z, i); //delayed
                 }
 
             } else {
-                ChunkObject thisChunk = map.get(chunkX + " " + chunkZ);
-                if (thisChunk == null) {
-                    map.put(chunkX + " " + chunkZ, new ChunkObject(chunkX, chunkZ));
-                } else {
-                    return;
-                }
 
-                thisChunk = map.get(chunkX + " " + chunkZ);
+                ChunkObject thisChunk = map.get(chunkX + " " + chunkZ);
+
+                if (thisChunk == null) {
+                    thisChunk = new ChunkObject(chunkX,chunkZ);
+                    map.put(chunkX + " " + chunkZ, thisChunk);
+                }
 
                 thisChunk.modified = true;
 
-                //biome max 64 trees
+                //biome max 128 trees
                 Vector3i[] treePosArray = new Vector3i[128];
                 byte treeIndex = 0;
 
+                //standard generation
                 for (generationX = 0; generationX < 16; generationX++) {
                     for (generationZ = 0; generationZ < 16; generationZ++) {
                         gennedSand = false;
@@ -635,7 +635,7 @@ public class Chunk {
                         float realPosX = (float)((chunkX * 16d) + (double) generationX);
                         float realPosZ = (float)((chunkZ * 16d) + (double) generationZ);
 
-                        height = (byte) (Math.abs(noise.GetPerlin(realPosX, realPosZ) * 50 + heightAdder));
+                        height = (byte) (Math.abs(noise.GetPerlin(realPosX, realPosZ) * noiseMultiplier + heightAdder));
 
                         //catch ultra deep oceans
                         if (height < 6) {
@@ -647,6 +647,10 @@ public class Chunk {
 
                             //don't overwrite
                             currBlock = thisChunk.block[posToIndex(generationX, generationY, generationZ)];
+
+                            if (currBlock != 0){
+                                //System.out.println("overwriting!!!");
+                            }
 
                             //bedrock
                             if (generationY <= 0 + dirtHeightRandom) {
@@ -716,13 +720,40 @@ public class Chunk {
                     }
                 }
 
+                //check for trees outside chunk borders (simulated chunk generation)
+                for (generationX = 0 - 3; generationX < 16 + 3; generationX++) {
+                    for (generationZ = 0 - 3; generationZ < 16 + 3; generationZ++) {
+
+                        //only check outside
+                        if (generationX < 0 || generationX > 15 || generationZ < 0 || generationZ > 15) {
+
+                            float realPosX = (float) ((chunkX * 16d) + (double) generationX);
+                            float realPosZ = (float) ((chunkZ * 16d) + (double) generationZ);
+
+                            height = (byte) (Math.abs(noise.GetPerlin(realPosX, realPosZ) * noiseMultiplier + heightAdder) + (byte) 1);
+
+                            if (height >= 0 && height <= 127 && height > waterHeight + 1) {
+
+                                float noiseTest2 = Math.abs(noise.GetWhiteNoise(realPosX, height, realPosZ));
+
+                                //add tree to queue
+                                if (noiseTest2 > 0.98f){
+                                    treePosArray[treeIndex] = new Vector3i(generationX, height, generationZ);
+                                    treeIndex++;
+                                }
+
+                            }
+                        }
+                    }
+                }
+
                 //generate tree cores
                 for (int i = 0; i < treeIndex; i++){
                     Vector3i basePos = treePosArray[i];
                     //generate stumps
                     for (int y = 0; y < 4; y++){
                         //stay within borders
-                        if (y + treePosArray[i].y < 127){
+                        if (y + treePosArray[i].y < 127 && basePos.x >= 0 && basePos.x <= 15 && basePos.z >= 0 && basePos.z <= 15){
                             thisChunk.block[posToIndex(basePos.x,basePos.y + y, basePos.z)] = 25;
                         }
                     }
@@ -734,7 +765,6 @@ public class Chunk {
                     byte treeWidth = 0;
                     for (int y = 5; y > 1; y--){
                         for (int x = -treeWidth; x <= treeWidth; x++){
-
                             for (int z = -treeWidth; z <= treeWidth; z++) {
 
                                 if (    basePos.x + x >= 0 && basePos.x + x <= 15 &&
@@ -744,10 +774,9 @@ public class Chunk {
                                     int index = posToIndex(basePos.x + x, basePos.y + y, basePos.z + z);
 
                                     if (thisChunk.block[index] == 0) {
-                                        thisChunk.block[index] = 3;
+                                        thisChunk.block[index] = 26;
                                     }
                                 }
-
                             }
                         }
                         if (treeWidth < 2) {
@@ -757,8 +786,6 @@ public class Chunk {
 
                 }
 
-                thisChunk.blank = false;
-
                 //todo: add in blank chunk boolean
 
                 //dump everything into the chunk updater
@@ -766,8 +793,10 @@ public class Chunk {
                     //generateChunkMesh(thisChunk.x, thisChunk.z, i); //instant
                     chunkUpdate(thisChunk.x, thisChunk.z, i); //delayed
                 }
+
+                instantSave(thisChunk);
             }
-        }).start();
+        //}).start();
     }
 
     public static void cleanUp(){

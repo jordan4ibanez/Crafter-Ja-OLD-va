@@ -62,7 +62,6 @@ public class SaveQueue {
             savingObject.rotation = thisChunk.rotation;
             savingObject.light = thisChunk.light;
             savingObject.heightMap = thisChunk.heightMap;
-            savingObject.blank = thisChunk.blank;
 
 
             mapper.writeValue(new File("Worlds/world1/" + savingObject.ID + ".chunk"), savingObject);
