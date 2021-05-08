@@ -580,7 +580,7 @@ public class Chunk {
 
     public static void genBiome(int chunkX, int chunkZ) {
 
-        //new Thread(() -> {
+        new Thread(() -> {
             final double heightAdder = 70;
             final byte dirtHeight = 4;
             final byte waterHeight = 50;
@@ -796,7 +796,7 @@ public class Chunk {
 
                 instantSave(thisChunk);
             }
-        //}).start();
+        }).start();
     }
 
     public static void cleanUp(){
