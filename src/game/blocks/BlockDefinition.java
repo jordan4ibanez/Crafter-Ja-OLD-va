@@ -269,6 +269,10 @@ public class BlockDefinition {
                 )
         );
 
+        blockShapeMap.put("allFaces",
+                new BlockShape(new double[][]{{0f,0f,0f,1f,1f,1f}})
+        );
+
 
         new BlockDefinition(
                 0,
@@ -1001,7 +1005,7 @@ public class BlockDefinition {
                 new int[]{28,0}, //left
                 new int[]{28,0}, //top
                 new int[]{28,0},  //bottom
-                "normal",
+                "allFaces",
                 true,
                 false,
                 false,
