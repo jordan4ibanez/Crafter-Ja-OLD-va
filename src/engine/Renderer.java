@@ -131,23 +131,21 @@ public class Renderer {
 
         Matrix4d modelViewMatrix;
 
-        //render world selection mesh
-        if (getPlayerWorldSelectionPos() != null){
+        for (ChunkObject thisChunk : getMap()) {
 
-            Mesh selectionMesh = getWorldSelectionMesh();
+            if (thisChunk == null) {
+                continue;
+            }
+            if (thisChunk.mesh == null) {
+                continue;
+            }
 
-            Vector3i tempPos = getPlayerWorldSelectionPos();
-            Vector3d actualPos = new Vector3d(tempPos.x, tempPos.y, tempPos.z);
-
-            modelViewMatrix = updateModelViewMatrix(actualPos, new Vector3f(0,0,0), viewMatrix);
-            shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            selectionMesh.render();
-
-            if (getDiggingFrame() >= 0) {
-                Mesh crackMesh = getMiningCrackMesh();
-                modelViewMatrix = updateModelViewMatrix(actualPos, new Vector3f(0, 0, 0), viewMatrix);
-                shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                crackMesh.render();
+            for (Mesh thisMesh : thisChunk.mesh) {
+                if (thisMesh != null) {
+                    modelViewMatrix = updateModelViewMatrix(new Vector3d(thisChunk.x * 16d, 0, thisChunk.z * 16d), new Vector3f(0, 0, 0), viewMatrix);
+                    shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                    thisMesh.render();
+                }
             }
         }
 
@@ -210,6 +208,7 @@ public class Renderer {
 
 
         //render each chunk column -- THIS NEEDS TO BE LAST
+        /*
         Vector3d camPos = getCameraPosition();
 
         HashMap<Double, ChunkObject> chunkHash = new HashMap<Double, ChunkObject>();
@@ -250,21 +249,27 @@ public class Renderer {
 
         for (int i = 0; i < arrayIndex; i++){
 
-            ChunkObject thisChunk = chunkArraySorted[i];
 
-            if (thisChunk == null){
-                continue;
-            }
-            if (thisChunk.mesh == null){
-                continue;
-            }
+        }
+         */
 
-            for (Mesh thisMesh : thisChunk.mesh){
-                if (thisMesh != null){
-                    modelViewMatrix = updateModelViewMatrix(new Vector3d(thisChunk.x * 16d, 0, thisChunk.z * 16d), new Vector3f(0,0,0), viewMatrix);
-                    shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                    thisMesh.render();
-                }
+        //render world selection mesh
+        if (getPlayerWorldSelectionPos() != null){
+
+            Mesh selectionMesh = getWorldSelectionMesh();
+
+            Vector3i tempPos = getPlayerWorldSelectionPos();
+            Vector3d actualPos = new Vector3d(tempPos.x, tempPos.y, tempPos.z);
+
+            modelViewMatrix = updateModelViewMatrix(actualPos, new Vector3f(0,0,0), viewMatrix);
+            shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            selectionMesh.render();
+
+            if (getDiggingFrame() >= 0) {
+                Mesh crackMesh = getMiningCrackMesh();
+                modelViewMatrix = updateModelViewMatrix(actualPos, new Vector3f(0, 0, 0), viewMatrix);
+                shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                crackMesh.render();
             }
         }
 
