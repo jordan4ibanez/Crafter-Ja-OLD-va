@@ -11,5 +11,13 @@ public class ChunkMeshDataObject {
     float[] lightArray;
     int[] indicesArray;
     float[] textureCoordArray;
-    boolean meshIsNull = false;
+    boolean normalMeshIsNull = false;
+
+    //liquid
+    float[] liquidPositionsArray ;
+    float[] liquidLightArray;
+    int[] liquidIndicesArray;
+    float[] liquidTextureCoordArray;
+    boolean liquidMeshIsNull = false;
+
 }

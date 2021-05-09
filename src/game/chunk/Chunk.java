@@ -35,7 +35,7 @@ public class Chunk {
         return map.get(x + " " + z);
     }
 
-    public static void setChunkMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
+    public static void setChunkNormalMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
         ChunkObject thisChunk = map.get(chunkX + " " + chunkZ);
         if (thisChunk == null){
             if (newMesh != null) {
@@ -43,18 +43,40 @@ public class Chunk {
             }
             return;
         }
-        if (thisChunk.mesh == null){
+        if (thisChunk.normalMesh == null){
             if (newMesh != null) {
                 newMesh.cleanUp(false);
             }
             return;
         }
 
-        if (thisChunk.mesh[yHeight] != null){
-            thisChunk.mesh[yHeight].cleanUp(false);
-            thisChunk.mesh[yHeight] = null;
+        if (thisChunk.normalMesh[yHeight] != null){
+            thisChunk.normalMesh[yHeight].cleanUp(false);
+            thisChunk.normalMesh[yHeight] = null;
         }
-        thisChunk.mesh[yHeight] = newMesh;
+        thisChunk.normalMesh[yHeight] = newMesh;
+    }
+
+    public static void setChunkLiquidMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
+        ChunkObject thisChunk = map.get(chunkX + " " + chunkZ);
+        if (thisChunk == null){
+            if (newMesh != null) {
+                newMesh.cleanUp(false);
+            }
+            return;
+        }
+        if (thisChunk.liquidMesh == null){
+            if (newMesh != null) {
+                newMesh.cleanUp(false);
+            }
+            return;
+        }
+
+        if (thisChunk.liquidMesh[yHeight] != null){
+            thisChunk.liquidMesh[yHeight].cleanUp(false);
+            thisChunk.liquidMesh[yHeight] = null;
+        }
+        thisChunk.liquidMesh[yHeight] = newMesh;
     }
 
     private static float saveTimer = 0f;
@@ -132,16 +154,16 @@ public class Chunk {
         return false;
     }
 
-    public static Mesh getChunkMesh(int chunkX, int chunkZ, int yHeight){
+    public static Mesh getChunkNormalMesh(int chunkX, int chunkZ, int yHeight){
         ChunkObject thisChunk = map.get(chunkX + " " + chunkZ);
         if (thisChunk == null){
             return null;
         }
-        if (thisChunk.mesh == null){
+        if (thisChunk.normalMesh == null){
             return null;
         }
-        if (thisChunk.mesh[yHeight] != null){
-            return thisChunk.mesh[yHeight];
+        if (thisChunk.normalMesh[yHeight] != null){
+            return thisChunk.normalMesh[yHeight];
         }
         return null;
     }
@@ -552,11 +574,20 @@ public class Chunk {
         int queueCounter = 0;
         for (ChunkObject thisChunk : map.values()){
             if (Math.abs(thisChunk.z - chunkZ) > getChunkRenderDistance() || Math.abs(thisChunk.x - chunkX) > getChunkRenderDistance()){
-                if (thisChunk.mesh != null){
+                if (thisChunk.normalMesh != null){
                     for (int y = 0; y < 8; y++) {
-                        if (thisChunk.mesh[y] != null){
-                            thisChunk.mesh[y].cleanUp(false);
-                            thisChunk.mesh[y] = null;
+                        if (thisChunk.normalMesh[y] != null){
+                            thisChunk.normalMesh[y].cleanUp(false);
+                            thisChunk.normalMesh[y] = null;
+                        }
+                    }
+                }
+
+                if (thisChunk.liquidMesh != null){
+                    for (int y = 0; y < 8; y++) {
+                        if (thisChunk.liquidMesh[y] != null){
+                            thisChunk.liquidMesh[y].cleanUp(false);
+                            thisChunk.liquidMesh[y] = null;
                         }
                     }
                 }
@@ -804,8 +835,16 @@ public class Chunk {
             if (thisChunk == null){
                 continue;
             }
-            if (thisChunk.mesh != null){
-                for (Mesh thisMesh : thisChunk.mesh){
+            if (thisChunk.normalMesh != null){
+                for (Mesh thisMesh : thisChunk.normalMesh){
+                    if (thisMesh != null){
+                        thisMesh.cleanUp(true);
+                    }
+                }
+            }
+
+            if (thisChunk.liquidMesh != null){
+                for (Mesh thisMesh : thisChunk.liquidMesh){
                     if (thisMesh != null){
                         thisMesh.cleanUp(true);
                     }

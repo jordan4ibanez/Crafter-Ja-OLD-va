@@ -1,6 +1,7 @@
 package engine;
 
 import engine.graph.*;
+import game.chunk.Chunk;
 import game.chunk.ChunkObject;
 import game.falling.FallingEntityObject;
 import game.item.Item;
@@ -29,6 +30,7 @@ import static game.chunk.Chunk.*;
 import static game.player.Inventory.*;
 import static game.player.Player.*;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 
 public class Renderer {
 
@@ -131,20 +133,106 @@ public class Renderer {
 
         Matrix4d modelViewMatrix;
 
-        for (ChunkObject thisChunk : getMap()) {
+
+        //render each chunk column -- THIS NEEDS TO BE LAST
+        Vector3d camPos = getCameraPosition();
+
+        HashMap<Double, ChunkObject> chunkHash = new HashMap<Double, ChunkObject>();
+
+        //get all distances
+        for (ChunkObject thisChunk : getMap()){
+            double currentDistance = getDistance((thisChunk.x * 16d) + 8d, 0,(thisChunk.z * 16d) + 8d, camPos.x, 0, camPos.z);
+            chunkHash.put(currentDistance, thisChunk);
+        }
+
+        ChunkObject[] chunkArraySorted = new ChunkObject[chunkHash.size()];
+
+        int arrayIndex = 0;
+
+        //sort all distances
+        while (!chunkHash.isEmpty()){
+
+            //System.out.println(chunkHash.size());
+
+            AtomicReference<Double> maxDistance = new AtomicReference<>(0d);
+
+            chunkHash.forEach((distancer,y) ->{
+                if(maxDistance.get() <= distancer) {
+                    maxDistance.set(distancer);
+                }
+            });
+
+            double maxDistancePrimitive = maxDistance.get();
+
+            //link
+            chunkArraySorted[arrayIndex] = chunkHash.get(maxDistancePrimitive);
+
+            arrayIndex++;
+
+            //remove
+            chunkHash.remove(maxDistancePrimitive);
+        }
+
+
+
+        //render normal chunk meshes
+        for (int i = 0; i < arrayIndex; i++) {
+
+            ChunkObject thisChunk = chunkArraySorted[i];
 
             if (thisChunk == null) {
                 continue;
             }
-            if (thisChunk.mesh == null) {
-                continue;
+
+            //normal
+            if (thisChunk.normalMesh != null) {
+                for (Mesh thisMesh : thisChunk.normalMesh) {
+                    if (thisMesh != null) {
+                        modelViewMatrix = updateModelViewMatrix(new Vector3d(thisChunk.x * 16d, 0, thisChunk.z * 16d), new Vector3f(0, 0, 0), viewMatrix);
+                        shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                        thisMesh.render();
+                    }
+                }
             }
 
-            for (Mesh thisMesh : thisChunk.mesh) {
-                if (thisMesh != null) {
-                    modelViewMatrix = updateModelViewMatrix(new Vector3d(thisChunk.x * 16d, 0, thisChunk.z * 16d), new Vector3f(0, 0, 0), viewMatrix);
-                    shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                    thisMesh.render();
+        }
+        //render world selection mesh
+        if (getPlayerWorldSelectionPos() != null){
+
+            Vector3i tempPos = getPlayerWorldSelectionPos();
+
+            Mesh selectionMesh = getWorldSelectionMesh();
+
+            Vector3d actualPos = new Vector3d(tempPos.x, tempPos.y, tempPos.z);
+
+            modelViewMatrix = updateModelViewMatrix(actualPos, new Vector3f(0, 0, 0), viewMatrix);
+            shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            selectionMesh.render();
+
+            if (getDiggingFrame() >= 0) {
+                Mesh crackMesh = getMiningCrackMesh();
+                modelViewMatrix = updateModelViewMatrix(actualPos, new Vector3f(0, 0, 0), viewMatrix);
+                shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                crackMesh.render();
+            }
+        }
+
+        //render liquid chunk meshes
+        for (int i = 0; i < arrayIndex; i++){
+
+            ChunkObject thisChunk = chunkArraySorted[i];
+
+            if (thisChunk == null) {
+                continue;
+            }
+            //liquid
+            if (thisChunk.liquidMesh != null) {
+                for (Mesh thisMesh : thisChunk.liquidMesh) {
+                    if (thisMesh != null) {
+                        modelViewMatrix = updateModelViewMatrix(new Vector3d(thisChunk.x * 16d, 0, thisChunk.z * 16d), new Vector3f(0, 0, 0), viewMatrix);
+                        shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                        thisMesh.render();
+                    }
                 }
             }
         }
@@ -205,73 +293,6 @@ public class Renderer {
             rainDrop.render();
         }
          */
-
-
-        //render each chunk column -- THIS NEEDS TO BE LAST
-        /*
-        Vector3d camPos = getCameraPosition();
-
-        HashMap<Double, ChunkObject> chunkHash = new HashMap<Double, ChunkObject>();
-
-        //get all distances
-        for (ChunkObject thisChunk : getMap()){
-            double currentDistance = getDistance((thisChunk.x * 16d) + 8d, 0,(thisChunk.z * 16d) + 8d, camPos.x, 0, camPos.z);
-            chunkHash.put(currentDistance, thisChunk);
-        }
-
-        ChunkObject[] chunkArraySorted = new ChunkObject[chunkHash.size()];
-
-        int arrayIndex = 0;
-
-        //sort all distances
-        while (!chunkHash.isEmpty()){
-
-            //System.out.println(chunkHash.size());
-
-            AtomicReference<Double> maxDistance = new AtomicReference<>(0d);
-
-            chunkHash.forEach((distancer,y) ->{
-                if(maxDistance.get() <= distancer) {
-                    maxDistance.set(distancer);
-                }
-            });
-
-            double maxDistancePrimitive = maxDistance.get();
-
-            //link
-            chunkArraySorted[arrayIndex] = chunkHash.get(maxDistancePrimitive);
-
-            arrayIndex++;
-
-            //remove
-            chunkHash.remove(maxDistancePrimitive);
-        }
-
-        for (int i = 0; i < arrayIndex; i++){
-
-
-        }
-         */
-
-        //render world selection mesh
-        if (getPlayerWorldSelectionPos() != null){
-
-            Mesh selectionMesh = getWorldSelectionMesh();
-
-            Vector3i tempPos = getPlayerWorldSelectionPos();
-            Vector3d actualPos = new Vector3d(tempPos.x, tempPos.y, tempPos.z);
-
-            modelViewMatrix = updateModelViewMatrix(actualPos, new Vector3f(0,0,0), viewMatrix);
-            shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            selectionMesh.render();
-
-            if (getDiggingFrame() >= 0) {
-                Mesh crackMesh = getMiningCrackMesh();
-                modelViewMatrix = updateModelViewMatrix(actualPos, new Vector3f(0, 0, 0), viewMatrix);
-                shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                crackMesh.render();
-            }
-        }
 
         //BEGIN HUD
 
