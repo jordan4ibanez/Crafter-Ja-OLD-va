@@ -140,9 +140,11 @@ public class Controls {
 
 
         //spawn human mob
+        /*
         if (isKeyPressed(GLFW_KEY_T)) {
             spawnMob("human", new Vector3d(getPlayerPos()), new Vector3f(0,0,0));
         }
+         */
 
 
         if (!isPlayerInventoryOpen() && !isPaused()) {
