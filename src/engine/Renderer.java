@@ -315,6 +315,9 @@ public class Renderer {
 
         glClear(GL_DEPTH_BUFFER_BIT);
 
+        projectionMatrix = getProjectionMatrix(FOV, getWindowWidth(), getWindowHeight(), Z_NEAR, Z_FAR);
+        shaderProgram.setUniform("projectionMatrix", projectionMatrix);
+
         //draw wield hand or item
         {
             //wield hand
