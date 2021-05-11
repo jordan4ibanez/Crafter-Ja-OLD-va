@@ -18,7 +18,8 @@ public class BlockDefinition {
 
     private final static BlockDefinition[] blockIDs = new BlockDefinition[256];
 
-    private final static Map<String, BlockShape> blockShapeMap = new HashMap<>();
+    //0: normal,
+    private final static BlockShape[] blockShapeMap = new BlockShape[128];
 
     //fixed fields for the class
     private static final byte atlasSizeX = 32;
@@ -37,7 +38,7 @@ public class BlockDefinition {
     public boolean walkable;
     public boolean steppable;
     public boolean isLiquid;
-    public String drawType;
+    public int drawType;
     public String placeSound;
     public String digSound;
     public BlockModifier blockModifier;
@@ -55,7 +56,7 @@ public class BlockDefinition {
             int[] left,
             int[] top,
             int[] bottom,
-            String drawType,
+            int drawType,
             boolean walkable,
             boolean steppable,
             boolean isLiquid,
@@ -148,9 +149,9 @@ public class BlockDefinition {
         return(blockIDs[ID].isOnPlaced);
     }
 
-    public static String getBlockDrawType(int ID){
+    public static int getBlockDrawType(int ID){
         if (ID < 0){
-            return "";
+            return 0;
         }
         return blockIDs[ID].drawType;
     }
@@ -161,14 +162,14 @@ public class BlockDefinition {
 
     public static double[][] getBlockShape(int ID, byte rot){
 
-        double[][] newBoxes = new double[blockShapeMap.get(blockIDs[ID].drawType).getBoxes().length][6];
+        double[][] newBoxes = new double[blockShapeMap[blockIDs[ID].drawType].getBoxes().length][6];
 
 
         int index = 0;
 
         //automated as base, since it's the same
         if (rot == 0) {
-            for (double[] thisShape : blockShapeMap.get(blockIDs[ID].drawType).getBoxes()) {
+            for (double[] thisShape : blockShapeMap[blockIDs[ID].drawType].getBoxes()) {
                 for (int i = 0; i < 6; i++) {
                     newBoxes[index][i] = thisShape[i];
                 }
@@ -177,7 +178,7 @@ public class BlockDefinition {
         }
 
         if (rot == 2){
-            for (double[] thisShape : blockShapeMap.get(blockIDs[ID].drawType).getBoxes()) {
+            for (double[] thisShape : blockShapeMap[blockIDs[ID].drawType].getBoxes()) {
 
                 double blockDiffZ =  1d - thisShape[5];
                 double widthZ = thisShape[5] - thisShape[2];
@@ -198,7 +199,7 @@ public class BlockDefinition {
 
 
         if (rot == 1){
-            for (double[] thisShape : blockShapeMap.get(blockIDs[ID].drawType).getBoxes()) {
+            for (double[] thisShape : blockShapeMap[blockIDs[ID].drawType].getBoxes()) {
 
                 double blockDiffZ =  1d - thisShape[5];
                 double widthZ = thisShape[5] - thisShape[2];
@@ -216,7 +217,7 @@ public class BlockDefinition {
 
 
         if (rot == 3){
-            for (double[] thisShape : blockShapeMap.get(blockIDs[ID].drawType).getBoxes()) {
+            for (double[] thisShape : blockShapeMap[blockIDs[ID].drawType].getBoxes()) {
                 double blockDiffX =  1d - thisShape[3];
                 double widthX = thisShape[3] - thisShape[0];
 
@@ -244,34 +245,31 @@ public class BlockDefinition {
 
     public static void initializeBlocks() throws Exception {
 
-        blockShapeMap.put("air",
-                new BlockShape(new double[][]{{0f,0f,0f,1f,1f,1f}})
-        );
+        //air
+        blockShapeMap[0] = new BlockShape(new double[][]{{0f,0f,0f,1f,1f,1f}});
 
-        blockShapeMap.put("normal",
-                new BlockShape(new double[][]{{0f,0f,0f,1f,1f,1f}})
-        );
 
-        blockShapeMap.put("stair",
-                new BlockShape(
-                        new double[][]{
+        //normal
+        blockShapeMap[1] = new BlockShape(new double[][]{{0f,0f,0f,1f,1f,1f}});
+
+        //stair
+        blockShapeMap[2] =
+                new BlockShape(new double[][]{
                                 {0f,0f,0f,1f,0.5f,1f},
                                 {0f,0f,0f,1f,1f,0.5f}
-                        }
-                        )
-        );
+                        });
 
-        blockShapeMap.put("slab",
-                new BlockShape(
-                        new double[][]{
+        //slab
+        blockShapeMap[3] =
+                new BlockShape(new double[][]{
                                 {0f,0f,0f,1f,0.5f,1f}
-                        }
-                )
-        );
+                        });
 
-        blockShapeMap.put("allFaces",
-                new BlockShape(new double[][]{{0f,0f,0f,1f,1f,1f}})
-        );
+        //allfaces
+        blockShapeMap[4] =
+                new BlockShape(new double[][]{
+                                {0f,0f,0f,1f,1f,1f}
+                        });
 
 
         new BlockDefinition(
@@ -284,7 +282,7 @@ public class BlockDefinition {
                 new int[]{-1,-1}, //left
                 new int[]{-1,-1}, //top
                 new int[]{-1,-1},  //bottom
-                "air",
+                0,
                 false,
                 false,
                 false,
@@ -307,7 +305,7 @@ public class BlockDefinition {
                 new int[]{0,0}, //left
                 new int[]{0,0}, //top
                 new int[]{0,0},  //bottom
-                "normal",
+                1,
                 true,
                 false,
                 false,
@@ -330,7 +328,7 @@ public class BlockDefinition {
                 new int[]{5,0}, //left
                 new int[]{4,0}, //top
                 new int[]{0,0},  //bottom
-                "normal",
+                1,
                 true,
                 false,
                 false,
@@ -353,7 +351,7 @@ public class BlockDefinition {
                 new int[]{1,0}, //left
                 new int[]{1,0}, //top
                 new int[]{1,0},  //bottom
-                "normal",
+                1,
                 true,
                 false,
                 false,
@@ -376,7 +374,7 @@ public class BlockDefinition {
                 new int[]{2,0}, //left
                 new int[]{2,0}, //top
                 new int[]{2,0},  //bottom
-                "normal",
+                1,
                 true,
                 false,
                 false,
@@ -399,7 +397,7 @@ public class BlockDefinition {
                 new int[]{6,0}, //left
                 new int[]{6,0}, //top
                 new int[]{6,0},  //bottom
-                "normal",
+                1,
                 true,
                 false,
                 false,
@@ -431,7 +429,7 @@ public class BlockDefinition {
                 new int[]{7,0}, //left
                 new int[]{8,0}, //top
                 new int[]{9,0},  //bottom
-                "normal",
+                1,
                 true,
                 false,
                 false,
@@ -466,7 +464,7 @@ public class BlockDefinition {
                 new int[]{10,0}, //left
                 new int[]{10,0}, //top
                 new int[]{10,0},  //bottom
-                "normal",
+                1,
                 false,
                 false,
                 true,
@@ -489,7 +487,7 @@ public class BlockDefinition {
                 new int[]{11,0}, //left
                 new int[]{11,0}, //top
                 new int[]{11,0},  //bottom
-                "normal",
+                1,
                 true,
                 false,
                 false,
@@ -512,7 +510,7 @@ public class BlockDefinition {
                 new int[]{12,0}, //left
                 new int[]{12,0}, //top
                 new int[]{12,0},  //bottom
-                "normal",
+                1,
                 true,
                 false,
                 false,
@@ -535,7 +533,7 @@ public class BlockDefinition {
                 new int[]{13,0}, //left
                 new int[]{13,0}, //top
                 new int[]{13,0},  //bottom
-                "normal",
+                1,
                 true,
                 false,
                 false,
@@ -558,7 +556,7 @@ public class BlockDefinition {
                 new int[]{14,0}, //left
                 new int[]{14,0}, //top
                 new int[]{14,0},  //bottom
-                "normal",
+                1,
                 true,
                 false,
                 false,
@@ -581,7 +579,7 @@ public class BlockDefinition {
                 new int[]{15,0}, //left
                 new int[]{15,0}, //top
                 new int[]{15,0},  //bottom
-                "normal",
+                1,
                 true,
                 false,
                 false,
@@ -604,7 +602,7 @@ public class BlockDefinition {
                 new int[]{16,0}, //left
                 new int[]{16,0}, //top
                 new int[]{16,0},  //bottom
-                "normal",
+                1,
                 true,
                 false,
                 false,
@@ -627,7 +625,7 @@ public class BlockDefinition {
                 new int[]{17,0}, //left
                 new int[]{17,0}, //top
                 new int[]{17,0},  //bottom
-                "normal",
+                1,
                 true,
                 false,
                 false,
@@ -650,7 +648,7 @@ public class BlockDefinition {
                 new int[]{18,0}, //left
                 new int[]{18,0}, //top
                 new int[]{18,0},  //bottom
-                "normal",
+                1,
                 true,
                 false,
                 false,
@@ -673,7 +671,7 @@ public class BlockDefinition {
                 new int[]{2,0}, //left
                 new int[]{2,0}, //top
                 new int[]{2,0},  //bottom
-                "stair",
+                2,
                 true,
                 true,
                 false,
@@ -697,7 +695,7 @@ public class BlockDefinition {
                 new int[]{19,0}, //left
                 new int[]{20,0}, //top
                 new int[]{20,0},  //bottom
-                "normal",
+                1,
                 true,
                 false,
                 false,
@@ -719,7 +717,7 @@ public class BlockDefinition {
                 new int[]{19,0}, //left
                 new int[]{20,0}, //top
                 new int[]{20,0},  //bottom
-                "normal",
+                1,
                 true,
                 false,
                 false,
@@ -741,7 +739,7 @@ public class BlockDefinition {
                 new int[]{19,0}, //left
                 new int[]{20,0}, //top
                 new int[]{20,0},  //bottom
-                "normal",
+                1,
                 true,
                 false,
                 false,
@@ -774,7 +772,7 @@ public class BlockDefinition {
                 new int[]{23,0}, //left
                 new int[]{23,0}, //top
                 new int[]{23,0},  //bottom
-                "normal",
+                1,
                 true,
                 false,
                 false,
@@ -787,13 +785,13 @@ public class BlockDefinition {
                 true
         );
 
-        blockShapeMap.put("door_open",
+        //door open
+        blockShapeMap[5] =
                 new BlockShape(
                         new double[][]{
                                 {0f,0f,0f,2f/16f,1f,1f}
                         }
-                )
-        );
+                );
 
 
 
@@ -807,7 +805,7 @@ public class BlockDefinition {
                 new int[]{24,0}, //left
                 new int[]{24,0}, //top
                 new int[]{24,0},  //bottom
-                "door_open",
+                5,
                 true,
                 false,
                 false,
@@ -848,7 +846,7 @@ public class BlockDefinition {
                 new int[]{25,0}, //left
                 new int[]{25,0}, //top
                 new int[]{25,0},  //bottom
-                "door_open",
+                5,
                 true,
                 false,
                 false,
@@ -880,13 +878,13 @@ public class BlockDefinition {
                 true
         );
 
-        blockShapeMap.put("door_closed",
+        //door closed
+        blockShapeMap[6] =
                 new BlockShape(
                         new double[][]{
                                 {0f,0f,14f/16f,1f,1f,1f}
                         }
-                )
-        );
+                );
 
         new BlockDefinition(
                 23,
@@ -898,7 +896,7 @@ public class BlockDefinition {
                 new int[]{24,0}, //left
                 new int[]{24,0}, //top
                 new int[]{24,0},  //bottom
-                "door_closed",
+                6,
                 true,
                 false,
                 false,
@@ -940,7 +938,7 @@ public class BlockDefinition {
                 new int[]{25,0}, //left
                 new int[]{25,0}, //top
                 new int[]{25,0},  //bottom
-                "door_closed",
+                6,
                 true,
                 false,
                 false,
@@ -982,7 +980,7 @@ public class BlockDefinition {
                 new int[]{26,0}, //left
                 new int[]{27,0}, //top
                 new int[]{27,0},  //bottom
-                "normal",
+                1,
                 true,
                 false,
                 false,
@@ -1005,7 +1003,7 @@ public class BlockDefinition {
                 new int[]{28,0}, //left
                 new int[]{28,0}, //top
                 new int[]{28,0},  //bottom
-                "allFaces",
+                4, //allfaces
                 true,
                 false,
                 false,

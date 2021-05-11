@@ -137,7 +137,7 @@ public class ChunkMesh {
                                     neighborBlock = thisChunk.block[posToIndex(x, y, z + 1)];
                                 }
 
-                                if (neighborBlock >= 0 && !getBlockDrawType(neighborBlock).equals("normal")) {
+                                if (neighborBlock >= 0 && getBlockDrawType(neighborBlock) != 1) {
                                     //front
                                     liquidPositions[liquidPositionsCount + 0] = (1f + x);
                                     liquidPositions[liquidPositionsCount + 1] = (1f + y);
@@ -207,7 +207,7 @@ public class ChunkMesh {
                                     neighborBlock = thisChunk.block[posToIndex(x, y, z - 1)];
                                 }
 
-                                if (neighborBlock >= 0 && !getBlockDrawType(neighborBlock).equals("normal")) {
+                                if (neighborBlock >= 0 && getBlockDrawType(neighborBlock) != 1) {
                                     //back
                                     liquidPositions[liquidPositionsCount + 0] = (0f + x);
                                     liquidPositions[liquidPositionsCount + 1] = (1f + y);
@@ -273,7 +273,7 @@ public class ChunkMesh {
                                     neighborBlock = thisChunk.block[posToIndex(x + 1, y, z)];
                                 }
 
-                                if (neighborBlock >= 0 && !getBlockDrawType(neighborBlock).equals("normal")) {
+                                if (neighborBlock >= 0 && getBlockDrawType(neighborBlock) != 1) {
                                     //right
                                     liquidPositions[liquidPositionsCount + 0] = (1f + x);
                                     liquidPositions[liquidPositionsCount + 1] = (1f + y);
@@ -340,7 +340,7 @@ public class ChunkMesh {
                                     neighborBlock = thisChunk.block[posToIndex(x - 1, y, z)];
                                 }
 
-                                if (neighborBlock >= 0 && !getBlockDrawType(neighborBlock).equals("normal")) {
+                                if (neighborBlock >= 0 && getBlockDrawType(neighborBlock) != 1) {
                                     //left
                                     liquidPositions[liquidPositionsCount + 0] = (0f + x);
                                     liquidPositions[liquidPositionsCount + 1] = (1f + y);
@@ -406,7 +406,7 @@ public class ChunkMesh {
                                     neighborBlock = thisChunk.block[posToIndex(x, y + 1, z)];
                                 }
 
-                                if (y == 127 || (neighborBlock >= 0 && !getBlockDrawType(neighborBlock).equals("normal"))) {
+                                if (y == 127 || (neighborBlock >= 0 && getBlockDrawType(neighborBlock) != 1)) {
                                     //top
                                     liquidPositions[liquidPositionsCount + 0] = (0f + x);
                                     liquidPositions[liquidPositionsCount + 1] = (1f + y);
@@ -473,7 +473,7 @@ public class ChunkMesh {
                                 }
 
                                 //don't render bottom of world
-                                if (y != 0 && neighborBlock >= 0 && !getBlockDrawType(neighborBlock).equals("normal")) {
+                                if (y != 0 && neighborBlock >= 0 && getBlockDrawType(neighborBlock) != 1) {
                                     //bottom
                                     liquidPositions[liquidPositionsCount + 0] = (0f + x);
                                     liquidPositions[liquidPositionsCount + 1] = (0f + y);
@@ -537,7 +537,7 @@ public class ChunkMesh {
                             }
 
                             //todo --------------------------------------- THE NORMAL DRAWTYPE (standard blocks)
-                            else if (getBlockDrawType(thisBlock).equals("normal")) {
+                            else if (getBlockDrawType(thisBlock) == 1) {
 
                                 int neighborBlock;
 
@@ -547,7 +547,7 @@ public class ChunkMesh {
                                     neighborBlock = thisChunk.block[posToIndex(x, y, z + 1)];
                                 }
 
-                                if (neighborBlock >= 0 && (!getBlockDrawType(neighborBlock).equals("normal") || getIfLiquid(neighborBlock))) {
+                                if (neighborBlock >= 0 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
                                     //front
                                     positions[positionsCount + 0] = (1f + x);
                                     positions[positionsCount + 1] = (1f + y);
@@ -616,7 +616,7 @@ public class ChunkMesh {
                                     neighborBlock = thisChunk.block[posToIndex(x, y, z - 1)];
                                 }
 
-                                if (neighborBlock >= 0 && (!getBlockDrawType(neighborBlock).equals("normal") || getIfLiquid(neighborBlock))) {
+                                if (neighborBlock >= 0 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
                                     //back
                                     positions[positionsCount + 0] = (0f + x);
                                     positions[positionsCount + 1] = (1f + y);
@@ -682,7 +682,7 @@ public class ChunkMesh {
                                     neighborBlock = thisChunk.block[posToIndex(x + 1, y, z)];
                                 }
 
-                                if (neighborBlock >= 0 && (!getBlockDrawType(neighborBlock).equals("normal") || getIfLiquid(neighborBlock))) {
+                                if (neighborBlock >= 0 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
                                     //right
                                     positions[positionsCount + 0] = (1f + x);
                                     positions[positionsCount + 1] = (1f + y);
@@ -748,7 +748,7 @@ public class ChunkMesh {
                                     neighborBlock = thisChunk.block[posToIndex(x - 1, y, z)];
                                 }
 
-                                if (neighborBlock >= 0 && (!getBlockDrawType(neighborBlock).equals("normal") || getIfLiquid(neighborBlock))) {
+                                if (neighborBlock >= 0 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
                                     //left
                                     positions[positionsCount + 0] = (0f + x);
                                     positions[positionsCount + 1] = (1f + y);
@@ -812,7 +812,7 @@ public class ChunkMesh {
                                     neighborBlock = thisChunk.block[posToIndex(x, y + 1, z)];
                                 }
 
-                                if (y == 127 || neighborBlock > -1 && ((neighborBlock >= 0 && !getBlockDrawType(neighborBlock).equals("normal") || getIfLiquid(neighborBlock)))) {
+                                if (y == 127 || neighborBlock > -1 && ((neighborBlock >= 0 && getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock)))) {
                                     //top
                                     positions[positionsCount + 0] = (0f + x);
                                     positions[positionsCount + 1] = (1f + y);
@@ -877,7 +877,7 @@ public class ChunkMesh {
                                     neighborBlock = thisChunk.block[posToIndex(x, y - 1, z)];
                                 }
 
-                                if (y != 0 && neighborBlock >= 0 && (!getBlockDrawType(neighborBlock).equals("normal") || getIfLiquid(neighborBlock))) {
+                                if (y != 0 && neighborBlock >= 0 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
                                     //bottom
                                     positions[positionsCount + 0] = (0f + x);
                                     positions[positionsCount + 1] = (0f + y);
