@@ -23,6 +23,7 @@ import static game.player.Ray.rayCast;
 
 public class Player {
 
+    private static float runningFOVAdder = 0f;
     private static Vector3d pos                  = loadPlayerPos();
     private static final float eyeHeight               = 1.5f;
     private static final float collectionHeight        = 0.7f;
@@ -849,6 +850,8 @@ public class Player {
             }
         }
 
+        calculateRunningFOV();
+
         if(mining && hasDug) {
             rayCast(getCameraPosition(), getCameraRotationVector(), reach,  true, false);
         } else if (placing && placeTimer <= 0){
@@ -970,6 +973,32 @@ public class Player {
         }
         if (currentInventorySelection > 8) {
             currentInventorySelection = 0;
+        }
+    }
+
+
+    public static float getRunningFOVAdder(){
+        return runningFOVAdder;
+    }
+
+    private static void calculateRunningFOV(){
+        float delta = getDelta();
+        if (playerIsMoving() && running){
+            if (runningFOVAdder < 0.3f){
+                runningFOVAdder += delta;
+
+                if (runningFOVAdder >= 0.3f){
+                    runningFOVAdder = 0.3f;
+                }
+            }
+        } else {
+            if (runningFOVAdder > 0f){
+                runningFOVAdder -= delta;
+
+                if (runningFOVAdder <= 0f){
+                    runningFOVAdder = 0f;
+                }
+            }
         }
     }
 

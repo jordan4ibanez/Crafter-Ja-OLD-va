@@ -1,7 +1,6 @@
 package engine;
 
 import engine.graph.*;
-import game.chunk.Chunk;
 import game.chunk.ChunkObject;
 import game.falling.FallingEntityObject;
 import game.item.Item;
@@ -30,13 +29,10 @@ import static game.chunk.Chunk.*;
 import static game.player.Inventory.*;
 import static game.player.Player.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 
 public class Renderer {
 
     private static float FOV = (float) Math.toRadians(72.0f); //todo: make this a calculator method ala calculateFOV(float);
-
-    private static float HUD_FOV = (float)Math.toRadians(60f);
 
     private static final float Z_NEAR = 0.1f;
     private static final float Z_FAR = 1120.f;
@@ -122,7 +118,7 @@ public class Renderer {
         shaderProgram.bind();
 
         //update projection matrix
-        Matrix4d projectionMatrix = getProjectionMatrix(FOV, getWindowWidth(), getWindowHeight(), Z_NEAR, Z_FAR);
+        Matrix4d projectionMatrix = getProjectionMatrix(FOV + getRunningFOVAdder(), getWindowWidth(), getWindowHeight(), Z_NEAR, Z_FAR);
 
         shaderProgram.setUniform("projectionMatrix", projectionMatrix);
 
@@ -252,7 +248,6 @@ public class Renderer {
         }
          */
 
-
         //render liquid chunk meshes
         for (int i = 0; i < arrayIndex; i++) {
 
@@ -272,6 +267,7 @@ public class Renderer {
                 }
             }
         }
+
 
         //render allFaces chunk meshes
         for (int i = 0; i < arrayIndex; i++) {
