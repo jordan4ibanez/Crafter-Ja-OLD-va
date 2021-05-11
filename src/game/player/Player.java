@@ -5,8 +5,7 @@ import org.joml.*;
 import java.lang.Math;
 
 import static engine.FancyMath.getDistance;
-import static engine.Hud.rebuildMiningMesh;
-import static engine.Hud.rebuildWieldHandMesh;
+import static engine.Hud.*;
 import static engine.Time.getDelta;
 import static engine.disk.Disk.loadPlayerPos;
 import static engine.graph.Camera.*;
@@ -24,6 +23,7 @@ import static game.player.Ray.rayCast;
 public class Player {
 
     private static float runningFOVAdder = 0f;
+    private static int health = 20;
     private static Vector3d pos                  = loadPlayerPos();
     private static final float eyeHeight               = 1.5f;
     private static final float collectionHeight        = 0.7f;
@@ -862,6 +862,8 @@ public class Player {
         }
 
 
+        doHealthTest();
+
         //update light level for the wield item
         lightCheckTimer += delta;
         Vector3i newFlooredPos = new Vector3i((int)Math.floor(camPos.x), (int)Math.floor(camPos.y), (int)Math.floor(camPos.z));
@@ -1004,5 +1006,30 @@ public class Player {
 
     public static int getCurrentInventorySelection(){
         return currentInventorySelection;
+    }
+
+    public static int getPlayerHealth(){
+        return health;
+    }
+
+    private static float healthTimer = 0;
+    private static void doHealthTest(){
+        float delta = getDelta();
+
+        healthTimer += delta;
+
+        if (healthTimer >= 1f){
+            healthTimer = 0;
+
+            health -= 1;
+
+            if (health < 0){
+                health = 20;
+            }
+
+            System.out.println("The player's health is: " + health);
+            calculateHealthBarElements();
+        }
+
     }
 }

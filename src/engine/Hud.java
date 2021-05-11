@@ -10,6 +10,7 @@ import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static engine.MouseInput.*;
 import static engine.Renderer.getWindowScale;
@@ -67,6 +68,8 @@ public class Hud {
     private static Texture menuBg;
     private static Texture miningCrack;
     private static Texture globalWaterEffect;
+    private static Texture heartTexture;
+    private static Texture heartShadowTexture;
 
 
     private static Mesh thisHotBarMesh;
@@ -90,6 +93,9 @@ public class Hud {
     private static Mesh quitGameMesh;
     private static Mesh miningCrackMesh;
     private static Mesh globalWaterEffectMesh;
+    private static Mesh heartHudMesh;
+    private static Mesh halfHeartHudMesh;
+    private static Mesh heartShadowHudMesh;
 
 
     public static void initializeHudAtlas() throws Exception {
@@ -108,6 +114,20 @@ public class Hud {
         menuBg = new Texture("textures/menu_bg.png");
         miningCrack = new Texture("textures/crack_anylength.png");
         globalWaterEffect = new Texture("textures/water_overlay.png");
+        heartTexture = new Texture("textures/heart.png");
+        heartShadowTexture = new Texture("textures/heart_shadow.png");
+    }
+
+    public static Mesh getHeartHudMesh(){
+        return heartHudMesh;
+    }
+
+    public static Mesh getHalfHeartHudMesh(){
+        return halfHeartHudMesh;
+    }
+
+    public static Mesh getHeartShadowHudMesh(){
+        return heartShadowHudMesh;
     }
 
     public static Mesh getHotBarMesh(){
@@ -221,10 +241,42 @@ public class Hud {
         createButtons();
         rebuildMiningMesh(0);
         createGlobalWaterEffect();
+        createHeart();
+        createHalfHeart();
+        createHeartShadow();
 
         continueMesh = createCustomHudText("CONTINUE", 1,1,1);
         toggleVsyncMesh = createCustomHudText("VSYNC:ON", 1,1,1);
         quitGameMesh = createCustomHudText("QUIT", 1,1,1);
+    }
+
+    //calculated per half heart
+    private static final byte[] healthHudArray = new byte[10];
+    private static float[] healthHudFloatArray = new float[10];
+
+    public static void calculateHealthBarElements(){
+        int health = getPlayerHealth();
+
+        byte z = 1; //this needs to start from 1 like lua
+
+        //compare health elements (base 2), generate new health bar
+        for (byte i = 0; i < 10; i++){
+            int compare = health - (z * 2);
+
+            if (compare >= 0){
+                healthHudArray[i] = 2;
+            } else if (compare == -1){
+                healthHudArray[i] = 1;
+            } else {
+                healthHudArray[i] = 0;
+            }
+            z++;
+        }
+        //System.out.println(Arrays.toString(healthHudArray));
+    }
+
+    public static byte[] getHealthHudArray(){
+        return healthHudArray;
     }
 
     private static void createGlobalWaterEffect(){
@@ -653,6 +705,252 @@ public class Hud {
         buttonMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, button);
         buttonSelectedMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, buttonSelected);
         buttonPushedMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, buttonPushed);
+    }
+
+    private static void createHalfHeart(){
+        ArrayList positions = new ArrayList();
+        ArrayList textureCoord = new ArrayList();
+        ArrayList indices = new ArrayList();
+        ArrayList light = new ArrayList();
+
+        int indicesCount = 0;
+
+        //front
+        positions.add(0f);
+        positions.add(0.5f);
+        positions.add(0f);
+
+        positions.add(-0.5f);
+        positions.add(0.5f);
+        positions.add(0f);
+
+        positions.add(-0.5f);
+        positions.add(-0.5f);
+        positions.add(0f);
+
+        positions.add(0f);
+        positions.add(-0.5f);
+        positions.add(0f);
+        //front
+        float frontLight = 1f;//getLight(x, y, z + 1, chunkX, chunkZ) / maxLight;
+
+        //front
+        for (int i = 0; i < 12; i++) {
+            light.add(frontLight);
+        }
+        //front
+        indices.add(0 + indicesCount);
+        indices.add(1 + indicesCount);
+        indices.add(2 + indicesCount);
+        indices.add(0 + indicesCount);
+        indices.add(2 + indicesCount);
+        indices.add(3 + indicesCount);
+
+        indicesCount += 4;
+
+        //-x +x   -y +y
+        // 0  1    2  3
+
+        //front
+        textureCoord.add(0.5f);//1
+        textureCoord.add(0f);//2
+        textureCoord.add(0f);//0
+        textureCoord.add(0f);//2
+        textureCoord.add(0f);//0
+        textureCoord.add(1f);//3
+        textureCoord.add(0.5f);//1
+        textureCoord.add(1f);//3
+
+
+        //convert the position objects into usable array
+        float[] positionsArray = new float[positions.size()];
+        for (int i = 0; i < positions.size(); i++) {
+            positionsArray[i] = (float) positions.get(i);
+        }
+
+        //convert the light objects into usable array
+        float[] lightArray = new float[light.size()];
+        for (int i = 0; i < light.size(); i++) {
+            lightArray[i] = (float) light.get(i);
+        }
+
+        //convert the indices objects into usable array
+        int[] indicesArray = new int[indices.size()];
+        for (int i = 0; i < indices.size(); i++) {
+            indicesArray[i] = (int) indices.get(i);
+        }
+
+        //convert the textureCoord objects into usable array
+        float[] textureCoordArray = new float[textureCoord.size()];
+        for (int i = 0; i < textureCoord.size(); i++) {
+            textureCoordArray[i] = (float) textureCoord.get(i);
+        }
+
+        halfHeartHudMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, heartTexture);
+    }
+
+    private static void createHeart(){
+        ArrayList positions = new ArrayList();
+        ArrayList textureCoord = new ArrayList();
+        ArrayList indices = new ArrayList();
+        ArrayList light = new ArrayList();
+
+        int indicesCount = 0;
+
+        //front
+        positions.add(0.5f);
+        positions.add(0.5f);
+        positions.add(0f);
+
+        positions.add(-0.5f);
+        positions.add(0.5f);
+        positions.add(0f);
+
+        positions.add(-0.5f);
+        positions.add(-0.5f);
+        positions.add(0f);
+
+        positions.add(0.5f);
+        positions.add(-0.5f);
+        positions.add(0f);
+        //front
+        float frontLight = 1f;//getLight(x, y, z + 1, chunkX, chunkZ) / maxLight;
+
+        //front
+        for (int i = 0; i < 12; i++) {
+            light.add(frontLight);
+        }
+        //front
+        indices.add(0 + indicesCount);
+        indices.add(1 + indicesCount);
+        indices.add(2 + indicesCount);
+        indices.add(0 + indicesCount);
+        indices.add(2 + indicesCount);
+        indices.add(3 + indicesCount);
+
+        indicesCount += 4;
+
+        //-x +x   -y +y
+        // 0  1    2  3
+
+        //front
+        textureCoord.add(1f);//1
+        textureCoord.add(0f);//2
+        textureCoord.add(0f);//0
+        textureCoord.add(0f);//2
+        textureCoord.add(0f);//0
+        textureCoord.add(1f);//3
+        textureCoord.add(1f);//1
+        textureCoord.add(1f);//3
+
+
+        //convert the position objects into usable array
+        float[] positionsArray = new float[positions.size()];
+        for (int i = 0; i < positions.size(); i++) {
+            positionsArray[i] = (float) positions.get(i);
+        }
+
+        //convert the light objects into usable array
+        float[] lightArray = new float[light.size()];
+        for (int i = 0; i < light.size(); i++) {
+            lightArray[i] = (float) light.get(i);
+        }
+
+        //convert the indices objects into usable array
+        int[] indicesArray = new int[indices.size()];
+        for (int i = 0; i < indices.size(); i++) {
+            indicesArray[i] = (int) indices.get(i);
+        }
+
+        //convert the textureCoord objects into usable array
+        float[] textureCoordArray = new float[textureCoord.size()];
+        for (int i = 0; i < textureCoord.size(); i++) {
+            textureCoordArray[i] = (float) textureCoord.get(i);
+        }
+
+        heartHudMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, heartTexture);
+    }
+
+    private static void createHeartShadow(){
+        ArrayList positions = new ArrayList();
+        ArrayList textureCoord = new ArrayList();
+        ArrayList indices = new ArrayList();
+        ArrayList light = new ArrayList();
+
+        int indicesCount = 0;
+
+        //front
+        positions.add(0.5f);
+        positions.add(0.5f);
+        positions.add(0f);
+
+        positions.add(-0.5f);
+        positions.add(0.5f);
+        positions.add(0f);
+
+        positions.add(-0.5f);
+        positions.add(-0.5f);
+        positions.add(0f);
+
+        positions.add(0.5f);
+        positions.add(-0.5f);
+        positions.add(0f);
+        //front
+        float frontLight = 1f;//getLight(x, y, z + 1, chunkX, chunkZ) / maxLight;
+
+        //front
+        for (int i = 0; i < 12; i++) {
+            light.add(frontLight);
+        }
+        //front
+        indices.add(0 + indicesCount);
+        indices.add(1 + indicesCount);
+        indices.add(2 + indicesCount);
+        indices.add(0 + indicesCount);
+        indices.add(2 + indicesCount);
+        indices.add(3 + indicesCount);
+
+        indicesCount += 4;
+
+        //-x +x   -y +y
+        // 0  1    2  3
+
+        //front
+        textureCoord.add(1f);//1
+        textureCoord.add(0f);//2
+        textureCoord.add(0f);//0
+        textureCoord.add(0f);//2
+        textureCoord.add(0f);//0
+        textureCoord.add(1f);//3
+        textureCoord.add(1f);//1
+        textureCoord.add(1f);//3
+
+
+        //convert the position objects into usable array
+        float[] positionsArray = new float[positions.size()];
+        for (int i = 0; i < positions.size(); i++) {
+            positionsArray[i] = (float) positions.get(i);
+        }
+
+        //convert the light objects into usable array
+        float[] lightArray = new float[light.size()];
+        for (int i = 0; i < light.size(); i++) {
+            lightArray[i] = (float) light.get(i);
+        }
+
+        //convert the indices objects into usable array
+        int[] indicesArray = new int[indices.size()];
+        for (int i = 0; i < indices.size(); i++) {
+            indicesArray[i] = (int) indices.get(i);
+        }
+
+        //convert the textureCoord objects into usable array
+        float[] textureCoordArray = new float[textureCoord.size()];
+        for (int i = 0; i < textureCoord.size(); i++) {
+            textureCoordArray[i] = (float) textureCoord.get(i);
+        }
+
+        heartShadowHudMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, heartShadowTexture);
     }
 
     private static void createInventorySlot(){

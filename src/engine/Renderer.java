@@ -541,6 +541,31 @@ public class Renderer {
                     }
                 }
             } else {
+
+
+                //healthbar
+                {
+                    byte[] healthArray = getHealthHudArray();
+
+                    for (byte i = 0; i < healthArray.length; i++) {
+                        modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(-windowScale/2.105f + (i * (windowScale/19.5d)), (-windowSize.y / 2d) + (windowScale / 6.8d), 0), new Vector3f(0, 0, 0), new Vector3d((windowScale/20f), (windowScale/20f), (windowScale/20f)));
+                        hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+
+                        //save cpu render calls
+                        if (healthArray[i] == 2) {
+                            getHeartHudMesh().render();
+                        } else if (healthArray[i] == 1){
+                            getHeartShadowHudMesh().render();
+                            glClear(GL_DEPTH_BUFFER_BIT);
+                            getHalfHeartHudMesh().render();
+                        } else {
+                            getHeartShadowHudMesh().render();
+                        }
+                    }
+                }
+
+                glClear(GL_DEPTH_BUFFER_BIT);
+
                 //hotbar
                 {
                     modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(0,  (-windowSize.y / 2d) + (windowScale / 16.5d), 0), new Vector3f(0, 0, 0), new Vector3d((windowScale), (windowScale), (windowScale)));

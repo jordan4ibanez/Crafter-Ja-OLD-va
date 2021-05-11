@@ -42,7 +42,7 @@ public class Crafter {
     //DO NOT finalize this
     private static int     chunkRenderDistance = 5;
 
-    private static final String versionName = "Crafter Pre-Alpha 0.03a";
+    private static final String versionName = "Crafter 0.03b Survival Test";
 
     public static String getVersionName(){
         return versionName;
@@ -68,6 +68,7 @@ public class Crafter {
             initGame();
             startSaveThread();
             //assistantThread();
+            calculateHealthBarElements();
             gameLoop();
 
         } catch ( Exception excp ){
