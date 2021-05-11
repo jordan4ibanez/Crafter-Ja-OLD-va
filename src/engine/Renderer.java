@@ -191,7 +191,50 @@ public class Renderer {
             }
         }
 
-//        render each item entity
+
+        //render liquid chunk meshes
+        for (int i = 0; i < arrayIndex; i++) {
+
+            ChunkObject thisChunk = chunkArraySorted[i];
+
+            if (thisChunk == null) {
+                continue;
+            }
+            //liquid
+            if (thisChunk.liquidMesh != null) {
+                for (Mesh thisMesh : thisChunk.liquidMesh) {
+                    if (thisMesh != null) {
+                        modelViewMatrix = updateModelViewMatrix(new Vector3d(thisChunk.x * 16d, 0, thisChunk.z * 16d), new Vector3f(0, 0, 0), viewMatrix);
+                        shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                        thisMesh.render();
+                    }
+                }
+            }
+        }
+
+
+        //render allFaces chunk meshes
+        for (int i = 0; i < arrayIndex; i++) {
+
+            ChunkObject thisChunk = chunkArraySorted[i];
+
+            if (thisChunk == null) {
+                continue;
+            }
+
+            //allFaces
+            if (thisChunk.allFacesMesh != null) {
+                for (Mesh thisMesh : thisChunk.allFacesMesh) {
+                    if (thisMesh != null) {
+                        modelViewMatrix = updateModelViewMatrix(new Vector3d(thisChunk.x * 16d, 0, thisChunk.z * 16d), new Vector3f(0, 0, 0), viewMatrix);
+                        shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                        thisMesh.render();
+                    }
+                }
+            }
+        }
+
+        //        render each item entity
         for (Item thisItem : getAllItems()){
             modelViewMatrix = updateModelViewMatrix(new Vector3d(thisItem.pos).add(0,thisItem.hover,0), thisItem.rotation, viewMatrix);
             shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
@@ -247,48 +290,6 @@ public class Renderer {
             rainDrop.render();
         }
          */
-
-        //render liquid chunk meshes
-        for (int i = 0; i < arrayIndex; i++) {
-
-            ChunkObject thisChunk = chunkArraySorted[i];
-
-            if (thisChunk == null) {
-                continue;
-            }
-            //liquid
-            if (thisChunk.liquidMesh != null) {
-                for (Mesh thisMesh : thisChunk.liquidMesh) {
-                    if (thisMesh != null) {
-                        modelViewMatrix = updateModelViewMatrix(new Vector3d(thisChunk.x * 16d, 0, thisChunk.z * 16d), new Vector3f(0, 0, 0), viewMatrix);
-                        shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                        thisMesh.render();
-                    }
-                }
-            }
-        }
-
-
-        //render allFaces chunk meshes
-        for (int i = 0; i < arrayIndex; i++) {
-
-            ChunkObject thisChunk = chunkArraySorted[i];
-
-            if (thisChunk == null) {
-                continue;
-            }
-
-            //allFaces
-            if (thisChunk.allFacesMesh != null) {
-                for (Mesh thisMesh : thisChunk.allFacesMesh) {
-                    if (thisMesh != null) {
-                        modelViewMatrix = updateModelViewMatrix(new Vector3d(thisChunk.x * 16d, 0, thisChunk.z * 16d), new Vector3f(0, 0, 0), viewMatrix);
-                        shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                        thisMesh.render();
-                    }
-                }
-            }
-        }
 
         //render world selection mesh
         if (getPlayerWorldSelectionPos() != null){
