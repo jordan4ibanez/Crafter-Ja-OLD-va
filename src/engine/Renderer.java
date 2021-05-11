@@ -93,6 +93,8 @@ public class Renderer {
 
         windowSize.x = getWindowWidth();
         windowSize.y = getWindowHeight();
+
+        resetWindowScale();
     }
 
     public static void clearScreen(){
