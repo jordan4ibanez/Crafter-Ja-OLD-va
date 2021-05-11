@@ -864,6 +864,10 @@ public class Player {
 
         doHealthTest();
 
+        if (health <= 6) {
+            makeHeartsJiggle();
+        }
+
         //update light level for the wield item
         lightCheckTimer += delta;
         Vector3i newFlooredPos = new Vector3i((int)Math.floor(camPos.x), (int)Math.floor(camPos.y), (int)Math.floor(camPos.z));

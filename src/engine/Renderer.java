@@ -546,9 +546,17 @@ public class Renderer {
                 //healthbar
                 {
                     byte[] healthArray = getHealthHudArray();
+                    float[] healthJiggleArray = getHealthHudFloatArray();
 
                     for (byte i = 0; i < healthArray.length; i++) {
-                        modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(-windowScale/2.105f + (i * (windowScale/19.5d)), (-windowSize.y / 2d) + (windowScale / 6.8d), 0), new Vector3f(0, 0, 0), new Vector3d((windowScale/20f), (windowScale/20f), (windowScale/20f)));
+
+                        float jiggle = healthJiggleArray[i];
+
+                        if (getPlayerHealth() > 6){
+                            jiggle = 0f;
+                        }
+
+                        modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(-windowScale/2.105f + (i * (windowScale/19.5d)), (-windowSize.y / 2d) + (windowScale / 6.8d) + jiggle, 0), new Vector3f(0, 0, 0), new Vector3d((windowScale/20f), (windowScale/20f), (windowScale/20f)));
                         hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
 
                         //save cpu render calls

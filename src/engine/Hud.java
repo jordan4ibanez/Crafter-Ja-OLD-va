@@ -252,6 +252,8 @@ public class Hud {
 
     //calculated per half heart
     private static final byte[] healthHudArray = new byte[10];
+    private static byte healthHudFloatIndex = 9;
+    private static boolean heartUp = true;
     private static float[] healthHudFloatArray = new float[10];
 
     public static void calculateHealthBarElements(){
@@ -275,8 +277,39 @@ public class Hud {
         //System.out.println(Arrays.toString(healthHudArray));
     }
 
+    public static void makeHeartsJiggle(){
+        float delta = getDelta();
+        if (heartUp) {
+            healthHudFloatArray[healthHudFloatIndex] += delta * 200f;
+            if (healthHudFloatArray[healthHudFloatIndex] > 10f){
+                healthHudFloatArray[healthHudFloatIndex] = 10f;
+                heartUp = false;
+            }
+        } else {
+            healthHudFloatArray[healthHudFloatIndex] -= delta * 200f;
+            if (healthHudFloatArray[healthHudFloatIndex] < 0f){
+                healthHudFloatArray[healthHudFloatIndex] = 0f;
+
+                heartUp = true;
+
+                //cycle through hearts
+                healthHudFloatIndex -= 1;
+                if (healthHudFloatIndex < 0){
+                    healthHudFloatIndex = 9;
+                }
+
+            }
+        }
+
+
+    }
+
     public static byte[] getHealthHudArray(){
         return healthHudArray;
+    }
+
+    public static float[] getHealthHudFloatArray(){
+        return healthHudFloatArray;
     }
 
     private static void createGlobalWaterEffect(){
