@@ -140,11 +140,14 @@ public class Controls {
 
 
         //spawn human mob
-        /*
         if (isKeyPressed(GLFW_KEY_T)) {
-            spawnMob("human", new Vector3d(getPlayerPos()), new Vector3f(0,0,0));
+            if (!tButtonPushed) {
+                tButtonPushed = true;
+                spawnMob("human", new Vector3d(getPlayerPos()), new Vector3f(0,0,0));
+            }
+        } else if (!isKeyPressed(GLFW_KEY_T)){
+            tButtonPushed = false;
         }
-         */
 
 
         if (!isPlayerInventoryOpen() && !isPaused()) {
