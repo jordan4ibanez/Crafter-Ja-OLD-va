@@ -653,30 +653,33 @@ public class Player {
         }
 
         //this is a minor hack which allows it to "rain"
-//        rainBuffer += delta;
-//        if (rainBuffer >= 0.1f) {
-//            rainBuffer = 0f;
-//
-//            float eyeHeightY = getPlayerPosWithEyeHeight().y;
-//            for (int x = -10; x <= 10; x++) {
-//                for (int z = -10; z <= 10; z++) {
-//                    int heightMap = getHeightMap((int) Math.floor(pos.x)+x, (int) Math.floor(pos.z)+z);
-//                    if (127 - heightMap > 0) {
-//                        for (int y = heightMap + 1; y < 127; y++) {
-//                            if (Math.abs(eyeHeightY - y) <= 8f) {
-//                                if (Math.random() > 0.8f) {
-//                                    createRainDrop(
-//                                            new Vector3f((int) Math.floor(pos.x) + x, y, (int) Math.floor(pos.z) + z)
-//                                                    .add((float) Math.random(), (float) Math.random(), (float) Math.random()),
-//                                            new Vector3f(0, -30f, 0)
-//                                    );
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
+        /*
+        rainBuffer += delta;
+        if (rainBuffer >= 0.1f) {
+            rainBuffer = 0f;
+
+            double eyeHeightY = getPlayerPosWithEyeHeight().y;
+            for (int x = -10; x <= 10; x++) {
+                for (int z = -10; z <= 10; z++) {
+                    int heightMap = getHeightMap((int) Math.floor(pos.x)+x, (int) Math.floor(pos.z)+z);
+                    if (127 - heightMap > 0) {
+                        for (int y = heightMap + 1; y < 127; y++) {
+                            if (Math.abs(eyeHeightY - y) <= 8f) {
+                                if (Math.random() > 0.8f) {
+                                    createRainDrop(
+                                            new Vector3f((int) Math.floor(pos.x) + x, y, (int) Math.floor(pos.z) + z)
+                                                    .add((float) Math.random(), (float) Math.random(), (float) Math.random()),
+                                            new Vector3f(0, -30f, 0)
+                                    );
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+         */
 
 
 
@@ -1031,7 +1034,7 @@ public class Player {
                 health = 20;
             }
 
-            System.out.println("The player's health is: " + health);
+            //System.out.println("The player's health is: " + health);
             calculateHealthBarElements();
         }
 
