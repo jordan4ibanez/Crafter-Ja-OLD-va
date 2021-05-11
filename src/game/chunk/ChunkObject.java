@@ -17,6 +17,7 @@ public class ChunkObject {
 
     public Mesh[] normalMesh = new Mesh[8];
     public Mesh[] liquidMesh = new Mesh[8];
+    public Mesh[] allFacesMesh = new Mesh[8];
 
     public boolean modified = false;
 

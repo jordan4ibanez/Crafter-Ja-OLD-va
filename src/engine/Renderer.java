@@ -196,26 +196,6 @@ public class Renderer {
             }
 
         }
-        //render world selection mesh
-        if (getPlayerWorldSelectionPos() != null){
-
-            Vector3i tempPos = getPlayerWorldSelectionPos();
-
-            Mesh selectionMesh = getWorldSelectionMesh();
-
-            Vector3d actualPos = new Vector3d(tempPos.x, tempPos.y, tempPos.z);
-
-            modelViewMatrix = updateModelViewMatrix(actualPos, new Vector3f(0, 0, 0), viewMatrix);
-            shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            selectionMesh.render();
-
-            if (getDiggingFrame() >= 0) {
-                Mesh crackMesh = getMiningCrackMesh();
-                modelViewMatrix = updateModelViewMatrix(actualPos, new Vector3f(0, 0, 0), viewMatrix);
-                shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                crackMesh.render();
-            }
-        }
 
         //render liquid chunk meshes
         for (int i = 0; i < arrayIndex; i++){
@@ -234,6 +214,47 @@ public class Renderer {
                         thisMesh.render();
                     }
                 }
+            }
+        }
+        
+        //render allFaces chunk meshes
+        for (int i = 0; i < arrayIndex; i++){
+
+            ChunkObject thisChunk = chunkArraySorted[i];
+
+            if (thisChunk == null) {
+                continue;
+            }
+            //liquid
+            if (thisChunk.allFacesMesh != null) {
+                for (Mesh thisMesh : thisChunk.allFacesMesh) {
+                    if (thisMesh != null) {
+                        modelViewMatrix = updateModelViewMatrix(new Vector3d(thisChunk.x * 16d, 0, thisChunk.z * 16d), new Vector3f(0, 0, 0), viewMatrix);
+                        shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                        thisMesh.render();
+                    }
+                }
+            }
+        }
+
+        //render world selection mesh
+        if (getPlayerWorldSelectionPos() != null){
+
+            Vector3i tempPos = getPlayerWorldSelectionPos();
+
+            Mesh selectionMesh = getWorldSelectionMesh();
+
+            Vector3d actualPos = new Vector3d(tempPos.x, tempPos.y, tempPos.z);
+
+            modelViewMatrix = updateModelViewMatrix(actualPos, new Vector3f(0, 0, 0), viewMatrix);
+            shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            selectionMesh.render();
+
+            if (getDiggingFrame() >= 0) {
+                Mesh crackMesh = getMiningCrackMesh();
+                modelViewMatrix = updateModelViewMatrix(actualPos, new Vector3f(0, 0, 0), viewMatrix);
+                shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                crackMesh.render();
             }
         }
 

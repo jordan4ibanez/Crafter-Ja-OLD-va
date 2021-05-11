@@ -20,4 +20,11 @@ public class ChunkMeshDataObject {
     float[] liquidTextureCoordArray;
     boolean liquidMeshIsNull = false;
 
+    //allFaces
+    float[] allFacesPositionsArray ;
+    float[] allFacesLightArray;
+    int[] allFacesIndicesArray;
+    float[] allFacesTextureCoordArray;
+    boolean allFacesMeshIsNull = false;
+
 }

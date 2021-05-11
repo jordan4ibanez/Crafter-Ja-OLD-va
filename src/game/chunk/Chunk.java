@@ -79,6 +79,28 @@ public class Chunk {
         thisChunk.liquidMesh[yHeight] = newMesh;
     }
 
+    public static void setChunkAllFacesMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
+        ChunkObject thisChunk = map.get(chunkX + " " + chunkZ);
+        if (thisChunk == null){
+            if (newMesh != null) {
+                newMesh.cleanUp(false);
+            }
+            return;
+        }
+        if (thisChunk.allFacesMesh == null){
+            if (newMesh != null) {
+                newMesh.cleanUp(false);
+            }
+            return;
+        }
+
+        if (thisChunk.allFacesMesh[yHeight] != null){
+            thisChunk.allFacesMesh[yHeight].cleanUp(false);
+            thisChunk.allFacesMesh[yHeight] = null;
+        }
+        thisChunk.allFacesMesh[yHeight] = newMesh;
+    }
+
     private static float saveTimer = 0f;
     public static void globalChunkSaveToDisk(){
         saveTimer += 0.001f;
