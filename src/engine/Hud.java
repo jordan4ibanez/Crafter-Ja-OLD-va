@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import static engine.MouseInput.*;
 import static engine.Renderer.getWindowScale;
 import static engine.Renderer.getWindowSize;
+import static engine.Time.getDelta;
 import static engine.Window.*;
 import static engine.sound.SoundAPI.playSound;
 import static game.Crafter.getVersionName;
@@ -3054,6 +3055,8 @@ public class Hud {
     //todo: redo this mess
     public static void hudOnStepTest(){
 
+        float delta = getDelta();
+
         if (!getItemInInventorySlotName(getCurrentInventorySelection(), 0).equals(oldSelection)) {
             resetWieldHandSetupTrigger();
             oldSelection = getItemInInventorySlotName(getCurrentInventorySelection(), 0);
@@ -3061,7 +3064,7 @@ public class Hud {
 
         if (isPlayerInventoryOpen()) {
 
-            playerRot.y += 0.1f;
+            playerRot.y += delta * 100f;
 
             if (invSelection == null){
                 invSelection = new int[2];
