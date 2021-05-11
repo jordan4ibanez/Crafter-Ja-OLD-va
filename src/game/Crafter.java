@@ -231,7 +231,7 @@ public class Crafter {
             if (!rButtonPushed) {
                 rButtonPushed = true;
 //                resetInventory();
-                generateRandomInventory();
+                //generateRandomInventory();
             }
         } else if (!isKeyPressed(GLFW_KEY_R)){
             rButtonPushed = false;
