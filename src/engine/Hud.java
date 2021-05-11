@@ -4,6 +4,7 @@ import engine.graph.Mesh;
 import engine.graph.Texture;
 import game.item.Item;
 import org.joml.Vector2d;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -3064,7 +3065,24 @@ public class Hud {
 
         if (isPlayerInventoryOpen()) {
 
-            playerRot.y += delta * 100f;
+            //begin player in inventory thing
+            //new scope because lazy
+            {
+
+                float windowScale = getWindowScale();
+                Vector2d basePlayerPos = new Vector2d(-(windowScale / 3.75d), (windowScale / 2.8d));
+                Vector2d mousePos = getMousePos();
+
+                float rotationY = (float)((mousePos.x - (getWindowWidth()/2f)) - basePlayerPos.x) / (windowScale * 1.2f);
+                rotationY *= 40f;
+                playerRot.y = rotationY;
+
+
+                float rotationX = (float)((mousePos.y - (getWindowHeight()/2f)) + (basePlayerPos.y /2f)) / (windowScale * 1.2f);
+                rotationX *= 40f;
+                playerRot.x = rotationX;
+            }
+
 
             if (invSelection == null){
                 invSelection = new int[2];
