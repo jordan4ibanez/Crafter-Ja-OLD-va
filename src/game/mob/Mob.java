@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Deque;
 import java.util.Hashtable;
 
+import static engine.Time.getDelta;
 import static game.mob.Human.registerHumanMob;
 
 public class Mob {
@@ -61,6 +62,22 @@ public class Mob {
             }
 
             count++;
+        }
+    }
+
+    //todo: shortest distance
+    public static void mobSmoothRotation(MobObject thisObject){
+        float delta = getDelta();
+        if (thisObject.rotation - thisObject.smoothRotation < 0) {
+            thisObject.smoothRotation -= delta * 500f;
+            if (thisObject.smoothRotation < thisObject.rotation) {
+                thisObject.smoothRotation = thisObject.rotation;
+            }
+        } else if (thisObject.rotation - thisObject.smoothRotation > 0) {
+            thisObject.smoothRotation += delta * 500f;
+            if (thisObject.smoothRotation > thisObject.rotation) {
+                thisObject.smoothRotation = thisObject.rotation;
+            }
         }
     }
 }

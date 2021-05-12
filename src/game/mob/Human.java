@@ -9,7 +9,9 @@ import java.util.ArrayList;
 
 import static engine.FancyMath.randomDirFloat;
 import static engine.Time.getDelta;
+import static game.chunk.Chunk.getBlock;
 import static game.collision.Collision.applyInertia;
+import static game.mob.Mob.mobSmoothRotation;
 import static game.mob.Mob.registerMob;
 
 public class Human {
@@ -34,7 +36,7 @@ public class Human {
                 thisObject.timer = 0f;
                 thisObject.rotation = (float)(Math.toDegrees(Math.PI * Math.random() * randomDirFloat()));
             }
-
+            
 
             //head test
             //thisObject.bodyRotations[0] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),(float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),0);
@@ -69,12 +71,19 @@ public class Human {
             boolean onGround = applyInertia(thisObject.pos, thisObject.inertia, false, thisObject.width, thisObject.height, true, false, true, false, false);
 
 
-            //if (onGround){
-                //thisObject.inertia.y += 10f;
-            //}
+            //check for block in front
+            if (onGround){
+                double x = Math.sin(-yaw);
+                double z = Math.cos(yaw);
 
+                if (getBlock((int)Math.floor(x + thisObject.pos.x), (int)Math.floor(thisObject.pos.y), (int)Math.floor(z + thisObject.pos.z)) > 0){
+                    thisObject.inertia.y += 10f;
+                }
+            }
 
-            thisObject.smoothRotation = (float)Math.toDegrees(Math.atan2(thisObject.lastPos.z - thisObject.pos.z, thisObject.lastPos.x - thisObject.pos.x)) - 90f;
+            //thisObject.smoothRotation = (float)Math.toDegrees(Math.atan2(thisObject.lastPos.z - thisObject.pos.z, thisObject.lastPos.x - thisObject.pos.x)) - 90f;
+            //smooth rotation
+            mobSmoothRotation(thisObject);
 
             thisObject.lastPos = new Vector3d(thisObject.pos);
 

@@ -4,6 +4,7 @@ import engine.graph.Mesh;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
+import static engine.FancyMath.randomDirFloat;
 import static game.mob.Mob.getMobDefinition;
 
 public class MobObject {
@@ -41,7 +42,7 @@ public class MobObject {
         this.height = getMobDefinition(ID).height;
         this.width = getMobDefinition(ID).width;
 
-        this.rotation = 0f;
+        this.rotation = (float)(Math.toDegrees(Math.PI * Math.random() * randomDirFloat()));
         this.smoothRotation = 0f;
 
         this.bodyOffsets = getMobDefinition(ID).bodyOffsets.clone();
