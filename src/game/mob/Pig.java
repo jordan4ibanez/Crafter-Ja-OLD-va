@@ -2,19 +2,23 @@ package game.mob;
 
 import engine.graph.Mesh;
 import engine.graph.Texture;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
 
 import static engine.FancyMath.randomDirFloat;
 import static engine.Time.getDelta;
+import static game.chunk.Chunk.getBlock;
+import static game.collision.Collision.applyInertia;
+import static game.mob.Mob.mobSmoothRotation;
 import static game.mob.Mob.registerMob;
 
 public class Pig {
 
     private final static Mesh[] bodyMeshes = createPigMesh();
 
-    private static final float accelerationMultiplier  = 0.07f;
+    private static final float accelerationMultiplier  = 0.05f;
     final private static float maxWalkSpeed = 4.f;
     final private static float movementAcceleration = 1000.f;
 
@@ -26,7 +30,7 @@ public class Pig {
 
             thisObject.timer += delta;
 
-            /*
+
 
 
             if (thisObject.timer > 1.5f){
@@ -44,13 +48,6 @@ public class Pig {
             thisObject.bodyRotations[4] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * -2f)),0,0);
             thisObject.bodyRotations[5] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f)),0,0);
 
-            thisObject.animationTimer += delta * (inertia2D.length() / maxSpeed) 2f;
-
-            if (thisObject.animationTimer >= 1f){
-                thisObject.animationTimer = 0f;
-            }
-
-
             float yaw = (float)Math.toRadians(thisObject.rotation) + (float)Math.PI;
 
             thisObject.inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementAcceleration * delta;
@@ -67,6 +64,11 @@ public class Pig {
             }
 
 
+            thisObject.animationTimer += delta * (inertia2D.length() / maxSpeed) * 2f;
+
+            if (thisObject.animationTimer >= 1f){
+                thisObject.animationTimer = 0f;
+            }
 
             boolean onGround = applyInertia(thisObject.pos, thisObject.inertia, false, thisObject.width, thisObject.height, true, false, true, false, false);
 
@@ -96,8 +98,6 @@ public class Pig {
             mobSmoothRotation(thisObject);
 
             thisObject.lastPos = new Vector3d(thisObject.pos);
-
-             */
 
 
         }
@@ -134,7 +134,7 @@ public class Pig {
     };
 
     public static void registerPigMob(){
-        registerMob(new MobDefinition("pig", "oink", bodyMeshes, bodyOffsets, bodyRotations,1.9f, 0.25f, mobInterface));
+        registerMob(new MobDefinition("pig", "oink", bodyMeshes, bodyOffsets, bodyRotations,1.2f, 0.45f, mobInterface));
     }
 
 
