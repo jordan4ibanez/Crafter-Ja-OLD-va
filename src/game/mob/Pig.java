@@ -2,21 +2,17 @@ package game.mob;
 
 import engine.graph.Mesh;
 import engine.graph.Texture;
-import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
 
 import static engine.FancyMath.randomDirFloat;
 import static engine.Time.getDelta;
-import static game.chunk.Chunk.getBlock;
-import static game.collision.Collision.applyInertia;
-import static game.mob.Mob.mobSmoothRotation;
 import static game.mob.Mob.registerMob;
 
-public class Human {
+public class Pig {
 
-    private final static Mesh[] bodyMeshes = createPlayerMesh();
+    private final static Mesh[] bodyMeshes = createPigMesh();
 
     private static final float accelerationMultiplier  = 0.07f;
     final private static float maxWalkSpeed = 4.f;
@@ -29,6 +25,8 @@ public class Human {
             float delta = getDelta();
 
             thisObject.timer += delta;
+
+            /*
 
 
             if (thisObject.timer > 1.5f){
@@ -46,6 +44,12 @@ public class Human {
             thisObject.bodyRotations[4] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * -2f)),0,0);
             thisObject.bodyRotations[5] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f)),0,0);
 
+            thisObject.animationTimer += delta * (inertia2D.length() / maxSpeed) 2f;
+
+            if (thisObject.animationTimer >= 1f){
+                thisObject.animationTimer = 0f;
+            }
+
 
             float yaw = (float)Math.toRadians(thisObject.rotation) + (float)Math.PI;
 
@@ -62,11 +66,7 @@ public class Human {
                 thisObject.inertia.z = inertia2D.z;
             }
 
-            thisObject.animationTimer += delta * (inertia2D.length() / maxSpeed) * 2f;
 
-            if (thisObject.animationTimer >= 1f){
-                thisObject.animationTimer = 0f;
-            }
 
             boolean onGround = applyInertia(thisObject.pos, thisObject.inertia, false, thisObject.width, thisObject.height, true, false, true, false, false);
 
@@ -97,6 +97,8 @@ public class Human {
 
             thisObject.lastPos = new Vector3d(thisObject.pos);
 
+             */
+
 
         }
     };
@@ -104,12 +106,22 @@ public class Human {
     private static final float yOffsetCorrection = 0.5f;
 
     private static final Vector3f[] bodyOffsets = new Vector3f[]{
-            new Vector3f(0,0.8f + yOffsetCorrection,0),
-            new Vector3f(0,0.8f + yOffsetCorrection,0),
-            new Vector3f(-0.28f,0.725f + yOffsetCorrection,0),
-            new Vector3f(0.28f,0.725f + yOffsetCorrection,0),
-            new Vector3f(-0.09f,0.17f + yOffsetCorrection,0),
-            new Vector3f(0.09f,0.17f + yOffsetCorrection,0),
+            //head
+            new Vector3f(0,0.5f,-0.6f),
+            //body
+            new Vector3f(0,0.6f,0),
+
+            //front right leg
+            new Vector3f(-0.15f,0.3f,-0.32f),
+
+            //front left leg
+            new Vector3f(0.15f,0.3f,-0.32f),
+
+            //rear right leg
+            new Vector3f(-0.15f,0.3f,0.32f),
+
+            //rear left leg
+            new Vector3f(0.15f,0.3f,0.32f),
     };
 
     private static final Vector3f[] bodyRotations = new Vector3f[]{
@@ -121,48 +133,50 @@ public class Human {
             new Vector3f(0,0,0),
     };
 
-    public static void registerHumanMob(){
-        registerMob(new MobDefinition("human", "hurt", bodyMeshes, bodyOffsets, bodyRotations,1.9f, 0.25f, mobInterface));
+    public static void registerPigMob(){
+        registerMob(new MobDefinition("pig", "oink", bodyMeshes, bodyOffsets, bodyRotations,1.9f, 0.25f, mobInterface));
     }
 
 
 
-    private static final float PLAYER_WIDTH = 64f;
-    private static final float PLAYER_HEIGHT = 32f;
+    private static final float PIG_WIDTH = 64f;
+    private static final float PIG_HEIGHT = 32f;
 
     private static float[] calculateTexture(int xMin, int yMin, int xMax, int yMax){
         float[] texturePoints = new float[4];
 
-        texturePoints[0] = (float)xMin/PLAYER_WIDTH; //min x (-)
-        texturePoints[1] = (float)xMax/PLAYER_WIDTH; //max x (+)
+        texturePoints[0] = (float)xMin/ PIG_WIDTH; //min x (-)
+        texturePoints[1] = (float)xMax/ PIG_WIDTH; //max x (+)
 
-        texturePoints[2] = (float)yMin/PLAYER_HEIGHT; //min y (-)
-        texturePoints[3] = (float)yMax/PLAYER_HEIGHT; //max y (+)
+        texturePoints[2] = (float)yMin/ PIG_HEIGHT; //min y (-)
+        texturePoints[3] = (float)yMax/ PIG_HEIGHT; //max y (+)
         return texturePoints;
     }
 
-    private static Mesh[] createPlayerMesh(){
+    private static Mesh[] createPigMesh(){
 
         float size = 0.25f; //lazy way to fix
 
         float[][] oneBlockyBoi = new float[][]{
 //                head
-                {-0.75f * size,0.0f * size,-0.75f * size,0.75f * size,1.5f * size,0.75f * size},
+                {-0.65f * size,0.0f * size,-0.65f * size,0.65f * size,1.3f * size,0.65f * size},
 //                body
-                {-0.75f * size,-2.5f * size,-0.45f * size,0.75f * size,0.0f * size,0.45f * size},
-//                //right arm
-                {-0.375f * size,-2.2f * size,-0.375f * size,  0.375f * size,0.3f * size,0.375f * size},
-//                //left arm
-                {-0.375f * size,-2.2f * size,-0.375f * size,  0.375f * size,0.3f * size,0.375f * size},
-                //right leg
-                {-0.375f * size,-2.5f * size,-0.375f * size,  0.375f * size,0.0f * size,0.375f * size},
-                //left leg
-                {-0.375f * size,-2.5f * size,-0.375f * size,  0.375f * size,0.0f * size,0.375f * size},
+                {-1.f * size,-1.f * size,-1.75f * size,1.f * size,0.75f * size,1.75f * size},
+//                //front right leg
+
+                {-0.375f * size,-1.2f * size,-0.375f * size,  0.375f * size,0.3f * size,0.375f * size},
+//                //front left leg
+                {-0.375f * size,-1.2f * size,-0.375f * size,  0.375f * size,0.3f * size,0.375f * size},
+                //rear right leg
+                {-0.375f * size,-1.2f * size,-0.375f * size,  0.375f * size,0.3f * size,0.375f * size},
+                //rear left leg
+                {-0.375f * size,-1.2f * size,-0.375f * size,  0.375f * size,0.3f * size,0.375f * size},
         };
 
 
         float[][] textureArrayArray = new float[][]{
                 //head
+
                 //right
                 calculateTexture(24,8,32,16),
                 //left
@@ -177,76 +191,89 @@ public class Human {
                 calculateTexture(16,0,24,8),
 
                 //body
+
                 //front
-                calculateTexture(32,20,40,30),
+                calculateTexture(46,8,56,16),
                 //back
-                calculateTexture(20,20,28,30),
+                calculateTexture(36,8,46,16),
                 //right
-                calculateTexture(28,20,32,30),
+                calculateTexture(46,16,56,32),
                 //left
-                calculateTexture(16,20,20,30),
+                calculateTexture(28,16,36,32),
                 //top
-                calculateTexture(20,16,28,20),
+                calculateTexture(36,16,46,32),
                 //bottom
-                calculateTexture(28,16,36,20),
+                calculateTexture(56,16,64,32),
 
 
                 //right arm
+
                 //front
-                calculateTexture(48,20,52,32), //dark
+                calculateTexture(0,20,4,26), //dark
                 //back
-                calculateTexture(44,20,48,32), //light
+                calculateTexture(4,20,8,26), //light
+
                 //right
-                calculateTexture(48,20,52,32), //dark
+                calculateTexture(8,20,12,26), //dark
                 //left
-                calculateTexture(44,20,48,32), //light
+                calculateTexture(12,20,16,26), //light
+
                 //top
-                calculateTexture(44,16,48,20), //shoulder
+                calculateTexture(4,16,8,20), //shoulder
                 //bottom
-                calculateTexture(48,16,52,20), //palm
+                calculateTexture(8,16,12,20), //palm
 
                 //left arm
+
                 //front
-                calculateTexture(48,20,52,32), //dark
+                calculateTexture(0,20,4,26), //dark
                 //back
-                calculateTexture(44,20,48,32), //light
+                calculateTexture(4,20,8,26), //light
+
                 //right
-                calculateTexture(44,20,48,32), //light
+                calculateTexture(8,20,12,26), //dark
                 //left
-                calculateTexture(48,20,52,32), //dark
+                calculateTexture(12,20,16,26), //light
+
                 //top
-                calculateTexture(44,16,48,20), //shoulder
+                calculateTexture(4,16,8,20), //shoulder
                 //bottom
-                calculateTexture(48,16,52,20), //palm
+                calculateTexture(8,16,12,20), //palm
 
 
                 //right leg
+
                 //front
-                calculateTexture(0,20,4,32), //dark
+                calculateTexture(0,20,4,26), //dark
                 //back
-                calculateTexture(4,20,8,32), //light
+                calculateTexture(4,20,8,26), //light
+
                 //right
-                calculateTexture(8,20,12,32), //dark
+                calculateTexture(8,20,12,26), //dark
                 //left
-                calculateTexture(12,20,16,32), //light
+                calculateTexture(12,20,16,26), //light
+
                 //top
-                calculateTexture(4,16,8,20), //top
+                calculateTexture(4,16,8,20), //shoulder
                 //bottom
-                calculateTexture(8,16,12,20), //bottom
+                calculateTexture(8,16,12,20), //palm
 
                 //left leg
+
                 //front
-                calculateTexture(0,20,4,32), //dark
+                calculateTexture(0,20,4,26), //dark
                 //back
-                calculateTexture(4,20,8,32), //light
+                calculateTexture(4,20,8,26), //light
+
                 //right
-                calculateTexture(12,20,16,32), //light
+                calculateTexture(8,20,12,26), //dark
                 //left
-                calculateTexture(8,20,12,32), //dark
+                calculateTexture(12,20,16,26), //light
+
                 //top
-                calculateTexture(4,16,8,20), //top
+                calculateTexture(4,16,8,20), //shoulder
                 //bottom
-                calculateTexture(8,16,12,20), //bottom
+                calculateTexture(8,16,12,20), //palm
 
         };
 
@@ -612,15 +639,15 @@ public class Human {
                 textureCoordArray[i] = (float) textureCoord.get(i);
             }
 
-            Texture playerTexture = null;
+            Texture pigTexture = null;
             try {
-                playerTexture = new Texture("textures/player.png");
+                pigTexture = new Texture("textures/pig.png");
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
 
-            bodyMeshes[bodyMeshesIndex] = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, playerTexture);
+            bodyMeshes[bodyMeshesIndex] = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, pigTexture);
             bodyMeshesIndex++;
 
         }
@@ -630,3 +657,4 @@ public class Human {
         return bodyMeshes;
     }
 }
+

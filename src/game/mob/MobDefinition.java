@@ -11,8 +11,9 @@ public class MobDefinition {
     public Vector3f[] bodyRotations;
     public float height;
     public float width;
+    public String hurtSound;
 
-    public MobDefinition(String name, Mesh[] bodyMeshes,Vector3f[] bodyOffsets,Vector3f[] bodyRotations, float height, float width, MobInterface mobInterface){
+    public MobDefinition(String name, String hurtSound, Mesh[] bodyMeshes,Vector3f[] bodyOffsets,Vector3f[] bodyRotations, float height, float width, MobInterface mobInterface){
         this.bodyMeshes = bodyMeshes;
         this.mobInterface = mobInterface;
         this.mobDefinitionKey = name;
@@ -20,5 +21,6 @@ public class MobDefinition {
         this.bodyRotations = bodyRotations;
         this.height = height;
         this.width = width;
+        this.hurtSound = hurtSound;
     }
 }

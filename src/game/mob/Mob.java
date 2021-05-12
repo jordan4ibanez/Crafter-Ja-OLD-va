@@ -11,6 +11,7 @@ import java.util.Hashtable;
 import static engine.Time.getDelta;
 import static engine.sound.SoundAPI.playSound;
 import static game.mob.Human.registerHumanMob;
+import static game.mob.Pig.registerPigMob;
 
 public class Mob {
 
@@ -33,6 +34,7 @@ public class Mob {
     //entry point
     public static void initializeMobRegister(){
         registerHumanMob();
+        registerPigMob();
     }
 
     public static void spawnMob(int ID, Vector3d pos, Vector3f inertia){
@@ -68,8 +70,8 @@ public class Mob {
 
     public static void punchMob(MobObject thisMob){
         if (thisMob.hurtTimer <= 0) {
-            playSound("hurt", new Vector3f((float)thisMob.pos.x, (float)thisMob.pos.y, (float)thisMob.pos.z), true);
-            System.out.println("punched!");
+            playSound(thisMob.hurtSound, new Vector3f((float)thisMob.pos.x, (float)thisMob.pos.y, (float)thisMob.pos.z), true);
+            System.out.println("punched! put the health debug here");
             if (thisMob.onGround) {
                 thisMob.inertia.y += 10;
             }

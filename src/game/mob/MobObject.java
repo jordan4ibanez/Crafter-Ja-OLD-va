@@ -29,6 +29,7 @@ public class MobObject {
     public float hurtTimer = 0f;
 
     public int globalID;
+    public String hurtSound;
 
 
     public MobObject(Vector3d pos, Vector3f inertia, int ID, int globalID){
@@ -54,5 +55,7 @@ public class MobObject {
         this.ID = ID;
 
         this.globalID = globalID;
+
+        this.hurtSound = getMobDefinition(ID).hurtSound;
     }
 }
