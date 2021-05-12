@@ -16,8 +16,9 @@ public class Human {
 
     private final static Mesh[] bodyMeshes = createPlayerMesh();
 
-    private static final float accelerationMultiplier  = 0.02f; // i had no idea you could inherit like this
-    private static final float movementSpeed = 1.5f;
+    private static final float accelerationMultiplier  = 0.07f;
+    final private static float maxWalkSpeed = 4.f;
+    final private static float movementAcceleration = 1000.f;
 
     private final static MobInterface mobInterface = new MobInterface() {
         @Override
@@ -35,10 +36,8 @@ public class Human {
             }
 
 
-
-
             //head test
-//            thisObject.bodyRotations[0] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),(float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),0);
+            //thisObject.bodyRotations[0] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),(float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),0);
             thisObject.bodyRotations[2] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f)),0,0);
             thisObject.bodyRotations[3] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * -2f)),0,0);
 
@@ -46,12 +45,10 @@ public class Human {
             thisObject.bodyRotations[5] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f)),0,0);
 
 
-
-
             float yaw = (float)Math.toRadians(thisObject.rotation) + (float)Math.PI;
 
-            thisObject.inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementSpeed;
-            thisObject.inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementSpeed;
+            thisObject.inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementAcceleration * delta;
+            thisObject.inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementAcceleration * delta;
 
             Vector3f inertia2D = new Vector3f(thisObject.inertia.x, 0, thisObject.inertia.z);
 
@@ -63,7 +60,7 @@ public class Human {
                 thisObject.inertia.z = inertia2D.z;
             }
 
-            thisObject.animationTimer += delta */* (inertia2D.length() / maxSpeed) */ 10f;
+            thisObject.animationTimer += delta * (inertia2D.length() / maxSpeed) * 5f;
 
             if (thisObject.animationTimer >= 1f){
                 thisObject.animationTimer = 0f;
@@ -71,9 +68,11 @@ public class Human {
 
             boolean onGround = applyInertia(thisObject.pos, thisObject.inertia, false, thisObject.width, thisObject.height, true, false, true, false, false);
 
-            if (onGround){
-                thisObject.inertia.y += 10f;
-            }
+
+            //if (onGround){
+                //thisObject.inertia.y += 10f;
+            //}
+
 
             thisObject.smoothRotation = (float)Math.toDegrees(Math.atan2(thisObject.lastPos.z - thisObject.pos.z, thisObject.lastPos.x - thisObject.pos.x)) - 90f;
 
