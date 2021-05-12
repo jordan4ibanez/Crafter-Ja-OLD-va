@@ -122,7 +122,7 @@ public class Human {
     };
 
     public static void registerHumanMob(){
-        registerMob(new MobDefinition("human", "hurt", bodyMeshes, bodyOffsets, bodyRotations,1.9f, 0.25f, mobInterface));
+        registerMob(new MobDefinition("human", "hurt", 20, bodyMeshes, bodyOffsets, bodyRotations,1.9f, 0.25f, mobInterface));
     }
 
 
