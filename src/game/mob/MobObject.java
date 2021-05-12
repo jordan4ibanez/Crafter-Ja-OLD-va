@@ -23,7 +23,7 @@ public class MobObject {
 
     public float animationTimer;
     public float timer;
-
+    public boolean onGround;
     public boolean stand;
 
     public int globalID;

@@ -856,12 +856,14 @@ public class Player {
         calculateRunningFOV();
 
         if(mining && hasDug) {
-            rayCast(getCameraPosition(), getCameraRotationVector(), reach,  true, false);
+            rayCast(getCameraPosition(), getCameraRotationVector(), reach, true, false, true);
+        } else if(mining) {
+                rayCast(getCameraPosition(), getCameraRotationVector(), reach,  true, false, false);
         } else if (placing && placeTimer <= 0){
-            rayCast(getCameraPosition(), getCameraRotationVector(), reach,  false, true);
+            rayCast(getCameraPosition(), getCameraRotationVector(), reach,  false, true, false);
             placeTimer = 0.25f; // every quarter second you can place
         } else {
-            rayCast(getCameraPosition(), getCameraRotationVector(), reach,  false, false);
+            rayCast(getCameraPosition(), getCameraRotationVector(), reach,  false, false, false);
         }
 
 

@@ -70,6 +70,8 @@ public class Human {
 
             boolean onGround = applyInertia(thisObject.pos, thisObject.inertia, false, thisObject.width, thisObject.height, true, false, true, false, false);
 
+            thisObject.onGround = onGround;
+
 
             //check for block in front
             if (onGround){
@@ -86,6 +88,7 @@ public class Human {
             mobSmoothRotation(thisObject);
 
             thisObject.lastPos = new Vector3d(thisObject.pos);
+
 
         }
     };
