@@ -18,6 +18,7 @@ import static game.collision.PointCollision.pointIsWithin;
 import static game.collision.PointCollision.setPointAABB;
 import static game.item.ItemDefinition.getItemModifier;
 import static game.mob.Mob.getAllMobs;
+import static game.mob.Mob.punchMob;
 import static game.particle.Particle.createParticle;
 import static game.player.Inventory.getItemInInventorySlot;
 import static game.player.Inventory.removeItemFromInventory;
@@ -92,9 +93,7 @@ public class Ray {
         }
 
         if (foundMob != null){
-            if (foundMob.onGround) {
-                foundMob.inertia.y += 10;
-            }
+            punchMob(foundMob);
         } else {
             if (foundBlock > 0 && getBlockDefinition(foundBlock).pointable) {
                 if (mining && hasMined) {

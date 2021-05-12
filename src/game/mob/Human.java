@@ -72,6 +72,14 @@ public class Human {
 
             thisObject.onGround = onGround;
 
+            //count down hurt timer
+            if(thisObject.hurtTimer > 0f){
+                thisObject.hurtTimer -= delta;
+                if (thisObject.hurtTimer <= 0){
+                    thisObject.hurtTimer = 0;
+                }
+            }
+
 
             //check for block in front
             if (onGround){

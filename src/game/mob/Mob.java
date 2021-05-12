@@ -65,6 +65,16 @@ public class Mob {
         }
     }
 
+    public static void punchMob(MobObject thisMob){
+        if (thisMob.hurtTimer <= 0) {
+            System.out.println("punched!");
+            if (thisMob.onGround) {
+                thisMob.inertia.y += 10;
+            }
+            thisMob.hurtTimer = 0.5f;
+        }
+    }
+
     //todo: shortest distance
     public static void mobSmoothRotation(MobObject thisObject){
         float delta = getDelta();

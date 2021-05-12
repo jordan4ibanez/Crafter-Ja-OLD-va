@@ -26,6 +26,8 @@ public class MobObject {
     public boolean onGround;
     public boolean stand;
 
+    public float hurtTimer = 0f;
+
     public int globalID;
 
 
@@ -53,5 +55,4 @@ public class MobObject {
 
         this.globalID = globalID;
     }
-
 }
