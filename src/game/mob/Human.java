@@ -36,7 +36,7 @@ public class Human {
                 thisObject.timer = 0f;
                 thisObject.rotation = (float)(Math.toDegrees(Math.PI * Math.random() * randomDirFloat()));
             }
-            
+
 
             //head test
             //thisObject.bodyRotations[0] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),(float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),0);
@@ -62,7 +62,7 @@ public class Human {
                 thisObject.inertia.z = inertia2D.z;
             }
 
-            thisObject.animationTimer += delta * (inertia2D.length() / maxSpeed) * 5f;
+            thisObject.animationTimer += delta * (inertia2D.length() / maxSpeed) * 2f;
 
             if (thisObject.animationTimer >= 1f){
                 thisObject.animationTimer = 0f;
