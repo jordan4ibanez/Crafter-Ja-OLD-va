@@ -44,7 +44,7 @@ public class Player {
     private static float sneakOffset = 0;
     private static boolean playerIsJumping = false;
     private static final int[] currentChunk = {(int)Math.floor(pos.x / 16f),(int)Math.floor(pos.z / 16f)};
-
+    public static int oldY = 0;
     private static float itemRotation = 0f;
     private static boolean itemRotationEnabled = false;
 
@@ -720,6 +720,19 @@ public class Player {
 
         onGround = applyInertia(pos, inertia, true, width, height,true, sneaking, true, true, true);
 
+        //falldamage
+        if (onGround){
+
+            int currentY = (int)Math.floor(pos.y);
+
+            if (currentY < oldY){
+                if (oldY - currentY > 6){
+                    hurtPlayer(oldY - currentY - 6);
+                }
+            }
+            oldY = currentY;
+        }
+
         updatePlayerHandInertia();
 
         if(onGround && playerIsMoving() && !sneaking && !inWater){
@@ -867,7 +880,7 @@ public class Player {
         }
 
 
-        doHealthTest();
+        //doHealthTest();
 
         if (health <= 6) {
             makeHeartsJiggle();
@@ -1022,6 +1035,7 @@ public class Player {
     }
 
     private static float healthTimer = 0;
+
     private static void doHealthTest(){
         float delta = getDelta();
 
@@ -1040,5 +1054,11 @@ public class Player {
             calculateHealthBarElements();
         }
 
+    }
+
+    public static void hurtPlayer(int hurt){
+        health -= hurt;
+        playSound("hurt", new Vector3f((float)pos.x, (float)pos.y, (float)pos.z), true);
+        calculateHealthBarElements();
     }
 }
