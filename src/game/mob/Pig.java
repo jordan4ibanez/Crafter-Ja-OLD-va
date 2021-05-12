@@ -32,31 +32,26 @@ public class Pig {
             thisObject.timer += delta;
 
 
-
-
-            if (thisObject.timer > 1.5f){
-                thisObject.stand = !thisObject.stand;
-                thisObject.timer = 0f;
-                thisObject.rotation = (float)(Math.toDegrees(Math.PI * Math.random() * randomDirFloat()));
-            }
-
-
             //head test
             //thisObject.bodyRotations[0] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),(float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),0);
-            thisObject.bodyRotations[2] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f)),0,0);
-            thisObject.bodyRotations[3] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * -2f)),0,0);
+            thisObject.bodyRotations[2] = new Vector3f((float) Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f)), 0, 0);
+            thisObject.bodyRotations[3] = new Vector3f((float) Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * -2f)), 0, 0);
 
-            thisObject.bodyRotations[4] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * -2f)),0,0);
-            thisObject.bodyRotations[5] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f)),0,0);
+            thisObject.bodyRotations[4] = new Vector3f((float) Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * -2f)), 0, 0);
+            thisObject.bodyRotations[5] = new Vector3f((float) Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f)), 0, 0);
 
-            float yaw = (float)Math.toRadians(thisObject.rotation) + (float)Math.PI;
+            float yaw = (float) Math.toRadians(thisObject.rotation) + (float) Math.PI;
 
-            thisObject.inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementAcceleration * delta;
-            thisObject.inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementAcceleration * delta;
+            thisObject.inertia.x += (float) (Math.sin(-yaw) * accelerationMultiplier) * movementAcceleration * delta;
+            thisObject.inertia.z += (float) (Math.cos(yaw) * accelerationMultiplier) * movementAcceleration * delta;
 
             Vector3f inertia2D = new Vector3f(thisObject.inertia.x, 0, thisObject.inertia.z);
 
             float maxSpeed = 3f;
+
+            if (thisObject.health <= 0){
+                maxSpeed = 0.01f;
+            }
 
             if(inertia2D.length() > maxSpeed){
                 inertia2D = inertia2D.normalize().mul(maxSpeed);
@@ -75,27 +70,23 @@ public class Pig {
 
             thisObject.onGround = onGround;
 
-            //count down hurt timer
-            if(thisObject.hurtTimer > 0f){
-                thisObject.hurtTimer -= delta;
-                if (thisObject.hurtTimer <= 0){
-                    thisObject.hurtTimer = 0;
+
+
+
+            if (thisObject.health > 0) {
+                //check if swimming
+                if (getIfLiquid(getBlock((int) Math.floor(thisObject.pos.x), (int) Math.floor(thisObject.pos.y), (int) Math.floor(thisObject.pos.z)))) {
+                    thisObject.inertia.y += 100f * delta;
                 }
-            }
 
+                //check for block in front
+                if (onGround) {
+                    double x = Math.sin(-yaw);
+                    double z = Math.cos(yaw);
 
-            //check if swimming
-            if(getIfLiquid(getBlock((int)Math.floor(thisObject.pos.x), (int)Math.floor(thisObject.pos.y), (int)Math.floor(thisObject.pos.z)))){
-                thisObject.inertia.y += 100f * delta;
-            }
-
-            //check for block in front
-            if (onGround){
-                double x = Math.sin(-yaw);
-                double z = Math.cos(yaw);
-
-                if (getBlock((int)Math.floor(x + thisObject.pos.x), (int)Math.floor(thisObject.pos.y), (int)Math.floor(z + thisObject.pos.z)) > 0){
-                    thisObject.inertia.y += 10f;
+                    if (getBlock((int) Math.floor(x + thisObject.pos.x), (int) Math.floor(thisObject.pos.y), (int) Math.floor(z + thisObject.pos.z)) > 0) {
+                        thisObject.inertia.y += 10f;
+                    }
                 }
             }
 

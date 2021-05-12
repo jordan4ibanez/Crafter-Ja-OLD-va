@@ -50,8 +50,12 @@ public class Mob {
 
     public static void mobsOnTick(){
         int count = 0;
+
+        float delta = getDelta();
+
         for (MobObject thisMob : mobs){
             if (thisMob == null){
+                count++;
                 continue;
             }
 
@@ -59,9 +63,30 @@ public class Mob {
 
 
             if (thisMob.pos.y < 0){
-                //deletionQueue.add(thisMob.ID);
                 mobs[count] = null;
                 System.out.println("mob " + count + " was deleted!");
+            }
+
+            //mob dying animation
+            if (thisMob.health <= 0 && thisMob.deathRotation < 90){
+                thisMob.deathRotation += delta * 300f;
+                if (thisMob.deathRotation >= 90){
+                    thisMob.deathRotation = 90;
+                    thisMob.timer = 0f;
+                }
+            }
+
+            if (thisMob.health <= 0 && thisMob.timer >= 0.5f && thisMob.deathRotation == 90){
+                mobs[count] = null;
+                System.out.println("mob " + count + " was deleted!");
+            }
+
+            //count down hurt timer
+            if(thisMob.hurtTimer > 0f){
+                thisMob.hurtTimer -= delta;
+                if (thisMob.hurtTimer <= 0){
+                    thisMob.hurtTimer = 0;
+                }
             }
 
             count++;
@@ -69,9 +94,10 @@ public class Mob {
     }
 
     public static void punchMob(MobObject thisMob){
-        if (thisMob.hurtTimer <= 0) {
+        if (thisMob.hurtTimer <= 0 && thisMob.health > 0) {
+            thisMob.health -= 1;
+            System.out.println("the mobs health is: " + thisMob.health);
             playSound(thisMob.hurtSound, new Vector3f((float)thisMob.pos.x, (float)thisMob.pos.y, (float)thisMob.pos.z), true);
-            System.out.println("punched! put the health debug here");
             if (thisMob.onGround) {
                 thisMob.inertia.y += 10;
             }

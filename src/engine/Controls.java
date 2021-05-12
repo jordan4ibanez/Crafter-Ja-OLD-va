@@ -143,7 +143,7 @@ public class Controls {
         if (isKeyPressed(GLFW_KEY_T)) {
             if (!tButtonPushed) {
                 tButtonPushed = true;
-                spawnMob(1,new Vector3d( getPlayerPos()), new Vector3f(0,0,0));
+                spawnMob((int)Math.floor(Math.random() + 0.5f),new Vector3d( getPlayerPos()), new Vector3f(0,0,0));
             }
         } else if (!isKeyPressed(GLFW_KEY_T)){
             tButtonPushed = false;

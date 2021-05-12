@@ -56,6 +56,10 @@ public class Human {
 
             float maxSpeed = 5f;
 
+            if (thisObject.animationTimer >= 1f){
+                thisObject.animationTimer = 0f;
+            }
+
             if(inertia2D.length() > maxSpeed){
                 inertia2D = inertia2D.normalize().mul(maxSpeed);
                 thisObject.inertia.x = inertia2D.x;
@@ -72,25 +76,18 @@ public class Human {
 
             thisObject.onGround = onGround;
 
-            //count down hurt timer
-            if(thisObject.hurtTimer > 0f){
-                thisObject.hurtTimer -= delta;
-                if (thisObject.hurtTimer <= 0){
-                    thisObject.hurtTimer = 0;
+
+            if (thisObject.health > 0) {
+                //check for block in front
+                if (onGround) {
+                    double x = Math.sin(-yaw);
+                    double z = Math.cos(yaw);
+
+                    if (getBlock((int) Math.floor(x + thisObject.pos.x), (int) Math.floor(thisObject.pos.y), (int) Math.floor(z + thisObject.pos.z)) > 0) {
+                        thisObject.inertia.y += 10f;
+                    }
                 }
             }
-
-
-            //check for block in front
-            if (onGround){
-                double x = Math.sin(-yaw);
-                double z = Math.cos(yaw);
-
-                if (getBlock((int)Math.floor(x + thisObject.pos.x), (int)Math.floor(thisObject.pos.y), (int)Math.floor(z + thisObject.pos.z)) > 0){
-                    thisObject.inertia.y += 10f;
-                }
-            }
-
             //thisObject.smoothRotation = (float)Math.toDegrees(Math.atan2(thisObject.lastPos.z - thisObject.pos.z, thisObject.lastPos.x - thisObject.pos.x)) - 90f;
             //smooth rotation
             mobSmoothRotation(thisObject);
