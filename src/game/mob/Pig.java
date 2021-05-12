@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import static engine.FancyMath.randomDirFloat;
 import static engine.Time.getDelta;
+import static game.blocks.BlockDefinition.getIfLiquid;
 import static game.chunk.Chunk.getBlock;
 import static game.collision.Collision.applyInertia;
 import static game.mob.Mob.mobSmoothRotation;
@@ -55,7 +56,7 @@ public class Pig {
 
             Vector3f inertia2D = new Vector3f(thisObject.inertia.x, 0, thisObject.inertia.z);
 
-            float maxSpeed = 5f;
+            float maxSpeed = 3f;
 
             if(inertia2D.length() > maxSpeed){
                 inertia2D = inertia2D.normalize().mul(maxSpeed);
@@ -82,6 +83,11 @@ public class Pig {
                 }
             }
 
+
+            //check if swimming
+            if(getIfLiquid(getBlock((int)Math.floor(thisObject.pos.x), (int)Math.floor(thisObject.pos.y), (int)Math.floor(thisObject.pos.z)))){
+                thisObject.inertia.y += 100f * delta;
+            }
 
             //check for block in front
             if (onGround){
