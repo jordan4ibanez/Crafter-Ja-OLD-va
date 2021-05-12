@@ -4,6 +4,7 @@ import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import static engine.sound.SoundManager.playSoundSource;
+import static org.lwjgl.openal.AL10.AL_PITCH;
 
 public class SoundAPI {
 
@@ -19,6 +20,22 @@ public class SoundAPI {
         thisSource.setPosition(pos);
         playSoundSource(soundBuffer, thisSource);
     }
+
+    public static void playSound(String name, Vector3f pos, boolean randomPitch) {
+        SoundBuffer soundBuffer = null;
+        try {
+            soundBuffer = new SoundBuffer("sounds/" + name + ".ogg");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        SoundSource thisSource = new SoundSource(false, false);
+        thisSource.setBuffer(soundBuffer.getBufferId());
+        thisSource.setPosition(pos);
+        thisSource.setProperty(AL_PITCH, 0.75f + (float)(Math.random()/2f));
+        playSoundSource(soundBuffer, thisSource);
+    }
+
+
 
     //overload for ease of use
     public static void playSound(String name, Vector3d pos) {

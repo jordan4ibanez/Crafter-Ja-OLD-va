@@ -9,6 +9,7 @@ import java.util.Deque;
 import java.util.Hashtable;
 
 import static engine.Time.getDelta;
+import static engine.sound.SoundAPI.playSound;
 import static game.mob.Human.registerHumanMob;
 
 public class Mob {
@@ -67,6 +68,7 @@ public class Mob {
 
     public static void punchMob(MobObject thisMob){
         if (thisMob.hurtTimer <= 0) {
+            playSound("hurt", new Vector3f((float)thisMob.pos.x, (float)thisMob.pos.y, (float)thisMob.pos.z), true);
             System.out.println("punched!");
             if (thisMob.onGround) {
                 thisMob.inertia.y += 10;
