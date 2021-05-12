@@ -32,6 +32,13 @@ public class Pig {
             thisObject.timer += delta;
 
 
+            if (thisObject.timer > 1.5f){
+                thisObject.stand = !thisObject.stand;
+                thisObject.timer = 0f;
+                thisObject.rotation = (float)(Math.toDegrees(Math.PI * Math.random() * randomDirFloat()));
+            }
+
+
             //head test
             //thisObject.bodyRotations[0] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),(float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),0);
             thisObject.bodyRotations[2] = new Vector3f((float) Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f)), 0, 0);
