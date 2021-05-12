@@ -75,7 +75,8 @@ public class Pig {
 
             if (thisObject.health > 0) {
                 //check if swimming
-                if (getIfLiquid(getBlock((int) Math.floor(thisObject.pos.x), (int) Math.floor(thisObject.pos.y), (int) Math.floor(thisObject.pos.z)))) {
+                int block = getBlock((int) Math.floor(thisObject.pos.x), (int) Math.floor(thisObject.pos.y), (int) Math.floor(thisObject.pos.z));
+                if (block > -1 && getIfLiquid(block)) {
                     thisObject.inertia.y += 100f * delta;
                 }
 
