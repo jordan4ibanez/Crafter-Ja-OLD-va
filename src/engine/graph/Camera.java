@@ -6,6 +6,7 @@ import org.joml.Vector3f;
 
 import static engine.MouseInput.getMouseDisplVec;
 import static game.player.Player.*;
+import static game.player.Player.getHurtCameraRotation;
 
 public class Camera {
 
@@ -89,5 +90,9 @@ public class Camera {
         if (getCameraRotation().y > 180f){
             moveCameraRotation(0,-360f, 0);
         }
+
+        //System.out.println(getHurtCameraRotation());
+
+        //setCameraRotation(rotation.x, rotation.y, getHurtCameraRotation());
     }
 }

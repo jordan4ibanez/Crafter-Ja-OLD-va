@@ -58,6 +58,14 @@ public class Player {
     private static Vector3i oldPos = new Vector3i(0,0,0);
     private static Vector3d oldRealPos = new Vector3d(0,0,0);
 
+    private static float hurtCameraRotation = 0;
+    private static boolean doHurtRotation = false;
+    private static boolean hurtRotationUp = true;
+
+    public static float getHurtCameraRotation(){
+        return hurtCameraRotation;
+    }
+
     public static void resetPlayerInputs(){
         setPlayerForward(false);
         setPlayerBackward(false);
@@ -880,11 +888,30 @@ public class Player {
         }
 
 
-        //doHealthTest();
-
         if (health <= 6) {
             makeHeartsJiggle();
         }
+
+        //camera z axis hurt rotation thing
+
+        /*
+        if (doHurtRotation){
+            if (hurtRotationUp) {
+                hurtCameraRotation += delta * 150f;
+                if (hurtCameraRotation >= 7f) {
+                    hurtRotationUp = false;
+                }
+            } else {
+                hurtCameraRotation -= delta * 150f;
+                if (hurtCameraRotation <= 0f){
+                    hurtCameraRotation = 0f;
+                    hurtRotationUp = true;
+                    doHurtRotation = false;
+                }
+            }
+        }
+
+         */
 
         //update light level for the wield item
         lightCheckTimer += delta;
@@ -1060,5 +1087,6 @@ public class Player {
         health -= hurt;
         playSound("hurt", new Vector3f((float)pos.x, (float)pos.y, (float)pos.z), true);
         calculateHealthBarElements();
+        //doHurtRotation = true;
     }
 }

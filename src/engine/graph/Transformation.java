@@ -24,6 +24,8 @@ public class Transformation {
         Vector3f rotation = getCameraRotation();
         viewMatrix.identity();
         //first do the rotation so the camera rotates over it's position
+        //(includes z)
+        //viewMatrix.rotate(Math.toRadians(rotation.z), new Vector3d(0,0,1)).rotate(Math.toRadians(rotation.x), new Vector3d(1,0,0)).rotate(Math.toRadians(rotation.y), new Vector3d(0,1,0));
         viewMatrix.rotate(Math.toRadians(rotation.x), new Vector3d(1,0,0)).rotate(Math.toRadians(rotation.y), new Vector3d(0,1,0));
         //then do the translation
         viewMatrix.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
