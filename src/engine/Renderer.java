@@ -264,7 +264,11 @@ public class Renderer {
 
         //render mobs
         for (MobObject thisMob : getAllMobs()){
+            if (thisMob == null){
+                continue;
+            }
             int offsetIndex = 0;
+
             for (Mesh thisMesh : thisMob.meshes) {
                 modelViewMatrix = getMobMatrix(new Vector3d(thisMob.pos), thisMob.bodyOffsets[offsetIndex], new Vector3f(0, thisMob.smoothRotation, 0), new Vector3f(thisMob.bodyRotations[offsetIndex]), new Vector3d(1f, 1f, 1f), viewMatrix);
                 shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);

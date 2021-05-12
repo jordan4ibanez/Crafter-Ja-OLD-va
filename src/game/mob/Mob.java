@@ -12,18 +12,20 @@ import static game.mob.Human.registerHumanMob;
 
 public class Mob {
 
-    private static final Hashtable<String, MobDefinition> mobDefinitions = new Hashtable<>();
-    private static final Hashtable<Integer, MobObject> mobs = new Hashtable<>();
+    private static final MobDefinition[] mobDefinitions = new MobDefinition[16];
+
+    private static final MobObject[] mobs = new MobObject[128]; //limited to 128 mobs
 
     private static int currentID = 0;
+    private static int currentMobDefinitionKey = 0;
 
-
-    public static MobDefinition getMobDefinition(String key){
-        return mobDefinitions.get(key);
+    public static MobDefinition getMobDefinition(int key){
+        return mobDefinitions[key];
     }
 
     public static void registerMob(MobDefinition newMobDefinition){
-        mobDefinitions.put(newMobDefinition.mobDefinitionKey, newMobDefinition);
+        mobDefinitions[currentMobDefinitionKey] = newMobDefinition;
+        currentMobDefinitionKey++;
     }
 
     //entry point
@@ -31,32 +33,34 @@ public class Mob {
         registerHumanMob();
     }
 
-    public static void spawnMob(String name, Vector3d pos, Vector3f inertia){
+    public static void spawnMob(int ID, Vector3d pos, Vector3f inertia){
         System.out.println("spawning mob! ID: " + currentID);
         System.out.println("pos y:" + pos.y);
-        mobs.put(currentID, new MobObject(pos,inertia,name,currentID));
+        mobs[currentID] = new MobObject(new Vector3d(pos),new Vector3f(inertia),ID,currentID);
         currentID++;
     }
 
-    public static Collection<MobObject> getAllMobs(){
-        return mobs.values();
+    public static MobObject[] getAllMobs(){
+        return mobs;
     }
 
-    private static final Deque<Integer> deletionQueue = new ArrayDeque<>();
-
     public static void mobsOnTick(){
-        for (MobObject thisMob : mobs.values()){
-            mobDefinitions.get(thisMob.mobDefinitionKey).mobInterface.onTick(thisMob);
+        int count = 0;
+        for (MobObject thisMob : mobs){
+            if (thisMob == null){
+                continue;
+            }
+
+            mobDefinitions[thisMob.ID].mobInterface.onTick(thisMob);
+
 
             if (thisMob.pos.y < 0){
-                deletionQueue.add(thisMob.mobTableKey);
+                //deletionQueue.add(thisMob.ID);
+                mobs[count] = null;
+                System.out.println("mob " + count + " was deleted!");
             }
-        }
 
-        while (!deletionQueue.isEmpty()){
-            int deleter = deletionQueue.pop();
-            mobs.remove(deleter);
-            System.out.println("mob " + deleter + " was deleted!");
+            count++;
         }
     }
 }

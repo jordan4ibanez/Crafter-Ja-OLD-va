@@ -8,6 +8,7 @@ import org.joml.Vector3f;
 import java.util.ArrayList;
 
 import static engine.FancyMath.randomDirFloat;
+import static engine.Time.getDelta;
 import static game.collision.Collision.applyInertia;
 import static game.mob.Mob.registerMob;
 
@@ -18,14 +19,22 @@ public class Human {
     private static final float accelerationMultiplier  = 0.02f; // i had no idea you could inherit like this
     private static final float movementSpeed = 1.5f;
 
-    private static final MobInterface mobInterface = new MobInterface() {
+    private final static MobInterface mobInterface = new MobInterface() {
         @Override
         public void onTick(MobObject thisObject) {
-            thisObject.timer += 0.001f;
+
+            float delta = getDelta();
+
+            thisObject.timer += delta;
+
+
             if (thisObject.timer > 1.5f){
+                thisObject.stand = !thisObject.stand;
                 thisObject.timer = 0f;
                 thisObject.rotation = (float)(Math.toDegrees(Math.PI * Math.random() * randomDirFloat()));
             }
+
+
 
 
             //head test
@@ -38,20 +47,23 @@ public class Human {
 
 
 
+
             float yaw = (float)Math.toRadians(thisObject.rotation) + (float)Math.PI;
+
             thisObject.inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementSpeed;
             thisObject.inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementSpeed;
 
             Vector3f inertia2D = new Vector3f(thisObject.inertia.x, 0, thisObject.inertia.z);
 
             float maxSpeed = 5f;
+
             if(inertia2D.length() > maxSpeed){
                 inertia2D = inertia2D.normalize().mul(maxSpeed);
                 thisObject.inertia.x = inertia2D.x;
                 thisObject.inertia.z = inertia2D.z;
             }
 
-            thisObject.animationTimer += 0.002f * (inertia2D.length()/maxSpeed);
+            thisObject.animationTimer += delta */* (inertia2D.length() / maxSpeed) */ 10f;
 
             if (thisObject.animationTimer >= 1f){
                 thisObject.animationTimer = 0f;
@@ -66,6 +78,7 @@ public class Human {
             thisObject.smoothRotation = (float)Math.toDegrees(Math.atan2(thisObject.lastPos.z - thisObject.pos.z, thisObject.lastPos.x - thisObject.pos.x)) - 90f;
 
             thisObject.lastPos = new Vector3d(thisObject.pos);
+
         }
     };
 

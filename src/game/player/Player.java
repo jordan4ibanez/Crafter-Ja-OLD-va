@@ -320,7 +320,7 @@ public class Player {
     }
 
     public static Vector3d getPlayerPos() {
-        return pos;
+        return new Vector3d(pos);
     }
 
     public static Vector3d getPlayerPosWithEyeHeight(){
@@ -678,7 +678,7 @@ public class Player {
                 }
             }
         }
-        
+
          */
 
 
