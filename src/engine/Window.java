@@ -41,8 +41,11 @@ public class Window {
         glfwDefaultWindowHints(); // optional, the current window hints are already the default
         glfwWindowHint(GLFW_VISIBLE, GL_FALSE); // the window will stay hidden after creation
         glfwWindowHint(GLFW_RESIZABLE, GL_TRUE); //the window will be resizable
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+
+        //openGL version (4.6
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
