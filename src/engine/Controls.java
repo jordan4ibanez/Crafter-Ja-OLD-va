@@ -9,6 +9,7 @@ import static engine.MouseInput.*;
 import static engine.MouseInput.getMouseScroll;
 import static engine.Window.isKeyPressed;
 import static engine.Window.toggleFullScreen;
+import static game.Crafter.invertDebugInfoBoolean;
 import static game.item.ItemEntity.clearItems;
 import static game.mob.Mob.spawnMob;
 import static game.player.Inventory.emptyMouseInventory;
@@ -26,6 +27,7 @@ public class Controls {
     private static boolean eButtonPushed       = false;
     private static boolean F11Pushed           = false;
     private static boolean escapePushed        = false;
+    private static boolean F3Pushed            = false;
     public static void input() {
         if (!isPlayerInventoryOpen() && !isPaused()) {
             if (isKeyPressed(GLFW_KEY_W)) {
@@ -86,6 +88,15 @@ public class Controls {
             rButtonPushed = false;
         }
          */
+
+        if (isKeyPressed(GLFW_KEY_F3)) {
+            if (!F3Pushed) {
+                F3Pushed = true;
+                invertDebugInfoBoolean();
+            }
+        } else if (!isKeyPressed(GLFW_KEY_F3)){
+            F3Pushed = false;
+        }
 
 
         if (isKeyPressed(GLFW_KEY_Q)) {
