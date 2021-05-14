@@ -94,6 +94,7 @@ public class Window {
 
         //set depth testing
         glEnable(GL_DEPTH_TEST);
+        //glDepthFunc(GL_ALWAYS);
 
         //enable backface culling
         glEnable(GL_CULL_FACE);

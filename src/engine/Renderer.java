@@ -360,8 +360,8 @@ public class Renderer {
 
         glClear(GL_DEPTH_BUFFER_BIT);
 
+        //render inverted crosshair
         {
-            //render inverted crosshair
             glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
             modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(0,0,0),new Vector3f(0,0,0), new Vector3d(windowScale/20f,windowScale/20f,windowScale/20f));
             hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
