@@ -33,6 +33,8 @@ public class Mesh {
     public Mesh(float[] positions, float[] colors, int[] indices, float[] textCoords, Texture texture) {
         try{
 
+            //System.out.println("mesh created"+Math.random());
+
             this.texture = texture;
             vertexCount = indices.length;
             vaoId = glGenVertexArrays();
