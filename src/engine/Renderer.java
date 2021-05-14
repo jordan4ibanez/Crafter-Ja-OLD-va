@@ -596,7 +596,7 @@ public class Renderer {
                 }
 
                 //THESE GO LAST!
-                
+
                 //version info
                 {
                     modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((-windowSize.x / 2d) + (windowSize.x / 600d)), ((windowSize.y / 2.d) - (windowSize.y / 600d)), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 30d, windowScale / 30d, windowScale / 30d));
