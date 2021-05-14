@@ -113,7 +113,7 @@ public class Crafter {
 
             calculateDelta();
 
-            indexLight();
+            //indexLight();
             mouseInput();
             updateCamera();
             countFPS();

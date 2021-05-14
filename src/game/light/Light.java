@@ -104,20 +104,21 @@ public class Light {
     }
 
     public static void lightFloodFill(int posX, int posY, int posZ) {
-        queue.add(new Vector3i(posX, posY, posZ));
-    }
+        
+      //  queue.add(new Vector3i(posX, posY, posZ));
+    //}
 
-    public static void indexLight(){
-        //new Thread(() -> {
-            if (!queue.isEmpty()) {
+    //public static void indexLight(){
+        new Thread(() -> {
+            //if (!queue.isEmpty()) {
                 final Deque<LightUpdate> lightSources = new ArrayDeque<>();
                 final byte[][][] memoryMap = new byte[(lightDistance * 2) + 1][(lightDistance * 2) + 1][(lightDistance * 2) + 1];
 
-                Vector3i tempObject = queue.pop();
+                //Vector3i tempObject = queue.pop();
 
-                int posX = tempObject.x;
-                int posY = tempObject.y;
-                int posZ = tempObject.z;
+                //int posX = tempObject.x;
+                //int posY = tempObject.y;
+                //int posZ = tempObject.z;
 
                 for (int x = posX - lightDistance; x <= posX + lightDistance; x++) {
                     for (int y = posY - lightDistance; y <= posY + lightDistance; y++) {
@@ -237,7 +238,7 @@ public class Light {
                     }
                 }
                 lightSources.clear();
-            }
-        //}).start();
+            //}
+        }).start();
     }
 }
