@@ -1007,7 +1007,7 @@ public class Player {
             xBobPos += 300 * delta;
         }
 
-        if ((Math.abs(xBobPos)) <= 50 * delta){
+        if ((Math.abs(xBobPos)) <= 100 * delta){
             xBobPos = 0;
         }
 

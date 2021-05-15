@@ -103,7 +103,6 @@ public class Renderer {
     }
 
 
-
     public static void renderGame(){
         Mesh workerMesh;
         clearScreen();
