@@ -11,8 +11,11 @@ import static engine.FancyMath.randomDirFloat;
 import static engine.Time.getDelta;
 import static game.chunk.Chunk.getBlock;
 import static game.collision.Collision.applyInertia;
+import static game.mob.HeadCode.doHeadCode;
 import static game.mob.Mob.mobSmoothRotation;
 import static game.mob.Mob.registerMob;
+import static game.player.Player.getPlayerPos;
+import static game.player.Player.getPlayerPosWithEyeHeight;
 
 public class Human {
 
@@ -30,12 +33,14 @@ public class Human {
 
             thisObject.timer += delta;
 
-
             if (thisObject.timer > 1.5f){
                 thisObject.stand = !thisObject.stand;
                 thisObject.timer = 0f;
                 thisObject.rotation = (float)(Math.toDegrees(Math.PI * Math.random() * randomDirFloat()));
             }
+
+            doHeadCode(thisObject);
+
 
 
             //head test
@@ -47,10 +52,10 @@ public class Human {
             thisObject.bodyRotations[5] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f)),0,0);
 
 
-            float yaw = (float)Math.toRadians(thisObject.rotation) + (float)Math.PI;
+            float bodyYaw = (float)Math.toRadians(thisObject.rotation) + (float)Math.PI;
 
-            thisObject.inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementAcceleration * delta;
-            thisObject.inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementAcceleration * delta;
+            thisObject.inertia.x += (float)(Math.sin(-bodyYaw) * accelerationMultiplier) * movementAcceleration * delta;
+            thisObject.inertia.z += (float)(Math.cos(bodyYaw)  * accelerationMultiplier) * movementAcceleration * delta;
 
             Vector3f inertia2D = new Vector3f(thisObject.inertia.x, 0, thisObject.inertia.z);
 
@@ -80,20 +85,21 @@ public class Human {
             if (thisObject.health > 0) {
                 //check for block in front
                 if (onGround) {
-                    double x = Math.sin(-yaw);
-                    double z = Math.cos(yaw);
+                    double x = Math.sin(-bodyYaw);
+                    double z = Math.cos(bodyYaw);
 
                     if (getBlock((int) Math.floor(x + thisObject.pos.x), (int) Math.floor(thisObject.pos.y), (int) Math.floor(z + thisObject.pos.z)) > 0) {
                         thisObject.inertia.y += 10f;
                     }
                 }
             }
+
+
             //thisObject.smoothRotation = (float)Math.toDegrees(Math.atan2(thisObject.lastPos.z - thisObject.pos.z, thisObject.lastPos.x - thisObject.pos.x)) - 90f;
             //smooth rotation
             mobSmoothRotation(thisObject);
 
             thisObject.lastPos = new Vector3d(thisObject.pos);
-
 
         }
     };
@@ -119,7 +125,7 @@ public class Human {
     };
 
     public static void registerHumanMob(){
-        registerMob(new MobDefinition("human", "hurt", 20, bodyMeshes, bodyOffsets, bodyRotations,1.9f, 0.25f, mobInterface));
+        registerMob(new MobDefinition("human", "hurt", 1, bodyMeshes, bodyOffsets, bodyRotations,1.9f, 0.25f, mobInterface));
     }
 
 

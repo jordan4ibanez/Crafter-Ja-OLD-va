@@ -12,6 +12,7 @@ import static engine.Time.getDelta;
 import static game.blocks.BlockDefinition.getIfLiquid;
 import static game.chunk.Chunk.getBlock;
 import static game.collision.Collision.applyInertia;
+import static game.mob.HeadCode.doHeadCode;
 import static game.mob.Mob.mobSmoothRotation;
 import static game.mob.Mob.registerMob;
 
@@ -38,6 +39,7 @@ public class Pig {
                 thisObject.rotation = (float)(Math.toDegrees(Math.PI * Math.random() * randomDirFloat()));
             }
 
+            doHeadCode(thisObject);
 
             //head test
             //thisObject.bodyRotations[0] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),(float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),0);
@@ -112,7 +114,7 @@ public class Pig {
 
     private static final Vector3f[] bodyOffsets = new Vector3f[]{
             //head
-            new Vector3f(0,0.5f,-0.6f),
+            new Vector3f(0,0.7f,-0.635f),
             //body
             new Vector3f(0,0.6f,0),
 
@@ -164,7 +166,7 @@ public class Pig {
 
         float[][] oneBlockyBoi = new float[][]{
 //                head
-                {-0.65f * size,0.0f * size,-0.65f * size,0.65f * size,1.3f * size,0.65f * size},
+                {-0.8f * size,-0.8f * size,-0.8f * size,0.8f * size,0.8f * size,0.8f * size},
 //                body
                 {-1.f * size,-1.f * size,-1.75f * size,1.f * size,0.75f * size,1.75f * size},
 //                //front right leg
