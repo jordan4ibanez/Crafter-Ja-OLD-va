@@ -31,37 +31,37 @@ public class Human {
 
             thisObject.timer += delta;
 
-            if (thisObject.timer > 1.5f){
+            if (thisObject.timer > 1.5f) {
                 thisObject.stand = !thisObject.stand;
                 thisObject.timer = 0f;
-                thisObject.rotation = (float)(Math.toDegrees(Math.PI * Math.random() * randomDirFloat()));
+                thisObject.rotation = (float) (Math.toDegrees(Math.PI * Math.random() * randomDirFloat()));
             }
 
 
 
             //head test
             //thisObject.bodyRotations[0] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),(float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),0);
-            thisObject.bodyRotations[2] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f)),0,0);
-            thisObject.bodyRotations[3] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * -2f)),0,0);
+            thisObject.bodyRotations[2] = new Vector3f((float) Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f)), 0, 0);
+            thisObject.bodyRotations[3] = new Vector3f((float) Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * -2f)), 0, 0);
 
-            thisObject.bodyRotations[4] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * -2f)),0,0);
-            thisObject.bodyRotations[5] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f)),0,0);
+            thisObject.bodyRotations[4] = new Vector3f((float) Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * -2f)), 0, 0);
+            thisObject.bodyRotations[5] = new Vector3f((float) Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f)), 0, 0);
 
 
-            float bodyYaw = (float)Math.toRadians(thisObject.rotation) + (float)Math.PI;
+            float bodyYaw = (float) Math.toRadians(thisObject.rotation) + (float) Math.PI;
 
-            thisObject.inertia.x += (float)(Math.sin(-bodyYaw) * accelerationMultiplier) * movementAcceleration * delta;
-            thisObject.inertia.z += (float)(Math.cos(bodyYaw)  * accelerationMultiplier) * movementAcceleration * delta;
+            thisObject.inertia.x += (float) (Math.sin(-bodyYaw) * accelerationMultiplier) * movementAcceleration * delta;
+            thisObject.inertia.z += (float) (Math.cos(bodyYaw) * accelerationMultiplier) * movementAcceleration * delta;
 
             Vector3f inertia2D = new Vector3f(thisObject.inertia.x, 0, thisObject.inertia.z);
 
             float maxSpeed = 5f;
 
-            if (thisObject.animationTimer >= 1f){
+            if (thisObject.animationTimer >= 1f) {
                 thisObject.animationTimer = 0f;
             }
 
-            if(inertia2D.length() > maxSpeed){
+            if (inertia2D.length() > maxSpeed) {
                 inertia2D = inertia2D.normalize().mul(maxSpeed);
                 thisObject.inertia.x = inertia2D.x;
                 thisObject.inertia.z = inertia2D.z;
@@ -69,7 +69,7 @@ public class Human {
 
             thisObject.animationTimer += delta * (inertia2D.length() / maxSpeed) * 2f;
 
-            if (thisObject.animationTimer >= 1f){
+            if (thisObject.animationTimer >= 1f) {
                 thisObject.animationTimer = 0f;
             }
 
@@ -89,7 +89,6 @@ public class Human {
                     }
                 }
             }
-
 
             mobSmoothRotation(thisObject);
             doHeadCode(thisObject);

@@ -1000,7 +1000,7 @@ public class Player {
     private static void returnPlayerViewBobbing(){
 
         float delta = getDelta();
-        
+
         if ((Math.abs(xBobPos)) <= 300 * delta){
             xBobPos = 0;
         }
