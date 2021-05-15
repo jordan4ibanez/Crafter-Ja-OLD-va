@@ -44,15 +44,45 @@ public class MobUtilityCode {
     //todo: shortest distance
     public static void mobSmoothRotation(MobObject thisObject){
         float delta = getDelta();
-        if (thisObject.rotation - thisObject.smoothRotation < 0) {
-            thisObject.smoothRotation -= delta * 500f;
-            if (thisObject.smoothRotation < thisObject.rotation) {
-                thisObject.smoothRotation = thisObject.rotation;
-            }
-        } else if (thisObject.rotation - thisObject.smoothRotation > 0) {
-            thisObject.smoothRotation += delta * 500f;
-            if (thisObject.smoothRotation > thisObject.rotation) {
-                thisObject.smoothRotation = thisObject.rotation;
+
+        float diff = thisObject.rotation - thisObject.smoothRotation;
+
+        //correction of degrees overflow (-piToDegrees to piToDegrees) so it is workable
+        if (diff < -180) {
+            diff += 360;
+        } else if (diff > 180){
+            diff -= 360;
+        }
+
+        /*
+        this is basically brute force inversion to correct the yaw
+        addition and make the mob move to the shortest rotation
+        vector possible
+         */
+
+        if (Math.abs(diff) < delta * 500f){
+            thisObject.smoothRotation = thisObject.rotation;
+        } else {
+            if (Math.abs(diff) > 180) {
+                if (diff < 0) {
+                    thisObject.smoothRotation += delta * 500f;
+                } else if (diff > 0) {
+                    thisObject.smoothRotation -= delta * 500f;
+                }
+
+                //correction of degrees overflow (-piToDegrees to piToDegrees) so it is workable
+                if (thisObject.smoothRotation < -180) {
+                    thisObject.smoothRotation += 360;
+                } else if (thisObject.smoothRotation > 180) {
+                    thisObject.smoothRotation -= 360;
+                }
+
+            } else {
+                if (diff < 0) {
+                    thisObject.smoothRotation -= delta * 500f;
+                } else if (diff > 0) {
+                    thisObject.smoothRotation += delta * 500f;
+                }
             }
         }
     }

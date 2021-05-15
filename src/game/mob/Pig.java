@@ -39,8 +39,6 @@ public class Pig {
                 thisObject.rotation = (float)(Math.toDegrees(Math.PI * Math.random() * randomDirFloat()));
             }
 
-            doHeadCode(thisObject);
-
             //head test
             //thisObject.bodyRotations[0] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),(float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),0);
             thisObject.bodyRotations[2] = new Vector3f((float) Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f)), 0, 0);
@@ -100,9 +98,9 @@ public class Pig {
                 }
             }
 
-            //thisObject.smoothRotation = (float)Math.toDegrees(Math.atan2(thisObject.lastPos.z - thisObject.pos.z, thisObject.lastPos.x - thisObject.pos.x)) - 90f;
-            //smooth rotation
+
             mobSmoothRotation(thisObject);
+            doHeadCode(thisObject);
 
             thisObject.lastPos = new Vector3d(thisObject.pos);
 
@@ -141,7 +139,7 @@ public class Pig {
     };
 
     public static void registerPigMob(){
-        registerMob(new MobDefinition("pig", "oink", 6, bodyMeshes, bodyOffsets, bodyRotations,1.2f, 0.45f, mobInterface));
+        registerMob(new MobDefinition("pig", "oink", 1, bodyMeshes, bodyOffsets, bodyRotations,1.2f, 0.45f, mobInterface));
     }
 
 
