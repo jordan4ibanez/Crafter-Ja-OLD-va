@@ -38,7 +38,7 @@ public class Human {
             }
 
 
-            
+
             //head test
             //thisObject.bodyRotations[0] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),(float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),0);
             thisObject.bodyRotations[2] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f)),0,0);
@@ -120,7 +120,7 @@ public class Human {
     };
 
     public static void registerHumanMob(){
-        registerMob(new MobDefinition("human", "hurt", 1, bodyMeshes, bodyOffsets, bodyRotations,1.9f, 0.25f, mobInterface));
+        registerMob(new MobDefinition("human", "hurt", 7, bodyMeshes, bodyOffsets, bodyRotations,1.9f, 0.25f, mobInterface));
     }
 
 
