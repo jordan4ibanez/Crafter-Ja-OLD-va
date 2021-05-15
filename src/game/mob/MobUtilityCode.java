@@ -3,9 +3,10 @@ package game.mob;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
+import static engine.Time.getDelta;
 import static game.player.Player.getPlayerPosWithEyeHeight;
 
-public class HeadCode {
+public class MobUtilityCode {
 
     public static void doHeadCode(MobObject thisObject){
         //silly head turning
@@ -37,5 +38,22 @@ public class HeadCode {
         //System.out.println((thisObject.rotation - 90) - yaw);
 
         thisObject.bodyRotations[0] = new Vector3f(pitch,headYaw,0);
+    }
+
+
+    //todo: shortest distance
+    public static void mobSmoothRotation(MobObject thisObject){
+        float delta = getDelta();
+        if (thisObject.rotation - thisObject.smoothRotation < 0) {
+            thisObject.smoothRotation -= delta * 500f;
+            if (thisObject.smoothRotation < thisObject.rotation) {
+                thisObject.smoothRotation = thisObject.rotation;
+            }
+        } else if (thisObject.rotation - thisObject.smoothRotation > 0) {
+            thisObject.smoothRotation += delta * 500f;
+            if (thisObject.smoothRotation > thisObject.rotation) {
+                thisObject.smoothRotation = thisObject.rotation;
+            }
+        }
     }
 }

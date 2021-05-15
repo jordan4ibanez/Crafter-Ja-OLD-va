@@ -11,11 +11,9 @@ import static engine.FancyMath.randomDirFloat;
 import static engine.Time.getDelta;
 import static game.chunk.Chunk.getBlock;
 import static game.collision.Collision.applyInertia;
-import static game.mob.HeadCode.doHeadCode;
-import static game.mob.Mob.mobSmoothRotation;
+import static game.mob.MobUtilityCode.doHeadCode;
 import static game.mob.Mob.registerMob;
-import static game.player.Player.getPlayerPos;
-import static game.player.Player.getPlayerPosWithEyeHeight;
+import static game.mob.MobUtilityCode.mobSmoothRotation;
 
 public class Human {
 

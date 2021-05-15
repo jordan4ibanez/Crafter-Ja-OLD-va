@@ -104,20 +104,4 @@ public class Mob {
             thisMob.hurtTimer = 0.5f;
         }
     }
-
-    //todo: shortest distance
-    public static void mobSmoothRotation(MobObject thisObject){
-        float delta = getDelta();
-        if (thisObject.rotation - thisObject.smoothRotation < 0) {
-            thisObject.smoothRotation -= delta * 500f;
-            if (thisObject.smoothRotation < thisObject.rotation) {
-                thisObject.smoothRotation = thisObject.rotation;
-            }
-        } else if (thisObject.rotation - thisObject.smoothRotation > 0) {
-            thisObject.smoothRotation += delta * 500f;
-            if (thisObject.smoothRotation > thisObject.rotation) {
-                thisObject.smoothRotation = thisObject.rotation;
-            }
-        }
-    }
 }
