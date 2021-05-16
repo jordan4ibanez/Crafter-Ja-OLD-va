@@ -31,15 +31,15 @@ public class Hud {
     private static final float FONT_HEIGHT = 16f;
     private static final float LETTER_HEIGHT = 8f;
 
-    private static Vector3f playerScale = new Vector3f(0.7f,0.8f,0.7f);
-    private static Vector3f playerRot = new Vector3f(0,0,0);
+    private static final Vector3f playerScale = new Vector3f(0.7f,0.8f,0.7f);
+    private static final Vector3f playerRot = new Vector3f(0,0,0);
 
     public static Vector3f getPlayerHudRotation(){
         return playerRot;
     }
 
-    private static Vector3f versionInfoPos = new Vector3f(-5f,8f,-14f);
-    private static Vector3f versionInfoShadowPos = new Vector3f(-4.9f,7.9f,-14f);
+    private static final Vector3f versionInfoPos = new Vector3f(-5f,8f,-14f);
+    private static final Vector3f versionInfoShadowPos = new Vector3f(-4.9f,7.9f,-14f);
 
     private static boolean paused = false;
 
@@ -3360,6 +3360,99 @@ public class Hud {
         return new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, fontTextureAtlas);
     }
 
+
+    public static Mesh createCustomHudTextCentered(String text, float r, float g, float b){
+
+        float x = (-text.length()/2f);
+
+
+        ArrayList positions = new ArrayList();
+        ArrayList textureCoord = new ArrayList();
+        ArrayList indices = new ArrayList();
+        ArrayList light = new ArrayList();
+
+        int indicesCount = 0;
+
+
+        for (char letter : text.toCharArray()) {
+            //front
+            positions.add(x + 0.8f);
+            positions.add(0f);
+            positions.add(0f);
+
+            positions.add(x);
+            positions.add(0f);
+            positions.add(0f);
+
+            positions.add(x);
+            positions.add(-1f);
+            positions.add(0f);
+
+            positions.add(x + 0.8f);
+            positions.add(-1f);
+            positions.add(0f);
+
+            //front
+            for (int i = 0; i < 4; i++) {
+                light.add(r);
+                light.add(g);
+                light.add(b);
+            }
+            //front
+            indices.add(0 + indicesCount);
+            indices.add(1 + indicesCount);
+            indices.add(2 + indicesCount);
+            indices.add(0 + indicesCount);
+            indices.add(2 + indicesCount);
+            indices.add(3 + indicesCount);
+
+            indicesCount += 4;
+
+            //-x +x   -y +y
+            // 0  1    2  3
+
+            float[] thisCharacterArray = translateCharToArray(letter);
+
+            //front
+            textureCoord.add(thisCharacterArray[1]);//1
+            textureCoord.add(thisCharacterArray[2]);//2
+            textureCoord.add(thisCharacterArray[0]);//0
+            textureCoord.add(thisCharacterArray[2]);//2
+            textureCoord.add(thisCharacterArray[0]);//0
+            textureCoord.add(thisCharacterArray[3]);//3
+            textureCoord.add(thisCharacterArray[1]);//1
+            textureCoord.add(thisCharacterArray[3]);//3
+
+            x++;
+        }
+
+
+        //convert the position objects into usable array
+        float[] positionsArray = new float[positions.size()];
+        for (int i = 0; i < positions.size(); i++) {
+            positionsArray[i] = (float) positions.get(i);
+        }
+
+        //convert the light objects into usable array
+        float[] lightArray = new float[light.size()];
+        for (int i = 0; i < light.size(); i++) {
+            lightArray[i] = (float) light.get(i);
+        }
+
+        //convert the indices objects into usable array
+        int[] indicesArray = new int[indices.size()];
+        for (int i = 0; i < indices.size(); i++) {
+            indicesArray[i] = (int) indices.get(i);
+        }
+
+        //convert the textureCoord objects into usable array
+        float[] textureCoordArray = new float[textureCoord.size()];
+        for (int i = 0; i < textureCoord.size(); i++) {
+            textureCoordArray[i] = (float) textureCoord.get(i);
+        }
+
+        return new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, fontTextureAtlas);
+    }
 
 
     private static int[] invSelection;

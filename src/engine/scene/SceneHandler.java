@@ -24,7 +24,7 @@ import static game.particle.Particle.particlesOnStep;
 import static game.player.Player.*;
 
 public class SceneHandler {
-    private static byte currentScene = 1;
+    private static byte currentScene = 0;
 
     public static void setScene(byte newScene){
         currentScene = newScene;
@@ -47,6 +47,8 @@ public class SceneHandler {
 
 
     private static void mainMenuLoop(){
+        calculateDelta();
+
         doMainMenuLogic();
         renderMainMenu();
         windowUpdate();

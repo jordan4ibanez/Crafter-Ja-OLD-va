@@ -61,6 +61,22 @@ public class GameRenderer {
         System.out.println("Window scale is now: " + windowScale);
     }
 
+    public static float getzNear(){
+        return Z_NEAR;
+    }
+
+    public static float getzFar(){
+        return Z_FAR;
+    }
+
+    public static ShaderProgram getShaderProgram(){
+        return shaderProgram;
+    }
+
+    public static ShaderProgram getHudShaderProgram(){
+        return hudShaderProgram;
+    }
+
     public static float getWindowScale(){
         return windowScale;
     }
@@ -90,6 +106,7 @@ public class GameRenderer {
         hudShaderProgram.createUniform("texture_sampler");
 
 
+        //setWindowClearColor(0.f,0.f,0.f,0.f);
         setWindowClearColor(0.53f,0.81f,0.92f,0.f);
 
         windowSize.x = getWindowWidth();
@@ -103,10 +120,7 @@ public class GameRenderer {
     }
 
 
-    public static void renderGame(){
-        Mesh workerMesh;
-        clearScreen();
-
+    public static void rescaleWindow(){
         if (isWindowResized()){
             windowSize.x = getWindowWidth();
             windowSize.y = getWindowHeight();
@@ -114,6 +128,13 @@ public class GameRenderer {
             setWindowResized(false);
             resetWindowScale();
         }
+    }
+
+    public static void renderGame(){
+        Mesh workerMesh;
+        clearScreen();
+
+        rescaleWindow();
 
 
         //todo: BEGIN WORLD SHADER PROGRAM!
@@ -318,7 +339,7 @@ public class GameRenderer {
             }
         }
 
-        //BEGIN HUD
+        //BEGIN HUD (3d parts)
 
         glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -342,7 +363,10 @@ public class GameRenderer {
             }
         }
 
+        //finished with 3d
         shaderProgram.unbind();
+
+        //BEGIN HUD 2D
         glClear(GL_DEPTH_BUFFER_BIT);
 
         //TODO: BEGIN HUD SHADER PROGRAM!

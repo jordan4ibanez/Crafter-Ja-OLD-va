@@ -73,7 +73,6 @@ public class Transformation {
 
         // First do the rotation so camera rotates over its position
         modelViewMatrix.identity().identity().translate(position).
-
                 rotateY(Math.toRadians(-rotation.y)).
                 rotateZ(Math.toRadians(-rotation.z)).
                 rotateX(Math.toRadians(-rotation.x)).
