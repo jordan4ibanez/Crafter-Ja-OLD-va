@@ -23,7 +23,7 @@ public class SoundBuffer {
     public SoundBuffer(String file) throws Exception{
         this.bufferId = alGenBuffers();
         try (STBVorbisInfo info = STBVorbisInfo.malloc()){
-            ShortBuffer pcm = readVorbis(file, 32 * 1024, info);
+            ShortBuffer pcm = readVorbis(file, 128 * 1024, info);
 
             //copy to buffer
             alBufferData(bufferId, info.channels() == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16, pcm, info.sample_rate());
