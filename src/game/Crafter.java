@@ -15,6 +15,7 @@ import static game.chunk.Chunk.*;
 import static game.chunk.ChunkMesh.generateChunkMesh;
 import static engine.Hud.*;
 import static engine.MouseInput.*;
+import static game.mainMenu.MainMenu.initMainMenu;
 import static game.mob.Mob.*;
 import static game.tnt.TNTEntity.createTNTEntityMesh;
 import static engine.Window.*;
@@ -73,6 +74,7 @@ public class Crafter {
             //assistantThread();
             calculateHealthBarElements();
 
+            initMainMenu();
             //this is the scene controller
             handleSceneLogic();
 

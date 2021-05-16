@@ -5,6 +5,7 @@ import game.tnt.TNTEntity;
 
 import static engine.Controls.input;
 import static engine.Hud.hudOnStepTest;
+import static engine.MainMenuRenderer.renderMainMenu;
 import static engine.MouseInput.mouseInput;
 import static engine.GameRenderer.renderGame;
 import static engine.Time.calculateDelta;
@@ -17,12 +18,13 @@ import static game.chunk.Chunk.globalChunkSaveToDisk;
 import static game.chunk.ChunkMesh.popChunkMeshQueue;
 import static game.chunk.ChunkUpdateHandler.chunkUpdater;
 import static game.falling.FallingEntity.fallingEntityOnStep;
+import static game.mainMenu.MainMenu.doMainMenuLogic;
 import static game.mob.Mob.mobsOnTick;
 import static game.particle.Particle.particlesOnStep;
 import static game.player.Player.*;
 
 public class SceneHandler {
-    private static byte currentScene = 0;
+    private static byte currentScene = 1;
 
     public static void setScene(byte newScene){
         currentScene = newScene;
@@ -33,7 +35,7 @@ public class SceneHandler {
         while (!windowShouldClose()){
             switch (currentScene){
                 case 0:
-                    System.out.println("do main menu");
+                    mainMenuLoop();
                     break;
                 case 1:
                     gameLoop();
@@ -43,6 +45,12 @@ public class SceneHandler {
 
     }
 
+
+    private static void mainMenuLoop(){
+        doMainMenuLogic();
+        renderMainMenu();
+        windowUpdate();
+    }
 
     //main game loop
     private static void gameLoop() throws Exception {
@@ -54,14 +62,16 @@ public class SceneHandler {
         countFPS();
         updateWorldChunkLoader();
         popChunkMeshQueue(); //this actually transmits the data from the other threads into main thread
-        renderGame();
-        windowUpdate();
+
         updateListenerPosition();
         chunkUpdater();
         globalChunkSaveToDisk(); //add in a getDelta argument into this!
         input();
         //testLightLevel();
         gameUpdate();
+
+        renderGame();
+        windowUpdate();
 
 
         /*
