@@ -101,6 +101,7 @@ public class MainMenu {
             titleMusic.stop();
             setScene((byte)1);
             toggleMouseLock();
+            return;
         }
 
         if (isRightButtonPressed() && !lockOutReset){
