@@ -31,6 +31,7 @@ public class Player {
     private static final float height                  = 1.9f;
     private static final float width                   = 0.3f;
     private static boolean onGround              =  false;
+    private static boolean wasOnGround           = false;
     private static boolean mining                = false;
     private static boolean placing               = false;
     private static float placeTimer              = 0;
@@ -728,6 +729,14 @@ public class Player {
 
         onGround = applyInertia(pos, inertia, true, width, height,true, sneaking, true, true, true);
 
+
+
+        //play sound when player lands on the ground
+        if (onGround && !wasOnGround){
+            playSound("dirt_" + (int)(Math.ceil(Math.random()*3)));
+        }
+
+
         //falldamage
         if (onGround){
 
@@ -935,6 +944,7 @@ public class Player {
 
         oldPos = newFlooredPos;
         oldRealPos = new Vector3d(pos);
+        wasOnGround = onGround;
     }
 
     public static void updateWorldChunkLoader(){

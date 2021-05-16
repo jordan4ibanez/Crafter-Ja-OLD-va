@@ -274,6 +274,7 @@ public class MainMenu {
             "Chunks!",
             "Yo banana boy!",
             "Was it a car or a cat I saw?",
-            "Now with more bugs!"
+            "Now with more bugs!",
+            "No punctuation included!"
     };
 }
