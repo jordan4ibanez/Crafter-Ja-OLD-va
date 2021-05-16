@@ -126,15 +126,15 @@ public class MainMenuRenderer {
             glClear(GL_DEPTH_BUFFER_BIT);
 
             //gray shadow part
-            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(windowScale/2.27d,windowScale/3.77f,0), new Vector3f(0, 0, 20f), new Vector3d(scale,scale,scale));
+            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(windowScale/2.27d,windowScale/3.27f,0), new Vector3f(0, 0, 20f), new Vector3d(scale,scale,scale));
             hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            workerMesh = createCustomHudTextCentered(getTitleScreenGag(), 0.2f, 0.2f, 0.2f);
+            workerMesh = createCustomHudTextCentered(getTitleScreenGag(), 0.2f, 0.2f, 0f);
             workerMesh.render();
 
             glClear(GL_DEPTH_BUFFER_BIT);
 
             //yellow part
-            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(windowScale/2.25d,windowScale/3.75f,0), new Vector3f(0, 0, 20f), new Vector3d(scale,scale,scale));
+            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(windowScale/2.25d,windowScale/3.25f,0), new Vector3f(0, 0, 20f), new Vector3d(scale,scale,scale));
             hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
             workerMesh = createCustomHudTextCentered(getTitleScreenGag(), 1f, 1f, 0f);
             workerMesh.render();
@@ -143,7 +143,7 @@ public class MainMenuRenderer {
 
 
 
-        /*
+
         glClear(GL_DEPTH_BUFFER_BIT);
         {
             modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(0, (0) * windowScale/3d, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale/2d, windowScale/2d, windowScale/2d));
@@ -160,7 +160,7 @@ public class MainMenuRenderer {
             workerMesh.render();
         }
 
-         */
+        hudShaderProgram.unbind();
 
 
     }

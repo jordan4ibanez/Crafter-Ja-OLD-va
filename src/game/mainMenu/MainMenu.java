@@ -279,6 +279,17 @@ public class MainMenu {
             "Yo banana boy!",
             "Was it a car or a cat I saw?",
             "Now with more bugs!",
-            "No punctuation included!"
+            "No punctuation included!",
+            "Wow this text is really really really really small!",
+            "Credit is in the credits!",
+            "Made for people by robots!",
+            "Undefined behavior!",
+            "128 bit math!",
+            "Almost a game!",
+            "Tell your friends!",
+            "Please distribute!",
+            "Gas gas gas!",
+            "Initial B!",
+            "Liquid cooled!",
     };
 }
