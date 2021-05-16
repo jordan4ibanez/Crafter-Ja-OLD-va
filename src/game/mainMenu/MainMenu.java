@@ -9,6 +9,7 @@ import static engine.Window.updateWindowTitle;
 import static engine.graph.Camera.setCameraPosition;
 import static engine.scene.SceneHandler.setScene;
 import static engine.sound.SoundAPI.playSound;
+import static game.Crafter.getVersionName;
 import static game.mainMenu.MainMenuAssets.createMainMenuBackGroundTile;
 import static game.mainMenu.MainMenuAssets.createMenuMenuTitleBlock;
 
@@ -190,6 +191,8 @@ public class MainMenu {
         titleScreenGag = titleScreenGags[(int)Math.floor(Math.random() * titleScreenGags.length)];
         if (titleScreenGag.equals("Look at the window title!")){
             updateWindowTitle("Got em!");
+        } else {
+            updateWindowTitle(getVersionName());
         }
         titleScreenGagLength = (byte)titleScreenGag.length();
     }
@@ -234,6 +237,13 @@ public class MainMenu {
             "Doesn't ｆｏｒｍａｔ text right!",
             "Look at the window title!",
             "My spoon is too big!",
-            "Its chaos!"
+            "Its chaos!",
+            "Dont shuck me, bro!",
+            "Translated to 1 language!",
+            "Its this!",
+            "Probably cures eyestrain!",
+            "Multithreaded!",
+            "You see it! Believe it!",
+
     };
 }
