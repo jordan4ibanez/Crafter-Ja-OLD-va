@@ -3,6 +3,9 @@ package game.mainMenu;
 import engine.sound.SoundBuffer;
 import engine.sound.SoundSource;
 
+import java.util.Date;
+import java.util.Random;
+
 import static engine.MouseInput.*;
 import static engine.Time.getDelta;
 import static engine.Window.updateWindowTitle;
@@ -31,7 +34,12 @@ public class MainMenu {
 
     private static boolean lockOutReset = false;
 
+    private static final Random random = new Random();
+
     public static void initMainMenu() throws Exception {
+
+        //seed the random generator
+        random.setSeed(new Date().getTime());
 
         setCameraPosition(0,-8,0);
 
@@ -104,9 +112,11 @@ public class MainMenu {
             return;
         }
 
-        if (isRightButtonPressed() && !lockOutReset){
+        if (isRightButtonPressed()){
+            if (!lockOutReset){
+                resetMainMenu();
+            }
             lockOutReset = true;
-            resetMainMenu();
         } else {
             lockOutReset = false;
         }
@@ -193,7 +203,8 @@ public class MainMenu {
 
 
     private static void selectTitleScreenGag(){
-        titleScreenGag = titleScreenGags[(int)Math.floor(Math.random() * titleScreenGags.length)];
+        titleScreenGag = titleScreenGags[random.nextInt(titleScreenGags.length)];
+
         if (titleScreenGag.equals("Look at the window title!")){
             updateWindowTitle("Got em!");
         } else {
@@ -224,7 +235,7 @@ public class MainMenu {
             "Also available online!",
             "Created with love!",
             "Now with more math!",
-            "Crashes are free!",
+            "Crashes for free!",
             "Made by one guy!",
             "Tutorial friendly!",
             "Minetest compatible!",
@@ -243,12 +254,26 @@ public class MainMenu {
             "Look at the window title!",
             "My spoon is too big!",
             "Its chaos!",
-            "Dont shuck me, bro!",
+            "Dont shuck me bro!",
             "Translated to 1 language!",
             "Its this!",
             "Probably cures eyestrain!",
             "Multithreaded!",
             "You see it! Believe it!",
-
+            "Awesome!",
+            "Fancy!",
+            "Null pointers!",
+            "Renders to your screen!",
+            "Context is current!",
+            "Words words words!",
+            "Flipped arrays!",
+            "Works until broken!",
+            "Tomorrows today!",
+            "Creeper free!",
+            "Automatic!",
+            "Chunks!",
+            "Yo banana boy!",
+            "Was it a car or a cat I saw?",
+            "Now with more bugs!"
     };
 }
