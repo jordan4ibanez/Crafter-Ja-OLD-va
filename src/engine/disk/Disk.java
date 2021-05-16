@@ -4,10 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import game.chunk.ChunkObject;
 import org.joml.Vector3d;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.zip.GZIPInputStream;
 
 public class Disk {
 
@@ -35,27 +36,52 @@ public class Disk {
 
     private static ObjectMapper objectMapper = new ObjectMapper();
 
-    public static ChunkObject loadChunkFromDisk(int x, int z){
+    public static ChunkObject loadChunkFromDisk(int x, int z) throws IOException {
 
         //System.out.println("loading!!");
         String key = x + " " + z;
+        String dir = "Worlds/world1/" + key + ".chunk";
 
         ChunkSavingObject thisChunkLoaded = null;
 
-        File test = new File("Worlds/world1/" + key + ".chunk");
+        File test = new File(dir);
 
         if (!test.canRead()){
             //System.out.println("FAILED TO LOAD A CHUNK!");
             return(null);
         }
 
+
+        //learned from https://www.journaldev.com/966/java-gzip-example-compress-decompress-file
+        ByteArrayOutputStream bais;
         try {
-            thisChunkLoaded = objectMapper.readValue(test, ChunkSavingObject.class);
+            FileInputStream fis = new FileInputStream(dir);
+            GZIPInputStream gis = new GZIPInputStream(fis);
+            byte[] buffer = new byte[1024];
+            int len;
+            bais = new ByteArrayOutputStream();
+            while((len = gis.read(buffer)) != -1){
+                bais.write(buffer, 0, len);
+            }
+            //close resources
+            bais.close();
+            gis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        try {
+            thisChunkLoaded = objectMapper.readValue(bais.toString(), ChunkSavingObject.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        if (thisChunkLoaded != null && thisChunkLoaded.block == null){
+        if (thisChunkLoaded == null){
+            return null;
+        }
+
+        if (thisChunkLoaded.block == null){
             return null;
         }
 

@@ -5,6 +5,7 @@ import engine.graph.Mesh;
 import org.joml.Vector2i;
 import org.joml.Vector3i;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -652,7 +653,12 @@ public class Chunk {
             int currBlock;
             byte height;
 
-            ChunkObject loadedChunk = loadChunkFromDisk(chunkX, chunkZ);
+            ChunkObject loadedChunk = null;
+            try {
+                loadedChunk = loadChunkFromDisk(chunkX, chunkZ);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
             if (loadedChunk != null) {
                 map.put(chunkX + " " + chunkZ, loadedChunk);
