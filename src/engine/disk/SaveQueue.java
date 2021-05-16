@@ -21,7 +21,6 @@ public class SaveQueue {
     public static void startSaveThread(){
         new Thread(() -> {
             final ObjectMapper mapper = new ObjectMapper();
-            final ObjectWriter writer = null;
 
             ChunkObject thisChunk;
             saveQueue = new ArrayDeque<>();
@@ -32,27 +31,27 @@ public class SaveQueue {
 
                         ChunkSavingObject savingObject = new ChunkSavingObject();
 
-                        savingObject.ID = thisChunk.ID;
+                        savingObject.I = thisChunk.ID;
                         savingObject.x = thisChunk.x;
                         savingObject.z = thisChunk.z;
-                        savingObject.block = thisChunk.block;
-                        savingObject.rotation = thisChunk.rotation;
-                        savingObject.light = thisChunk.light;
-                        savingObject.heightMap = thisChunk.heightMap;
-                        savingObject.lightLevel = thisChunk.lightLevel;
+                        savingObject.b = thisChunk.block;
+                        savingObject.r = thisChunk.rotation;
+                        savingObject.l = thisChunk.light;
+                        savingObject.h = thisChunk.heightMap;
+                        savingObject.e = thisChunk.lightLevel;
 
                         String stringedChunk = mapper.writeValueAsString(savingObject);
 
                         //crate new file if does not exist
-                        File test = new File("Worlds/world1/" + savingObject.ID + ".chunk");
+                        File test = new File("Worlds/world1/" + savingObject.I + ".chunk");
                         if (!test.canRead()){
-                            File newFile = new File("Worlds/world1/" + savingObject.ID + ".chunk");
+                            File newFile = new File("Worlds/world1/" + savingObject.I + ".chunk");
                             newFile.createNewFile();
                         }
 
                         //learned from https://www.journaldev.com/966/java-gzip-example-compress-decompress-file
                         ByteArrayInputStream bais = new ByteArrayInputStream(stringedChunk.getBytes());
-                        FileOutputStream fos = new FileOutputStream("Worlds/world1/" + savingObject.ID + ".chunk");
+                        FileOutputStream fos = new FileOutputStream("Worlds/world1/" + savingObject.I + ".chunk");
                         GZIPOutputStream gzipOS = new GZIPOutputStream(fos);
                         byte[] buffer = new byte[1024];
                         int len;
@@ -82,26 +81,27 @@ public class SaveQueue {
             //System.out.println("SAVED WORLD!");
             ChunkSavingObject savingObject = new ChunkSavingObject();
 
-            savingObject.ID = thisChunk.ID;
+            savingObject.I = thisChunk.ID;
             savingObject.x = thisChunk.x;
             savingObject.z = thisChunk.z;
-            savingObject.block = thisChunk.block;
-            savingObject.rotation = thisChunk.rotation;
-            savingObject.light = thisChunk.light;
-            savingObject.heightMap = thisChunk.heightMap;
+            savingObject.b = thisChunk.block;
+            savingObject.r = thisChunk.rotation;
+            savingObject.l = thisChunk.light;
+            savingObject.h = thisChunk.heightMap;
+            savingObject.e = thisChunk.lightLevel;
 
             String stringedChunk = mapper.writeValueAsString(savingObject);
 
             //crate new file if does not exist
-            File test = new File("Worlds/world1/" + savingObject.ID + ".chunk");
+            File test = new File("Worlds/world1/" + savingObject.I + ".chunk");
             if (!test.canRead()){
-                File newFile = new File("Worlds/world1/" + savingObject.ID + ".chunk");
+                File newFile = new File("Worlds/world1/" + savingObject.I + ".chunk");
                 newFile.createNewFile();
             }
 
             //learned from https://www.journaldev.com/966/java-gzip-example-compress-decompress-file
             ByteArrayInputStream bais = new ByteArrayInputStream(stringedChunk.getBytes());
-            FileOutputStream fos = new FileOutputStream("Worlds/world1/" + savingObject.ID + ".chunk");
+            FileOutputStream fos = new FileOutputStream("Worlds/world1/" + savingObject.I + ".chunk");
             GZIPOutputStream gzipOS = new GZIPOutputStream(fos);
             byte[] buffer = new byte[1024];
             int len;

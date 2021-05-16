@@ -81,20 +81,20 @@ public class Disk {
             return null;
         }
 
-        if (thisChunkLoaded.block == null){
+        if (thisChunkLoaded.b == null){
             return null;
         }
 
         ChunkObject abstractedChunk = new ChunkObject();
 
-        abstractedChunk.ID = thisChunkLoaded.ID;
+        abstractedChunk.ID = thisChunkLoaded.I;
         abstractedChunk.x = thisChunkLoaded.x;
         abstractedChunk.z = thisChunkLoaded.z;
-        abstractedChunk.block = thisChunkLoaded.block;
-        abstractedChunk.rotation = thisChunkLoaded.rotation;
-        abstractedChunk.light = thisChunkLoaded.light;
-        abstractedChunk.heightMap = thisChunkLoaded.heightMap;
-        abstractedChunk.lightLevel = thisChunkLoaded.lightLevel;
+        abstractedChunk.block = thisChunkLoaded.b;
+        abstractedChunk.rotation = thisChunkLoaded.r;
+        abstractedChunk.light = thisChunkLoaded.l;
+        abstractedChunk.heightMap = thisChunkLoaded.h;
+        abstractedChunk.lightLevel = thisChunkLoaded.e;
 
         return(abstractedChunk);
     }

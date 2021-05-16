@@ -845,8 +845,6 @@ public class Chunk {
 
                 }
 
-                //todo: add in blank chunk boolean
-
                 //dump everything into the chunk updater
                 for (int i = 0; i < 8; i++) {
                     //generateChunkMesh(thisChunk.x, thisChunk.z, i); //instant
