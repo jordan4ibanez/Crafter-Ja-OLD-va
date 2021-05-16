@@ -58,7 +58,7 @@ public class SoundAPI {
         playSoundSource(soundBuffer, thisSource);
     }
 
-    public static void playSound(String name) {
+    public static SoundSource playSound(String name) {
         SoundBuffer soundBuffer = null;
         try {
             soundBuffer = new SoundBuffer("sounds/" + name + ".ogg");
@@ -71,6 +71,8 @@ public class SoundAPI {
         thisSource.setBuffer(soundBuffer.getBufferId());
 
         playSoundSource(soundBuffer, thisSource);
+
+        return thisSource;
     }
 
     public static void playSound(String name, boolean randomPitch) {

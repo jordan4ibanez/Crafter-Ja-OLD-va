@@ -1,10 +1,14 @@
 package game.mainMenu;
 
+import engine.sound.SoundBuffer;
+import engine.sound.SoundSource;
+
 import static engine.MouseInput.*;
 import static engine.Time.getDelta;
 import static engine.Window.updateWindowTitle;
 import static engine.graph.Camera.setCameraPosition;
 import static engine.scene.SceneHandler.setScene;
+import static engine.sound.SoundAPI.playSound;
 import static game.mainMenu.MainMenuAssets.createMainMenuBackGroundTile;
 import static game.mainMenu.MainMenuAssets.createMenuMenuTitleBlock;
 
@@ -21,6 +25,8 @@ public class MainMenu {
     private static float bounceAnimation = 0.75f;
 
     private static float backGroundScroll = 0f;
+
+    private static SoundSource titleMusic;
 
     public static void initMainMenu() throws Exception {
 
@@ -50,6 +56,8 @@ public class MainMenu {
         createMenuMenuTitleBlock();
         createMainMenuBackGroundTile();
         selectTitleScreenGag();
+
+        titleMusic = playSound("main_menu");
     }
 
     public static byte[][] getTitleBlocks(){
@@ -67,6 +75,7 @@ public class MainMenu {
         }
 
         if (isLeftButtonPressed()){
+            titleMusic.stop();
             setScene((byte)1);
             toggleMouseLock();
         }
