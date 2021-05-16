@@ -112,6 +112,10 @@ public class MainMenu {
         makeBlocksFlyIn();
         makeTitleBounce();
         makeBackGroundScroll();
+
+        if (!titleMusic.isPlaying()){
+            titleMusic.play();
+        }
     }
 
     public static float getTitleBounce(){
