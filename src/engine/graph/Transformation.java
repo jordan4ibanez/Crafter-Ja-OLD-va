@@ -1,11 +1,10 @@
 package engine.graph;
 
 import org.joml.Matrix4d;
-import org.joml.Matrix4f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import static engine.Renderer.getWindowSize;
+import static engine.GameRenderer.getWindowSize;
 import static game.tnt.TNTEntity.getTNTPosition;
 import static game.tnt.TNTEntity.getTNTScale;
 import static engine.graph.Camera.getCameraPosition;

@@ -31,7 +31,7 @@ import static game.player.Inventory.*;
 import static game.player.Player.*;
 import static org.lwjgl.opengl.GL11.*;
 
-public class Renderer {
+public class GameRenderer {
 
     private static float FOV = (float) Math.toRadians(72.0f); //todo: make this a calculator method ala calculateFOV(float);
 

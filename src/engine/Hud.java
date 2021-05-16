@@ -6,15 +6,13 @@ import engine.graph.Mesh;
 import engine.graph.Texture;
 import game.item.Item;
 import org.joml.Vector2d;
-import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import static engine.MouseInput.*;
-import static engine.Renderer.getWindowScale;
-import static engine.Renderer.getWindowSize;
+import static engine.GameRenderer.getWindowScale;
+import static engine.GameRenderer.getWindowSize;
 import static engine.Time.getDelta;
 import static engine.Window.*;
 import static engine.sound.SoundAPI.playSound;
