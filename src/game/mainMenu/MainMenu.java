@@ -28,6 +28,8 @@ public class MainMenu {
 
     private static SoundSource titleMusic;
 
+    private static boolean lockOutReset = false;
+
     public static void initMainMenu() throws Exception {
 
         setCameraPosition(0,-8,0);
@@ -60,6 +62,26 @@ public class MainMenu {
         titleMusic = playSound("main_menu");
     }
 
+    //debug
+    private static void resetMainMenu(){
+        //set initial random float variables
+        for (int x = 0; x < 5; x++){
+            //assume equal lengths
+            for (int y = 0; y < 27; y++){
+                if (titleBlocks[x][y] == 1){
+                    titleOffsets[x][y] = 25d + Math.random()*15d;
+                }
+            }
+        }
+
+        haltBlockFlyIn = false;
+        initialBounce = true;
+        titleBounce = 25f;
+        bounceAnimation = 0.75f;
+
+        selectTitleScreenGag();
+    }
+
     public static byte[][] getTitleBlocks(){
         return titleBlocks;
     }
@@ -78,6 +100,13 @@ public class MainMenu {
             titleMusic.stop();
             setScene((byte)1);
             toggleMouseLock();
+        }
+
+        if (isRightButtonPressed() && !lockOutReset){
+            lockOutReset = true;
+            resetMainMenu();
+        } else {
+            lockOutReset = false;
         }
         makeBlocksFlyIn();
         makeTitleBounce();
