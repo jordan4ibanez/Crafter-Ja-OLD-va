@@ -1095,7 +1095,7 @@ public class Player {
 
     public static void hurtPlayer(int hurt){
         health -= hurt;
-        playSound("hurt", new Vector3f((float)pos.x, (float)pos.y, (float)pos.z), true);
+        playSound("hurt", true);
         calculateHealthBarElements();
         //doHurtRotation = true;
     }
