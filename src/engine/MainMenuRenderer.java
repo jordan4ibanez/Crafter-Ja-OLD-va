@@ -91,33 +91,6 @@ public class MainMenuRenderer {
         }
 
 
-
-
-        //title screen gag
-        {
-            glClear(GL_DEPTH_BUFFER_BIT);
-
-            float scale = 15f/(float)getTitleScreenGagLength();
-
-            if (scale > 1){
-                scale = 1;
-            }
-
-            //gray shadow
-            modelViewMatrix = getGenericMatrixWithPosRotationScale(new Vector3d(11.925,0,-20 + getTitleBounce()), new Vector3f(0, 0, -20f), new Vector3d(scale,scale,scale), viewMatrix);
-            hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            workerMesh = createCustomHudTextCentered(getTitleScreenGag(), 0.2f, 0.2f, 0.2f);
-            workerMesh.render();
-
-            glClear(GL_DEPTH_BUFFER_BIT);
-
-            //yellow part
-            modelViewMatrix = getGenericMatrixWithPosRotationScale(new Vector3d(12,0,-20 + getTitleBounce()), new Vector3f(0, 0, -20f), new Vector3d(scale,scale,scale), viewMatrix);
-            hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            workerMesh = createCustomHudTextCentered(getTitleScreenGag(), 1f, 1f, 0f);
-            workerMesh.render();
-        }
-
         //finished with 3d
 
         shaderProgram.unbind();
@@ -134,6 +107,43 @@ public class MainMenuRenderer {
         float windowScale = getWindowScale();
 
 
+
+        //title screen gag
+        {
+            glClear(GL_DEPTH_BUFFER_BIT);
+
+            //process scale of title screen gag text
+            float scale = (15f/(float)getTitleScreenGagLength());
+            if (scale > 1){
+                scale = 1;
+            }
+            scale *= windowScale / 30;
+
+            scale += getTitleBounce();
+
+
+
+            glClear(GL_DEPTH_BUFFER_BIT);
+
+            //gray shadow part
+            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(windowScale/2.27d,windowScale/3.77f,0), new Vector3f(0, 0, 20f), new Vector3d(scale,scale,scale));
+            hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            workerMesh = createCustomHudTextCentered(getTitleScreenGag(), 0.2f, 0.2f, 0.2f);
+            workerMesh.render();
+
+            glClear(GL_DEPTH_BUFFER_BIT);
+
+            //yellow part
+            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(windowScale/2.25d,windowScale/3.75f,0), new Vector3f(0, 0, 20f), new Vector3d(scale,scale,scale));
+            hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            workerMesh = createCustomHudTextCentered(getTitleScreenGag(), 1f, 1f, 0f);
+            workerMesh.render();
+        }
+
+
+
+
+        /*
         glClear(GL_DEPTH_BUFFER_BIT);
         {
             modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(0, (0) * windowScale/3d, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale/2d, windowScale/2d, windowScale/2d));
@@ -149,6 +159,8 @@ public class MainMenuRenderer {
             workerMesh = createCustomHudTextCentered("PLAY", 1f, 1f, 1f);
             workerMesh.render();
         }
+
+         */
 
 
     }

@@ -86,7 +86,8 @@ public class MainMenu {
         haltBlockFlyIn = false;
         initialBounce = true;
         titleBounce = 25f;
-        bounceAnimation = 0.75f;
+        bounceAnimation = 0f;
+        //bounceAnimation = 0.75f;
 
         selectTitleScreenGag();
     }
@@ -152,6 +153,7 @@ public class MainMenu {
     private static void makeTitleBounce(){
         float delta = getDelta();
 
+        /*
         if (initialBounce){
             float adder = delta * 30f;
 
@@ -163,15 +165,17 @@ public class MainMenu {
             }
         } else {
 
-            bounceAnimation += delta / 2f;
+         */
 
-            if (bounceAnimation > 1f){
-                bounceAnimation -= 1f;
-            }
+        bounceAnimation += delta / 2f;
 
-            //smooth bouncing
-            titleBounce = (float)((Math.sin(bounceAnimation * Math.PI * 2f) * 1.25f) + 1.25f);
+        if (bounceAnimation > 1f){
+            bounceAnimation -= 1f;
         }
+
+        //smooth bouncing
+        titleBounce = (float)((Math.sin(bounceAnimation * Math.PI * 2f) * 1.25f) + 1.25f);
+        //}
     }
 
     private static void makeBlocksFlyIn(){
