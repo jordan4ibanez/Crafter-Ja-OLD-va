@@ -2,6 +2,8 @@ package game.mainMenu;
 
 import engine.sound.SoundSource;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Random;
 
@@ -23,8 +25,8 @@ public class MainMenu {
     private static String titleScreenGag = "";
     private static byte titleScreenGagLength = 0;
 
-    private static boolean initialBounce = true;
-    private static float titleBounce = 25f;
+    private static final float blockOffsetInitial = 15f;
+    private static float titleBounce = 10f;
     private static float bounceAnimation = 0.75f;
 
     private static float backGroundScroll = 0f;
@@ -58,7 +60,7 @@ public class MainMenu {
             //assume equal lengths
             for (int y = 0; y < 27; y++){
                 if (titleBlocks[x][y] == 1){
-                    titleOffsets[x][y] = 25d + Math.random()*15d;
+                    titleOffsets[x][y] = blockOffsetInitial + Math.random()*15d;
                 }
             }
         }
@@ -77,16 +79,13 @@ public class MainMenu {
             //assume equal lengths
             for (int y = 0; y < 27; y++){
                 if (titleBlocks[x][y] == 1){
-                    titleOffsets[x][y] = 25d + Math.random()*15d;
+                    titleOffsets[x][y] = blockOffsetInitial + Math.random()*15d;
                 }
             }
         }
 
         haltBlockFlyIn = false;
-        initialBounce = true;
-        titleBounce = 25f;
-        bounceAnimation = 0f;
-        //bounceAnimation = 0.75f;
+        //bounceAnimation = 0f;
 
         selectTitleScreenGag();
     }
@@ -217,6 +216,17 @@ public class MainMenu {
     }
 
     public static String getTitleScreenGag(){
+        if (titleScreenGag.equals("R_A_N_D_O_M")){
+            int leftLimit = 97; // letter 'a'
+            int rightLimit = 122; // letter 'z'
+            int targetStringLength = 10;
+            Random random = new Random();
+
+            return random.ints(leftLimit, rightLimit + 1)
+                    .limit(targetStringLength)
+                    .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                    .toString() + "!";
+        }
         return titleScreenGag;
     }
 
@@ -226,6 +236,7 @@ public class MainMenu {
 
     //please keep this on the bottom
     private static final String[] titleScreenGags = new String[]{
+            "R_A_N_D_O_M",
             "aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ!",
             "Made in America!",
             "Made in Canada!",
