@@ -18,7 +18,7 @@ import static engine.Timer.getFpsCounted;
 import static engine.graph.Camera.*;
 import static engine.graph.Transformation.*;
 import static engine.graph.Transformation.buildOrthoProjModelMatrix;
-import static engine.Hud.*;
+import static engine.hud.Hud.*;
 import static game.Crafter.getDebugInfo;
 import static game.falling.FallingEntity.getFallingEntities;
 import static game.item.ItemEntity.*;

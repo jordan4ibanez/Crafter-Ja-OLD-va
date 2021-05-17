@@ -13,7 +13,7 @@ import static engine.disk.SaveQueue.startSaveThread;
 import static engine.scene.SceneHandler.handleSceneLogic;
 import static game.chunk.Chunk.*;
 import static game.chunk.ChunkMesh.generateChunkMesh;
-import static engine.Hud.*;
+import static engine.hud.Hud.*;
 import static engine.MouseInput.*;
 import static game.mainMenu.MainMenu.initMainMenu;
 import static game.mob.Mob.*;

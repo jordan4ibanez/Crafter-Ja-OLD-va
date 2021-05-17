@@ -4,7 +4,7 @@ import game.item.ItemEntity;
 import game.tnt.TNTEntity;
 
 import static engine.Controls.input;
-import static engine.Hud.hudOnStepTest;
+import static engine.hud.Hud.hudOnStepTest;
 import static engine.MainMenuRenderer.renderMainMenu;
 import static engine.MouseInput.mouseInput;
 import static engine.GameRenderer.renderGame;

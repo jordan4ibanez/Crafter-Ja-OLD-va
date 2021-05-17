@@ -8,14 +8,13 @@ import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import static engine.GameRenderer.*;
-import static engine.Hud.*;
+import static engine.hud.Hud.*;
 import static engine.Window.*;
 import static engine.graph.Transformation.*;
 
 import static game.mainMenu.MainMenu.*;
 import static game.mainMenu.MainMenuAssets.getTitleBackGroundMeshTile;
 import static game.mainMenu.MainMenuAssets.getTitleBlockMesh;
-import static game.player.Player.getPlayerPos;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
 
