@@ -624,7 +624,7 @@ public class GameRenderer {
 
                 //version info
                 {
-                    modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((-windowSize.x / 2d) + (windowSize.x / 600d)), ((windowSize.y / 2.d) - (windowSize.y / 600d)), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 30d, windowScale / 30d, windowScale / 30d));
+                    modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((-windowSize.x / 2d) + (windowSize.x / 600d)), ((windowSize.y / 2.1d) - (windowSize.y / 600d)), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 30d, windowScale / 30d, windowScale / 30d));
                     hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                     getVersionInfoTextShadow().render();
                 }
@@ -632,7 +632,7 @@ public class GameRenderer {
                 glClear(GL_DEPTH_BUFFER_BIT);
 
                 {
-                    modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(-windowSize.x / 2d, (windowSize.y / 2.d), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 30d, windowScale / 30d, windowScale / 30d));
+                    modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(-windowSize.x / 2d, (windowSize.y / 2.1d), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 30d, windowScale / 30d, windowScale / 30d));
                     hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                     getVersionInfoText().render();
                 }
@@ -774,19 +774,21 @@ public class GameRenderer {
                     } else {
                         getButtonMesh().render();
                     }
+
+
                 }
             }
 
             glClear(GL_DEPTH_BUFFER_BIT);
             {
-                modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(-windowScale / 5.25d, (1) * windowScale / 2.8d, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 20d, windowScale / 20d, windowScale / 20d));
+                modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(0, (1) * windowScale / 3d, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 20d, windowScale / 20d, windowScale / 20d));
                 hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 getContinueMesh().render();
             }
             glClear(GL_DEPTH_BUFFER_BIT);
 
             {
-                modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(-windowScale / 4.5d, windowScale / 50d, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 20d, windowScale / 20d, windowScale / 20d));
+                modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(0, (0) * windowScale / 3d, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 20d, windowScale / 20d, windowScale / 20d));
                 hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 getToggleVsyncMesh().render();
             }
@@ -794,17 +796,13 @@ public class GameRenderer {
             glClear(GL_DEPTH_BUFFER_BIT);
 
             {
-                modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(-windowScale / 12d, -windowScale / 3.25d, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 20d, windowScale / 20d, windowScale / 20d));
+                modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(0, -1 * windowScale / 3d, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 20d, windowScale / 20d, windowScale / 20d));
                 hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 getQuitGameMesh().render();
             }
         }
 
-
-
         hudShaderProgram.unbind();
-
-        workerMesh = null;
     }
 
     public static void cleanupRenderer(){

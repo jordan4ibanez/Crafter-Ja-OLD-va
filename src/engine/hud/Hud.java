@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import static engine.MouseInput.*;
 import static engine.hud.TextHandling.createCustomHudText;
+import static engine.hud.TextHandling.createCustomHudTextCentered;
 import static engine.render.GameRenderer.getWindowScale;
 import static engine.render.GameRenderer.getWindowSize;
 import static engine.Time.getDelta;
@@ -106,9 +107,9 @@ public class Hud {
         createHalfHeart();
         createHeartShadow();
 
-        continueMesh = createCustomHudText("CONTINUE", 1,1,1);
-        toggleVsyncMesh = createCustomHudText("VSYNC:ON", 1,1,1);
-        quitGameMesh = createCustomHudText("QUIT", 1,1,1);
+        continueMesh = createCustomHudTextCentered("CONTINUE", 1,1,1);
+        toggleVsyncMesh = createCustomHudTextCentered("VSYNC:ON", 1,1,1);
+        quitGameMesh = createCustomHudTextCentered("QUIT", 1,1,1);
     }
 
     public static Vector3f getPlayerHudRotation(){
@@ -391,10 +392,10 @@ public class Hud {
 
     public static void toggleVsyncMesh(){
         if (isvSync()) {
-            toggleVsyncMesh = createCustomHudText("VSYNC:ON", 1, 1, 1);
+            toggleVsyncMesh = createCustomHudTextCentered("VSYNC:ON", 1, 1, 1);
             System.out.println("vsync on");
         } else {
-            toggleVsyncMesh = createCustomHudText("VSYNC:OFF", 1, 1, 1);
+            toggleVsyncMesh = createCustomHudTextCentered("VSYNC:OFF", 1, 1, 1);
             System.out.println("vsync off");
         }
     }

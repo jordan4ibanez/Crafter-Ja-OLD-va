@@ -226,7 +226,7 @@ public class MainMenu {
 
     //please keep this on the bottom
     private static final String[] titleScreenGags = new String[]{
-            "aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ",
+            "aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ!",
             "Made in America!",
             "Made in Canada!",
             "Clam approved!",
@@ -257,10 +257,10 @@ public class MainMenu {
             "Doesn't ｆｏｒｍａｔ text right!",
             "Look at the window title!",
             "My spoon is too big!",
-            "Its chaos!",
+            "It's chaos!",
             "Don't shuck me, bro!",
             "Translated to 1 language!",
-            "Its this!",
+            "It's this!",
             "Probably cures eyestrain!",
             "Multithreaded!",
             "You see it! Believe it!",
@@ -276,7 +276,7 @@ public class MainMenu {
             "Creeper free!",
             "Automatic!",
             "Chunks!",
-            "Yo banana boy!",
+            "Yo, banana boy!",
             "Was it a car or a cat I saw?",
             "Now with more bugs!",
             "No punctuation included!",
@@ -295,5 +295,8 @@ public class MainMenu {
             "#%^&*()_=+[]{}\\|;:'\",<.>/?`~!",
             "Created the hard way!",
             "Coming to a town near you!",
+            "Celeron55 is cool!",
+            "Found in the grocery isle!",
+            "Also try Mineclone 2!"
     };
 }
