@@ -5,9 +5,9 @@ import game.tnt.TNTEntity;
 
 import static engine.Controls.input;
 import static engine.hud.Hud.hudOnStepTest;
-import static engine.MainMenuRenderer.renderMainMenu;
+import static engine.render.MainMenuRenderer.renderMainMenu;
 import static engine.MouseInput.mouseInput;
-import static engine.GameRenderer.renderGame;
+import static engine.render.GameRenderer.renderGame;
 import static engine.Time.calculateDelta;
 import static engine.Timer.countFPS;
 import static engine.Window.windowShouldClose;

@@ -1,6 +1,5 @@
 package game.mainMenu;
 
-import engine.sound.SoundBuffer;
 import engine.sound.SoundSource;
 
 import java.util.Date;
@@ -291,5 +290,6 @@ public class MainMenu {
             "Gas gas gas!",
             "Initial B!",
             "Liquid cooled!",
+            "Not sus!",
     };
 }

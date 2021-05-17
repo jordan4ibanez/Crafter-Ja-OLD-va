@@ -11,8 +11,8 @@ import org.joml.Vector3f;
 import java.util.ArrayList;
 
 import static engine.MouseInput.*;
-import static engine.GameRenderer.getWindowScale;
-import static engine.GameRenderer.getWindowSize;
+import static engine.render.GameRenderer.getWindowScale;
+import static engine.render.GameRenderer.getWindowSize;
 import static engine.Time.getDelta;
 import static engine.Window.*;
 import static engine.sound.SoundAPI.playSound;

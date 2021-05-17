@@ -1,4 +1,4 @@
-package engine;
+package engine.render;
 
 import engine.graph.Mesh;
 import engine.graph.ShaderProgram;
@@ -7,7 +7,7 @@ import org.joml.Vector2d;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import static engine.GameRenderer.*;
+import static engine.render.GameRenderer.*;
 import static engine.hud.Hud.*;
 import static engine.Window.*;
 import static engine.graph.Transformation.*;
