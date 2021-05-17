@@ -24,6 +24,8 @@ import static game.particle.Particle.particlesOnStep;
 import static game.player.Player.*;
 
 public class SceneHandler {
+    //0 main menu
+    //1 gameplay
     private static byte currentScene = 0;
 
     public static void setScene(byte newScene){

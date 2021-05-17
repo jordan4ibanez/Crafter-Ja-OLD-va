@@ -99,7 +99,7 @@ public class Mob {
             System.out.println("the mobs health is: " + thisMob.health);
             playSound(thisMob.hurtSound, new Vector3f((float)thisMob.pos.x, (float)thisMob.pos.y, (float)thisMob.pos.z), true);
             if (thisMob.onGround) {
-                thisMob.inertia.y += 10;
+                thisMob.inertia.y = 7;
             }
             thisMob.hurtTimer = 0.5f;
         }

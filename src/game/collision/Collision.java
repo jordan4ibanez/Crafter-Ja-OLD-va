@@ -132,7 +132,7 @@ public class Collision {
                         setPlayerInWater(false);
                     }
                     //regular gravity
-                    inertia.y -= 40f * adjustedDelta;
+                    inertia.y -= 30f * adjustedDelta;
                 }
             }
 

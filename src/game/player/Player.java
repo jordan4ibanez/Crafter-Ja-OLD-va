@@ -541,7 +541,7 @@ public class Player {
         }
 
         if (!inWater && jump && isPlayerOnGround()){
-            inertia.y += 10.5f; //do not get delta for this
+            inertia.y += 8.75f; //do not get delta for this
             playerIsJumping = true;
         //the player comes to equilibrium with the water's surface
         // if this is not implemented like this

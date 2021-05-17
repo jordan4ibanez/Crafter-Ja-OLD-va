@@ -20,9 +20,9 @@ public class Pig {
 
     private final static Mesh[] bodyMeshes = createPigMesh();
 
-    private static final float accelerationMultiplier  = 0.05f;
-    final private static float maxWalkSpeed = 4.f;
-    final private static float movementAcceleration = 1000.f;
+    private static final float accelerationMultiplier  = 0.04f;
+    final private static float maxWalkSpeed = 2.f;
+    final private static float movementAcceleration = 900.f;
 
     private final static MobInterface mobInterface = new MobInterface() {
         @Override
@@ -35,7 +35,7 @@ public class Pig {
 
             if (thisObject.timer > 1.5f){
                 thisObject.stand = !thisObject.stand;
-                thisObject.timer = 0f;
+                thisObject.timer = (float)Math.random() * -2f;
                 thisObject.rotation = (float)(Math.toDegrees(Math.PI * Math.random() * randomDirFloat()));
             }
 
@@ -54,7 +54,7 @@ public class Pig {
 
             Vector3f inertia2D = new Vector3f(thisObject.inertia.x, 0, thisObject.inertia.z);
 
-            float maxSpeed = 3f;
+            float maxSpeed = maxWalkSpeed;
 
             if (thisObject.health <= 0){
                 maxSpeed = 0.01f;
@@ -67,7 +67,7 @@ public class Pig {
             }
 
 
-            thisObject.animationTimer += delta * (inertia2D.length() / maxSpeed) * 2f;
+            thisObject.animationTimer += delta * (inertia2D.length() / maxSpeed);
 
             if (thisObject.animationTimer >= 1f){
                 thisObject.animationTimer = 0f;
@@ -93,7 +93,7 @@ public class Pig {
                     double z = Math.cos(yaw);
 
                     if (getBlock((int) Math.floor(x + thisObject.pos.x), (int) Math.floor(thisObject.pos.y), (int) Math.floor(z + thisObject.pos.z)) > 0) {
-                        thisObject.inertia.y += 10f;
+                        thisObject.inertia.y += 8.75f;
                     }
                 }
             }
@@ -139,7 +139,7 @@ public class Pig {
     };
 
     public static void registerPigMob(){
-        registerMob(new MobDefinition("pig", "oink", 6, bodyMeshes, bodyOffsets, bodyRotations,1.2f, 0.45f, mobInterface));
+        registerMob(new MobDefinition("pig", "oink", 6, bodyMeshes, bodyOffsets, bodyRotations,0.9f, 0.45f, mobInterface));
     }
 
 

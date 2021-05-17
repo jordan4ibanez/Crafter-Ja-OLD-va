@@ -31,7 +31,7 @@ public class ParticleCollision {
         for (int i = 0; i < loops; i++) {
 
             if(gravity) {
-                inertia.y -= 40f * adjustedDelta; //gravity
+                inertia.y -= 30f * adjustedDelta; //gravity
             }
 
             //limit speed on x axis
