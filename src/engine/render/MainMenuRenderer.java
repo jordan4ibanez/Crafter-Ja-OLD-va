@@ -7,6 +7,7 @@ import org.joml.Vector2d;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
+import static engine.hud.TextHandling.createCustomHudTextCentered;
 import static engine.render.GameRenderer.*;
 import static engine.hud.Hud.*;
 import static engine.Window.*;
@@ -143,7 +144,7 @@ public class MainMenuRenderer {
 
 
 
-        //play button`
+        //play button
         {
             glClear(GL_DEPTH_BUFFER_BIT);
             {
@@ -152,9 +153,21 @@ public class MainMenuRenderer {
                 getButtonMesh().render();
             }
 
+
+            //play (shadow)
             glClear(GL_DEPTH_BUFFER_BIT);
             {
-                modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(0, ((0) * windowScale / 3d), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 20d, windowScale / 20d, windowScale / 20d));
+                modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(windowScale / 300d, windowScale / 300d, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 20d, windowScale / 20d, windowScale / 20d));
+                hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+
+                workerMesh = createCustomHudTextCentered("PLAY", 0.2f, 0.2f, 0.2f);
+                workerMesh.render();
+            }
+
+            //play (white)
+            glClear(GL_DEPTH_BUFFER_BIT);
+            {
+                modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(0, 0, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 20d, windowScale / 20d, windowScale / 20d));
                 hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
 
                 workerMesh = createCustomHudTextCentered("PLAY", 1f, 1f, 1f);

@@ -11,7 +11,7 @@ import org.joml.Vector3f;
 import java.util.ArrayList;
 
 import static engine.MouseInput.*;
-import static engine.hud.TextHandling.translateCharToArray;
+import static engine.hud.TextHandling.createCustomHudText;
 import static engine.render.GameRenderer.getWindowScale;
 import static engine.render.GameRenderer.getWindowSize;
 import static engine.Time.getDelta;
@@ -42,7 +42,6 @@ public class Hud {
     private static final float[] healthHudFloatArray = new float[10];
 
     //textures
-    private static Texture fontTextureAtlas;
     private static Texture hotBar;
     private static Texture selection;
     private static Texture mainInventory;
@@ -126,7 +125,6 @@ public class Hud {
 
 
     public static void initializeHudAtlas() throws Exception {
-        fontTextureAtlas = new Texture("textures/font.png");
         hotBar = new Texture("textures/hotbar.png");
         selection = new Texture("textures/hotbar_selected.png");
         mainInventory = new Texture("textures/inventory.png");
@@ -2958,174 +2956,6 @@ public class Hud {
         playerMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, playerTexture);
     }
 
-    public static Mesh createCustomHudText(String text, float r, float g, float b){
-
-        float x = 0f;
-        float z = 0f;
-
-
-        ArrayList positions = new ArrayList();
-        ArrayList textureCoord = new ArrayList();
-        ArrayList indices = new ArrayList();
-        ArrayList light = new ArrayList();
-
-        int indicesCount = 0;
-
-
-        for (char letter : text.toCharArray()) {
-            //front
-            positions.add(x + 0.8f);
-            positions.add(0f);
-            positions.add(0f);
-
-            positions.add(x);
-            positions.add(0f);
-            positions.add(0f);
-
-            positions.add(x);
-            positions.add(-1f);
-            positions.add(0f);
-
-            positions.add(x + 0.8f);
-            positions.add(-1f);
-            positions.add(0f);
-
-            //front
-            for (int i = 0; i < 4; i++) {
-                light.add(r);
-                light.add(g);
-                light.add(b);
-            }
-            //front
-            indices.add(0 + indicesCount);
-            indices.add(1 + indicesCount);
-            indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
-            indices.add(2 + indicesCount);
-            indices.add(3 + indicesCount);
-
-            indicesCount += 4;
-
-            //-x +x   -y +y
-            // 0  1    2  3
-
-            float[] thisCharacterArray = translateCharToArray(letter);
-
-            //front
-            textureCoord.add(thisCharacterArray[1]);//1
-            textureCoord.add(thisCharacterArray[2]);//2
-            textureCoord.add(thisCharacterArray[0]);//0
-            textureCoord.add(thisCharacterArray[2]);//2
-            textureCoord.add(thisCharacterArray[0]);//0
-            textureCoord.add(thisCharacterArray[3]);//3
-            textureCoord.add(thisCharacterArray[1]);//1
-            textureCoord.add(thisCharacterArray[3]);//3
-
-            x++;
-        }
-
-
-        //convert the position objects into usable array
-        float[] positionsArray = new float[positions.size()];
-        for (int i = 0; i < positions.size(); i++) {
-            positionsArray[i] = (float) positions.get(i);
-        }
-
-        //convert the light objects into usable array
-        float[] lightArray = new float[light.size()];
-        for (int i = 0; i < light.size(); i++) {
-            lightArray[i] = (float) light.get(i);
-        }
-
-        //convert the indices objects into usable array
-        int[] indicesArray = new int[indices.size()];
-        for (int i = 0; i < indices.size(); i++) {
-            indicesArray[i] = (int) indices.get(i);
-        }
-
-        //convert the textureCoord objects into usable array
-        float[] textureCoordArray = new float[textureCoord.size()];
-        for (int i = 0; i < textureCoord.size(); i++) {
-            textureCoordArray[i] = (float) textureCoord.get(i);
-        }
-
-        return new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, fontTextureAtlas);
-    }
-
-
-    public static Mesh createCustomHudTextCentered(String text, float r, float g, float b){
-        //x is the actual position in the mesh creation of the letter
-        float x = ((-text.length()/2f) * 0.8f);
-        //get the amount of letters in the string
-        int stringLength = text.length();
-
-        float[] positions = new float[stringLength * 12];
-        float[] textureCoord = new float[stringLength * 8];
-        int[] indices = new int[stringLength * 6];
-
-        float[] light = new float[stringLength * 12];
-
-        int indicesCount = 0;
-
-
-        int i = 0; //positions count
-        int a = 0; //light count
-        int w = 0; //textureCoord count
-        int t = 0; //indices count
-
-        for (char letter : text.toCharArray()) {
-            positions[i     ] = (x + 0.8f);
-            positions[i + 1 ] = (0.5f);
-            positions[i + 2 ] = (0f);
-            positions[i + 3 ] = (x);
-            positions[i + 4 ] = (0.5f);
-            positions[i + 5 ] = (0f);
-            positions[i + 6 ] = (x);
-            positions[i + 7 ] = (-0.5f);
-            positions[i + 8 ] = (0f);
-            positions[i + 9 ] = (x + 0.8f);
-            positions[i + 10] = (-0.5f);
-            positions[i + 11] = (0f);
-            i += 12;
-
-            for (int q = 0; q < 4; q++) {
-                light[a    ] = (r);
-                light[a + 1] = (g);
-                light[a + 2] = (b);
-                a += 3;
-            }
-
-            indices[t    ] = (0 + indicesCount);
-            indices[t + 1] = (1 + indicesCount);
-            indices[t + 2] = (2 + indicesCount);
-            indices[t + 3] = (0 + indicesCount);
-            indices[t + 4] = (2 + indicesCount);
-            indices[t + 5] = (3 + indicesCount);
-
-            t += 6;
-            indicesCount += 4;
-
-
-            //translate the character (char primitive) into a usable float array
-            float[] thisCharacterArray = translateCharToArray(letter);
-
-            textureCoord[w    ] = (thisCharacterArray[1]);
-            textureCoord[w + 1] = (thisCharacterArray[2]);
-            textureCoord[w + 2] = (thisCharacterArray[0]);
-            textureCoord[w + 3] = (thisCharacterArray[2]);
-            textureCoord[w + 4] = (thisCharacterArray[0]);
-            textureCoord[w + 5] = (thisCharacterArray[3]);
-            textureCoord[w + 6] = (thisCharacterArray[1]);
-            textureCoord[w + 7] = (thisCharacterArray[3]);
-            w += 8;
-
-            //shift the left of the letter to the right
-            //kind of like a type writer
-            x++;
-        }
-
-        return new Mesh(positions, light, indices, textureCoord, fontTextureAtlas);
-    }
 
 
     private static int[] invSelection;

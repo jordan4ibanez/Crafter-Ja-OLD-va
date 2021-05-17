@@ -226,12 +226,13 @@ public class MainMenu {
 
     //please keep this on the bottom
     private static final String[] titleScreenGags = new String[]{
+            "aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ",
             "Made in America!",
             "Made in Canada!",
             "Clam approved!",
             "Open source!",
             "Runs great on Linux!",
-            "Doesnt doubt!",
+            "Doesn't doubt!",
             "Probably original!",
             "The pigs are dangerous!",
             "2D!",
@@ -257,7 +258,7 @@ public class MainMenu {
             "Look at the window title!",
             "My spoon is too big!",
             "Its chaos!",
-            "Dont shuck me bro!",
+            "Don't shuck me, bro!",
             "Translated to 1 language!",
             "Its this!",
             "Probably cures eyestrain!",
@@ -291,5 +292,8 @@ public class MainMenu {
             "Initial B!",
             "Liquid cooled!",
             "Not sus!",
+            "#%^&*()_=+[]{}\\|;:'\",<.>/?`~!",
+            "Created the hard way!",
+            "Coming to a town near you!",
     };
 }
