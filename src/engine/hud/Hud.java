@@ -11,6 +11,7 @@ import org.joml.Vector3f;
 import java.util.ArrayList;
 
 import static engine.MouseInput.*;
+import static engine.hud.TextHandling.translateCharToArray;
 import static engine.render.GameRenderer.getWindowScale;
 import static engine.render.GameRenderer.getWindowSize;
 import static engine.Time.getDelta;
@@ -25,32 +26,22 @@ import static org.lwjgl.glfw.GLFW.*;
 public class Hud {
     private final static float scale = 1f;
 
-    private static final float FONT_WIDTH = 216f;
-    private static final float LETTER_WIDTH = 6f;
-
-    private static final float FONT_HEIGHT = 16f;
-    private static final float LETTER_HEIGHT = 8f;
-
     private static final Vector3f playerScale = new Vector3f(0.7f,0.8f,0.7f);
     private static final Vector3f playerRot = new Vector3f(0,0,0);
-
-    public static Vector3f getPlayerHudRotation(){
-        return playerRot;
-    }
 
     private static final Vector3f versionInfoPos = new Vector3f(-5f,8f,-14f);
     private static final Vector3f versionInfoShadowPos = new Vector3f(-4.9f,7.9f,-14f);
 
     private static boolean paused = false;
 
-    public static boolean isPaused(){
-        return paused;
-    }
+    //health bar elements
+    //calculated per half heart
+    private static final byte[] healthHudArray = new byte[10];
+    private static byte healthHudFloatIndex = 9;
+    private static boolean heartUp = true;
+    private static final float[] healthHudFloatArray = new float[10];
 
-    public static void setPaused(boolean truth){
-        paused = truth;
-    }
-
+    //textures
     private static Texture fontTextureAtlas;
     private static Texture hotBar;
     private static Texture selection;
@@ -69,7 +60,7 @@ public class Hud {
     private static Texture heartTexture;
     private static Texture heartShadowTexture;
 
-
+    //meshes
     private static Mesh thisHotBarMesh;
     private static Mesh thisSelectionMesh;
     private static Mesh thisInventoryMesh;
@@ -94,6 +85,44 @@ public class Hud {
     private static Mesh heartHudMesh;
     private static Mesh halfHeartHudMesh;
     private static Mesh heartShadowHudMesh;
+
+    public static void createHud(){
+        createDebugHotbar();
+        createInventory();
+        createSelection();
+        createWorldSelectionMesh();
+        createCrossHair();
+        versionInfoText = createCustomHudText(getVersionName(), 1,1,1);
+        versionInfoTextShadow = createCustomHudText(getVersionName(), 0,0,0);
+        createPlayerMesh();
+        createInventorySelection();
+        createWieldHandMesh((byte)15);
+        createInventorySlot();
+        createInventorySlotSelected();
+        createMenuBg();
+        createButtons();
+        rebuildMiningMesh(0);
+        createGlobalWaterEffect();
+        createHeart();
+        createHalfHeart();
+        createHeartShadow();
+
+        continueMesh = createCustomHudText("CONTINUE", 1,1,1);
+        toggleVsyncMesh = createCustomHudText("VSYNC:ON", 1,1,1);
+        quitGameMesh = createCustomHudText("QUIT", 1,1,1);
+    }
+
+    public static Vector3f getPlayerHudRotation(){
+        return playerRot;
+    }
+
+    public static boolean isPaused(){
+        return paused;
+    }
+
+    public static void setPaused(boolean truth){
+        paused = truth;
+    }
 
 
     public static void initializeHudAtlas() throws Exception {
@@ -221,38 +250,6 @@ public class Hud {
     public static Mesh getGlobalWaterEffectMesh(){
         return globalWaterEffectMesh;
     }
-
-    public static void createHud(){
-        createDebugHotbar();
-        createInventory();
-        createSelection();
-        createWorldSelectionMesh();
-        createCrossHair();
-        versionInfoText = createCustomHudText(getVersionName(), 1,1,1);
-        versionInfoTextShadow = createCustomHudText(getVersionName(), 0,0,0);
-        createPlayerMesh();
-        createInventorySelection();
-        createWieldHandMesh((byte)15);
-        createInventorySlot();
-        createInventorySlotSelected();
-        createMenuBg();
-        createButtons();
-        rebuildMiningMesh(0);
-        createGlobalWaterEffect();
-        createHeart();
-        createHalfHeart();
-        createHeartShadow();
-
-        continueMesh = createCustomHudText("CONTINUE", 1,1,1);
-        toggleVsyncMesh = createCustomHudText("VSYNC:ON", 1,1,1);
-        quitGameMesh = createCustomHudText("QUIT", 1,1,1);
-    }
-
-    //calculated per half heart
-    private static final byte[] healthHudArray = new byte[10];
-    private static byte healthHudFloatIndex = 9;
-    private static boolean heartUp = true;
-    private static float[] healthHudFloatArray = new float[10];
 
     public static void calculateHealthBarElements(){
         int health = getPlayerHealth();
@@ -2961,311 +2958,6 @@ public class Hud {
         playerMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, playerTexture);
     }
 
-    public static float[] translateCharToArray(char thisChar){
-        float[] letterArray = new float[]{0,0};
-        switch (thisChar){
-            case 'a':
-                letterArray[1] = 1;
-                break;
-            case 'A':
-                break;
-
-            case 'b':
-                letterArray[0] = 1;
-                letterArray[1] = 1;
-                break;
-            case 'B':
-                letterArray[0] = 1;
-                letterArray[1] = 0;
-                break;
-
-            case 'c':
-                letterArray[0] = 2;
-                letterArray[1] = 1;
-                break;
-            case 'C':
-                letterArray[0] = 2;
-                letterArray[1] = 0;
-                break;
-
-            case 'd':
-                letterArray[0] = 3;
-                letterArray[1] = 1;
-                break;
-            case 'D':
-                letterArray[0] = 3;
-                letterArray[1] = 0;
-                break;
-
-            case 'e':
-                letterArray[0] = 4;
-                letterArray[1] = 1;
-                break;
-            case 'E':
-                letterArray[0] = 4;
-                letterArray[1] = 0;
-                break;
-
-            case 'f':
-                letterArray[0] = 5;
-                letterArray[1] = 1;
-                break;
-            case 'F':
-                letterArray[0] = 5;
-                letterArray[1] = 0;
-                break;
-
-            case 'g':
-                letterArray[0] = 6;
-                letterArray[1] = 1;
-                break;
-            case 'G':
-                letterArray[0] = 6;
-                letterArray[1] = 0;
-                break;
-
-            case 'h':
-                letterArray[0] = 7;
-                letterArray[1] = 1;
-                break;
-            case 'H':
-                letterArray[0] = 7;
-                letterArray[1] = 0;
-                break;
-
-            case 'i':
-                letterArray[0] = 8;
-                letterArray[1] = 1;
-                break;
-            case 'I':
-                letterArray[0] = 8;
-                letterArray[1] = 0;
-                break;
-
-            case 'j':
-                letterArray[0] = 9;
-                letterArray[1] = 1;
-                break;
-            case 'J':
-                letterArray[0] = 9;
-                letterArray[1] = 0;
-                break;
-
-            case 'k':
-                letterArray[0] = 10;
-                letterArray[1] = 1;
-                break;
-            case 'K':
-                letterArray[0] = 10;
-                letterArray[1] = 0;
-                break;
-
-            case 'l':
-                letterArray[0] = 11;
-                letterArray[1] = 1;
-                break;
-            case 'L':
-                letterArray[0] = 11;
-                letterArray[1] = 0;
-                break;
-
-            case 'm':
-                letterArray[0] = 12;
-                letterArray[1] = 1;
-                break;
-            case 'M':
-                letterArray[0] = 12;
-                letterArray[1] = 0;
-                break;
-
-            case 'n':
-                letterArray[0] = 13;
-                letterArray[1] = 1;
-                break;
-            case 'N':
-                letterArray[0] = 13;
-                letterArray[1] = 0;
-                break;
-
-            case 'o':
-                letterArray[0] = 14;
-                letterArray[1] = 1;
-                break;
-            case 'O':
-                letterArray[0] = 14;
-                letterArray[1] = 0;
-                break;
-
-            case 'p':
-                letterArray[0] = 15;
-                letterArray[1] = 1;
-                break;
-            case 'P':
-                letterArray[0] = 15;
-                letterArray[1] = 0;
-                break;
-
-            case 'q':
-                letterArray[0] = 16;
-                letterArray[1] = 1;
-                break;
-            case 'Q':
-                letterArray[0] = 16;
-                letterArray[1] = 0;
-                break;
-
-            case 'r':
-                letterArray[0] = 17;
-                letterArray[1] = 1;
-                break;
-            case 'R':
-                letterArray[0] = 17;
-                letterArray[1] = 0;
-                break;
-
-            case 's':
-                letterArray[0] = 18;
-                letterArray[1] = 1;
-                break;
-            case 'S':
-                letterArray[0] = 18;
-                letterArray[1] = 0;
-                break;
-
-            case 't':
-                letterArray[0] = 19;
-                letterArray[1] = 1;
-                break;
-            case 'T':
-                letterArray[0] = 19;
-                letterArray[1] = 0;
-                break;
-
-            case 'u':
-                letterArray[0] = 20;
-                letterArray[1] = 1;
-                break;
-            case 'U':
-                letterArray[0] = 20;
-                letterArray[1] = 0;
-                break;
-
-            case 'v':
-                letterArray[0] = 21;
-                letterArray[1] = 1;
-                break;
-            case 'V':
-                letterArray[0] = 21;
-                letterArray[1] = 0;
-                break;
-
-            case 'w':
-                letterArray[0] = 22;
-                letterArray[1] = 1;
-                break;
-            case 'W':
-                letterArray[0] = 22;
-                letterArray[1] = 0;
-                break;
-
-            case 'x':
-                letterArray[0] = 23;
-                letterArray[1] = 1;
-                break;
-            case 'X':
-                letterArray[0] = 23;
-                letterArray[1] = 0;
-                break;
-
-            case 'y':
-                letterArray[0] = 24;
-                letterArray[1] = 1;
-                break;
-            case 'Y':
-                letterArray[0] = 24;
-                letterArray[1] = 0;
-                break;
-
-            case 'z':
-                letterArray[0] = 25;
-                letterArray[1] = 1;
-                break;
-            case 'Z':
-                letterArray[0] = 25;
-                letterArray[1] = 0;
-                break;
-                //now I know my ABCs
-
-            case '0':
-                letterArray[0] = 26;
-                break;
-            case '1':
-                letterArray[0] = 27;
-                break;
-            case '2':
-                letterArray[0] = 28;
-                break;
-            case '3':
-                letterArray[0] = 29;
-                break;
-            case '4':
-                letterArray[0] = 30;
-                break;
-            case '5':
-                letterArray[0] = 31;
-                break;
-            case '6':
-                letterArray[0] = 32;
-                break;
-            case '7':
-                letterArray[0] = 33;
-                break;
-            case '8':
-                letterArray[0] = 34;
-                break;
-            case '9':
-                letterArray[0] = 35;
-                break;
-
-            case '.':
-                letterArray[0] = 26;
-                letterArray[1] = 1;
-                break;
-            case '!':
-                letterArray[0] = 27;
-                letterArray[1] = 1;
-                break;
-            case '?':
-                letterArray[0] = 28;
-                letterArray[1] = 1;
-                break;
-
-            case ' ':
-                letterArray[0] = 29;
-                letterArray[1] = 1;
-                break;
-            case '-':
-                letterArray[0] = 30;
-                letterArray[1] = 1;
-                break;
-            case ':':
-                letterArray[0] = 31;
-                letterArray[1] = 1;
-                break;
-            default: //all unknown end up as "AAAAAAAAAA"  ¯\_(ツ)_/¯
-                break;
-        }
-
-        float[] returningArray = new float[4];
-
-        returningArray[0] = (letterArray[0] * LETTER_WIDTH) / FONT_WIDTH; //-x
-        returningArray[1] = ((letterArray[0] * LETTER_WIDTH) + LETTER_WIDTH - 1) / FONT_WIDTH; //+x
-        returningArray[2] = (letterArray[1] * LETTER_HEIGHT) / FONT_HEIGHT; //-y
-        returningArray[3] = ((letterArray[1] * LETTER_HEIGHT) + LETTER_HEIGHT - 1) / FONT_HEIGHT; //+y
-
-        return returningArray;
-    }
-
     public static Mesh createCustomHudText(String text, float r, float g, float b){
 
         float x = 0f;
@@ -3362,96 +3054,77 @@ public class Hud {
 
 
     public static Mesh createCustomHudTextCentered(String text, float r, float g, float b){
+        //x is the actual position in the mesh creation of the letter
+        float x = ((-text.length()/2f) * 0.8f);
+        //get the amount of letters in the string
+        int stringLength = text.length();
 
-        float x = (-text.length()/2f);
+        float[] positions = new float[stringLength * 12];
+        float[] textureCoord = new float[stringLength * 8];
+        int[] indices = new int[stringLength * 6];
 
-
-        ArrayList positions = new ArrayList();
-        ArrayList textureCoord = new ArrayList();
-        ArrayList indices = new ArrayList();
-        ArrayList light = new ArrayList();
+        float[] light = new float[stringLength * 12];
 
         int indicesCount = 0;
 
 
+        int i = 0; //positions count
+        int a = 0; //light count
+        int w = 0; //textureCoord count
+        int t = 0; //indices count
+
         for (char letter : text.toCharArray()) {
-            //front
-            positions.add(x + 0.8f);
-            positions.add(0f);
-            positions.add(0f);
+            positions[i     ] = (x + 0.8f);
+            positions[i + 1 ] = (0.5f);
+            positions[i + 2 ] = (0f);
+            positions[i + 3 ] = (x);
+            positions[i + 4 ] = (0.5f);
+            positions[i + 5 ] = (0f);
+            positions[i + 6 ] = (x);
+            positions[i + 7 ] = (-0.5f);
+            positions[i + 8 ] = (0f);
+            positions[i + 9 ] = (x + 0.8f);
+            positions[i + 10] = (-0.5f);
+            positions[i + 11] = (0f);
+            i += 12;
 
-            positions.add(x);
-            positions.add(0f);
-            positions.add(0f);
-
-            positions.add(x);
-            positions.add(-1f);
-            positions.add(0f);
-
-            positions.add(x + 0.8f);
-            positions.add(-1f);
-            positions.add(0f);
-
-            //front
-            for (int i = 0; i < 4; i++) {
-                light.add(r);
-                light.add(g);
-                light.add(b);
+            for (int q = 0; q < 4; q++) {
+                light[a    ] = (r);
+                light[a + 1] = (g);
+                light[a + 2] = (b);
+                a += 3;
             }
-            //front
-            indices.add(0 + indicesCount);
-            indices.add(1 + indicesCount);
-            indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
-            indices.add(2 + indicesCount);
-            indices.add(3 + indicesCount);
 
+            indices[t    ] = (0 + indicesCount);
+            indices[t + 1] = (1 + indicesCount);
+            indices[t + 2] = (2 + indicesCount);
+            indices[t + 3] = (0 + indicesCount);
+            indices[t + 4] = (2 + indicesCount);
+            indices[t + 5] = (3 + indicesCount);
+
+            t += 6;
             indicesCount += 4;
 
-            //-x +x   -y +y
-            // 0  1    2  3
 
+            //translate the character (char primitive) into a usable float array
             float[] thisCharacterArray = translateCharToArray(letter);
 
-            //front
-            textureCoord.add(thisCharacterArray[1]);//1
-            textureCoord.add(thisCharacterArray[2]);//2
-            textureCoord.add(thisCharacterArray[0]);//0
-            textureCoord.add(thisCharacterArray[2]);//2
-            textureCoord.add(thisCharacterArray[0]);//0
-            textureCoord.add(thisCharacterArray[3]);//3
-            textureCoord.add(thisCharacterArray[1]);//1
-            textureCoord.add(thisCharacterArray[3]);//3
+            textureCoord[w    ] = (thisCharacterArray[1]);
+            textureCoord[w + 1] = (thisCharacterArray[2]);
+            textureCoord[w + 2] = (thisCharacterArray[0]);
+            textureCoord[w + 3] = (thisCharacterArray[2]);
+            textureCoord[w + 4] = (thisCharacterArray[0]);
+            textureCoord[w + 5] = (thisCharacterArray[3]);
+            textureCoord[w + 6] = (thisCharacterArray[1]);
+            textureCoord[w + 7] = (thisCharacterArray[3]);
+            w += 8;
 
+            //shift the left of the letter to the right
+            //kind of like a type writer
             x++;
         }
 
-
-        //convert the position objects into usable array
-        float[] positionsArray = new float[positions.size()];
-        for (int i = 0; i < positions.size(); i++) {
-            positionsArray[i] = (float) positions.get(i);
-        }
-
-        //convert the light objects into usable array
-        float[] lightArray = new float[light.size()];
-        for (int i = 0; i < light.size(); i++) {
-            lightArray[i] = (float) light.get(i);
-        }
-
-        //convert the indices objects into usable array
-        int[] indicesArray = new int[indices.size()];
-        for (int i = 0; i < indices.size(); i++) {
-            indicesArray[i] = (int) indices.get(i);
-        }
-
-        //convert the textureCoord objects into usable array
-        float[] textureCoordArray = new float[textureCoord.size()];
-        for (int i = 0; i < textureCoord.size(); i++) {
-            textureCoordArray[i] = (float) textureCoord.get(i);
-        }
-
-        return new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, fontTextureAtlas);
+        return new Mesh(positions, light, indices, textureCoord, fontTextureAtlas);
     }
 
 
@@ -3611,5 +3284,54 @@ public class Hud {
 
     public static void togglePauseMenu(){
         setPaused(!isPaused());
+    }
+
+
+    private static Mesh create2DMesh(float width, float height, String texture) throws Exception {
+
+        //ArrayList positions = new ArrayList();
+        float[] positions = new float[12];
+        float[] textureCoord = new float[8];
+
+        int[] indices = new int[6];
+
+        float[] light = new float[12];
+
+
+        positions[0] = (width);
+        positions[1] = (height);
+        positions[2] = (0f);
+        positions[3] = (-width);
+        positions[4] = (height);
+        positions[5] = (0f);
+        positions[6] = (-width);
+        positions[7] = (-height);
+        positions[8] = (0f);
+        positions[9] = (width);
+        positions[10] = (-height);
+        positions[11] = (0f);
+
+        for (int i = 0; i < 12; i++) {
+            light[i] = 1f;
+        }
+
+        indices[0] = (0);
+        indices[1] = (1);
+        indices[2] = (2);
+        indices[3] = (0);
+        indices[4] = (2);
+        indices[5] = (3);
+
+        textureCoord[0] = (1f);
+        textureCoord[1] = (0f);
+        textureCoord[2] = (0f);
+        textureCoord[3] = (0f);
+        textureCoord[4] = (0f);
+        textureCoord[5] = (1f);
+        textureCoord[6] = (1f);
+        textureCoord[7] = (1f);
+
+
+        return new Mesh(positions, light, indices, textureCoord, new Texture(texture));
     }
 }

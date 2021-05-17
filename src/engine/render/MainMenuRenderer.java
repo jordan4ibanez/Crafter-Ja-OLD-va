@@ -143,20 +143,23 @@ public class MainMenuRenderer {
 
 
 
-        glClear(GL_DEPTH_BUFFER_BIT);
+        //play button`
         {
-            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(0, (0) * windowScale/3d, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale/2d, windowScale/2d, windowScale/2d));
-            hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            getButtonMesh().render();
-        }
+            glClear(GL_DEPTH_BUFFER_BIT);
+            {
+                modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(0, (0) * windowScale / 3d, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 2d, windowScale / 2d, windowScale / 2d));
+                hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                getButtonMesh().render();
+            }
 
-        glClear(GL_DEPTH_BUFFER_BIT);
-        {
-            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(0, ((0) * windowScale/3d) + (windowScale/50d), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale/20d, windowScale/20d, windowScale/20d));
-            hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            glClear(GL_DEPTH_BUFFER_BIT);
+            {
+                modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(0, ((0) * windowScale / 3d), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 20d, windowScale / 20d, windowScale / 20d));
+                hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
 
-            workerMesh = createCustomHudTextCentered("PLAY", 1f, 1f, 1f);
-            workerMesh.render();
+                workerMesh = createCustomHudTextCentered("PLAY", 1f, 1f, 1f);
+                workerMesh.render();
+            }
         }
 
         hudShaderProgram.unbind();
