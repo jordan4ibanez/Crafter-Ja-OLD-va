@@ -132,8 +132,10 @@ public class GameRenderer {
         }
     }
 
+
+    private static Mesh workerMesh;
+
     public static void renderGame(){
-        Mesh workerMesh;
         clearScreen();
 
         rescaleWindow();
