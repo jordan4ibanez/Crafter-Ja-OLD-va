@@ -5,10 +5,7 @@ import engine.graph.Texture;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static engine.Time.getDelta;
 import static game.blocks.BlockDefinition.*;
@@ -25,16 +22,28 @@ public class Particle {
         currentID++;
     }
 
+    private static final Deque<Integer> deletionQueue = new ArrayDeque<>();
+
     public static void particlesOnStep(){
+
         float delta = getDelta();
+
         for (ParticleObject thisParticle : particles.values()){
+
             applyParticleInertia(thisParticle.pos, thisParticle.inertia, true,true,true);
+
             thisParticle.timer += delta;
+
             if (thisParticle.timer > 1f){
-                particles.remove(thisParticle.key);
-                return;
+                deletionQueue.add(thisParticle.key);
             }
         }
+
+        while (!deletionQueue.isEmpty()) {
+            Integer key = deletionQueue.pop();
+            particles.remove(key);
+        }
+
     }
 
     public static Collection<ParticleObject> getAllParticles(){
