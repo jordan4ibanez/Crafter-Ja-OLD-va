@@ -20,6 +20,7 @@ import static engine.graph.Camera.*;
 import static engine.graph.Transformation.*;
 import static engine.graph.Transformation.buildOrthoProjModelMatrix;
 import static engine.hud.Hud.*;
+import static engine.hud.HudLogic.*;
 import static engine.hud.TextHandling.createCustomHudText;
 import static game.Crafter.getDebugInfo;
 import static game.falling.FallingEntity.getFallingEntities;

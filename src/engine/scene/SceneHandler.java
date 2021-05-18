@@ -4,7 +4,7 @@ import game.item.ItemEntity;
 import game.tnt.TNTEntity;
 
 import static engine.Controls.input;
-import static engine.hud.Hud.hudOnStepTest;
+import static engine.hud.HudLogic.hudOnStepTest;
 import static engine.render.MainMenuRenderer.renderMainMenu;
 import static engine.MouseInput.mouseInput;
 import static engine.render.GameRenderer.renderGame;
@@ -26,6 +26,7 @@ import static game.player.Player.*;
 public class SceneHandler {
     //0 main menu
     //1 gameplay
+    //2 debug
     private static byte currentScene = 0;
 
     public static void setScene(byte newScene){
@@ -42,8 +43,16 @@ public class SceneHandler {
                 case 1:
                     gameLoop();
                     break;
+                case 3:
+                    debugLoop();
+                    break;
             }
         }
+
+    }
+
+
+    private static void debugLoop(){
 
     }
 

@@ -25,15 +25,10 @@ import static game.player.Player.*;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Hud {
-    private final static float scale = 1f;
-
     private static final Vector3f playerScale = new Vector3f(0.7f,0.8f,0.7f);
-    private static final Vector3f playerRot = new Vector3f(0,0,0);
 
     private static final Vector3f versionInfoPos = new Vector3f(-5f,8f,-14f);
     private static final Vector3f versionInfoShadowPos = new Vector3f(-4.9f,7.9f,-14f);
-
-    private static boolean paused = false;
 
     //health bar elements
     //calculated per half heart
@@ -51,9 +46,6 @@ public class Hud {
     private static Texture playerTexture;
     private static Texture inventorySlot;
     private static Texture inventorySlotSelected;
-    private static Texture button;
-    private static Texture buttonSelected;
-    private static Texture buttonPushed;
     private static Texture menuBg;
     private static Texture miningCrack;
     private static Texture globalWaterEffect;
@@ -86,7 +78,7 @@ public class Hud {
     private static Mesh halfHeartHudMesh;
     private static Mesh heartShadowHudMesh;
 
-    public static void createHud(){
+    public static void createHud() throws Exception {
         createDebugHotbar();
         createInventory();
         createSelection();
@@ -112,18 +104,6 @@ public class Hud {
         quitGameMesh = createCustomHudTextCentered("QUIT", 1,1,1);
     }
 
-    public static Vector3f getPlayerHudRotation(){
-        return playerRot;
-    }
-
-    public static boolean isPaused(){
-        return paused;
-    }
-
-    public static void setPaused(boolean truth){
-        paused = truth;
-    }
-
 
     public static void initializeHudAtlas() throws Exception {
         hotBar = new Texture("textures/hotbar.png");
@@ -134,9 +114,6 @@ public class Hud {
         playerTexture = new Texture("textures/player.png");
         inventorySlot = new Texture("textures/inventory_slot.png");
         inventorySlotSelected = new Texture("textures/inventory_slot_selected.png");
-        button = new Texture("textures/button.png");
-        buttonSelected = new Texture("textures/button_selected.png");
-        buttonPushed = new Texture("textures/button_pushed.png");
         menuBg = new Texture("textures/menu_bg.png");
         miningCrack = new Texture("textures/crack_anylength.png");
         globalWaterEffect = new Texture("textures/water_overlay.png");
@@ -178,10 +155,6 @@ public class Hud {
 
     public static Mesh getPlayerMesh(){
         return playerMesh;
-    }
-
-    public static Vector3f getPlayerHudRot(){
-        return playerRot;
     }
 
     public static Vector3f getPlayerHudScale(){
@@ -649,89 +622,10 @@ public class Hud {
         menuBgMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, menuBg);
     }
 
-    private static void createButtons(){
-        ArrayList positions = new ArrayList();
-        ArrayList textureCoord = new ArrayList();
-        ArrayList indices = new ArrayList();
-        ArrayList light = new ArrayList();
-
-
-        int indicesCount = 0;
-
-
-        //front
-        positions.add(0.5f);
-        positions.add(0.125f);
-        positions.add(0f);
-
-        positions.add(-0.5f);
-        positions.add(0.125f);
-        positions.add(0f);
-
-        positions.add(-0.5f);
-        positions.add(-0.125f);
-        positions.add(0f);
-
-        positions.add(0.5f);
-        positions.add(-0.125f);
-        positions.add(0f);
-        //front
-        float frontLight = 1f;//getLight(x, y, z + 1, chunkX, chunkZ) / maxLight;
-
-        //front
-        for (int i = 0; i < 12; i++) {
-            light.add(frontLight);
-        }
-        //front
-        indices.add(0 + indicesCount);
-        indices.add(1 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(0 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(3 + indicesCount);
-
-        indicesCount += 4;
-
-        //-x +x   -y +y
-        // 0  1    2  3
-
-        //front
-        textureCoord.add(1f);//1
-        textureCoord.add(0f);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(0f);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(1f);//3
-        textureCoord.add(1f);//1
-        textureCoord.add(1f);//3
-
-
-        //convert the position objects into usable array
-        float[] positionsArray = new float[positions.size()];
-        for (int i = 0; i < positions.size(); i++) {
-            positionsArray[i] = (float) positions.get(i);
-        }
-
-        //convert the light objects into usable array
-        float[] lightArray = new float[light.size()];
-        for (int i = 0; i < light.size(); i++) {
-            lightArray[i] = (float) light.get(i);
-        }
-
-        //convert the indices objects into usable array
-        int[] indicesArray = new int[indices.size()];
-        for (int i = 0; i < indices.size(); i++) {
-            indicesArray[i] = (int) indices.get(i);
-        }
-
-        //convert the textureCoord objects into usable array
-        float[] textureCoordArray = new float[textureCoord.size()];
-        for (int i = 0; i < textureCoord.size(); i++) {
-            textureCoordArray[i] = (float) textureCoord.get(i);
-        }
-        buttonMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, button);
-        buttonSelectedMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, buttonSelected);
-        buttonPushedMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, buttonPushed);
+    private static void createButtons() throws Exception {
+        buttonMesh = create2DMesh(0.5f,0.125f,"textures/button.png");
+        buttonSelectedMesh = create2DMesh(0.5f,0.125f,"textures/button_selected.png");
+        buttonPushedMesh = create2DMesh(0.5f,0.125f,"textures/button_pushed.png");
     }
 
     private static void createHalfHeart(){
@@ -1918,172 +1812,12 @@ public class Hud {
         thisWorldSelectionMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, worldSelection);
     }
 
-    private static void createCrossHair(){
-        ArrayList positions = new ArrayList();
-        ArrayList textureCoord = new ArrayList();
-        ArrayList indices = new ArrayList();
-        ArrayList light = new ArrayList();
-
-
-        int indicesCount = 0;
-
-
-        //front
-        positions.add(0.5f);
-        positions.add(0.5f);
-        positions.add(0f);
-
-        positions.add(-0.5f);
-        positions.add(0.5f);
-        positions.add(0f);
-
-        positions.add(-0.5f);
-        positions.add(-0.5f);
-        positions.add(0f);
-
-        positions.add(0.5f);
-        positions.add(-0.5f);
-        positions.add(0f);
-        //front
-        float frontLight = 1f;//getLight(x, y, z + 1, chunkX, chunkZ) / maxLight;
-
-        //front
-        for (int i = 0; i < 12; i++) {
-            light.add(frontLight);
-        }
-        //front
-        indices.add(0 + indicesCount);
-        indices.add(1 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(0 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(3 + indicesCount);
-
-        indicesCount += 4;
-
-        //-x +x   -y +y
-        // 0  1    2  3
-
-        //front
-        textureCoord.add(1f);//1
-        textureCoord.add(0f);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(0f);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(1f);//3
-        textureCoord.add(1f);//1
-        textureCoord.add(1f);//3
-
-
-        //convert the position objects into usable array
-        float[] positionsArray = new float[positions.size()];
-        for (int i = 0; i < positions.size(); i++) {
-            positionsArray[i] = (float) positions.get(i);
-        }
-
-        //convert the light objects into usable array
-        float[] lightArray = new float[light.size()];
-        for (int i = 0; i < light.size(); i++) {
-            lightArray[i] = (float) light.get(i);
-        }
-
-        //convert the indices objects into usable array
-        int[] indicesArray = new int[indices.size()];
-        for (int i = 0; i < indices.size(); i++) {
-            indicesArray[i] = (int) indices.get(i);
-        }
-
-        //convert the textureCoord objects into usable array
-        float[] textureCoordArray = new float[textureCoord.size()];
-        for (int i = 0; i < textureCoord.size(); i++) {
-            textureCoordArray[i] = (float) textureCoord.get(i);
-        }
-
-        thisCrossHairMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, crossHair);
+    private static void createCrossHair() throws Exception {
+        thisCrossHairMesh = create2DMesh(0.5f, 0.5f, "textures/crosshair.png");
     }
 
-    private static void createInventorySelection(){
-        ArrayList positions = new ArrayList();
-        ArrayList textureCoord = new ArrayList();
-        ArrayList indices = new ArrayList();
-        ArrayList light = new ArrayList();
-
-
-        int indicesCount = 0;
-        float thisTest = -14f;
-
-        //front
-        positions.add(scale);
-        positions.add(scale);
-        positions.add(thisTest); //z (how close it is to screen)
-
-        positions.add(-scale);
-        positions.add(scale);
-        positions.add(thisTest);
-
-        positions.add(-scale);
-        positions.add(-scale);
-        positions.add(thisTest);
-
-        positions.add(scale);
-        positions.add(-scale);
-        positions.add(thisTest);
-        //front
-        float frontLight = 1f;//getLight(x, y, z + 1, chunkX, chunkZ) / maxLight;
-
-        //front
-        for (int i = 0; i < 12; i++) {
-            light.add(frontLight);
-        }
-        //front
-        indices.add(0 + indicesCount);
-        indices.add(1 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(0 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(3 + indicesCount);
-
-        indicesCount += 4;
-
-        //-x +x   -y +y
-        // 0  1    2  3
-
-        //front
-        textureCoord.add(1f);//1
-        textureCoord.add(0f);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(0f);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(1f);//3
-        textureCoord.add(1f);//1
-        textureCoord.add(1f);//3
-
-
-        //convert the position objects into usable array
-        float[] positionsArray = new float[positions.size()];
-        for (int i = 0; i < positions.size(); i++) {
-            positionsArray[i] = (float) positions.get(i);
-        }
-
-        //convert the light objects into usable array
-        float[] lightArray = new float[light.size()];
-        for (int i = 0; i < light.size(); i++) {
-            lightArray[i] = (float) light.get(i);
-        }
-
-        //convert the indices objects into usable array
-        int[] indicesArray = new int[indices.size()];
-        for (int i = 0; i < indices.size(); i++) {
-            indicesArray[i] = (int) indices.get(i);
-        }
-
-        //convert the textureCoord objects into usable array
-        float[] textureCoordArray = new float[textureCoord.size()];
-        for (int i = 0; i < textureCoord.size(); i++) {
-            textureCoordArray[i] = (float) textureCoord.get(i);
-        }
-
-        inventorySelectionMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, selection);
+    private static void createInventorySelection() throws Exception {
+        inventorySelectionMesh = create2DMesh(0.5f, 0.5f, "textures/hotbar_selected.png");
     }
 
 
@@ -2958,176 +2692,11 @@ public class Hud {
     }
 
 
-
-    private static int[] invSelection;
-
-    public static int[] getInvSelection(){
-        return invSelection;
-    }
-
-    private static String oldSelection;
-
-    private static boolean mouseButtonPushed = false;
-
-    private static int pauseButtonSelection;
-
-    public static int getPauseButtonSelection(){
-        return pauseButtonSelection;
-    }
-
-    private static boolean clicking = false;
-
-    public static boolean getIfClicking(){
-        return clicking;
-    }
-
-    //todo: redo this mess
-    public static void hudOnStepTest(){
-
-        float delta = getDelta();
-
-        if (!getItemInInventorySlotName(getCurrentInventorySelection(), 0).equals(oldSelection)) {
-            resetWieldHandSetupTrigger();
-            oldSelection = getItemInInventorySlotName(getCurrentInventorySelection(), 0);
-        }
-
-        if (isPlayerInventoryOpen()) {
-
-            //begin player in inventory thing
-            //new scope because lazy
-            {
-
-                float windowScale = getWindowScale();
-                Vector2d basePlayerPos = new Vector2d(-(windowScale / 3.75d), (windowScale / 2.8d));
-                Vector2d mousePos = getMousePos();
-
-                float rotationY = (float)((mousePos.x - (getWindowWidth()/2f)) - basePlayerPos.x) / (windowScale * 1.2f);
-                rotationY *= 40f;
-                playerRot.y = rotationY;
-
-
-                float rotationX = (float)((mousePos.y - (getWindowHeight()/2f)) + (basePlayerPos.y /2f)) / (windowScale * 1.2f);
-                rotationX *= 40f;
-                playerRot.x = rotationX;
-            }
-
-
-            if (invSelection == null){
-                invSelection = new int[2];
-            } else {
-                if (isLeftButtonPressed()) {
-                    if (!mouseButtonPushed) {
-                        mouseButtonPushed = true;
-
-                        if (getMouseInventory() == null) {
-                            setMouseInventory(getItemInInventorySlot(invSelection[0], invSelection[1]));
-
-                            removeStackFromInventory(invSelection[0], invSelection[1]);
-                        } else {
-                            Item bufferItemMouse = getMouseInventory();
-                            Item bufferItemInv  = getItemInInventorySlot(invSelection[0], invSelection[1]);
-                            setItemInInventory(invSelection[0], invSelection[1], bufferItemMouse.name, bufferItemMouse.stack);
-                            setMouseInventory(bufferItemInv);
-                        }
-
-                    }
-                } else if (!isLeftButtonPressed()){
-                    mouseButtonPushed = false;
-                }
-            }
-
-            //need to create new object or the mouse position gets messed up
-            Vector2d mousePos = new Vector2d(getMousePos());
-
-            //work from the center
-            mousePos.x -= (getWindowSize().x/2f);
-            mousePos.y -= (getWindowSize().y/2f);
-            //invert the Y position to follow rendering coordinate system
-            mousePos.y *= -1f;
-
-            //collision detect the lower inventory
-            for (int x = 1; x <= 9; x++) {
-                for (int y = -2; y > -5; y--) {
-                    if (
-                            mousePos.x > ((x - 5) * (getWindowScale() / 9.5f)) - ((getWindowScale()/10.5f) / 2f) && mousePos.x < ((x - 5) * (getWindowScale() / 9.5f)) + ((getWindowScale()/10.5f) / 2f) && //x axis
-                            mousePos.y > ((y+0.3f) * (getWindowScale() / 9.5f)) - ((getWindowScale()/10.5f) / 2f) && mousePos.y < ((y+0.3f) * (getWindowScale() / 9.5f)) + ((getWindowScale()/10.5f) / 2f) //y axis
-                    ){
-                        invSelection[0] = (x-1);
-                        invSelection[1] = ((y*-1) - 1);
-                        return;
-                    }
-                }
-            }
-
-            //collision detect the inventory hotbar (upper part)
-            for (int x = 1; x <= 9; x++) {
-                if (
-                        mousePos.x > ((x - 5) * (getWindowScale() / 9.5f)) - ((getWindowScale()/10.5f) / 2f) && mousePos.x < ((x - 5) * (getWindowScale() / 9.5f)) + ((getWindowScale()/10.5f) / 2f) && //x axis
-                        mousePos.y > (-0.5f * (getWindowScale() / 9.5f)) - ((getWindowScale()/10.5f) / 2f) && mousePos.y < (-0.5f * (getWindowScale() / 9.5f)) + ((getWindowScale()/10.5f) / 2f) //y axis
-                ){
-                    invSelection[0] = (x-1);
-                    invSelection[1] = 0;
-                    return;
-                }
-            }
-            invSelection = null;
-        } else if (isPaused()){
-
-            if (pauseButtonSelection != -1 && isLeftButtonPressed() && !clicking){
-                clicking = true;
-                playSound("button");
-                if (pauseButtonSelection == 0){
-                    toggleMouseLock();
-                    setPaused(false);
-                }else if (pauseButtonSelection == 1) {
-                    setVSync(!isvSync());
-                    toggleVsyncMesh();
-                } else if (pauseButtonSelection == 2){
-                    glfwSetWindowShouldClose(getWindowHandle(), true);
-                }
-
-            } else if (!isLeftButtonPressed() && clicking) {
-                clicking = false;
-            }
-
-            //need to create new object or the mouse position gets messed up
-            Vector2d mousePos = new Vector2d(getMousePos());
-
-            //work from the center
-            mousePos.x -= (getWindowSize().x/2f);
-            mousePos.y -= (getWindowSize().y/2f);
-            //invert the Y position to follow rendering coordinate system
-            mousePos.y *= -1f;
-
-            for (int y = 0; y > -3; y --){
-//                Matrix4f modelViewMatrix = buildOrthoProjModelMatrix(new Vector3f(0, (y+1) * getWindowScale()/3f, 0), new Vector3f(0, 0, 0), new Vector3f(windowScale/2f, windowScale/2f, windowScale/2f));
-
-                if (mousePos.x > -(getWindowScale()/2f * 0.5f) && mousePos.x < (getWindowScale()/2f * 0.5f) && //x axis\
-                    mousePos.y > ((y+1) * getWindowScale()/3f) - ((getWindowScale()/2f) * 0.125f) && mousePos.y < ((y+1) * getWindowScale()/3f) + ((getWindowScale()/2f) * 0.125f)) { //y axis
-                    pauseButtonSelection = (y * -1);
-                    return;
-                }
-            }
-
-            pauseButtonSelection = -1;
-        }
-    }
-
-    public static void togglePauseMenu(){
-        setPaused(!isPaused());
-    }
-
-
     private static Mesh create2DMesh(float width, float height, String texture) throws Exception {
-
-        //ArrayList positions = new ArrayList();
         float[] positions = new float[12];
         float[] textureCoord = new float[8];
-
         int[] indices = new int[6];
-
         float[] light = new float[12];
-
 
         positions[0] = (width);
         positions[1] = (height);
@@ -3161,7 +2730,6 @@ public class Hud {
         textureCoord[5] = (1f);
         textureCoord[6] = (1f);
         textureCoord[7] = (1f);
-
 
         return new Mesh(positions, light, indices, textureCoord, new Texture(texture));
     }

@@ -3,12 +3,12 @@ package engine;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import static engine.hud.Hud.isPaused;
-import static engine.hud.Hud.togglePauseMenu;
 import static engine.MouseInput.*;
 import static engine.MouseInput.getMouseScroll;
 import static engine.Window.isKeyPressed;
 import static engine.Window.toggleFullScreen;
+import static engine.hud.HudLogic.isPaused;
+import static engine.hud.HudLogic.togglePauseMenu;
 import static game.Crafter.invertDebugInfoBoolean;
 import static game.item.ItemEntity.clearItems;
 import static game.mob.Mob.spawnMob;
