@@ -15,7 +15,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static engine.FancyMath.getDistance;
 import static engine.MouseInput.getMousePos;
-import static engine.Timer.getFpsCounted;
 import static engine.graph.Camera.*;
 import static engine.graph.Transformation.*;
 import static engine.graph.Transformation.buildOrthoProjModelMatrix;
@@ -657,7 +656,6 @@ public class GameRenderer {
                         workerMesh = createCustomHudText("X:" + getPlayerPos().x, 1f, 1f, 1f);
                         workerMesh.render();
                         workerMesh.cleanUp(false);
-                        workerMesh = null;
                     }
 
                     //y info
@@ -675,7 +673,6 @@ public class GameRenderer {
                         workerMesh = createCustomHudText("Y:" + getPlayerPos().y, 1f, 1f, 1f);
                         workerMesh.render();
                         workerMesh.cleanUp(false);
-                        workerMesh = null;
                     }
 
                     //z info
@@ -693,7 +690,6 @@ public class GameRenderer {
                         workerMesh = createCustomHudText("Z:" + getPlayerPos().z, 1f, 1f, 1f);
                         workerMesh.render();
                         workerMesh.cleanUp(false);
-                        workerMesh = null;
                     }
 
                     //render fps
@@ -701,17 +697,29 @@ public class GameRenderer {
                         glClear(GL_DEPTH_BUFFER_BIT);
                         modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((-windowSize.x / 2d) + (windowSize.x / 600d)), ((windowSize.y / 3.3d) - (windowSize.y / 600d)), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 30d, windowScale / 30d, windowScale / 30d));
                         hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                        workerMesh = createCustomHudText("FPS:" + getFpsCounted(), 0f, 0f, 0f);
+                        workerMesh = getFPSShadowMesh();
                         workerMesh.render();
-                        workerMesh.cleanUp(false);
 
                         glClear(GL_DEPTH_BUFFER_BIT);
                         modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d((-windowSize.x / 2d), (windowSize.y / 3.3d), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 30d, windowScale / 30d, windowScale / 30d));
                         hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                        workerMesh = createCustomHudText("FPS:" + getFpsCounted(), 1f, 1f, 1f);
+                        workerMesh = getFPSMesh();
                         workerMesh.render();
-                        workerMesh.cleanUp(false);
-                        workerMesh = null;
+                    }
+                } else {
+                    //only show FPS
+                    {
+                        glClear(GL_DEPTH_BUFFER_BIT);
+                        modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((-windowSize.x / 2d) + (windowSize.x / 600d)), ((windowSize.y / 2.3d) - (windowSize.y / 600d)), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 30d, windowScale / 30d, windowScale / 30d));
+                        hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                        workerMesh = getFPSShadowMesh();
+                        workerMesh.render();
+
+                        glClear(GL_DEPTH_BUFFER_BIT);
+                        modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d((-windowSize.x / 2d), (windowSize.y / 2.3d), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 30d, windowScale / 30d, windowScale / 30d));
+                        hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                        workerMesh = getFPSMesh();
+                        workerMesh.render();
                     }
                 }
 

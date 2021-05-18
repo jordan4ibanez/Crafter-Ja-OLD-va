@@ -9,6 +9,7 @@ import org.joml.Vector3f;
 
 import java.util.ArrayList;
 
+import static engine.Timer.getFpsCounted;
 import static engine.hud.TextHandling.createCustomHudText;
 import static engine.hud.TextHandling.createCustomHudTextCentered;
 import static engine.Time.getDelta;
@@ -62,6 +63,10 @@ public class Hud {
     private static Mesh halfHeartHudMesh;
     private static Mesh heartShadowHudMesh;
 
+
+    private static Mesh fpsShadowMesh;
+    private static Mesh fpsMesh;
+
     public static void createHud() throws Exception {
 
         //2D mesh creations
@@ -86,8 +91,12 @@ public class Hud {
         toggleVsyncMesh = createCustomHudTextCentered("VSYNC:ON", 1,1,1);
         quitGameMesh = createCustomHudTextCentered("QUIT", 1,1,1);
 
+        fpsShadowMesh = createCustomHudText("FPS: " + getFpsCounted(), 0f, 0f, 0f);
+        fpsMesh = createCustomHudText("FPS: " + getFpsCounted(), 1f, 1f, 1f);
+
         versionInfoText = createCustomHudText(getVersionName(), 1,1,1);
         versionInfoTextShadow = createCustomHudText(getVersionName(), 0,0,0);
+
 
 
         //3D mesh creations
@@ -270,6 +279,19 @@ public class Hud {
             toggleVsyncMesh = createCustomHudTextCentered("VSYNC:OFF", 1, 1, 1);
             System.out.println("vsync off");
         }
+    }
+
+    public static void buildFPSMesh() {
+        fpsShadowMesh = createCustomHudText("FPS: " + getFpsCounted(), 0f, 0f, 0f);
+        fpsMesh = createCustomHudText("FPS: " + getFpsCounted(), 1f, 1f, 1f);
+    }
+
+    public static Mesh getFPSMesh(){
+        return fpsMesh;
+    }
+
+    public static Mesh getFPSShadowMesh(){
+        return fpsShadowMesh;
     }
 
     public static void rebuildMiningMesh(int level) {

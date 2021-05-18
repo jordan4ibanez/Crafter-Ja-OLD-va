@@ -32,7 +32,7 @@ public class Crafter {
     private static int     chunkRenderDistance = 5;
     private static boolean debugInfo = true;
     private static final String versionName = "Crafter 0.03b Survival Test";
-    
+
 
     public static void setDebugInfo(boolean truth){
         debugInfo = truth;

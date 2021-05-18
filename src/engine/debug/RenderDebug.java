@@ -37,6 +37,7 @@ public class RenderDebug {
 
 
 
+        shaderProgram.unbind();
 
     }
 }

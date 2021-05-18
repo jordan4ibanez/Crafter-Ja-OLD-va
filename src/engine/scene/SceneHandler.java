@@ -5,14 +5,14 @@ import game.tnt.TNTEntity;
 
 import static engine.Controls.gameInput;
 import static engine.Controls.mainMenuInput;
+import static engine.Window.*;
+import static engine.debug.RenderDebug.renderDebug;
 import static engine.hud.HudLogic.hudOnStepTest;
 import static engine.render.MainMenuRenderer.renderMainMenu;
 import static engine.MouseInput.mouseInput;
 import static engine.render.GameRenderer.renderGame;
 import static engine.Time.calculateDelta;
 import static engine.Timer.countFPS;
-import static engine.Window.windowShouldClose;
-import static engine.Window.windowUpdate;
 import static engine.graph.Camera.updateCamera;
 import static engine.sound.SoundManager.updateListenerPosition;
 import static game.chunk.Chunk.globalChunkSaveToDisk;
@@ -36,6 +36,11 @@ public class SceneHandler {
 
     public static void handleSceneLogic() throws Exception {
 
+        //for debugging
+        if (currentScene == 2){
+            setWindowClearColor(0f,0f,0f,0f);
+        }
+
         while (!windowShouldClose()){
             switch (currentScene){
                 case 0:
@@ -44,7 +49,7 @@ public class SceneHandler {
                 case 1:
                     gameLoop();
                     break;
-                case 3:
+                case 2:
                     debugLoop();
                     break;
             }
@@ -54,7 +59,10 @@ public class SceneHandler {
 
 
     private static void debugLoop(){
+        calculateDelta();
 
+        renderDebug();
+        windowUpdate();
     }
 
 
