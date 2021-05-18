@@ -1,6 +1,7 @@
 package engine;
 
 import static engine.Window.updateWindowTitle;
+import static engine.debug.CheckHeapSize.dumpHeapSize;
 import static engine.hud.Hud.buildFPSMesh;
 import static game.Crafter.getVersionName;
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
@@ -44,6 +45,7 @@ public class Timer {
 //            System.out.println("framerate :" +  framesPerSecond);
             updateWindowTitle(getVersionName() + " | FPS: " + framesPerSecond);
             currentFpsCount = framesPerSecond;
+            //dumpHeapSize();
             buildFPSMesh();
             framesPerSecond = 0;
             elapsedTime = 0;
