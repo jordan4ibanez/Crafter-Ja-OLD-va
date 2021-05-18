@@ -24,6 +24,7 @@ public class Item {
     public boolean floatUp;
     public boolean exists;
     public boolean collecting;
+    public float collectionTimer = 0;
     public Vector3f rotation;
     public Vector3f inertia;
     public int ID;

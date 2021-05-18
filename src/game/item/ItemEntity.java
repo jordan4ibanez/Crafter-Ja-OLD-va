@@ -46,6 +46,9 @@ public class ItemEntity {
         float delta = getDelta();
         for (Item thisItem : items.values()){
 
+            if (thisItem.collectionTimer > 0f){
+                thisItem.collectionTimer -= delta;
+            }
             thisItem.timer += delta;
             thisItem.lightUpdateTimer += delta;
 
@@ -84,6 +87,7 @@ public class ItemEntity {
                         if (addItemToInventory(thisItem.name)) {
                             playSound("pickup");
                             thisItem.collecting = true;
+                            thisItem.collectionTimer = 0.1f;
                         }
                     }
                     if (thisItem.collecting) {
@@ -99,7 +103,7 @@ public class ItemEntity {
                     }
                 }
 
-                if (getDistance(thisItem.pos, getPlayerPosWithCollectionHeight()) < 0.2f){
+                if (getDistance(thisItem.pos, getPlayerPosWithCollectionHeight()) < 0.2f || thisItem.collectionTimer <= 0){
                     deletionQueue.add(thisItem.ID);
                     continue;
                 }
