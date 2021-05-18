@@ -4,25 +4,19 @@ package engine.hud;
 
 import engine.graph.Mesh;
 import engine.graph.Texture;
-import game.item.Item;
-import org.joml.Vector2d;
+
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
 
-import static engine.MouseInput.*;
 import static engine.hud.TextHandling.createCustomHudText;
 import static engine.hud.TextHandling.createCustomHudTextCentered;
-import static engine.render.GameRenderer.getWindowScale;
-import static engine.render.GameRenderer.getWindowSize;
 import static engine.Time.getDelta;
 import static engine.Window.*;
-import static engine.sound.SoundAPI.playSound;
+
 import static game.Crafter.getVersionName;
 import static game.chunk.ChunkMesh.convertLight;
-import static game.player.Inventory.*;
 import static game.player.Player.*;
-import static org.lwjgl.glfw.GLFW.*;
 
 public class Hud {
     private static final Vector3f playerScale = new Vector3f(0.7f,0.8f,0.7f);
@@ -38,19 +32,9 @@ public class Hud {
     private static final float[] healthHudFloatArray = new float[10];
 
     //textures
-    private static Texture hotBar;
-    private static Texture selection;
-    private static Texture mainInventory;
     private static Texture worldSelection;
-    private static Texture crossHair;
     private static Texture playerTexture;
-    private static Texture inventorySlot;
-    private static Texture inventorySlotSelected;
-    private static Texture menuBg;
     private static Texture miningCrack;
-    private static Texture globalWaterEffect;
-    private static Texture heartTexture;
-    private static Texture heartShadowTexture;
 
     //meshes
     private static Mesh thisHotBarMesh;
@@ -79,46 +63,45 @@ public class Hud {
     private static Mesh heartShadowHudMesh;
 
     public static void createHud() throws Exception {
-        createDebugHotbar();
-        createInventory();
-        createSelection();
-        createWorldSelectionMesh();
-        createCrossHair();
-        versionInfoText = createCustomHudText(getVersionName(), 1,1,1);
-        versionInfoTextShadow = createCustomHudText(getVersionName(), 0,0,0);
-        createPlayerMesh();
-        createInventorySelection();
-        createWieldHandMesh((byte)15);
-        createInventorySlot();
-        createInventorySlotSelected();
-        createMenuBg();
-        createButtons();
-        rebuildMiningMesh(0);
-        createGlobalWaterEffect();
-        createHeart();
-        createHalfHeart();
-        createHeartShadow();
 
+        //2D mesh creations
+        thisHotBarMesh = create2DMesh(0.5f,0.06043956043f, "textures/hotbar.png");
+        thisInventoryMesh = create2DMesh(0.5f,0.46335697399f,  "textures/inventory.png");
+        thisSelectionMesh = create2DMesh(0.5f, 0.5f, "textures/hotbar_selected.png");
+        thisCrossHairMesh = create2DMesh(0.5f, 0.5f, "textures/crosshair.png");
+        inventorySelectionMesh = create2DMesh(0.5f, 0.5f, "textures/hotbar_selected.png");
+        inventorySlotMesh = create2DMesh(0.5f,0.5f,"textures/inventory_slot.png");
+        inventorySlotSelectedMesh = create2DMesh(0.5f,0.5f, "textures/inventory_slot_selected.png");
+        menuBgMesh = create2DMesh(0.5f,0.5f, "textures/menu_bg.png");
+        buttonMesh = create2DMesh(0.5f,0.125f,"textures/button.png");
+        buttonSelectedMesh = create2DMesh(0.5f,0.125f,"textures/button_selected.png");
+        buttonPushedMesh = create2DMesh(0.5f,0.125f,"textures/button_pushed.png");
+        globalWaterEffectMesh = create2DMesh(0.5f,0.5f, "textures/water_overlay.png");
+        heartHudMesh = create2DMesh(0.5f, 0.5f, "textures/heart.png");
+        halfHeartHudMesh = create2DMesh(0.5f, 0.5f, 0.5f, "textures/heart.png");
+        heartShadowHudMesh = create2DMesh(0.5f, 0.5f, "textures/heart_shadow.png");
+
+        //2D text creations
         continueMesh = createCustomHudTextCentered("CONTINUE", 1,1,1);
         toggleVsyncMesh = createCustomHudTextCentered("VSYNC:ON", 1,1,1);
         quitGameMesh = createCustomHudTextCentered("QUIT", 1,1,1);
+
+        versionInfoText = createCustomHudText(getVersionName(), 1,1,1);
+        versionInfoTextShadow = createCustomHudText(getVersionName(), 0,0,0);
+
+
+        //3D mesh creations
+        createWieldHandMesh((byte)15);
+        rebuildMiningMesh(0);
+        createWorldSelectionMesh();
+        createPlayerMesh(); //todo REBUILD THIS JUNK, THIS IS HORRIBLE
     }
 
 
     public static void initializeHudAtlas() throws Exception {
-        hotBar = new Texture("textures/hotbar.png");
-        selection = new Texture("textures/hotbar_selected.png");
-        mainInventory = new Texture("textures/inventory.png");
         worldSelection = new Texture("textures/selection.png");
-        crossHair = new Texture("textures/crosshair.png");
         playerTexture = new Texture("textures/player.png");
-        inventorySlot = new Texture("textures/inventory_slot.png");
-        inventorySlotSelected = new Texture("textures/inventory_slot_selected.png");
-        menuBg = new Texture("textures/menu_bg.png");
         miningCrack = new Texture("textures/crack_anylength.png");
-        globalWaterEffect = new Texture("textures/water_overlay.png");
-        heartTexture = new Texture("textures/heart.png");
-        heartShadowTexture = new Texture("textures/heart_shadow.png");
     }
 
     public static Mesh getHeartHudMesh(){
@@ -279,90 +262,6 @@ public class Hud {
         return healthHudFloatArray;
     }
 
-    private static void createGlobalWaterEffect(){
-        ArrayList positions = new ArrayList();
-        ArrayList textureCoord = new ArrayList();
-        ArrayList indices = new ArrayList();
-        ArrayList light = new ArrayList();
-
-
-        int indicesCount = 0;
-
-
-        //front
-        positions.add(0.5f);
-        positions.add(0.5f);
-        positions.add(0f);
-
-        positions.add(-0.5f);
-        positions.add(0.5f);
-        positions.add(0f);
-
-        positions.add(-0.5f);
-        positions.add(-0.5f);
-        positions.add(0f);
-
-        positions.add(0.5f);
-        positions.add(-0.5f);
-        positions.add(0f);
-        //front
-        float frontLight = 1f;//getLight(x, y, z + 1, chunkX, chunkZ) / maxLight;
-
-        //front
-        for (int i = 0; i < 12; i++) {
-            light.add(frontLight);
-        }
-        //front
-        indices.add(0 + indicesCount);
-        indices.add(1 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(0 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(3 + indicesCount);
-
-        indicesCount += 4;
-
-        //-x +x   -y +y
-        // 0  1    2  3
-
-        //front
-        textureCoord.add(1f);//1
-        textureCoord.add(0f);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(0f);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(1f);//3
-        textureCoord.add(1f);//1
-        textureCoord.add(1f);//3
-
-
-        //convert the position objects into usable array
-        float[] positionsArray = new float[positions.size()];
-        for (int i = 0; i < positions.size(); i++) {
-            positionsArray[i] = (float) positions.get(i);
-        }
-
-        //convert the light objects into usable array
-        float[] lightArray = new float[light.size()];
-        for (int i = 0; i < light.size(); i++) {
-            lightArray[i] = (float) light.get(i);
-        }
-
-        //convert the indices objects into usable array
-        int[] indicesArray = new int[indices.size()];
-        for (int i = 0; i < indices.size(); i++) {
-            indicesArray[i] = (int) indices.get(i);
-        }
-
-        //convert the textureCoord objects into usable array
-        float[] textureCoordArray = new float[textureCoord.size()];
-        for (int i = 0; i < textureCoord.size(); i++) {
-            textureCoordArray[i] = (float) textureCoord.get(i);
-        }
-
-        globalWaterEffectMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, globalWaterEffect);
-    }
-
     public static void toggleVsyncMesh(){
         if (isvSync()) {
             toggleVsyncMesh = createCustomHudTextCentered("VSYNC:ON", 1, 1, 1);
@@ -371,753 +270,6 @@ public class Hud {
             toggleVsyncMesh = createCustomHudTextCentered("VSYNC:OFF", 1, 1, 1);
             System.out.println("vsync off");
         }
-    }
-
-    private static void createDebugHotbar(){
-        ArrayList positions = new ArrayList();
-        ArrayList textureCoord = new ArrayList();
-        ArrayList indices = new ArrayList();
-        ArrayList light = new ArrayList();
-
-
-        int indicesCount = 0;
-
-        //front
-        positions.add(0.5f);
-        positions.add(0.06043956043f);
-        positions.add(0f);
-
-        positions.add(-0.5f);
-        positions.add(0.06043956043f);
-        positions.add(0f);
-
-        positions.add(-0.5f);
-        positions.add(-0.06043956043f);
-        positions.add(0f);
-
-        positions.add(0.5f);
-        positions.add(-0.06043956043f);
-        positions.add(0f);
-        //front
-        float frontLight = 1f;//getLight(x, y, z + 1, chunkX, chunkZ) / maxLight;
-
-        //front
-        for (int i = 0; i < 12; i++) {
-            light.add(frontLight);
-        }
-        //front
-        indices.add(0 + indicesCount);
-        indices.add(1 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(0 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(3 + indicesCount);
-
-        indicesCount += 4;
-
-        //-x +x   -y +y
-        // 0  1    2  3
-
-        //front
-        textureCoord.add(1f);//1
-        textureCoord.add(0f);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(0f);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(1f);//3
-        textureCoord.add(1f);//1
-        textureCoord.add(1f);//3
-
-
-        //convert the position objects into usable array
-        float[] positionsArray = new float[positions.size()];
-        for (int i = 0; i < positions.size(); i++) {
-            positionsArray[i] = (float) positions.get(i);
-        }
-
-        //convert the light objects into usable array
-        float[] lightArray = new float[light.size()];
-        for (int i = 0; i < light.size(); i++) {
-            lightArray[i] = (float) light.get(i);
-        }
-
-        //convert the indices objects into usable array
-        int[] indicesArray = new int[indices.size()];
-        for (int i = 0; i < indices.size(); i++) {
-            indicesArray[i] = (int) indices.get(i);
-        }
-
-        //convert the textureCoord objects into usable array
-        float[] textureCoordArray = new float[textureCoord.size()];
-        for (int i = 0; i < textureCoord.size(); i++) {
-            textureCoordArray[i] = (float) textureCoord.get(i);
-        }
-
-        thisHotBarMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, hotBar);
-    }
-
-    private static void createSelection(){
-        ArrayList positions = new ArrayList();
-        ArrayList textureCoord = new ArrayList();
-        ArrayList indices = new ArrayList();
-        ArrayList light = new ArrayList();
-
-
-        int indicesCount = 0;
-
-
-        //front
-        positions.add(0.5f);
-        positions.add(0.5f);
-        positions.add(0f);
-
-        positions.add(-0.5f);
-        positions.add(0.5f);
-        positions.add(0f);
-
-        positions.add(-0.5f);
-        positions.add(-0.5f);
-        positions.add(0f);
-
-        positions.add(0.5f);
-        positions.add(-0.5f);
-        positions.add(0f);
-        //front
-        float frontLight = 1f;//getLight(x, y, z + 1, chunkX, chunkZ) / maxLight;
-
-        //front
-        for (int i = 0; i < 12; i++) {
-            light.add(frontLight);
-        }
-        //front
-        indices.add(0 + indicesCount);
-        indices.add(1 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(0 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(3 + indicesCount);
-
-        indicesCount += 4;
-
-        //-x +x   -y +y
-        // 0  1    2  3
-
-        //front
-        textureCoord.add(1f);//1
-        textureCoord.add(0f);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(0f);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(1f);//3
-        textureCoord.add(1f);//1
-        textureCoord.add(1f);//3
-
-
-        //convert the position objects into usable array
-        float[] positionsArray = new float[positions.size()];
-        for (int i = 0; i < positions.size(); i++) {
-            positionsArray[i] = (float) positions.get(i);
-        }
-
-        //convert the light objects into usable array
-        float[] lightArray = new float[light.size()];
-        for (int i = 0; i < light.size(); i++) {
-            lightArray[i] = (float) light.get(i);
-        }
-
-        //convert the indices objects into usable array
-        int[] indicesArray = new int[indices.size()];
-        for (int i = 0; i < indices.size(); i++) {
-            indicesArray[i] = (int) indices.get(i);
-        }
-
-        //convert the textureCoord objects into usable array
-        float[] textureCoordArray = new float[textureCoord.size()];
-        for (int i = 0; i < textureCoord.size(); i++) {
-            textureCoordArray[i] = (float) textureCoord.get(i);
-        }
-        thisSelectionMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, selection);
-    }
-
-    private static void createMenuBg(){
-        ArrayList positions = new ArrayList();
-        ArrayList textureCoord = new ArrayList();
-        ArrayList indices = new ArrayList();
-        ArrayList light = new ArrayList();
-
-
-        int indicesCount = 0;
-
-
-        //front
-        positions.add(0.5f);
-        positions.add(0.5f);
-        positions.add(0f);
-
-        positions.add(-0.5f);
-        positions.add(0.5f);
-        positions.add(0f);
-
-        positions.add(-0.5f);
-        positions.add(-0.5f);
-        positions.add(0f);
-
-        positions.add(0.5f);
-        positions.add(-0.5f);
-        positions.add(0f);
-        //front
-        float frontLight = 1f;//getLight(x, y, z + 1, chunkX, chunkZ) / maxLight;
-
-        //front
-        for (int i = 0; i < 12; i++) {
-            light.add(frontLight);
-        }
-        //front
-        indices.add(0 + indicesCount);
-        indices.add(1 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(0 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(3 + indicesCount);
-
-        indicesCount += 4;
-
-        //-x +x   -y +y
-        // 0  1    2  3
-
-        //front
-        textureCoord.add(1f);//1
-        textureCoord.add(0f);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(0f);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(1f);//3
-        textureCoord.add(1f);//1
-        textureCoord.add(1f);//3
-
-
-        //convert the position objects into usable array
-        float[] positionsArray = new float[positions.size()];
-        for (int i = 0; i < positions.size(); i++) {
-            positionsArray[i] = (float) positions.get(i);
-        }
-
-        //convert the light objects into usable array
-        float[] lightArray = new float[light.size()];
-        for (int i = 0; i < light.size(); i++) {
-            lightArray[i] = (float) light.get(i);
-        }
-
-        //convert the indices objects into usable array
-        int[] indicesArray = new int[indices.size()];
-        for (int i = 0; i < indices.size(); i++) {
-            indicesArray[i] = (int) indices.get(i);
-        }
-
-        //convert the textureCoord objects into usable array
-        float[] textureCoordArray = new float[textureCoord.size()];
-        for (int i = 0; i < textureCoord.size(); i++) {
-            textureCoordArray[i] = (float) textureCoord.get(i);
-        }
-        menuBgMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, menuBg);
-    }
-
-    private static void createButtons() throws Exception {
-        buttonMesh = create2DMesh(0.5f,0.125f,"textures/button.png");
-        buttonSelectedMesh = create2DMesh(0.5f,0.125f,"textures/button_selected.png");
-        buttonPushedMesh = create2DMesh(0.5f,0.125f,"textures/button_pushed.png");
-    }
-
-    private static void createHalfHeart(){
-        ArrayList positions = new ArrayList();
-        ArrayList textureCoord = new ArrayList();
-        ArrayList indices = new ArrayList();
-        ArrayList light = new ArrayList();
-
-        int indicesCount = 0;
-
-        //front
-        positions.add(0f);
-        positions.add(0.5f);
-        positions.add(0f);
-
-        positions.add(-0.5f);
-        positions.add(0.5f);
-        positions.add(0f);
-
-        positions.add(-0.5f);
-        positions.add(-0.5f);
-        positions.add(0f);
-
-        positions.add(0f);
-        positions.add(-0.5f);
-        positions.add(0f);
-        //front
-        float frontLight = 1f;//getLight(x, y, z + 1, chunkX, chunkZ) / maxLight;
-
-        //front
-        for (int i = 0; i < 12; i++) {
-            light.add(frontLight);
-        }
-        //front
-        indices.add(0 + indicesCount);
-        indices.add(1 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(0 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(3 + indicesCount);
-
-        indicesCount += 4;
-
-        //-x +x   -y +y
-        // 0  1    2  3
-
-        //front
-        textureCoord.add(0.5f);//1
-        textureCoord.add(0f);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(0f);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(1f);//3
-        textureCoord.add(0.5f);//1
-        textureCoord.add(1f);//3
-
-
-        //convert the position objects into usable array
-        float[] positionsArray = new float[positions.size()];
-        for (int i = 0; i < positions.size(); i++) {
-            positionsArray[i] = (float) positions.get(i);
-        }
-
-        //convert the light objects into usable array
-        float[] lightArray = new float[light.size()];
-        for (int i = 0; i < light.size(); i++) {
-            lightArray[i] = (float) light.get(i);
-        }
-
-        //convert the indices objects into usable array
-        int[] indicesArray = new int[indices.size()];
-        for (int i = 0; i < indices.size(); i++) {
-            indicesArray[i] = (int) indices.get(i);
-        }
-
-        //convert the textureCoord objects into usable array
-        float[] textureCoordArray = new float[textureCoord.size()];
-        for (int i = 0; i < textureCoord.size(); i++) {
-            textureCoordArray[i] = (float) textureCoord.get(i);
-        }
-
-        halfHeartHudMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, heartTexture);
-    }
-
-    private static void createHeart(){
-        ArrayList positions = new ArrayList();
-        ArrayList textureCoord = new ArrayList();
-        ArrayList indices = new ArrayList();
-        ArrayList light = new ArrayList();
-
-        int indicesCount = 0;
-
-        //front
-        positions.add(0.5f);
-        positions.add(0.5f);
-        positions.add(0f);
-
-        positions.add(-0.5f);
-        positions.add(0.5f);
-        positions.add(0f);
-
-        positions.add(-0.5f);
-        positions.add(-0.5f);
-        positions.add(0f);
-
-        positions.add(0.5f);
-        positions.add(-0.5f);
-        positions.add(0f);
-        //front
-        float frontLight = 1f;//getLight(x, y, z + 1, chunkX, chunkZ) / maxLight;
-
-        //front
-        for (int i = 0; i < 12; i++) {
-            light.add(frontLight);
-        }
-        //front
-        indices.add(0 + indicesCount);
-        indices.add(1 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(0 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(3 + indicesCount);
-
-        indicesCount += 4;
-
-        //-x +x   -y +y
-        // 0  1    2  3
-
-        //front
-        textureCoord.add(1f);//1
-        textureCoord.add(0f);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(0f);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(1f);//3
-        textureCoord.add(1f);//1
-        textureCoord.add(1f);//3
-
-
-        //convert the position objects into usable array
-        float[] positionsArray = new float[positions.size()];
-        for (int i = 0; i < positions.size(); i++) {
-            positionsArray[i] = (float) positions.get(i);
-        }
-
-        //convert the light objects into usable array
-        float[] lightArray = new float[light.size()];
-        for (int i = 0; i < light.size(); i++) {
-            lightArray[i] = (float) light.get(i);
-        }
-
-        //convert the indices objects into usable array
-        int[] indicesArray = new int[indices.size()];
-        for (int i = 0; i < indices.size(); i++) {
-            indicesArray[i] = (int) indices.get(i);
-        }
-
-        //convert the textureCoord objects into usable array
-        float[] textureCoordArray = new float[textureCoord.size()];
-        for (int i = 0; i < textureCoord.size(); i++) {
-            textureCoordArray[i] = (float) textureCoord.get(i);
-        }
-
-        heartHudMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, heartTexture);
-    }
-
-    private static void createHeartShadow(){
-        ArrayList positions = new ArrayList();
-        ArrayList textureCoord = new ArrayList();
-        ArrayList indices = new ArrayList();
-        ArrayList light = new ArrayList();
-
-        int indicesCount = 0;
-
-        //front
-        positions.add(0.5f);
-        positions.add(0.5f);
-        positions.add(0f);
-
-        positions.add(-0.5f);
-        positions.add(0.5f);
-        positions.add(0f);
-
-        positions.add(-0.5f);
-        positions.add(-0.5f);
-        positions.add(0f);
-
-        positions.add(0.5f);
-        positions.add(-0.5f);
-        positions.add(0f);
-        //front
-        float frontLight = 1f;//getLight(x, y, z + 1, chunkX, chunkZ) / maxLight;
-
-        //front
-        for (int i = 0; i < 12; i++) {
-            light.add(frontLight);
-        }
-        //front
-        indices.add(0 + indicesCount);
-        indices.add(1 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(0 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(3 + indicesCount);
-
-        indicesCount += 4;
-
-        //-x +x   -y +y
-        // 0  1    2  3
-
-        //front
-        textureCoord.add(1f);//1
-        textureCoord.add(0f);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(0f);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(1f);//3
-        textureCoord.add(1f);//1
-        textureCoord.add(1f);//3
-
-
-        //convert the position objects into usable array
-        float[] positionsArray = new float[positions.size()];
-        for (int i = 0; i < positions.size(); i++) {
-            positionsArray[i] = (float) positions.get(i);
-        }
-
-        //convert the light objects into usable array
-        float[] lightArray = new float[light.size()];
-        for (int i = 0; i < light.size(); i++) {
-            lightArray[i] = (float) light.get(i);
-        }
-
-        //convert the indices objects into usable array
-        int[] indicesArray = new int[indices.size()];
-        for (int i = 0; i < indices.size(); i++) {
-            indicesArray[i] = (int) indices.get(i);
-        }
-
-        //convert the textureCoord objects into usable array
-        float[] textureCoordArray = new float[textureCoord.size()];
-        for (int i = 0; i < textureCoord.size(); i++) {
-            textureCoordArray[i] = (float) textureCoord.get(i);
-        }
-
-        heartShadowHudMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, heartShadowTexture);
-    }
-
-    private static void createInventorySlot(){
-        ArrayList positions = new ArrayList();
-        ArrayList textureCoord = new ArrayList();
-        ArrayList indices = new ArrayList();
-        ArrayList light = new ArrayList();
-
-        int indicesCount = 0;
-
-        //front
-        positions.add(0.5f);
-        positions.add(0.5f);
-        positions.add(0f);
-
-        positions.add(-0.5f);
-        positions.add(0.5f);
-        positions.add(0f);
-
-        positions.add(-0.5f);
-        positions.add(-0.5f);
-        positions.add(0f);
-
-        positions.add(0.5f);
-        positions.add(-0.5f);
-        positions.add(0f);
-        //front
-        float frontLight = 1f;//getLight(x, y, z + 1, chunkX, chunkZ) / maxLight;
-
-        //front
-        for (int i = 0; i < 12; i++) {
-            light.add(frontLight);
-        }
-        //front
-        indices.add(0 + indicesCount);
-        indices.add(1 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(0 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(3 + indicesCount);
-
-        indicesCount += 4;
-
-        //-x +x   -y +y
-        // 0  1    2  3
-
-        //front
-        textureCoord.add(1f);//1
-        textureCoord.add(0f);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(0f);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(1f);//3
-        textureCoord.add(1f);//1
-        textureCoord.add(1f);//3
-
-
-        //convert the position objects into usable array
-        float[] positionsArray = new float[positions.size()];
-        for (int i = 0; i < positions.size(); i++) {
-            positionsArray[i] = (float) positions.get(i);
-        }
-
-        //convert the light objects into usable array
-        float[] lightArray = new float[light.size()];
-        for (int i = 0; i < light.size(); i++) {
-            lightArray[i] = (float) light.get(i);
-        }
-
-        //convert the indices objects into usable array
-        int[] indicesArray = new int[indices.size()];
-        for (int i = 0; i < indices.size(); i++) {
-            indicesArray[i] = (int) indices.get(i);
-        }
-
-        //convert the textureCoord objects into usable array
-        float[] textureCoordArray = new float[textureCoord.size()];
-        for (int i = 0; i < textureCoord.size(); i++) {
-            textureCoordArray[i] = (float) textureCoord.get(i);
-        }
-
-        inventorySlotMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, inventorySlot);
-    }
-
-    private static void createInventorySlotSelected(){
-        ArrayList positions = new ArrayList();
-        ArrayList textureCoord = new ArrayList();
-        ArrayList indices = new ArrayList();
-        ArrayList light = new ArrayList();
-
-        int indicesCount = 0;
-
-        //front
-        positions.add(0.5f);
-        positions.add(0.5f);
-        positions.add(0f);
-
-        positions.add(-0.5f);
-        positions.add(0.5f);
-        positions.add(0f);
-
-        positions.add(-0.5f);
-        positions.add(-0.5f);
-        positions.add(0f);
-
-        positions.add(0.5f);
-        positions.add(-0.5f);
-        positions.add(0f);
-        //front
-        float frontLight = 1f;//getLight(x, y, z + 1, chunkX, chunkZ) / maxLight;
-
-        //front
-        for (int i = 0; i < 12; i++) {
-            light.add(frontLight);
-        }
-        //front
-        indices.add(0 + indicesCount);
-        indices.add(1 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(0 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(3 + indicesCount);
-
-        indicesCount += 4;
-
-        //-x +x   -y +y
-        // 0  1    2  3
-
-        //front
-        textureCoord.add(1f);//1
-        textureCoord.add(0f);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(0f);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(1f);//3
-        textureCoord.add(1f);//1
-        textureCoord.add(1f);//3
-
-
-        //convert the position objects into usable array
-        float[] positionsArray = new float[positions.size()];
-        for (int i = 0; i < positions.size(); i++) {
-            positionsArray[i] = (float) positions.get(i);
-        }
-
-        //convert the light objects into usable array
-        float[] lightArray = new float[light.size()];
-        for (int i = 0; i < light.size(); i++) {
-            lightArray[i] = (float) light.get(i);
-        }
-
-        //convert the indices objects into usable array
-        int[] indicesArray = new int[indices.size()];
-        for (int i = 0; i < indices.size(); i++) {
-            indicesArray[i] = (int) indices.get(i);
-        }
-
-        //convert the textureCoord objects into usable array
-        float[] textureCoordArray = new float[textureCoord.size()];
-        for (int i = 0; i < textureCoord.size(); i++) {
-            textureCoordArray[i] = (float) textureCoord.get(i);
-        }
-
-        inventorySlotSelectedMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, inventorySlotSelected);
-    }
-
-    private static void createInventory(){
-        ArrayList positions = new ArrayList();
-        ArrayList textureCoord = new ArrayList();
-        ArrayList indices = new ArrayList();
-        ArrayList light = new ArrayList();
-
-        int indicesCount = 0;
-
-        //front
-        positions.add(0.5f);
-        positions.add(0.46335697399f);
-        positions.add(0f);
-
-        positions.add(-0.5f);
-        positions.add(0.46335697399f);
-        positions.add(0f);
-
-        positions.add(-0.5f);
-        positions.add(-0.46335697399f);
-        positions.add(0f);
-
-        positions.add(0.5f);
-        positions.add(-0.46335697399f);
-        positions.add(0f);
-        //front
-        float frontLight = 1f;//getLight(x, y, z + 1, chunkX, chunkZ) / maxLight;
-
-        //front
-        for (int i = 0; i < 12; i++) {
-            light.add(frontLight);
-        }
-        //front
-        indices.add(0 + indicesCount);
-        indices.add(1 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(0 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(3 + indicesCount);
-
-        indicesCount += 4;
-
-        //-x +x   -y +y
-        // 0  1    2  3
-
-        //front
-        textureCoord.add(1f);//1
-        textureCoord.add(0f);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(0f);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(1f);//3
-        textureCoord.add(1f);//1
-        textureCoord.add(1f);//3
-
-
-        //convert the position objects into usable array
-        float[] positionsArray = new float[positions.size()];
-        for (int i = 0; i < positions.size(); i++) {
-            positionsArray[i] = (float) positions.get(i);
-        }
-
-        //convert the light objects into usable array
-        float[] lightArray = new float[light.size()];
-        for (int i = 0; i < light.size(); i++) {
-            lightArray[i] = (float) light.get(i);
-        }
-
-        //convert the indices objects into usable array
-        int[] indicesArray = new int[indices.size()];
-        for (int i = 0; i < indices.size(); i++) {
-            indicesArray[i] = (int) indices.get(i);
-        }
-
-        //convert the textureCoord objects into usable array
-        float[] textureCoordArray = new float[textureCoord.size()];
-        for (int i = 0; i < textureCoord.size(); i++) {
-            textureCoordArray[i] = (float) textureCoord.get(i);
-        }
-
-        thisInventoryMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, mainInventory);
     }
 
     public static void rebuildMiningMesh(int level) {
@@ -1810,14 +962,6 @@ public class Hud {
         }
 
         thisWorldSelectionMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, worldSelection);
-    }
-
-    private static void createCrossHair() throws Exception {
-        thisCrossHairMesh = create2DMesh(0.5f, 0.5f, "textures/crosshair.png");
-    }
-
-    private static void createInventorySelection() throws Exception {
-        inventorySelectionMesh = create2DMesh(0.5f, 0.5f, "textures/hotbar_selected.png");
     }
 
 
@@ -2729,6 +1873,49 @@ public class Hud {
         textureCoord[4] = (0f);
         textureCoord[5] = (1f);
         textureCoord[6] = (1f);
+        textureCoord[7] = (1f);
+
+        return new Mesh(positions, light, indices, textureCoord, new Texture(texture));
+    }
+
+    //overloaded for texture width (used for half hearts)
+    private static Mesh create2DMesh(float width, float height, float textureWidth, String texture) throws Exception {
+        float[] positions = new float[12];
+        float[] textureCoord = new float[8];
+        int[] indices = new int[6];
+        float[] light = new float[12];
+
+        positions[0] = (width - textureWidth);
+        positions[1] = (height);
+        positions[2] = (0f);
+        positions[3] = (-width);
+        positions[4] = (height);
+        positions[5] = (0f);
+        positions[6] = (-width);
+        positions[7] = (-height);
+        positions[8] = (0f);
+        positions[9] = (width - textureWidth);
+        positions[10] = (-height);
+        positions[11] = (0f);
+
+        for (int i = 0; i < 12; i++) {
+            light[i] = 1f;
+        }
+
+        indices[0] = (0);
+        indices[1] = (1);
+        indices[2] = (2);
+        indices[3] = (0);
+        indices[4] = (2);
+        indices[5] = (3);
+
+        textureCoord[0] = (textureWidth);
+        textureCoord[1] = (0f);
+        textureCoord[2] = (0f);
+        textureCoord[3] = (0f);
+        textureCoord[4] = (0f);
+        textureCoord[5] = (1f);
+        textureCoord[6] = (textureWidth);
         textureCoord[7] = (1f);
 
         return new Mesh(positions, light, indices, textureCoord, new Texture(texture));
