@@ -156,11 +156,13 @@ public class Window {
             glfwSetWindowMonitor(windowHandle, glfwGetPrimaryMonitor(), d.width / 2, d.height / 2, d.width, d.height, glfwGetVideoMode(glfwGetPrimaryMonitor()).refreshRate());
             width = d.width;
             height = d.height;
+            updateVSync();
         }
         else {
             glfwSetWindowMonitor(windowHandle, NULL, d.width / 4, d.height / 4,d.width / 2, d.height / 2, glfwGetVideoMode(glfwGetPrimaryMonitor()).refreshRate());
             width = d.width / 2;
             height = d.height / 2;
+            updateVSync();
         }
 
         fullScreen = !fullScreen;
@@ -188,6 +190,14 @@ public class Window {
 
     public static void setVSync(boolean newVSync){
         vSync = newVSync;
+        if (vSync){
+            glfwSwapInterval(1);
+        } else {
+            glfwSwapInterval(0);
+        }
+    }
+
+    public static void updateVSync(){
         if (vSync){
             glfwSwapInterval(1);
         } else {
