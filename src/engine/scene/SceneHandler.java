@@ -89,7 +89,7 @@ public class SceneHandler {
 
         updateListenerPosition();
         chunkUpdater();
-        globalChunkSaveToDisk(); //add in a getDelta argument into this!
+        globalChunkSaveToDisk();
         gameInput();
         //testLightLevel();
         gameUpdate();
@@ -100,17 +100,20 @@ public class SceneHandler {
         processOldChunks();
 
 
+
         /*
         long count = 0;
 
-        boolean debugLowFPS = false; //this sets my machine (jordan4ibanez) to 7-9FPS
+        boolean debugLowFPS = true; //this sets my machine (jordan4ibanez) to 14FPS
+
 
         if (debugLowFPS) {
-            while (count < 500_000_000L) {
+            while (count < 75_000L) {
+                System.out.println(count);
                 count++;
             }
         }
-
+        
          */
     }
 
