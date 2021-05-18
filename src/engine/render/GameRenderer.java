@@ -35,7 +35,7 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class GameRenderer {
 
-    private static float FOV = (float) Math.toRadians(72.0f); //todo: make this a calculator method ala calculateFOV(float);
+    private static final float FOV = (float) Math.toRadians(72.0f); //todo: make this a calculator method ala calculateFOV(float);
 
     private static final float Z_NEAR = 0.1f;
     private static final float Z_FAR = 1120.f;
@@ -44,7 +44,7 @@ public class GameRenderer {
 
     private static float windowScale = 0f;
 
-    private static Vector2d windowSize = new Vector2d();
+    private static final Vector2d windowSize = new Vector2d();
 
     private static ShaderProgram shaderProgram;
 
