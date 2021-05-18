@@ -28,7 +28,7 @@ public class Controls {
     private static boolean F11Pushed           = false;
     private static boolean escapePushed        = false;
     private static boolean F3Pushed            = false;
-    public static void input() {
+    public static void gameInput() {
         if (!isPlayerInventoryOpen() && !isPaused()) {
             if (isKeyPressed(GLFW_KEY_W)) {
                 setPlayerForward(true);
@@ -184,6 +184,18 @@ public class Controls {
             } else if (scroll > 0) {
                 changeScrollSelection(-1);
             }
+        }
+    }
+
+
+    public static void mainMenuInput(){
+        if (isKeyPressed(GLFW_KEY_F11)) {
+            if (!F11Pushed) {
+                F11Pushed = true;
+                toggleFullScreen();
+            }
+        } else if (!isKeyPressed(GLFW_KEY_F11)){
+            F11Pushed = false;
         }
     }
 }

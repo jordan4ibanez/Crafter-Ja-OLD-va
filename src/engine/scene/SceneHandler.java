@@ -3,7 +3,8 @@ package engine.scene;
 import game.item.ItemEntity;
 import game.tnt.TNTEntity;
 
-import static engine.Controls.input;
+import static engine.Controls.gameInput;
+import static engine.Controls.mainMenuInput;
 import static engine.hud.HudLogic.hudOnStepTest;
 import static engine.render.MainMenuRenderer.renderMainMenu;
 import static engine.MouseInput.mouseInput;
@@ -60,6 +61,7 @@ public class SceneHandler {
     private static void mainMenuLoop(){
         calculateDelta();
 
+        mainMenuInput();
         doMainMenuLogic();
         renderMainMenu();
         windowUpdate();
@@ -79,7 +81,7 @@ public class SceneHandler {
         updateListenerPosition();
         chunkUpdater();
         globalChunkSaveToDisk(); //add in a getDelta argument into this!
-        input();
+        gameInput();
         //testLightLevel();
         gameUpdate();
 
