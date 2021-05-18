@@ -6,11 +6,11 @@ import org.joml.Vector2i;
 import org.joml.Vector3i;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static engine.FancyMath.getDistance;
+import static engine.Time.getDelta;
 import static engine.disk.Disk.*;
 import static engine.disk.SaveQueue.instantSave;
 import static engine.disk.SaveQueue.saveChunk;
@@ -20,6 +20,7 @@ import static game.chunk.ChunkMath.posToIndex;
 import static game.chunk.ChunkMesh.generateChunkMesh;
 import static game.chunk.ChunkUpdateHandler.chunkUpdate;
 import static game.light.Light.*;
+import static game.player.Player.getPlayerCurrentChunk;
 import static game.player.Player.getPlayerPos;
 
 public class Chunk {
@@ -34,6 +35,38 @@ public class Chunk {
 
     public static ChunkObject getChunk(int x, int z){
         return map.get(x + " " + z);
+    }
+
+    public static void initialChunkPayload(){
+        //create the initial map in memory
+        int x;
+        int z;
+
+        int chunkRenderDistance = getChunkRenderDistance();
+
+        Vector3i currentChunk = getPlayerCurrentChunk();
+
+        for (x = -chunkRenderDistance + currentChunk.x; x < chunkRenderDistance + currentChunk.x; x++){
+            for (z = -chunkRenderDistance + currentChunk.z; z< chunkRenderDistance + currentChunk.z; z++){
+                if (getChunkDistanceFromPlayer(x,z) <= chunkRenderDistance){
+                    genBiome(x,z);
+                    for (int y = 0; y < 8; y++){
+                        generateChunkMesh(x,z,y);
+                    }
+                }
+            }
+        }
+    }
+
+    private static double getChunkDistanceFromPlayer(int x, int z){
+        Vector3i currentChunk = getPlayerCurrentChunk();
+
+        //x distance
+        double distanceX = getDistance(currentChunk.x,0,0, x, 0, 0);
+        //z distance
+        double distanceZ = getDistance(0,0,currentChunk.z, 0, 0, z);
+
+        return Math.max(distanceZ, distanceX);
     }
 
     public static void setChunkNormalMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
@@ -547,68 +580,85 @@ public class Chunk {
     }
 
 
-    public static void generateNewChunks(int currentChunkX, int currentChunkZ, int dirX, int dirZ){
-        //long startTime = System.nanoTime();
+    public static void generateNewChunks(){
 
 
-        HashMap<Integer, int[]> neighborQueue = new HashMap<>();
+        //create the initial map in memory
+        int x;
+        int z;
+        int chunkRenderDistance = getChunkRenderDistance();
+        Vector3i currentChunk = getPlayerCurrentChunk();
 
-        int neighborQueueCount = 0;
-        if (dirX != 0){
-            for (int z = -getChunkRenderDistance() + currentChunkZ; z < getChunkRenderDistance() + currentChunkZ; z++){
-                if (map.get((currentChunkX + (getChunkRenderDistance() * dirX)) + " " + z) == null) {
-                    genBiome(currentChunkX + (getChunkRenderDistance() * dirX), z);
-                    neighborQueue.put(neighborQueueCount, new int[]{currentChunkX + (getChunkRenderDistance() * dirX), z});
-                    neighborQueueCount++;
+        String currChunk = "";
+
+        //scan for not-generated/loaded chunks
+        for (x = -chunkRenderDistance + currentChunk.x; x < chunkRenderDistance + currentChunk.x; x++){
+            for (z = -chunkRenderDistance + currentChunk.z; z< chunkRenderDistance + currentChunk.z; z++){
+                if (getChunkDistanceFromPlayer(x,z) <= chunkRenderDistance){
+                    currChunk = x + " " + z;
+                    if (map.get(currChunk) == null){
+                        genBiome(x,z);
+                        for (int y = 0; y < 8; y++) {
+                            chunkUpdate(x, z, y);
+                        }
+                        fullNeighborUpdate(x, z);
+                    }
                 }
             }
         }
-        if (dirZ != 0){
-            for (int x = -getChunkRenderDistance() + currentChunkX; x < getChunkRenderDistance() + currentChunkX; x++){
-                if (map.get( x + " " + (currentChunkZ + (getChunkRenderDistance() * dirZ))) == null) {
-                    genBiome(x, currentChunkZ + (getChunkRenderDistance() * dirZ));
-                    neighborQueue.put(neighborQueueCount, new int[]{x, currentChunkZ + (getChunkRenderDistance() * dirZ)});
-                    neighborQueueCount++;
-                }
+
+        //scan map for out of range chunks
+        for (ChunkObject thisChunk : map.values()){
+            if (getChunkDistanceFromPlayer(thisChunk.x,thisChunk.z) > chunkRenderDistance){
+                deleteOldChunks(thisChunk.x,thisChunk.z);
             }
         }
-
-
-        for (int[] thisArray : neighborQueue.values()){
-            for (int y = 0; y < 8; y++) {
-                chunkUpdate(thisArray[0], thisArray[1], y);
-            }
-            fullNeighborUpdate(thisArray[0], thisArray[1]);
-        }
-
-
-
-        deleteOldChunks(currentChunkX+dirX, currentChunkZ+dirZ);
-
-        //long endTime = System.nanoTime();
-        //double duration = (double)(endTime - startTime) /  1_000_000_000d;  //divide by 1000000 to get milliseconds.
-
-        //System.out.println("This took: " + duration + " seconds");
     }
 
-    private final static HashMap<Integer, String> deletionQueue = new HashMap<>();
+    private static final Deque<String> deletionQueue = new ArrayDeque<>();
 
-    private static void deleteOldChunks(int chunkX, int chunkZ){
-        int queueCounter = 0;
-        for (ChunkObject thisChunk : map.values()){
-            if (Math.abs(thisChunk.z - chunkZ) > getChunkRenderDistance() || Math.abs(thisChunk.x - chunkX) > getChunkRenderDistance()){
-                if (thisChunk.normalMesh != null){
+    private static void deleteOldChunks(int chunkX, int chunkZ) {
+        deletionQueue.add(chunkX + " " + chunkZ);
+    }
+
+    //the higher this is set, the lazier chunk deletion gets
+    //set it too high, and chunk deletion barely works
+    final private static float goalTimer = 0.06f;
+    private static float chunkDeletionTimer = 0f;
+
+    public static void processOldChunks() {
+
+        chunkDeletionTimer += getDelta();
+        int updateAmount = 0;
+
+        if (chunkDeletionTimer >= goalTimer){
+            updateAmount = (int)(Math.ceil(chunkDeletionTimer / goalTimer));
+            chunkDeletionTimer = 0;
+        }
+
+        for (int i = 0; i < updateAmount; i++) {
+            if (!deletionQueue.isEmpty()) {
+
+                String key = deletionQueue.pop();
+
+                ChunkObject thisChunk = map.get(key);
+
+                if (thisChunk == null) {
+                    return;
+                }
+
+                if (thisChunk.normalMesh != null) {
                     for (int y = 0; y < 8; y++) {
-                        if (thisChunk.normalMesh[y] != null){
+                        if (thisChunk.normalMesh[y] != null) {
                             thisChunk.normalMesh[y].cleanUp(false);
                             thisChunk.normalMesh[y] = null;
                         }
                     }
                 }
 
-                if (thisChunk.liquidMesh != null){
+                if (thisChunk.liquidMesh != null) {
                     for (int y = 0; y < 8; y++) {
-                        if (thisChunk.liquidMesh[y] != null){
+                        if (thisChunk.liquidMesh[y] != null) {
                             thisChunk.liquidMesh[y].cleanUp(false);
                             thisChunk.liquidMesh[y] = null;
                         }
@@ -619,14 +669,9 @@ public class Chunk {
                     saveChunk(thisChunk);
                 }
 
-                deletionQueue.put(queueCounter, thisChunk.x + " " + thisChunk.z);
-                queueCounter++;
+                map.remove(key);
             }
         }
-        for (String thisString : deletionQueue.values()){
-            map.remove(thisString);
-        }
-        deletionQueue.clear();
     }
 
 

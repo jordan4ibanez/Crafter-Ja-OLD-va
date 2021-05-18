@@ -16,6 +16,7 @@ import static engine.Timer.countFPS;
 import static engine.graph.Camera.updateCamera;
 import static engine.sound.SoundManager.updateListenerPosition;
 import static game.chunk.Chunk.globalChunkSaveToDisk;
+import static game.chunk.Chunk.processOldChunks;
 import static game.chunk.ChunkMesh.popChunkMeshQueue;
 import static game.chunk.ChunkUpdateHandler.chunkUpdater;
 import static game.falling.FallingEntity.fallingEntityOnStep;
@@ -95,6 +96,8 @@ public class SceneHandler {
 
         renderGame();
         windowUpdate();
+
+        processOldChunks();
 
 
         /*

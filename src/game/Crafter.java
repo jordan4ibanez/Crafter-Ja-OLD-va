@@ -120,23 +120,7 @@ public class Crafter {
 
         initializeWorldHandling();
 
-        //create the initial map in memory
-        int x;
-        int z;
-        int[] currentChunk = getPlayerCurrentChunk();
-        for (x = -chunkRenderDistance + currentChunk[0]; x < chunkRenderDistance + currentChunk[0]; x++){
-            for (z = -chunkRenderDistance + currentChunk[1]; z< chunkRenderDistance + currentChunk[1]; z++){
-                genBiome(x,z);
-            }
-        }
-
-        for (x = -chunkRenderDistance + currentChunk[0]; x < chunkRenderDistance + currentChunk[0]; x++){
-            for (z = -chunkRenderDistance + currentChunk[1]; z< chunkRenderDistance + currentChunk[1]; z++){
-                for (int y = 0; y < 8; y++){
-                    generateChunkMesh(x,z,y);
-                }
-            }
-        }
+        initialChunkPayload();
 
         //createToolDebugInventory();
         //generateRandomInventory();

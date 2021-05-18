@@ -44,7 +44,8 @@ public class Player {
     private static Vector3i worldSelectionPos    = new Vector3i();
     private static float sneakOffset = 0;
     private static boolean playerIsJumping = false;
-    private static final int[] currentChunk = {(int)Math.floor(pos.x / 16f),(int)Math.floor(pos.z / 16f)};
+    //this is like this because working with x and z is easier than x and y
+    private static final Vector3i currentChunk = new Vector3i((int)Math.floor(pos.x / 16f),0,(int)Math.floor(pos.z / 16f));
     public static int oldY = 0;
     private static float itemRotation = 0f;
     private static boolean itemRotationEnabled = false;
@@ -108,7 +109,7 @@ public class Player {
         return(playerIsJumping);
     }
 
-    public static int[] getPlayerCurrentChunk(){
+    public static Vector3i getPlayerCurrentChunk(){
         return currentChunk;
     }
 
@@ -951,21 +952,10 @@ public class Player {
         int newChunkX = (int)Math.floor(pos.x / 16f);
         int newChunkZ = (int)Math.floor(pos.z / 16f);
 
-        if (newChunkX != currentChunk[0] || newChunkZ != currentChunk[1]) {
-            if (newChunkX < currentChunk[0]) {
-                generateNewChunks(currentChunk[0], currentChunk[1], -1, 0);
-            }
-            if (newChunkX > currentChunk[0]) {
-                generateNewChunks(currentChunk[0], currentChunk[1], 1, 0);
-            }
-            if (newChunkZ < currentChunk[1]) {
-                generateNewChunks(currentChunk[0], currentChunk[1], 0, -1);
-            }
-            if (newChunkZ > currentChunk[1]) {
-                generateNewChunks(currentChunk[0], currentChunk[1], 0, 1);
-            }
-            currentChunk[0] = newChunkX;
-            currentChunk[1] = newChunkZ;
+        if (newChunkX != currentChunk.x || newChunkZ != currentChunk.z) {
+            currentChunk.x = newChunkX;
+            currentChunk.z = newChunkZ;
+            generateNewChunks();
         }
     }
 
