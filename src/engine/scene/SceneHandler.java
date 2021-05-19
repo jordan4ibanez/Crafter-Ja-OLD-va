@@ -6,7 +6,11 @@ import game.tnt.TNTEntity;
 import static engine.Controls.gameInput;
 import static engine.Controls.mainMenuInput;
 import static engine.Window.*;
+import static engine.debug.DebugTerrainDrawTypes.generateDebugChunkMesh;
+import static engine.debug.RenderDebug.initializeDebugRenderShader;
 import static engine.debug.RenderDebug.renderDebug;
+import static engine.debug.debug.debugInput;
+import static engine.graph.Camera.setCameraPosition;
 import static engine.hud.HudLogic.hudOnStepTest;
 import static engine.render.MainMenuRenderer.renderMainMenu;
 import static engine.MouseInput.mouseInput;
@@ -29,7 +33,7 @@ public class SceneHandler {
     //0 main menu
     //1 gameplay
     //2 debug
-    private static byte currentScene = 0;
+    private static byte currentScene = 2;
 
     public static void setScene(byte newScene){
         currentScene = newScene;
@@ -37,9 +41,16 @@ public class SceneHandler {
 
     public static void handleSceneLogic() throws Exception {
 
+        //move the camera into position for the main menu
+        if (currentScene == 0){
+            setCameraPosition(0,-8,0);
+        }
+
         //for debugging
         if (currentScene == 2){
+            initializeDebugRenderShader();
             setWindowClearColor(0f,0f,0f,0f);
+            generateDebugChunkMesh();
         }
 
         while (!windowShouldClose()){
@@ -61,6 +72,9 @@ public class SceneHandler {
 
     private static void debugLoop(){
         calculateDelta();
+
+        mouseInput();
+        debugInput();
 
         renderDebug();
         windowUpdate();
@@ -113,7 +127,7 @@ public class SceneHandler {
                 count++;
             }
         }
-        
+
          */
     }
 

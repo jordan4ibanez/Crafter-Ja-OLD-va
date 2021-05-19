@@ -42,8 +42,6 @@ public class MainMenu {
         //seed the random generator
         random.setSeed(new Date().getTime());
 
-        setCameraPosition(0,-8,0);
-
         //in intellij, search for 1 and you'll be able to read it
         titleBlocks = new byte[][]{
                 {1,1,1,0,1,1,0,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,0},

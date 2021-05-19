@@ -71,6 +71,10 @@ public class GameRenderer {
         return Z_FAR;
     }
 
+    public static float getFOV(){
+        return FOV;
+    }
+
     public static ShaderProgram getShaderProgram(){
         return shaderProgram;
     }
