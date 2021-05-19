@@ -182,6 +182,9 @@ public class GameRenderer {
         //get all distances
         for (ChunkObject thisChunk : getMap()){
             double currentDistance = getDistance((thisChunk.x * 16d) + 8d, 0,(thisChunk.z * 16d) + 8d, camPos.x, 0, camPos.z);
+            if (chunkHash.get(currentDistance) != null){
+                currentDistance += 0.000000001;
+            }
             chunkHash.put(currentDistance, thisChunk);
         }
 
