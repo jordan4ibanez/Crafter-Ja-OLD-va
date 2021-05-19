@@ -33,7 +33,7 @@ public class SceneHandler {
     //0 main menu
     //1 gameplay
     //2 debug
-    private static byte currentScene = 2;
+    private static byte currentScene = 0;
 
     public static void setScene(byte newScene){
         currentScene = newScene;
