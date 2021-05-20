@@ -9,6 +9,7 @@ import java.util.Random;
 
 import static engine.MouseInput.*;
 import static engine.Time.getDelta;
+import static engine.Window.getWindowHandle;
 import static engine.Window.updateWindowTitle;
 import static engine.gui.GUILogic.doGUIMouseCollisionDetection;
 import static engine.scene.SceneHandler.setScene;
@@ -16,6 +17,7 @@ import static engine.sound.SoundAPI.playSound;
 import static game.Crafter.getVersionName;
 import static game.mainMenu.MainMenuAssets.createMainMenuBackGroundTile;
 import static game.mainMenu.MainMenuAssets.createMenuMenuTitleBlock;
+import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
 public class MainMenu {
 
@@ -109,17 +111,12 @@ public class MainMenu {
         return titleOffsets;
     }
 
+    private static boolean mouseLeftButtonPushed = false;
+
     public static void doMainMenuLogic(){
         if (isMouseLocked()){
             //System.out.println("unlocking");
             toggleMouseLock();
-        }
-
-        if (isLeftButtonPressed()){
-            titleMusic.stop();
-            setScene((byte)1);
-            toggleMouseLock();
-            return;
         }
 
         if (isRightButtonPressed()){
@@ -138,7 +135,33 @@ public class MainMenu {
             titleMusic.play();
         }
 
-        doGUIMouseCollisionDetection(mainMenuGUI);
+        byte selection = doGUIMouseCollisionDetection(mainMenuGUI);
+        
+        //0 singleplayer
+        //1 multiplayer
+        //2 settings
+        //3 quit
+
+        if (isLeftButtonPressed() && selection >= 0){
+
+            if (!mouseLeftButtonPushed) {
+                mouseLeftButtonPushed = true;
+                playSound("button");
+            }
+
+            if (selection == 0) {
+                titleMusic.stop();
+                setScene((byte) 1);
+                toggleMouseLock();
+            }
+
+            if (selection == 3){
+                glfwSetWindowShouldClose(getWindowHandle(), true);
+            }
+
+        } else {
+            mouseLeftButtonPushed = false;
+        }
     }
 
     public static float getTitleBounce(){

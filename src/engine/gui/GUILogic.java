@@ -202,7 +202,7 @@ public class GUILogic {
         //work from the center
         mousePos.x -= (getWindowSize().x/2f);
         mousePos.y -= (getWindowSize().y/2f);
-
+        byte count = 0;
         for (GUIObject thisButton : guiElements){
             double xPos = thisButton.pos.x * (windowScale / 100d);
             double yPos = thisButton.pos.y * (windowScale / 100d);
@@ -213,7 +213,14 @@ public class GUILogic {
             float xAdder = (float)Math.ceil(windowScale / ( 20 / thisButton.buttonScale.x)) / 2f;
             float yAdder = (float)Math.ceil(windowScale / (20 / thisButton.buttonScale.y)) / 2f;
 
-            thisButton.selected = mousePos.y <= yPos + yAdder && mousePos.y >= yPos - yAdder && mousePos.x <= xPos + xAdder && mousePos.x >= xPos - xAdder;
+            if (mousePos.y <= yPos + yAdder && mousePos.y >= yPos - yAdder && mousePos.x <= xPos + xAdder && mousePos.x >= xPos - xAdder){
+                thisButton.selected = true;
+                selected = count;
+            } else {
+                thisButton.selected = false;
+            }
+
+            count++;
         }
 
 
