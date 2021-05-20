@@ -11,7 +11,7 @@ import static engine.debug.RenderDebug.initializeDebugRenderShader;
 import static engine.debug.RenderDebug.renderDebug;
 import static engine.debug.debug.debugInput;
 import static engine.graph.Camera.setCameraPosition;
-import static engine.hud.HudLogic.hudOnStepTest;
+import static engine.gui.GUILogic.hudOnStepTest;
 import static engine.render.MainMenuRenderer.renderMainMenu;
 import static engine.MouseInput.mouseInput;
 import static engine.render.GameRenderer.renderGame;

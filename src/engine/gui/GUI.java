@@ -1,4 +1,4 @@
-package engine.hud;
+package engine.gui;
 
 //this is a complex mess
 
@@ -10,8 +10,8 @@ import org.joml.Vector3f;
 import java.util.ArrayList;
 
 import static engine.Timer.getFpsCounted;
-import static engine.hud.TextHandling.createCustomHudText;
-import static engine.hud.TextHandling.createCustomHudTextCentered;
+import static engine.gui.TextHandling.createText;
+import static engine.gui.TextHandling.createTextCentered;
 import static engine.Time.getDelta;
 import static engine.Window.*;
 
@@ -19,7 +19,7 @@ import static game.Crafter.getVersionName;
 import static game.chunk.ChunkMesh.convertLight;
 import static game.player.Player.*;
 
-public class Hud {
+public class GUI {
     private static final Vector3f playerScale = new Vector3f(0.7f,0.8f,0.7f);
 
     private static final Vector3f versionInfoPos = new Vector3f(-5f,8f,-14f);
@@ -67,7 +67,7 @@ public class Hud {
     private static Mesh fpsShadowMesh;
     private static Mesh fpsMesh;
 
-    public static void createHud() throws Exception {
+    public static void createGUI() throws Exception {
 
         //2D mesh creations
         thisHotBarMesh = create2DMesh(0.5f,0.06043956043f, "textures/hotbar.png");
@@ -87,15 +87,15 @@ public class Hud {
         heartShadowHudMesh = create2DMesh(0.5f, 0.5f, "textures/heart_shadow.png");
 
         //2D text creations
-        continueMesh = createCustomHudTextCentered("CONTINUE", 1,1,1);
-        toggleVsyncMesh = createCustomHudTextCentered("VSYNC:ON", 1,1,1);
-        quitGameMesh = createCustomHudTextCentered("QUIT", 1,1,1);
+        continueMesh = createTextCentered("CONTINUE", 1,1,1);
+        toggleVsyncMesh = createTextCentered("VSYNC:ON", 1,1,1);
+        quitGameMesh = createTextCentered("QUIT", 1,1,1);
 
-        fpsShadowMesh = createCustomHudText("FPS: " + getFpsCounted(), 0f, 0f, 0f);
-        fpsMesh = createCustomHudText("FPS: " + getFpsCounted(), 1f, 1f, 1f);
+        fpsShadowMesh = createText("FPS: " + getFpsCounted(), 0f, 0f, 0f);
+        fpsMesh = createText("FPS: " + getFpsCounted(), 1f, 1f, 1f);
 
-        versionInfoText = createCustomHudText(getVersionName(), 1,1,1);
-        versionInfoTextShadow = createCustomHudText(getVersionName(), 0,0,0);
+        versionInfoText = createText(getVersionName(), 1,1,1);
+        versionInfoTextShadow = createText(getVersionName(), 0,0,0);
 
 
 
@@ -273,17 +273,17 @@ public class Hud {
 
     public static void toggleVsyncMesh(){
         if (isvSync()) {
-            toggleVsyncMesh = createCustomHudTextCentered("VSYNC:ON", 1, 1, 1);
+            toggleVsyncMesh = createTextCentered("VSYNC:ON", 1, 1, 1);
             System.out.println("vsync on");
         } else {
-            toggleVsyncMesh = createCustomHudTextCentered("VSYNC:OFF", 1, 1, 1);
+            toggleVsyncMesh = createTextCentered("VSYNC:OFF", 1, 1, 1);
             System.out.println("vsync off");
         }
     }
 
     public static void buildFPSMesh() {
-        fpsShadowMesh = createCustomHudText("FPS: " + getFpsCounted(), 0f, 0f, 0f);
-        fpsMesh = createCustomHudText("FPS: " + getFpsCounted(), 1f, 1f, 1f);
+        fpsShadowMesh = createText("FPS: " + getFpsCounted(), 0f, 0f, 0f);
+        fpsMesh = createText("FPS: " + getFpsCounted(), 1f, 1f, 1f);
     }
 
     public static Mesh getFPSMesh(){

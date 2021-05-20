@@ -1,4 +1,4 @@
-package engine.hud;
+package engine.gui;
 
 import game.item.Item;
 import org.joml.Vector2d;
@@ -7,7 +7,7 @@ import org.joml.Vector3f;
 import static engine.MouseInput.*;
 import static engine.Time.getDelta;
 import static engine.Window.*;
-import static engine.hud.Hud.toggleVsyncMesh;
+import static engine.gui.GUI.toggleVsyncMesh;
 import static engine.render.GameRenderer.getWindowScale;
 import static engine.render.GameRenderer.getWindowSize;
 import static engine.sound.SoundAPI.playSound;
@@ -15,7 +15,7 @@ import static game.player.Inventory.*;
 import static game.player.Player.*;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
-public class HudLogic {
+public class GUILogic {
 
     private static String oldSelection;
     private static final Vector3f playerRot = new Vector3f(0,0,0);

@@ -5,7 +5,7 @@ import org.joml.*;
 import java.lang.Math;
 
 import static engine.FancyMath.getDistance;
-import static engine.hud.Hud.*;
+import static engine.gui.GUI.*;
 import static engine.Time.getDelta;
 import static engine.disk.Disk.loadPlayerPos;
 import static engine.graph.Camera.*;

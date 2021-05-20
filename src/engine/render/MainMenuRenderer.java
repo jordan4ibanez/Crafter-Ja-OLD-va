@@ -2,14 +2,15 @@ package engine.render;
 
 import engine.graph.Mesh;
 import engine.graph.ShaderProgram;
+import engine.gui.GUIObject;
 import org.joml.Matrix4d;
 import org.joml.Vector2d;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import static engine.hud.TextHandling.createCustomHudTextCentered;
+import static engine.gui.TextHandling.createTextCentered;
 import static engine.render.GameRenderer.*;
-import static engine.hud.Hud.*;
+import static engine.gui.GUI.*;
 import static engine.Window.*;
 import static engine.graph.Transformation.*;
 
@@ -128,7 +129,7 @@ public class MainMenuRenderer {
             //gray shadow part
             modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(windowScale/2.27d,windowScale/3.27f,0), new Vector3f(0, 0, 20f), new Vector3d(scale,scale,scale));
             hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            workerMesh = createCustomHudTextCentered(getTitleScreenGag(), 0.2f, 0.2f, 0f);
+            workerMesh = createTextCentered(getTitleScreenGag(), 0.2f, 0.2f, 0f);
             workerMesh.render();
 
             glClear(GL_DEPTH_BUFFER_BIT);
@@ -136,16 +137,19 @@ public class MainMenuRenderer {
             //yellow part
             modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(windowScale/2.25d,windowScale/3.25f,0), new Vector3f(0, 0, 20f), new Vector3d(scale,scale,scale));
             hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            workerMesh = createCustomHudTextCentered(getTitleScreenGag(), 1f, 1f, 0f);
+            workerMesh = createTextCentered(getTitleScreenGag(), 1f, 1f, 0f);
             workerMesh.render();
         }
 
 
 
 
+        renderGUITest();
+
+
 
         //play button
-        {
+        if (false){
             glClear(GL_DEPTH_BUFFER_BIT);
             {
                 modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(0, (0) * windowScale / 3d, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 2d, windowScale / 2d, windowScale / 2d));
@@ -160,7 +164,7 @@ public class MainMenuRenderer {
                 modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(windowScale / 300d, windowScale / 300d, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 20d, windowScale / 20d, windowScale / 20d));
                 hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
 
-                workerMesh = createCustomHudTextCentered("PLAY", 0.2f, 0.2f, 0.2f);
+                workerMesh = createTextCentered("PLAY", 0.2f, 0.2f, 0.2f);
                 workerMesh.render();
             }
 
@@ -170,12 +174,40 @@ public class MainMenuRenderer {
                 modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(0, 0, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 20d, windowScale / 20d, windowScale / 20d));
                 hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
 
-                workerMesh = createCustomHudTextCentered("PLAY", 1f, 1f, 1f);
+                workerMesh = createTextCentered("PLAY", 1f, 1f, 1f);
                 workerMesh.render();
             }
         }
 
+
         hudShaderProgram.unbind();
+    }
+
+    private static void renderGUITest(){
+        GUIObject test = getGuiTest();
+        ShaderProgram hudShaderProgram = getHudShaderProgram();
+        float windowScale = getWindowScale();
+
+
+
+        float xAdder = 20;
+        float yAdder = 20;
+
+        Matrix4d modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(0, 0, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / xAdder, windowScale / yAdder, windowScale / 20d));
+        hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+        test.textMesh.render();
+
+
+
+        xAdder = 20 / (test.buttonScale.x * 2.1f);
+        yAdder = 2.75f;
+
+        modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(0, 0, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / xAdder, windowScale / yAdder, windowScale / 20d));
+        hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+        getButtonMesh().render();
+
+
+
 
 
     }

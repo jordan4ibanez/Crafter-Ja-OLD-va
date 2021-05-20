@@ -1,9 +1,7 @@
-package engine.hud;
+package engine.gui;
 
 import engine.graph.Mesh;
 import engine.graph.Texture;
-
-import java.util.ArrayList;
 
 public class TextHandling {
 
@@ -568,7 +566,7 @@ public class TextHandling {
     }
 
 
-    public static Mesh createCustomHudTextCentered(String text, float r, float g, float b){
+    public static Mesh createTextCentered(String text, float r, float g, float b){
 
         //calculate the length for the entire string
         float totalLengthReal = 0;
@@ -577,7 +575,6 @@ public class TextHandling {
         for (char letter : text.toCharArray()) {
             float[] thisCharacterArray = translateCharToArray(letter);
             totalLengthReal += thisCharacterArray[4] + 0.1f;
-
         }
 
         //x is the actual position in the mesh creation of the letter
@@ -665,7 +662,7 @@ public class TextHandling {
 
 
     //this one is not centered (goes from the center to the right)
-    public static Mesh createCustomHudText(String text, float r, float g, float b){
+    public static Mesh createText(String text, float r, float g, float b){
 
         //x is the actual position in the mesh creation of the letter
         float x = 0;

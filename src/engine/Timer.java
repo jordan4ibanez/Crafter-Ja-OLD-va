@@ -1,10 +1,8 @@
 package engine;
 
 import static engine.Window.updateWindowTitle;
-import static engine.debug.CheckHeapSize.dumpHeapSize;
-import static engine.hud.Hud.buildFPSMesh;
+import static engine.gui.GUI.buildFPSMesh;
 import static game.Crafter.getVersionName;
-import static org.lwjgl.glfw.GLFW.glfwGetTime;
 
 public class Timer {
     private static double lastLoopTime = System.nanoTime();

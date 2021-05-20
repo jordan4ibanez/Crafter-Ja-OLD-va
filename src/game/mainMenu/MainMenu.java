@@ -1,6 +1,8 @@
 package game.mainMenu;
 
+import engine.gui.GUIObject;
 import engine.sound.SoundSource;
+import org.joml.Vector2d;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -37,7 +39,15 @@ public class MainMenu {
 
     private static final Random random = new Random();
 
+    private static GUIObject guiTest;
+
+    public static GUIObject getGuiTest(){
+        return guiTest;
+    }
+
     public static void initMainMenu() throws Exception {
+
+        guiTest = new GUIObject("You've lost the game", new Vector2d(0,0));
 
         //seed the random generator
         random.setSeed(new Date().getTime());

@@ -12,7 +12,7 @@ import static engine.disk.Disk.*;
 import static engine.disk.SaveQueue.startSaveThread;
 import static engine.scene.SceneHandler.handleSceneLogic;
 import static game.chunk.Chunk.*;
-import static engine.hud.Hud.*;
+import static engine.gui.GUI.*;
 import static engine.MouseInput.*;
 import static game.mainMenu.MainMenu.initMainMenu;
 import static game.mob.Mob.*;
@@ -28,7 +28,7 @@ public class Crafter {
 
     //fields
     //DO NOT finalize this
-    private static int     chunkRenderDistance = 5;
+    private static final int     chunkRenderDistance = 5;
     private static boolean debugInfo = true;
     private static final String versionName = "Crafter 0.03b Survival Test";
 
@@ -111,7 +111,7 @@ public class Crafter {
 
         setAttenuationModel(AL11.AL_LINEAR_DISTANCE);
         setListener(new SoundListener(new Vector3d()));
-        createHud();
+        createGUI();
 
         registerTools();
 
