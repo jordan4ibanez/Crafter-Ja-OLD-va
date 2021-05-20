@@ -144,7 +144,7 @@ public class MainMenuRenderer {
 
 
 
-        renderGUITest();
+        renderMainMenuGUI();
 
 
 
@@ -183,32 +183,29 @@ public class MainMenuRenderer {
         hudShaderProgram.unbind();
     }
 
-    private static void renderGUITest(){
-        GUIObject test = getGuiTest();
-        ShaderProgram hudShaderProgram = getHudShaderProgram();
-        float windowScale = getWindowScale();
+    private static void renderMainMenuGUI(){
+        for (GUIObject thisButton : getMainMenuGUI()) {
+            ShaderProgram hudShaderProgram = getHudShaderProgram();
+
+            float windowScale = getWindowScale();
+
+            //TODO: USE THIS FOR MOUSE COLLISION DETECTION
+            double xPos = thisButton.pos.x * (windowScale / 100d);
+            double yPos = thisButton.pos.y * (windowScale / 100d);
 
 
-
-        float xAdder = 20;
-        float yAdder = 20;
-
-        Matrix4d modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(0, 0, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / xAdder, windowScale / yAdder, windowScale / 20d));
-        hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-        test.textMesh.render();
+            Matrix4d modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(xPos, yPos, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 20d, windowScale / 20d, windowScale / 20d));
+            hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            thisButton.textMesh.render();
 
 
+            //TODO: USE THIS FOR MOUSE COLLISION DETECTION
+            float xAdder = 20 / (thisButton.buttonScale.x * 2.1f);
+            float yAdder = 2.75f;
 
-        xAdder = 20 / (test.buttonScale.x * 2.1f);
-        yAdder = 2.75f;
-
-        modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(0, 0, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / xAdder, windowScale / yAdder, windowScale / 20d));
-        hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-        getButtonMesh().render();
-
-
-
-
-
+            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(xPos, yPos, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / xAdder, windowScale / yAdder, windowScale / 20d));
+            hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            getButtonMesh().render();
+        }
     }
 }

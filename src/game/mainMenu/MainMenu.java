@@ -4,15 +4,12 @@ import engine.gui.GUIObject;
 import engine.sound.SoundSource;
 import org.joml.Vector2d;
 
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Random;
 
 import static engine.MouseInput.*;
 import static engine.Time.getDelta;
 import static engine.Window.updateWindowTitle;
-import static engine.graph.Camera.setCameraPosition;
 import static engine.scene.SceneHandler.setScene;
 import static engine.sound.SoundAPI.playSound;
 import static game.Crafter.getVersionName;
@@ -39,15 +36,20 @@ public class MainMenu {
 
     private static final Random random = new Random();
 
-    private static GUIObject guiTest;
+    private static GUIObject[] mainMenuGUI;
 
-    public static GUIObject getGuiTest(){
-        return guiTest;
+    public static GUIObject[] getMainMenuGUI(){
+        return mainMenuGUI;
     }
 
     public static void initMainMenu() throws Exception {
 
-        guiTest = new GUIObject("You've lost the game", new Vector2d(0,0));
+        mainMenuGUI = new GUIObject[]{
+                new GUIObject("SINGLEPLAYER" , new Vector2d(0, 10), 10),
+                new GUIObject("MULTIPLAYER" , new Vector2d(0, -5), 10),
+                new GUIObject("SETTINGS" , new Vector2d(0, -20), 10),
+                new GUIObject("QUIT" , new Vector2d(0, -35), 10),
+        };
 
         //seed the random generator
         random.setSeed(new Date().getTime());

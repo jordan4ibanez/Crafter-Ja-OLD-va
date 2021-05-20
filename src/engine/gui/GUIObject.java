@@ -26,4 +26,11 @@ public class GUIObject {
         this.buttonScale.x = totalLengthReal/2f;
         this.pos = pos;
     }
+
+    //initializer for button with fixed width
+    public GUIObject(String text, Vector2d pos, float width){
+        this.textMesh = createTextCentered(text, 1,1,1);
+        this.buttonScale.x = width;
+        this.pos = pos;
+    }
 }
