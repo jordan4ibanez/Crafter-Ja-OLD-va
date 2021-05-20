@@ -39,20 +39,18 @@ public class MainMenu {
 
     private static final Random random = new Random();
 
-    private static GUIObject[] mainMenuGUI;
+    private static final GUIObject[] mainMenuGUI = new GUIObject[]{
+            new GUIObject("SINGLEPLAYER" , new Vector2d(0, 10), 10, 1),
+            new GUIObject("MULTIPLAYER" , new Vector2d(0, -5), 10,1),
+            new GUIObject("SETTINGS" , new Vector2d(0, -20), 10,1),
+            new GUIObject("QUIT" , new Vector2d(0, -35), 10,1),
+    };
 
     public static GUIObject[] getMainMenuGUI(){
         return mainMenuGUI;
     }
 
     public static void initMainMenu() throws Exception {
-
-        mainMenuGUI = new GUIObject[]{
-                new GUIObject("SINGLEPLAYER" , new Vector2d(0, 10), 10, 1),
-                new GUIObject("MULTIPLAYER" , new Vector2d(0, -5), 10,1),
-                new GUIObject("SETTINGS" , new Vector2d(0, -20), 10,1),
-                new GUIObject("QUIT" , new Vector2d(0, -35), 10,1),
-        };
 
         //seed the random generator
         random.setSeed(new Date().getTime());
@@ -136,18 +134,15 @@ public class MainMenu {
         }
 
         byte selection = doGUIMouseCollisionDetection(mainMenuGUI);
-        
+
         //0 singleplayer
         //1 multiplayer
         //2 settings
         //3 quit
 
-        if (isLeftButtonPressed() && selection >= 0){
-
-            if (!mouseLeftButtonPushed) {
-                mouseLeftButtonPushed = true;
-                playSound("button");
-            }
+        if (isLeftButtonPressed() && selection >= 0 && !mouseLeftButtonPushed){
+            mouseLeftButtonPushed = true;
+            playSound("button");
 
             if (selection == 0) {
                 titleMusic.stop();
@@ -155,11 +150,19 @@ public class MainMenu {
                 toggleMouseLock();
             }
 
+            if (selection == 1){
+                System.out.println("THERE'S NO MULTIPLAYER OH NO");
+            }
+
+            if (selection == 2){
+                System.out.println("YOU FORGOT TO ADD THE SETTINGS MENU!!!");
+            }
+
             if (selection == 3){
                 glfwSetWindowShouldClose(getWindowHandle(), true);
             }
 
-        } else {
+        } else if (!isLeftButtonPressed()){
             mouseLeftButtonPushed = false;
         }
     }

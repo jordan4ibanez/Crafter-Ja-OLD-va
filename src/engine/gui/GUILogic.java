@@ -10,6 +10,7 @@ import static engine.Window.*;
 import static engine.gui.GUI.toggleVsyncMesh;
 import static engine.render.GameRenderer.getWindowScale;
 import static engine.render.GameRenderer.getWindowSize;
+import static engine.scene.SceneHandler.setScene;
 import static engine.sound.SoundAPI.playSound;
 import static game.player.Inventory.*;
 import static game.player.Player.*;
@@ -24,6 +25,17 @@ public class GUILogic {
     private static boolean clicking = false;
     private static boolean mouseButtonPushed = false;
     private static int pauseButtonSelection;
+
+    private static final GUIObject[] gamePauseMenuGUI = new GUIObject[]{
+            new GUIObject("CONTINUE" , new Vector2d(0, 25), 10, 1),
+            new GUIObject("SETTINGS" , new Vector2d(0, 0), 10,1),
+            new GUIObject("QUIT TO MAIN MENU" , new Vector2d(0, -25), 10,1),
+    };
+
+    public static GUIObject[] getGamePauseMenuGUI(){
+        return gamePauseMenuGUI;
+    }
+
 
 
     public static int[] getInvSelection(){
@@ -153,45 +165,33 @@ public class GUILogic {
             invSelection = null;
         } else if (isPaused()){
 
-            if (pauseButtonSelection != -1 && isLeftButtonPressed() && !clicking){
-                clicking = true;
+            byte selection = doGUIMouseCollisionDetection(gamePauseMenuGUI);
+
+            //0 continue
+            //1 settings
+            //2 quit
+
+            if (selection >= 0 && isLeftButtonPressed() && !mouseButtonPushed){
+
                 playSound("button");
-                if (pauseButtonSelection == 0){
+                mouseButtonPushed = true;
+
+                if (selection == 0){
                     toggleMouseLock();
                     setPaused(false);
-                }else if (pauseButtonSelection == 1) {
-                    setVSync(!isvSync());
-                    toggleVsyncMesh();
-                } else if (pauseButtonSelection == 2){
-                    glfwSetWindowShouldClose(getWindowHandle(), true);
+                } else if (selection == 1){
+                    System.out.println("YOU FORGOT TO ADD THE SETTINGS MENU >:(");
+                } else if (selection == 2){
+                    //glfwSetWindowShouldClose(getWindowHandle(), true);
+                    setScene((byte) 0);
+                    setPaused(false);
                 }
-
-            } else if (!isLeftButtonPressed() && clicking) {
-                clicking = false;
+            } else if (!isLeftButtonPressed()) {
+                mouseButtonPushed = false;
             }
-
-            //need to create new object or the mouse position gets messed up
-            Vector2d mousePos = new Vector2d(getMousePos());
-
-            //work from the center
-            mousePos.x -= (getWindowSize().x/2f);
-            mousePos.y -= (getWindowSize().y/2f);
-            //invert the Y position to follow rendering coordinate system
-            mousePos.y *= -1f;
-
-            for (int y = 0; y > -3; y --){
-//                Matrix4f modelViewMatrix = buildOrthoProjModelMatrix(new Vector3f(0, (y+1) * getWindowScale()/3f, 0), new Vector3f(0, 0, 0), new Vector3f(windowScale/2f, windowScale/2f, windowScale/2f));
-
-                if (mousePos.x > -(getWindowScale()/2f * 0.5f) && mousePos.x < (getWindowScale()/2f * 0.5f) && //x axis\
-                        mousePos.y > ((y+1) * getWindowScale()/3f) - ((getWindowScale()/2f) * 0.125f) && mousePos.y < ((y+1) * getWindowScale()/3f) + ((getWindowScale()/2f) * 0.125f)) { //y axis
-                    pauseButtonSelection = (y * -1);
-                    return;
-                }
-            }
-
-            pauseButtonSelection = -1;
         }
     }
+
     public static byte doGUIMouseCollisionDetection(GUIObject[] guiElements){
         byte selected = -1;
         float windowScale = getWindowScale();

@@ -2,6 +2,7 @@ package engine.render;
 
 import engine.Utils;
 import engine.graph.*;
+import engine.gui.GUIObject;
 import game.chunk.ChunkObject;
 import game.falling.FallingEntityObject;
 import game.item.Item;
@@ -24,6 +25,7 @@ import static engine.gui.TextHandling.createText;
 import static game.Crafter.getDebugInfo;
 import static game.falling.FallingEntity.getFallingEntities;
 import static game.item.ItemEntity.*;
+import static game.mainMenu.MainMenu.getMainMenuGUI;
 import static game.mob.Mob.getAllMobs;
 import static game.particle.Particle.getAllParticles;
 import static game.tnt.TNTEntity.*;
@@ -817,50 +819,40 @@ public class GameRenderer {
 
             glClear(GL_DEPTH_BUFFER_BIT);
 
-            {
-                for (int y = 0; y > -3; y --){
-                    modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(0, (y+1) * windowScale/3d, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale/2d, windowScale/2d, windowScale/2d));
-                    hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-
-
-                    if (getPauseButtonSelection() == y * -1){
-                        if (getIfClicking()){
-                            getButtonPushedMesh().render();
-                        } else {
-                            getButtonSelectedMesh().render();
-                        }
-                    } else {
-                        getButtonMesh().render();
-                    }
-
-
-                }
-            }
-
-            glClear(GL_DEPTH_BUFFER_BIT);
-            {
-                modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(0, (1) * windowScale / 3d, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 20d, windowScale / 20d, windowScale / 20d));
-                hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                getContinueMesh().render();
-            }
-            glClear(GL_DEPTH_BUFFER_BIT);
-
-            {
-                modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(0, (0) * windowScale / 3d, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 20d, windowScale / 20d, windowScale / 20d));
-                hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                getToggleVsyncMesh().render();
-            }
-
-            glClear(GL_DEPTH_BUFFER_BIT);
-
-            {
-                modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(0, -1 * windowScale / 3d, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 20d, windowScale / 20d, windowScale / 20d));
-                hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                getQuitGameMesh().render();
-            }
+            renderGameGUI();
         }
 
         hudShaderProgram.unbind();
+    }
+
+    private static void renderGameGUI(){
+        for (GUIObject thisButton : getGamePauseMenuGUI()) {
+            ShaderProgram hudShaderProgram = getHudShaderProgram();
+
+            float windowScale = getWindowScale();
+
+            //TODO: USE THIS FOR MOUSE COLLISION DETECTION
+            double xPos = thisButton.pos.x * (windowScale / 100d);
+            double yPos = thisButton.pos.y * (windowScale / 100d);
+
+
+            Matrix4d modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(xPos, yPos, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 20d, windowScale / 20d, windowScale / 20d));
+            hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            thisButton.textMesh.render();
+
+
+            //TODO: USE THIS FOR MOUSE COLLISION DETECTION
+            float xAdder = 20 / thisButton.buttonScale.x;
+            float yAdder = 20 / thisButton.buttonScale.y;
+
+            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(xPos, yPos, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / xAdder, windowScale / yAdder, windowScale / 20d));
+            hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            if (thisButton.selected){
+                getButtonSelectedMesh().render();
+            } else {
+                getButtonMesh().render();
+            }
+        }
     }
 
     public static void cleanupRenderer(){

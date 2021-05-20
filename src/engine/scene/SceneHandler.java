@@ -5,19 +5,18 @@ import game.tnt.TNTEntity;
 
 import static engine.Controls.gameInput;
 import static engine.Controls.mainMenuInput;
+import static engine.MouseInput.*;
 import static engine.Window.*;
 import static engine.debug.DebugTerrainDrawTypes.generateDebugChunkMesh;
 import static engine.debug.RenderDebug.initializeDebugRenderShader;
 import static engine.debug.RenderDebug.renderDebug;
 import static engine.debug.debug.debugInput;
-import static engine.graph.Camera.setCameraPosition;
+import static engine.graph.Camera.*;
 import static engine.gui.GUILogic.hudOnStepTest;
 import static engine.render.MainMenuRenderer.renderMainMenu;
-import static engine.MouseInput.mouseInput;
 import static engine.render.GameRenderer.renderGame;
 import static engine.Time.calculateDelta;
 import static engine.Timer.countFPS;
-import static engine.graph.Camera.updateCamera;
 import static engine.sound.SoundManager.updateListenerPosition;
 import static game.chunk.Chunk.globalChunkSaveToDisk;
 import static game.chunk.Chunk.processOldChunks;
@@ -37,6 +36,24 @@ public class SceneHandler {
 
     public static void setScene(byte newScene){
         currentScene = newScene;
+
+        //move the camera into position for the main menu
+        if (currentScene == 0){
+            setCameraPosition(0,-8,0);
+            setCameraRotation(0,0,0);
+            setWindowClearColor(0,0,0,1);
+            if (isMouseLocked()){
+                toggleMouseLock();
+            }
+        }
+
+        if (currentScene == 1){
+            setWindowClearColor(0.53f,0.81f,0.92f,0.f);
+            if (!isMouseLocked()){
+                //toggleMouseLock();
+            }
+        }
+
     }
 
     public static void handleSceneLogic() throws Exception {
