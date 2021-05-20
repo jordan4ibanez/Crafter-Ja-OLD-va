@@ -44,4 +44,14 @@ public class GUIObject {
         this.type = 0;
         this.selected = false;
     }
+
+    //initializer for button with fixed width and height
+    public GUIObject(String text, Vector2d pos, float width, float height){
+        this.textMesh = createTextCenteredWithShadow(text, 1,1,1);
+        this.buttonScale.x = width * 2.1f;
+        this.buttonScale.y = height * 2.1f;
+        this.pos = pos;
+        this.type = 0;
+        this.selected = false;
+    }
 }

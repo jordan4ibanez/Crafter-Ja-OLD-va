@@ -46,10 +46,10 @@ public class MainMenu {
     public static void initMainMenu() throws Exception {
 
         mainMenuGUI = new GUIObject[]{
-                new GUIObject("SINGLEPLAYER" , new Vector2d(0, 10), 10),
-                new GUIObject("MULTIPLAYER" , new Vector2d(0, -5), 10),
-                new GUIObject("SETTINGS" , new Vector2d(0, -20), 10),
-                new GUIObject("QUIT" , new Vector2d(0, -35), 10),
+                new GUIObject("SINGLEPLAYER" , new Vector2d(0, 10), 10, 1),
+                new GUIObject("MULTIPLAYER" , new Vector2d(0, -5), 10,1),
+                new GUIObject("SETTINGS" , new Vector2d(0, -20), 10,1),
+                new GUIObject("QUIT" , new Vector2d(0, -35), 10,1),
         };
 
         //seed the random generator
@@ -326,6 +326,11 @@ public class MainMenu {
             "Object oriented!",
             "The boats never sink!",
             "404 - Sheep not found!",
-            "Almost alpha!"
+            "Almost alpha!",
+            "Optional options!",
+            "Don't fall off the edge!",
+            "Collides!",
+            "Works underwater!",
+            "Doesn't include crafting!",
     };
 }
