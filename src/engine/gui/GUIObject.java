@@ -12,9 +12,10 @@ public class GUIObject {
     0 - button
     1 - slider bar
      */
+
     public byte type;
     public Mesh textMesh;
-    public Vector2d pos = new Vector2d();
+    public Vector2d pos;
     public Vector2f buttonScale = new Vector2f();
     public boolean selected;
 
@@ -27,8 +28,8 @@ public class GUIObject {
             float[] thisCharacterArray = translateCharToArray(letter);
             totalLengthReal += thisCharacterArray[4] + 0.1f;
         }
-        totalLengthReal -= 0.1f;
-        this.buttonScale.x = totalLengthReal/2f;
+        this.buttonScale.x = (totalLengthReal/2f) * 2.1f;
+        this.buttonScale.y = 1.6f;
         this.pos = pos;
         this.type = 0;
         this.selected = false;
@@ -37,11 +38,10 @@ public class GUIObject {
     //initializer for button with fixed width
     public GUIObject(String text, Vector2d pos, float width){
         this.textMesh = createTextCenteredWithShadow(text, 1,1,1);
-        this.buttonScale.x = width;
+        this.buttonScale.x = width * 2.1f;
+        this.buttonScale.y = 1.6f;
         this.pos = pos;
         this.type = 0;
         this.selected = false;
     }
-
-
 }

@@ -10,6 +10,7 @@ import java.util.Random;
 import static engine.MouseInput.*;
 import static engine.Time.getDelta;
 import static engine.Window.updateWindowTitle;
+import static engine.gui.GUILogic.doGUIMouseCollisionDetection;
 import static engine.scene.SceneHandler.setScene;
 import static engine.sound.SoundAPI.playSound;
 import static game.Crafter.getVersionName;
@@ -136,6 +137,8 @@ public class MainMenu {
         if (!titleMusic.isPlaying()){
             titleMusic.play();
         }
+
+        doGUIMouseCollisionDetection(mainMenuGUI);
     }
 
     public static float getTitleBounce(){
@@ -318,6 +321,11 @@ public class MainMenu {
             "Coming to a town near you!",
             "Celeron55 is cool!",
             "Found in the grocery isle!",
-            "Also try Mineclone 2!"
+            "Also try Mineclone 2!",
+            "Now with bigger buttons!",
+            "Object oriented!",
+            "The boats never sink!",
+            "404 - Sheep not found!",
+            "Almost alpha!"
     };
 }

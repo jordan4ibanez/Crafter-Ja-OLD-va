@@ -192,4 +192,31 @@ public class GUILogic {
             pauseButtonSelection = -1;
         }
     }
+    public static byte doGUIMouseCollisionDetection(GUIObject[] guiElements){
+        byte selected = -1;
+        float windowScale = getWindowScale();
+
+        //need to create new object or the mouse position gets messed up
+        Vector2d mousePos = new Vector2d(getMousePos());
+
+        //work from the center
+        mousePos.x -= (getWindowSize().x/2f);
+        mousePos.y -= (getWindowSize().y/2f);
+
+        for (GUIObject thisButton : guiElements){
+            double xPos = thisButton.pos.x * (windowScale / 100d);
+            double yPos = thisButton.pos.y * (windowScale / 100d);
+
+            //y is inverted because GPU math
+            yPos *= -1;
+
+            float xAdder = (float)Math.ceil(windowScale / ( 20 / thisButton.buttonScale.x)) / 2f;
+            float yAdder = (float)Math.ceil(windowScale / (20 / thisButton.buttonScale.y)) / 2f;
+
+            thisButton.selected = mousePos.y <= yPos + yAdder && mousePos.y >= yPos - yAdder && mousePos.x <= xPos + xAdder && mousePos.x >= xPos - xAdder;
+        }
+
+
+        return selected;
+    }
 }

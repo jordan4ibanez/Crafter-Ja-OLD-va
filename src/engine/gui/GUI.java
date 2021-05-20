@@ -78,9 +78,9 @@ public class GUI {
         inventorySlotMesh = create2DMesh(0.5f,0.5f,"textures/inventory_slot.png");
         inventorySlotSelectedMesh = create2DMesh(0.5f,0.5f, "textures/inventory_slot_selected.png");
         menuBgMesh = create2DMesh(0.5f,0.5f, "textures/menu_bg.png");
-        buttonMesh = create2DMesh(0.5f,0.125f,"textures/button.png");
-        buttonSelectedMesh = create2DMesh(0.5f,0.125f,"textures/button_selected.png");
-        buttonPushedMesh = create2DMesh(0.5f,0.125f,"textures/button_pushed.png");
+        buttonMesh = create2DMesh(0.5f,0.5f,"textures/button.png");
+        buttonSelectedMesh = create2DMesh(0.5f,0.5f,"textures/button_selected.png");
+        buttonPushedMesh = create2DMesh(0.5f,0.5f,"textures/button_pushed.png");
         globalWaterEffectMesh = create2DMesh(0.5f,0.5f, "textures/water_overlay.png");
         heartHudMesh = create2DMesh(0.5f, 0.5f, "textures/heart.png");
         halfHeartHudMesh = create2DMesh(0.5f, 0.5f, 0.5f, "textures/heart.png");

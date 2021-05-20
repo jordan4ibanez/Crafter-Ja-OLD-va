@@ -200,12 +200,16 @@ public class MainMenuRenderer {
 
 
             //TODO: USE THIS FOR MOUSE COLLISION DETECTION
-            float xAdder = 20 / (thisButton.buttonScale.x * 2.1f);
-            float yAdder = 2.75f;
+            float xAdder = 20 / thisButton.buttonScale.x;
+            float yAdder = 20 / thisButton.buttonScale.y;
 
             modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(xPos, yPos, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / xAdder, windowScale / yAdder, windowScale / 20d));
             hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            getButtonMesh().render();
+            if (thisButton.selected){
+                getButtonSelectedMesh().render();
+            } else {
+                getButtonMesh().render();
+            }
         }
     }
 }
