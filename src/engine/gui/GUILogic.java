@@ -27,9 +27,10 @@ public class GUILogic {
     private static int pauseButtonSelection;
 
     private static final GUIObject[] gamePauseMenuGUI = new GUIObject[]{
-            new GUIObject("CONTINUE" , new Vector2d(0, 25), 10, 1),
-            new GUIObject("SETTINGS" , new Vector2d(0, 0), 10,1),
-            new GUIObject("QUIT TO MAIN MENU" , new Vector2d(0, -25), 10,1),
+            new GUIObject("CONTINUE" , new Vector2d(0, 30), 10, 1),
+            new GUIObject("SETTINGS" , new Vector2d(0, 10), 10,1),
+            new GUIObject("QUIT TO MAIN MENU" , new Vector2d(0, -10), 10,1),
+            new GUIObject("QUIT GAME" , new Vector2d(0, -30), 10,1),
     };
 
     public static GUIObject[] getGamePauseMenuGUI(){
@@ -185,6 +186,8 @@ public class GUILogic {
                     //glfwSetWindowShouldClose(getWindowHandle(), true);
                     setScene((byte) 0);
                     setPaused(false);
+                } else if (selection == 3){
+                    glfwSetWindowShouldClose(getWindowHandle(), true);
                 }
             } else if (!isLeftButtonPressed()) {
                 mouseButtonPushed = false;
