@@ -24,6 +24,7 @@ import static game.chunk.ChunkMesh.popChunkMeshQueue;
 import static game.chunk.ChunkUpdateHandler.chunkUpdater;
 import static game.falling.FallingEntity.fallingEntityOnStep;
 import static game.mainMenu.MainMenu.doMainMenuLogic;
+import static game.mainMenu.MainMenu.selectTitleScreenGag;
 import static game.mob.Mob.mobsOnTick;
 import static game.particle.Particle.particlesOnStep;
 import static game.player.Player.*;
@@ -42,6 +43,7 @@ public class SceneHandler {
             setCameraPosition(0,-8,0);
             setCameraRotation(0,0,0);
             setWindowClearColor(0,0,0,1);
+            selectTitleScreenGag();
             if (isMouseLocked()){
                 toggleMouseLock();
             }
@@ -49,9 +51,6 @@ public class SceneHandler {
 
         if (currentScene == 1){
             setWindowClearColor(0.53f,0.81f,0.92f,0.f);
-            if (!isMouseLocked()){
-                //toggleMouseLock();
-            }
         }
 
     }

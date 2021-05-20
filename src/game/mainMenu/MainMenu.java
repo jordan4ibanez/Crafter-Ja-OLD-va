@@ -243,7 +243,7 @@ public class MainMenu {
     }
 
 
-    private static void selectTitleScreenGag(){
+    public static void selectTitleScreenGag(){
         titleScreenGag = titleScreenGags[random.nextInt(titleScreenGags.length)];
 
         if (titleScreenGag.equals("Look at the window title!")){
