@@ -16,5 +16,5 @@ void main()
         discard;
     }
 
-    fragColor = p;
+    fragColor = p * vec4(exColor, 1.0);
 }
