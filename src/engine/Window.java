@@ -21,7 +21,7 @@ public class Window {
     private static long windowHandle;
     private static boolean resized;
     private static boolean vSync;
-    private static int dumpedKey;
+    private static int dumpedKey = -1;
 
     public static void initWindow(String newTitle, int newWidth, int newHeight, boolean newVSync) {
         title   = newTitle;

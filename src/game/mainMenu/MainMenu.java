@@ -9,10 +9,11 @@ import java.util.Random;
 
 import static engine.MouseInput.*;
 import static engine.Time.getDelta;
-import static engine.Window.getWindowHandle;
-import static engine.Window.updateWindowTitle;
+import static engine.Window.*;
 import static engine.gui.GUILogic.doGUIMouseCollisionDetection;
 import static engine.scene.SceneHandler.setScene;
+import static engine.settings.Settings.*;
+import static engine.settings.Settings.getKeyInventory;
 import static engine.sound.SoundAPI.playMusic;
 import static engine.sound.SoundAPI.playSound;
 import static game.Crafter.getVersionName;
@@ -27,18 +28,22 @@ public class MainMenu {
     private static boolean haltBlockFlyIn = false;
     private static String titleScreenGag = "";
     private static byte titleScreenGagLength = 0;
-
     private static final float blockOffsetInitial = 15f;
     private static float titleBounce = 10f;
     private static float bounceAnimation = 0.75f;
-
     private static float backGroundScroll = 0f;
-
     private static SoundSource titleMusic;
-
     private static boolean lockOutReset = false;
-
     private static final Random random = new Random();
+    private static boolean mouseButtonPushed = false;
+    private static boolean mouseButtonWasPushed = false;
+    private static boolean pollingButtonInputs = false;
+    private static byte lockedOnButtonInput = -1;
+
+    //0 main
+    //1 settings base
+    //2 buttons settings
+    private static byte menuPage = 0;
 
     private static final GUIObject[] mainMenuGUI = new GUIObject[]{
             new GUIObject("SINGLEPLAYER" , new Vector2d(0, 10), 10, 1),
@@ -47,7 +52,41 @@ public class MainMenu {
             new GUIObject("QUIT" , new Vector2d(0, -35), 10,1),
     };
 
+    private static final GUIObject[] mainMenuSettingsMenuGUI = new GUIObject[]{
+            new GUIObject("CONTROLS" ,             new Vector2d(0, 35), 12, 1),
+            new GUIObject("VSYNC: " + boolToString(getSettingsVsync()),            new Vector2d(0, 21), 12, 1),
+            new GUIObject("GRAPHICS MODE: " + graphicsThing(getGraphicsMode()) , new Vector2d(0, 7), 12,1),
+            new GUIObject("RENDER DISTANCE: " + getRenderDistance(),   new Vector2d(0, -7), 12,1),
+            new GUIObject("CHUNK LOADING: " + convertChunkLoadText(getSettingsChunkLoad()), new Vector2d(0, -21), 12,1),
+            new GUIObject("BACK" ,                  new Vector2d(0, -35), 12,1),
+    };
+
+    private static final GUIObject[] controlsMenuGUI = new GUIObject[]{
+            new GUIObject("FORWARD: " + quickConvertKeyCode(getKeyForward()) ,     new Vector2d(-35, 30), 6, 1),
+            new GUIObject("BACK: " + quickConvertKeyCode(getKeyBack()),            new Vector2d(35, 30), 6, 1),
+            new GUIObject("LEFT: " + quickConvertKeyCode(getKeyLeft()),            new Vector2d(-35, 15), 6, 1),
+            new GUIObject("RIGHT: " + quickConvertKeyCode(getKeyRight()),          new Vector2d(35, 15), 6, 1),
+            new GUIObject("SNEAK: " + quickConvertKeyCode(getKeySneak()),          new Vector2d(-35, 0), 6, 1),
+            new GUIObject("DROP: " + quickConvertKeyCode(getKeyDrop()),            new Vector2d(35, 0), 6, 1),
+            new GUIObject("JUMP: " + quickConvertKeyCode(getKeyJump()),            new Vector2d(-35, -15), 6, 1),
+            new GUIObject("INVENTORY: " + quickConvertKeyCode(getKeyInventory()) , new Vector2d(35, -15), 6, 1),
+            new GUIObject("BACK" , new Vector2d(0, -30), 5, 1),
+    };
+
+    public static byte getMainMenuPage(){
+        return menuPage;
+    }
+
     public static GUIObject[] getMainMenuGUI(){
+        if (menuPage == 0) {
+            return mainMenuGUI;
+        } else if (menuPage == 1){
+            return mainMenuSettingsMenuGUI;
+        } else if (menuPage == 2){
+            return controlsMenuGUI;
+        }
+
+        //have to return something
         return mainMenuGUI;
     }
 
@@ -110,7 +149,6 @@ public class MainMenu {
         return titleOffsets;
     }
 
-    private static boolean mouseLeftButtonPushed = false;
 
     public static void doMainMenuLogic(){
         if (isMouseLocked()){
@@ -118,54 +156,252 @@ public class MainMenu {
             toggleMouseLock();
         }
 
-        if (isRightButtonPressed()){
-            if (!lockOutReset){
-                resetMainMenu();
-            }
-            lockOutReset = true;
-        } else {
-            lockOutReset = false;
-        }
-        makeBlocksFlyIn();
-        makeTitleBounce();
+
         makeBackGroundScroll();
 
-        if (!titleMusic.isPlaying()){
-            titleMusic.play();
+        //title screen
+        if (menuPage == 0) {
+            makeBlocksFlyIn();
+            makeTitleBounce();
+
+            if (!titleMusic.isPlaying()) {
+                titleMusic.play();
+            }
+
+            byte selection = doGUIMouseCollisionDetection(mainMenuGUI);
+
+            //0 singleplayer
+            //1 multiplayer
+            //2 settings
+            //3 quit
+
+            if (isLeftButtonPressed() && selection >= 0 && !mouseButtonPushed && !mouseButtonWasPushed) {
+                mouseButtonPushed = true;
+                playSound("button");
+
+                if (selection == 0) {
+                    titleMusic.stop();
+                    setScene((byte) 1);
+                    toggleMouseLock();
+                }
+
+                if (selection == 1) {
+                    System.out.println("THERE'S NO MULTIPLAYER OH NO");
+                }
+
+                if (selection == 2) {
+                    resetMainMenu();
+                    menuPage = 1;
+                }
+
+                if (selection == 3) {
+                    glfwSetWindowShouldClose(getWindowHandle(), true);
+                }
+
+            } else if (!isLeftButtonPressed()) {
+                mouseButtonPushed = false;
+            }
+        //settings menu
+        } else if (menuPage == 1){
+            byte selection = doGUIMouseCollisionDetection(mainMenuSettingsMenuGUI);
+
+            //0 - controls
+            //1 - vsync
+            //2 - graphics render mode
+            //3 - render distance
+            //4 - lazy chunk loading
+            //5 - back
+
+            if (selection >= 0 && isLeftButtonPressed() && !mouseButtonPushed && !mouseButtonWasPushed) {
+                playSound("button");
+                mouseButtonPushed = true;
+
+                switch (selection) {
+                    case 0:
+                        //goto controls menu
+                        menuPage = 2;
+                        break;
+                    case 1:
+                        boolean vSync = !getSettingsVsync();
+                        setSettingsVsync(vSync);
+                        mainMenuSettingsMenuGUI[1].updateTextCenteredFixed("VSYNC: " + boolToString(vSync));
+                        saveSettings();
+                        break;
+                    case 2:
+                        boolean graphicsMode = !getGraphicsMode();
+                        setGraphicsMode(graphicsMode);
+                        mainMenuSettingsMenuGUI[2].updateTextCenteredFixed("GRAPHICS: " + graphicsThing(graphicsMode));
+                        saveSettings();
+                        break;
+                    case 3:
+                        int renderDistance = getRenderDistance();
+                        switch (renderDistance) {
+                            case 3:
+                                renderDistance = 5;
+                                break;
+                            case 5:
+                                renderDistance = 7;
+                                break;
+                            case 7:
+                                renderDistance = 9;
+                                break;
+                            case 9:
+                                renderDistance = 3;
+                        }
+                        setRenderDistance(renderDistance);
+                        mainMenuSettingsMenuGUI[3].updateTextCenteredFixed("RENDER DISTANCE: " + renderDistance);
+                        saveSettings();
+                        break;
+                    case 4:
+                        byte chunkLoad = getSettingsChunkLoad();
+                        chunkLoad++;
+                        if (chunkLoad > 5) {
+                            chunkLoad = 0;
+                        }
+                        mainMenuSettingsMenuGUI[4].updateTextCenteredFixed("CHUNK LOADING: " + convertChunkLoadText(chunkLoad));
+                        setSettingsChunkLoad(chunkLoad);
+                        saveSettings();
+                        break;
+                    case 5:
+                        menuPage = 0;
+                        break;
+                }
+            } else if (!isLeftButtonPressed()) {
+                mouseButtonPushed = false;
+            }
+        } else if (menuPage == 2){
+            byte selection = doGUIMouseCollisionDetection(controlsMenuGUI);
+            //0 - forward
+            //1 - back
+            //2 - left
+            //3 - right
+            //4 - sneak
+            //5 - drop
+            //6 - jump
+            //7 - inventory
+            //8 - back
+
+            //todo: fix duplicating keys
+            if (lockedOnButtonInput >= 0 && pollingButtonInputs) {
+                int dumpedKey = getDumpedKey();
+                //poll data stream of key inputs
+                if (dumpedKey >= 0){
+                    //forward
+                    if (lockedOnButtonInput == 0) {
+                        setKeyForward(dumpedKey);
+                        lockedOnButtonInput = -1;
+                        pollingButtonInputs = false;
+                        controlsMenuGUI[0].updateTextCenteredFixed("FORWARD: " + quickConvertKeyCode(dumpedKey));
+                        saveSettings();
+                        //back
+                    } else if (lockedOnButtonInput == 1){
+                        setKeyBack(dumpedKey);
+                        lockedOnButtonInput = -1;
+                        pollingButtonInputs = false;
+                        controlsMenuGUI[1].updateTextCenteredFixed("BACK: " + quickConvertKeyCode(dumpedKey));
+                        saveSettings();
+                        //left
+                    } else if (lockedOnButtonInput == 2){
+                        setKeyLeft(dumpedKey);
+                        lockedOnButtonInput = -1;
+                        pollingButtonInputs = false;
+                        controlsMenuGUI[2].updateTextCenteredFixed("LEFT: " + quickConvertKeyCode(dumpedKey));
+                        saveSettings();
+                        //right
+                    } else if (lockedOnButtonInput == 3) {
+                        setKeyRight(dumpedKey);
+                        lockedOnButtonInput = -1;
+                        pollingButtonInputs = false;
+                        controlsMenuGUI[3].updateTextCenteredFixed("RIGHT: " + quickConvertKeyCode(dumpedKey));
+                        saveSettings();
+                        //sneak
+                    } else if (lockedOnButtonInput == 4) {
+                        setKeySneak(dumpedKey);
+                        lockedOnButtonInput = -1;
+                        pollingButtonInputs = false;
+                        controlsMenuGUI[4].updateTextCenteredFixed("SNEAK: " + quickConvertKeyCode(dumpedKey));
+                        saveSettings();
+                        //drop
+                    } else if (lockedOnButtonInput == 5) {
+                        setKeyDrop(dumpedKey);
+                        lockedOnButtonInput = -1;
+                        pollingButtonInputs = false;
+                        controlsMenuGUI[5].updateTextCenteredFixed("DROP: " + quickConvertKeyCode(dumpedKey));
+                        saveSettings();
+                        //jump
+                    } else if (lockedOnButtonInput == 6) {
+                        setKeyJump(dumpedKey);
+                        lockedOnButtonInput = -1;
+                        pollingButtonInputs = false;
+                        controlsMenuGUI[6].updateTextCenteredFixed("JUMP: " + quickConvertKeyCode(dumpedKey));
+                        saveSettings();
+                        //jump
+                    } else if (lockedOnButtonInput == 7) {
+                        setKeyInventory(dumpedKey);
+                        lockedOnButtonInput = -1;
+                        pollingButtonInputs = false;
+                        controlsMenuGUI[7].updateTextCenteredFixed("INVENTORY: " + quickConvertKeyCode(dumpedKey));
+                        saveSettings();
+                    }
+                }
+            }
+
+            if (lockedOnButtonInput < 0 && !pollingButtonInputs && selection >= 0 && isLeftButtonPressed() && !mouseButtonPushed && !mouseButtonWasPushed) {
+
+                playSound("button");
+
+                switch (selection){
+                    case 0:
+                        lockedOnButtonInput = 0;
+                        pollingButtonInputs = true;
+                        controlsMenuGUI[0].updateTextCenteredFixed("FORWARD:>" + quickConvertKeyCode(getKeyForward()) + "<");
+                        break;
+                    case 1:
+                        lockedOnButtonInput = 1;
+                        pollingButtonInputs = true;
+                        controlsMenuGUI[1].updateTextCenteredFixed("BACK:>" + quickConvertKeyCode(getKeyBack()) + "<");
+                        break;
+                    case 2:
+                        lockedOnButtonInput = 2;
+                        pollingButtonInputs = true;
+                        controlsMenuGUI[2].updateTextCenteredFixed("LEFT:>" + quickConvertKeyCode(getKeyLeft()) + "<");
+                        break;
+                    case 3:
+                        lockedOnButtonInput = 3;
+                        pollingButtonInputs = true;
+                        controlsMenuGUI[3].updateTextCenteredFixed("RIGHT:>" + quickConvertKeyCode(getKeyRight()) + "<");
+                        break;
+                    case 4:
+                        lockedOnButtonInput = 4;
+                        pollingButtonInputs = true;
+                        controlsMenuGUI[4].updateTextCenteredFixed("SNEAK:>" + quickConvertKeyCode(getKeySneak()) + "<");
+                        break;
+                    case 5:
+                        lockedOnButtonInput = 5;
+                        pollingButtonInputs = true;
+                        controlsMenuGUI[5].updateTextCenteredFixed("DROP:>" + quickConvertKeyCode(getKeyDrop()) + "<");
+                        break;
+                    case 6:
+                        lockedOnButtonInput = 6;
+                        pollingButtonInputs = true;
+                        controlsMenuGUI[6].updateTextCenteredFixed("JUMP:>" + quickConvertKeyCode(getKeyJump()) + "<");
+                        break;
+                    case 7:
+                        lockedOnButtonInput = 7;
+                        pollingButtonInputs = true;
+                        controlsMenuGUI[7].updateTextCenteredFixed("INVENTORY:>" + quickConvertKeyCode(getKeyInventory()) + "<");
+                        break;
+                    case 8:
+                        menuPage = 1;
+                        mouseButtonPushed = true;
+                        break;
+                }
+            } else if (!isLeftButtonPressed()) {
+                mouseButtonPushed = false;
+            }
         }
 
-        byte selection = doGUIMouseCollisionDetection(mainMenuGUI);
-
-        //0 singleplayer
-        //1 multiplayer
-        //2 settings
-        //3 quit
-
-        if (isLeftButtonPressed() && selection >= 0 && !mouseLeftButtonPushed){
-            mouseLeftButtonPushed = true;
-            playSound("button");
-
-            if (selection == 0) {
-                titleMusic.stop();
-                setScene((byte) 1);
-                toggleMouseLock();
-            }
-
-            if (selection == 1){
-                System.out.println("THERE'S NO MULTIPLAYER OH NO");
-            }
-
-            if (selection == 2){
-                System.out.println("YOU FORGOT TO ADD THE SETTINGS MENU!!!");
-            }
-
-            if (selection == 3){
-                glfwSetWindowShouldClose(getWindowHandle(), true);
-            }
-
-        } else if (!isLeftButtonPressed()){
-            mouseLeftButtonPushed = false;
-        }
+        mouseButtonWasPushed = isLeftButtonPressed();
     }
 
     public static float getTitleBounce(){
@@ -243,6 +479,52 @@ public class MainMenu {
         }
     }
 
+
+    private static String quickConvertKeyCode(int keyCode){
+        char code = (char)keyCode;
+
+        if(code == 'Ŕ'){
+            return "SHIFT";
+        } else if (code == ' '){
+            return "SPACE";
+        } else if (code == 'Ř'){
+            return "SHIFT";
+        }
+
+        return code + "";
+    }
+
+    private static String boolToString(boolean bool){
+        if (bool){
+            return "ON";
+        }
+        return "OFF";
+    }
+
+    private static String graphicsThing(boolean bool){
+        if (bool){
+            return "FANCY";
+        }
+        return "FAST";
+    }
+
+    private static String convertChunkLoadText(byte input){
+        if (input == 0){
+            return "SNAIL";
+        } else if (input == 1){
+            return "LAZY";
+        } else if (input == 2){
+            return "NORMAL";
+        } else if (input == 3){
+            return "SPEEDY";
+        } else if (input == 4){
+            return "INSANE";
+        } else if (input == 5){
+            return "FUTURE PC";
+        }
+
+        return "NULL";
+    }
 
     public static void selectTitleScreenGag(){
         titleScreenGag = titleScreenGags[random.nextInt(titleScreenGags.length)];

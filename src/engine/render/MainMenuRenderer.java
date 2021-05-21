@@ -55,7 +55,7 @@ public class MainMenuRenderer {
         byte[][] titleBlocks = getTitleBlocks();
         double[][] titleBlockOffsets = getTitleBlockOffsets();
 
-
+        boolean onTitleScreen = getMainMenuPage() == 0;
         //set initial random float variables
 
         workerMesh = getTitleBackGroundMeshTile();
@@ -74,23 +74,24 @@ public class MainMenuRenderer {
         }
 
 
-        glClear(GL_DEPTH_BUFFER_BIT);
-        workerMesh = getTitleBlockMesh();
-        //render title (in blocks)
-        for (int x = 0; x < titleBlocks.length; x++) {
-            //assume equal lengths
-            for (int y = 0; y < titleBlocks[0].length; y++) {
+        if (onTitleScreen) {
+            glClear(GL_DEPTH_BUFFER_BIT);
+            workerMesh = getTitleBlockMesh();
+            //render title (in blocks)
+            for (int x = 0; x < titleBlocks.length; x++) {
+                //assume equal lengths
+                for (int y = 0; y < titleBlocks[0].length; y++) {
 
-                if (titleBlocks[x][y] == 1) {
-                    //these calculations are done to perfectly center the title in front of the camera (hopefully)
-                    modelViewMatrix = updateModelViewMatrix(new Vector3d(y - (27d/2d), -x + (5d/2d), -18 + titleBlockOffsets[x][y]), new Vector3f(0, 0, 0), viewMatrix);
-                    shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                    if (titleBlocks[x][y] == 1) {
+                        //these calculations are done to perfectly center the title in front of the camera (hopefully)
+                        modelViewMatrix = updateModelViewMatrix(new Vector3d(y - (27d / 2d), -x + (5d / 2d), -18 + titleBlockOffsets[x][y]), new Vector3f(0, 0, 0), viewMatrix);
+                        shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
 
-                    workerMesh.render();
+                        workerMesh.render();
+                    }
                 }
             }
         }
-
 
         //finished with 3d
 
@@ -109,76 +110,41 @@ public class MainMenuRenderer {
 
 
 
-        //title screen gag
-        {
-            glClear(GL_DEPTH_BUFFER_BIT);
+        if (onTitleScreen) {
+            //title screen gag
+            {
+                glClear(GL_DEPTH_BUFFER_BIT);
 
-            //process scale of title screen gag text
-            float scale = (15f/(float)getTitleScreenGagLength());
-            if (scale > 1){
-                scale = 1;
+                //process scale of title screen gag text
+                float scale = (15f / (float) getTitleScreenGagLength());
+                if (scale > 1) {
+                    scale = 1;
+                }
+                scale *= windowScale / 30;
+
+                scale += getTitleBounce();
+
+
+                glClear(GL_DEPTH_BUFFER_BIT);
+
+                //gray shadow part
+                modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(windowScale / 2.27d, windowScale / 3.27f, 0), new Vector3f(0, 0, 20f), new Vector3d(scale, scale, scale));
+                hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                workerMesh = createTextCentered(getTitleScreenGag(), 0.2f, 0.2f, 0f);
+                workerMesh.render();
+
+                glClear(GL_DEPTH_BUFFER_BIT);
+
+                //yellow part
+                modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(windowScale / 2.25d, windowScale / 3.25f, 0), new Vector3f(0, 0, 20f), new Vector3d(scale, scale, scale));
+                hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                workerMesh = createTextCentered(getTitleScreenGag(), 1f, 1f, 0f);
+                workerMesh.render();
             }
-            scale *= windowScale / 30;
 
-            scale += getTitleBounce();
-
-
-
-            glClear(GL_DEPTH_BUFFER_BIT);
-
-            //gray shadow part
-            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(windowScale/2.27d,windowScale/3.27f,0), new Vector3f(0, 0, 20f), new Vector3d(scale,scale,scale));
-            hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            workerMesh = createTextCentered(getTitleScreenGag(), 0.2f, 0.2f, 0f);
-            workerMesh.render();
-
-            glClear(GL_DEPTH_BUFFER_BIT);
-
-            //yellow part
-            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(windowScale/2.25d,windowScale/3.25f,0), new Vector3f(0, 0, 20f), new Vector3d(scale,scale,scale));
-            hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            workerMesh = createTextCentered(getTitleScreenGag(), 1f, 1f, 0f);
-            workerMesh.render();
         }
-
-
-
 
         renderMainMenuGUI();
-
-
-
-        //play button
-        if (false){
-            glClear(GL_DEPTH_BUFFER_BIT);
-            {
-                modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(0, (0) * windowScale / 3d, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 2d, windowScale / 2d, windowScale / 2d));
-                hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                getButtonMesh().render();
-            }
-
-
-            //play (shadow)
-            glClear(GL_DEPTH_BUFFER_BIT);
-            {
-                modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(windowScale / 300d, windowScale / 300d, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 20d, windowScale / 20d, windowScale / 20d));
-                hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-
-                workerMesh = createTextCentered("PLAY", 0.2f, 0.2f, 0.2f);
-                workerMesh.render();
-            }
-
-            //play (white)
-            glClear(GL_DEPTH_BUFFER_BIT);
-            {
-                modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(0, 0, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 20d, windowScale / 20d, windowScale / 20d));
-                hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-
-                workerMesh = createTextCentered("PLAY", 1f, 1f, 1f);
-                workerMesh.render();
-            }
-        }
-
 
         hudShaderProgram.unbind();
     }
