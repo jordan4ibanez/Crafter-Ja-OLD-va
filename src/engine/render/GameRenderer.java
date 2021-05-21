@@ -41,7 +41,6 @@ public class GameRenderer {
     private static final float FOV = (float) Math.toRadians(72.0f); //todo: make this a calculator method ala calculateFOV(float);
 
     private static final float Z_NEAR = 0.1f;
-    private static final float Z_FAR = 1120.f;
 
     private static float itemRotation = 0f;
 
@@ -68,10 +67,6 @@ public class GameRenderer {
 
     public static float getzNear(){
         return Z_NEAR;
-    }
-
-    public static float getzFar(){
-        return Z_FAR;
     }
 
     public static float getFOV(){
@@ -456,7 +451,7 @@ public class GameRenderer {
 
         glClear(GL_DEPTH_BUFFER_BIT);
 
-        projectionMatrix = getProjectionMatrix(FOV, getWindowWidth(), getWindowHeight(), Z_NEAR, Z_FAR);
+        projectionMatrix = getProjectionMatrix(FOV, getWindowWidth(), getWindowHeight(), Z_NEAR, 100);
         shaderProgram.setUniform("projectionMatrix", projectionMatrix);
 
         //draw wield hand or item

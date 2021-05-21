@@ -12,7 +12,6 @@ import static engine.Window.getWindowWidth;
 import static engine.debug.DebugTerrainDrawTypes.getDebugMesh;
 import static engine.graph.Transformation.*;
 import static engine.render.GameRenderer.*;
-import static engine.render.GameRenderer.getzFar;
 import static org.lwjgl.opengl.GL11.GL_ALPHA_TEST;
 import static org.lwjgl.opengl.GL11C.*;
 
@@ -69,7 +68,7 @@ public class RenderDebug {
         debugShaderProgram.bind();
 
         //update projection matrix
-        Matrix4d projectionMatrix = getProjectionMatrix(getFOV(), getWindowWidth(), getWindowHeight(), getzNear(), getzFar());
+        Matrix4d projectionMatrix = getProjectionMatrix(getFOV(), getWindowWidth(), getWindowHeight(), getzNear(), 1000);
 
         debugShaderProgram.setUniform("projectionMatrix", projectionMatrix);
 
