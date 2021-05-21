@@ -4,6 +4,7 @@ import static engine.Window.setVSync;
 import static engine.disk.Disk.loadSettingsFromDisk;
 import static engine.disk.Disk.saveSettingsToDisk;
 import static game.chunk.Chunk.generateNewChunks;
+import static game.chunk.ChunkUpdateHandler.updateChunkLoadingSpeed;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Settings {
@@ -16,7 +17,7 @@ public class Settings {
     private static boolean debugInfo = false;
     private static boolean vSync;
     private static boolean graphicsMode; //true = fancy, false = fast
-    private static byte lazyChunkLoad;
+    private static byte chunkLoading;
     private static int renderDistance;
 
     private static int keyForward;
@@ -47,8 +48,9 @@ public class Settings {
             renderDistance = 5;
             settings.renderDistance = 5;
 
-            lazyChunkLoad = 0;
-            settings.lazyChunkLoad = 0;
+            //lower slower, higher faster
+            chunkLoading = 2;
+            settings.chunkLoading = 2;
 
             keyForward = GLFW_KEY_W;
             settings.keyForward = GLFW_KEY_W;
@@ -85,7 +87,7 @@ public class Settings {
             vSync = settings.vSync;
             graphicsMode = settings.graphicsMode;
             renderDistance = settings.renderDistance;
-            lazyChunkLoad = settings.lazyChunkLoad;
+            chunkLoading = settings.chunkLoading;
 
             keyForward = settings.keyForward;
             keyBack = settings.keyBack;
@@ -130,12 +132,13 @@ public class Settings {
     }
 
     //lazy chunk loading
-    public static void setSettingsLazyChunkLoad(byte truth){
-        lazyChunkLoad = truth;
-        settings.lazyChunkLoad = truth;
+    public static void setSettingsChunkLoad(byte truth){
+        chunkLoading = truth;
+        settings.chunkLoading = truth;
+        updateChunkLoadingSpeed();
     }
-    public static byte getSettingsLazyChunkLoad(){
-        return lazyChunkLoad;
+    public static byte getSettingsChunkLoad(){
+        return chunkLoading;
     }
 
     //graphics mode

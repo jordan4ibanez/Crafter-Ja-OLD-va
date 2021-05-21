@@ -44,7 +44,7 @@ public class GUILogic {
             new GUIObject("VSYNC: " + boolToString(getSettingsVsync()),            new Vector2d(0, 21), 12, 1),
             new GUIObject("GRAPHICS MODE: " + graphicsThing(getGraphicsMode()) , new Vector2d(0, 7), 12,1),
             new GUIObject("RENDER DISTANCE: " + getRenderDistance(),   new Vector2d(0, -7), 12,1),
-            new GUIObject("LAZY CHUNK LOADING: FALSE" , new Vector2d(0, -21), 12,1),
+            new GUIObject("LAZY CHUNK LOADING: " + convertChunkLoadText(getSettingsChunkLoad()), new Vector2d(0, -21), 12,1),
             new GUIObject("BACK" ,                  new Vector2d(0, -35), 12,1),
     };
 
@@ -106,6 +106,23 @@ public class GUILogic {
     }
 
 
+    private static String convertChunkLoadText(byte input){
+        if (input == 0){
+            return "SNAIL";
+        } else if (input == 1){
+            return "LAZY";
+        } else if (input == 2){
+            return "NORMAL";
+        } else if (input == 3){
+            return "SPEEDY";
+        } else if (input == 4){
+            return "INSANE";
+        } else if (input == 5){
+            return "FUTURE PC";
+        }
+
+        return "NULL";
+    }
 
     public static int[] getInvSelection(){
         return invSelection;
@@ -313,7 +330,14 @@ public class GUILogic {
                             saveSettings();
                             break;
                         case 4:
-                            System.out.println("lazy chunk loading");
+                            byte chunkLoad = getSettingsChunkLoad();
+                            chunkLoad++;
+                            if (chunkLoad > 5){
+                                chunkLoad = 0;
+                            }
+                            gameSettingsMenuGUI[4].updateTextCenteredFixed("CHUNK LOADING: " + convertChunkLoadText(chunkLoad));
+                            setSettingsChunkLoad(chunkLoad);
+                            saveSettings();
                             break;
                         case 5:
                             menuPage = 0;

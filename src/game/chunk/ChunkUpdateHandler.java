@@ -4,7 +4,10 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static engine.Time.getDelta;
+import static engine.settings.Settings.getSettingsChunkLoad;
+import static engine.settings.Settings.setSettingsChunkLoad;
 import static game.chunk.Chunk.chunkStackContainsBlock;
+import static game.chunk.Chunk.updateChunkUnloadingSpeed;
 import static game.chunk.ChunkMesh.generateChunkMesh;
 
 public class ChunkUpdateHandler {
@@ -23,11 +26,22 @@ public class ChunkUpdateHandler {
     //the higher this is set, the lazier chunk mesh loading gets
     //set it too high, and chunk mesh loading barely works
 
-    //lazy
-    //private static float goalTimer = 0.01f;
+    private static final float[] goalTimerArray = new float[]{
+            0.05f, //SNAIL
+            0.025f, //SLOWER
+            0.009f, //NORMAL
+            0.004f, //FASTER
+            0.002f, //INSANE
+            0.0005f, //FUTURE PC
+    };
 
-    //not lazy
-    private static float goalTimer = 0.005f;
+    private static float goalTimer = goalTimerArray[getSettingsChunkLoad()];
+
+    public static void updateChunkLoadingSpeed(){
+        goalTimer = goalTimerArray[getSettingsChunkLoad()];
+        //also update unload speed timer
+        updateChunkUnloadingSpeed();
+    }
 
     private static float chunkUpdateTimer = 0f;
 

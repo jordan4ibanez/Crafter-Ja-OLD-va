@@ -3,7 +3,7 @@ package engine.settings;
 public class SettingsObject {
     public boolean vSync;
     public boolean graphicsMode;
-    public byte lazyChunkLoad;
+    public byte chunkLoading;
     public int renderDistance;
     public int keyForward;
     public int keyBack;

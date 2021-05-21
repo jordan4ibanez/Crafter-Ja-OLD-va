@@ -15,6 +15,7 @@ import static engine.disk.Disk.*;
 import static engine.disk.SaveQueue.instantSave;
 import static engine.disk.SaveQueue.saveChunk;
 import static engine.settings.Settings.getRenderDistance;
+import static engine.settings.Settings.getSettingsChunkLoad;
 import static game.chunk.ChunkMath.posToIndex;
 import static game.chunk.ChunkMesh.generateChunkMesh;
 import static game.chunk.ChunkUpdateHandler.chunkUpdate;
@@ -595,6 +596,7 @@ public class Chunk {
             for (z = -chunkRenderDistance + currentChunk.z; z< chunkRenderDistance + currentChunk.z; z++){
                 if (getChunkDistanceFromPlayer(x,z) <= chunkRenderDistance){
                     currChunk = x + " " + z;
+
                     if (map.get(currChunk) == null){
                         genBiome(x,z);
                         for (int y = 0; y < 8; y++) {
@@ -622,7 +624,21 @@ public class Chunk {
 
     //the higher this is set, the lazier chunk deletion gets
     //set it too high, and chunk deletion barely works
-    final private static float goalTimer = 0.06f;
+    private static final float[] goalTimerArray = new float[]{
+            0.05f, //SNAIL
+            0.025f, //SLOWER
+            0.009f, //NORMAL
+            0.004f, //FASTER
+            0.002f, //INSANE
+            0.0005f, //FUTURE PC
+    };
+
+    private static float goalTimer = goalTimerArray[getSettingsChunkLoad()];
+
+    public static void updateChunkUnloadingSpeed(){
+        goalTimer = goalTimerArray[getSettingsChunkLoad()];
+    }
+
     private static float chunkDeletionTimer = 0f;
 
     public static void processOldChunks() {
