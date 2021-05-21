@@ -1,13 +1,55 @@
 <component name="libraryTable">
   <library name="windows">
     <CLASSES>
-      <root url="file://$PROJECT_DIR$/lib/windows" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-bgfx-natives-windows.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-openal-natives-windows.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/pngdecoder.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-nanovg-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-assimp-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-par.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/joml-1.9.25.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-glfw-natives-windows.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-stb.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-nanovg-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-opengl-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-nuklear-natives-windows.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-vulkan.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-assimp-natives-windows.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-opengl-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-stb-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-openal.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/joml-1.9.25-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-openal-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-nanovg.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-par-natives-windows.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-opengl-natives-windows.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-glfw.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-stb-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-bgfx.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-stb-natives-windows.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-vulkan-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-vulkan-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-assimp.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-par-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-nuklear.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-openal-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-bgfx-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-nuklear-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-glfw-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-par-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/joml-1.9.25-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-opengl.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-nuklear-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-natives-windows.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-nanovg-natives-windows.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-glfw-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-bgfx-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/windows/lwjgl-assimp-javadoc.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES>
-      <root url="file://$PROJECT_DIR$/lib/windows" />
-    </SOURCES>
-    <jarDirectory url="file://$PROJECT_DIR$/lib/windows" recursive="false" />
-    <jarDirectory url="file://$PROJECT_DIR$/lib/windows" recursive="false" type="SOURCES" />
+    <SOURCES />
   </library>
 </component>
