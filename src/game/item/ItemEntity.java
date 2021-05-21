@@ -12,7 +12,7 @@ import static engine.sound.SoundAPI.playSound;
 import static game.chunk.Chunk.getLight;
 import static game.collision.Collision.applyInertia;
 import static game.item.Item.getCurrentID;
-import static game.player.Inventory.addItemToInventory;
+import static game.crafting.Inventory.addItemToInventory;
 import static game.player.Player.getPlayerPosWithCollectionHeight;
 
 public class ItemEntity {

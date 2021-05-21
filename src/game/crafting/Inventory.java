@@ -1,4 +1,4 @@
-package game.player;
+package game.crafting;
 
 import game.blocks.BlockDefinition;
 import game.item.Item;
@@ -129,7 +129,7 @@ public class Inventory {
             if (layer2 != null) {
                 String name = layer2.name;
                 if (name != null) {
-                    createItem(name, getPlayerPosWithEyeHeight(), getCameraRotationVector().mul(10f), test.stack);
+                    createItem(name, getPlayerPosWithEyeHeight(), getCameraRotationVector().mul(10f).add(getPlayerInertia()), test.stack);
                     removeItemFromInventory(getPlayerInventorySelection(), 0);
                 }
             }

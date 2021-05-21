@@ -30,7 +30,7 @@ import static game.particle.Particle.getAllParticles;
 import static game.tnt.TNTEntity.*;
 import static engine.Window.*;
 import static game.chunk.Chunk.*;
-import static game.player.Inventory.*;
+import static game.crafting.Inventory.*;
 import static game.player.Player.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL11C.GL_BLEND;

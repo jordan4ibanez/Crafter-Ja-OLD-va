@@ -14,7 +14,7 @@ import static engine.settings.Settings.*;
 import static engine.sound.SoundAPI.playSound;
 import static game.mainMenu.MainMenu.resetMainMenu;
 import static game.mainMenu.MainMenu.resetMainMenuPage;
-import static game.player.Inventory.*;
+import static game.crafting.Inventory.*;
 import static game.player.Player.*;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 

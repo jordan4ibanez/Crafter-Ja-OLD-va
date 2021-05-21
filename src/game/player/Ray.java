@@ -5,9 +5,6 @@ import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
-import java.util.Random;
-import java.util.stream.IntStream;
-
 import static engine.FancyMath.getDistance;
 import static game.chunk.Chunk.*;
 import static game.blocks.BlockDefinition.*;
@@ -20,8 +17,8 @@ import static game.item.ItemDefinition.getItemModifier;
 import static game.mob.Mob.getAllMobs;
 import static game.mob.Mob.punchMob;
 import static game.particle.Particle.createParticle;
-import static game.player.Inventory.getItemInInventorySlot;
-import static game.player.Inventory.removeItemFromInventory;
+import static game.crafting.Inventory.getItemInInventorySlot;
+import static game.crafting.Inventory.removeItemFromInventory;
 import static game.player.Player.*;
 
 public class Ray {
