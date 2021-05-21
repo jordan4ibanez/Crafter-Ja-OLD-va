@@ -7,7 +7,6 @@ import org.joml.Vector3f;
 import static engine.MouseInput.*;
 import static engine.Time.getDelta;
 import static engine.Window.*;
-import static engine.disk.Disk.saveSettingsToDisk;
 import static engine.render.GameRenderer.getWindowScale;
 import static engine.render.GameRenderer.getWindowSize;
 import static engine.scene.SceneHandler.setScene;
@@ -31,7 +30,7 @@ public class GUILogic {
     //0 main
     //1 settings base
     //2 buttons settings
-    private static byte menuPage = 2;
+    private static byte menuPage = 0;
 
     private static final GUIObject[] gamePauseMenuGUI = new GUIObject[]{
             new GUIObject("CONTINUE" , new Vector2d(0, 30), 10, 1),
@@ -222,7 +221,7 @@ public class GUILogic {
             }
             invSelection = null;
         } else if (isPaused()){
-
+            //root pause menu
             if (menuPage == 0) {
                 byte selection = doGUIMouseCollisionDetection(gamePauseMenuGUI);
                 //0 continue
@@ -247,6 +246,7 @@ public class GUILogic {
                 } else if (!isLeftButtonPressed()) {
                     mouseButtonPushed = false;
                 }
+            //settings menu
             } else if (menuPage == 1) {
                 byte selection = doGUIMouseCollisionDetection(gameSettingsMenuGUI);
 
@@ -285,17 +285,18 @@ public class GUILogic {
                 } else if (!isLeftButtonPressed()) {
                     mouseButtonPushed = false;
                 }
+            //control reassignment menu
             } else if (menuPage == 2){
                 byte selection = doGUIMouseCollisionDetection(controlsMenuGUI);
                 //0 - forward
                 //1 - back
                 //2 - left
                 //3 - right
-
                 //4 - sneak
                 //5 - drop
                 //6 - jump
-                //7 - back
+                //7 - inventory
+                //8 - back
 
                 //todo: fix duplicating keys
                 if (lockedOnButtonInput >= 0 && pollingButtonInputs) {
