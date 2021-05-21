@@ -8,6 +8,7 @@ import org.joml.Vector2d;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
+import static engine.credits.Credits.getCreditParts;
 import static engine.gui.TextHandling.createTextCentered;
 import static engine.render.GameRenderer.*;
 import static engine.gui.GUI.*;
@@ -35,27 +36,24 @@ public class MainMenuRenderer {
 
         Mesh workerMesh;
         clearScreen();
-
         rescaleWindow();
-
         shaderProgram.bind();
 
         //update projection matrix
         Matrix4d projectionMatrix = getProjectionMatrix(FOV, getWindowWidth(), getWindowHeight(), getzNear(), 100f);
-
         shaderProgram.setUniform("projectionMatrix", projectionMatrix);
 
         //update the view matrix
         Matrix4d viewMatrix = getViewMatrix();
-
         shaderProgram.setUniform("texture_sampler", 0);
-
         Matrix4d modelViewMatrix;
 
 
 
         boolean onTitleScreen = getMainMenuPage() == 0;
         boolean onWorldsScreen = getMainMenuPage() == 3;
+        boolean onCreditsScreen = getMainMenuPage() == 4;
+
         //set initial random float variables
 
         workerMesh = getTitleBackGroundMeshTile();
@@ -129,10 +127,7 @@ public class MainMenuRenderer {
         hudShaderProgram.setUniform("texture_sampler", 0);
         resetOrthoProjectionMatrix(); // needed to get current screen size
 
-        Vector2d windowSize = getWindowSize();
         float windowScale = getWindowScale();
-
-
 
         if (onTitleScreen) {
             //title screen gag
@@ -168,7 +163,50 @@ public class MainMenuRenderer {
 
         }
 
-        renderMainMenuGUI();
+        if (getMainMenuPage() != 4) {
+            renderMainMenuGUI();
+        } else {
+            Mesh[] creditParts = getCreditParts();
+            boolean on = true;
+            double trueY = 0;
+
+            float scale = windowScale / 20f;
+            float scroll = getCreditsScroll() * (windowScale / 10f);
+
+            for (int y = 0; y < creditParts.length; y++){
+                if (creditParts[y] != null) {
+                    modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(0, trueY + scroll, 0), new Vector3f(0, 0, 0), new Vector3d(scale, scale, scale));
+                    hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                    creditParts[y].render();
+
+
+                    if (y <= 2){
+                        if (y < 2){
+                            trueY -= (windowScale / 3.27f) * 0.5;
+                        } else {
+                            trueY -= (windowScale / 3.27f) * 1.7;
+                        }
+                    } else if (y <= 18){
+
+                        if (y == 18) {
+                            trueY -= (windowScale / 3.27f) * 3.5;
+                        }else {
+                            if (on) {
+                                trueY -= (windowScale / 3.27f) * 0.5;
+                            } else {
+                                trueY -= (windowScale / 3.27f) * 1.7;
+                            }
+                            on = !on;
+                        }
+                    } else if (y == 19){
+                        trueY -= (windowScale / 3.27f) * 0.5;
+                    }
+
+                }
+            }
+        }
+
+
 
         hudShaderProgram.unbind();
     }

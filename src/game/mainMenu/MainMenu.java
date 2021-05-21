@@ -10,6 +10,7 @@ import java.util.Random;
 import static engine.MouseInput.*;
 import static engine.Time.getDelta;
 import static engine.Window.*;
+import static engine.credits.Credits.initializeCredits;
 import static engine.disk.Disk.setCurrentActiveWorld;
 import static engine.disk.Disk.worldSize;
 import static engine.gui.GUILogic.doGUIMouseCollisionDetection;
@@ -40,7 +41,12 @@ public class MainMenu {
     private static float titleBounce = 10f;
     private static float bounceAnimation = 0.75f;
     private static float backGroundScroll = 0f;
+
+    private static float creditsScroll = 0f;
+
     private static SoundSource titleMusic;
+    private static SoundSource creditsMusic;
+
     private static final Random random = new Random();
     private static boolean mouseButtonPushed = false;
     private static boolean mouseButtonWasPushed = false;
@@ -50,6 +56,8 @@ public class MainMenu {
     //0 main
     //1 settings base
     //2 buttons settings
+    //3 singleplayer worlds menu
+    //4 credits
     private static byte menuPage = 0;
 
     private static final GUIObject[] mainMenuGUI = new GUIObject[]{
@@ -113,6 +121,8 @@ public class MainMenu {
         //seed the random generator
         random.setSeed(new Date().getTime());
 
+        initializeCredits();
+
         //in intellij, search for 1 and you'll be able to read it
         titleBlocks = new byte[][]{
                 {1,1,1,0,1,1,0,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,0},
@@ -157,6 +167,8 @@ public class MainMenu {
         selectTitleScreenGag();
 
         titleMusic = playMusic("main_menu");
+        creditsMusic = playMusic("credits");
+        creditsMusic.stop();
     }
 
 
@@ -250,6 +262,9 @@ public class MainMenu {
                 }
 
                 if (selection == 3){
+                    titleMusic.stop();
+                    menuPage = 4;
+                    creditsMusic.play();
                     System.out.println("YOU FORGOT TO ADD THE CREDITS ARGHH");
                 }
 
@@ -482,6 +497,13 @@ public class MainMenu {
             } else if (!isLeftButtonPressed()) {
                 mouseButtonPushed = false;
             }
+        } else if (menuPage == 4){
+            makeCreditsScroll();
+            if (getDumpedKey() > -1){
+                creditsMusic.stop();
+                titleMusic.play();
+                menuPage = 0;
+            }
         }
 
         mouseButtonWasPushed = isLeftButtonPressed();
@@ -505,6 +527,33 @@ public class MainMenu {
         if (backGroundScroll > 1f){
             backGroundScroll -= 1f;
         }
+    }
+
+    private final static float lockScroll = 70;
+    //scrolling credits
+    private static void makeCreditsScroll(){
+
+        float delta = getDelta();
+        
+        if (creditsScroll < lockScroll) {
+            creditsScroll += delta / 1.5f;
+
+            if (creditsScroll >= lockScroll){
+                creditsScroll = lockScroll;
+            }
+        }
+
+        //System.out.println(creditsScroll);
+
+        /*
+        if (creditsScroll > 1f){
+            creditsScroll -= 1f;
+        }
+         */
+    }
+
+    public static float getCreditsScroll(){
+        return creditsScroll;
     }
 
     private static void makeTitleBounce(){

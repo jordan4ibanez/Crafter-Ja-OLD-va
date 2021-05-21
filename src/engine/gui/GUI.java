@@ -1858,7 +1858,7 @@ public class GUI {
     }
 
 
-    private static Mesh create2DMesh(float width, float height, String texture) throws Exception {
+    public static Mesh create2DMesh(float width, float height, String texture) throws Exception {
         float[] positions = new float[12];
         float[] textureCoord = new float[8];
         int[] indices = new int[6];
@@ -1901,7 +1901,7 @@ public class GUI {
     }
 
     //overloaded for texture width (used for half hearts)
-    private static Mesh create2DMesh(float width, float height, float textureWidth, String texture) throws Exception {
+    public static Mesh create2DMesh(float width, float height, float textureWidth, String texture) throws Exception {
         float[] positions = new float[12];
         float[] textureCoord = new float[8];
         int[] indices = new int[6];
