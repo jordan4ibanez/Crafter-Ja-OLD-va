@@ -43,7 +43,7 @@ public class Credits {
         creditParts[17] = createTextCenteredWithShadow("OpenGL Library: GLFW", 1,1,1);
         creditParts[18] = create2DMesh(2f,2f,"textures/glfw.png");
 
-        creditParts[19] = createTextCenteredWithShadow("And thanks to you, for playing my game! :]", 1,1,1);
+        creditParts[19] = createTextCenteredWithShadow("Thank you for playing my game! :]", 1,1,1);
         creditParts[20] = create2DMesh(2f,2f,"textures/icon.png");
     }
 }

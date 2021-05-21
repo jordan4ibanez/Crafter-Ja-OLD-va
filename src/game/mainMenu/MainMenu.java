@@ -537,7 +537,7 @@ public class MainMenu {
         float delta = getDelta();
 
         if (creditsScroll < lockScroll) {
-            creditsScroll += delta / 1.5f;
+            creditsScroll += delta / 1.391f;
 
             if (creditsScroll >= lockScroll){
                 creditsScroll = lockScroll;
