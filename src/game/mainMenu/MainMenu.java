@@ -42,7 +42,7 @@ public class MainMenu {
     private static float bounceAnimation = 0.75f;
     private static float backGroundScroll = 0f;
 
-    private static float creditsScroll = 0f;
+    private static float creditsScroll = -6f;
 
     private static SoundSource titleMusic;
     private static SoundSource creditsMusic;
@@ -503,6 +503,7 @@ public class MainMenu {
                 creditsMusic.stop();
                 titleMusic.play();
                 menuPage = 0;
+                creditsScroll = -6f;
             }
         }
 
@@ -534,7 +535,7 @@ public class MainMenu {
     private static void makeCreditsScroll(){
 
         float delta = getDelta();
-        
+
         if (creditsScroll < lockScroll) {
             creditsScroll += delta / 1.5f;
 
@@ -543,13 +544,6 @@ public class MainMenu {
             }
         }
 
-        //System.out.println(creditsScroll);
-
-        /*
-        if (creditsScroll > 1f){
-            creditsScroll -= 1f;
-        }
-         */
     }
 
     public static float getCreditsScroll(){
