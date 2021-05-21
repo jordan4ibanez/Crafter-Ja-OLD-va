@@ -36,10 +36,10 @@ public class SceneHandler {
     private static byte currentScene = 0;
 
     public static void setScene(byte newScene){
-        currentScene = newScene;
+
 
         //move the camera into position for the main menu
-        if (currentScene == 0){
+        if (newScene == 0){
             setCameraPosition(0,-8,0);
             setCameraRotation(0,0,0);
             setWindowClearColor(0,0,0,1);
@@ -49,9 +49,11 @@ public class SceneHandler {
             }
         }
 
-        if (currentScene == 1){
+        if (newScene == 1){
             setWindowClearColor(0.53f,0.81f,0.92f,0.f);
         }
+
+        currentScene = newScene;
 
     }
 
