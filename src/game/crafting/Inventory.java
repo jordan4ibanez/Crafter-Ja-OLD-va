@@ -12,7 +12,8 @@ import static game.player.Player.*;
 
 public class Inventory {
 
-    private static Item[][] inventory = new Item[4][9];
+    private static final InventoryObject smallCraftInventory = new InventoryObject(2,2);
+    private static final InventoryObject inventory = new InventoryObject(9,4);
 
     private static Item mouseInventory;
 
@@ -64,38 +65,24 @@ public class Inventory {
             for (int y = 0; y < 4; y++){
                 String thisItem = getRandomItemDefinition().name;
                 if (thisItem.equals("air")){
-                    inventory[y][x] = null;
+                    inventory.set(x,y,null);
                 } else {
                     int thisAmount = (int) Math.floor(Math.random() * 65);
                     if (thisAmount == 0){
                         thisAmount = 1;
                     }
-                    inventory[y][x] = new Item(thisItem, thisAmount);
+                    inventory.set(x,y,new Item(thisItem, thisAmount));
                 }
             }
         }
     }
 
-    public static void createToolDebugInventory(){
-        for (int x = 0; x < 9; x++){
-            for (int y = 0; y < 4; y++) {
-                inventory[y][x] = new Item("stone_pickaxe", 5);
-            }
-        }
-    }
 
+    //could be used for when a player dies
     public static void resetInventory(){
         for (int x = 0; x < 9; x++){
             for (int y = 0; y < 4; y++){
-                inventory[y][x] = null;
-            }
-        }
-    }
-
-    public static void tntFillErUp(){
-        for (int x = 0; x < 9; x++){
-            for (int y = 0; y < 4; y++){
-                inventory[y][x] = new Item("tnt", 64);
+                inventory.set(x,y, null);
             }
         }
     }
@@ -104,21 +91,21 @@ public class Inventory {
         //check whole inventory
         for (int y = 0; y < 4; y++) {
             for (int x = 0; x < 9; x++) {
-                if (inventory[y][x] != null && inventory[y][x].name.equals(name)){
-                    inventory[y][x].stack++;
+                if (inventory.get(x,y) != null && inventory.get(x,y).name.equals(name)){
+                    inventory.get(x,y).stack++;
                     return true;
                 }
             }
         }
+        //failed to find one, create new stack
         for (int y = 0; y < 4; y++) {
             for (int x = 0; x < 9; x++) {
-                if (inventory[y][x] == null){
-                    inventory[y][x] = new Item(name, 1);
+                if (inventory.get(x,y) == null){
+                    inventory.set(x,y,new Item(name, 1));
                     return true;
                 }
             }
         }
-
         return false;
     }
 
@@ -136,29 +123,29 @@ public class Inventory {
         }
     }
     public static void setItemInInventory(int x, int y, String name, int stack){
-        inventory[y][x] = new Item(name, stack);
+        inventory.set(x,y,new Item(name, stack));
     }
 
     public static void removeItemFromInventory(int x, int y){
-        inventory[y][x].stack--;
-        if (inventory[y][x].stack <= 0){
-            inventory[y][x] = null;
+        inventory.get(x,y).stack--;
+        if (inventory.get(x,y).stack <= 0){
+            inventory.set(x,y,null);
         }
     }
 
     public static void removeStackFromInventory(int x, int y){
-        inventory[y][x] = null;
+        inventory.set(x,y,null);
     }
 
     public static Item getItemInInventorySlot(int x, int y){
-        return inventory[y][x];
+        return inventory.get(x,y);
     }
 
     public static String getItemInInventorySlotName(int x, int y){
-        if (inventory[y][x] == null){
+        if (inventory.get(x,y) == null){
             return "null";
         } else {
-            return inventory[y][x].name;
+            return inventory.get(x,y).name;
         }
     }
 
