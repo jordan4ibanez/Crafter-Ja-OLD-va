@@ -43,7 +43,7 @@ public class GUILogic {
             new GUIObject("CONTROLS" ,             new Vector2d(0, 35), 12, 1),
             new GUIObject("VSYNC: " + boolToString(getSettingsVsync()),            new Vector2d(0, 21), 12, 1),
             new GUIObject("GRAPHICS MODE: " + graphicsThing(getGraphicsMode()) , new Vector2d(0, 7), 12,1),
-            new GUIObject("RENDER DISTANCE: 5" ,   new Vector2d(0, -7), 12,1),
+            new GUIObject("RENDER DISTANCE: " + getRenderDistance(),   new Vector2d(0, -7), 12,1),
             new GUIObject("LAZY CHUNK LOADING: FALSE" , new Vector2d(0, -21), 12,1),
             new GUIObject("BACK" ,                  new Vector2d(0, -35), 12,1),
     };
@@ -294,7 +294,23 @@ public class GUILogic {
                             saveSettings();
                             break;
                         case 3:
-                            System.out.println("render distance");
+                            int renderDistance = getRenderDistance();
+                            switch (renderDistance){
+                                case 3:
+                                    renderDistance = 5;
+                                    break;
+                                case 5:
+                                    renderDistance = 7;
+                                    break;
+                                case 7:
+                                    renderDistance = 9;
+                                    break;
+                                case 9:
+                                    renderDistance = 3;
+                            }
+                            setRenderDistance(renderDistance);
+                            gameSettingsMenuGUI[3].updateTextCenteredFixed("RENDER DISTANCE: " + renderDistance);
+                            saveSettings();
                             break;
                         case 4:
                             System.out.println("lazy chunk loading");

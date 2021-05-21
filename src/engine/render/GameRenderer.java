@@ -22,8 +22,7 @@ import static engine.graph.Transformation.buildOrthoProjModelMatrix;
 import static engine.gui.GUI.*;
 import static engine.gui.GUILogic.*;
 import static engine.gui.TextHandling.createText;
-import static engine.settings.Settings.getDebugInfo;
-import static engine.settings.Settings.getGraphicsMode;
+import static engine.settings.Settings.*;
 import static game.falling.FallingEntity.getFallingEntities;
 import static game.item.ItemEntity.*;
 import static game.mob.Mob.getAllMobs;
@@ -179,6 +178,7 @@ public class GameRenderer {
 
         HashMap<Double, ChunkObject> chunkHash = new HashMap<>();
 
+        int renderDistance = getRenderDistance();
 
         //get all distances
         for (ChunkObject thisChunk : getMap()){
@@ -186,7 +186,11 @@ public class GameRenderer {
             if (chunkHash.get(currentDistance) != null){
                 currentDistance += 0.000000001;
             }
-            chunkHash.put(currentDistance, thisChunk);
+
+
+            if (getChunkDistanceFromPlayer(thisChunk.x, thisChunk.z) <= renderDistance) {
+                chunkHash.put(currentDistance, thisChunk);
+            }
         }
 
         ChunkObject[] chunkArraySorted = new ChunkObject[chunkHash.size()];
@@ -414,6 +418,9 @@ public class GameRenderer {
 
 
         //render liquid chunk meshes
+        if (graphicsMode) {
+            glDisable(GL_CULL_FACE);
+        }
         for (int i = 0; i < arrayIndex; i++) {
 
             ChunkObject thisChunk = chunkArraySorted[i];
@@ -431,6 +438,9 @@ public class GameRenderer {
                     }
                 }
             }
+        }
+        if (graphicsMode) {
+            glEnable(GL_CULL_FACE);
         }
 
         //finished with standard shader
@@ -496,11 +506,6 @@ public class GameRenderer {
             getCrossHairMesh().render();
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         }
-
-
-
-
-
 
         glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -915,5 +920,16 @@ public class GameRenderer {
         if (hudShaderProgram != null){
             hudShaderProgram.cleanup();
         }
+    }
+
+    private static double getChunkDistanceFromPlayer(int x, int z){
+        Vector3i currentChunk = getPlayerCurrentChunk();
+
+        //x distance
+        double distanceX = getDistance(currentChunk.x,0,0, x, 0, 0);
+        //z distance
+        double distanceZ = getDistance(0,0,currentChunk.z, 0, 0, z);
+
+        return Math.max(distanceZ, distanceX);
     }
 }

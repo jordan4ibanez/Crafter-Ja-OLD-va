@@ -3,6 +3,7 @@ package engine.settings;
 import static engine.Window.setVSync;
 import static engine.disk.Disk.loadSettingsFromDisk;
 import static engine.disk.Disk.saveSettingsToDisk;
+import static game.chunk.Chunk.generateNewChunks;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Settings {
@@ -15,7 +16,7 @@ public class Settings {
     private static boolean debugInfo = false;
     private static boolean vSync;
     private static boolean graphicsMode; //true = fancy, false = fast
-    private static boolean lazyChunkLoad;
+    private static byte lazyChunkLoad;
     private static int renderDistance;
 
     private static int keyForward;
@@ -46,8 +47,8 @@ public class Settings {
             renderDistance = 5;
             settings.renderDistance = 5;
 
-            lazyChunkLoad = false;
-            settings.lazyChunkLoad = false;
+            lazyChunkLoad = 0;
+            settings.lazyChunkLoad = 0;
 
             keyForward = GLFW_KEY_W;
             settings.keyForward = GLFW_KEY_W;
@@ -77,7 +78,7 @@ public class Settings {
             saveSettingsToDisk(settings);
 
         } else {
-            
+
             //dump new settings in
             settings = loadedSettings;
 
@@ -114,6 +115,8 @@ public class Settings {
     }
     public static void setRenderDistance(int newRenderDistance){
         renderDistance = newRenderDistance;
+        settings.renderDistance = newRenderDistance;
+        generateNewChunks();
     }
 
     //vsync
@@ -127,11 +130,11 @@ public class Settings {
     }
 
     //lazy chunk loading
-    public static void setSettingsLazyChunkLoad(boolean truth){
+    public static void setSettingsLazyChunkLoad(byte truth){
         lazyChunkLoad = truth;
         settings.lazyChunkLoad = truth;
     }
-    public static boolean getSettingsLazyChunkLoad(){
+    public static byte getSettingsLazyChunkLoad(){
         return lazyChunkLoad;
     }
 
