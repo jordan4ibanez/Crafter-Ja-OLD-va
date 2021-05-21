@@ -30,7 +30,7 @@ public class Crafter {
 
     //fields
     //DO NOT finalize this
-    private static final String versionName = "Crafter 0.03b Survival Test";
+    private static final String versionName = "Crafter 0.03c Survival Test";
 
     public static String getVersionName(){
         return versionName;
