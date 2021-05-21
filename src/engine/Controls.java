@@ -9,7 +9,7 @@ import static engine.Window.isKeyPressed;
 import static engine.Window.toggleFullScreen;
 import static engine.gui.GUILogic.isPaused;
 import static engine.gui.GUILogic.togglePauseMenu;
-import static engine.settings.Settings.invertDebugInfoBoolean;
+import static engine.settings.Settings.*;
 import static game.item.ItemEntity.clearItems;
 import static game.mob.Mob.spawnMob;
 import static game.player.Inventory.emptyMouseInventory;
@@ -28,37 +28,41 @@ public class Controls {
     private static boolean F11Pushed           = false;
     private static boolean escapePushed        = false;
     private static boolean F3Pushed            = false;
+
+
+
     public static void gameInput() {
+
         if (!isPlayerInventoryOpen() && !isPaused()) {
-            if (isKeyPressed(GLFW_KEY_W)) {
+            if (isKeyPressed(getKeyForward())) {
                 setPlayerForward(true);
             } else {
                 setPlayerForward(false);
             }
 
-            if (isKeyPressed(GLFW_KEY_S)) {
+            if (isKeyPressed(getKeyBack())) {
                 setPlayerBackward(true);
             } else {
                 setPlayerBackward(false);
             }
-            if (isKeyPressed(GLFW_KEY_A)) {
+            if (isKeyPressed(getKeyLeft())) {
                 setPlayerLeft(true);
             } else {
                 setPlayerLeft(false);
             }
-            if (isKeyPressed(GLFW_KEY_D)) {
+            if (isKeyPressed(getKeyRight())) {
                 setPlayerRight(true);
             } else {
                 setPlayerRight(false);
             }
 
-            if (isKeyPressed(GLFW_KEY_LEFT_SHIFT)) { //sneaking
+            if (isKeyPressed(getKeySneak())) { //sneaking
                 setPlayerSneaking(true);
             } else {
                 setPlayerSneaking(false);
             }
 
-            if (isKeyPressed(GLFW_KEY_SPACE)) {
+            if (isKeyPressed(getKeyJump())) {
                 setPlayerJump(true);
             } else {
                 setPlayerJump(false);
@@ -66,6 +70,7 @@ public class Controls {
         }
 
 
+        /*
         if (isKeyPressed(GLFW_KEY_G)) {
             clearItems();
         }
@@ -75,19 +80,8 @@ public class Controls {
         } else {
             setPlayerRunning(false);
         }
-
-
-        /*
-        if (isKeyPressed(GLFW_KEY_R)) {
-            if (!rButtonPushed) {
-                rButtonPushed = true;
-//                resetInventory();
-                //generateRandomInventory();
-            }
-        } else if (!isKeyPressed(GLFW_KEY_R)){
-            rButtonPushed = false;
-        }
          */
+
 
         if (isKeyPressed(GLFW_KEY_F3)) {
             if (!F3Pushed) {
@@ -99,12 +93,12 @@ public class Controls {
         }
 
 
-        if (isKeyPressed(GLFW_KEY_Q)) {
+        if (isKeyPressed(getKeyDrop())) {
             if (!qButtonPushed) {
                 qButtonPushed = true;
                 throwItem();
             }
-        } else if (!isKeyPressed(GLFW_KEY_Q)){
+        } else if (!isKeyPressed(getKeyDrop())){
             qButtonPushed = false;
         }
 
@@ -137,7 +131,7 @@ public class Controls {
 
 
         //prototype clear objects - C KEY
-        if (isKeyPressed(GLFW_KEY_E) && !isPaused()) {
+        if (isKeyPressed(getKeyInventory()) && !isPaused()) {
             if (!eButtonPushed) {
                 eButtonPushed = true;
                 togglePlayerInventory();
@@ -145,7 +139,7 @@ public class Controls {
                 resetPlayerInputs();
                 emptyMouseInventory();
             }
-        } else if (!isKeyPressed(GLFW_KEY_E)){
+        } else if (!isKeyPressed(getKeyInventory())){
             eButtonPushed = false;
         }
 

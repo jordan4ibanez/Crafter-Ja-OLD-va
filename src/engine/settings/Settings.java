@@ -2,8 +2,12 @@ package engine.settings;
 
 import static engine.disk.Disk.loadSettingsFromDisk;
 import static engine.disk.Disk.saveSettingsToDisk;
+import static org.lwjgl.glfw.GLFW.*;
 
 public class Settings {
+
+    //todo: fix crashing when players mess with Settings.conf
+
     private static SettingsObject settings;
 
     //false for production (debugInfo)
@@ -13,12 +17,20 @@ public class Settings {
     private static boolean lazyChunkLoad;
     private static int renderDistance;
 
+    private static int keyForward;
+    private static int keyBack;
+    private static int keyLeft;
+    private static int keyRight;
+    private static int keySneak;
+    private static int keyDrop;
+    private static int keyJump;
+    private static int keyInventory;
+
     public static void loadSettings(){
 
         SettingsObject loadedSettings = loadSettingsFromDisk();
 
         if (loadedSettings == null) {
-
             //default if no settings set
 
             //instantiate new object
@@ -36,11 +48,36 @@ public class Settings {
             lazyChunkLoad = false;
             settings.lazyChunkLoad = false;
 
+            keyForward = GLFW_KEY_W;
+            settings.keyForward = GLFW_KEY_W;
+
+            keyBack = GLFW_KEY_S;
+            settings.keyBack = GLFW_KEY_S;
+
+            keyLeft = GLFW_KEY_A;
+            settings.keyLeft = GLFW_KEY_A;
+
+            keyRight = GLFW_KEY_D;
+            settings.keyRight = GLFW_KEY_D;
+
+            keySneak = GLFW_KEY_LEFT_SHIFT;
+            settings.keySneak = GLFW_KEY_LEFT_SHIFT;
+
+            keyDrop = GLFW_KEY_Q;
+            settings.keyDrop = GLFW_KEY_Q;
+
+            keyJump = GLFW_KEY_SPACE;
+            settings.keyJump = GLFW_KEY_SPACE;
+
+            keyInventory = GLFW_KEY_E;
+            settings.keyInventory = GLFW_KEY_E;
+
             //save default values
             saveSettingsToDisk(settings);
 
         } else {
 
+            System.out.println("WARNING: SETTINGS ARE NOT NULL");
             //dump new settings in
             settings = loadedSettings;
 
@@ -48,6 +85,15 @@ public class Settings {
             graphicsMode = settings.graphicsMode;
             renderDistance = settings.renderDistance;
             lazyChunkLoad = settings.lazyChunkLoad;
+
+            keyForward = settings.keyForward;
+            keyBack = settings.keyBack;
+            keyLeft = settings.keyLeft;
+            keyRight = settings.keyRight;
+            keySneak = settings.keySneak;
+            keyDrop = settings.keyDrop;
+            keyJump = settings.keyJump;
+            keyInventory = settings.keyInventory;
         }
     }
 
@@ -94,5 +140,84 @@ public class Settings {
     }
     public static boolean getGraphicsMode(){
         return graphicsMode;
+    }
+
+    //input keys
+
+    //forward
+    public static void setKeyForward(int newKey){
+        keyForward = newKey;
+        settings.keyForward = newKey;
+    }
+    public static int getKeyForward(){
+        return keyForward;
+    }
+
+    //back
+    public static void setKeyBack(int newKey){
+        keyBack = newKey;
+        settings.keyBack = newKey;
+    }
+    public static int getKeyBack(){
+        return keyBack;
+    }
+
+    //left
+    public static void setKeyLeft(int newKey){
+        keyLeft = newKey;
+        settings.keyLeft = newKey;
+    }
+    public static int getKeyLeft(){
+        return keyLeft;
+    }
+
+    //right
+    public static void setKeyRight(int newKey){
+        keyRight = newKey;
+        settings.keyRight = newKey;
+    }
+    public static int getKeyRight(){
+        return keyRight;
+    }
+
+    //sneak
+    public static void setKeySneak(int newKey){
+        keySneak = newKey;
+        settings.keySneak = newKey;
+    }
+    public static int getKeySneak(){
+        return keySneak;
+    }
+
+    //drop
+    public static void setKeyDrop(int newKey){
+        keyDrop = newKey;
+        settings.keyDrop = newKey;
+    }
+    public static int getKeyDrop(){
+        return keyDrop;
+    }
+
+    //jump
+    public static void setKeyJump(int newKey){
+        keyJump = newKey;
+        settings.keyJump = newKey;
+    }
+    public static int getKeyJump(){
+        return keyJump;
+    }
+
+    //inventory
+    public static void setKeyInventory(int newKey){
+        keyInventory = newKey;
+        settings.keyInventory = newKey;
+    }
+    public static int getKeyInventory(){
+        return keyInventory;
+    }
+
+    //settings saving
+    public static void saveSettings(){
+        saveSettingsToDisk(settings);
     }
 }

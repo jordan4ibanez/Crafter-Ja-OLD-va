@@ -5,6 +5,14 @@ public class SettingsObject {
     public boolean graphicsMode;
     public boolean lazyChunkLoad;
     public int renderDistance;
+    public int keyForward;
+    public int keyBack;
+    public int keyLeft;
+    public int keyRight;
+    public int keySneak;
+    public int keyDrop;
+    public int keyJump;
+    public int keyInventory;
 
     public SettingsObject(){
 

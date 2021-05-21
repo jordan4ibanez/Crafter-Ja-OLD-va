@@ -21,6 +21,7 @@ public class Window {
     private static long windowHandle;
     private static boolean resized;
     private static boolean vSync;
+    private static int dumpedKey;
 
     public static void initWindow(String newTitle, int newWidth, int newHeight, boolean newVSync) {
         title   = newTitle;
@@ -64,9 +65,12 @@ public class Window {
 
         // setup a key callback. it will be called every time a key is pressed, repeated or released.
         glfwSetKeyCallback(windowHandle, (window, key, scancode, action, mods) -> {
-//            if (key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE){
-//                glfwSetWindowShouldClose(window, true); //we will detect this in the rendering loop
-//            }
+            //data stream of key inputs
+            if (action == GLFW_PRESS){
+                dumpedKey = key;
+            } else {
+                dumpedKey = -1;
+            }
         });
 
         // make the OpenGL context current
@@ -120,6 +124,11 @@ public class Window {
 
         //set icon
         glfwSetWindowIcon(windowHandle, images);
+    }
+
+
+    public static int getDumpedKey(){
+        return dumpedKey;
     }
 
     public static long getWindowHandle(){

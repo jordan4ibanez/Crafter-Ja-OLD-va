@@ -54,4 +54,22 @@ public class GUIObject {
         this.type = 0;
         this.selected = false;
     }
+
+    public void updateTextCenteredFixed(String text){
+        this.textMesh.cleanUp(false);
+        this.textMesh = createTextCenteredWithShadow(text, 1,1,1);
+    }
+
+    public void updateTextDynamic(String text){
+        this.textMesh.cleanUp(false);
+        this.textMesh = createTextCentered(text, 1,1,1);
+        float totalLengthReal = 0;
+        //pre-poll the actual length
+        for (char letter : text.toCharArray()) {
+            float[] thisCharacterArray = translateCharToArray(letter);
+            totalLengthReal += thisCharacterArray[4] + 0.1f;
+        }
+        this.buttonScale.x = (totalLengthReal/2f) * 2.1f;
+        this.buttonScale.y = 1.6f;
+    }
 }
