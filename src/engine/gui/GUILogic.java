@@ -12,6 +12,8 @@ import static engine.render.GameRenderer.getWindowSize;
 import static engine.scene.SceneHandler.setScene;
 import static engine.settings.Settings.*;
 import static engine.sound.SoundAPI.playSound;
+import static game.mainMenu.MainMenu.resetMainMenu;
+import static game.mainMenu.MainMenu.resetMainMenuPage;
 import static game.player.Inventory.*;
 import static game.player.Player.*;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
@@ -269,6 +271,8 @@ public class GUILogic {
                     } else if (selection == 1) {
                         menuPage = 1;
                     } else if (selection == 2) {
+                        resetMainMenuPage();
+                        resetMainMenu();
                         setScene((byte) 0);
                         setPaused(false);
                     } else if (selection == 3) {
@@ -325,7 +329,7 @@ public class GUILogic {
                                 case 9:
                                     renderDistance = 3;
                             }
-                            setRenderDistance(renderDistance);
+                            setRenderDistance(renderDistance, true);
                             gameSettingsMenuGUI[3].updateTextCenteredFixed("RENDER DISTANCE: " + renderDistance);
                             saveSettings();
                             break;

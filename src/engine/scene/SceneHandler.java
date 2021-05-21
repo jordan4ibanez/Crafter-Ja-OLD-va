@@ -11,7 +11,6 @@ import static engine.debug.DebugTerrainDrawTypes.generateDebugChunkMesh;
 import static engine.debug.RenderDebug.initializeDebugRenderShader;
 import static engine.debug.RenderDebug.renderDebug;
 import static engine.debug.debug.debugInput;
-import static engine.disk.Disk.initializeWorldHandling;
 import static engine.graph.Camera.*;
 import static engine.gui.GUI.calculateHealthBarElements;
 import static engine.gui.GUILogic.hudOnStepTest;
@@ -57,7 +56,6 @@ public class SceneHandler {
             calculateHealthBarElements();
             registerTools();
             initializeMobRegister();
-            initializeWorldHandling();
             initialChunkPayload();
         }
 

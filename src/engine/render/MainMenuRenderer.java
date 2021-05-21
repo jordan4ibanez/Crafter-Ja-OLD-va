@@ -52,10 +52,10 @@ public class MainMenuRenderer {
 
         Matrix4d modelViewMatrix;
 
-        byte[][] titleBlocks = getTitleBlocks();
-        double[][] titleBlockOffsets = getTitleBlockOffsets();
+
 
         boolean onTitleScreen = getMainMenuPage() == 0;
+        boolean onWorldsScreen = getMainMenuPage() == 3;
         //set initial random float variables
 
         workerMesh = getTitleBackGroundMeshTile();
@@ -74,7 +74,31 @@ public class MainMenuRenderer {
         }
 
 
+
+        if (onWorldsScreen) {
+            byte[][] worldTitleBlocks = getWorldTitleBlocks();
+            double[][] worldTitleOffsets = getWorldTitleOffsets();
+            glClear(GL_DEPTH_BUFFER_BIT);
+            workerMesh = getTitleBlockMesh();
+            //render title (in blocks)
+            for (int x = 0; x < worldTitleBlocks.length; x++) {
+                //assume equal lengths
+                for (int y = 0; y < worldTitleBlocks[0].length; y++) {
+
+                    if (worldTitleBlocks[x][y] == 1) {
+                        //these calculations are done to perfectly center the title in front of the camera (hopefully)
+                        modelViewMatrix = updateModelViewMatrix(new Vector3d(y - (27d / 2d), -x + (5d / 2d), -18 + worldTitleOffsets[x][y]), new Vector3f(0, 0, 0), viewMatrix);
+                        shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+
+                        workerMesh.render();
+                    }
+                }
+            }
+        }
+
         if (onTitleScreen) {
+            byte[][] titleBlocks = getTitleBlocks();
+            double[][] titleBlockOffsets = getTitleBlockOffsets();
             glClear(GL_DEPTH_BUFFER_BIT);
             workerMesh = getTitleBlockMesh();
             //render title (in blocks)

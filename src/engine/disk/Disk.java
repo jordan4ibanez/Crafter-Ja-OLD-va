@@ -7,17 +7,57 @@ import org.joml.Vector3d;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.CharacterIterator;
+import java.text.StringCharacterIterator;
 import java.util.zip.GZIPInputStream;
+
+import static engine.disk.SaveQueue.updateSaveQueueCurrentActiveWorld;
 
 public class Disk {
 
-    public static void initializeWorldHandling(){
-        createWorldsDir();
+    private static byte currentActiveWorld = 1; //failsafe
+
+    public static byte getCurrentActiveWorld(){
+        return currentActiveWorld;
+    }
+
+    public static void setCurrentActiveWorld(byte newWorld){
+        currentActiveWorld = newWorld;
+        updateSaveQueueCurrentActiveWorld(newWorld);
         createAlphaWorldFolder();
     }
 
-    private static void createWorldsDir(){
+    //https://stackoverflow.com/a/24734290
+    //https://stackoverflow.com/a/3758880
+    public static String worldSize(byte world) {
+        long bytes = 0;
+
+        Path thisWorld = Paths.get("Worlds/world" + world);
+
+        if (!Files.isDirectory(Paths.get("Worlds/world" + world))){
+            return "";
+        }
+
+        try {
+            bytes = Files.walk(thisWorld).mapToLong( p -> p.toFile().length() ).sum();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (-1000 < bytes && bytes < 1000) {
+            return bytes + " B";
+        }
+        CharacterIterator ci = new StringCharacterIterator("kMGTPE");
+        while (bytes <= -999_950 || bytes >= 999_950) {
+            bytes /= 1000;
+            ci.next();
+        }
+        return " (" + String.format("%.1f %cB", bytes / 1000.0, ci.current()) + ")";
+    }
+
+    public static void createWorldsDir(){
         try {
             Files.createDirectories(Paths.get("Worlds"));
         } catch (IOException e) {
@@ -27,7 +67,7 @@ public class Disk {
 
     private static void createAlphaWorldFolder(){
         try {
-            Files.createDirectories(Paths.get("Worlds/world1"));
+            Files.createDirectories(Paths.get("Worlds/world" + currentActiveWorld));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -67,7 +107,7 @@ public class Disk {
 
         //System.out.println("loading!!");
         String key = x + " " + z;
-        String dir = "Worlds/world1/" + key + ".chunk";
+        String dir = "Worlds/world" + currentActiveWorld + "/" + key + ".chunk";
 
         ChunkSavingObject thisChunkLoaded = null;
 
@@ -132,7 +172,7 @@ public class Disk {
         tempPos.y = pos.y;
         tempPos.z = pos.z;
         try {
-            objectMapper.writeValue(new File("Worlds/world1/playerPos.data"), tempPos);
+            objectMapper.writeValue(new File("Worlds/world" + currentActiveWorld + "/playerPos.data"), tempPos);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -140,7 +180,7 @@ public class Disk {
 
     public static Vector3d loadPlayerPos(){
 
-        File test = new File("Worlds/world1/playerPos.data");
+        File test = new File("Worlds/world" + currentActiveWorld + "/playerPos.data");
 
         Vector3d thisPos = new Vector3d(0,100,0);
 

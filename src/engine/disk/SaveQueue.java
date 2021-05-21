@@ -13,8 +13,15 @@ import java.util.zip.GZIPOutputStream;
 
 
 import static engine.Window.windowShouldClose;
+import static engine.disk.Disk.getCurrentActiveWorld;
 
 public class SaveQueue {
+
+    private static byte currentActiveWorld = 1; //failsafe
+
+    public static void updateSaveQueueCurrentActiveWorld(byte newWorld){
+        currentActiveWorld = newWorld;
+    }
 
     public static Deque<ChunkObject> saveQueue;
 
@@ -43,15 +50,15 @@ public class SaveQueue {
                         String stringedChunk = mapper.writeValueAsString(savingObject);
 
                         //crate new file if does not exist
-                        File test = new File("Worlds/world1/" + savingObject.I + ".chunk");
+                        File test = new File("Worlds/world" + currentActiveWorld + "/" + savingObject.I + ".chunk");
                         if (!test.canRead()){
-                            File newFile = new File("Worlds/world1/" + savingObject.I + ".chunk");
+                            File newFile = new File("Worlds/world" + currentActiveWorld + "/" + savingObject.I + ".chunk");
                             newFile.createNewFile();
                         }
 
                         //learned from https://www.journaldev.com/966/java-gzip-example-compress-decompress-file
                         ByteArrayInputStream bais = new ByteArrayInputStream(stringedChunk.getBytes());
-                        FileOutputStream fos = new FileOutputStream("Worlds/world1/" + savingObject.I + ".chunk");
+                        FileOutputStream fos = new FileOutputStream("Worlds/world" + currentActiveWorld + "/" + savingObject.I + ".chunk");
                         GZIPOutputStream gzipOS = new GZIPOutputStream(fos);
                         byte[] buffer = new byte[1024];
                         int len;
@@ -93,15 +100,15 @@ public class SaveQueue {
             String stringedChunk = mapper.writeValueAsString(savingObject);
 
             //crate new file if does not exist
-            File test = new File("Worlds/world1/" + savingObject.I + ".chunk");
+            File test = new File("Worlds/world" + currentActiveWorld + "/" + savingObject.I + ".chunk");
             if (!test.canRead()){
-                File newFile = new File("Worlds/world1/" + savingObject.I + ".chunk");
+                File newFile = new File("Worlds/world" + currentActiveWorld + "/" + savingObject.I + ".chunk");
                 newFile.createNewFile();
             }
 
             //learned from https://www.journaldev.com/966/java-gzip-example-compress-decompress-file
             ByteArrayInputStream bais = new ByteArrayInputStream(stringedChunk.getBytes());
-            FileOutputStream fos = new FileOutputStream("Worlds/world1/" + savingObject.I + ".chunk");
+            FileOutputStream fos = new FileOutputStream("Worlds/world" + currentActiveWorld + "/" + savingObject.I + ".chunk");
             GZIPOutputStream gzipOS = new GZIPOutputStream(fos);
             byte[] buffer = new byte[1024];
             int len;

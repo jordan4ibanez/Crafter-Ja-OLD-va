@@ -52,6 +52,7 @@ public class Crafter {
             initMouseInput();
             initSoundManager();
             initGame();
+            createWorldsDir();
             startSaveThread();
             //assistantThread();
 

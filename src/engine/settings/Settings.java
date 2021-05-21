@@ -115,10 +115,12 @@ public class Settings {
     public static int getRenderDistance(){
         return renderDistance;
     }
-    public static void setRenderDistance(int newRenderDistance){
+    public static void setRenderDistance(int newRenderDistance, boolean inGame){
         renderDistance = newRenderDistance;
         settings.renderDistance = newRenderDistance;
-        generateNewChunks();
+        if (inGame) {
+            generateNewChunks();
+        }
     }
 
     //vsync

@@ -10,6 +10,8 @@ import java.util.Random;
 import static engine.MouseInput.*;
 import static engine.Time.getDelta;
 import static engine.Window.*;
+import static engine.disk.Disk.setCurrentActiveWorld;
+import static engine.disk.Disk.worldSize;
 import static engine.gui.GUILogic.doGUIMouseCollisionDetection;
 import static engine.scene.SceneHandler.setScene;
 import static engine.settings.Settings.*;
@@ -26,6 +28,12 @@ public class MainMenu {
     private static byte[][] titleBlocks;
     private static double[][] titleOffsets;
     private static boolean haltBlockFlyIn = false;
+
+    private static byte[][] worldTitleBlocks;
+    private static double[][] worldTitleOffsets;
+    private static boolean haltWorldBlockFlyIn = false;
+
+
     private static String titleScreenGag = "";
     private static byte titleScreenGagLength = 0;
     private static final float blockOffsetInitial = 15f;
@@ -33,7 +41,6 @@ public class MainMenu {
     private static float bounceAnimation = 0.75f;
     private static float backGroundScroll = 0f;
     private static SoundSource titleMusic;
-    private static boolean lockOutReset = false;
     private static final Random random = new Random();
     private static boolean mouseButtonPushed = false;
     private static boolean mouseButtonWasPushed = false;
@@ -47,9 +54,10 @@ public class MainMenu {
 
     private static final GUIObject[] mainMenuGUI = new GUIObject[]{
             new GUIObject("SINGLEPLAYER" , new Vector2d(0, 10), 10, 1),
-            new GUIObject("MULTIPLAYER" , new Vector2d(0, -5), 10,1),
-            new GUIObject("SETTINGS" , new Vector2d(0, -20), 10,1),
-            new GUIObject("QUIT" , new Vector2d(0, -35), 10,1),
+            new GUIObject("MULTIPLAYER (NOT YET)" , new Vector2d(0, -3), 10,1),
+            new GUIObject("SETTINGS" , new Vector2d(0, -16), 10,1),
+            new GUIObject("CREDITS" , new Vector2d(0, -29), 10,1),
+            new GUIObject("QUIT" , new Vector2d(0, -42), 10,1),
     };
 
     private static final GUIObject[] mainMenuSettingsMenuGUI = new GUIObject[]{
@@ -73,6 +81,14 @@ public class MainMenu {
             new GUIObject("BACK" , new Vector2d(0, -30), 5, 1),
     };
 
+    private static final GUIObject[] worldSelectionGUI = new GUIObject[]{
+            new GUIObject("WORLD 1" + worldSize((byte)1) , new Vector2d(0, 10), 10, 1),
+            new GUIObject("WORLD 2" + worldSize((byte)2) , new Vector2d(0, -3), 10,1),
+            new GUIObject("WORLD 3" + worldSize((byte)3) , new Vector2d(0, -16), 10,1),
+            new GUIObject("WORLD 4" + worldSize((byte)4) , new Vector2d(0, -29), 10,1),
+            new GUIObject("BACK" , new Vector2d(0, -42), 10,1),
+    };
+
     public static byte getMainMenuPage(){
         return menuPage;
     }
@@ -84,6 +100,8 @@ public class MainMenu {
             return mainMenuSettingsMenuGUI;
         } else if (menuPage == 2){
             return controlsMenuGUI;
+        } else if (menuPage == 3){
+            return worldSelectionGUI;
         }
 
         //have to return something
@@ -103,8 +121,15 @@ public class MainMenu {
                 {1,0,0,0,1,0,1,0,1,0,1,0,1,0,0,0,0,1,0,0,1,0,0,0,1,0,1},
                 {1,1,1,0,1,0,1,0,1,0,1,0,1,0,0,0,0,1,0,0,1,1,1,0,1,0,1},
         };
+        worldTitleBlocks = new byte[][]{
+                {1,0,0,0,1,0,0,1,1,0,0,1,1,0,0,1,0,0,0,1,1,0,0,0,1,1,1},
+                {1,0,0,0,1,0,1,0,0,1,0,1,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0},
+                {1,0,1,0,1,0,1,0,0,1,0,1,1,0,0,1,0,0,0,1,0,1,0,0,1,1,0},
+                {1,1,0,1,1,0,1,0,0,1,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1},
+                {1,0,0,0,1,0,0,1,1,0,0,1,0,1,0,1,1,1,0,1,1,0,0,1,1,1,0},
+        };
 
-       titleOffsets = new double[5][27];
+        titleOffsets = new double[5][27];
 
         //set initial random float variables
         for (int x = 0; x < 5; x++){
@@ -112,6 +137,17 @@ public class MainMenu {
             for (int y = 0; y < 27; y++){
                 if (titleBlocks[x][y] == 1){
                     titleOffsets[x][y] = blockOffsetInitial + Math.random()*15d;
+                }
+            }
+        }
+
+        worldTitleOffsets = new double[5][27];
+
+        for (int x = 0; x < 5; x++){
+            //assume equal lengths
+            for (int y = 0; y < 27; y++){
+                if (worldTitleBlocks[x][y] == 1){
+                    worldTitleOffsets[x][y] = blockOffsetInitial + Math.random()*15d;
                 }
             }
         }
@@ -123,8 +159,12 @@ public class MainMenu {
         titleMusic = playMusic("main_menu");
     }
 
-    //debug
-    private static void resetMainMenu(){
+
+    public static void resetMainMenuPage(){
+        menuPage = 0;
+    }
+
+    public static void resetMainMenu(){
         //set initial random float variables
         for (int x = 0; x < 5; x++){
             //assume equal lengths
@@ -134,9 +174,17 @@ public class MainMenu {
                 }
             }
         }
+        for (int x = 0; x < 5; x++){
+            //assume equal lengths
+            for (int y = 0; y < 27; y++){
+                if (worldTitleBlocks[x][y] == 1){
+                    worldTitleOffsets[x][y] = blockOffsetInitial + Math.random()*15d;
+                }
+            }
+        }
 
         haltBlockFlyIn = false;
-        //bounceAnimation = 0f;
+        haltWorldBlockFlyIn = false;
 
         selectTitleScreenGag();
     }
@@ -147,6 +195,14 @@ public class MainMenu {
 
     public static double[][] getTitleBlockOffsets(){
         return titleOffsets;
+    }
+
+    public static byte[][] getWorldTitleBlocks(){
+        return worldTitleBlocks;
+    }
+
+    public static double[][] getWorldTitleOffsets(){
+        return worldTitleOffsets;
     }
 
 
@@ -180,9 +236,8 @@ public class MainMenu {
                 playSound("button");
 
                 if (selection == 0) {
-                    titleMusic.stop();
-                    setScene((byte) 1);
-                    toggleMouseLock();
+                    resetMainMenu();
+                    menuPage = 3;
                 }
 
                 if (selection == 1) {
@@ -194,7 +249,11 @@ public class MainMenu {
                     menuPage = 1;
                 }
 
-                if (selection == 3) {
+                if (selection == 3){
+                    System.out.println("YOU FORGOT TO ADD THE CREDITS ARGHH");
+                }
+
+                if (selection == 4) {
                     glfwSetWindowShouldClose(getWindowHandle(), true);
                 }
 
@@ -248,7 +307,7 @@ public class MainMenu {
                             case 9:
                                 renderDistance = 3;
                         }
-                        setRenderDistance(renderDistance);
+                        setRenderDistance(renderDistance, false);
                         mainMenuSettingsMenuGUI[3].updateTextCenteredFixed("RENDER DISTANCE: " + renderDistance);
                         saveSettings();
                         break;
@@ -399,6 +458,30 @@ public class MainMenu {
             } else if (!isLeftButtonPressed()) {
                 mouseButtonPushed = false;
             }
+        } else if (menuPage == 3){
+            makeWorldBlocksFlyIn();
+
+            byte selection = doGUIMouseCollisionDetection(worldSelectionGUI);
+
+
+            if (isLeftButtonPressed() && selection >= 0 && !mouseButtonPushed && !mouseButtonWasPushed) {
+                playSound("button");
+                mouseButtonPushed = true;
+
+                if (selection < 4) {
+                    byte selectedWorld = (byte) (selection + 1); //base 1 counting
+                    setCurrentActiveWorld(selectedWorld);
+                    titleMusic.stop();
+                    toggleMouseLock();
+                    setScene((byte) 1);
+                } else {
+                    resetMainMenu();
+                    menuPage = 0;
+                }
+
+            } else if (!isLeftButtonPressed()) {
+                mouseButtonPushed = false;
+            }
         }
 
         mouseButtonWasPushed = isLeftButtonPressed();
@@ -479,6 +562,32 @@ public class MainMenu {
         }
     }
 
+    private static void makeWorldBlocksFlyIn(){
+        if (haltWorldBlockFlyIn){
+            return;
+        }
+
+        boolean found = false;
+
+        float delta = getDelta();
+        //set initial random float variables
+        for (int x = 0; x < 5; x++){
+            //assume equal lengths
+            for (int y = 0; y < 27; y++){
+                if (worldTitleBlocks[x][y] == 1 && worldTitleOffsets[x][y] > 0){
+                    found = true;
+                    worldTitleOffsets[x][y] -= delta * 30f;
+                    if (worldTitleOffsets[x][y] <= 0){
+                        worldTitleOffsets[x][y] = 0;
+                    }
+                }
+            }
+        }
+
+        if (!found){
+            haltWorldBlockFlyIn = true;
+        }
+    }
 
     private static String quickConvertKeyCode(int keyCode){
         char code = (char)keyCode;
@@ -641,5 +750,9 @@ public class MainMenu {
             "Collides!",
             "Works underwater!",
             "Doesn't include crafting!",
+            "Too much math!",
+            "Multiple worlds!",
+            "Polished, but not enough!",
+            "Inconvenient!",
     };
 }

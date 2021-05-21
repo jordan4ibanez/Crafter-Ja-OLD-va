@@ -19,7 +19,6 @@ public class RenderDebug {
 
     private static float debugRotation = 0f;
 
-
     private static ShaderProgram debugShaderProgram;
 
     public static void initializeDebugRenderShader() throws Exception {
