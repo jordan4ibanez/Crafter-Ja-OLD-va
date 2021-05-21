@@ -7,7 +7,6 @@ import org.joml.Vector3f;
 import static engine.MouseInput.*;
 import static engine.Time.getDelta;
 import static engine.Window.*;
-import static engine.gui.GUI.toggleVsyncMesh;
 import static engine.render.GameRenderer.getWindowScale;
 import static engine.render.GameRenderer.getWindowSize;
 import static engine.scene.SceneHandler.setScene;
@@ -22,9 +21,7 @@ public class GUILogic {
     private static final Vector3f playerRot = new Vector3f(0,0,0);
     private static boolean paused = false;
     private static int[] invSelection;
-    private static boolean clicking = false;
     private static boolean mouseButtonPushed = false;
-    private static int pauseButtonSelection;
 
     private static final GUIObject[] gamePauseMenuGUI = new GUIObject[]{
             new GUIObject("CONTINUE" , new Vector2d(0, 30), 10, 1),
@@ -41,19 +38,6 @@ public class GUILogic {
 
     public static int[] getInvSelection(){
         return invSelection;
-    }
-
-    public static int getPauseButtonSelection(){
-        return pauseButtonSelection;
-    }
-
-    public static boolean getIfClicking(){
-        return clicking;
-    }
-
-
-    public static Vector3f getPlayerHudRot(){
-        return playerRot;
     }
 
     public static void togglePauseMenu(){
