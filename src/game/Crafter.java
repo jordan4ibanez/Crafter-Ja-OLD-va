@@ -11,6 +11,7 @@ import java.awt.*;
 import static engine.disk.Disk.*;
 import static engine.disk.SaveQueue.startSaveThread;
 import static engine.scene.SceneHandler.handleSceneLogic;
+import static engine.settings.Settings.getSettingsVsync;
 import static engine.settings.Settings.loadSettings;
 import static game.chunk.Chunk.*;
 import static engine.gui.GUI.*;
@@ -40,13 +41,12 @@ public class Crafter {
     //load everything
     public static void main(String[] args){
         try{
-            boolean vSync = true;
             Toolkit tk = Toolkit.getDefaultToolkit();
             Dimension d = tk.getScreenSize();
 
-            initWindow(versionName, d.width/2,d.height/2,vSync);
-
             loadSettings();
+
+            initWindow(versionName, d.width/2,d.height/2,getSettingsVsync());
 
             initRenderer();
             initMouseInput();

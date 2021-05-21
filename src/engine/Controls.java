@@ -10,7 +10,6 @@ import static engine.Window.toggleFullScreen;
 import static engine.gui.GUILogic.isPaused;
 import static engine.gui.GUILogic.togglePauseMenu;
 import static engine.settings.Settings.*;
-import static game.item.ItemEntity.clearItems;
 import static game.mob.Mob.spawnMob;
 import static game.player.Inventory.emptyMouseInventory;
 import static game.player.Inventory.throwItem;
@@ -21,15 +20,11 @@ import static org.lwjgl.glfw.GLFW.*;
 public class Controls {
 
     private static boolean qButtonPushed       = false;
-    private static boolean rButtonPushed       = false;
     private static boolean tButtonPushed       = false;
-    private static boolean cButtonPushed       = false;
     private static boolean eButtonPushed       = false;
     private static boolean F11Pushed           = false;
     private static boolean escapePushed        = false;
     private static boolean F3Pushed            = false;
-
-
 
     public static void gameInput() {
 

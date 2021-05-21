@@ -1,5 +1,6 @@
 package engine.settings;
 
+import static engine.Window.setVSync;
 import static engine.disk.Disk.loadSettingsFromDisk;
 import static engine.disk.Disk.saveSettingsToDisk;
 import static org.lwjgl.glfw.GLFW.*;
@@ -118,8 +119,9 @@ public class Settings {
 
     //vsync
     public static void setSettingsVsync(boolean truth){
-        vSync = true;
-        settings.vSync = true;
+        vSync = truth;
+        settings.vSync = truth;
+        setVSync(truth);
     }
     public static boolean getSettingsVsync(){
         return vSync;

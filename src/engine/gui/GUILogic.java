@@ -41,7 +41,7 @@ public class GUILogic {
 
     private static final GUIObject[] gameSettingsMenuGUI = new GUIObject[]{
             new GUIObject("CONTROLS" ,             new Vector2d(0, 35), 12, 1),
-            new GUIObject("VSYNC: ON" ,            new Vector2d(0, 21), 12, 1),
+            new GUIObject("VSYNC: " + boolToString(getSettingsVsync()),            new Vector2d(0, 21), 12, 1),
             new GUIObject("GRAPHICS MODE: FANCY" , new Vector2d(0, 7), 12,1),
             new GUIObject("RENDER DISTANCE: 5" ,   new Vector2d(0, -7), 12,1),
             new GUIObject("LAZY CHUNK LOADING: FALSE" , new Vector2d(0, -21), 12,1),
@@ -75,6 +75,13 @@ public class GUILogic {
         }
 
         return code + "";
+    }
+
+    private static String boolToString(boolean bool){
+        if (bool){
+            return "TRUE";
+        }
+        return "FALSE";
     }
 
 
@@ -264,10 +271,13 @@ public class GUILogic {
 
                     switch (selection){
                         case 0:
+                            //goto controls menu
                             menuPage = 2;
                             break;
                         case 1:
-                            System.out.println("vsync");
+                            boolean vSync = !getSettingsVsync();
+                            setSettingsVsync(vSync);
+                            gameSettingsMenuGUI[1].updateTextCenteredFixed("VSYNC: " + boolToString(vSync));
                             break;
                         case 2:
                             System.out.println("graphics render mode");
