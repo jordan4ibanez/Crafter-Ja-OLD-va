@@ -162,9 +162,10 @@ public class GameRenderer {
 
         rescaleWindow();
 
+        int renderDistance = getRenderDistance();
 
         //update projection matrix
-        Matrix4d projectionMatrix = getProjectionMatrix(FOV + getRunningFOVAdder(), getWindowWidth(), getWindowHeight(), Z_NEAR, Z_FAR);
+        Matrix4d projectionMatrix = getProjectionMatrix(FOV + getRunningFOVAdder(), getWindowWidth(), getWindowHeight(), Z_NEAR, (renderDistance + 1) * 16f);
         //update the view matrix
         Matrix4d viewMatrix = getViewMatrix();
 
@@ -178,7 +179,6 @@ public class GameRenderer {
 
         HashMap<Double, ChunkObject> chunkHash = new HashMap<>();
 
-        int renderDistance = getRenderDistance();
 
         //get all distances
         for (ChunkObject thisChunk : getMap()){

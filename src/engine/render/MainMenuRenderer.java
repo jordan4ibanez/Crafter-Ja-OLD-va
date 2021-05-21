@@ -41,7 +41,7 @@ public class MainMenuRenderer {
         shaderProgram.bind();
 
         //update projection matrix
-        Matrix4d projectionMatrix = getProjectionMatrix(FOV, getWindowWidth(), getWindowHeight(), getzNear(), getzFar());
+        Matrix4d projectionMatrix = getProjectionMatrix(FOV, getWindowWidth(), getWindowHeight(), getzNear(), 100f);
 
         shaderProgram.setUniform("projectionMatrix", projectionMatrix);
 
