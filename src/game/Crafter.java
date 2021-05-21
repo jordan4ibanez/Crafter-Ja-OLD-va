@@ -11,6 +11,7 @@ import java.awt.*;
 import static engine.disk.Disk.*;
 import static engine.disk.SaveQueue.startSaveThread;
 import static engine.scene.SceneHandler.handleSceneLogic;
+import static engine.settings.Settings.loadSettings;
 import static game.chunk.Chunk.*;
 import static engine.gui.GUI.*;
 import static engine.MouseInput.*;
@@ -28,29 +29,10 @@ public class Crafter {
 
     //fields
     //DO NOT finalize this
-    private static final int     chunkRenderDistance = 5;
-    private static boolean debugInfo = true;
     private static final String versionName = "Crafter 0.03b Survival Test";
-
-
-    public static void setDebugInfo(boolean truth){
-        debugInfo = truth;
-    }
-
-    public static boolean getDebugInfo(){
-        return debugInfo;
-    }
-
-    public static void invertDebugInfoBoolean(){
-        debugInfo = !debugInfo;
-    }
 
     public static String getVersionName(){
         return versionName;
-    }
-
-    public static int getRenderDistance(){
-        return chunkRenderDistance;
     }
 
     //core game engine elements
@@ -63,6 +45,9 @@ public class Crafter {
             Dimension d = tk.getScreenSize();
 
             initWindow(versionName, d.width/2,d.height/2,vSync);
+
+            loadSettings();
+
             initRenderer();
             initMouseInput();
             initSoundManager();
@@ -96,12 +81,6 @@ public class Crafter {
     }
 
     //the game engine elements
-
-
-    public static int getChunkRenderDistance(){
-        return chunkRenderDistance;
-    }
-
     public static void initGame() throws Exception{
         initializeHudAtlas();
         //this initializes the block definitions

@@ -1,6 +1,7 @@
 package engine.disk;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import engine.settings.SettingsObject;
 import game.chunk.ChunkObject;
 import org.joml.Vector3d;
 
@@ -35,6 +36,33 @@ public class Disk {
 
 
     private static ObjectMapper objectMapper = new ObjectMapper();
+
+
+    public static SettingsObject loadSettingsFromDisk(){
+        File file = new File("Settings.conf");
+
+        if (!file.canRead()){
+            return null;
+        }
+
+        SettingsObject settings = null;
+
+        try {
+            settings = objectMapper.readValue(file, SettingsObject.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return settings;
+    }
+
+    public static void saveSettingsToDisk(SettingsObject settingsObject){
+        try {
+            objectMapper.writeValue(new File("Settings.conf"), settingsObject);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static ChunkObject loadChunkFromDisk(int x, int z) throws IOException {
 

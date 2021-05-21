@@ -22,7 +22,12 @@ public class ChunkUpdateHandler {
 
     //the higher this is set, the lazier chunk mesh loading gets
     //set it too high, and chunk mesh loading barely works
-    final private static float goalTimer = 0.01f;
+
+    //lazy
+    //private static float goalTimer = 0.01f;
+
+    //not lazy
+    private static float goalTimer = 0.005f;
 
     private static float chunkUpdateTimer = 0f;
 

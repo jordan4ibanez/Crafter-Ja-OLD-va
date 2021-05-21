@@ -14,8 +14,7 @@ import static engine.Time.getDelta;
 import static engine.disk.Disk.*;
 import static engine.disk.SaveQueue.instantSave;
 import static engine.disk.SaveQueue.saveChunk;
-import static game.Crafter.getChunkRenderDistance;
-import static game.chunk.ChunkMath.indexToPos;
+import static engine.settings.Settings.getRenderDistance;
 import static game.chunk.ChunkMath.posToIndex;
 import static game.chunk.ChunkMesh.generateChunkMesh;
 import static game.chunk.ChunkUpdateHandler.chunkUpdate;
@@ -42,7 +41,7 @@ public class Chunk {
         int x;
         int z;
 
-        int chunkRenderDistance = getChunkRenderDistance();
+        int chunkRenderDistance = getRenderDistance();
 
         Vector3i currentChunk = getPlayerCurrentChunk();
 
@@ -586,7 +585,7 @@ public class Chunk {
         //create the initial map in memory
         int x;
         int z;
-        int chunkRenderDistance = getChunkRenderDistance();
+        int chunkRenderDistance = getRenderDistance();
         Vector3i currentChunk = getPlayerCurrentChunk();
 
         String currChunk = "";

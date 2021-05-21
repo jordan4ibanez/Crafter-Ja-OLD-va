@@ -9,7 +9,7 @@ import static engine.Window.isKeyPressed;
 import static engine.Window.toggleFullScreen;
 import static engine.gui.GUILogic.isPaused;
 import static engine.gui.GUILogic.togglePauseMenu;
-import static game.Crafter.invertDebugInfoBoolean;
+import static engine.settings.Settings.invertDebugInfoBoolean;
 import static game.item.ItemEntity.clearItems;
 import static game.mob.Mob.spawnMob;
 import static game.player.Inventory.emptyMouseInventory;
