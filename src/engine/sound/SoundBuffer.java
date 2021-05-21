@@ -17,8 +17,7 @@ public class SoundBuffer {
     public final int bufferId;
 
     private ShortBuffer pcm = null;
-
-    private ByteBuffer vorbis = null;
+    private boolean lock = false;
 
     public SoundBuffer(String file) throws Exception{
         this.bufferId = alGenBuffers();
@@ -28,6 +27,14 @@ public class SoundBuffer {
             //copy to buffer
             alBufferData(bufferId, info.channels() == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16, pcm, info.sample_rate());
         }
+    }
+
+    public boolean isLocked(){
+        return lock;
+    }
+
+    public void setLock(boolean isLocked){
+        this.lock = isLocked;
     }
 
     public int getBufferId(){
@@ -43,7 +50,7 @@ public class SoundBuffer {
 
     private ShortBuffer readVorbis(String resource, int bufferSize, STBVorbisInfo info) throws Exception{
         try(MemoryStack stack = MemoryStack.stackPush()) {
-            vorbis = Utils.ioResourceToByteBuffer(resource, bufferSize);
+            ByteBuffer vorbis = Utils.ioResourceToByteBuffer(resource, bufferSize);
             IntBuffer error = stack.mallocInt(1);
             long decoder = stb_vorbis_open_memory(vorbis, error, null);
 

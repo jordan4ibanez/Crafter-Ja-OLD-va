@@ -75,6 +75,20 @@ public class SoundAPI {
         return thisSource;
     }
 
+    public static SoundSource playMusic(String name) {
+        SoundBuffer soundBuffer = null;
+        try {
+            soundBuffer = new SoundBuffer("sounds/" + name + ".ogg");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        soundBuffer.setLock(true);
+        SoundSource thisSource = new SoundSource(false, true);
+        thisSource.setBuffer(soundBuffer.getBufferId());
+        playSoundSource(soundBuffer, thisSource);
+        return thisSource;
+    }
+
     public static void playSound(String name, boolean randomPitch) {
         SoundBuffer soundBuffer = null;
         try {

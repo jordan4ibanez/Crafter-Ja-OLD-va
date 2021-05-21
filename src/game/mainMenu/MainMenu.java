@@ -13,6 +13,7 @@ import static engine.Window.getWindowHandle;
 import static engine.Window.updateWindowTitle;
 import static engine.gui.GUILogic.doGUIMouseCollisionDetection;
 import static engine.scene.SceneHandler.setScene;
+import static engine.sound.SoundAPI.playMusic;
 import static engine.sound.SoundAPI.playSound;
 import static game.Crafter.getVersionName;
 import static game.mainMenu.MainMenuAssets.createMainMenuBackGroundTile;
@@ -80,7 +81,7 @@ public class MainMenu {
         createMainMenuBackGroundTile();
         selectTitleScreenGag();
 
-        titleMusic = playSound("main_menu");
+        titleMusic = playMusic("main_menu");
     }
 
     //debug

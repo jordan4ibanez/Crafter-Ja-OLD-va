@@ -28,7 +28,6 @@ public class SoundManager {
     private static SoundListener listener;
 
     private static SoundBuffer[] soundBufferList = new SoundBuffer[maxSounds];
-
     private static SoundSource[] soundSourceArray = new SoundSource[maxSounds];
 
     private static final Matrix4d cameraMatrix = new Matrix4d();
@@ -54,23 +53,35 @@ public class SoundManager {
     }
 
     public static void playSoundSource(SoundBuffer soundBuffer, SoundSource soundSource) {
+        //THIS IS PRETTY HORRIBLE AND CAN CAUSE A FREEZE IF YOU PLAY 64 MUSIC TRACKS somehow
+        //todo: make this better somehow
+        boolean found = false;
+        while (!found) {
+            if (soundBufferList[currentIndex] != null && soundBufferList[currentIndex].isLocked()) {
+                currentIndex++;
+                if (currentIndex >= maxSounds) {
+                    currentIndex = 0;
+                }
+                continue;
+            }
+            found = true;
+            if (soundBufferList[currentIndex] != null) {
+                soundBufferList[currentIndex].cleanUp();
+            }
+            soundBufferList[currentIndex] = soundBuffer;
 
-        if (soundBufferList[currentIndex] != null){
-            soundBufferList[currentIndex].cleanUp();
-        }
-        soundBufferList[currentIndex] = soundBuffer;
 
+            if (soundSourceArray[currentIndex] != null) {
+                soundSourceArray[currentIndex].stop();
+                soundSourceArray[currentIndex].cleanUp();
+            }
+            soundSourceArray[currentIndex] = soundSource;
+            soundSourceArray[currentIndex].play();
 
-        if (soundSourceArray[currentIndex] != null) {
-            soundSourceArray[currentIndex].stop();
-            soundSourceArray[currentIndex].cleanUp();
-        }
-        soundSourceArray[currentIndex] = soundSource;
-        soundSourceArray[currentIndex].play();
-
-        currentIndex++;
-        if (currentIndex >= maxSounds){
-            currentIndex = 0;
+            currentIndex++;
+            if (currentIndex >= maxSounds) {
+                currentIndex = 0;
+            }
         }
     }
 
