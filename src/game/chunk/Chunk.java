@@ -195,6 +195,8 @@ public class Chunk {
             instantSave(thisChunk);
             thisChunk.modified = false;
         }
+
+        map.clear();
     }
 
     public static boolean chunkStackContainsBlock(int chunkX, int chunkZ, int yHeight){

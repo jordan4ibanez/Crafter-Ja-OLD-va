@@ -7,7 +7,6 @@ import org.joml.Vector3d;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.zip.GZIPInputStream;
 
@@ -35,7 +34,7 @@ public class Disk {
     }
 
 
-    private static ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
 
     public static SettingsObject loadSettingsFromDisk(){

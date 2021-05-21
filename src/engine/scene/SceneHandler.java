@@ -11,20 +11,23 @@ import static engine.debug.DebugTerrainDrawTypes.generateDebugChunkMesh;
 import static engine.debug.RenderDebug.initializeDebugRenderShader;
 import static engine.debug.RenderDebug.renderDebug;
 import static engine.debug.debug.debugInput;
+import static engine.disk.Disk.initializeWorldHandling;
 import static engine.graph.Camera.*;
+import static engine.gui.GUI.calculateHealthBarElements;
 import static engine.gui.GUILogic.hudOnStepTest;
 import static engine.render.MainMenuRenderer.renderMainMenu;
 import static engine.render.GameRenderer.renderGame;
 import static engine.Time.calculateDelta;
 import static engine.Timer.countFPS;
 import static engine.sound.SoundManager.updateListenerPosition;
-import static game.chunk.Chunk.globalChunkSaveToDisk;
-import static game.chunk.Chunk.processOldChunks;
+import static game.chunk.Chunk.*;
 import static game.chunk.ChunkMesh.popChunkMeshQueue;
 import static game.chunk.ChunkUpdateHandler.chunkUpdater;
 import static game.falling.FallingEntity.fallingEntityOnStep;
+import static game.item.ItemRegistration.registerTools;
 import static game.mainMenu.MainMenu.doMainMenuLogic;
 import static game.mainMenu.MainMenu.selectTitleScreenGag;
+import static game.mob.Mob.initializeMobRegister;
 import static game.mob.Mob.mobsOnTick;
 import static game.particle.Particle.particlesOnStep;
 import static game.player.Player.*;
@@ -37,7 +40,6 @@ public class SceneHandler {
 
     public static void setScene(byte newScene){
 
-
         //move the camera into position for the main menu
         if (newScene == 0){
             setCameraPosition(0,-8,0);
@@ -47,10 +49,16 @@ public class SceneHandler {
             if (isMouseLocked()){
                 toggleMouseLock();
             }
+            globalFinalChunkSaveToDisk();
         }
 
         if (newScene == 1){
             setWindowClearColor(0.53f,0.81f,0.92f,0.f);
+            calculateHealthBarElements();
+            registerTools();
+            initializeMobRegister();
+            initializeWorldHandling();
+            initialChunkPayload();
         }
 
         currentScene = newScene;

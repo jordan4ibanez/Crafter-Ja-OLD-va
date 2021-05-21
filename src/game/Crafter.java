@@ -54,7 +54,7 @@ public class Crafter {
             initGame();
             startSaveThread();
             //assistantThread();
-            calculateHealthBarElements();
+
 
             initMainMenu();
             //this is the scene controller
@@ -92,17 +92,6 @@ public class Crafter {
         setListener(new SoundListener(new Vector3d()));
         createGUI();
 
-        registerTools();
-
-        initializeMobRegister();
-
-        initializeWorldHandling();
-
-        initialChunkPayload();
-
-        //createToolDebugInventory();
-        //generateRandomInventory();
-        //tntFillErUp();
     }
 
 
