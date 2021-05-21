@@ -42,7 +42,7 @@ public class GUILogic {
     private static final GUIObject[] gameSettingsMenuGUI = new GUIObject[]{
             new GUIObject("CONTROLS" ,             new Vector2d(0, 35), 12, 1),
             new GUIObject("VSYNC: " + boolToString(getSettingsVsync()),            new Vector2d(0, 21), 12, 1),
-            new GUIObject("GRAPHICS MODE: FANCY" , new Vector2d(0, 7), 12,1),
+            new GUIObject("GRAPHICS MODE: " + graphicsThing(getGraphicsMode()) , new Vector2d(0, 7), 12,1),
             new GUIObject("RENDER DISTANCE: 5" ,   new Vector2d(0, -7), 12,1),
             new GUIObject("LAZY CHUNK LOADING: FALSE" , new Vector2d(0, -21), 12,1),
             new GUIObject("BACK" ,                  new Vector2d(0, -35), 12,1),
@@ -79,9 +79,16 @@ public class GUILogic {
 
     private static String boolToString(boolean bool){
         if (bool){
-            return "TRUE";
+            return "ON";
         }
-        return "FALSE";
+        return "OFF";
+    }
+
+    private static String graphicsThing(boolean bool){
+        if (bool){
+            return "FANCY";
+        }
+        return "FAST";
     }
 
 
@@ -278,9 +285,13 @@ public class GUILogic {
                             boolean vSync = !getSettingsVsync();
                             setSettingsVsync(vSync);
                             gameSettingsMenuGUI[1].updateTextCenteredFixed("VSYNC: " + boolToString(vSync));
+                            saveSettings();
                             break;
                         case 2:
-                            System.out.println("graphics render mode");
+                            boolean graphicsMode = !getGraphicsMode();
+                            setGraphicsMode(graphicsMode);
+                            gameSettingsMenuGUI[2].updateTextCenteredFixed("GRAPHICS: " + graphicsThing(graphicsMode));
+                            saveSettings();
                             break;
                         case 3:
                             System.out.println("render distance");

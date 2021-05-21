@@ -23,6 +23,7 @@ import static engine.gui.GUI.*;
 import static engine.gui.GUILogic.*;
 import static engine.gui.TextHandling.createText;
 import static engine.settings.Settings.getDebugInfo;
+import static engine.settings.Settings.getGraphicsMode;
 import static game.falling.FallingEntity.getFallingEntities;
 import static game.item.ItemEntity.*;
 import static game.mob.Mob.getAllMobs;
@@ -218,12 +219,19 @@ public class GameRenderer {
 
         //todo end chunk sorting ---------------------------------------------------------------------------------------------
 
+        //get fast or fancy
+        boolean graphicsMode = getGraphicsMode();
 
 
-
-        glassLikeShaderProgram.bind();
-        glassLikeShaderProgram.setUniform("projectionMatrix", projectionMatrix);
-        glassLikeShaderProgram.setUniform("texture_sampler", 0);
+        if (graphicsMode) {
+            glassLikeShaderProgram.bind();
+            glassLikeShaderProgram.setUniform("projectionMatrix", projectionMatrix);
+            glassLikeShaderProgram.setUniform("texture_sampler", 0);
+        } else {
+            shaderProgram.bind();
+            shaderProgram.setUniform("projectionMatrix", projectionMatrix);
+            shaderProgram.setUniform("texture_sampler", 0);
+        }
 
         glDisable(GL_BLEND);
 
@@ -241,7 +249,11 @@ public class GameRenderer {
                 for (Mesh thisMesh : thisChunk.normalMesh) {
                     if (thisMesh != null) {
                         modelViewMatrix = updateModelViewMatrix(new Vector3d(thisChunk.x * 16d, 0, thisChunk.z * 16d), new Vector3f(0, 0, 0), viewMatrix);
-                        glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                        if (graphicsMode) {
+                            glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                        } else {
+                            shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                        }
                         thisMesh.render();
                     }
                 }
@@ -262,7 +274,11 @@ public class GameRenderer {
                 for (Mesh thisMesh : thisChunk.allFacesMesh) {
                     if (thisMesh != null) {
                         modelViewMatrix = updateModelViewMatrix(new Vector3d(thisChunk.x * 16d, 0, thisChunk.z * 16d), new Vector3f(0, 0, 0), viewMatrix);
-                        glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                        if (graphicsMode) {
+                            glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                        } else {
+                            shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                        }
                         thisMesh.render();
                     }
                 }
@@ -272,7 +288,11 @@ public class GameRenderer {
         //        render each item entity
         for (Item thisItem : getAllItems()){
             modelViewMatrix = updateModelViewMatrix(new Vector3d(thisItem.pos).add(0,thisItem.hover,0), thisItem.rotation, viewMatrix);
-            glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            if (graphicsMode) {
+                glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            } else {
+                shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            }
             thisItem.mesh.render();
         }
 
@@ -283,14 +303,22 @@ public class GameRenderer {
                 continue;
             }
             modelViewMatrix = getTNTModelViewMatrix(i, viewMatrix);
-            glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            if (graphicsMode) {
+                glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            } else {
+                shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            }
             tntMesh.render();
         }
 
         //render falling entities
         for (FallingEntityObject thisObject : getFallingEntities()){
             modelViewMatrix = getGenericMatrixWithPosRotationScale(thisObject.pos, new Vector3f(0,0,0), new Vector3d(2.5d,2.5d,2.5d), viewMatrix);
-            glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            if (graphicsMode) {
+                glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            } else {
+                hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            }
             thisObject.mesh.render();
         }
 
@@ -304,7 +332,11 @@ public class GameRenderer {
 
             for (Mesh thisMesh : thisMob.meshes) {
                 modelViewMatrix = getMobMatrix(new Vector3d(thisMob.pos), thisMob.bodyOffsets[offsetIndex], new Vector3f(0, thisMob.smoothRotation, thisMob.deathRotation), new Vector3f(thisMob.bodyRotations[offsetIndex]), new Vector3d(1f, 1f, 1f), viewMatrix);
-                glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                if (graphicsMode) {
+                    glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                } else {
+                    hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                }
                 thisMesh.render();
                 offsetIndex++;
             }
@@ -316,7 +348,11 @@ public class GameRenderer {
             Mesh thisMesh = thisParticle.mesh;
 
             modelViewMatrix = updateParticleViewMatrix(thisParticle.pos, new Vector3f(getCameraRotation()), viewMatrix);
-            glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            if (graphicsMode) {
+                glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            } else {
+                hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            }
             thisMesh.render();
         }
 
@@ -325,11 +361,23 @@ public class GameRenderer {
         Mesh rainDrop = getRainDropMesh();
         for (RainDropEntity thisRainDrop : getRainDrops()){
             modelViewMatrix = updateParticleViewMatrix(thisRainDrop.pos, new Vector3f(0,getCameraRotation().y,0), viewMatrix);
-            glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            if (graphicsMode) {
+                glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            } else {
+                hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            }
             rainDrop.render();
         }
          */
 
+        //we must unbind then rebind
+        if (!graphicsMode){
+            shaderProgram.unbind();
+
+            glassLikeShaderProgram.bind();
+            glassLikeShaderProgram.setUniform("projectionMatrix", projectionMatrix);
+            glassLikeShaderProgram.setUniform("texture_sampler", 0);
+        }
 
         //render world selection mesh
         if (getPlayerWorldSelectionPos() != null){
@@ -352,9 +400,12 @@ public class GameRenderer {
             }
         }
 
+        //glassLikeShaderProgram is always reached
         glassLikeShaderProgram.unbind();
 
-        glEnable(GL_BLEND);
+        if (graphicsMode) {
+            glEnable(GL_BLEND);
+        }
 
         //do standard blending
         shaderProgram.bind();
@@ -387,7 +438,9 @@ public class GameRenderer {
 
         glassLikeShaderProgram.bind();
 
-        glDisable(GL_BLEND);
+        if (graphicsMode) {
+            glDisable(GL_BLEND);
+        }
 
         //BEGIN HUD (3d parts)
 

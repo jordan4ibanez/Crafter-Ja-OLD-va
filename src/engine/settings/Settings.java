@@ -77,8 +77,7 @@ public class Settings {
             saveSettingsToDisk(settings);
 
         } else {
-
-            System.out.println("WARNING: SETTINGS ARE NOT NULL");
+            
             //dump new settings in
             settings = loadedSettings;
 
@@ -139,6 +138,7 @@ public class Settings {
     //graphics mode
     public static void setGraphicsMode(boolean newGraphicsMode){
         graphicsMode = newGraphicsMode;
+        settings.graphicsMode = newGraphicsMode;
     }
     public static boolean getGraphicsMode(){
         return graphicsMode;
