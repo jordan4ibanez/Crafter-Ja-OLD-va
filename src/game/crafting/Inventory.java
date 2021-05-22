@@ -13,14 +13,10 @@ import static engine.graph.Camera.getCameraRotationVector;
 import static game.player.Player.*;
 
 public class Inventory {
-
-    private static final InventoryObject debugInventory = new InventoryObject(4,1, new Vector2d(0,0), false);
-    private static final InventoryObject armorInventory = new InventoryObject(1,4, new Vector2d(-3.9875,2.15), false);
-    private static final InventoryObject outputInventory = new InventoryObject(1,1, new Vector2d(3.25,2.23), false);
-    private static final InventoryObject smallCraftInventory = new InventoryObject(2,2, new Vector2d(0.25,2.23), false);
-
-    //0,-2.15
-    private static final InventoryObject mainInventory = new InventoryObject(9,4, new Vector2d(0,-2.15), true);
+    private static final InventoryObject armorInventory = new InventoryObject("armor", 1,4, new Vector2d(-3.9875,2.15), false);
+    private static final InventoryObject outputInventory = new InventoryObject("output", 1,1, new Vector2d(3.25,2.23), false);
+    private static final InventoryObject smallCraftInventory = new InventoryObject("smallCraft", 2,2, new Vector2d(0.25,2.23), false);
+    private static final InventoryObject mainInventory = new InventoryObject("main", 9,4, new Vector2d(0,-2.15), true);
 
     private static boolean inventoryOpen = false;
 
@@ -48,10 +44,6 @@ public class Inventory {
 
     public static InventoryObject getArmorInventory(){
         return armorInventory;
-    }
-
-    public static InventoryObject getDebugInventory(){
-        return debugInventory;
     }
 
     public static Item getWieldInventory() {
@@ -186,12 +178,11 @@ public class Inventory {
     }
 
     public static void setMouseInventory(Item newItem){
-        /*
+        /* this crashes the game
         if (mouseInventory != null && mouseInventory.mesh != null){
             mouseInventory.mesh.cleanUp(false);
             mouseInventory = null; //shove it into a null pointer
         }
-
          */
         mouseInventory = newItem;
     }

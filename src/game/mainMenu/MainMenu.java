@@ -800,5 +800,10 @@ public class MainMenu {
             "Polished, but not enough!",
             "Inconvenient!",
             "Powered by coal!",
+            "Now with crafting!",
+            "Craft the universe!",
+            "Jump for joy!",
+            "Now with more binary!",
+            "Algorithmic!",
     };
 }

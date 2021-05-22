@@ -7,13 +7,15 @@ import org.joml.Vector2i;
 public class InventoryObject {
     Item[][] inventory;
 
+    String name;
     //selection is initially off the grid
     Vector2i selection = new Vector2i(-1,-1);
     Vector2d position;
     Vector2i size;
     boolean mainInventory;
 
-    public InventoryObject(int sizeX, int sizeY, Vector2d position, boolean isMainInventory){
+    public InventoryObject(String newName, int sizeX, int sizeY, Vector2d position, boolean isMainInventory){
+        this.name = newName;
         this.inventory = new Item[sizeY][sizeX];
         this.size = new Vector2i(sizeX, sizeY);
         this.position = position;

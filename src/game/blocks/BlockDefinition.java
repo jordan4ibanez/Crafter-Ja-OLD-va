@@ -1015,6 +1015,30 @@ public class BlockDefinition {
                 0,
                 true
         );
+
+        new BlockDefinition(
+                27,
+                "Wood",
+                true,
+                new int[]{29,0}, //front
+                new int[]{29,0}, //back
+                new int[]{29,0}, //right
+                new int[]{29,0}, //left
+                new int[]{29,0}, //top
+                new int[]{29,0},  //bottom
+                1, //regular
+                true,
+                false,
+                false,
+                null,
+                "wood_1",
+                "wood_2",
+                false,
+                false,
+                0,
+                true
+        );
+        
     }
 
     public static BlockDefinition getBlockDefinition(int ID){
