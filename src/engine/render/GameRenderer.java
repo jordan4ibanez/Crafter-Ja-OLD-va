@@ -539,44 +539,14 @@ public class GameRenderer {
                 glClear(GL_DEPTH_BUFFER_BIT);
 
                 renderInventoryGUI(getMainInventory());
-
                 renderInventoryGUI(getSmallCraftInventory());
-
                 renderInventoryGUI(getOutputInventory());
-
                 renderInventoryGUI(getArmorInventory());
 
                 //glClear(GL_DEPTH_BUFFER_BIT);
 
                 /*
                 {
-                    //render the actual inventory
-                    for (int x = 1; x <= 9; x++) {
-                        for (int y = -2; y > -5; y--) {
-                            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d((x - 5) * (windowScale / 9.5d), (y + 0.3d) * (windowScale / 9.5d), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 10.5f, windowScale / 10.5d, windowScale / 10.5d));
-                            hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-
-                            if (getInvSelection() != null && (x - 1) == getInvSelection()[0] && ((y * -1) - 1) == getInvSelection()[1]) {
-                                getInventorySlotSelectedMesh().render();
-                            } else {
-                                getInventorySlotMesh().render();
-                            }
-
-                        }
-                    }
-
-                    //render the inventory hotbar (top row)
-                    for (int x = 1; x <= 9; x++) {
-                        modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d((x - 5) * (windowScale / 9.5d), -0.5d * (windowScale / 9.5d), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 10.5d, windowScale / 10.5d, windowScale / 10.5d));
-                        hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-
-                        if (getInvSelection() != null && (x - 1) == getInvSelection()[0] && 0 == getInvSelection()[1]) {
-                            getInventorySlotSelectedMesh().render();
-                        } else {
-                            getInventorySlotMesh().render();
-                        }
-                    }
-                }
 
 
                 glClear(GL_DEPTH_BUFFER_BIT);
