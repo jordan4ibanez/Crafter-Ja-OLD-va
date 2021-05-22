@@ -5,7 +5,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static engine.Time.getDelta;
 import static engine.settings.Settings.getSettingsChunkLoad;
-import static engine.settings.Settings.setSettingsChunkLoad;
 import static game.chunk.Chunk.chunkStackContainsBlock;
 import static game.chunk.Chunk.updateChunkUnloadingSpeed;
 import static game.chunk.ChunkMesh.generateChunkMesh;
