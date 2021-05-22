@@ -16,9 +16,12 @@ public class Inventory {
     private static final InventoryObject armorInventory = new InventoryObject("armor", 1,4, new Vector2d(-3.9875,2.15), false);
     private static final InventoryObject outputInventory = new InventoryObject("output", 1,1, new Vector2d(3.25,2.23), false);
     private static final InventoryObject smallCraftInventory = new InventoryObject("smallCraft", 2,2, new Vector2d(0.25,2.23), false);
+    private static final InventoryObject bigCraftInventory = new InventoryObject("bigCraft", 3,3, new Vector2d(0.1,2.23), false);
     private static final InventoryObject mainInventory = new InventoryObject("main", 9,4, new Vector2d(0,-2.15), true);
 
     private static boolean inventoryOpen = false;
+
+    private static boolean atCraftingBench = false;
 
     //inventory when you're moving items around
     private static Item mouseInventory;
@@ -37,6 +40,9 @@ public class Inventory {
     public static InventoryObject getSmallCraftInventory(){
         return smallCraftInventory;
     }
+    public static InventoryObject getBigCraftInventory(){
+        return bigCraftInventory;
+    }
 
     public static InventoryObject getOutputInventory(){
         return outputInventory;
@@ -44,6 +50,14 @@ public class Inventory {
 
     public static InventoryObject getArmorInventory(){
         return armorInventory;
+    }
+
+    public static boolean isAtCraftingBench(){
+        return atCraftingBench;
+    }
+
+    public static void setIsAtCraftingBench(boolean isCurrentlyAtCraftingBench){
+        atCraftingBench = isCurrentlyAtCraftingBench;
     }
 
     public static Item getWieldInventory() {
@@ -201,8 +215,8 @@ public class Inventory {
         }
     }
 
-    public static void togglePlayerInventory(){
-        inventoryOpen = !inventoryOpen;
+    public static void setPlayerInventoryIsOpen(boolean truth){
+        inventoryOpen = truth;
     }
 
     public static boolean isPlayerInventoryOpen(){

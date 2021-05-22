@@ -541,7 +541,14 @@ public class GameRenderer {
                 glClear(GL_DEPTH_BUFFER_BIT);
 
                 renderInventoryGUI(getMainInventory());
-                renderInventoryGUI(getSmallCraftInventory());
+
+                if (isAtCraftingBench()){
+                    renderInventoryGUI(getBigCraftInventory());
+                } else {
+                    renderInventoryGUI(getSmallCraftInventory());
+                }
+
+
                 renderInventoryGUI(getOutputInventory());
                 renderInventoryGUI(getArmorInventory());
 
