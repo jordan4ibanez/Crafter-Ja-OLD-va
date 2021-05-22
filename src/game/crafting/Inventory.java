@@ -3,6 +3,7 @@ package game.crafting;
 import game.blocks.BlockDefinition;
 import game.item.Item;
 import game.item.ItemDefinition;
+import org.joml.Vector2d;
 
 import static engine.Time.getDelta;
 import static game.blocks.BlockDefinition.getBlockDefinition;
@@ -13,8 +14,10 @@ import static game.player.Player.*;
 
 public class Inventory {
 
-    private static final InventoryObject smallCraftInventory = new InventoryObject(2,2);
-    private static final InventoryObject mainInventory = new InventoryObject(9,4);
+    private static final InventoryObject smallCraftInventory = new InventoryObject(2,2, new Vector2d(0,0));
+    private static final InventoryObject mainInventory = new InventoryObject(9,4, new Vector2d(0,0));
+
+    private static boolean inventoryOpen = false;
 
     //inventory when you're moving items around
     private static Item mouseInventory;
@@ -177,5 +180,13 @@ public class Inventory {
                 }
             }
         }
+    }
+
+    public static void togglePlayerInventory(){
+        inventoryOpen = !inventoryOpen;
+    }
+
+    public static boolean isPlayerInventoryOpen(){
+        return inventoryOpen;
     }
 }

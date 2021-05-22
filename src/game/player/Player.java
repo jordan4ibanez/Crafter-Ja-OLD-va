@@ -39,7 +39,6 @@ public class Player {
     private static final String name                   = "singleplayer";
     private static final Vector3f viewBobbing          = new Vector3f(0,0,0);
     private static int currentInventorySelection = 0;
-    private static boolean inventoryOpen         = false;
     private static Vector3i oldWorldSelectionPos = new Vector3i();
     private static Vector3i worldSelectionPos    = new Vector3i();
     private static float sneakOffset = 0;
@@ -47,8 +46,6 @@ public class Player {
     //this is like this because working with x and z is easier than x and y
     private static final Vector3i currentChunk = new Vector3i((int)Math.floor(pos.x / 16f),0,(int)Math.floor(pos.z / 16f));
     public static int oldY = 0;
-    private static float itemRotation = 0f;
-    private static boolean itemRotationEnabled = false;
 
     private static final float reach = 3.575f;
 
@@ -79,32 +76,6 @@ public class Player {
         placing = false;
     }
 
-
-    //these two void are for enabling framerate consistant
-    //item rotation in the hud menu
-    public static void enableItemRotationInHud(){
-        itemRotationEnabled = true;
-    }
-    public static void disableItemRotationInHud(){
-        itemRotationEnabled = false;
-    }
-
-    public static float getItemRotationInHud(){
-        return(itemRotation);
-    }
-
-    private static void checkIfHudItemRotates(){
-        if (!itemRotationEnabled) {
-            itemRotation = 0f;
-        } else {
-            itemRotation += getDelta() * 50f;
-            //prevent buffer overflow
-            if (itemRotation > 360f) {
-                itemRotation -= 360f;
-            }
-        }
-    }
-
     public static boolean getIfPlayerIsJumping(){
         return(playerIsJumping);
     }
@@ -130,14 +101,6 @@ public class Player {
 
     public static Vector3i getPlayerWorldSelectionPos(){
         return worldSelectionPos;
-    }
-
-    public static void togglePlayerInventory(){
-        inventoryOpen = !inventoryOpen;
-    }
-
-    public static boolean isPlayerInventoryOpen(){
-        return inventoryOpen;
     }
 
     public static String getPlayerName(){
@@ -639,8 +602,6 @@ public class Player {
                 waterLockout = false;
             }
         }
-
-        checkIfHudItemRotates();
 
         if (playerIsJumping && isPlayerOnGround()){
             playerIsJumping = false;

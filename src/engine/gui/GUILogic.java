@@ -22,11 +22,13 @@ public class GUILogic {
 
     private static String oldSelection;
     private static final Vector3f playerRot = new Vector3f(0,0,0);
+
     private static boolean paused = false;
-    private static int[] invSelection;
+
     private static boolean mouseButtonPushed = false;
     private static boolean mouseButtonWasPushed = false;
     private static boolean pollingButtonInputs = false;
+
     private static byte lockedOnButtonInput = -1;
 
     //0 main
@@ -126,9 +128,6 @@ public class GUILogic {
         return "NULL";
     }
 
-    public static int[] getInvSelection(){
-        return invSelection;
-    }
 
     public static void togglePauseMenu(){
         setPaused(!isPaused());
@@ -174,6 +173,7 @@ public class GUILogic {
 
         if (isPlayerInventoryOpen()) {
 
+            /*
             //begin player in inventory thing
             //new scope because lazy
             {
@@ -251,6 +251,8 @@ public class GUILogic {
                 }
             }
             invSelection = null;
+
+             */
         } else if (isPaused()){
             //root pause menu
             if (menuPage == 0) {
