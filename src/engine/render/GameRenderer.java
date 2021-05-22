@@ -536,8 +536,17 @@ public class GameRenderer {
                 }
 
 
-
                 glClear(GL_DEPTH_BUFFER_BIT);
+
+                renderInventoryGUI(getMainInventory());
+
+                renderInventoryGUI(getSmallCraftInventory());
+
+                renderInventoryGUI(getOutputInventory());
+
+                renderInventoryGUI(getArmorInventory());
+
+                //glClear(GL_DEPTH_BUFFER_BIT);
 
                 /*
                 {
@@ -898,6 +907,48 @@ public class GameRenderer {
     }
 
     private static void renderInventoryGUI(InventoryObject inventory){
+
+        Vector2d startingPoint = inventory.getPosition();
+
+        //this is the size of the actual slots
+        //it also makes the default spacing of (0)
+        //they bunch up right next to each other with 0
+        double scale = windowScale/10.5d;
+
+        //this is the spacing between the slots
+        double spacing = windowScale / 75d;
+
+        Vector2d offset = new Vector2d((double)inventory.getSize().x/2d,(double)inventory.getSize().y/2d);
+
+        Matrix4d modelViewMatrix;
+        workerMesh = getInventorySlotMesh();
+
+        double yProgram;
+        if (inventory.isMainInventory()) {
+            for (int x = 0; x < inventory.getSize().x; x++) {
+                for (int y = 0; y < inventory.getSize().y; y++) {
+
+                    if (y == inventory.getSize().y - 1){
+                        yProgram = 0.2d;
+                    } else {
+                        yProgram = 0;
+                    }
+
+                    modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((double) x + 0.5d - offset.x + startingPoint.x) * (scale + spacing), ((double) y + 0.5d - offset.y + startingPoint.y + yProgram) * (scale + spacing), 0), new Vector3f(0, 0, 0), new Vector3d(scale, scale, scale));
+                    hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                    workerMesh.render();
+                }
+            }
+        } else {
+            for (int x = 0; x < inventory.getSize().x; x++) {
+                for (int y = 0; y < inventory.getSize().y; y++) {
+
+                    modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((double) x + 0.5d - offset.x + startingPoint.x) * (scale + spacing), ((double) y + 0.5d - offset.y + startingPoint.y) * (scale + spacing), 0), new Vector3f(0, 0, 0), new Vector3d(scale, scale, scale));
+                    hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                    workerMesh.render();
+                }
+            }
+        }
 
     }
 

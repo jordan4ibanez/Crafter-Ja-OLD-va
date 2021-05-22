@@ -14,8 +14,11 @@ import static game.player.Player.*;
 
 public class Inventory {
 
-    private static final InventoryObject smallCraftInventory = new InventoryObject(2,2, new Vector2d(0,0));
-    private static final InventoryObject mainInventory = new InventoryObject(9,4, new Vector2d(0,0));
+    private static final InventoryObject armorInventory = new InventoryObject(1,4, new Vector2d(-3.9875,2.15), false);
+
+    private static final InventoryObject outputInventory = new InventoryObject(1,1, new Vector2d(3.25,2.23), false);
+    private static final InventoryObject smallCraftInventory = new InventoryObject(2,2, new Vector2d(0.25,2.23), false);
+    private static final InventoryObject mainInventory = new InventoryObject(9,4, new Vector2d(0,-2.15), true);
 
     private static boolean inventoryOpen = false;
 
@@ -31,6 +34,18 @@ public class Inventory {
 
     public static InventoryObject getMainInventory(){
         return mainInventory;
+    }
+
+    public static InventoryObject getSmallCraftInventory(){
+        return smallCraftInventory;
+    }
+
+    public static InventoryObject getOutputInventory(){
+        return outputInventory;
+    }
+
+    public static InventoryObject getArmorInventory(){
+        return armorInventory;
     }
 
     public static Item getWieldInventory() {
