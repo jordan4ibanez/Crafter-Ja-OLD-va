@@ -17,19 +17,16 @@ import static game.chunk.Chunk.*;
 import static engine.gui.GUI.*;
 import static engine.MouseInput.*;
 import static game.mainMenu.MainMenu.initMainMenu;
-import static game.mob.Mob.*;
 import static game.tnt.TNTEntity.createTNTEntityMesh;
 import static engine.Window.*;
 import static engine.sound.SoundManager.*;
 import static engine.render.GameRenderer.*;
 import static game.blocks.BlockDefinition.initializeBlocks;
-import static game.item.ItemRegistration.registerTools;
 import static game.player.Player.*;
 
 public class Crafter {
 
     //fields
-    //DO NOT finalize this
     private static final String versionName = "Crafter 0.03c Survival Test";
 
     public static String getVersionName(){
@@ -37,7 +34,6 @@ public class Crafter {
     }
 
     //core game engine elements
-
     //load everything
     public static void main(String[] args){
         try{
