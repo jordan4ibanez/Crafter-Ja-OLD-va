@@ -165,9 +165,7 @@ public class GUILogic {
     }
 
 
-    //todo: redo this mess
-    public static void hudOnStepTest(){
-        float delta = getDelta();
+    public static void pauseMenuOnTick(){
 
         if (!getItemInInventorySlotName(getCurrentInventorySelection(), 0).equals(oldSelection)) {
             resetWieldHandSetupTrigger();

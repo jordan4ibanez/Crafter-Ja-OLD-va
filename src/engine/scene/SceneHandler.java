@@ -13,7 +13,7 @@ import static engine.debug.RenderDebug.renderDebug;
 import static engine.debug.debug.debugInput;
 import static engine.graph.Camera.*;
 import static engine.gui.GUI.calculateHealthBarElements;
-import static engine.gui.GUILogic.hudOnStepTest;
+import static engine.gui.GUILogic.pauseMenuOnTick;
 import static engine.render.MainMenuRenderer.renderMainMenu;
 import static engine.render.GameRenderer.renderGame;
 import static engine.Time.calculateDelta;
@@ -160,7 +160,7 @@ public class SceneHandler {
         playerOnTick();
         ItemEntity.onStep();
         TNTEntity.onTNTStep();
-        hudOnStepTest();
+        pauseMenuOnTick();
         particlesOnStep();
         fallingEntityOnStep();
         //rainDropsOnTick();
