@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static game.chunk.Chunk.*;
+import static game.crafting.InventoryLogic.openCraftingInventory;
 import static game.falling.FallingEntity.addFallingEntity;
 
 import static game.item.ItemDefinition.registerItem;
@@ -1038,7 +1039,37 @@ public class BlockDefinition {
                 0,
                 true
         );
-        
+
+        BlockModifier workBench = new BlockModifier() {
+            @Override
+            public void onRightClick(Vector3d pos) {
+                //BlockModifier.super.onRightClick(pos);
+                openCraftingInventory(true);
+            }
+        };
+
+        new BlockDefinition(
+                28,
+                "Workbench",
+                true,
+                new int[]{31,0}, //front
+                new int[]{31,0}, //back
+                new int[]{31,0}, //right
+                new int[]{31,0}, //left
+                new int[]{30,0}, //top
+                new int[]{31,0},  //bottom
+                1, //regular
+                true,
+                false,
+                false,
+                workBench,
+                "wood_1",
+                "wood_2",
+                true,
+                false,
+                0,
+                true
+        );
     }
 
     public static BlockDefinition getBlockDefinition(int ID){
