@@ -178,6 +178,8 @@ public class GameRenderer {
         //get all distances
         for (ChunkObject thisChunk : getMap()){
             double currentDistance = getDistance((thisChunk.x * 16d) + 8d, 0,(thisChunk.z * 16d) + 8d, camPos.x, 0, camPos.z);
+
+            //this doesn't fix anything, todo: fix flickering chunks
             if (chunkHash.get(currentDistance) != null){
                 currentDistance += 0.000000001;
             }
@@ -220,7 +222,6 @@ public class GameRenderer {
 
         //get fast or fancy
         boolean graphicsMode = getGraphicsMode();
-
 
         if (graphicsMode) {
             glassLikeShaderProgram.bind();
@@ -505,6 +506,7 @@ public class GameRenderer {
         glClear(GL_DEPTH_BUFFER_BIT);
 
         if (!isPaused()) {
+            /*
             if (isPlayerInventoryOpen()) {
                 {
                     modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(0, 0, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale, windowScale, windowScale));
@@ -674,9 +676,10 @@ public class GameRenderer {
                     }
                 }
             } else {
+             */
 
 
-                //healthbar
+                //health bar
                 {
                     byte[] healthArray = getHealthHudArray();
                     float[] healthJiggleArray = getHealthHudFloatArray();
@@ -685,17 +688,17 @@ public class GameRenderer {
 
                         float jiggle = healthJiggleArray[i];
 
-                        if (getPlayerHealth() > 6){
+                        if (getPlayerHealth() > 6) {
                             jiggle = 0f;
                         }
 
-                        modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(-windowScale/2.105f + (i * (windowScale/19.5d)), (-windowSize.y / 2d) + (windowScale / 6.8d) + jiggle, 0), new Vector3f(0, 0, 0), new Vector3d((windowScale/20f), (windowScale/20f), (windowScale/20f)));
+                        modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(-windowScale / 2.105f + (i * (windowScale / 19.5d)), (-windowSize.y / 2d) + (windowScale / 6.8d) + jiggle, 0), new Vector3f(0, 0, 0), new Vector3d((windowScale / 20f), (windowScale / 20f), (windowScale / 20f)));
                         hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
 
                         //save cpu render calls
                         if (healthArray[i] == 2) {
                             getHeartHudMesh().render();
-                        } else if (healthArray[i] == 1){
+                        } else if (healthArray[i] == 1) {
                             getHeartShadowHudMesh().render();
                             glClear(GL_DEPTH_BUFFER_BIT);
                             getHalfHeartHudMesh().render();
@@ -704,7 +707,6 @@ public class GameRenderer {
                         }
                     }
                 }
-
                 glClear(GL_DEPTH_BUFFER_BIT);
 
                 //hotbar
@@ -861,7 +863,7 @@ public class GameRenderer {
                 }
 
 
-            }
+            //}
         } else {
             {
                 modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(0, 0, 0), new Vector3f(0, 0, 0), new Vector3d(windowSize.x, windowSize.y, windowScale));
