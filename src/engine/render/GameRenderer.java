@@ -916,8 +916,12 @@ public class GameRenderer {
 
                     modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((double) x + 0.5d - offset.x + startingPoint.x) * (scale + spacing), ((y * -1d) - 0.5d + startingPoint.y + offset.y + yProgram) * (scale + spacing), 0), new Vector3f(0, 0, 0), new Vector3d(scale, scale, scale));
                     hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                    workerMesh.render();
 
+                    if (inventory.getSelection().x == x && inventory.getSelection().y == y){
+                        getInventorySlotSelectedMesh().render();
+                    } else {
+                        getInventorySlotMesh().render();
+                    }
 
                     Item thisItem = inventory.get(x,y);
 
@@ -951,7 +955,12 @@ public class GameRenderer {
 
                     modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((double) x + 0.5d - offset.x + startingPoint.x) * (scale + spacing), ((y * -1d) - 0.5d + startingPoint.y + offset.y) * (scale + spacing), 0), new Vector3f(0, 0, 0), new Vector3d(scale, scale, scale));
                     hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                    workerMesh.render();
+
+                    if (inventory.getSelection().x == x && inventory.getSelection().y == y){
+                        getInventorySlotSelectedMesh().render();
+                    } else {
+                        getInventorySlotMesh().render();
+                    }
 
 
                     Item thisItem = inventory.get(x,y);

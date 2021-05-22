@@ -799,5 +799,6 @@ public class MainMenu {
             "Multiple worlds!",
             "Polished, but not enough!",
             "Inconvenient!",
+            "Powered by coal!",
     };
 }

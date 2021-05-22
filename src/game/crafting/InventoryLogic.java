@@ -2,6 +2,7 @@ package game.crafting;
 
 import game.item.Item;
 import org.joml.Vector2d;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import static engine.MouseInput.getMousePos;
@@ -15,9 +16,6 @@ import static game.player.Player.getCurrentInventorySelection;
 import static game.player.Player.resetWieldHandSetupTrigger;
 
 public class InventoryLogic {
-
-    private static boolean mouseButtonPushed = false;
-    private static boolean mouseButtonWasPushed = false;
 
     private static String oldSelection;
 
@@ -64,67 +62,10 @@ public class InventoryLogic {
                 playerRot.x = rotationX;
             }
 
-
-            /*
-            int[] invSelection = new int[0];
-            {
-                if (isLeftButtonPressed()) {
-                    if (!mouseButtonPushed) {
-                        mouseButtonPushed = true;
-
-                        if (getMouseInventory() == null) {
-                            setMouseInventory(getItemInInventorySlot(invSelection[0], invSelection[1]));
-
-                            removeStackFromInventory(invSelection[0], invSelection[1]);
-                        } else {
-                            Item bufferItemMouse = getMouseInventory();
-                            Item bufferItemInv  = getItemInInventorySlot(invSelection[0], invSelection[1]);
-                            setItemInInventory(invSelection[0], invSelection[1], bufferItemMouse.name, bufferItemMouse.stack);
-                            setMouseInventory(bufferItemInv);
-                        }
-
-                    }
-                } else {
-                    mouseButtonPushed = false;
-                }
-            }
-
-            //need to create new object or the mouse position gets messed up
-            Vector2d mousePos = new Vector2d(getMousePos());
-
-            //work from the center
-            mousePos.x -= (getWindowSize().x/2f);
-            mousePos.y -= (getWindowSize().y/2f);
-            //invert the Y position to follow rendering coordinate system
-            mousePos.y *= -1f;
-
-            //collision detect the lower inventory
-            for (int x = 1; x <= 9; x++) {
-                for (int y = -2; y > -5; y--) {
-                    if (
-                            mousePos.x > ((x - 5) * (getWindowScale() / 9.5f)) - ((getWindowScale()/10.5f) / 2f) && mousePos.x < ((x - 5) * (getWindowScale() / 9.5f)) + ((getWindowScale()/10.5f) / 2f) && //x axis
-                                    mousePos.y > ((y+0.3f) * (getWindowScale() / 9.5f)) - ((getWindowScale()/10.5f) / 2f) && mousePos.y < ((y+0.3f) * (getWindowScale() / 9.5f)) + ((getWindowScale()/10.5f) / 2f) //y axis
-                    ){
-                        invSelection[0] = (x-1);
-                        invSelection[1] = ((y*-1) - 1);
-                        return;
-                    }
-                }
-            }
-
-            //collision detect the inventory hotbar (upper part)
-            for (int x = 1; x <= 9; x++) {
-                if (
-                        mousePos.x > ((x - 5) * (getWindowScale() / 9.5f)) - ((getWindowScale()/10.5f) / 2f) && mousePos.x < ((x - 5) * (getWindowScale() / 9.5f)) + ((getWindowScale()/10.5f) / 2f) && //x axis
-                                mousePos.y > (-0.5f * (getWindowScale() / 9.5f)) - ((getWindowScale()/10.5f) / 2f) && mousePos.y < (-0.5f * (getWindowScale() / 9.5f)) + ((getWindowScale()/10.5f) / 2f) //y axis
-                ){
-                    invSelection[0] = (x-1);
-                    invSelection[1] = 0;
-                    return;
-                }
-            }
-
-             */
+            collideMouseWithInventory(getMainInventory());
+            collideMouseWithInventory(getSmallCraftInventory());
+            collideMouseWithInventory(getOutputInventory());
+            collideMouseWithInventory(getArmorInventory());
 
         }
     }
@@ -132,4 +73,80 @@ public class InventoryLogic {
     public static Vector3f getPlayerHudRotation(){
         return playerRot;
     }
+
+
+
+    public static void collideMouseWithInventory(InventoryObject inventory){
+        Vector2d startingPoint = inventory.getPosition();
+
+        float windowScale = getWindowScale();
+
+        //need to create new object or the mouse position gets messed up
+        Vector2d mousePos = new Vector2d(getMousePos());
+
+        //work from the center
+        mousePos.x -= (getWindowSize().x/2f);
+        mousePos.y -= (getWindowSize().y/2f);
+
+        //invert mouse
+        mousePos.y *= -1;
+
+        //this is the size of the actual slots
+        //it also makes the default spacing of (0)
+        //they bunch up right next to each other with 0
+        double scale = windowScale/10.5d;
+
+        //this is the spacing between the slots
+        double spacing = windowScale / 75d;
+
+        Vector2d offset = new Vector2d((double)inventory.getSize().x/2d,(double)inventory.getSize().y/2d);
+
+
+        double yProgram;
+
+        if (inventory.isMainInventory()) {
+
+            for (int x = 0; x < inventory.getSize().x; x++) {
+                for (int y = 0; y < inventory.getSize().y; y++) {
+
+                    //this is a quick and dirty hack to implement
+                    //the space between the hotbar and rest of inventory
+                    //on the main inventory
+                    if (y == 0){
+                        yProgram = 0.2d;
+                    } else {
+                        yProgram = 0;
+                    }
+                    
+                    Vector2d slotPosition = new Vector2d(((double) x + 0.5d - offset.x + startingPoint.x) * (scale + spacing), ((y * -1d) - 0.5d + startingPoint.y + offset.y + yProgram) * (scale + spacing));
+                    //scale is the size
+
+                    //found selection break out of loop
+                    if (mousePos.x >= slotPosition.x - (scale / 2) && mousePos.x <= slotPosition.x + (scale / 2) && mousePos.y >= slotPosition.y - (scale / 2) && mousePos.y <= slotPosition.y + (scale / 2)) {
+                        inventory.setSelection(x, y);
+                        return;
+                    }
+                }
+            }
+        } else {
+            for (int x = 0; x < inventory.getSize().x; x++) {
+                for (int y = 0; y < inventory.getSize().y; y++) {
+
+                    Vector2d slotPosition = new Vector2d(((double) x + 0.5d - offset.x + startingPoint.x) * (scale + spacing), ((y * -1d) - 0.5d + startingPoint.y + offset.y) * (scale + spacing));
+
+                    //scale is the size
+
+                    //found selection break out of loop
+                    if (mousePos.x >= slotPosition.x - (scale / 2) && mousePos.x <= slotPosition.x + (scale / 2) && mousePos.y >= slotPosition.y - (scale / 2) && mousePos.y <= slotPosition.y + (scale / 2)) {
+                        inventory.setSelection(x, y);
+                        return;
+                    }
+                }
+            }
+        }
+
+        //fail state
+        inventory.setSelection(-1,-1);
+    }
+
 }
