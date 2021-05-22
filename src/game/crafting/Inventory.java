@@ -186,10 +186,13 @@ public class Inventory {
     }
 
     public static void setMouseInventory(Item newItem){
+        /*
         if (mouseInventory != null && mouseInventory.mesh != null){
             mouseInventory.mesh.cleanUp(false);
             mouseInventory = null; //shove it into a null pointer
         }
+
+         */
         mouseInventory = newItem;
     }
 

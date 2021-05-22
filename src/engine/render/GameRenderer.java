@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static engine.FancyMath.getDistance;
+import static engine.MouseInput.getMousePos;
 import static engine.graph.Camera.*;
 import static engine.graph.Transformation.*;
 import static engine.graph.Transformation.buildOrthoProjModelMatrix;
@@ -545,135 +546,35 @@ public class GameRenderer {
                 renderInventoryGUI(getArmorInventory());
 
 
-                //glClear(GL_DEPTH_BUFFER_BIT);
 
-                /*
-                {
+                //render mouse item
+                if (getMouseInventory() != null) {
+                    glClear(GL_DEPTH_BUFFER_BIT);
+                    //need to create new object or the mouse position gets messed up
+                    Vector2d mousePos = new Vector2d(getMousePos());
 
+                    //work from the center
+                    mousePos.x -= (getWindowSize().x / 2f);
+                    mousePos.y -= (getWindowSize().y / 2f);
+                    mousePos.y *= -1f;
 
-                glClear(GL_DEPTH_BUFFER_BIT);
+                    modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d((float) mousePos.x, (float) mousePos.y - (windowScale / 55d), 0), new Vector3f(45, 45, 0), new Vector3d(windowScale / 8d, windowScale / 8d, windowScale / 8d));
+                    hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
 
+                    getMouseInventory().mesh.render();
 
-                boolean itemSelected = false;
+                    glClear(GL_DEPTH_BUFFER_BIT);
 
-                //render items in inventory
-                for (int x = 1; x <= 9; x++) {
-                    for (int y = -2; y > -5; y--) {
+                    //stack numbers
+                    if(getMouseInventory().stack > 1) {
                         glClear(GL_DEPTH_BUFFER_BIT);
-                        if (getItemInInventorySlot(x - 1, ((y * -1) - 1)) != null) {
-                            if (getInvSelection() != null && (x - 1) == getInvSelection()[0] && ((y * -1) - 1) == getInvSelection()[1]) {
-                                itemSelected = true;
-                                modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d((x - 5) * (windowScale / 9.5d), ((y + 0.3d) * (windowScale / 9.5d)) - (windowScale / 55d), 0), new Vector3f(45, 45 + itemRotation, 0), new Vector3d(windowScale / 8d, windowScale / 8d, windowScale / 8d));
-                            } else {
-                                modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d((x - 5) * (windowScale / 9.5d), ((y + 0.3d) * (windowScale / 9.5d)) - (windowScale / 55d), 0), new Vector3f(45, 45, 0), new Vector3d(windowScale / 8d, windowScale / 8d, windowScale / 8d));
-                            }
-                            hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                            getItemInInventorySlot(x - 1, ((y * -1) - 1)).mesh.render();
-
-
-                            if (getItemInInventorySlot(x - 1, ((y * -1) - 1)).stack > 1) {
-                                //draw stack numbers
-                                glClear(GL_DEPTH_BUFFER_BIT);
-                                modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d((x - 4.98d) * (windowScale / 9.5d), ((y + 0.28d) * (windowScale / 9.5d)) - (windowScale / 55d), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 48, windowScale / 48, windowScale / 48));
-                                hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                                workerMesh = createText(Integer.toString(getItemInInventorySlot(x - 1, ((y * -1) - 1)).stack), 0f, 0f, 0f);
-                                workerMesh.render();
-                                workerMesh.cleanUp(false);
-
-                                glClear(GL_DEPTH_BUFFER_BIT);
-                                modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d((x - 5) * (windowScale / 9.5d), ((y + 0.3d) * (windowScale / 9.5d)) - (windowScale / 55d), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 48, windowScale / 48, windowScale / 48));
-                                hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                                workerMesh = createText(Integer.toString(getItemInInventorySlot(x - 1, ((y * -1) - 1)).stack), 1f, 1f, 1f);
-                                workerMesh.render();
-                                workerMesh.cleanUp(false);
-                            }
-                        }
-                    }
-                }
-
-                //render items in inventory hotbar (upper part)
-
-                for (int x = 1; x <= 9; x++) {
-                    if (getItemInInventorySlot(x - 1, 0) != null) {
-                        glClear(GL_DEPTH_BUFFER_BIT);
-                        if (getInvSelection() != null && (x - 1) == getInvSelection()[0] && 0 == getInvSelection()[1]) {
-                            itemSelected = true;
-                            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d((x - 5) * (windowScale / 9.5d), (-0.5d * (windowScale / 9.5d)) - (windowScale / 55d), 0), new Vector3f(45, 45 + itemRotation, 0), new Vector3d(windowScale / 8d, windowScale / 8d, windowScale / 8d));
-                        } else {
-                            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d((x - 5) * (windowScale / 9.5d), (-0.5d * (windowScale / 9.5d)) - (windowScale / 55d), 0), new Vector3f(45, 45, 0), new Vector3d(windowScale / 8d, windowScale / 8d, windowScale / 8d));
-                        }
-
+                        modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d( mousePos.x + (windowScale/47d),  mousePos.y - (windowScale / 35f), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 48, windowScale / 48, windowScale / 48));
                         hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                        getItemInInventorySlot(x - 1, 0).mesh.render();
-
-                        glClear(GL_DEPTH_BUFFER_BIT);
-
-                        if (getItemInInventorySlot(x - 1, 0).stack > 1) {
-                            //render item stack numbers
-                            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d((x - 4.98d) * (windowScale / 9.5d), ((-0.52d) * (windowScale / 9.5d)) - (windowScale / 55d), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 48, windowScale / 48, windowScale / 48));
-                            hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                            workerMesh = createText(Integer.toString(getItemInInventorySlot(x - 1, 0).stack), 0f, 0f, 0f);
-                            workerMesh.render();
-                            workerMesh.cleanUp(false);
-
-                            glClear(GL_DEPTH_BUFFER_BIT);
-                            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d((x - 5) * (windowScale / 9.5d), ((-0.5d) * (windowScale / 9.5d)) - (windowScale / 55d), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 48, windowScale / 48, windowScale / 48));
-                            hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                            workerMesh = createText(Integer.toString(getItemInInventorySlot(x - 1, 0).stack), 1f, 1f, 1f);
-                            workerMesh.render();
-                            workerMesh.cleanUp(false);
-                        }
+                        workerMesh = createTextCenteredWithShadow(Integer.toString(getMouseInventory().stack), 1f, 1f, 1f);
+                        workerMesh.render();
+                        workerMesh.cleanUp(false);
                     }
                 }
-
-                //this is used for an effect of
-                //rotating the selected item in HUD
-                if (!itemSelected) {
-                    disableItemRotationInHud();
-                } else {
-                    enableItemRotationInHud();
-                }
-                itemRotation = getItemRotationInHud();
-
-
-                //debug testing for rendered item
-                {
-                    if (getMouseInventory() != null) {
-                        glClear(GL_DEPTH_BUFFER_BIT);
-                        //need to create new object or the mouse position gets messed up
-                        Vector2d mousePos = new Vector2d(getMousePos());
-
-                        //work from the center
-                        mousePos.x -= (getWindowSize().x / 2f);
-                        mousePos.y -= (getWindowSize().y / 2f);
-                        mousePos.y *= -1f;
-
-                        modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d((float) mousePos.x, (float) mousePos.y - (windowScale / 55d), 0), new Vector3f(45, 45, 0), new Vector3d(windowScale / 8d, windowScale / 8d, windowScale / 8d));
-                        hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-
-                        getMouseInventory().mesh.render();
-
-                        glClear(GL_DEPTH_BUFFER_BIT);
-
-                        //stack numbers
-                        if(getMouseInventory().stack > 1) {
-                            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d( mousePos.x + (windowScale / 400d),  mousePos.y - (windowScale / 55d) - (windowScale / 400d), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 48, windowScale / 48, windowScale / 48));
-                            hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                            workerMesh = createText(Integer.toString(getMouseInventory().stack), 0f, 0f, 0f);
-                            workerMesh.render();
-                            workerMesh.cleanUp(false);
-
-                            glClear(GL_DEPTH_BUFFER_BIT);
-                            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d( mousePos.x,  mousePos.y - (windowScale / 55f), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 48, windowScale / 48, windowScale / 48));
-                            hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                            workerMesh = createText(Integer.toString(getMouseInventory().stack), 1f, 1f, 1f);
-                            workerMesh.render();
-                            workerMesh.cleanUp(false);
-                        }
-                    }
-                }
-
-             */
             } else {
 
 
@@ -935,13 +836,14 @@ public class GameRenderer {
                         thisItem.mesh.render();
 
                         //render item stack number
-
-                        glClear(GL_DEPTH_BUFFER_BIT);
-                        modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((double) x + 0.7d - offset.x + startingPoint.x) * (scale + spacing), ((y * -1d) - 0.6d + startingPoint.y + offset.y + yProgram) * (scale + spacing) - (itemScale / 7d), 0), new Vector3f(0, 0, 0), new Vector3d(textScale, textScale, textScale));
-                        hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                        Mesh itemStackLabel = createTextCenteredWithShadow(Integer.toString(thisItem.stack), 1,1,1);
-                        itemStackLabel.render();
-                        itemStackLabel.cleanUp(false);
+                        if (thisItem.stack > 1) {
+                            glClear(GL_DEPTH_BUFFER_BIT);
+                            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((double) x + 0.7d - offset.x + startingPoint.x) * (scale + spacing), ((y * -1d) - 0.6d + startingPoint.y + offset.y + yProgram) * (scale + spacing) - (itemScale / 7d), 0), new Vector3f(0, 0, 0), new Vector3d(textScale, textScale, textScale));
+                            hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                            Mesh itemStackLabel = createTextCenteredWithShadow(Integer.toString(thisItem.stack), 1, 1, 1);
+                            itemStackLabel.render();
+                            itemStackLabel.cleanUp(false);
+                        }
                     }
 
                 }
@@ -975,13 +877,14 @@ public class GameRenderer {
                         thisItem.mesh.render();
 
                         //render item stack number
-
-                        glClear(GL_DEPTH_BUFFER_BIT);
-                        modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((double) x + 0.7d - offset.x + startingPoint.x) * (scale + spacing), ((y * -1d) - 0.6d + startingPoint.y + offset.y) * (scale + spacing) - (itemScale / 7d), 0), new Vector3f(0, 0, 0), new Vector3d(textScale, textScale, textScale));
-                        hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                        Mesh itemStackLabel = createTextCenteredWithShadow(Integer.toString(thisItem.stack), 1,1,1);
-                        itemStackLabel.render();
-                        itemStackLabel.cleanUp(false);
+                        if (thisItem.stack > 1) {
+                            glClear(GL_DEPTH_BUFFER_BIT);
+                            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((double) x + 0.7d - offset.x + startingPoint.x) * (scale + spacing), ((y * -1d) - 0.6d + startingPoint.y + offset.y) * (scale + spacing) - (itemScale / 7d), 0), new Vector3f(0, 0, 0), new Vector3d(textScale, textScale, textScale));
+                            hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                            Mesh itemStackLabel = createTextCenteredWithShadow(Integer.toString(thisItem.stack), 1, 1, 1);
+                            itemStackLabel.render();
+                            itemStackLabel.cleanUp(false);
+                        }
                     }
                 }
             }

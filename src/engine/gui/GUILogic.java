@@ -1,11 +1,8 @@
 package engine.gui;
 
-import game.item.Item;
 import org.joml.Vector2d;
-import org.joml.Vector3f;
 
 import static engine.MouseInput.*;
-import static engine.Time.getDelta;
 import static engine.Window.*;
 import static engine.render.GameRenderer.getWindowScale;
 import static engine.render.GameRenderer.getWindowSize;
@@ -14,8 +11,6 @@ import static engine.settings.Settings.*;
 import static engine.sound.SoundAPI.playSound;
 import static game.mainMenu.MainMenu.resetMainMenu;
 import static game.mainMenu.MainMenu.resetMainMenuPage;
-import static game.crafting.Inventory.*;
-import static game.player.Player.*;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
 public class GUILogic {

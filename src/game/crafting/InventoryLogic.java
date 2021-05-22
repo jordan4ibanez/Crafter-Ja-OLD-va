@@ -2,7 +2,7 @@ package game.crafting;
 
 import game.item.Item;
 import org.joml.Vector2d;
-import org.joml.Vector3d;
+import org.joml.Vector2i;
 import org.joml.Vector3f;
 
 import static engine.MouseInput.getMousePos;
@@ -21,6 +21,8 @@ public class InventoryLogic {
 
     private static final Vector3f playerRot = new Vector3f(0,0,0);
 
+    private static boolean mouseButtonPushed = false;
+    private static boolean mouseButtonWasPushed = false;
 
 
     public static void inventoryMenuOnTick(){
@@ -67,6 +69,31 @@ public class InventoryLogic {
             collideMouseWithInventory(getOutputInventory());
             collideMouseWithInventory(getArmorInventory());
 
+
+
+            if (isLeftButtonPressed() && !mouseButtonPushed && !mouseButtonWasPushed) {
+                mouseButtonPushed = true;
+                //this might cause a memory leak todo: test if leaking
+                InventoryObject[] tempInventoryObjectArray = new InventoryObject[]{
+                        getMainInventory(), getSmallCraftInventory(), getOutputInventory(), getArmorInventory()
+                };
+
+                for (InventoryObject inventory : tempInventoryObjectArray) {
+                    Vector2i selection = inventory.getSelection();
+                    if (selection.x >= 0 && selection.y >= 0) {
+                        Item thisItem = inventory.get(selection.x, selection.y);
+                        Item mouseItem = getMouseInventory();
+
+                        setMouseInventory(thisItem);
+
+                        inventory.set(selection.x, selection.y, mouseItem);
+                    }
+                }
+            } else if (!isLeftButtonPressed()) {
+                mouseButtonPushed = false;
+            }
+
+            mouseButtonWasPushed = mouseButtonPushed;
         }
     }
 
@@ -117,7 +144,7 @@ public class InventoryLogic {
                     } else {
                         yProgram = 0;
                     }
-                    
+
                     Vector2d slotPosition = new Vector2d(((double) x + 0.5d - offset.x + startingPoint.x) * (scale + spacing), ((y * -1d) - 0.5d + startingPoint.y + offset.y + yProgram) * (scale + spacing));
                     //scale is the size
 
