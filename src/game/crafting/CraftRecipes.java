@@ -42,6 +42,13 @@ public class CraftRecipes {
         };
         craftRecipeAccumulator.add(new CraftRecipeObject(boat2, "Boat", 1, new Vector2i(3)));
 
+        String[][] door = {
+                {"","Wood", "Wood" },
+                {"","Wood", "Wood" },
+                {"","Wood", "Wood" },
+        };
+        craftRecipeAccumulator.add(new CraftRecipeObject(door, "Door", 1, new Vector2i(3)));
+
 
         //dump recipes into the recipe array
         recipes = new CraftRecipeObject[craftRecipeAccumulator.toArray().length];
