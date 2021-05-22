@@ -8,7 +8,6 @@ import org.joml.Vector3f;
 import static engine.MouseInput.*;
 import static engine.Window.getWindowHeight;
 import static engine.Window.getWindowWidth;
-import static engine.gui.GUILogic.togglePauseMenu;
 import static engine.render.GameRenderer.getWindowScale;
 import static engine.render.GameRenderer.getWindowSize;
 import static game.crafting.CraftRecipes.recipeScan;
