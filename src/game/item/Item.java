@@ -125,6 +125,34 @@ public class Item {
         currentID++;
     }
 
+    public Item(Item thisItem) {
+        this.name = thisItem.name;
+        if (thisItem.pos == null){
+            this.pos = new Vector3d();
+        } else {
+            this.pos = new Vector3d(thisItem.pos);
+        }
+        this.definition = getItemDefinition(name);
+        this.stack = thisItem.stack;
+        if (thisItem.inertia == null){
+            this.inertia = new Vector3f();
+        } else {
+            this.inertia = new Vector3f(thisItem.inertia);
+        }
+        this.rotation = new Vector3f(0, 0, 0);
+        this.hover = 0f;
+        this.floatUp = true;
+        this.exists = true;
+        this.collecting = false;
+        this.scale = 1f;
+        this.timer = 0f;
+        this.ID = currentID;
+
+        rebuildLightMesh(this);
+
+        currentID++;
+    }
+
 
     public void rebuildLightMesh(Item self) {
         ItemDefinition temp = getItemDefinition(self.name);

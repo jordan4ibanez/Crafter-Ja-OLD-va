@@ -5,8 +5,7 @@ import org.joml.Vector2d;
 import org.joml.Vector2i;
 import org.joml.Vector3f;
 
-import static engine.MouseInput.getMousePos;
-import static engine.MouseInput.isLeftButtonPressed;
+import static engine.MouseInput.*;
 import static engine.Window.getWindowHeight;
 import static engine.Window.getWindowWidth;
 import static engine.render.GameRenderer.getWindowScale;
@@ -21,8 +20,10 @@ public class InventoryLogic {
 
     private static final Vector3f playerRot = new Vector3f(0,0,0);
 
-    private static boolean mouseButtonPushed = false;
-    private static boolean mouseButtonWasPushed = false;
+    private static boolean leftMouseButtonPushed = false;
+    private static boolean leftMouseButtonWasPushed = false;
+    private static boolean rightMouseButtonPushed = false;
+    private static boolean rightMouseButtonWasPushed = false;
 
 
     public static void inventoryMenuOnTick(){
@@ -70,9 +71,9 @@ public class InventoryLogic {
             collideMouseWithInventory(getArmorInventory());
 
 
-
-            if (isLeftButtonPressed() && !mouseButtonPushed && !mouseButtonWasPushed) {
-                mouseButtonPushed = true;
+            //normal left click moving items
+            if (isLeftButtonPressed() && !leftMouseButtonPushed && !leftMouseButtonWasPushed) {
+                leftMouseButtonPushed = true;
                 //this might cause a memory leak todo: test if leaking
                 InventoryObject[] tempInventoryObjectArray = new InventoryObject[]{
                         getMainInventory(), getSmallCraftInventory(), getOutputInventory(), getArmorInventory()
@@ -84,16 +85,135 @@ public class InventoryLogic {
                         Item thisItem = inventory.get(selection.x, selection.y);
                         Item mouseItem = getMouseInventory();
 
-                        setMouseInventory(thisItem);
+                        //pick up item
+                        if (mouseItem == null && thisItem != null){
+                            setMouseInventory(thisItem);
+                            inventory.set(selection.x, selection.y, null);
+                        //add to blank space
+                        } else if (mouseItem != null && thisItem == null){
+                            inventory.set(selection.x, selection.y, mouseItem);
+                            setMouseInventory(null);
+                        //two stacks to compare
+                        } else if (mouseItem != null && thisItem != null){
+                            //try to add into the inventory stack or swap
+                            if (thisItem.name.equals(mouseItem.name)) {
 
-                        inventory.set(selection.x, selection.y, mouseItem);
+                                //swap item
+
+                                //accommodate if player's find a way to spoof
+                                //higher than 64 item stacks
+                                if (thisItem.stack >= 64) {
+                                    setMouseInventory(thisItem);
+                                    inventory.set(selection.x, selection.y, mouseItem);
+                                    //add into stack
+                                } else {
+                                    int mouseStack = mouseItem.stack;
+                                    int thisItemStack = thisItem.stack;
+
+                                    int adder = mouseStack + thisItemStack;
+
+                                    //compare, leave remainder
+                                    if (adder > 64) {
+                                        mouseItem.stack = adder - 64;
+                                        thisItem.stack = 64;
+                                        //dump full stack in
+                                    } else {
+                                        thisItem.stack = adder;
+                                        setMouseInventory(null);
+                                    }
+                                }
+                            //swap mouse item with inventory item
+                            } else {
+                                setMouseInventory(thisItem);
+                                inventory.set(selection.x, selection.y, mouseItem);
+                            }
+                        }
                     }
                 }
             } else if (!isLeftButtonPressed()) {
-                mouseButtonPushed = false;
+                leftMouseButtonPushed = false;
             }
 
-            mouseButtonWasPushed = mouseButtonPushed;
+            //right click moving items/splitting stack/dropping single items
+            if (isRightButtonPressed() && !rightMouseButtonPushed && !rightMouseButtonWasPushed) {
+                rightMouseButtonPushed = true;
+                //this might cause a memory leak todo: test if leaking
+                InventoryObject[] tempInventoryObjectArray = new InventoryObject[]{
+                        getMainInventory(), getSmallCraftInventory(), getOutputInventory(), getArmorInventory()
+                };
+
+                for (InventoryObject inventory : tempInventoryObjectArray) {
+                    Vector2i selection = inventory.getSelection();
+                    if (selection.x >= 0 && selection.y >= 0) {
+
+                        Item mouseItem = getMouseInventory();
+                        Item thisItem = inventory.get(selection.x, selection.y);
+
+                        //mouse splits stack
+                        if (mouseItem == null){
+                            int first = thisItem.stack;
+                            int subtraction = thisItem.stack/2;
+                            int remainder = thisItem.stack/2;
+
+                            //solve for odd numbered stacks
+                            if (subtraction + remainder < first){
+                                subtraction += 1;
+                            }
+
+                            if (remainder == 0){
+                                inventory.set(selection.x, selection.y, null);
+                            } else {
+                                thisItem.stack = remainder;
+                                inventory.set(selection.x, selection.y, thisItem);
+                            }
+
+                            Item newMouseItem = new Item(thisItem);
+                            newMouseItem.stack = subtraction;
+                            setMouseInventory(newMouseItem);
+                        }
+                        //mouse single place into existing stack
+                        else if (thisItem != null) {
+                            //single add to existing stack
+                            if (mouseItem.name.equals(thisItem.name) && thisItem.stack < 64){
+                                int mouseItemStack = mouseItem.stack;
+                                mouseItemStack -= 1;
+                                thisItem.stack++;
+                                if (mouseItemStack <= 0){
+                                    setMouseInventory(null);
+                                } else {
+                                    mouseItem.stack = mouseItemStack;
+                                    setMouseInventory(mouseItem);
+                                }
+                            }
+                        //mouse creating initial stack
+                        } else {
+                            //single add to non-existing
+
+                            int mouseItemStack = mouseItem.stack;
+                            mouseItemStack -= 1;
+
+
+                            Item creationItem = new Item(mouseItem);
+                            creationItem.stack = 1;
+
+                            inventory.set(selection.x, selection.y, creationItem);
+
+                            if (mouseItemStack <= 0){
+                                setMouseInventory(null);
+                            } else {
+                                mouseItem.stack = mouseItemStack;
+                                setMouseInventory(mouseItem);
+                            }
+                        }
+                    }
+                }
+            } else if (!isRightButtonPressed()) {
+                rightMouseButtonPushed = false;
+            }
+
+
+            leftMouseButtonWasPushed = leftMouseButtonPushed;
+            rightMouseButtonWasPushed = rightMouseButtonPushed;
         }
     }
 
