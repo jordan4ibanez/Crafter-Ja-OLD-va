@@ -107,7 +107,13 @@ public class MouseInput {
     }
 
     public static void setMouseLocked(boolean lock){
+        if(!lock) {
+            glfwSetInputMode(getWindowHandle(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        } else{
+            glfwSetInputMode(getWindowHandle(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        }
         mouseLocked = lock;
+        resetMousePosVector();
     }
 
     public static boolean isMouseLocked(){
@@ -126,15 +132,11 @@ public class MouseInput {
     }
 
     public static void toggleMouseLock(){
-        setMouseLocked(!isMouseLocked());
-
+        mouseLocked = !mouseLocked;
         if(!isMouseLocked()) {
             glfwSetInputMode(getWindowHandle(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-            System.out.println("normal");
         } else{
-            //glfwSetInputMode(getWindowHandle(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
             glfwSetInputMode(getWindowHandle(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-            System.out.println("hidden");
         }
         resetMousePosVector();
     }

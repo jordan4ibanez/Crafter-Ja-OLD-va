@@ -8,11 +8,11 @@ import org.joml.Vector3f;
 import static engine.MouseInput.*;
 import static engine.Window.getWindowHeight;
 import static engine.Window.getWindowWidth;
+import static engine.gui.GUILogic.togglePauseMenu;
 import static engine.render.GameRenderer.getWindowScale;
 import static engine.render.GameRenderer.getWindowSize;
 import static game.crafting.Inventory.*;
-import static game.player.Player.getCurrentInventorySelection;
-import static game.player.Player.resetWieldHandSetupTrigger;
+import static game.player.Player.*;
 
 public class InventoryLogic {
 
@@ -66,17 +66,23 @@ public class InventoryLogic {
             }
 
             collideMouseWithInventory(getMainInventory());
-            collideMouseWithInventory(getSmallCraftInventory());
+            if (isAtCraftingBench()){
+                collideMouseWithInventory(getBigCraftInventory());
+            } else {
+                collideMouseWithInventory(getSmallCraftInventory());
+            }
             collideMouseWithInventory(getOutputInventory());
             collideMouseWithInventory(getArmorInventory());
 
+
+            String foundInventory = null;
 
             //normal left click moving items
             if (isLeftButtonPressed() && !leftMouseButtonPushed && !leftMouseButtonWasPushed) {
                 leftMouseButtonPushed = true;
                 //this might cause a memory leak todo: test if leaking
                 InventoryObject[] tempInventoryObjectArray = new InventoryObject[]{
-                        getMainInventory(), getSmallCraftInventory(), getOutputInventory(), getArmorInventory()
+                        getMainInventory(), getSmallCraftInventory(), getBigCraftInventory(), getOutputInventory(), getArmorInventory()
                 };
 
                 for (InventoryObject inventory : tempInventoryObjectArray) {
@@ -89,10 +95,12 @@ public class InventoryLogic {
                         if (mouseItem == null && thisItem != null){
                             setMouseInventory(thisItem);
                             inventory.set(selection.x, selection.y, null);
+                            foundInventory = inventory.name;
                         //add to blank space
                         } else if (mouseItem != null && thisItem == null){
                             inventory.set(selection.x, selection.y, mouseItem);
                             setMouseInventory(null);
+                            foundInventory = inventory.name;
                         //two stacks to compare
                         } else if (mouseItem != null && thisItem != null){
                             //try to add into the inventory stack or swap
@@ -105,6 +113,7 @@ public class InventoryLogic {
                                 if (thisItem.stack >= 64) {
                                     setMouseInventory(thisItem);
                                     inventory.set(selection.x, selection.y, mouseItem);
+                                    foundInventory = inventory.name;
                                     //add into stack
                                 } else {
                                     int mouseStack = mouseItem.stack;
@@ -116,16 +125,19 @@ public class InventoryLogic {
                                     if (adder > 64) {
                                         mouseItem.stack = adder - 64;
                                         thisItem.stack = 64;
+                                        foundInventory = inventory.name;
                                         //dump full stack in
                                     } else {
                                         thisItem.stack = adder;
                                         setMouseInventory(null);
+                                        foundInventory = inventory.name;
                                     }
                                 }
                             //swap mouse item with inventory item
                             } else {
                                 setMouseInventory(thisItem);
                                 inventory.set(selection.x, selection.y, mouseItem);
+                                foundInventory = inventory.name;
                             }
                         }
                     }
@@ -139,7 +151,7 @@ public class InventoryLogic {
                 rightMouseButtonPushed = true;
                 //this might cause a memory leak todo: test if leaking
                 InventoryObject[] tempInventoryObjectArray = new InventoryObject[]{
-                        getMainInventory(), getSmallCraftInventory(), getOutputInventory(), getArmorInventory()
+                        getMainInventory(), getSmallCraftInventory(), getBigCraftInventory(), getOutputInventory(), getArmorInventory()
                 };
 
                 for (InventoryObject inventory : tempInventoryObjectArray) {
@@ -167,6 +179,7 @@ public class InventoryLogic {
                                 inventory.set(selection.x, selection.y, thisItem);
                             }
 
+                            foundInventory = inventory.name;
                             Item newMouseItem = new Item(thisItem);
                             newMouseItem.stack = subtraction;
                             setMouseInventory(newMouseItem);
@@ -184,6 +197,7 @@ public class InventoryLogic {
                                     mouseItem.stack = mouseItemStack;
                                     setMouseInventory(mouseItem);
                                 }
+                                foundInventory = inventory.name;
                             }
                         //mouse creating initial stack
                         } else {
@@ -204,6 +218,7 @@ public class InventoryLogic {
                                 mouseItem.stack = mouseItemStack;
                                 setMouseInventory(mouseItem);
                             }
+                            foundInventory = inventory.name;
                         }
                     }
                 }
@@ -211,9 +226,44 @@ public class InventoryLogic {
                 rightMouseButtonPushed = false;
             }
 
+            if (foundInventory != null){
+                if (foundInventory.equals("smallCraft") || foundInventory.equals("bigCraft")){
+                    //small craft recipe scan
+                    if (foundInventory.equals("smallCraft")){
+                        System.out.println("small recipe scan");
+                    //large craft recipe scan
+                    } else {
+                        System.out.println("BIG RECIPE SCAN");
+
+                    }
+                }
+            }
 
             leftMouseButtonWasPushed = leftMouseButtonPushed;
             rightMouseButtonWasPushed = rightMouseButtonPushed;
+        }
+    }
+
+    public static void openCraftingInventory(boolean isCraftingTable) {
+        //inventory closed, open it
+        if (!isPlayerInventoryOpen()){
+            setMouseLocked(false);
+            resetPlayerInputs();
+            setIsAtCraftingBench(isCraftingTable);
+            setPlayerInventoryIsOpen(true);
+            resetPlayerInputs();
+        }
+
+    }
+
+    public static void closeCraftingInventory(){
+        //inventory open, close it
+        if (isPlayerInventoryOpen()){
+            setMouseLocked(true);
+            resetPlayerInputs();
+            setPlayerInventoryIsOpen(false);
+            emptyMouseInventory();
+            resetPlayerInputs();
         }
     }
 

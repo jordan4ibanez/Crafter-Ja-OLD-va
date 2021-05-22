@@ -11,6 +11,8 @@ import static engine.gui.GUILogic.isPaused;
 import static engine.gui.GUILogic.togglePauseMenu;
 import static engine.settings.Settings.*;
 import static game.crafting.Inventory.*;
+import static game.crafting.InventoryLogic.closeCraftingInventory;
+import static game.crafting.InventoryLogic.openCraftingInventory;
 import static game.mob.Mob.spawnMob;
 import static game.player.Player.*;
 import static game.player.Player.changeScrollSelection;
@@ -91,10 +93,10 @@ public class Controls {
         if (isKeyPressed(GLFW_KEY_ESCAPE)) {
             if (!escapePushed) {
                 escapePushed = true;
+                //close inventory
                 if(isPlayerInventoryOpen()){
-                    togglePlayerInventory();
-                    toggleMouseLock();
-                    emptyMouseInventory();
+                    closeCraftingInventory();
+                //pause game
                 } else {
                     toggleMouseLock();
                     togglePauseMenu();
@@ -111,10 +113,11 @@ public class Controls {
         if (isKeyPressed(getKeyInventory()) && !isPaused()) {
             if (!inventoryButtonPushed) {
                 inventoryButtonPushed = true;
-                togglePlayerInventory();
-                toggleMouseLock();
-                resetPlayerInputs();
-                emptyMouseInventory();
+                if (isPlayerInventoryOpen()){
+                    closeCraftingInventory();
+                } else {
+                    openCraftingInventory(false);
+                }
             }
         } else if (!isKeyPressed(getKeyInventory())){
             inventoryButtonPushed = false;
