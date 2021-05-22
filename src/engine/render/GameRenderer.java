@@ -4,6 +4,7 @@ import engine.Utils;
 import engine.graph.*;
 import engine.gui.GUIObject;
 import game.chunk.ChunkObject;
+import game.crafting.InventoryObject;
 import game.falling.FallingEntityObject;
 import game.item.Item;
 import game.mob.MobObject;
@@ -15,7 +16,6 @@ import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static engine.FancyMath.getDistance;
-import static engine.MouseInput.getMousePos;
 import static engine.graph.Camera.*;
 import static engine.graph.Transformation.*;
 import static engine.graph.Transformation.buildOrthoProjModelMatrix;
@@ -23,6 +23,7 @@ import static engine.gui.GUI.*;
 import static engine.gui.GUILogic.*;
 import static engine.gui.TextHandling.createText;
 import static engine.settings.Settings.*;
+import static game.crafting.InventoryLogic.getPlayerHudRotation;
 import static game.falling.FallingEntity.getFallingEntities;
 import static game.item.ItemEntity.*;
 import static game.mob.Mob.getAllMobs;
@@ -506,16 +507,19 @@ public class GameRenderer {
         glClear(GL_DEPTH_BUFFER_BIT);
 
         if (!isPaused()) {
-            /*
+
             if (isPlayerInventoryOpen()) {
+
+                //inventory backdrop
                 {
                     modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(0, 0, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale, windowScale, windowScale));
                     hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                    getInventoryMesh().render();
+                    getInventoryBackdropMesh().render();
                 }
 
                 glClear(GL_DEPTH_BUFFER_BIT);
 
+                //player inside box
                 {
                     modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(-(windowScale / 3.75d), (windowScale / 2.8d), 0), getPlayerHudRotation(), new Vector3d((windowScale / 18d), (windowScale / 18d), (windowScale / 18d)));
                     hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
@@ -524,6 +528,18 @@ public class GameRenderer {
 
                 glClear(GL_DEPTH_BUFFER_BIT);
 
+                //inventory foreground
+                {
+                    modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(0, 0, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale, windowScale, windowScale));
+                    hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                    getInventoryMesh().render();
+                }
+
+
+
+                glClear(GL_DEPTH_BUFFER_BIT);
+
+                /*
                 {
                     //render the actual inventory
                     for (int x = 1; x <= 9; x++) {
@@ -675,8 +691,10 @@ public class GameRenderer {
                         }
                     }
                 }
-            } else {
+
              */
+            } else {
+
 
 
                 //health bar
@@ -842,7 +860,7 @@ public class GameRenderer {
 
                         glClear(GL_DEPTH_BUFFER_BIT);
 
-//                        render hotbar counts if greater than 1
+                        //render hotbar counts if greater than 1
 
                         if (getItemInInventorySlot(x - 1, 0).stack > 1) {
 
@@ -863,7 +881,7 @@ public class GameRenderer {
                 }
 
 
-            //}
+            }
         } else {
             {
                 modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(0, 0, 0), new Vector3f(0, 0, 0), new Vector3d(windowSize.x, windowSize.y, windowScale));
@@ -879,13 +897,16 @@ public class GameRenderer {
         hudShaderProgram.unbind();
     }
 
+    private static void renderInventoryGUI(InventoryObject inventory){
+
+    }
+
     private static void renderGameGUI(){
         for (GUIObject thisButton : getGamePauseMenuGUI()) {
             ShaderProgram hudShaderProgram = getHudShaderProgram();
 
             float windowScale = getWindowScale();
 
-            //TODO: USE THIS FOR MOUSE COLLISION DETECTION
             double xPos = thisButton.pos.x * (windowScale / 100d);
             double yPos = thisButton.pos.y * (windowScale / 100d);
 
@@ -894,8 +915,6 @@ public class GameRenderer {
             hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
             thisButton.textMesh.render();
 
-
-            //TODO: USE THIS FOR MOUSE COLLISION DETECTION
             float xAdder = 20 / thisButton.buttonScale.x;
             float yAdder = 20 / thisButton.buttonScale.y;
 

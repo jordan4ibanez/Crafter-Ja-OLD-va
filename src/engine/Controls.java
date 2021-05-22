@@ -18,9 +18,9 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class Controls {
 
-    private static boolean qButtonPushed       = false;
-    private static boolean tButtonPushed       = false;
-    private static boolean eButtonPushed       = false;
+    private static boolean throwButtonPushed = false;
+    private static boolean mobSpawningButtonPushed = false;
+    private static boolean inventoryButtonPushed = false;
     private static boolean F11Pushed           = false;
     private static boolean escapePushed        = false;
     private static boolean F3Pushed            = false;
@@ -28,39 +28,18 @@ public class Controls {
     public static void gameInput() {
 
         if (!isPlayerInventoryOpen() && !isPaused()) {
-            if (isKeyPressed(getKeyForward())) {
-                setPlayerForward(true);
-            } else {
-                setPlayerForward(false);
-            }
+            setPlayerForward(isKeyPressed(getKeyForward()));
 
-            if (isKeyPressed(getKeyBack())) {
-                setPlayerBackward(true);
-            } else {
-                setPlayerBackward(false);
-            }
-            if (isKeyPressed(getKeyLeft())) {
-                setPlayerLeft(true);
-            } else {
-                setPlayerLeft(false);
-            }
-            if (isKeyPressed(getKeyRight())) {
-                setPlayerRight(true);
-            } else {
-                setPlayerRight(false);
-            }
+            setPlayerBackward(isKeyPressed(getKeyBack()));
 
-            if (isKeyPressed(getKeySneak())) { //sneaking
-                setPlayerSneaking(true);
-            } else {
-                setPlayerSneaking(false);
-            }
+            setPlayerLeft(isKeyPressed(getKeyLeft()));
 
-            if (isKeyPressed(getKeyJump())) {
-                setPlayerJump(true);
-            } else {
-                setPlayerJump(false);
-            }
+            setPlayerRight(isKeyPressed(getKeyRight()));
+
+            //sneaking
+            setPlayerSneaking(isKeyPressed(getKeySneak()));
+
+            setPlayerJump(isKeyPressed(getKeyJump()));
         }
 
 
@@ -77,6 +56,7 @@ public class Controls {
          */
 
 
+        //debug info
         if (isKeyPressed(GLFW_KEY_F3)) {
             if (!F3Pushed) {
                 F3Pushed = true;
@@ -87,15 +67,17 @@ public class Controls {
         }
 
 
+        //drop
         if (isKeyPressed(getKeyDrop())) {
-            if (!qButtonPushed) {
-                qButtonPushed = true;
+            if (!throwButtonPushed) {
+                throwButtonPushed = true;
                 throwItem();
             }
         } else if (!isKeyPressed(getKeyDrop())){
-            qButtonPushed = false;
+            throwButtonPushed = false;
         }
 
+        //fullscreen
         if (isKeyPressed(GLFW_KEY_F11)) {
             if (!F11Pushed) {
                 F11Pushed = true;
@@ -105,6 +87,7 @@ public class Controls {
             F11Pushed = false;
         }
 
+        //esape
         if (isKeyPressed(GLFW_KEY_ESCAPE)) {
             if (!escapePushed) {
                 escapePushed = true;
@@ -124,28 +107,28 @@ public class Controls {
         }
 
 
-        //prototype clear objects - C KEY
+        //inventory
         if (isKeyPressed(getKeyInventory()) && !isPaused()) {
-            if (!eButtonPushed) {
-                eButtonPushed = true;
+            if (!inventoryButtonPushed) {
+                inventoryButtonPushed = true;
                 togglePlayerInventory();
                 toggleMouseLock();
                 resetPlayerInputs();
                 emptyMouseInventory();
             }
         } else if (!isKeyPressed(getKeyInventory())){
-            eButtonPushed = false;
+            inventoryButtonPushed = false;
         }
 
 
         //spawn human mob
         if (isKeyPressed(GLFW_KEY_T)) {
-            if (!tButtonPushed) {
-                tButtonPushed = true;
+            if (!mobSpawningButtonPushed) {
+                mobSpawningButtonPushed = true;
                 spawnMob((int)Math.floor(Math.random() + 0.5f),new Vector3d( getPlayerPos()), new Vector3f(0,0,0));
             }
         } else if (!isKeyPressed(GLFW_KEY_T)){
-            tButtonPushed = false;
+            mobSpawningButtonPushed = false;
         }
 
 

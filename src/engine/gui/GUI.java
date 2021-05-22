@@ -40,7 +40,8 @@ public class GUI {
     //meshes
     private static Mesh thisHotBarMesh;
     private static Mesh thisSelectionMesh;
-    private static Mesh thisInventoryMesh;
+    private static Mesh inventoryMesh;
+    private static Mesh inventoryBackdropMesh;
     private static Mesh thisWorldSelectionMesh;
     private static Mesh thisCrossHairMesh;
     private static Mesh playerMesh;
@@ -71,7 +72,8 @@ public class GUI {
 
         //2D mesh creations
         thisHotBarMesh = create2DMesh(0.5f,0.06043956043f, "textures/hotbar.png");
-        thisInventoryMesh = create2DMesh(0.5f,0.46335697399f,  "textures/inventory.png");
+        inventoryMesh = create2DMesh(0.5f,0.46335697399f,  "textures/inventory.png");
+        inventoryBackdropMesh = create2DMesh(0.5f,0.46335697399f,  "textures/inventory_backdrop.png");
         thisSelectionMesh = create2DMesh(0.5f, 0.5f, "textures/hotbar_selected.png");
         thisCrossHairMesh = create2DMesh(0.5f, 0.5f, "textures/crosshair.png");
         inventorySelectionMesh = create2DMesh(0.5f, 0.5f, "textures/hotbar_selected.png");
@@ -134,7 +136,10 @@ public class GUI {
     }
 
     public static Mesh getInventoryMesh(){
-        return thisInventoryMesh;
+        return inventoryMesh;
+    }
+    public static Mesh getInventoryBackdropMesh(){
+        return inventoryBackdropMesh;
     }
 
     public static Mesh getWorldSelectionMesh(){

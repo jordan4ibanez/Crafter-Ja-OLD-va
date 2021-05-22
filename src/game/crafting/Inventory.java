@@ -29,6 +29,10 @@ public class Inventory {
     private static float updateTimer = 0f;
     private static byte oldLight = 15;
 
+    public static InventoryObject getMainInventory(){
+        return mainInventory;
+    }
+
     public static Item getWieldInventory() {
         return wieldInventory;
     }
