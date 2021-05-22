@@ -218,20 +218,6 @@ public class Chunk {
         return false;
     }
 
-    public static Mesh getChunkNormalMesh(int chunkX, int chunkZ, int yHeight){
-        ChunkObject thisChunk = map.get(chunkX + " " + chunkZ);
-        if (thisChunk == null){
-            return null;
-        }
-        if (thisChunk.normalMesh == null){
-            return null;
-        }
-        if (thisChunk.normalMesh[yHeight] != null){
-            return thisChunk.normalMesh[yHeight];
-        }
-        return null;
-    }
-
 
     public static int getHeightMap(int x, int z){
         int chunkX = (int)Math.floor(x/16d);
