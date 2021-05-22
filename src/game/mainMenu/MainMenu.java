@@ -489,7 +489,7 @@ public class MainMenu {
                     setCurrentActiveWorld(selectedWorld);
                     titleMusic.stop();
                     toggleMouseLock();
-                    generateRandomInventory();
+                    //generateRandomInventory();
                     setScene((byte) 1);
                 } else {
                     resetMainMenu();

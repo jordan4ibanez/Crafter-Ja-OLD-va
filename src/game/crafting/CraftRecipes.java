@@ -14,6 +14,8 @@ public class CraftRecipes {
         ArrayList<CraftRecipeObject> craftRecipeAccumulator = new ArrayList<>();
 
 
+        //everything is case sensitive
+
         String[][] wood = {
                 {"Tree"},
         };
@@ -25,6 +27,20 @@ public class CraftRecipes {
                 {"Wood","Wood" }
         };
         craftRecipeAccumulator.add(new CraftRecipeObject(workbench, "Workbench", 1, new Vector2i(2)));
+
+        String[][] boat = {
+                {"Wood",""    , "Wood" },
+                {"Wood","Wood", "Wood" },
+                {"","", "" }
+        };
+        craftRecipeAccumulator.add(new CraftRecipeObject(boat, "Boat", 1, new Vector2i(3)));
+
+        String[][] boat2 = {
+                {"","", "" },
+                {"Wood",""    , "Wood" },
+                {"Wood","Wood", "Wood" },
+        };
+        craftRecipeAccumulator.add(new CraftRecipeObject(boat2, "Boat", 1, new Vector2i(3)));
 
 
         //dump recipes into the recipe array
@@ -52,6 +68,8 @@ public class CraftRecipes {
             boolean found = false;
             boolean lockOut = false;
 
+
+            //System.out.println(thisRecipe.size.x);
             //single item recipe
             if (thisRecipe.size.x == 1){
                 for (int x = 0; x < inventory.getSize().x; x++){
@@ -98,7 +116,7 @@ public class CraftRecipes {
             }
 
             if (found){
-                System.out.println("Found: " + thisRecipe.output);
+                //System.out.println("Found: " + thisRecipe.output);
                 return thisRecipe;
             }
         }

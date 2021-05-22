@@ -14,7 +14,7 @@ import static game.player.Player.getPlayerDir;
 public class ItemRegistration {
     public static void registerTools(){
 
-        registerItem("stone_pickaxe", "textures/stone_pickaxe.png", null);
+        registerItem("Stone_pickaxe", "textures/stone_pickaxe.png", null);
 
 
         ItemModifier test = new ItemModifier() {
@@ -31,6 +31,8 @@ public class ItemRegistration {
             }
         };
 
-        registerItem("door", "textures/door.png", test);
+        registerItem("Door", "textures/door.png", test);
+
+        registerItem("Boat", "textures/boatitem.png", null);
     }
 }
