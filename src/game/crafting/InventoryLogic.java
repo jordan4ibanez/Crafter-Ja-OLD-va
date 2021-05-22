@@ -158,7 +158,7 @@ public class InventoryLogic {
                                 setOutputInventory(null);
                                 updateCraftingGrid();
                             //add to existing stack
-                            } else if (mouseItem != null && thisItem != null){
+                            } else if (mouseItem != null && thisItem != null && mouseItem.name.equals(thisItem.name)){
                                 int first = mouseItem.stack;
                                 int second = thisItem.stack;
                                 int adder = first + second;

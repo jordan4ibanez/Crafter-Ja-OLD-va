@@ -48,26 +48,56 @@ public class CraftRecipes {
             }
 
 
-            //single item recipe
-            boolean found1 = false;
+            //lockouts
+            boolean found = false;
             boolean lockOut = false;
+
+            //single item recipe
             if (thisRecipe.size.x == 1){
                 for (int x = 0; x < inventory.getSize().x; x++){
                     for (int y = 0; y < inventory.getSize().y; y++){
                         Item thisItem = inventory.get(x,y);
                         if (thisItem != null){
                             if (thisItem.name.equals(thisRecipe.recipe[0][0])){
-                                found1 = !lockOut;
+                                found = !lockOut;
                                 lockOut = true;
                             } else {
                                 lockOut = true;
-                                found1 = false;
+                                found = false;
+                            }
+                        }
+                    }
+                }
+
+            //width 2-3 recipe
+            } else {
+                for (int x = 0; x < inventory.getSize().x; x++) {
+                    for (int y = 0; y < inventory.getSize().y; y++) {
+
+                        //keep it inside for now (top left corner
+                        if (x < thisRecipe.size.x && y < thisRecipe.size.y){
+                            Item thisItem = inventory.get(x,y);
+                            if (thisItem != null) {
+                                if (thisItem.name.equals(thisRecipe.recipe[x][y])) {
+                                    if (!lockOut){
+                                        found = true;
+                                    }
+                                } else {
+                                    lockOut = true;
+                                    found = false;
+                                }
+                            } else {
+                                if (!thisRecipe.recipe[x][y].equals("")) {
+                                    lockOut = true;
+                                    found = false;
+                                }
                             }
                         }
                     }
                 }
             }
-            if (found1){
+
+            if (found){
                 System.out.println("Found: " + thisRecipe.output);
                 return thisRecipe;
             }
