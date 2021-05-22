@@ -159,6 +159,37 @@ public class Inventory {
             }
         }
     }
+
+    public static void clearOutCraftInventories(){
+        InventoryObject inventory = getBigCraftInventory();
+
+        for (int x = 0; x < inventory.getSize().x; x++) {
+            for (int y = 0; y < inventory.getSize().y; y++) {
+                Item thisItem = inventory.get(x, y);
+                if (thisItem != null) {
+                    for (int i = 0; i < thisItem.stack; i++) {
+                        createItem(thisItem.name, getPlayerPosWithEyeHeight(), getCameraRotationVector().mul(10f).add(getPlayerInertia()), 1);
+                    }
+                    inventory.set(x, y, null);
+                }
+            }
+        }
+
+
+        InventoryObject inventory2 = getSmallCraftInventory();
+        for (int x = 0; x < inventory2.getSize().x; x++) {
+            for (int y = 0; y < inventory2.getSize().y; y++) {
+                Item thisItem = inventory2.get(x, y);
+                if (thisItem != null) {
+                    for (int i = 0; i < thisItem.stack; i++) {
+                        createItem(thisItem.name, getPlayerPosWithEyeHeight(), getCameraRotationVector().mul(10f).add(getPlayerInertia()), 1);
+                    }
+                    inventory2.set(x, y, null);
+                }
+            }
+        }
+    }
+
     public static void setItemInInventory(int x, int y, String name, int stack){
         mainInventory.set(x,y,new Item(name, stack));
     }
@@ -202,17 +233,17 @@ public class Inventory {
     }
 
     public static void emptyMouseInventory(){
-        Item test = getMouseInventory();
-        if (test != null) {
-            BlockDefinition layer2 = getBlockDefinition(test.name);
-            if (layer2 != null) {
-                String name = layer2.name;
-                if (name != null) {
-                    createItem(name, getPlayerPosWithEyeHeight(), getCameraRotationVector().mul(10f), test.stack);
-                    setMouseInventory(null);
-                }
+        Item thisItem = getMouseInventory();
+        if (thisItem != null) {
+            for (int i = 0; i < thisItem.stack; i++) {
+                createItem(thisItem.name, getPlayerPosWithEyeHeight(), getCameraRotationVector().mul(10f).add(getPlayerInertia()), 1);
             }
+            setMouseInventory(null);
         }
+    }
+
+    public static void setOutputInventory(Item newItem) {
+        outputInventory.set(0,0,newItem);
     }
 
     public static void setPlayerInventoryIsOpen(boolean truth){

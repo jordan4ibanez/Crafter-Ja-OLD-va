@@ -11,6 +11,7 @@ import static engine.Window.getWindowWidth;
 import static engine.gui.GUILogic.togglePauseMenu;
 import static engine.render.GameRenderer.getWindowScale;
 import static engine.render.GameRenderer.getWindowSize;
+import static game.crafting.CraftRecipes.recipeScan;
 import static game.crafting.Inventory.*;
 import static game.player.Player.*;
 
@@ -86,58 +87,87 @@ public class InventoryLogic {
                 };
 
                 for (InventoryObject inventory : tempInventoryObjectArray) {
-                    Vector2i selection = inventory.getSelection();
-                    if (selection.x >= 0 && selection.y >= 0) {
-                        Item thisItem = inventory.get(selection.x, selection.y);
-                        Item mouseItem = getMouseInventory();
 
-                        //pick up item
-                        if (mouseItem == null && thisItem != null){
-                            setMouseInventory(thisItem);
-                            inventory.set(selection.x, selection.y, null);
-                            foundInventory = inventory.name;
-                        //add to blank space
-                        } else if (mouseItem != null && thisItem == null){
-                            inventory.set(selection.x, selection.y, mouseItem);
-                            setMouseInventory(null);
-                            foundInventory = inventory.name;
-                        //two stacks to compare
-                        } else if (mouseItem != null && thisItem != null){
-                            //try to add into the inventory stack or swap
-                            if (thisItem.name.equals(mouseItem.name)) {
+                    //handle output inventory separately
+                    if (!inventory.name.equals("output")) {
+                        Vector2i selection = inventory.getSelection();
+                        if (selection.x >= 0 && selection.y >= 0) {
+                            Item thisItem = inventory.get(selection.x, selection.y);
+                            Item mouseItem = getMouseInventory();
 
-                                //swap item
+                            //pick up item
+                            if (mouseItem == null && thisItem != null) {
+                                setMouseInventory(thisItem);
+                                inventory.set(selection.x, selection.y, null);
+                                foundInventory = inventory.name;
+                                //add to blank space
+                            } else if (mouseItem != null && thisItem == null) {
+                                inventory.set(selection.x, selection.y, mouseItem);
+                                setMouseInventory(null);
+                                foundInventory = inventory.name;
+                                //two stacks to compare
+                            } else if (mouseItem != null && thisItem != null) {
+                                //try to add into the inventory stack or swap
+                                if (thisItem.name.equals(mouseItem.name)) {
 
-                                //accommodate if player's find a way to spoof
-                                //higher than 64 item stacks
-                                if (thisItem.stack >= 64) {
+                                    //swap item
+
+                                    //accommodate if player's find a way to spoof
+                                    //higher than 64 item stacks
+                                    if (thisItem.stack >= 64) {
+                                        setMouseInventory(thisItem);
+                                        inventory.set(selection.x, selection.y, mouseItem);
+                                        foundInventory = inventory.name;
+                                        //add into stack
+                                    } else {
+                                        int mouseStack = mouseItem.stack;
+                                        int thisItemStack = thisItem.stack;
+
+                                        int adder = mouseStack + thisItemStack;
+
+                                        //compare, leave remainder
+                                        if (adder > 64) {
+                                            mouseItem.stack = adder - 64;
+                                            thisItem.stack = 64;
+                                            foundInventory = inventory.name;
+                                            //dump full stack in
+                                        } else {
+                                            thisItem.stack = adder;
+                                            setMouseInventory(null);
+                                            foundInventory = inventory.name;
+                                        }
+                                    }
+                                    //swap mouse item with inventory item
+                                } else {
                                     setMouseInventory(thisItem);
                                     inventory.set(selection.x, selection.y, mouseItem);
                                     foundInventory = inventory.name;
-                                    //add into stack
-                                } else {
-                                    int mouseStack = mouseItem.stack;
-                                    int thisItemStack = thisItem.stack;
-
-                                    int adder = mouseStack + thisItemStack;
-
-                                    //compare, leave remainder
-                                    if (adder > 64) {
-                                        mouseItem.stack = adder - 64;
-                                        thisItem.stack = 64;
-                                        foundInventory = inventory.name;
-                                        //dump full stack in
-                                    } else {
-                                        thisItem.stack = adder;
-                                        setMouseInventory(null);
-                                        foundInventory = inventory.name;
-                                    }
                                 }
-                            //swap mouse item with inventory item
-                            } else {
+                            }
+                        }
+                    //handle craft output
+                    } else {
+                        Vector2i selection = inventory.getSelection();
+                        if (selection.x >= 0 && selection.y >= 0) {
+                            Item thisItem = inventory.get(selection.x, selection.y);
+                            Item mouseItem = getMouseInventory();
+
+                            //new item in mouse inventory
+                            if (mouseItem == null && thisItem != null){
                                 setMouseInventory(thisItem);
-                                inventory.set(selection.x, selection.y, mouseItem);
-                                foundInventory = inventory.name;
+                                setOutputInventory(null);
+                                updateCraftingGrid();
+                            //add to existing stack
+                            } else if (mouseItem != null && thisItem != null){
+                                int first = mouseItem.stack;
+                                int second = thisItem.stack;
+                                int adder = first + second;
+
+                                if (adder <= 64){
+                                    mouseItem.stack = adder;
+                                    setOutputInventory(null);
+                                    updateCraftingGrid();
+                                }
                             }
                         }
                     }
@@ -158,40 +188,63 @@ public class InventoryLogic {
                     Vector2i selection = inventory.getSelection();
                     if (selection.x >= 0 && selection.y >= 0) {
 
-                        Item mouseItem = getMouseInventory();
-                        Item thisItem = inventory.get(selection.x, selection.y);
+                        //don't allow anything to happen to the output
+                        if (!inventory.name.equals("output")) {
+                            Item mouseItem = getMouseInventory();
+                            Item thisItem = inventory.get(selection.x, selection.y);
 
-                        //mouse splits stack
-                        if (mouseItem == null){
-                            int first = thisItem.stack;
-                            int subtraction = thisItem.stack/2;
-                            int remainder = thisItem.stack/2;
+                            //mouse splits stack
+                            if (mouseItem == null) {
+                                int first = thisItem.stack;
+                                int subtraction = thisItem.stack / 2;
+                                int remainder = thisItem.stack / 2;
 
-                            //solve for odd numbered stacks
-                            if (subtraction + remainder < first){
-                                subtraction += 1;
+                                //solve for odd numbered stacks
+                                if (subtraction + remainder < first) {
+                                    subtraction += 1;
+                                }
+
+                                if (remainder == 0) {
+                                    inventory.set(selection.x, selection.y, null);
+                                } else {
+                                    thisItem.stack = remainder;
+                                    inventory.set(selection.x, selection.y, thisItem);
+                                }
+
+                                foundInventory = inventory.name;
+                                Item newMouseItem = new Item(thisItem);
+                                newMouseItem.stack = subtraction;
+                                setMouseInventory(newMouseItem);
                             }
-
-                            if (remainder == 0){
-                                inventory.set(selection.x, selection.y, null);
+                            //mouse single place into existing stack
+                            else if (thisItem != null) {
+                                //single add to existing stack
+                                if (mouseItem.name.equals(thisItem.name) && thisItem.stack < 64) {
+                                    int mouseItemStack = mouseItem.stack;
+                                    mouseItemStack -= 1;
+                                    thisItem.stack++;
+                                    if (mouseItemStack <= 0) {
+                                        setMouseInventory(null);
+                                    } else {
+                                        mouseItem.stack = mouseItemStack;
+                                        setMouseInventory(mouseItem);
+                                    }
+                                    foundInventory = inventory.name;
+                                }
+                                //mouse creating initial stack
                             } else {
-                                thisItem.stack = remainder;
-                                inventory.set(selection.x, selection.y, thisItem);
-                            }
+                                //single add to non-existing
 
-                            foundInventory = inventory.name;
-                            Item newMouseItem = new Item(thisItem);
-                            newMouseItem.stack = subtraction;
-                            setMouseInventory(newMouseItem);
-                        }
-                        //mouse single place into existing stack
-                        else if (thisItem != null) {
-                            //single add to existing stack
-                            if (mouseItem.name.equals(thisItem.name) && thisItem.stack < 64){
                                 int mouseItemStack = mouseItem.stack;
                                 mouseItemStack -= 1;
-                                thisItem.stack++;
-                                if (mouseItemStack <= 0){
+
+
+                                Item creationItem = new Item(mouseItem);
+                                creationItem.stack = 1;
+
+                                inventory.set(selection.x, selection.y, creationItem);
+
+                                if (mouseItemStack <= 0) {
                                     setMouseInventory(null);
                                 } else {
                                     mouseItem.stack = mouseItemStack;
@@ -199,42 +252,33 @@ public class InventoryLogic {
                                 }
                                 foundInventory = inventory.name;
                             }
-                        //mouse creating initial stack
-                        } else {
-                            //single add to non-existing
-
-                            int mouseItemStack = mouseItem.stack;
-                            mouseItemStack -= 1;
-
-
-                            Item creationItem = new Item(mouseItem);
-                            creationItem.stack = 1;
-
-                            inventory.set(selection.x, selection.y, creationItem);
-
-                            if (mouseItemStack <= 0){
-                                setMouseInventory(null);
-                            } else {
-                                mouseItem.stack = mouseItemStack;
-                                setMouseInventory(mouseItem);
-                            }
-                            foundInventory = inventory.name;
                         }
                     }
                 }
             } else if (!isRightButtonPressed()) {
                 rightMouseButtonPushed = false;
             }
-
             if (foundInventory != null){
                 if (foundInventory.equals("smallCraft") || foundInventory.equals("bigCraft")){
+
+                    CraftRecipeObject newItems;
                     //small craft recipe scan
                     if (foundInventory.equals("smallCraft")){
                         System.out.println("small recipe scan");
-                    //large craft recipe scan
+                        newItems = recipeScan(getSmallCraftInventory());
+                        //large craft recipe scan
                     } else {
                         System.out.println("BIG RECIPE SCAN");
+                        newItems = recipeScan(getBigCraftInventory());
+                    }
 
+                    if (newItems != null){
+                        //addItemToInventory(newItems.output);
+                        Item outputItem = new Item(newItems.output, newItems.amountOutput);
+                        setOutputInventory(outputItem);
+                    //clear output inventory
+                    } else {
+                        setOutputInventory(null);
                     }
                 }
             }
@@ -242,6 +286,50 @@ public class InventoryLogic {
             leftMouseButtonWasPushed = leftMouseButtonPushed;
             rightMouseButtonWasPushed = rightMouseButtonPushed;
         }
+    }
+
+    public static void updateCraftingGrid(){
+
+        CraftRecipeObject newItems;
+
+        if (isAtCraftingBench()){
+            InventoryObject inventory = getBigCraftInventory();
+
+            for (int x = 0; x < inventory.size.x; x++){
+                for (int y = 0; y < inventory.size.y; y++){
+                    if (inventory.get(x,y) != null){
+                        inventory.get(x,y).stack--;
+                        if (inventory.get(x,y).stack <= 0){
+                            inventory.set(x,y,null);
+                        }
+                    }
+                }
+            }
+            newItems = recipeScan(getBigCraftInventory());
+        } else {
+            InventoryObject inventory = getSmallCraftInventory();
+            for (int x = 0; x < inventory.size.x; x++){
+                for (int y = 0; y < inventory.size.y; y++){
+                    if (inventory.get(x,y) != null){
+                        inventory.get(x,y).stack--;
+                        if (inventory.get(x,y).stack <= 0){
+                            inventory.set(x,y,null);
+                        }
+                    }
+                }
+            }
+            newItems = recipeScan(getSmallCraftInventory());
+        }
+
+        if (newItems != null){
+            //addItemToInventory(newItems.output);
+            Item outputItem = new Item(newItems.output, newItems.amountOutput);
+            setOutputInventory(outputItem);
+            //clear output inventory
+        } else {
+            setOutputInventory(null);
+        }
+
     }
 
     public static void openCraftingInventory(boolean isCraftingTable) {
@@ -262,7 +350,9 @@ public class InventoryLogic {
             setMouseLocked(true);
             resetPlayerInputs();
             setPlayerInventoryIsOpen(false);
+            clearOutCraftInventories();
             emptyMouseInventory();
+            updateCraftingGrid();
             resetPlayerInputs();
         }
     }
