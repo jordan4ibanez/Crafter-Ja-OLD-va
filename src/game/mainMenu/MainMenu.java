@@ -20,6 +20,7 @@ import static engine.settings.Settings.getKeyInventory;
 import static engine.sound.SoundAPI.playMusic;
 import static engine.sound.SoundAPI.playSound;
 import static game.Crafter.getVersionName;
+import static game.crafting.Inventory.generateRandomInventory;
 import static game.mainMenu.MainMenuAssets.createMainMenuBackGroundTile;
 import static game.mainMenu.MainMenuAssets.createMenuMenuTitleBlock;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
@@ -488,6 +489,7 @@ public class MainMenu {
                     setCurrentActiveWorld(selectedWorld);
                     titleMusic.stop();
                     toggleMouseLock();
+                    generateRandomInventory();
                     setScene((byte) 1);
                 } else {
                     resetMainMenu();

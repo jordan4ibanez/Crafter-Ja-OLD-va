@@ -22,6 +22,7 @@ import static engine.graph.Transformation.buildOrthoProjModelMatrix;
 import static engine.gui.GUI.*;
 import static engine.gui.GUILogic.*;
 import static engine.gui.TextHandling.createText;
+import static engine.gui.TextHandling.createTextCenteredWithShadow;
 import static engine.settings.Settings.*;
 import static game.crafting.InventoryLogic.getPlayerHudRotation;
 import static game.falling.FallingEntity.getFallingEntities;
@@ -543,6 +544,7 @@ public class GameRenderer {
                 renderInventoryGUI(getOutputInventory());
                 renderInventoryGUI(getArmorInventory());
 
+
                 //glClear(GL_DEPTH_BUFFER_BIT);
 
                 /*
@@ -884,6 +886,8 @@ public class GameRenderer {
         //it also makes the default spacing of (0)
         //they bunch up right next to each other with 0
         double scale = windowScale/10.5d;
+        double itemScale = windowScale / 8d;
+        double textScale = windowScale / 48;
 
         //this is the spacing between the slots
         double spacing = windowScale / 75d;
@@ -898,24 +902,78 @@ public class GameRenderer {
             for (int x = 0; x < inventory.getSize().x; x++) {
                 for (int y = 0; y < inventory.getSize().y; y++) {
 
-                    if (y == inventory.getSize().y - 1){
+                    //this is a quick and dirty hack to implement
+                    //the space between the hotbar and rest of inventory
+                    //on the main inventory
+                    if (y == 0){
                         yProgram = 0.2d;
                     } else {
                         yProgram = 0;
                     }
 
-                    modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((double) x + 0.5d - offset.x + startingPoint.x) * (scale + spacing), ((double) y + 0.5d - offset.y + startingPoint.y + yProgram) * (scale + spacing), 0), new Vector3f(0, 0, 0), new Vector3d(scale, scale, scale));
+                    //background of the slot
+                    glClear(GL_DEPTH_BUFFER_BIT);
+
+                    modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((double) x + 0.5d - offset.x + startingPoint.x) * (scale + spacing), ((y * -1d) - 0.5d + startingPoint.y + offset.y + yProgram) * (scale + spacing), 0), new Vector3f(0, 0, 0), new Vector3d(scale, scale, scale));
                     hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                     workerMesh.render();
+
+
+                    Item thisItem = inventory.get(x,y);
+
+                    //only attempt if an actual item and not empty slot
+                    if (thisItem != null) {
+
+                        //render item
+                        glClear(GL_DEPTH_BUFFER_BIT);
+                        modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((double) x + 0.5d - offset.x + startingPoint.x) * (scale + spacing), ((y * -1d) - 0.5d + startingPoint.y + offset.y + yProgram) * (scale + spacing) - (itemScale / 7d), 0), new Vector3f(45, 45, 0), new Vector3d(itemScale, itemScale, itemScale));
+                        hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                        thisItem.mesh.render();
+
+                        //render item stack number
+
+                        glClear(GL_DEPTH_BUFFER_BIT);
+                        modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((double) x + 0.7d - offset.x + startingPoint.x) * (scale + spacing), ((y * -1d) - 0.6d + startingPoint.y + offset.y + yProgram) * (scale + spacing) - (itemScale / 7d), 0), new Vector3f(0, 0, 0), new Vector3d(textScale, textScale, textScale));
+                        hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                        Mesh itemStackLabel = createTextCenteredWithShadow(Integer.toString(thisItem.stack), 1,1,1);
+                        itemStackLabel.render();
+                        itemStackLabel.cleanUp(false);
+                    }
+
                 }
             }
         } else {
             for (int x = 0; x < inventory.getSize().x; x++) {
                 for (int y = 0; y < inventory.getSize().y; y++) {
 
-                    modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((double) x + 0.5d - offset.x + startingPoint.x) * (scale + spacing), ((double) y + 0.5d - offset.y + startingPoint.y) * (scale + spacing), 0), new Vector3f(0, 0, 0), new Vector3d(scale, scale, scale));
+                    //background of the slot
+                    glClear(GL_DEPTH_BUFFER_BIT);
+
+                    modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((double) x + 0.5d - offset.x + startingPoint.x) * (scale + spacing), ((y * -1d) - 0.5d + startingPoint.y + offset.y) * (scale + spacing), 0), new Vector3f(0, 0, 0), new Vector3d(scale, scale, scale));
                     hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                     workerMesh.render();
+
+
+                    Item thisItem = inventory.get(x,y);
+
+                    //only attempt if an actual item and not empty slot
+                    if (thisItem != null) {
+
+                        //render item
+                        glClear(GL_DEPTH_BUFFER_BIT);
+                        modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((double) x + 0.5d - offset.x + startingPoint.x) * (scale + spacing), ((y * -1d) - 0.5d + startingPoint.y + offset.y) * (scale + spacing) - (itemScale / 7d), 0), new Vector3f(45, 45, 0), new Vector3d(itemScale, itemScale, itemScale));
+                        hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                        thisItem.mesh.render();
+
+                        //render item stack number
+
+                        glClear(GL_DEPTH_BUFFER_BIT);
+                        modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((double) x + 0.7d - offset.x + startingPoint.x) * (scale + spacing), ((y * -1d) - 0.6d + startingPoint.y + offset.y) * (scale + spacing) - (itemScale / 7d), 0), new Vector3f(0, 0, 0), new Vector3d(textScale, textScale, textScale));
+                        hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                        Mesh itemStackLabel = createTextCenteredWithShadow(Integer.toString(thisItem.stack), 1,1,1);
+                        itemStackLabel.render();
+                        itemStackLabel.cleanUp(false);
+                    }
                 }
             }
         }
