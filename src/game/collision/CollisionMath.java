@@ -1,7 +1,6 @@
 package game.collision;
 
 import org.joml.Vector3d;
-import org.joml.Vector3f;
 
 public class CollisionMath {
 
