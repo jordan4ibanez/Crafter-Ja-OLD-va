@@ -109,34 +109,26 @@ public class ChunkMesh {
                 return;
             }
 
-            //normal block data
-            final List<Float> positions = new ArrayList<>();
-            final List<Float> textureCoord = new ArrayList<>();
-            final List<Integer> indices = new ArrayList<>();
-            final List<Float> light = new ArrayList<>();
+            //normal block mesh data
+            List<Float> positions = new ArrayList<>();
+            List<Float> textureCoord = new ArrayList<>();
+            List<Integer> indices = new ArrayList<>();
+            List<Float> light = new ArrayList<>();
             int indicesCount = 0;
 
-            //liquid block data
-            final List<Float> liquidPositions = new ArrayList<>();
-            final List<Float> liquidTextureCoord = new ArrayList<>();
-            final List<Integer> liquidIndices = new ArrayList<>();
-            final List<Float> liquidLight = new ArrayList<>();
+            //liquid block mesh data
+            List<Float> liquidPositions = new ArrayList<>();
+            List<Float> liquidTextureCoord = new ArrayList<>();
+            List<Integer> liquidIndices = new ArrayList<>();
+            List<Float> liquidLight = new ArrayList<>();
             int liquidIndicesCount = 0;
 
-            //allFaces block stuff
-
-            final float[] allFacesPositions = new float[50_824];
-            int allFacesPositionsCount = 0;
-
-            final float[] allFacesTextureCoord = new float[50_824];
-            int allFacesTextureCoordCount = 0;
-
-            final int[] allFacesIndices = new int[50_824];
-            int allFacesIndicesTableCount = 0;
+            //allFaces block mesh data
+            List<Float> allFacesPositions = new ArrayList<>();
+            List<Float> allFacesTextureCoord = new ArrayList<>();
+            List<Integer> allFacesIndices = new ArrayList<>();
+            List<Float> allFacesLight = new ArrayList<>();
             int allFacesIndicesCount = 0;
-
-            final float[] allFacesLight = new float[50_824];
-            int allFacesLightCount = 0;
 
             //cache data
             int thisBlock;
@@ -145,12 +137,14 @@ public class ChunkMesh {
             int realZ;
             float lightValue;
             float[] textureWorker;
+            int x,y,z;
+            int neighborBlock;
 
-            for (int x = 0; x < 16; x++) {
+            for (x = 0; x < 16; x++) {
                 realX = (chunkX * 16) + x;
-                for (int z = 0; z < 16; z++) {
+                for (z = 0; z < 16; z++) {
                     realZ = (chunkZ * 16) + z;
-                    for (int y = yHeight * 16; y < (yHeight + 1) * 16; y++) {
+                    for (y = yHeight * 16; y < (yHeight + 1) * 16; y++) {
 
                         thisBlock = thisChunk.block[posToIndex(x, y, z)];
                         thisRotation = thisChunk.rotation[posToIndex(x, y, z)];
@@ -159,8 +153,6 @@ public class ChunkMesh {
 
                             //todo --------------------------------------- THE LIQUID DRAWTYPE
                             if (getIfLiquid(thisBlock)) {
-
-                                int neighborBlock;
 
                                 if (z + 1 > 15) {
                                     neighborBlock = getBlock(realX, y, realZ + 1);
@@ -508,8 +500,6 @@ public class ChunkMesh {
                             //todo --------------------------------------- THE NORMAL DRAWTYPE (standard blocks)
                             else if (getBlockDrawType(thisBlock) == 1) {
 
-                                int neighborBlock;
-
                                 if (z + 1 > 15) {
                                     neighborBlock = getBlock(realX, y, realZ + 1);
                                 } else {
@@ -843,368 +833,305 @@ public class ChunkMesh {
                             else if (getBlockDrawType(thisBlock) == 4) {
                                 {
                                     //front
-                                    allFacesPositions[allFacesPositionsCount] = (1f + x);
-                                    allFacesPositions[allFacesPositionsCount + 1] = (1f + y);
-                                    allFacesPositions[allFacesPositionsCount + 2] = (1f + z);
-
-                                    allFacesPositions[allFacesPositionsCount + 3] = (0f + x);
-                                    allFacesPositions[allFacesPositionsCount + 4] = (1f + y);
-                                    allFacesPositions[allFacesPositionsCount + 5] = (1f + z);
-
-                                    allFacesPositions[allFacesPositionsCount + 6] = (0f + x);
-                                    allFacesPositions[allFacesPositionsCount + 7] = (0f + y);
-                                    allFacesPositions[allFacesPositionsCount + 8] = (1f + z);
-
-                                    allFacesPositions[allFacesPositionsCount + 9] = (1f + x);
-                                    allFacesPositions[allFacesPositionsCount + 10] = (0f + y);
-                                    allFacesPositions[allFacesPositionsCount + 11] = (1f + z);
-
-                                    allFacesPositionsCount += 12;
+                                    allFacesPositions.add(1f + x);
+                                    allFacesPositions.add(1f + y);
+                                    allFacesPositions.add(1f + z);
+                                    allFacesPositions.add(0f + x);
+                                    allFacesPositions.add(1f + y);
+                                    allFacesPositions.add(1f + z);
+                                    allFacesPositions.add(0f + x);
+                                    allFacesPositions.add(0f + y);
+                                    allFacesPositions.add(1f + z);
+                                    allFacesPositions.add(1f + x);
+                                    allFacesPositions.add(0f + y);
+                                    allFacesPositions.add(1f + z);
 
                                     //front
-                                    float frontLight;
-
                                     if (z + 1 > 15) {
-                                        frontLight = getLight(realX, y, realZ + 1);
+                                        lightValue = getLight(realX, y, realZ + 1);
                                     } else {
-                                        frontLight = thisChunk.light[posToIndex(x, y, z + 1)];
+                                        lightValue = thisChunk.light[posToIndex(x, y, z + 1)];
                                     }
 
-                                    frontLight = convertLight(frontLight / maxLight);
+                                    lightValue = convertLight(lightValue / maxLight);
 
                                     //front
                                     for (int i = 0; i < 12; i++) {
-                                       allFacesLight[i + allFacesLightCount] = (frontLight);
+                                       allFacesLight.add(lightValue);
                                     }
 
-                                    allFacesLightCount += 12;
-
 
                                     //front
-                                    allFacesIndices[allFacesIndicesTableCount] = (allFacesIndicesCount);
-                                    allFacesIndices[allFacesIndicesTableCount + 1] = (1 + allFacesIndicesCount);
-                                    allFacesIndices[allFacesIndicesTableCount + 2] = (2 + allFacesIndicesCount);
-                                    allFacesIndices[allFacesIndicesTableCount + 3] = (allFacesIndicesCount);
-                                    allFacesIndices[allFacesIndicesTableCount + 4] = (2 + allFacesIndicesCount);
-                                    allFacesIndices[allFacesIndicesTableCount + 5] = (3 + allFacesIndicesCount);
-
+                                    allFacesIndices.add(allFacesIndicesCount);
+                                    allFacesIndices.add(1 + allFacesIndicesCount);
+                                    allFacesIndices.add(2 + allFacesIndicesCount);
+                                    allFacesIndices.add(allFacesIndicesCount);
+                                    allFacesIndices.add(2 + allFacesIndicesCount);
+                                    allFacesIndices.add(3 + allFacesIndicesCount);
                                     allFacesIndicesCount += 4;
-                                    allFacesIndicesTableCount += 6;
 
-                                    float[] textureFront = getFrontTexturePoints(thisBlock, thisRotation);
+                                    textureWorker = getFrontTexturePoints(thisBlock, thisRotation);
                                     //front
-                                    allFacesTextureCoord[allFacesTextureCoordCount] = (textureFront[1]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 1] = (textureFront[2]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 2] = (textureFront[0]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 3] = (textureFront[2]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 4] = (textureFront[0]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 5] = (textureFront[3]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 6] = (textureFront[1]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 7] = (textureFront[3]);
-                                    allFacesTextureCoordCount += 8;
+                                    allFacesTextureCoord.add(textureWorker[1]);
+                                    allFacesTextureCoord.add(textureWorker[2]);
+                                    allFacesTextureCoord.add(textureWorker[0]);
+                                    allFacesTextureCoord.add(textureWorker[2]);
+                                    allFacesTextureCoord.add(textureWorker[0]);
+                                    allFacesTextureCoord.add(textureWorker[3]);
+                                    allFacesTextureCoord.add(textureWorker[1]);
+                                    allFacesTextureCoord.add(textureWorker[3]);
                                 }
 
                                 {
                                     //back
-                                    allFacesPositions[allFacesPositionsCount] = (0f + x);
-                                    allFacesPositions[allFacesPositionsCount + 1] = (1f + y);
-                                    allFacesPositions[allFacesPositionsCount + 2] = (0f + z);
-
-                                    allFacesPositions[allFacesPositionsCount + 3] = (1f + x);
-                                    allFacesPositions[allFacesPositionsCount + 4] = (1f + y);
-                                    allFacesPositions[allFacesPositionsCount + 5] = (0f + z);
-
-                                    allFacesPositions[allFacesPositionsCount + 6] = (1f + x);
-                                    allFacesPositions[allFacesPositionsCount + 7] = (0f + y);
-                                    allFacesPositions[allFacesPositionsCount + 8] = (0f + z);
-
-                                    allFacesPositions[allFacesPositionsCount + 9] = (0f + x);
-                                    allFacesPositions[allFacesPositionsCount + 10] = (0f + y);
-                                    allFacesPositions[allFacesPositionsCount + 11] = (0f + z);
-
-                                    allFacesPositionsCount += 12;
+                                    allFacesPositions.add(0f + x);
+                                    allFacesPositions.add(1f + y);
+                                    allFacesPositions.add(0f + z);
+                                    allFacesPositions.add(1f + x);
+                                    allFacesPositions.add(1f + y);
+                                    allFacesPositions.add(0f + z);
+                                    allFacesPositions.add(1f + x);
+                                    allFacesPositions.add(0f + y);
+                                    allFacesPositions.add(0f + z);
+                                    allFacesPositions.add(0f + x);
+                                    allFacesPositions.add(0f + y);
+                                    allFacesPositions.add(0f + z);
 
                                     //back
-                                    float backLight;
 
                                     if (z - 1 < 0) {
-                                        backLight = getLight(realX, y, realZ - 1);
+                                        lightValue = getLight(realX, y, realZ - 1);
                                     } else {
-                                        backLight = thisChunk.light[posToIndex(x, y, z - 1)];
+                                        lightValue = thisChunk.light[posToIndex(x, y, z - 1)];
                                     }
 
-                                    backLight = convertLight(backLight / maxLight);
+                                    lightValue = convertLight(lightValue / maxLight);
                                     //back
                                     for (int i = 0; i < 12; i++) {
-                                       allFacesLight[i + allFacesLightCount] = (backLight);
+                                       allFacesLight.add(lightValue);
                                     }
 
-                                    allFacesLightCount += 12;
-
                                     //back
-                                    allFacesIndices[allFacesIndicesTableCount] = (allFacesIndicesCount);
-                                    allFacesIndices[allFacesIndicesTableCount + 1] = (1 + allFacesIndicesCount);
-                                    allFacesIndices[allFacesIndicesTableCount + 2] = (2 + allFacesIndicesCount);
-                                    allFacesIndices[allFacesIndicesTableCount + 3] = (allFacesIndicesCount);
-                                    allFacesIndices[allFacesIndicesTableCount + 4] = (2 + allFacesIndicesCount);
-                                    allFacesIndices[allFacesIndicesTableCount + 5] = (3 + allFacesIndicesCount);
+                                    allFacesIndices.add(allFacesIndicesCount);
+                                    allFacesIndices.add(1 + allFacesIndicesCount);
+                                    allFacesIndices.add(2 + allFacesIndicesCount);
+                                    allFacesIndices.add(allFacesIndicesCount);
+                                    allFacesIndices.add(2 + allFacesIndicesCount);
+                                    allFacesIndices.add(3 + allFacesIndicesCount);
                                     allFacesIndicesCount += 4;
-                                    allFacesIndicesTableCount += 6;
 
-                                    float[] textureBack = getBackTexturePoints(thisBlock, thisRotation);
+                                    textureWorker = getBackTexturePoints(thisBlock, thisRotation);
                                     //back
-                                    allFacesTextureCoord[allFacesTextureCoordCount] = (textureBack[1]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 1] = (textureBack[2]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 2] = (textureBack[0]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 3] = (textureBack[2]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 4] = (textureBack[0]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 5] = (textureBack[3]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 6] = (textureBack[1]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 7] = (textureBack[3]);
-                                    allFacesTextureCoordCount += 8;
+                                    allFacesTextureCoord.add(textureWorker[1]);
+                                    allFacesTextureCoord.add(textureWorker[2]);
+                                    allFacesTextureCoord.add(textureWorker[0]);
+                                    allFacesTextureCoord.add(textureWorker[2]);
+                                    allFacesTextureCoord.add(textureWorker[0]);
+                                    allFacesTextureCoord.add(textureWorker[3]);
+                                    allFacesTextureCoord.add(textureWorker[1]);
+                                    allFacesTextureCoord.add(textureWorker[3]);
                                 }
 
                                 {
                                     //right
-                                    allFacesPositions[allFacesPositionsCount] = (1f + x);
-                                    allFacesPositions[allFacesPositionsCount + 1] = (1f + y);
-                                    allFacesPositions[allFacesPositionsCount + 2] = (0f + z);
-
-                                    allFacesPositions[allFacesPositionsCount + 3] = (1f + x);
-                                    allFacesPositions[allFacesPositionsCount + 4] = (1f + y);
-                                    allFacesPositions[allFacesPositionsCount + 5] = (1f + z);
-
-                                    allFacesPositions[allFacesPositionsCount + 6] = (1f + x);
-                                    allFacesPositions[allFacesPositionsCount + 7] = (0f + y);
-                                    allFacesPositions[allFacesPositionsCount + 8] = (1f + z);
-
-                                    allFacesPositions[allFacesPositionsCount + 9] = (1f + x);
-                                    allFacesPositions[allFacesPositionsCount + 10] = (0f + y);
-                                    allFacesPositions[allFacesPositionsCount + 11] = (0f + z);
-
-                                    allFacesPositionsCount += 12;
+                                    allFacesPositions.add(1f + x);
+                                    allFacesPositions.add(1f + y);
+                                    allFacesPositions.add(0f + z);
+                                    allFacesPositions.add(1f + x);
+                                    allFacesPositions.add(1f + y);
+                                    allFacesPositions.add(1f + z);
+                                    allFacesPositions.add(1f + x);
+                                    allFacesPositions.add(0f + y);
+                                    allFacesPositions.add(1f + z);
+                                    allFacesPositions.add(1f + x);
+                                    allFacesPositions.add(0f + y);
+                                    allFacesPositions.add(0f + z);
 
                                     //right
-                                    float rightLight;
 
                                     if (x + 1 > 15) {
-                                        rightLight = getLight(realX + 1, y, realZ);
+                                        lightValue = getLight(realX + 1, y, realZ);
                                     } else {
-                                        rightLight = thisChunk.light[posToIndex(x + 1, y, z)];
+                                        lightValue = thisChunk.light[posToIndex(x + 1, y, z)];
                                     }
 
-                                    rightLight = convertLight(rightLight / maxLight);
+                                    lightValue = convertLight(lightValue / maxLight);
                                     //right
                                     for (int i = 0; i < 12; i++) {
-                                       allFacesLight[i + allFacesLightCount] = (rightLight);
+                                       allFacesLight.add(lightValue);
                                     }
 
-                                    allFacesLightCount += 12;
-
                                     //right
-                                    allFacesIndices[allFacesIndicesTableCount] = (allFacesIndicesCount);
-                                    allFacesIndices[allFacesIndicesTableCount + 1] = (1 + allFacesIndicesCount);
-                                    allFacesIndices[allFacesIndicesTableCount + 2] = (2 + allFacesIndicesCount);
-                                    allFacesIndices[allFacesIndicesTableCount + 3] = (allFacesIndicesCount);
-                                    allFacesIndices[allFacesIndicesTableCount + 4] = (2 + allFacesIndicesCount);
-                                    allFacesIndices[allFacesIndicesTableCount + 5] = (3 + allFacesIndicesCount);
+                                    allFacesIndices.add(allFacesIndicesCount);
+                                    allFacesIndices.add(1 + allFacesIndicesCount);
+                                    allFacesIndices.add(2 + allFacesIndicesCount);
+                                    allFacesIndices.add(allFacesIndicesCount);
+                                    allFacesIndices.add(2 + allFacesIndicesCount);
+                                    allFacesIndices.add(3 + allFacesIndicesCount);
                                     allFacesIndicesCount += 4;
-                                    allFacesIndicesTableCount += 6;
 
-                                    float[] textureRight = getRightTexturePoints(thisBlock, thisRotation);
+                                    textureWorker = getRightTexturePoints(thisBlock, thisRotation);
                                     //right
-                                    allFacesTextureCoord[allFacesTextureCoordCount] = (textureRight[1]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 1] = (textureRight[2]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 2] = (textureRight[0]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 3] = (textureRight[2]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 4] = (textureRight[0]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 5] = (textureRight[3]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 6] = (textureRight[1]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 7] = (textureRight[3]);
-                                    allFacesTextureCoordCount += 8;
+                                    allFacesTextureCoord.add(textureWorker[1]);
+                                    allFacesTextureCoord.add(textureWorker[2]);
+                                    allFacesTextureCoord.add(textureWorker[0]);
+                                    allFacesTextureCoord.add(textureWorker[2]);
+                                    allFacesTextureCoord.add(textureWorker[0]);
+                                    allFacesTextureCoord.add(textureWorker[3]);
+                                    allFacesTextureCoord.add(textureWorker[1]);
+                                    allFacesTextureCoord.add(textureWorker[3]);
                                 }
 
                                 {
                                     //left
-                                    allFacesPositions[allFacesPositionsCount] = (0f + x);
-                                    allFacesPositions[allFacesPositionsCount + 1] = (1f + y);
-                                    allFacesPositions[allFacesPositionsCount + 2] = (1f + z);
-
-                                    allFacesPositions[allFacesPositionsCount + 3] = (0f + x);
-                                    allFacesPositions[allFacesPositionsCount + 4] = (1f + y);
-                                    allFacesPositions[allFacesPositionsCount + 5] = (0f + z);
-
-                                    allFacesPositions[allFacesPositionsCount + 6] = (0f + x);
-                                    allFacesPositions[allFacesPositionsCount + 7] = (0f + y);
-                                    allFacesPositions[allFacesPositionsCount + 8] = (0f + z);
-
-                                    allFacesPositions[allFacesPositionsCount + 9] = (0f + x);
-                                    allFacesPositions[allFacesPositionsCount + 10] = (0f + y);
-                                    allFacesPositions[allFacesPositionsCount + 11] = (1f + z);
-
-                                    allFacesPositionsCount += 12;
+                                    allFacesPositions.add(0f + x);
+                                    allFacesPositions.add(1f + y);
+                                    allFacesPositions.add(1f + z);
+                                    allFacesPositions.add(0f + x);
+                                    allFacesPositions.add(1f + y);
+                                    allFacesPositions.add(0f + z);
+                                    allFacesPositions.add(0f + x);
+                                    allFacesPositions.add(0f + y);
+                                    allFacesPositions.add(0f + z);
+                                    allFacesPositions.add(0f + x);
+                                    allFacesPositions.add(0f + y);
+                                    allFacesPositions.add(1f + z);
 
                                     //left
-                                    float leftLight;
 
                                     if (x - 1 < 0) {
-                                        leftLight = getLight(realX - 1, y, realZ);
+                                        lightValue = getLight(realX - 1, y, realZ);
                                     } else {
-                                        leftLight = thisChunk.light[posToIndex(x - 1, y, z)];
+                                        lightValue = thisChunk.light[posToIndex(x - 1, y, z)];
                                     }
 
-                                    leftLight = convertLight(leftLight / maxLight);
+                                    lightValue = convertLight(lightValue / maxLight);
                                     //left
                                     for (int i = 0; i < 12; i++) {
-                                       allFacesLight[i + allFacesLightCount] = (leftLight);
+                                       allFacesLight.add(lightValue);
                                     }
 
-                                    allFacesLightCount += 12;
-
                                     //left
-                                    allFacesIndices[allFacesIndicesTableCount] = (allFacesIndicesCount);
-                                    allFacesIndices[allFacesIndicesTableCount + 1] = (1 + allFacesIndicesCount);
-                                    allFacesIndices[allFacesIndicesTableCount + 2] = (2 + allFacesIndicesCount);
-                                    allFacesIndices[allFacesIndicesTableCount + 3] = (allFacesIndicesCount);
-                                    allFacesIndices[allFacesIndicesTableCount + 4] = (2 + allFacesIndicesCount);
-                                    allFacesIndices[allFacesIndicesTableCount + 5] = (3 + allFacesIndicesCount);
+                                    allFacesIndices.add(allFacesIndicesCount);
+                                    allFacesIndices.add(1 + allFacesIndicesCount);
+                                    allFacesIndices.add(2 + allFacesIndicesCount);
+                                    allFacesIndices.add(allFacesIndicesCount);
+                                    allFacesIndices.add(2 + allFacesIndicesCount);
+                                    allFacesIndices.add(3 + allFacesIndicesCount);
                                     allFacesIndicesCount += 4;
-                                    allFacesIndicesTableCount += 6;
 
-                                    float[] textureLeft = getLeftTexturePoints(thisBlock, thisRotation);
+                                    textureWorker = getLeftTexturePoints(thisBlock, thisRotation);
                                     //left
-                                    allFacesTextureCoord[allFacesTextureCoordCount] = (textureLeft[1]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 1] = (textureLeft[2]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 2] = (textureLeft[0]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 3] = (textureLeft[2]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 4] = (textureLeft[0]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 5] = (textureLeft[3]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 6] = (textureLeft[1]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 7] = (textureLeft[3]);
-                                    allFacesTextureCoordCount += 8;
+                                    allFacesTextureCoord.add(textureWorker[1]);
+                                    allFacesTextureCoord.add(textureWorker[2]);
+                                    allFacesTextureCoord.add(textureWorker[0]);
+                                    allFacesTextureCoord.add(textureWorker[2]);
+                                    allFacesTextureCoord.add(textureWorker[0]);
+                                    allFacesTextureCoord.add(textureWorker[3]);
+                                    allFacesTextureCoord.add(textureWorker[1]);
+                                    allFacesTextureCoord.add(textureWorker[3]);
                                 }
 
                                  {
                                     //top
-                                    allFacesPositions[allFacesPositionsCount] = (0f + x);
-                                    allFacesPositions[allFacesPositionsCount + 1] = (1f + y);
-                                    allFacesPositions[allFacesPositionsCount + 2] = (0f + z);
-
-                                    allFacesPositions[allFacesPositionsCount + 3] = (0f + x);
-                                    allFacesPositions[allFacesPositionsCount + 4] = (1f + y);
-                                    allFacesPositions[allFacesPositionsCount + 5] = (1f + z);
-
-                                    allFacesPositions[allFacesPositionsCount + 6] = (1f + x);
-                                    allFacesPositions[allFacesPositionsCount + 7] = (1f + y);
-                                    allFacesPositions[allFacesPositionsCount + 8] = (1f + z);
-
-                                    allFacesPositions[allFacesPositionsCount + 9] = (1f + x);
-                                    allFacesPositions[allFacesPositionsCount + 10] = (1f + y);
-                                    allFacesPositions[allFacesPositionsCount + 11] = (0f + z);
-
-                                    allFacesPositionsCount += 12;
+                                    allFacesPositions.add(0f + x);
+                                    allFacesPositions.add(1f + y);
+                                    allFacesPositions.add(0f + z);
+                                    allFacesPositions.add(0f + x);
+                                    allFacesPositions.add(1f + y);
+                                    allFacesPositions.add(1f + z);
+                                    allFacesPositions.add(1f + x);
+                                    allFacesPositions.add(1f + y);
+                                    allFacesPositions.add(1f + z);
+                                    allFacesPositions.add(1f + x);
+                                    allFacesPositions.add(1f + y);
+                                    allFacesPositions.add(0f + z);
 
                                     //top
-                                    float topLight;
 
                                     if (y + 1 < 128) {
-                                        topLight = thisChunk.light[posToIndex(x, y + 1, z)];
+                                        lightValue = thisChunk.light[posToIndex(x, y + 1, z)];
                                     } else {
-                                        topLight = maxLight;
+                                        lightValue = maxLight;
                                     }
 
-                                    topLight = convertLight(topLight / maxLight);
+                                     lightValue = convertLight(lightValue / maxLight);
 
                                     //top
                                     for (int i = 0; i < 12; i++) {
-                                       allFacesLight[i + allFacesLightCount] = (topLight);
+                                       allFacesLight.add(lightValue);
                                     }
 
-                                    allFacesLightCount += 12;
-
                                     //top
-                                    allFacesIndices[allFacesIndicesTableCount] = (allFacesIndicesCount);
-                                    allFacesIndices[allFacesIndicesTableCount + 1] = (1 + allFacesIndicesCount);
-                                    allFacesIndices[allFacesIndicesTableCount + 2] = (2 + allFacesIndicesCount);
-                                    allFacesIndices[allFacesIndicesTableCount + 3] = (allFacesIndicesCount);
-                                    allFacesIndices[allFacesIndicesTableCount + 4] = (2 + allFacesIndicesCount);
-                                    allFacesIndices[allFacesIndicesTableCount + 5] = (3 + allFacesIndicesCount);
+                                    allFacesIndices.add(allFacesIndicesCount);
+                                    allFacesIndices.add(1 + allFacesIndicesCount);
+                                    allFacesIndices.add(2 + allFacesIndicesCount);
+                                    allFacesIndices.add(allFacesIndicesCount);
+                                    allFacesIndices.add(2 + allFacesIndicesCount);
+                                    allFacesIndices.add(3 + allFacesIndicesCount);
                                     allFacesIndicesCount += 4;
-                                    allFacesIndicesTableCount += 6;
 
-                                    float[] textureTop = getTopTexturePoints(thisBlock);
+                                     textureWorker = getTopTexturePoints(thisBlock);
                                     //top
-                                    allFacesTextureCoord[allFacesTextureCoordCount] = (textureTop[1]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 1] = (textureTop[2]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 2] = (textureTop[0]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 3] = (textureTop[2]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 4] = (textureTop[0]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 5] = (textureTop[3]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 6] = (textureTop[1]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 7] = (textureTop[3]);
-                                    allFacesTextureCoordCount += 8;
-
+                                    allFacesTextureCoord.add(textureWorker[1]);
+                                    allFacesTextureCoord.add(textureWorker[2]);
+                                    allFacesTextureCoord.add(textureWorker[0]);
+                                    allFacesTextureCoord.add(textureWorker[2]);
+                                    allFacesTextureCoord.add(textureWorker[0]);
+                                    allFacesTextureCoord.add(textureWorker[3]);
+                                    allFacesTextureCoord.add(textureWorker[1]);
+                                    allFacesTextureCoord.add(textureWorker[3]);
                                  }
 
 
                                 if (y != 0) {
                                     //bottom
-                                    allFacesPositions[allFacesPositionsCount] = (0f + x);
-                                    allFacesPositions[allFacesPositionsCount + 1] = (0f + y);
-                                    allFacesPositions[allFacesPositionsCount + 2] = (1f + z);
-
-                                    allFacesPositions[allFacesPositionsCount + 3] = (0f + x);
-                                    allFacesPositions[allFacesPositionsCount + 4] = (0f + y);
-                                    allFacesPositions[allFacesPositionsCount + 5] = (0f + z);
-
-                                    allFacesPositions[allFacesPositionsCount + 6] = (1f + x);
-                                    allFacesPositions[allFacesPositionsCount + 7] = (0f + y);
-                                    allFacesPositions[allFacesPositionsCount + 8] = (0f + z);
-
-                                    allFacesPositions[allFacesPositionsCount + 9] = (1f + x);
-                                    allFacesPositions[allFacesPositionsCount + 10] = (0f + y);
-                                    allFacesPositions[allFacesPositionsCount + 11] = (1f + z);
-
-                                    allFacesPositionsCount += 12;
+                                    allFacesPositions.add(0f + x);
+                                    allFacesPositions.add(0f + y);
+                                    allFacesPositions.add(1f + z);
+                                    allFacesPositions.add(0f + x);
+                                    allFacesPositions.add(0f + y);
+                                    allFacesPositions.add(0f + z);
+                                    allFacesPositions.add(1f + x);
+                                    allFacesPositions.add(0f + y);
+                                    allFacesPositions.add(0f + z);
+                                    allFacesPositions.add(1f + x);
+                                    allFacesPositions.add(0f + y);
+                                    allFacesPositions.add(1f + z);
 
                                     //bottom
-                                    float bottomLight;
 
                                     if (y - 1 > 0) {
-                                        bottomLight = thisChunk.light[posToIndex(x, y - 1, z)];
+                                        lightValue = thisChunk.light[posToIndex(x, y - 1, z)];
                                     } else {
-                                        bottomLight = 0;
+                                        lightValue = 0;
                                     }
 
-                                    bottomLight = convertLight(bottomLight / maxLight);
+                                    lightValue = convertLight(lightValue / maxLight);
                                     //bottom
                                     for (int i = 0; i < 12; i++) {
-                                       allFacesLight[i + allFacesLightCount] = (bottomLight);
+                                       allFacesLight.add(lightValue);
                                     }
 
-                                    allFacesLightCount += 12;
-
                                     //bottom
-                                    allFacesIndices[allFacesIndicesTableCount] = (allFacesIndicesCount);
-                                    allFacesIndices[allFacesIndicesTableCount + 1] = (1 + allFacesIndicesCount);
-                                    allFacesIndices[allFacesIndicesTableCount + 2] = (2 + allFacesIndicesCount);
-                                    allFacesIndices[allFacesIndicesTableCount + 3] = (allFacesIndicesCount);
-                                    allFacesIndices[allFacesIndicesTableCount + 4] = (2 + allFacesIndicesCount);
-                                    allFacesIndices[allFacesIndicesTableCount + 5] = (3 + allFacesIndicesCount);
+                                    allFacesIndices.add(allFacesIndicesCount);
+                                    allFacesIndices.add(1 + allFacesIndicesCount);
+                                    allFacesIndices.add(2 + allFacesIndicesCount);
+                                    allFacesIndices.add(allFacesIndicesCount);
+                                    allFacesIndices.add(2 + allFacesIndicesCount);
+                                    allFacesIndices.add(3 + allFacesIndicesCount);
                                     allFacesIndicesCount += 4;
-                                    allFacesIndicesTableCount += 6;
 
-                                    float[] textureBottom = getBottomTexturePoints(thisBlock);
+                                    textureWorker = getBottomTexturePoints(thisBlock);
                                     //bottom
-                                    allFacesTextureCoord[allFacesTextureCoordCount] = (textureBottom[1]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 1] = (textureBottom[2]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 2] = (textureBottom[0]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 3] = (textureBottom[2]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 4] = (textureBottom[0]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 5] = (textureBottom[3]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 6] = (textureBottom[1]);
-                                    allFacesTextureCoord[allFacesTextureCoordCount + 7] = (textureBottom[3]);
-                                    allFacesTextureCoordCount += 8;
+                                    allFacesTextureCoord.add(textureWorker[1]);
+                                    allFacesTextureCoord.add(textureWorker[2]);
+                                    allFacesTextureCoord.add(textureWorker[0]);
+                                    allFacesTextureCoord.add(textureWorker[2]);
+                                    allFacesTextureCoord.add(textureWorker[0]);
+                                    allFacesTextureCoord.add(textureWorker[3]);
+                                    allFacesTextureCoord.add(textureWorker[1]);
+                                    allFacesTextureCoord.add(textureWorker[3]);
                                 }
 
                             }
@@ -1591,7 +1518,6 @@ public class ChunkMesh {
                 newChunkData.lightArray = lightArray;
                 newChunkData.indicesArray = indicesArray;
                 newChunkData.textureCoordArray = textureCoordArray;
-
             } else {
                 //inform the container object that this chunk is null for this part of it
                 newChunkData.normalMeshIsNull = true;
@@ -1645,47 +1571,58 @@ public class ChunkMesh {
                 newChunkData.liquidMeshIsNull = true;
             }
 
-            if (allFacesPositionsCount > 0) {
-//        convert the position objects into usable array
-                float[] allFacesPositionsArray = new float[allFacesPositionsCount];
-                if (allFacesPositionsCount >= 0) System.arraycopy(allFacesPositions, 0, allFacesPositionsArray, 0, allFacesPositionsCount);
+            workerCounter = 0;
 
-                //convert the light objects into usable array
-                float[] allFacesLightArray = new float[allFacesLightCount];
-                if (allFacesLightCount >= 0) System.arraycopy(allFacesLight, 0, allFacesLightArray, 0, allFacesLightCount);
+            if (allFacesPositions.size() > 0) {
 
-                //convert the indices objects into usable array
-                int[] allFacesIndicesArray = new int[allFacesIndicesTableCount];
-                if (allFacesIndicesTableCount >= 0) System.arraycopy(allFacesIndices, 0, allFacesIndicesArray, 0, allFacesIndicesTableCount);
+                float[] allFacesPositionsArray = new float[allFacesPositions.size()];
+                for (Float data : allFacesPositions){
+                    //auto casted from Float to float
+                    allFacesPositionsArray[workerCounter] = data;
+                    workerCounter++;
+                }
 
-                //convert the textureCoord objects into usable array
-                float[] allFacesTextureCoordArray = new float[allFacesTextureCoordCount];
-                if (allFacesTextureCoordCount >= 0) System.arraycopy(allFacesTextureCoord, 0, allFacesTextureCoordArray, 0, allFacesTextureCoordCount);
+                workerCounter = 0;
+
+                float[] allFacesLightArray = new float[allFacesLight.size()];
+                for (Float data : allFacesLight){
+                    //auto casted from Float to float
+                    allFacesLightArray[workerCounter] = data;
+                    workerCounter++;
+                }
+
+                workerCounter = 0;
+
+                int[] allFacesIndicesArray = new int[allFacesIndices.size()];
+                for (Integer data : allFacesIndices){
+                    //auto casted from Integer to int
+                    allFacesIndicesArray[workerCounter] = data;
+                    workerCounter++;
+                }
+
+                workerCounter = 0;
+
+                float[] allFacesTextureCoordArray = new float[allFacesTextureCoord.size()];
+                for (Float data : allFacesTextureCoord){
+                    //auto casted from Float to float
+                    allFacesTextureCoordArray[workerCounter] = data;
+                    workerCounter++;
+                }
 
                 //pass data to container object
                 newChunkData.allFacesPositionsArray = allFacesPositionsArray;
                 newChunkData.allFacesLightArray = allFacesLightArray;
                 newChunkData.allFacesIndicesArray = allFacesIndicesArray;
                 newChunkData.allFacesTextureCoordArray = allFacesTextureCoordArray;
-
-                //setChunkMesh(chunkX, chunkZ, yHeight, new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, textureAtlas));
             } else {
-                //setChunkMesh(chunkX, chunkZ, yHeight, null);
                 //inform the container object that this chunk is null for this part of it
                 newChunkData.allFacesMeshIsNull = true;
             }
-
-
-
-
-            String keyName = chunkX + " " + chunkZ + " " + yHeight;
-            //finally add it into the queue to be popped
-            queue.put(keyName, newChunkData);
             
+            //finally add it into the queue to be popped
+            String keyName = chunkX + " " + chunkZ + " " + yHeight;
+            queue.put(keyName, newChunkData);
 
-            //long endTime = System.nanoTime();
-            //double duration = (double)(endTime - startTime) /  1_000_000_000d;  //divide by 1000000 to get milliseconds.
-            //System.out.println("This took: " + duration + " seconds");
             //done, thread dies
         }).start();
     }
