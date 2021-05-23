@@ -1,22 +1,22 @@
 package game.player;
 
-import org.joml.*;
+import org.joml.Quaternionf;
+import org.joml.Vector3d;
+import org.joml.Vector3f;
+import org.joml.Vector3i;
 
-import java.lang.Math;
-
-import static engine.FancyMath.getDistance;
-import static engine.gui.GUI.*;
 import static engine.Time.getDelta;
 import static engine.disk.Disk.loadPlayerPos;
 import static engine.graph.Camera.*;
+import static engine.gui.GUI.*;
 import static engine.sound.SoundAPI.playSound;
 import static game.blocks.BlockDefinition.getBlockDefinition;
 import static game.blocks.BlockDefinition.isBlockLiquid;
 import static game.chunk.Chunk.*;
 import static game.collision.Collision.applyInertia;
-import static game.particle.Particle.createParticle;
 import static game.crafting.Inventory.getItemInInventorySlot;
 import static game.crafting.Inventory.updateWieldInventory;
+import static game.particle.Particle.createParticle;
 import static game.player.Ray.rayCast;
 
 

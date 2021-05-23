@@ -20,11 +20,11 @@ public class TNTEntity {
     private static int totalTNT = 0;
     //TODO: pseudo object holder
     private static Mesh mesh;
-    private static Vector3d[] tntPos = new Vector3d[MAX_ID_AMOUNT];
-    private static Vector3d tntScale[] = new Vector3d[MAX_ID_AMOUNT];
-    private static float[] tntTimer =    new float[MAX_ID_AMOUNT];
-    private static boolean[] tntExists =    new boolean[MAX_ID_AMOUNT];
-    private static Vector3f[] tntInertia = new Vector3f[MAX_ID_AMOUNT];
+    private static final Vector3d[] tntPos = new Vector3d[MAX_ID_AMOUNT];
+    private static final Vector3d[] tntScale = new Vector3d[MAX_ID_AMOUNT];
+    private static final float[] tntTimer =    new float[MAX_ID_AMOUNT];
+    private static final boolean[] tntExists =    new boolean[MAX_ID_AMOUNT];
+    private static final Vector3f[] tntInertia = new Vector3f[MAX_ID_AMOUNT];
 
     public static int getTotalTNT(){
         return totalTNT;
@@ -43,7 +43,7 @@ public class TNTEntity {
         System.out.println("Created new TNT. Total TNT: " + totalTNT);
     }
 
-    public static void createTNT(Vector3d pos, float timer, boolean punched) throws Exception {
+    public static void createTNT(Vector3d pos, float timer, boolean punched) {
         pos.x += 0.5f;
         //pos.y += 0.5f;
         pos.z += 0.5f;
@@ -121,19 +121,6 @@ public class TNTEntity {
         return tntScale[ID];
     }
 
-    public static void clearTNT(){
-        for (int i = 0; i < totalTNT; i++){
-            if(tntExists[i]){
-                tntPos[i] = null;
-                tntInertia[i] = null;
-                tntExists[i] = false;
-                tntScale[i] = null;
-                tntTimer[i] = 0;
-            }
-        }
-        totalTNT = 0;
-    }
-
     public static Mesh getTNTMesh(){
         return mesh;
     }
@@ -150,10 +137,10 @@ public class TNTEntity {
 
         int indicesCount = 0;
 
-        ArrayList positions     = new ArrayList();
-        ArrayList textureCoord  = new ArrayList();
-        ArrayList indices       = new ArrayList();
-        ArrayList light         = new ArrayList();
+        ArrayList<Float> positions     = new ArrayList<>();
+        ArrayList<Float> textureCoord  = new ArrayList<>();
+        ArrayList<Integer> indices       = new ArrayList<>();
+        ArrayList<Float> light         = new ArrayList<>();
 
         //create the mesh
 
@@ -169,7 +156,7 @@ public class TNTEntity {
             light.add(thisLight);
         }
         //front
-        indices.add(0+indicesCount); indices.add(1+indicesCount); indices.add(2+indicesCount); indices.add(0+indicesCount); indices.add(2+indicesCount); indices.add(3+indicesCount);
+        indices.add(0); indices.add(1+indicesCount); indices.add(2+indicesCount); indices.add(0); indices.add(2+indicesCount); indices.add(3+indicesCount);
         indicesCount += 4;
 
         float[] textureFront = getFrontTexturePoints(6,(byte) 0);
@@ -191,7 +178,7 @@ public class TNTEntity {
             light.add(thisLight);
         }
         //back
-        indices.add(0+indicesCount); indices.add(1+indicesCount); indices.add(2+indicesCount); indices.add(0+indicesCount); indices.add(2+indicesCount); indices.add(3+indicesCount);
+        indices.add(indicesCount); indices.add(1+indicesCount); indices.add(2+indicesCount); indices.add(indicesCount); indices.add(2+indicesCount); indices.add(3+indicesCount);
         indicesCount += 4;
 
         float[] textureBack = getBackTexturePoints(6,(byte) 0);
@@ -212,7 +199,7 @@ public class TNTEntity {
             light.add(thisLight);
         }
         //right
-        indices.add(0+indicesCount); indices.add(1+indicesCount); indices.add(2+indicesCount); indices.add(0+indicesCount); indices.add(2+indicesCount); indices.add(3+indicesCount);
+        indices.add(indicesCount); indices.add(1+indicesCount); indices.add(2+indicesCount); indices.add(indicesCount); indices.add(2+indicesCount); indices.add(3+indicesCount);
         indicesCount += 4;
 
         float[] textureRight = getRightTexturePoints(6,(byte) 0);
@@ -233,7 +220,7 @@ public class TNTEntity {
             light.add(thisLight);
         }
         //left
-        indices.add(0+indicesCount); indices.add(1+indicesCount); indices.add(2+indicesCount); indices.add(0+indicesCount); indices.add(2+indicesCount); indices.add(3+indicesCount);
+        indices.add(indicesCount); indices.add(1+indicesCount); indices.add(2+indicesCount); indices.add(indicesCount); indices.add(2+indicesCount); indices.add(3+indicesCount);
         indicesCount += 4;
 
         float[] textureLeft = getLeftTexturePoints(6,(byte) 0);
@@ -254,7 +241,7 @@ public class TNTEntity {
             light.add(thisLight);
         }
         //top
-        indices.add(0+indicesCount); indices.add(1+indicesCount); indices.add(2+indicesCount); indices.add(0+indicesCount); indices.add(2+indicesCount); indices.add(3+indicesCount);
+        indices.add(indicesCount); indices.add(1+indicesCount); indices.add(2+indicesCount); indices.add(indicesCount); indices.add(2+indicesCount); indices.add(3+indicesCount);
         indicesCount += 4;
 
         float[] textureTop = getTopTexturePoints(6);
@@ -276,7 +263,7 @@ public class TNTEntity {
             light.add(thisLight);
         }
         //bottom
-        indices.add(0+indicesCount); indices.add(1+indicesCount); indices.add(2+indicesCount); indices.add(0+indicesCount); indices.add(2+indicesCount); indices.add(3+indicesCount);
+        indices.add(indicesCount); indices.add(1+indicesCount); indices.add(2+indicesCount); indices.add(indicesCount); indices.add(2+indicesCount); indices.add(3+indicesCount);
 
         float[] textureBottom = getBottomTexturePoints(6);
         //bottom
@@ -289,32 +276,30 @@ public class TNTEntity {
         //convert the position objects into usable array
         float[] positionsArray = new float[positions.size()];
         for (int i = 0; i < positions.size(); i++) {
-            positionsArray[i] = (float)positions.get(i);
+            positionsArray[i] = positions.get(i);
         }
 
         //convert the light objects into usable array
         float[] lightArray = new float[light.size()];
         for (int i = 0; i < light.size(); i++) {
-            lightArray[i] = (float)light.get(i);
+            lightArray[i] = light.get(i);
         }
 
         //convert the indices objects into usable array
         int[] indicesArray = new int[indices.size()];
         for (int i = 0; i < indices.size(); i++) {
-            indicesArray[i] = (int)indices.get(i);
+            indicesArray[i] = indices.get(i);
         }
 
         //convert the textureCoord objects into usable array
         float[] textureCoordArray = new float[textureCoord.size()];
         for (int i = 0; i < textureCoord.size(); i++) {
-            textureCoordArray[i] = (float)textureCoord.get(i);
+            textureCoordArray[i] = textureCoord.get(i);
         }
 
         Texture texture = new Texture("textures/textureAtlas.png");
 
-        Mesh thisMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, texture);
-
-        mesh = thisMesh;
+        mesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, texture);
     }
 
     public static void cleanTNTUp(){

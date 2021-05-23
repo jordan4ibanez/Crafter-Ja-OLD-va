@@ -1,12 +1,11 @@
 package game.tnt;
 
 import org.joml.Vector3d;
-import org.joml.Vector3f;
 
+import static engine.FancyMath.getDistance;
 import static game.blocks.BlockDefinition.getBlockDefinition;
 import static game.chunk.Chunk.getBlock;
 import static game.chunk.Chunk.setBlock;
-import static engine.FancyMath.getDistance;
 import static game.item.ItemEntity.createItem;
 import static game.light.Light.lightFloodFill;
 import static game.tnt.TNTEntity.createTNT;
