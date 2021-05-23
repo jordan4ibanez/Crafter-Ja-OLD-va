@@ -8,6 +8,7 @@ import static engine.settings.Settings.getSettingsChunkLoad;
 import static game.chunk.Chunk.chunkStackContainsBlock;
 import static game.chunk.Chunk.updateChunkUnloadingSpeed;
 import static game.chunk.ChunkMesh.generateChunkMesh;
+import static game.chunk.ChunkMesh.updateChunkMeshLoadingSpeed;
 
 public class ChunkUpdateHandler {
 
@@ -39,6 +40,8 @@ public class ChunkUpdateHandler {
         goalTimer = goalTimerArray[getSettingsChunkLoad()];
         //also update unload speed timer
         updateChunkUnloadingSpeed();
+        //also update chunk mesh loading speed timer
+        updateChunkMeshLoadingSpeed();
     }
 
     private static float chunkUpdateTimer = 0f;

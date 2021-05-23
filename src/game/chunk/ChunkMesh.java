@@ -6,6 +6,8 @@ import engine.graph.Texture;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static engine.Time.getDelta;
+import static engine.settings.Settings.getSettingsChunkLoad;
 import static game.chunk.Chunk.*;
 import static game.blocks.BlockDefinition.*;
 import static game.chunk.ChunkMath.posToIndex;
@@ -30,41 +32,65 @@ public class ChunkMesh {
     }
 
     private final static float maxLight = 15;
-
     private static final Random random = new Random();
+
+    //the higher this is set, the lazier chunk mesh loading gets
+    //set it too high, and chunk mesh loading barely works
+    private static final float[] goalTimerArray = new float[]{
+            0.05f, //SNAIL
+            0.025f, //SLOWER
+            0.009f, //NORMAL
+            0.004f, //FASTER
+            0.002f, //INSANE
+            0.0005f, //FUTURE PC
+    };
+
+    private static float goalTimer = goalTimerArray[getSettingsChunkLoad()];
+
+    public static void updateChunkMeshLoadingSpeed() {
+        goalTimer = goalTimerArray[getSettingsChunkLoad()];
+    }
+
+    private static float chunkUpdateTimer = 0;
 
     public static void popChunkMeshQueue(){
 
-        int count = 0;
+        chunkUpdateTimer += getDelta();
+        int updateAmount = 0;
 
-        while (!queue.isEmpty() && count < 10) {
-            count ++;
+        if (chunkUpdateTimer >= goalTimer){
+            updateAmount = (int)(Math.ceil(chunkUpdateTimer / goalTimer));
+            chunkUpdateTimer = 0;
+        }
+        
+        for (int i = 0; i < updateAmount; i++) {
+            if (!queue.isEmpty()) {
+                Object[] queueAsArray = queue.keySet().toArray();
+                String thisKey = (String) queueAsArray[random.nextInt(queueAsArray.length)];
 
-            Object[] queueAsArray = queue.keySet().toArray();
-            String thisKey = (String)queueAsArray[random.nextInt(queueAsArray.length)];
+                ChunkMeshDataObject newChunkMeshData = queue.get(thisKey);
 
-            ChunkMeshDataObject newChunkMeshData = queue.get(thisKey);
+                String keyName = newChunkMeshData.chunkX + " " + newChunkMeshData.chunkZ + " " + newChunkMeshData.yHeight;
 
-            String keyName = newChunkMeshData.chunkX + " " + newChunkMeshData.chunkZ + " " + newChunkMeshData.yHeight;
+                queue.remove(keyName);
 
-            queue.remove(keyName);
+                if (!newChunkMeshData.normalMeshIsNull) {
+                    setChunkNormalMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, new Mesh(newChunkMeshData.positionsArray, newChunkMeshData.lightArray, newChunkMeshData.indicesArray, newChunkMeshData.textureCoordArray, textureAtlas));
+                } else {
+                    setChunkNormalMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, null);
+                }
 
-            if (!newChunkMeshData.normalMeshIsNull) {
-                setChunkNormalMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, new Mesh(newChunkMeshData.positionsArray, newChunkMeshData.lightArray, newChunkMeshData.indicesArray, newChunkMeshData.textureCoordArray, textureAtlas));
-            } else {
-                setChunkNormalMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, null);
-            }
+                if (!newChunkMeshData.liquidMeshIsNull) {
+                    setChunkLiquidMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, new Mesh(newChunkMeshData.liquidPositionsArray, newChunkMeshData.liquidLightArray, newChunkMeshData.liquidIndicesArray, newChunkMeshData.liquidTextureCoordArray, textureAtlas));
+                } else {
+                    setChunkLiquidMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, null);
+                }
 
-            if (!newChunkMeshData.liquidMeshIsNull) {
-                setChunkLiquidMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, new Mesh(newChunkMeshData.liquidPositionsArray, newChunkMeshData.liquidLightArray, newChunkMeshData.liquidIndicesArray, newChunkMeshData.liquidTextureCoordArray, textureAtlas));
-            } else {
-                setChunkLiquidMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, null);
-            }
-
-            if (!newChunkMeshData.allFacesMeshIsNull) {
-                setChunkAllFacesMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, new Mesh(newChunkMeshData.allFacesPositionsArray, newChunkMeshData.allFacesLightArray, newChunkMeshData.allFacesIndicesArray, newChunkMeshData.allFacesTextureCoordArray, textureAtlas));
-            } else {
-                setChunkAllFacesMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, null);
+                if (!newChunkMeshData.allFacesMeshIsNull) {
+                    setChunkAllFacesMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, new Mesh(newChunkMeshData.allFacesPositionsArray, newChunkMeshData.allFacesLightArray, newChunkMeshData.allFacesIndicesArray, newChunkMeshData.allFacesTextureCoordArray, textureAtlas));
+                } else {
+                    setChunkAllFacesMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, null);
+                }
             }
         }
     }
