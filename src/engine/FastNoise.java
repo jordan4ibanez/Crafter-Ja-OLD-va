@@ -714,21 +714,20 @@ public class FastNoise {
         int x1 = x0 + 1;
         int y1 = y0 + 1;
 
-        float xs, ys;
+        float xs = 0, ys = 0;
         switch (m_interp) {
-            default:
-            case Linear:
+            case Linear -> {
                 xs = x - x0;
                 ys = y - y0;
-                break;
-            case Hermite:
+            }
+            case Hermite -> {
                 xs = InterpHermiteFunc(x - x0);
                 ys = InterpHermiteFunc(y - y0);
-                break;
-            case Quintic:
+            }
+            case Quintic -> {
                 xs = InterpQuinticFunc(x - x0);
                 ys = InterpQuinticFunc(y - y0);
-                break;
+            }
         }
 
         float xf0 = Lerp(ValCoord2D(seed, x0, y0), ValCoord2D(seed, x1, y0), xs);
@@ -743,16 +742,11 @@ public class FastNoise {
         y *= m_frequency;
         z *= m_frequency;
 
-        switch (m_fractalType) {
-            case FBM:
-                return SinglePerlinFractalFBM(x, y, z);
-            case Billow:
-                return SinglePerlinFractalBillow(x, y, z);
-            case RigidMulti:
-                return SinglePerlinFractalRigidMulti(x, y, z);
-            default:
-                return 0;
-        }
+        return switch (m_fractalType) {
+            case FBM -> SinglePerlinFractalFBM(x, y, z);
+            case Billow -> SinglePerlinFractalBillow(x, y, z);
+            case RigidMulti -> SinglePerlinFractalRigidMulti(x, y, z);
+        };
     }
 
     private float SinglePerlinFractalFBM(float x, float y, float z) {
