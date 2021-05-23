@@ -51,7 +51,6 @@ public class Crafter {
             initGame();
             createWorldsDir();
             startSaveThread();
-            //assistantThread();
 
 
             initMainMenu();
@@ -66,16 +65,6 @@ public class Crafter {
             savePlayerPos(getPlayerPos());
             cleanup();
         }
-    }
-
-    //assistant thread
-    private static void assistantThread(){
-        new Thread(() -> {
-            while(!windowShouldClose()){
-                //heavy
-
-            }
-        }).start();
     }
 
     //the game engine elements
