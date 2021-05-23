@@ -40,7 +40,6 @@ public class MobObject {
         this.pos = pos;
         this.lastPos = new Vector3d(pos);
         this.inertia = inertia;
-        this.mobDefinitionKey = mobDefinitionKey;
 
         this.timer = 0f;
         this.animationTimer = 0f;
