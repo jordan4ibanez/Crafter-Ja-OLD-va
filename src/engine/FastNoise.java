@@ -501,7 +501,6 @@ public class FastNoise {
 
     private int FloatCast2Int(float f) {
         int i = Float.floatToRawIntBits(f);
-
         return i ^ (i >> 16);
     }
 
@@ -547,16 +546,11 @@ public class FastNoise {
         y *= m_frequency;
         z *= m_frequency;
 
-        switch (m_fractalType) {
-            case FBM:
-                return SingleValueFractalFBM(x, y, z);
-            case Billow:
-                return SingleValueFractalBillow(x, y, z);
-            case RigidMulti:
-                return SingleValueFractalRigidMulti(x, y, z);
-            default:
-                return 0;
-        }
+        return switch (m_fractalType) {
+            case FBM -> SingleValueFractalFBM(x, y, z);
+            case Billow -> SingleValueFractalBillow(x, y, z);
+            case RigidMulti -> SingleValueFractalRigidMulti(x, y, z);
+        };
     }
 
     private float SingleValueFractalFBM(float x, float y, float z) {
