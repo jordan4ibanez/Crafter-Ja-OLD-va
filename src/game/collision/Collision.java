@@ -19,7 +19,6 @@ public class Collision {
     private static float adjustedDelta;
 
     //this probably definitely absolutely should not take isPlayer as a value
-    //fix this later FIX ME FIX ME - DO OBJECT TYPE MATCHING
     public static boolean applyInertia(Vector3d pos, Vector3f inertia, boolean onGround, float width, float height, boolean gravity, boolean sneaking, boolean applyCollision, boolean airFriction, boolean isPlayer){
         float delta = getDelta();
 
@@ -109,9 +108,6 @@ public class Collision {
             if (inWater > 0.f) {
                 inertia.x += -inertia.x * adjustedDelta * inWater;
                 inertia.z += -inertia.z * adjustedDelta * inWater;
-
-                //inertia.y += -inertia.z * gameSpeed * inWater;
-                //inertia.y = inertia.y / 1.2f;
             }
 
             if (gravity) {
@@ -144,10 +140,9 @@ public class Collision {
 
     //these are class/method caches!! NOT FIELDS!
     private static Vector3d fPos;
-    private static boolean onGround;
     private static double x,y,z;
     private static int cachedBlock;
-    private static Vector3d cachedPos = new Vector3d(0d,0d,0d);
+    private static final Vector3d cachedPos = new Vector3d(0d,0d,0d);
 
 
 
@@ -248,7 +243,7 @@ public class Collision {
 
     private static boolean collisionDetect(Vector3d pos, Vector3f inertia, float width, float height){
 
-        onGround = false;
+        boolean onGround = false;
 
         Vector3d oldPos = new Vector3d();
 
