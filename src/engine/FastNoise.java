@@ -812,7 +812,7 @@ public class FastNoise {
         int y1 = y0 + 1;
         int z1 = z0 + 1;
 
-        float xs, ys, zs;
+        float xs = 0, ys = 0, zs = 0;
         switch (m_interp) {
             case Linear -> {
                 xs = x - x0;
