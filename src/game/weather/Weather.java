@@ -2,7 +2,6 @@ package game.weather;
 
 import engine.graph.Mesh;
 import engine.graph.Texture;
-import game.particle.ParticleObject;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
@@ -47,10 +46,10 @@ public class Weather {
     private static Mesh createRainDropMesh() {
         float pixelScale = 0.25f;
 
-        ArrayList positions = new ArrayList();
-        ArrayList textureCoord = new ArrayList();
-        ArrayList indices = new ArrayList();
-        ArrayList light = new ArrayList();
+        ArrayList<Float> positions = new ArrayList<>();
+        ArrayList<Float> textureCoord = new ArrayList<>();
+        ArrayList<Integer> indices = new ArrayList<>();
+        ArrayList<Float> light = new ArrayList<>();
 
 
         int indicesCount = 0;
@@ -81,21 +80,15 @@ public class Weather {
             light.add(frontLight);
         }
         //front
-        indices.add(0 + indicesCount);
+        indices.add(0);
         indices.add(1 + indicesCount);
         indices.add(2 + indicesCount);
-        indices.add(0 + indicesCount);
+        indices.add(0);
         indices.add(2 + indicesCount);
         indices.add(3 + indicesCount);
 
-        indicesCount += 4;
-
         //-x +x   -y +y
         // 0  1    2  3
-
-        int selection = (int)Math.floor(Math.random()*6f);
-
-        float[] texturePoints;
 
         // 0, 1,  2, 3
         //-x,+x, -y,+y
@@ -114,25 +107,25 @@ public class Weather {
         //convert the position objects into usable array
         float[] positionsArray = new float[positions.size()];
         for (int i = 0; i < positions.size(); i++) {
-            positionsArray[i] = (float) positions.get(i);
+            positionsArray[i] = positions.get(i);
         }
 
         //convert the light objects into usable array
         float[] lightArray = new float[light.size()];
         for (int i = 0; i < light.size(); i++) {
-            lightArray[i] = (float) light.get(i);
+            lightArray[i] = light.get(i);
         }
 
         //convert the indices objects into usable array
         int[] indicesArray = new int[indices.size()];
         for (int i = 0; i < indices.size(); i++) {
-            indicesArray[i] = (int) indices.get(i);
+            indicesArray[i] = indices.get(i);
         }
 
         //convert the textureCoord objects into usable array
         float[] textureCoordArray = new float[textureCoord.size()];
         for (int i = 0; i < textureCoord.size(); i++) {
-            textureCoordArray[i] = (float) textureCoord.get(i);
+            textureCoordArray[i] = textureCoord.get(i);
         }
 
         Texture rainDropTexture = null;

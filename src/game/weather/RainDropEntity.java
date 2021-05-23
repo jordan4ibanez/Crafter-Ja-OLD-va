@@ -1,6 +1,5 @@
 package game.weather;
 
-import engine.graph.Mesh;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
