@@ -2023,21 +2023,20 @@ public class FastNoise {
         int x1 = x0 + 1;
         int y1 = y0 + 1;
 
-        float xs, ys;
+        float xs = 0, ys = 0;
         switch (m_interp) {
-            default:
-            case Linear:
+            case Linear -> {
                 xs = xf - x0;
                 ys = yf - y0;
-                break;
-            case Hermite:
+            }
+            case Hermite -> {
                 xs = InterpHermiteFunc(xf - x0);
                 ys = InterpHermiteFunc(yf - y0);
-                break;
-            case Quintic:
+            }
+            case Quintic -> {
                 xs = InterpQuinticFunc(xf - x0);
                 ys = InterpQuinticFunc(yf - y0);
-                break;
+            }
         }
 
         Float2 vec0 = CELL_2D[Hash2D(seed, x0, y0) & 255];
