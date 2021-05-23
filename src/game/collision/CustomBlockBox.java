@@ -2,7 +2,7 @@ package game.collision;
 
 public class CustomBlockBox {
 
-    private static double[] aabb = new double[6];
+    private static final double[] aabb = new double[6];
 
     public static void setBlockBox(int x, int y, int z, double[] blockBox){
         aabb[0] = x + blockBox[0];
