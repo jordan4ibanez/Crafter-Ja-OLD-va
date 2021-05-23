@@ -3,11 +3,6 @@ package game.mob;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import java.util.ArrayDeque;
-import java.util.Collection;
-import java.util.Deque;
-import java.util.Hashtable;
-
 import static engine.Time.getDelta;
 import static engine.sound.SoundAPI.playSound;
 import static game.mob.Human.registerHumanMob;
