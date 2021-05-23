@@ -1940,24 +1940,23 @@ public class FastNoise {
         int y1 = y0 + 1;
         int z1 = z0 + 1;
 
-        float xs, ys, zs;
+        float xs = 0, ys = 0, zs = 0;
         switch (m_interp) {
-            default:
-            case Linear:
+            case Linear -> {
                 xs = xf - x0;
                 ys = yf - y0;
                 zs = zf - z0;
-                break;
-            case Hermite:
+            }
+            case Hermite -> {
                 xs = InterpHermiteFunc(xf - x0);
                 ys = InterpHermiteFunc(yf - y0);
                 zs = InterpHermiteFunc(zf - z0);
-                break;
-            case Quintic:
+            }
+            case Quintic -> {
                 xs = InterpQuinticFunc(xf - x0);
                 ys = InterpQuinticFunc(yf - y0);
                 zs = InterpQuinticFunc(zf - z0);
-                break;
+            }
         }
 
         Float3 vec0 = CELL_3D[Hash3D(seed, x0, y0, z0) & 255];
