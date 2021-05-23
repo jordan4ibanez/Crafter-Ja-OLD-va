@@ -2,7 +2,6 @@ package game.chunk;
 
 import engine.FastNoise;
 import engine.graph.Mesh;
-import org.joml.Vector2i;
 import org.joml.Vector3i;
 
 import java.io.IOException;
@@ -511,14 +510,14 @@ public class Chunk {
         //scan map for out of range chunks
         for (ChunkObject thisChunk : map.values()){
             if (getChunkDistanceFromPlayer(thisChunk.x,thisChunk.z) > chunkRenderDistance){
-                deleteOldChunks(thisChunk.x,thisChunk.z);
+                addChunkToDeletionQueue(thisChunk.x,thisChunk.z);
             }
         }
     }
 
     private static final Deque<String> deletionQueue = new ArrayDeque<>();
 
-    private static void deleteOldChunks(int chunkX, int chunkZ) {
+    private static void addChunkToDeletionQueue(int chunkX, int chunkZ) {
         deletionQueue.add(chunkX + " " + chunkZ);
     }
 
