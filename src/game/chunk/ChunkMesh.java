@@ -40,7 +40,6 @@ public class ChunkMesh {
         while (!queue.isEmpty() && count < 10) {
             count ++;
 
-
             Object[] queueAsArray = queue.keySet().toArray();
             String thisKey = (String)queueAsArray[random.nextInt(queueAsArray.length)];
 
@@ -62,17 +61,12 @@ public class ChunkMesh {
                 setChunkLiquidMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, null);
             }
 
-
             if (!newChunkMeshData.allFacesMeshIsNull) {
                 setChunkAllFacesMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, new Mesh(newChunkMeshData.allFacesPositionsArray, newChunkMeshData.allFacesLightArray, newChunkMeshData.allFacesIndicesArray, newChunkMeshData.allFacesTextureCoordArray, textureAtlas));
             } else {
                 setChunkAllFacesMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, null);
             }
         }
-
-        //if (count > 0) {
-        //    System.out.println("amount of chunk meshes created:" + count);
-        //}
     }
 
     public static void generateChunkMesh(int chunkX, int chunkZ, int yHeight) {
