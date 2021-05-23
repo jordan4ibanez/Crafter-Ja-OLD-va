@@ -1,17 +1,9 @@
 package engine;
 
 import org.joml.Vector3d;
-import org.joml.Vector3f;
-
 import java.util.Random;
 
-import static engine.FancyMath.randomForceValue;
-
 public class FancyMath {
-    public static int randomDirInt(){
-        return  -1 + ((int)(Math.random()*2f) * 2);
-    }
-
     private static final Random random = new Random();
     private static final int[] dirArray = new int[]{-1,1};
 
