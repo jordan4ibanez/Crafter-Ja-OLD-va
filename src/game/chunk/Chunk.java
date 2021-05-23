@@ -39,19 +39,15 @@ public class Chunk {
 
     public static void initialChunkPayload(){
         //create the initial map in memory
-        int x;
-        int z;
-
         int chunkRenderDistance = getRenderDistance();
-
         Vector3i currentChunk = getPlayerCurrentChunk();
-
-        for (x = -chunkRenderDistance + currentChunk.x; x < chunkRenderDistance + currentChunk.x; x++){
-            for (z = -chunkRenderDistance + currentChunk.z; z< chunkRenderDistance + currentChunk.z; z++){
+        for (int x = -chunkRenderDistance + currentChunk.x; x < chunkRenderDistance + currentChunk.x; x++){
+            for (int z = -chunkRenderDistance + currentChunk.z; z< chunkRenderDistance + currentChunk.z; z++){
                 if (getChunkDistanceFromPlayer(x,z) <= chunkRenderDistance){
                     genBiome(x,z);
                     for (int y = 0; y < 8; y++){
-                        generateChunkMesh(x,z,y);
+                        chunkUpdate(x,z,y);
+                        //generateChunkMesh(x,z,y); <- this one causes serious startup lag for slow pcs
                     }
                 }
             }
