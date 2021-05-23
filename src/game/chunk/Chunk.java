@@ -56,13 +56,7 @@ public class Chunk {
 
     private static double getChunkDistanceFromPlayer(int x, int z){
         Vector3i currentChunk = getPlayerCurrentChunk();
-
-        //x distance
-        double distanceX = getDistance(currentChunk.x,0,0, x, 0, 0);
-        //z distance
-        double distanceZ = getDistance(0,0,currentChunk.z, 0, 0, z);
-
-        return Math.max(distanceZ, distanceX);
+        return Math.max(getDistance(0,0,currentChunk.z, 0, 0, z), getDistance(currentChunk.x,0,0, x, 0, 0));
     }
 
     public static void setChunkNormalMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
