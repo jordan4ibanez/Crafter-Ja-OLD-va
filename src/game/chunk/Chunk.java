@@ -446,25 +446,9 @@ public class Chunk {
             return;
         }
         int yPillar = (int)Math.floor(y/16d);
-        switch (y){
-            case 112:
-            case 96:
-            case 80:
-            case 64:
-            case 48:
-            case 32:
-            case 16:
-                chunkUpdate(chunkX, chunkZ, yPillar-1);
-                break;
-            case 111:
-            case 95:
-            case 79:
-            case 63:
-            case 47:
-            case 31:
-            case 15:
-                chunkUpdate(chunkX, chunkZ, yPillar+1);
-                break;
+        switch (y) {
+            case 112, 96, 80, 64, 48, 32, 16 -> chunkUpdate(chunkX, chunkZ, yPillar - 1);
+            case 111, 95, 79, 63, 47, 31, 15 -> chunkUpdate(chunkX, chunkZ, yPillar + 1);
         }
         if (x == 15){ //update neighbor
             chunkUpdate(chunkX+1, chunkZ, yPillar);
