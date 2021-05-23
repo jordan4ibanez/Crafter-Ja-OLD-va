@@ -587,7 +587,7 @@ public class Player {
         //camera underwater effect trigger
         Vector3d camPos = new Vector3d(getCameraPosition());
         camPos.y -= 0.02f;
-        int cameraCheckBlock = getBlock((int)camPos.x,(int)camPos.y, (int)camPos.z);
+        int cameraCheckBlock = getBlock((int)Math.floor(camPos.x),(int)Math.floor(camPos.y), (int)Math.floor(camPos.z));
 
         cameraSubmerged = cameraCheckBlock > 0 && isBlockLiquid(cameraCheckBlock);
 
