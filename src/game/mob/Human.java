@@ -257,10 +257,10 @@ public class Human {
         int textureCounter = 0;
 
         for (float[] thisBlockBox : oneBlockyBoi) {
-            ArrayList positions = new ArrayList();
-            ArrayList textureCoord = new ArrayList();
-            ArrayList indices = new ArrayList();
-            ArrayList light = new ArrayList();
+            ArrayList<Float> positions = new ArrayList<>();
+            ArrayList<Float> textureCoord = new ArrayList<>();
+            ArrayList<Integer> indices = new ArrayList<>();
+            ArrayList<Float> light = new ArrayList<>();
 
             int indicesCount = 0;
             // 0, 1, 2, 3, 4, 5
@@ -288,10 +288,10 @@ public class Human {
                 light.add(frontLight);
             }
             //front
-            indices.add(0 + indicesCount);
+            indices.add(0);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(0);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
 
@@ -343,10 +343,10 @@ public class Human {
                 light.add(backLight);
             }
             //back
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
@@ -400,10 +400,10 @@ public class Human {
                 light.add(rightLight);
             }
             //right
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
@@ -457,10 +457,10 @@ public class Human {
                 light.add(leftLight);
             }
             //left
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
@@ -504,10 +504,10 @@ public class Human {
                 light.add(topLight);
             }
             //top
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
@@ -558,13 +558,12 @@ public class Human {
                 light.add(bottomLight);
             }
             //bottom
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
-            indicesCount += 4;
 
 
             // 0, 1, 2, 3, 4, 5
@@ -592,25 +591,25 @@ public class Human {
             //convert the position objects into usable array
             float[] positionsArray = new float[positions.size()];
             for (int i = 0; i < positions.size(); i++) {
-                positionsArray[i] = (float) positions.get(i);
+                positionsArray[i] = positions.get(i);
             }
 
             //convert the light objects into usable array
             float[] lightArray = new float[light.size()];
             for (int i = 0; i < light.size(); i++) {
-                lightArray[i] = (float) light.get(i);
+                lightArray[i] = light.get(i);
             }
 
             //convert the indices objects into usable array
             int[] indicesArray = new int[indices.size()];
             for (int i = 0; i < indices.size(); i++) {
-                indicesArray[i] = (int) indices.get(i);
+                indicesArray[i] = indices.get(i);
             }
 
             //convert the textureCoord objects into usable array
             float[] textureCoordArray = new float[textureCoord.size()];
             for (int i = 0; i < textureCoord.size(); i++) {
-                textureCoordArray[i] = (float) textureCoord.get(i);
+                textureCoordArray[i] = textureCoord.get(i);
             }
 
             Texture playerTexture = null;
