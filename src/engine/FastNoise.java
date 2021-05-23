@@ -1361,16 +1361,11 @@ public class FastNoise {
         y *= m_frequency;
         z *= m_frequency;
 
-        switch (m_fractalType) {
-            case FBM:
-                return SingleCubicFractalFBM(x, y, z);
-            case Billow:
-                return SingleCubicFractalBillow(x, y, z);
-            case RigidMulti:
-                return SingleCubicFractalRigidMulti(x, y, z);
-            default:
-                return 0;
-        }
+        return switch (m_fractalType) {
+            case FBM -> SingleCubicFractalFBM(x, y, z);
+            case Billow -> SingleCubicFractalBillow(x, y, z);
+            case RigidMulti -> SingleCubicFractalRigidMulti(x, y, z);
+        };
     }
 
     private float SingleCubicFractalFBM(float x, float y, float z) {
