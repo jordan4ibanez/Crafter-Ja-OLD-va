@@ -186,9 +186,9 @@ public class MainMenuRenderer {
                         } else {
                             trueY -= (windowScale / 3.27f) * 1.7;
                         }
-                    } else if (y <= 18){
+                    } else if (y <= 16){
 
-                        if (y == 18) {
+                        if (y == 16) {
                             trueY -= (windowScale / 3.27f) * 3.5;
                         }else {
                             if (on) {
@@ -198,7 +198,7 @@ public class MainMenuRenderer {
                             }
                             on = !on;
                         }
-                    } else if (y == 19){
+                    } else if (y == 17){
                         trueY -= (windowScale / 3.27f) * 0.5;
                     }
 
