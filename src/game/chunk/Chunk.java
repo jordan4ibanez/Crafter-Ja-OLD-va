@@ -24,8 +24,6 @@ import static game.player.Player.getPlayerPos;
 
 public class Chunk {
 
-    private static final int chunkArrayLength = 128 * 16 * 16;
-
     private static final ConcurrentHashMap<String, ChunkObject> map = new ConcurrentHashMap<>();
 
     public static Collection<ChunkObject> getMap(){
