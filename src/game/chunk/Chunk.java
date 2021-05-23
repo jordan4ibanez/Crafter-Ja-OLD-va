@@ -128,7 +128,7 @@ public class Chunk {
     private static float saveTimer = 0f;
     public static void globalChunkSaveToDisk(){
         saveTimer += getDelta();
-
+        //save interval is 3 seconds
         if (saveTimer >= 3f){
             savePlayerPos(getPlayerPos());
             for (ChunkObject thisChunk : map.values()){
