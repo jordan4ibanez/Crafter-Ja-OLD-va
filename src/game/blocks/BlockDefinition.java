@@ -1072,57 +1072,37 @@ public class BlockDefinition {
     }
 
     public static float[] getFrontTexturePoints(int ID, byte rotation){
-        switch (rotation){
-            case 0:
-                return blockIDs[ID].frontTexture;
-            case 1:
-                return blockIDs[ID].rightTexture;
-            case 2:
-                return blockIDs[ID].backTexture;
-            case 3:
-                return blockIDs[ID].leftTexture;
-        }
-        return blockIDs[ID].frontTexture;
+        return switch (rotation) {
+            case 1 -> blockIDs[ID].rightTexture;
+            case 2 -> blockIDs[ID].backTexture;
+            case 3 -> blockIDs[ID].leftTexture;
+            default -> blockIDs[ID].frontTexture;
+        };
     }
     public static float[] getBackTexturePoints(int ID, byte rotation){
-        switch (rotation){
-            case 0:
-                return blockIDs[ID].backTexture;
-            case 1:
-                return blockIDs[ID].leftTexture;
-            case 2:
-                return blockIDs[ID].frontTexture;
-            case 3:
-                return blockIDs[ID].rightTexture;
-        }
+        return switch (rotation) {
+            case 1 -> blockIDs[ID].leftTexture;
+            case 2 -> blockIDs[ID].frontTexture;
+            case 3 -> blockIDs[ID].rightTexture;
+            default -> blockIDs[ID].backTexture;
+        };
 
-        return blockIDs[ID].backTexture;
     }
     public static float[] getRightTexturePoints(int ID, byte rotation){
-        switch (rotation){
-            case 0:
-                return blockIDs[ID].rightTexture;
-            case 1:
-                return blockIDs[ID].backTexture;
-            case 2:
-                return blockIDs[ID].leftTexture;
-            case 3:
-                return blockIDs[ID].frontTexture;
-        }
-        return blockIDs[ID].rightTexture;
+        return switch (rotation) {
+            case 1 -> blockIDs[ID].backTexture;
+            case 2 -> blockIDs[ID].leftTexture;
+            case 3 -> blockIDs[ID].frontTexture;
+            default -> blockIDs[ID].rightTexture;
+        };
     }
     public static float[] getLeftTexturePoints(int ID, byte rotation){
-        switch (rotation){
-            case 0:
-                return blockIDs[ID].leftTexture;
-            case 1:
-                return blockIDs[ID].frontTexture;
-            case 2:
-                return blockIDs[ID].rightTexture;
-            case 3:
-                return blockIDs[ID].backTexture;
-        }
-        return blockIDs[ID].leftTexture;
+        return switch (rotation) {
+            case 1 -> blockIDs[ID].frontTexture;
+            case 2 -> blockIDs[ID].rightTexture;
+            case 3 -> blockIDs[ID].backTexture;
+            default -> blockIDs[ID].leftTexture;
+        };
     }
 
     public static boolean isBlockLiquid(int ID){
