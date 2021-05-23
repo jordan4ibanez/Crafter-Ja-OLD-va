@@ -122,21 +122,21 @@ public class ParticleCollision {
 
         int positive = inertiaToDir(inertia.x);
 
-        switch (positive){
-            case 1:
+        switch (positive) {
+            case 1 -> {
                 cachedBlock = detectBlock(floorPos(fPos));
-                rot =  detectRot(cachedPos);
+                rot = detectRot(cachedPos);
                 if (cachedBlock > 0 && isWalkable(cachedBlock)) {
                     collideXPositive((int) pos.x, (int) fPos.y, (int) fPos.z, rot, pos, inertia, oldPos, cachedBlock);
                 }
-                break;
-            case -1:
+            }
+            case -1 -> {
                 cachedBlock = detectBlock(floorPos(fPos));
-                rot =  detectRot(cachedPos);
+                rot = detectRot(cachedPos);
                 if (cachedBlock > 0 && isWalkable(cachedBlock)) {
                     collideXNegative((int) fPos.x, (int) fPos.y, (int) fPos.z, rot, pos, inertia, oldPos, cachedBlock);
                 }
-                break;
+            }
         }
 
 
@@ -147,21 +147,21 @@ public class ParticleCollision {
 
         positive = inertiaToDir(inertia.z);
 
-        switch (positive){
-            case 1:
+        switch (positive) {
+            case 1 -> {
                 cachedBlock = detectBlock(floorPos(fPos));
-                rot =  detectRot(cachedPos);
+                rot = detectRot(cachedPos);
                 if (cachedBlock > 0 && isWalkable(cachedBlock)) {
-                    collideZPositive((int) fPos.x , (int) fPos.y, (int) fPos.z, rot, pos, inertia, oldPos, cachedBlock);
+                    collideZPositive((int) fPos.x, (int) fPos.y, (int) fPos.z, rot, pos, inertia, oldPos, cachedBlock);
                 }
-                break;
-            case -1:
+            }
+            case -1 -> {
                 cachedBlock = detectBlock(floorPos(fPos));
-                rot =  detectRot(cachedPos);
+                rot = detectRot(cachedPos);
                 if (cachedBlock > 0 && isWalkable(cachedBlock)) {
-                    collideZNegative((int) fPos.x , (int) fPos.y, (int) fPos.z, rot, pos, inertia, oldPos, cachedBlock);
+                    collideZNegative((int) fPos.x, (int) fPos.y, (int) fPos.z, rot, pos, inertia, oldPos, cachedBlock);
                 }
-                break;
+            }
         }
 
         return onGround;
