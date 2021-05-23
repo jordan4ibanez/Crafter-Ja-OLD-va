@@ -174,7 +174,7 @@ public class Collision {
                 byte rot =  detectRot(cachedPos);
 
                 if (cachedBlock > 0 && isWalkable(cachedBlock)) {
-                    onGround = sneakCollideYNegative((int)(fPos.x + x), (int)fPos.y, (int)(fPos.z + z), rot, clonedPos, clonedInertia, width, height, onGround, cachedBlock);
+                    onGround = sneakCollideYNegative((int)(fPos.x + x), (int)fPos.y, (int)(fPos.z + z), rot, clonedPos, width, height, onGround, cachedBlock);
                 }
             }
         }
@@ -208,7 +208,7 @@ public class Collision {
                 byte rot =  detectRot(cachedPos);
 
                 if (cachedBlock > 0 && isWalkable(cachedBlock)) {
-                    onGround = sneakCollideYNegative((int)(fPos.x + x), (int)fPos.y, (int)(fPos.z + z), rot, clonedPos, clonedInertia, width, height, onGround, cachedBlock);
+                    onGround = sneakCollideYNegative((int)(fPos.x + x), (int)fPos.y, (int)(fPos.z + z), rot, clonedPos, width, height, onGround, cachedBlock);
                 }
             }
         }
@@ -222,7 +222,7 @@ public class Collision {
         return binaryReturn;
     }
 
-    private static boolean sneakCollideYNegative(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, float width, float height, boolean onGround, int blockID){
+    private static boolean sneakCollideYNegative(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, float width, float height, boolean onGround, int blockID){
         for (double[] thisBlockBox : getBlockShape(blockID, rot)) {
             setAABB(pos.x, pos.y, pos.z, width, height);
             setBlockBox(blockPosX,blockPosY,blockPosz,thisBlockBox);
@@ -259,16 +259,12 @@ public class Collision {
         //todo: begin Y collision detection -- YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
         double y;
         switch (inertiaToDir(inertia.y)) {
-            case -1:
-                y = (int) fPos.y;
-                break;
-            case 1:
+            case -1 -> y = (int) fPos.y;
+            case 1 -> {
                 y = (int) Math.floor(pos.y + height);
                 up = 1;
-                break;
-            default:
-                y = 777;
-                break;
+            }
+            default -> y = 777;
         }
         if (y != 777) {
             switch (up) {
@@ -296,7 +292,6 @@ public class Collision {
                         for (z = -1; z <= 1; z++) {
                             cachedPos.x = fPos.x + x;
                             cachedPos.y = Math.floor(pos.y + height);
-                            ;
                             cachedPos.z = fPos.z + z;
 
                             cachedBlock = detectBlock(cachedPos);
@@ -391,7 +386,7 @@ public class Collision {
                     byte rot =  detectRot(cachedPos);
 
                     if (cachedBlock > 0 && isBlockLiquid(cachedBlock)){
-                        detectIfInWater((int)(fPos.x + x), (int)(yy + pos.y), (int)(fPos.z + z), rot, pos, inertia, width, height, cachedBlock);
+                        detectIfInWater((int)(fPos.x + x), (int)(yy + pos.y), (int)(fPos.z + z), rot, pos, width, height, cachedBlock);
                     }
                 }
             }
@@ -402,7 +397,7 @@ public class Collision {
 
     //a simple way to check if an object is in the water, only done on x and z passes so you can't stand
     //next to water and get slowed down
-    private static void detectIfInWater(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, float width, float height, int blockID){
+    private static void detectIfInWater(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, float width, float height, int blockID){
         for (double[] thisBlockBox : getBlockShape(blockID, rot)) {
             setAABB(pos.x, pos.y, pos.z, width, height);
             setBlockBox(blockPosX,blockPosY,blockPosz,thisBlockBox);
