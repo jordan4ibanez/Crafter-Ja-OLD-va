@@ -99,14 +99,14 @@ public class ParticleCollision {
         switch (up) {
             case -1 -> {
                 cachedBlock = detectBlock(fPos);
-                rot = detectRot(cachedPos);
+                rot = detectRot();
                 if (cachedBlock > 0 && isWalkable(cachedBlock)) {
                     onGround = collideYNegative((int) fPos.x, (int) fPos.y, (int) fPos.z, rot, pos, inertia, onGround, cachedBlock);
                 }
             }
             case 1 -> {
                 cachedBlock = detectBlock(fPos);
-                rot = detectRot(cachedPos);
+                rot = detectRot();
                 if (cachedBlock > 0 && isWalkable(cachedBlock)) {
                     collideYPositive((int) fPos.x, (int) fPos.y, (int) fPos.z, rot, pos, inertia, cachedBlock);
                 }
@@ -125,14 +125,14 @@ public class ParticleCollision {
         switch (positive) {
             case 1 -> {
                 cachedBlock = detectBlock(floorPos(fPos));
-                rot = detectRot(cachedPos);
+                rot = detectRot();
                 if (cachedBlock > 0 && isWalkable(cachedBlock)) {
                     collideXPositive((int) pos.x, (int) fPos.y, (int) fPos.z, rot, pos, inertia, oldPos, cachedBlock);
                 }
             }
             case -1 -> {
                 cachedBlock = detectBlock(floorPos(fPos));
-                rot = detectRot(cachedPos);
+                rot = detectRot();
                 if (cachedBlock > 0 && isWalkable(cachedBlock)) {
                     collideXNegative((int) fPos.x, (int) fPos.y, (int) fPos.z, rot, pos, inertia, oldPos, cachedBlock);
                 }
@@ -150,14 +150,14 @@ public class ParticleCollision {
         switch (positive) {
             case 1 -> {
                 cachedBlock = detectBlock(floorPos(fPos));
-                rot = detectRot(cachedPos);
+                rot = detectRot();
                 if (cachedBlock > 0 && isWalkable(cachedBlock)) {
                     collideZPositive((int) fPos.x, (int) fPos.y, (int) fPos.z, rot, pos, inertia, oldPos, cachedBlock);
                 }
             }
             case -1 -> {
                 cachedBlock = detectBlock(floorPos(fPos));
-                rot = detectRot(cachedPos);
+                rot = detectRot();
                 if (cachedBlock > 0 && isWalkable(cachedBlock)) {
                     collideZNegative((int) fPos.x, (int) fPos.y, (int) fPos.z, rot, pos, inertia, oldPos, cachedBlock);
                 }
@@ -245,8 +245,8 @@ public class ParticleCollision {
         return getBlock((int)flooredPos.x, (int)flooredPos.y, (int)flooredPos.z);
     }
 
-    private static byte detectRot(Vector3f flooredPos){
-        return getBlockRotation((int)flooredPos.x, (int)flooredPos.y, (int)flooredPos.z);
+    private static byte detectRot(){
+        return getBlockRotation((int) ParticleCollision.cachedPos.x, (int) ParticleCollision.cachedPos.y, (int) ParticleCollision.cachedPos.z);
     }
 
 
