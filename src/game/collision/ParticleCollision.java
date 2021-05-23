@@ -96,21 +96,21 @@ public class ParticleCollision {
         byte rot;
 
         int cachedBlock;
-        switch (up){
-            case -1:
+        switch (up) {
+            case -1 -> {
                 cachedBlock = detectBlock(fPos);
-                rot =  detectRot(cachedPos);
+                rot = detectRot(cachedPos);
                 if (cachedBlock > 0 && isWalkable(cachedBlock)) {
                     onGround = collideYNegative((int) fPos.x, (int) fPos.y, (int) fPos.z, rot, pos, inertia, onGround, cachedBlock);
                 }
-                break;
-            case 1:
+            }
+            case 1 -> {
                 cachedBlock = detectBlock(fPos);
-                rot =  detectRot(cachedPos);
+                rot = detectRot(cachedPos);
                 if (cachedBlock > 0 && isWalkable(cachedBlock)) {
                     collideYPositive((int) fPos.x, (int) fPos.y, (int) fPos.z, rot, pos, inertia, cachedBlock);
                 }
-                break;
+            }
         }
 
 
