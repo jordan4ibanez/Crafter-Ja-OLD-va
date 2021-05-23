@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static engine.FancyMath.getDistance;
 import static engine.MouseInput.getMousePos;
-import static engine.debug.CheckHeapSize.getHeapInfoText;
+import static engine.debug.CheckRuntimeInfo.getRuntimeInfoText;
 import static engine.graph.Camera.*;
 import static engine.graph.Transformation.*;
 import static engine.graph.Transformation.buildOrthoProjModelMatrix;
@@ -678,13 +678,13 @@ public class GameRenderer {
                     }
 
 
-                    Mesh[] heapInfo = getHeapInfoText();
-                    for (int i = 0; i < 3; i++){
-                        if (heapInfo[i] != null){
+                    Mesh[] runtimeInfo = getRuntimeInfoText();
+                    for (int i = 0; i < runtimeInfo.length; i++){
+                        if (runtimeInfo[i] != null){
                             glClear(GL_DEPTH_BUFFER_BIT);
                             modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d((-windowSize.x / 2d), (float) (windowSize.y / 3d) + ((-i - 1) * (windowSize.y/20d)), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 30d, windowScale / 30d, windowScale / 30d));
                             hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                            heapInfo[i].render();
+                            runtimeInfo[i].render();
                         }
                     }
 
@@ -692,7 +692,7 @@ public class GameRenderer {
                     //render fps
                     {
                         glClear(GL_DEPTH_BUFFER_BIT);
-                        modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d((-windowSize.x / 2d), (windowSize.y / 3d + (-4 * (windowSize.y/20d))), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 30d, windowScale / 30d, windowScale / 30d));
+                        modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d((-windowSize.x / 2d), (windowSize.y / 3d + (-7 * (windowSize.y/20d))), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 30d, windowScale / 30d, windowScale / 30d));
                         hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                         workerMesh = getFPSMesh();
                         workerMesh.render();

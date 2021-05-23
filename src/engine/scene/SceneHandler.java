@@ -7,7 +7,7 @@ import static engine.Controls.gameInput;
 import static engine.Controls.mainMenuInput;
 import static engine.MouseInput.*;
 import static engine.Window.*;
-import static engine.debug.CheckHeapSize.doHeapInfoUpdate;
+import static engine.debug.CheckRuntimeInfo.doRuntimeInfoUpdate;
 import static engine.debug.DebugTerrainDrawTypes.generateDebugChunkMesh;
 import static engine.debug.RenderDebug.initializeDebugRenderShader;
 import static engine.debug.RenderDebug.renderDebug;
@@ -82,7 +82,7 @@ public class SceneHandler {
 
         while (!windowShouldClose()){
             if (getDebugInfo()) {
-                doHeapInfoUpdate();
+                doRuntimeInfoUpdate();
             }
 
             switch (currentScene) {
