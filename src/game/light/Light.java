@@ -1,16 +1,12 @@
 package game.light;
 
-import org.joml.Vector3f;
-import org.joml.Vector3i;
-
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 import static engine.Time.getDelta;
-import static engine.Window.windowShouldClose;
 import static game.chunk.Chunk.*;
 
 public class Light {
-    private static final Deque<Vector3i> queue = new ArrayDeque<>();
 
     private static final byte maxLightLevel = 15;
     private static final byte blockIndicator = 127;
@@ -104,22 +100,9 @@ public class Light {
     }
 
     public static void lightFloodFill(int posX, int posY, int posZ) {
-
-      //  queue.add(new Vector3i(posX, posY, posZ));
-    //}
-
-    //public static void indexLight(){
         new Thread(() -> {
-            //if (!queue.isEmpty()) {
                 final Deque<LightUpdate> lightSources = new ArrayDeque<>();
                 final byte[][][] memoryMap = new byte[(lightDistance * 2) + 1][(lightDistance * 2) + 1][(lightDistance * 2) + 1];
-
-                //Vector3i tempObject = queue.pop();
-
-                //int posX = tempObject.x;
-                //int posY = tempObject.y;
-                //int posZ = tempObject.z;
-
                 for (int x = posX - lightDistance; x <= posX + lightDistance; x++) {
                     for (int y = posY - lightDistance; y <= posY + lightDistance; y++) {
                         for (int z = posZ - lightDistance; z <= posZ + lightDistance; z++) {
