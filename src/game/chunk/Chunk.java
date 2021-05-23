@@ -144,15 +144,10 @@ public class Chunk {
     //this is for testing the day/night cycle
     public static void testLightCycleFlood(){
         byte currentLightLevel = getCurrentGlobalLightLevel();
-
         for (ChunkObject thisChunk : map.values()){
-
             if (thisChunk.lightLevel != currentLightLevel){
-
                 floodChunkWithNewGlobalLight(thisChunk, thisChunk.lightLevel, currentLightLevel);
-
                 thisChunk.lightLevel = currentLightLevel;
-
             }
         }
     }
@@ -185,17 +180,14 @@ public class Chunk {
             instantSave(thisChunk);
             thisChunk.modified = false;
         }
-
         map.clear();
     }
 
     public static boolean chunkStackContainsBlock(int chunkX, int chunkZ, int yHeight){
         ChunkObject thisChunk = map.get(chunkX + " " + chunkZ);
-
         if (thisChunk == null || thisChunk.block == null){
             return false;
         }
-
         for (int x = 0; x < 16; x++){
             for (int z = 0; z < 16; z++){
                 for (int y = yHeight * 16; y < (yHeight + 1) * 16; y++){
@@ -235,19 +227,14 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
-
         String key = chunkX + " " + chunkZ;
-
         ChunkObject thisChunk = map.get(key);
-
         if (thisChunk == null){
             return false;
         }
-
         if (thisChunk.block == null){
             return false;
         }
-
         return thisChunk.heightMap[blockX][blockZ] < y + 1;
     }
 
