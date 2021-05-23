@@ -59,8 +59,7 @@ public class ChunkUpdateHandler {
                 String key = "";
 
                 Object[] queueAsArray = queue.keySet().toArray();
-                Object thisObject = queueAsArray[random.nextInt(queueAsArray.length)];
-                String thisKey = (String)thisObject;
+                String thisKey = (String)queueAsArray[random.nextInt(queueAsArray.length)];
 
                 ChunkUpdate thisUpdate = queue.get(thisKey);
 
