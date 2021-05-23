@@ -408,21 +408,16 @@ public class FastNoise {
         hash &= 31;
         float a = yd, b = zd, c = wd;            // X,Y,Z
         switch (hash >> 3) {          // OR, DEPENDING ON HIGH ORDER 2 BITS:
-            case 1:
+            case 1 -> {
                 a = wd;
                 b = xd;
                 c = yd;
-                break;     // W,X,Y
-            case 2:
+            }     // W,X,Y
+            case 2 -> {
                 a = zd;
                 b = wd;
                 c = xd;
-                break;     // Z,W,X
-            case 3:
-                a = yd;
-                b = zd;
-                c = wd;
-                break;     // Y,Z,W
+            }     // Z,W,X
         }
         return ((hash & 4) == 0 ? -a : a) + ((hash & 2) == 0 ? -b : b) + ((hash & 1) == 0 ? -c : c);
     }
