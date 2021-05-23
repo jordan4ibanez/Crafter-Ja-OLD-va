@@ -11,7 +11,6 @@ public class MobObject {
     public Vector3d pos;
     public Vector3d lastPos;
     public Vector3f inertia;
-    public String mobDefinitionKey;
     public final float width;
     public final float height;
     public float rotation;
