@@ -22,8 +22,7 @@ import static engine.graph.Transformation.*;
 import static engine.graph.Transformation.buildOrthoProjModelMatrix;
 import static engine.gui.GUI.*;
 import static engine.gui.GUILogic.*;
-import static engine.gui.TextHandling.createText;
-import static engine.gui.TextHandling.createTextCenteredWithShadow;
+import static engine.gui.TextHandling.*;
 import static engine.settings.Settings.*;
 import static game.crafting.InventoryLogic.getPlayerHudRotation;
 import static game.falling.FallingEntity.getFallingEntities;
@@ -634,15 +633,9 @@ public class GameRenderer {
 
                 //THESE GO LAST!
 
-                //version info
-                {
-                    modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((-windowSize.x / 2d) + (windowSize.x / 600d)), ((windowSize.y / 2.1d) - (windowSize.y / 600d)), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 30d, windowScale / 30d, windowScale / 30d));
-                    hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                    getVersionInfoTextShadow().render();
-                }
-
                 glClear(GL_DEPTH_BUFFER_BIT);
 
+                //version info
                 {
                     modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(-windowSize.x / 2d, (windowSize.y / 2.1d), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 30d, windowScale / 30d, windowScale / 30d));
                     hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
@@ -654,35 +647,22 @@ public class GameRenderer {
 
                     //x info
                     {
-                        glClear(GL_DEPTH_BUFFER_BIT);
-
-                        modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((-windowSize.x / 2d) + (windowSize.x / 600d)), ((windowSize.y / 2.3d) - (windowSize.y / 600d)), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 30d, windowScale / 30d, windowScale / 30d));
-                        hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                        workerMesh = createText("X:" + getPlayerPos().x, 0f, 0f, 0f);
-                        workerMesh.render();
-                        workerMesh.cleanUp(false);
 
                         glClear(GL_DEPTH_BUFFER_BIT);
                         modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d((-windowSize.x / 2d), (windowSize.y / 2.3d), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 30d, windowScale / 30d, windowScale / 30d));
                         hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                        workerMesh = createText("X:" + getPlayerPos().x, 1f, 1f, 1f);
+                        workerMesh = createTextWithShadow("X:" + getPlayerPos().x, 1f, 1f, 1f);
                         workerMesh.render();
                         workerMesh.cleanUp(false);
                     }
 
                     //y info
                     {
-                        glClear(GL_DEPTH_BUFFER_BIT);
-                        modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((-windowSize.x / 2d) + (windowSize.x / 600d)), ((windowSize.y / 2.6d) - (windowSize.y / 600d)), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 30d, windowScale / 30d, windowScale / 30d));
-                        hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                        workerMesh = createText("Y:" + getPlayerPos().y, 0f, 0f, 0f);
-                        workerMesh.render();
-                        workerMesh.cleanUp(false);
 
                         glClear(GL_DEPTH_BUFFER_BIT);
                         modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d((-windowSize.x / 2d), (windowSize.y / 2.6d), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 30d, windowScale / 30d, windowScale / 30d));
                         hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                        workerMesh = createText("Y:" + getPlayerPos().y, 1f, 1f, 1f);
+                        workerMesh = createTextWithShadow("Y:" + getPlayerPos().y, 1f, 1f, 1f);
                         workerMesh.render();
                         workerMesh.cleanUp(false);
                     }
@@ -690,28 +670,15 @@ public class GameRenderer {
                     //z info
                     {
                         glClear(GL_DEPTH_BUFFER_BIT);
-                        modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((-windowSize.x / 2d) + (windowSize.x / 600d)), ((windowSize.y / 2.9d) - (windowSize.y / 600d)), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 30d, windowScale / 30d, windowScale / 30d));
-                        hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                        workerMesh = createText("Z:" + getPlayerPos().z, 0f, 0f, 0f);
-                        workerMesh.render();
-                        workerMesh.cleanUp(false);
-
-                        glClear(GL_DEPTH_BUFFER_BIT);
                         modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d((-windowSize.x / 2d), (float) (windowSize.y / 2.9d), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 30d, windowScale / 30d, windowScale / 30d));
                         hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                        workerMesh = createText("Z:" + getPlayerPos().z, 1f, 1f, 1f);
+                        workerMesh = createTextWithShadow("Z:" + getPlayerPos().z, 1f, 1f, 1f);
                         workerMesh.render();
                         workerMesh.cleanUp(false);
                     }
 
                     //render fps
                     {
-                        glClear(GL_DEPTH_BUFFER_BIT);
-                        modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((-windowSize.x / 2d) + (windowSize.x / 600d)), ((windowSize.y / 3.3d) - (windowSize.y / 600d)), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 30d, windowScale / 30d, windowScale / 30d));
-                        hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                        workerMesh = getFPSShadowMesh();
-                        workerMesh.render();
-
                         glClear(GL_DEPTH_BUFFER_BIT);
                         modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d((-windowSize.x / 2d), (windowSize.y / 3.3d), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 30d, windowScale / 30d, windowScale / 30d));
                         hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
@@ -721,12 +688,6 @@ public class GameRenderer {
                 } else {
                     //only show FPS
                     {
-                        glClear(GL_DEPTH_BUFFER_BIT);
-                        modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((-windowSize.x / 2d) + (windowSize.x / 600d)), ((windowSize.y / 2.3d) - (windowSize.y / 600d)), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 30d, windowScale / 30d, windowScale / 30d));
-                        hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                        workerMesh = getFPSShadowMesh();
-                        workerMesh.render();
-
                         glClear(GL_DEPTH_BUFFER_BIT);
                         modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d((-windowSize.x / 2d), (windowSize.y / 2.3d), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 30d, windowScale / 30d, windowScale / 30d));
                         hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);

@@ -10,20 +10,16 @@ import org.joml.Vector3f;
 import java.util.ArrayList;
 
 import static engine.Timer.getFpsCounted;
-import static engine.gui.TextHandling.createText;
-import static engine.gui.TextHandling.createTextCentered;
 import static engine.Time.getDelta;
 import static engine.Window.*;
 
+import static engine.gui.TextHandling.*;
 import static game.Crafter.getVersionName;
 import static game.chunk.ChunkMesh.convertLight;
 import static game.player.Player.*;
 
 public class GUI {
     private static final Vector3f playerScale = new Vector3f(0.7f,0.8f,0.7f);
-
-    private static final Vector3f versionInfoPos = new Vector3f(-5f,8f,-14f);
-    private static final Vector3f versionInfoShadowPos = new Vector3f(-4.9f,7.9f,-14f);
 
     //health bar elements
     //calculated per half heart
@@ -46,7 +42,6 @@ public class GUI {
     private static Mesh thisCrossHairMesh;
     private static Mesh playerMesh;
     private static Mesh versionInfoText;
-    private static Mesh versionInfoTextShadow;
     private static Mesh inventorySelectionMesh;
     private static Mesh wieldHandMesh;
     private static Mesh inventorySlotMesh;
@@ -65,7 +60,6 @@ public class GUI {
     private static Mesh heartShadowHudMesh;
 
 
-    private static Mesh fpsShadowMesh;
     private static Mesh fpsMesh;
 
     public static void createGUI() throws Exception {
@@ -93,11 +87,9 @@ public class GUI {
         toggleVsyncMesh = createTextCentered("VSYNC:ON", 1,1,1);
         quitGameMesh = createTextCentered("QUIT", 1,1,1);
 
-        fpsShadowMesh = createText("FPS: " + getFpsCounted(), 0f, 0f, 0f);
-        fpsMesh = createText("FPS: " + getFpsCounted(), 1f, 1f, 1f);
+        fpsMesh = createTextWithShadow("FPS: " + getFpsCounted(), 1f, 1f, 1f);
 
-        versionInfoText = createText(getVersionName(), 1,1,1);
-        versionInfoTextShadow = createText(getVersionName(), 0,0,0);
+        versionInfoText = createTextWithShadow(getVersionName(), 1,1,1);
 
 
 
@@ -160,18 +152,6 @@ public class GUI {
 
     public static Mesh getVersionInfoText(){
         return versionInfoText;
-    }
-
-    public static Mesh getVersionInfoTextShadow(){
-        return versionInfoTextShadow;
-    }
-
-    public static Vector3f getVersionInfoPos(){
-        return versionInfoPos;
-    }
-
-    public static Vector3f getVersionInfoShadowPos(){
-        return versionInfoShadowPos;
     }
 
     public static Mesh getInventorySelectionMesh(){
@@ -287,16 +267,14 @@ public class GUI {
     }
 
     public static void buildFPSMesh() {
-        fpsShadowMesh = createText("FPS: " + getFpsCounted(), 0f, 0f, 0f);
-        fpsMesh = createText("FPS: " + getFpsCounted(), 1f, 1f, 1f);
+        if (fpsMesh != null){
+            fpsMesh.cleanUp(false);
+        }
+        fpsMesh = createTextWithShadow("FPS: " + getFpsCounted(), 1f, 1f, 1f);
     }
 
     public static Mesh getFPSMesh(){
         return fpsMesh;
-    }
-
-    public static Mesh getFPSShadowMesh(){
-        return fpsShadowMesh;
     }
 
     public static void rebuildMiningMesh(int level) {
