@@ -246,18 +246,14 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
-
         String key = chunkX + " " + chunkZ;
-
         ChunkObject thisChunk = map.get(key);
         if (thisChunk == null){
             return -1;
         }
-
         if (thisChunk.block == null){
             return -1;
         }
-
         return thisChunk.block[posToIndex(blockX, y, blockZ)];
     }
 
