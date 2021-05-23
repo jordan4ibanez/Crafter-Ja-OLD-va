@@ -1579,14 +1579,10 @@ public class FastNoise {
         y *= m_frequency;
         z *= m_frequency;
 
-        switch (m_cellularReturnType) {
-            case CellValue:
-            case NoiseLookup:
-            case Distance:
-                return SingleCellular(x, y, z);
-            default:
-                return SingleCellular2Edge(x, y, z);
-        }
+        return switch (m_cellularReturnType) {
+            case CellValue, NoiseLookup, Distance -> SingleCellular(x, y, z);
+            default -> SingleCellular2Edge(x, y, z);
+        };
     }
 
     private float SingleCellular(float x, float y, float z) {
