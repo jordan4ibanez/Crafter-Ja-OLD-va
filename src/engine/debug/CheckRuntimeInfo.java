@@ -26,9 +26,19 @@ public class CheckRuntimeInfo {
     public static void doRuntimeInfoUpdate(){
         timer += getDelta();
 
-        if (timer >= 0.1){
+        if (timer >= 0.5){
             timer = 0f;
             updateRuntimeInfoText();
+            currentAmountOfThreads = 0;
+        }
+
+        //do THREAD and HEALTH calculation in real time
+
+        if (Thread.activeCount() > currentAmountOfThreads) {
+            // Get number of threads currently being utilized
+            currentAmountOfThreads = Thread.activeCount();
+            // Show how much effort the CPU is exerting (Higher is better/Less cpu resources being used)
+            cpuHealth = Math.round((((float)availableProcessors-((float)currentAmountOfThreads-1f)) / (float)availableProcessors) * 100.f);
         }
     }
 
@@ -65,11 +75,6 @@ public class CheckRuntimeInfo {
 
         // Get number of cpu threads available
         availableProcessors = Runtime.getRuntime().availableProcessors();
-        // Get number of threads currently being utilized
-        currentAmountOfThreads = Thread.activeCount();
-        // Show how much effort the CPU is exerting (Higher is better/Less cpu resources being used)
-        cpuHealth = Math.round((((float)availableProcessors-((float)currentAmountOfThreads-1f)) / (float)availableProcessors) * 100.f);
-
     }
 
     public static String formatSize(long v) {
