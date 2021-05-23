@@ -24,7 +24,6 @@ public class ChunkUpdateHandler {
 
     //the higher this is set, the lazier chunk mesh loading gets
     //set it too high, and chunk mesh loading barely works
-
     private static final float[] goalTimerArray = new float[]{
             0.05f, //SNAIL
             0.025f, //SLOWER
