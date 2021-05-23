@@ -480,7 +480,6 @@ public class Chunk {
                 chunkUpdate(chunkX, chunkZ+1, y);
             }
         }
-
         if (map.get(chunkX + " " + (chunkZ-1)) != null){
             for (int y = 0; y < 8; y++){
                 chunkUpdate(chunkX, chunkZ-1, y);
@@ -490,22 +489,15 @@ public class Chunk {
 
 
     public static void generateNewChunks(){
-
-
         //create the initial map in memory
-        int x;
-        int z;
         int chunkRenderDistance = getRenderDistance();
         Vector3i currentChunk = getPlayerCurrentChunk();
-
         String currChunk = "";
-
         //scan for not-generated/loaded chunks
-        for (x = -chunkRenderDistance + currentChunk.x; x < chunkRenderDistance + currentChunk.x; x++){
-            for (z = -chunkRenderDistance + currentChunk.z; z< chunkRenderDistance + currentChunk.z; z++){
+        for (int x = -chunkRenderDistance + currentChunk.x; x < chunkRenderDistance + currentChunk.x; x++){
+            for (int z = -chunkRenderDistance + currentChunk.z; z< chunkRenderDistance + currentChunk.z; z++){
                 if (getChunkDistanceFromPlayer(x,z) <= chunkRenderDistance){
                     currChunk = x + " " + z;
-
                     if (map.get(currChunk) == null){
                         genBiome(x,z);
                         for (int y = 0; y < 8; y++) {
@@ -516,7 +508,6 @@ public class Chunk {
                 }
             }
         }
-
         //scan map for out of range chunks
         for (ChunkObject thisChunk : map.values()){
             if (getChunkDistanceFromPlayer(thisChunk.x,thisChunk.z) > chunkRenderDistance){
