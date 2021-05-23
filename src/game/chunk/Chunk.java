@@ -540,9 +540,11 @@ public class Chunk {
 
     private static float chunkDeletionTimer = 0f;
 
+
     public static void processOldChunks() {
 
         chunkDeletionTimer += getDelta();
+
         int updateAmount = 0;
 
         if (chunkDeletionTimer >= goalTimer){
@@ -552,15 +554,11 @@ public class Chunk {
 
         for (int i = 0; i < updateAmount; i++) {
             if (!deletionQueue.isEmpty()) {
-
                 String key = deletionQueue.pop();
-
                 ChunkObject thisChunk = map.get(key);
-
                 if (thisChunk == null) {
                     return;
                 }
-
                 if (thisChunk.normalMesh != null) {
                     for (int y = 0; y < 8; y++) {
                         if (thisChunk.normalMesh[y] != null) {
@@ -569,7 +567,6 @@ public class Chunk {
                         }
                     }
                 }
-
                 if (thisChunk.liquidMesh != null) {
                     for (int y = 0; y < 8; y++) {
                         if (thisChunk.liquidMesh[y] != null) {
@@ -578,16 +575,13 @@ public class Chunk {
                         }
                     }
                 }
-
                 if (thisChunk.modified) {
                     saveChunk(thisChunk);
                 }
-
                 map.remove(key);
             }
         }
     }
-
 
     private final static int seed = 532_444_432;
 
@@ -618,7 +612,6 @@ public class Chunk {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
             if (loadedChunk != null) {
                 map.put(chunkX + " " + chunkZ, loadedChunk);
 
@@ -626,22 +619,17 @@ public class Chunk {
                 for (int i = 0; i < 8; i++) {
                     chunkUpdate(loadedChunk.x, loadedChunk.z, i); //delayed
                 }
-
             } else {
-
                 ChunkObject thisChunk = map.get(chunkX + " " + chunkZ);
 
                 if (thisChunk == null) {
                     thisChunk = new ChunkObject(chunkX,chunkZ);
                     map.put(chunkX + " " + chunkZ, thisChunk);
                 }
-
                 thisChunk.modified = true;
-
                 //biome max 128 trees
                 Vector3i[] treePosArray = new Vector3i[128];
                 byte treeIndex = 0;
-
                 //standard generation
                 for (generationX = 0; generationX < 16; generationX++) {
                     for (generationZ = 0; generationZ < 16; generationZ++) {
@@ -739,8 +727,8 @@ public class Chunk {
                 }
 
                 //check for trees outside chunk borders (simulated chunk generation)
-                for (generationX = 0 - 3; generationX < 16 + 3; generationX++) {
-                    for (generationZ = 0 - 3; generationZ < 16 + 3; generationZ++) {
+                for (generationX = -3; generationX < 16 + 3; generationX++) {
+                    for (generationZ = -3; generationZ < 16 + 3; generationZ++) {
 
                         //only check outside
                         if (generationX < 0 || generationX > 15 || generationZ < 0 || generationZ > 15) {
@@ -750,7 +738,7 @@ public class Chunk {
 
                             height = (byte) (Math.abs(noise.GetPerlin(realPosX, realPosZ) * noiseMultiplier + heightAdder) + (byte) 1);
 
-                            if (height >= 0 && height <= 127 && height > waterHeight + 1) {
+                            if (height > waterHeight + 1) {
 
                                 float noiseTest2 = Math.abs(noise.GetWhiteNoise(realPosX, height, realPosZ));
 
