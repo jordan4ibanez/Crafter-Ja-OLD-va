@@ -1618,7 +1618,7 @@ public class ChunkMesh {
                 //inform the container object that this chunk is null for this part of it
                 newChunkData.allFacesMeshIsNull = true;
             }
-            
+
             //finally add it into the queue to be popped
             String keyName = chunkX + " " + chunkZ + " " + yHeight;
             queue.put(keyName, newChunkData);

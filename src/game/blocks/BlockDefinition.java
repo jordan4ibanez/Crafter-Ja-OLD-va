@@ -3,17 +3,13 @@ package game.blocks;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import static engine.sound.SoundAPI.playSound;
 import static game.chunk.Chunk.*;
 import static game.crafting.InventoryLogic.openCraftingInventory;
 import static game.falling.FallingEntity.addFallingEntity;
-
 import static game.item.ItemDefinition.registerItem;
 import static game.item.ItemEntity.createItem;
 import static game.tnt.TNTEntity.createTNT;
-import static engine.sound.SoundAPI.playSound;
 
 public class BlockDefinition {
 
@@ -171,9 +167,7 @@ public class BlockDefinition {
         //automated as base, since it's the same
         if (rot == 0) {
             for (double[] thisShape : blockShapeMap[blockIDs[ID].drawType].getBoxes()) {
-                for (int i = 0; i < 6; i++) {
-                    newBoxes[index][i] = thisShape[i];
-                }
+                System.arraycopy(thisShape, 0, newBoxes[index], 0, 6);
                 index++;
             }
         }
@@ -244,7 +238,7 @@ public class BlockDefinition {
         return blockIDs[ID].steppable;
     }
 
-    public static void initializeBlocks() throws Exception {
+    public static void initializeBlocks() {
 
         //air
         blockShapeMap[0] = new BlockShape(new double[][]{{0f,0f,0f,1f,1f,1f}});
@@ -415,7 +409,7 @@ public class BlockDefinition {
         //tnt explosion
         BlockModifier kaboom = new BlockModifier() {
             @Override
-            public void onDig(Vector3d pos) throws Exception {
+            public void onDig(Vector3d pos) {
                 createTNT(pos, 0, true);
             }
         };
@@ -442,18 +436,6 @@ public class BlockDefinition {
                 0,
                 true
         );
-
-        //water thing
-        /*
-        BlockModifier splash = new BlockModifier() {
-            @Override
-            public void onPlace(Vector3f pos) {
-                for(int y = 0; y < 128; y++){
-                    setBlock((int)Math.floor(pos.x), y, (int)Math.floor(pos.z),7, 0);
-                }
-            }
-        };
-         */
 
         new BlockDefinition(
                 7,
@@ -812,7 +794,7 @@ public class BlockDefinition {
                 false,
                 new BlockModifier() {
                     @Override
-                    public void onDig(Vector3d pos) throws Exception {
+                    public void onDig(Vector3d pos) {
                         if (getBlock((int)pos.x, (int)pos.y - 1, (int)pos.z) == 22) {
                             setBlock((int)pos.x, (int)pos.y - 1, (int)pos.z, 0, 0);
                             createItem("door", pos.add(0.5d,0.5d,0.5d), 1);
@@ -854,7 +836,7 @@ public class BlockDefinition {
                 new BlockModifier() {
 
                     @Override
-                    public void onDig(Vector3d pos) throws Exception {
+                    public void onDig(Vector3d pos) {
                         if (getBlock((int)pos.x, (int)pos.y + 1, (int)pos.z) == 21) {
                             setBlock((int)pos.x, (int)pos.y + 1, (int)pos.z, 0, 0);
                             createItem("door", pos.add(0.5d,0.5d,0.5d), 1);
@@ -904,7 +886,7 @@ public class BlockDefinition {
                 new BlockModifier() {
 
                     @Override
-                    public void onDig(Vector3d pos) throws Exception {
+                    public void onDig(Vector3d pos) {
                         if (getBlock((int)pos.x, (int)pos.y - 1, (int)pos.z) == 24) {
                             setBlock((int)pos.x, (int)pos.y - 1, (int)pos.z, 0, 0);
                             createItem("door", pos.add(0.5d,0.5d,0.5d), 1);
@@ -946,7 +928,7 @@ public class BlockDefinition {
                 new BlockModifier() {
 
                     @Override
-                    public void onDig(Vector3d pos) throws Exception {
+                    public void onDig(Vector3d pos) {
                         if (getBlock((int)pos.x, (int)pos.y + 1, (int)pos.z) == 23) {
                             setBlock((int)pos.x, (int)pos.y + 1, (int)pos.z, 0, 0);
                             createItem("door", pos.add(0.5d,0.5d,0.5d), 1);
