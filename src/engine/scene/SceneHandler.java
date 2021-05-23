@@ -7,6 +7,7 @@ import static engine.Controls.gameInput;
 import static engine.Controls.mainMenuInput;
 import static engine.MouseInput.*;
 import static engine.Window.*;
+import static engine.debug.CheckHeapSize.doHeapInfoUpdate;
 import static engine.debug.DebugTerrainDrawTypes.generateDebugChunkMesh;
 import static engine.debug.RenderDebug.initializeDebugRenderShader;
 import static engine.debug.RenderDebug.renderDebug;
@@ -18,6 +19,7 @@ import static engine.render.MainMenuRenderer.renderMainMenu;
 import static engine.render.GameRenderer.renderGame;
 import static engine.Time.calculateDelta;
 import static engine.Timer.countFPS;
+import static engine.settings.Settings.getDebugInfo;
 import static engine.sound.SoundManager.updateListenerPosition;
 import static game.chunk.Chunk.*;
 import static game.chunk.ChunkMesh.popChunkMeshQueue;
@@ -79,16 +81,14 @@ public class SceneHandler {
         }
 
         while (!windowShouldClose()){
-            switch (currentScene){
-                case 0:
-                    mainMenuLoop();
-                    break;
-                case 1:
-                    gameLoop();
-                    break;
-                case 2:
-                    debugLoop();
-                    break;
+            if (getDebugInfo()) {
+                doHeapInfoUpdate();
+            }
+
+            switch (currentScene) {
+                case 0 -> mainMenuLoop();
+                case 1 -> gameLoop();
+                case 2 -> debugLoop();
             }
         }
 
@@ -130,30 +130,12 @@ public class SceneHandler {
         chunkUpdater();
         globalChunkSaveToDisk();
         gameInput();
-        //testLightLevel();
         gameUpdate();
 
         renderGame();
         windowUpdate();
 
         processOldChunks();
-
-
-
-        /*
-        long count = 0;
-
-        boolean debugLowFPS = true; //this sets my machine (jordan4ibanez) to 14FPS
-
-
-        if (debugLowFPS) {
-            while (count < 75_000L) {
-                System.out.println(count);
-                count++;
-            }
-        }
-
-         */
     }
 
     private static void gameUpdate() throws Exception {
