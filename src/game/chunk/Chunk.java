@@ -287,17 +287,14 @@ public class Chunk {
         int blockZ = (int)(z - (16d*chunkZ));
         String key = chunkX + " " + chunkZ;
         ChunkObject thisChunk = map.get(key);
-
         if (thisChunk == null){
             return;
         }
         if (thisChunk.block == null){
             return;
         }
-
         thisChunk.block[posToIndex(blockX, y, blockZ)] = newBlock;
         thisChunk.rotation[posToIndex(blockX, y, blockZ)] = (byte)rot;
-
         if (newBlock == 0){
             if (thisChunk.heightMap[blockX][blockZ] == y){
                 for (int yCheck = thisChunk.heightMap[blockX][blockZ]; yCheck > 0; yCheck--){
@@ -312,9 +309,7 @@ public class Chunk {
                 thisChunk.heightMap[blockX][blockZ] = (byte) y;
             }
         }
-
         thisChunk.modified = true;
-
         chunkUpdate(chunkX,chunkZ,yPillar);
         updateNeighbor(chunkX, chunkZ,blockX,y,blockZ);
     }
@@ -328,10 +323,8 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
-
         String key = chunkX + " " + chunkZ;
         ChunkObject thisChunk = map.get(key);
-
         if (thisChunk == null){
             return;
         }
@@ -348,17 +341,13 @@ public class Chunk {
         if (y > 127 || y < 0){
             return;
         }
-
         int yPillar = (int)Math.floor(y/16d);
-
         int chunkX = (int)Math.floor(x/16d);
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
-
         String key = chunkX + " " + chunkZ;
         ChunkObject thisChunk = map.get(key);
-
         if (thisChunk == null){
             return;
         }
@@ -367,11 +356,8 @@ public class Chunk {
         }
         thisChunk.block[posToIndex(blockX, y, blockZ)] = 0;
         thisChunk.rotation[posToIndex(blockX, y, blockZ)] = 0;
-
         if (thisChunk.heightMap[blockX][blockZ] == y){
-
             for (int yCheck = thisChunk.heightMap[blockX][blockZ]; yCheck > 0; yCheck--){
-
                 if (thisChunk.block[posToIndex(blockX, yCheck, blockZ)] != 0){
                     thisChunk.heightMap[blockX][blockZ] = (byte) yCheck;
                     break;
@@ -380,9 +366,7 @@ public class Chunk {
         }
         lightFloodFill(x, y, z);
         thisChunk.modified = true;
-
         thisChunk.light[posToIndex(blockX, y, blockZ)] = getImmediateLight(x,y,z);
-
         generateChunkMesh(chunkX,chunkZ,yPillar);//instant update
         instantUpdateNeighbor(chunkX, chunkZ,blockX,y,blockZ);//instant update
     }
@@ -394,30 +378,23 @@ public class Chunk {
         int yPillar = (int)Math.floor(y/16d);
         int chunkX = (int)Math.floor(x/16d);
         int chunkZ = (int)Math.floor(z/16d);
-
         int blockX = (x - (16*chunkX));
         int blockZ = (z - (16*chunkZ));
-
         String key = chunkX + " " + chunkZ;
         ChunkObject thisChunk = map.get(key);
-
         if (thisChunk == null){
             return;
         }
         if (thisChunk.block == null){
             return;
         }
-
         thisChunk.block[posToIndex(blockX, y, blockZ)] = ID;
         thisChunk.rotation[posToIndex(blockX, y, blockZ)] = (byte) rot;
-
         if (thisChunk.heightMap[blockX][blockZ] < y){
             thisChunk.heightMap[blockX][blockZ] = (byte) y;
         }
-
         lightFloodFill(x, y, z);
         thisChunk.modified = true;
-
         generateChunkMesh(chunkX,chunkZ,yPillar);//instant update
         instantUpdateNeighbor(chunkX, chunkZ,blockX,y,blockZ);//instant update
     }
@@ -430,9 +407,7 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
-
         String key = chunkX + " " + chunkZ;
-
         ChunkObject thisChunk = map.get(key);
         if (thisChunk == null){
             return 0;
@@ -440,7 +415,6 @@ public class Chunk {
         if (thisChunk.light == null){
             return 0;
         }
-
         return thisChunk.light[posToIndex(blockX, y, blockZ)];
     }
 
@@ -448,7 +422,6 @@ public class Chunk {
         if (y > 127 || y < 0){
             return;
         }
-
         int yPillar = (int)Math.floor(y/16d);
         switch (y){
             case 112:
