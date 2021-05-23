@@ -140,11 +140,10 @@ public class Collision {
 
     //these are class/method caches!! NOT FIELDS!
     private static Vector3d fPos;
-    private static double x,y,z;
+    private static double x;
+    private static double z;
     private static int cachedBlock;
     private static final Vector3d cachedPos = new Vector3d(0d,0d,0d);
-
-
 
     //sneaking stuff
 
@@ -258,6 +257,7 @@ public class Collision {
         int up = 0;
 
         //todo: begin Y collision detection -- YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+        double y;
         switch (inertiaToDir(inertia.y)) {
             case -1:
                 y = (int) fPos.y;
