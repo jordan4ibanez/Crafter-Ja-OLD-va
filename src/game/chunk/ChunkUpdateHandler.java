@@ -59,9 +59,11 @@ public class ChunkUpdateHandler {
                 String key = "";
 
                 Object[] queueAsArray = queue.keySet().toArray();
-                Object thisKey = queueAsArray[random.nextInt(queueAsArray.length)];
+                Object thisObject = queueAsArray[random.nextInt(queueAsArray.length)];
+                String thisKey = (String)thisObject;
 
                 ChunkUpdate thisUpdate = queue.get(thisKey);
+
                 if (!chunkStackContainsBlock(thisUpdate.x, thisUpdate.z, thisUpdate.y)) {
                     key = thisUpdate.key;
                 } else {
