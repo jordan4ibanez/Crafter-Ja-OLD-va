@@ -532,7 +532,7 @@ public class MainMenu {
         }
     }
 
-    private final static float lockScroll = 70;
+    private final static float lockScroll = 57;
     //scrolling credits
     private static void makeCreditsScroll(){
 
