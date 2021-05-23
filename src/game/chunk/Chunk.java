@@ -208,13 +208,14 @@ public class Chunk {
 
         for (int x = 0; x < 16; x++){
             for (int z = 0; z < 16; z++){
-                for (int y = yHeight * 16; yHeight < (yHeight + 1) * 16; y++){
+                for (int y = yHeight * 16; y < (yHeight + 1) * 16; y++){
                     if (thisChunk.block[posToIndex(x,y,z)] != 0){
                         return true;
                     }
                 }
             }
         }
+
         return false;
     }
 
