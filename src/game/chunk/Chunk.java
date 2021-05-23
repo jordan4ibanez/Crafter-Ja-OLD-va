@@ -153,18 +153,19 @@ public class Chunk {
     private static void floodChunkWithNewGlobalLight(ChunkObject thisChunk, byte oldLight, byte newLight){
 
         /* this causes SERIOUS lag
-            Vector3i thisPos = indexToPos(i);
+        Vector3i thisPos = indexToPos(i);
 
-            int blockX = (int)(thisPos.x + (16d*thisChunk.x));
-            int blockZ = (int)(thisPos.z + (16d*thisChunk.z));
+        int blockX = (int)(thisPos.x + (16d*thisChunk.x));
+        int blockZ = (int)(thisPos.z + (16d*thisChunk.z));
 
-            if (thisChunk.block[i] == 0 && !underSunLight(blockX, thisPos.y, blockZ)) {
-                lightFloodFill(blockX, thisPos.y, blockZ);
-            }
-             */
-        //if (thisChunk.light[i] == oldLight) {
-        //  System.out.println("somtthing brkun");
-        //}
+        if (thisChunk.block[i] == 0 && !underSunLight(blockX, thisPos.y, blockZ)) {
+            lightFloodFill(blockX, thisPos.y, blockZ);
+        }
+
+        if (thisChunk.light[i] == oldLight) {
+          System.out.println("something broken");
+        }
+         */
         Arrays.fill(thisChunk.light, newLight);
 
         for (int y = 0; y < 8; y++) {
