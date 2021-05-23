@@ -33,10 +33,6 @@ public class MobUtilityCode {
             pitch = 0;
         }
 
-        //System.out.println(headYaw);
-
-        //System.out.println((thisObject.rotation - 90) - yaw);
-
         thisObject.bodyRotations[0] = new Vector3f(pitch,headYaw,0);
     }
 
