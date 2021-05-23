@@ -1744,20 +1744,14 @@ public class FastNoise {
                 break;
         }
 
-        switch (m_cellularReturnType) {
-            case Distance2:
-                return distance2 - 1;
-            case Distance2Add:
-                return distance2 + distance - 1;
-            case Distance2Sub:
-                return distance2 - distance - 1;
-            case Distance2Mul:
-                return distance2 * distance - 1;
-            case Distance2Div:
-                return distance / distance2 - 1;
-            default:
-                return 0;
-        }
+        return switch (m_cellularReturnType) {
+            case Distance2 -> distance2 - 1;
+            case Distance2Add -> distance2 + distance - 1;
+            case Distance2Sub -> distance2 - distance - 1;
+            case Distance2Mul -> distance2 * distance - 1;
+            case Distance2Div -> distance / distance2 - 1;
+            default -> 0;
+        };
     }
 
     public float GetCellular(float x, float y) {
