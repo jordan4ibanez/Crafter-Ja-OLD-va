@@ -131,8 +131,6 @@ public class Collision {
                     inertia.y -= 30f * adjustedDelta;
                 }
             }
-
-
         }
 
         return onGroundLock;
@@ -146,7 +144,6 @@ public class Collision {
     private static final Vector3d cachedPos = new Vector3d(0d,0d,0d);
 
     //sneaking stuff
-
     private static int sneakCollisionDetect(Vector3d pos, Vector3f inertia, float width, float height){
 
         int binaryReturn = 0;
@@ -213,11 +210,9 @@ public class Collision {
             }
         }
 
-
         if (!onGround) {
             binaryReturn += 2;
         }
-
 
         return binaryReturn;
     }
@@ -234,12 +229,7 @@ public class Collision {
         return onGround;
     }
 
-
-
-
-
     //normal collision
-
     private static boolean collisionDetect(Vector3d pos, Vector3f inertia, float width, float height){
 
         boolean onGround = false;
@@ -372,8 +362,6 @@ public class Collision {
             }
         }
 
-
-
         //water check
         for (float yy = 0; yy <= height; yy = yy + 0.5f) {
             for (x = -1; x <= 1; x++) {
@@ -442,7 +430,6 @@ public class Collision {
         }
     }
 
-
     //TODO ----------------------------------XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
     private static void collideX(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, Vector3d oldPos, float width, float height, int blockID){
@@ -478,7 +465,6 @@ public class Collision {
                 }
             }
         }
-
 
         //correction for the sides of stairs
         if (isSteppable(blockID) && pos.y - oldPos.y > 0.51d) {
