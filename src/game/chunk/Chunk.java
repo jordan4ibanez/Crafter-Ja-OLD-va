@@ -489,7 +489,7 @@ public class Chunk {
         //create the initial map in memory
         int chunkRenderDistance = getRenderDistance();
         Vector3i currentChunk = getPlayerCurrentChunk();
-        String currChunk = "";
+        String currChunk;
         //scan for not-generated/loaded chunks
         for (int x = -chunkRenderDistance + currentChunk.x; x < chunkRenderDistance + currentChunk.x; x++){
             for (int z = -chunkRenderDistance + currentChunk.z; z< chunkRenderDistance + currentChunk.z; z++){
@@ -651,10 +651,6 @@ public class Chunk {
 
                             //don't overwrite
                             currBlock = thisChunk.block[posToIndex(generationX, generationY, generationZ)];
-
-                            if (currBlock != 0){
-                                //System.out.println("overwriting!!!");
-                            }
 
                             //bedrock
                             if (generationY <= 0 + dirtHeightRandom) {
