@@ -814,22 +814,21 @@ public class FastNoise {
 
         float xs, ys, zs;
         switch (m_interp) {
-            default:
-            case Linear:
+            case Linear -> {
                 xs = x - x0;
                 ys = y - y0;
                 zs = z - z0;
-                break;
-            case Hermite:
+            }
+            case Hermite -> {
                 xs = InterpHermiteFunc(x - x0);
                 ys = InterpHermiteFunc(y - y0);
                 zs = InterpHermiteFunc(z - z0);
-                break;
-            case Quintic:
+            }
+            case Quintic -> {
                 xs = InterpQuinticFunc(x - x0);
                 ys = InterpQuinticFunc(y - y0);
                 zs = InterpQuinticFunc(z - z0);
-                break;
+            }
         }
 
         float xd0 = x - x0;
