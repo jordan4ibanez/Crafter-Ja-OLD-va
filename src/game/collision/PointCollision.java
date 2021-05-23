@@ -1,10 +1,5 @@
 package game.collision;
 
-import static game.collision.CustomAABB.*;
-import static game.collision.CustomAABB.AABBGetBack;
-import static game.collision.CustomBlockBox.*;
-import static game.collision.CustomBlockBox.BlockBoxGetFront;
-
 public class PointCollision {
     final private static double[] aabb = new double[6];
 
