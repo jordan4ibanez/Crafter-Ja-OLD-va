@@ -62,7 +62,7 @@ public class ChunkMesh {
             updateAmount = (int)(Math.ceil(chunkUpdateTimer / goalTimer));
             chunkUpdateTimer = 0;
         }
-        
+
         for (int i = 0; i < updateAmount; i++) {
             if (!queue.isEmpty()) {
                 Object[] queueAsArray = queue.keySet().toArray();

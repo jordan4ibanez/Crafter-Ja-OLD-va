@@ -5,7 +5,7 @@ import org.joml.Vector3f;
 
 public interface BlockModifier {
     default public void onDig(Vector3d pos) throws Exception {
-//        System.out.println("digging interface worked");
+        
     }
 
     default public void onPlace(Vector3d pos) {
