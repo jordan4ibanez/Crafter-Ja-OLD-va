@@ -4,7 +4,6 @@ import org.joml.Vector3i;
 
 //https://stackoverflow.com/a/34363187
 //ported from C++ to Java
-
 public class ChunkMath {
 
     private final static int xMax = 16;

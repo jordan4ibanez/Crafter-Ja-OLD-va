@@ -42,7 +42,7 @@ public class ChunkMesh {
 
 
             Object[] queueAsArray = queue.keySet().toArray();
-            Object thisKey = queueAsArray[random.nextInt(queueAsArray.length)];
+            String thisKey = (String)queueAsArray[random.nextInt(queueAsArray.length)];
 
             ChunkMeshDataObject newChunkMeshData = queue.get(thisKey);
 
