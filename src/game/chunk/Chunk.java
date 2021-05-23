@@ -127,7 +127,7 @@ public class Chunk {
 
     private static float saveTimer = 0f;
     public static void globalChunkSaveToDisk(){
-        saveTimer += 0.001f;
+        saveTimer += getDelta();
 
         if (saveTimer >= 3f){
             savePlayerPos(getPlayerPos());
