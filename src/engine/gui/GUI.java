@@ -44,7 +44,6 @@ public class GUI {
     private static Mesh halfHeartHudMesh;
     private static Mesh heartShadowHudMesh;
 
-
     private static Mesh fpsMesh;
 
     public static void createGUI() throws Exception {
@@ -185,6 +184,8 @@ public class GUI {
 
         float textureMin = (float)level/maxLevels;
         float textureMax = (float)(level+1)/maxLevels;
+
+        //todo: access light here (use digging position + getLocalLight)
 
         //front
         positions.add(max);
@@ -462,25 +463,25 @@ public class GUI {
         //convert the position objects into usable array
         float[] positionsArray = new float[positions.size()];
         for (int i = 0; i < positions.size(); i++) {
-            positionsArray[i] = (float) positions.get(i);
+            positionsArray[i] = positions.get(i);
         }
 
         //convert the light objects into usable array
         float[] lightArray = new float[light.size()];
         for (int i = 0; i < light.size(); i++) {
-            lightArray[i] = (float) light.get(i);
+            lightArray[i] = light.get(i);
         }
 
         //convert the indices objects into usable array
         int[] indicesArray = new int[indices.size()];
         for (int i = 0; i < indices.size(); i++) {
-            indicesArray[i] = (int) indices.get(i);
+            indicesArray[i] = indices.get(i);
         }
 
         //convert the textureCoord objects into usable array
         float[] textureCoordArray = new float[textureCoord.size()];
         for (int i = 0; i < textureCoord.size(); i++) {
-            textureCoordArray[i] = (float) textureCoord.get(i);
+            textureCoordArray[i] = textureCoord.get(i);
         }
 
         miningCrackMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, miningCrack);
@@ -488,10 +489,10 @@ public class GUI {
 
     private static void createWorldSelectionMesh() {
 
-        ArrayList positions = new ArrayList();
-        ArrayList textureCoord = new ArrayList();
-        ArrayList indices = new ArrayList();
-        ArrayList light = new ArrayList();
+        List<Float> positions = new ArrayList<>();
+        List<Float> textureCoord = new ArrayList<>();
+        List<Integer> indices = new ArrayList<>();
+        List<Float> light = new ArrayList<>();
 
         float sizeOffset = 0.0025f;
         float min = -sizeOffset;
@@ -560,10 +561,10 @@ public class GUI {
                 light.add(frontLight);
             }
             //front
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
@@ -582,8 +583,6 @@ public class GUI {
             textureCoord.add(1f);//3
 
 
-            //todo///////////////////////////////////////////////////////
-
             //back
             positions.add(thisArray[0].x);
             positions.add(thisArray[1].y);
@@ -601,16 +600,16 @@ public class GUI {
             positions.add(thisArray[0].y);
             positions.add(thisArray[0].z);
             //back
-            float backLight = 2f;
+            float backLight = 1f;
             //back
             for (int i = 0; i < 12; i++) {
                 light.add(backLight);
             }
             //back
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
@@ -628,8 +627,6 @@ public class GUI {
             textureCoord.add(1f);//1
             textureCoord.add(1f);//3
 
-
-            //todo///////////////////////////////////////////////////////
 
             //right
             positions.add(thisArray[1].x);
@@ -655,10 +652,10 @@ public class GUI {
                 light.add(rightLight);
             }
             //right
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
@@ -676,8 +673,6 @@ public class GUI {
             textureCoord.add(1f);//1
             textureCoord.add(1f);//3
 
-
-            //todo///////////////////////////////////////////////////////
 
             //left
             positions.add(thisArray[0].x);
@@ -702,10 +697,10 @@ public class GUI {
                 light.add(leftLight);
             }
             //left
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
@@ -724,8 +719,6 @@ public class GUI {
             textureCoord.add(1f);//3
 
 
-            //todo///////////////////////////////////////////////////////
-
             //top
             positions.add(thisArray[0].x);
             positions.add(thisArray[1].y);
@@ -742,6 +735,7 @@ public class GUI {
             positions.add(thisArray[1].x);
             positions.add(thisArray[1].y);
             positions.add(thisArray[0].z);
+
             //top
             float topLight = 1f;
             //top
@@ -749,17 +743,14 @@ public class GUI {
                 light.add(topLight);
             }
             //top
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
 
-
-            //-x +x  -y +y
-            // 0  1   2  3
             //top
             textureCoord.add(1f);//1
             textureCoord.add(0f);//2
@@ -770,11 +761,6 @@ public class GUI {
             textureCoord.add(1f);//1
             textureCoord.add(1f);//3
 
-
-            //todo///////////////////////////////////////////////////////
-
-            //min = thisArray[0]
-            //max = thisArray[1]
 
             //bottom
             positions.add(thisArray[0].x);
@@ -800,17 +786,15 @@ public class GUI {
                 light.add(bottomLight);
             }
             //bottom
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
 
 
-            //-x +x  -y +y
-            // 0  1   2  3
             //bottom
             textureCoord.add(1f);//1
             textureCoord.add(0f);//2
@@ -827,25 +811,25 @@ public class GUI {
         //convert the position objects into usable array
         float[] positionsArray = new float[positions.size()];
         for (int i = 0; i < positions.size(); i++) {
-            positionsArray[i] = (float) positions.get(i);
+            positionsArray[i] = positions.get(i);
         }
 
         //convert the light objects into usable array
         float[] lightArray = new float[light.size()];
         for (int i = 0; i < light.size(); i++) {
-            lightArray[i] = (float) light.get(i);
+            lightArray[i] = light.get(i);
         }
 
         //convert the indices objects into usable array
         int[] indicesArray = new int[indices.size()];
         for (int i = 0; i < indices.size(); i++) {
-            indicesArray[i] = (int) indices.get(i);
+            indicesArray[i] = indices.get(i);
         }
 
         //convert the textureCoord objects into usable array
         float[] textureCoordArray = new float[textureCoord.size()];
         for (int i = 0; i < textureCoord.size(); i++) {
-            textureCoordArray[i] = (float) textureCoord.get(i);
+            textureCoordArray[i] = textureCoord.get(i);
         }
 
         thisWorldSelectionMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, worldSelection);
@@ -876,7 +860,7 @@ public class GUI {
         float floatedLight = convertLight((float)lightLevel/15f);
 
         float[][] oneBlockyBoi = new float[][]{
-//                //right arm
+                //right arm
                 {   -0.45f,
                         -2.25f,
                         -0.45f,
@@ -884,7 +868,6 @@ public class GUI {
                         0.45f,
                         0.5f ,
                         0.45f,
-
                 },
         };
 
@@ -905,10 +888,10 @@ public class GUI {
         };
 
 
-        ArrayList positions = new ArrayList();
-        ArrayList textureCoord = new ArrayList();
-        ArrayList indices = new ArrayList();
-        ArrayList light = new ArrayList();
+        List<Float> positions = new ArrayList<>();
+        List<Float> textureCoord = new ArrayList<>();
+        List<Integer> indices = new ArrayList<>();
+        List<Float> light = new ArrayList<>();
 
         int indicesCount = 0;
         int textureCounter = 0;
@@ -936,10 +919,10 @@ public class GUI {
                 light.add(floatedLight);
             }
             //front
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
 
@@ -989,23 +972,15 @@ public class GUI {
                 light.add(floatedLight);
             }
             //back
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
 
             float[] textureBack = textureArrayArray[textureCounter];
-
-            // 0, 1, 2, 3, 4, 5
-            //-x,-y,-z, x, y, z
-            // 0, 0, 0, 1, 1, 1
-
-            // 0, 1,  2, 3
-            //-x,+x, -y,+y
-
 
             //back
             textureCoord.add(textureBack[1]);
@@ -1019,8 +994,6 @@ public class GUI {
             textureCoord.add(textureBack[3]);
 
             textureCounter++;
-
-
 
             //right
             positions.add(thisBlockBox[3]);
@@ -1044,21 +1017,13 @@ public class GUI {
                 light.add(floatedLight);
             }
             //right
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
-
-
-            // 0, 1, 2, 3, 4, 5
-            //-x,-y,-z, x, y, z
-            // 0, 0, 0, 1, 1, 1
-
-            // 0, 1,  2, 3
-            //-x,+x, -y,+y
 
 
             float[] textureRight = textureArrayArray[textureCounter];
@@ -1098,10 +1063,10 @@ public class GUI {
                 light.add(floatedLight);
             }
             //left
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
@@ -1143,20 +1108,13 @@ public class GUI {
                 light.add(floatedLight);
             }
             //top
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
-
-            // 0, 1, 2, 3, 4, 5
-            //-x,-y,-z, x, y, z
-            // 0, 0, 0, 1, 1, 1
-
-            // 0, 1,  2, 3
-            //-x,+x, -y,+y
 
             float[] textureTop = textureArrayArray[textureCounter];
             //top
@@ -1195,21 +1153,13 @@ public class GUI {
                 light.add(floatedLight);
             }
             //bottom
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
-
-
-            // 0, 1, 2, 3, 4, 5
-            //-x,-y,-z, x, y, z
-            // 0, 0, 0, 1, 1, 1
-
-            // 0, 1,  2, 3
-            //-x,+x, -y,+y
 
             float[] textureBottom = textureArrayArray[textureCounter];
             //bottom
@@ -1229,25 +1179,25 @@ public class GUI {
         //convert the position objects into usable array
         float[] positionsArray = new float[positions.size()];
         for (int i = 0; i < positions.size(); i++) {
-            positionsArray[i] = (float) positions.get(i);
+            positionsArray[i] = positions.get(i);
         }
 
         //convert the light objects into usable array
         float[] lightArray = new float[light.size()];
         for (int i = 0; i < light.size(); i++) {
-            lightArray[i] = (float) light.get(i);
+            lightArray[i] = light.get(i);
         }
 
         //convert the indices objects into usable array
         int[] indicesArray = new int[indices.size()];
         for (int i = 0; i < indices.size(); i++) {
-            indicesArray[i] = (int) indices.get(i);
+            indicesArray[i] = indices.get(i);
         }
 
         //convert the textureCoord objects into usable array
         float[] textureCoordArray = new float[textureCoord.size()];
         for (int i = 0; i < textureCoord.size(); i++) {
-            textureCoordArray[i] = (float) textureCoord.get(i);
+            textureCoordArray[i] = textureCoord.get(i);
         }
 
         wieldHandMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, playerTexture);
@@ -1361,10 +1311,10 @@ public class GUI {
 
         };
 
-        ArrayList positions = new ArrayList();
-        ArrayList textureCoord = new ArrayList();
-        ArrayList indices = new ArrayList();
-        ArrayList light = new ArrayList();
+        List<Float> positions = new ArrayList<>();
+        List<Float> textureCoord = new ArrayList<>();
+        List<Integer> indices = new ArrayList<>();
+        List<Float> light = new ArrayList<>();
 
         int indicesCount = 0;
         int textureCounter = 0;
@@ -1394,10 +1344,10 @@ public class GUI {
                 light.add(frontLight);
             }
             //front
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
 
@@ -1421,7 +1371,6 @@ public class GUI {
 
 
             textureCounter++;
-
 
 
             //back
@@ -1449,23 +1398,15 @@ public class GUI {
                 light.add(backLight);
             }
             //back
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
 
             float[] textureBack = textureArrayArray[textureCounter];
-
-            // 0, 1, 2, 3, 4, 5
-            //-x,-y,-z, x, y, z
-            // 0, 0, 0, 1, 1, 1
-
-            // 0, 1,  2, 3
-            //-x,+x, -y,+y
-
 
             //back
             textureCoord.add(textureBack[1]);
@@ -1479,7 +1420,6 @@ public class GUI {
             textureCoord.add(textureBack[3]);
 
             textureCounter++;
-
 
 
             //right
@@ -1506,21 +1446,13 @@ public class GUI {
                 light.add(rightLight);
             }
             //right
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
-
-
-            // 0, 1, 2, 3, 4, 5
-            //-x,-y,-z, x, y, z
-            // 0, 0, 0, 1, 1, 1
-
-            // 0, 1,  2, 3
-            //-x,+x, -y,+y
 
 
             float[] textureRight = textureArrayArray[textureCounter];
@@ -1563,10 +1495,10 @@ public class GUI {
                 light.add(leftLight);
             }
             //left
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
@@ -1610,20 +1542,14 @@ public class GUI {
                 light.add(topLight);
             }
             //top
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
 
-            // 0, 1, 2, 3, 4, 5
-            //-x,-y,-z, x, y, z
-            // 0, 0, 0, 1, 1, 1
-
-            // 0, 1,  2, 3
-            //-x,+x, -y,+y
 
             float[] textureTop = textureArrayArray[textureCounter];
             //top
@@ -1664,10 +1590,10 @@ public class GUI {
                 light.add(bottomLight);
             }
             //bottom
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
@@ -1698,25 +1624,25 @@ public class GUI {
         //convert the position objects into usable array
         float[] positionsArray = new float[positions.size()];
         for (int i = 0; i < positions.size(); i++) {
-            positionsArray[i] = (float) positions.get(i);
+            positionsArray[i] = positions.get(i);
         }
 
         //convert the light objects into usable array
         float[] lightArray = new float[light.size()];
         for (int i = 0; i < light.size(); i++) {
-            lightArray[i] = (float) light.get(i);
+            lightArray[i] = light.get(i);
         }
 
         //convert the indices objects into usable array
         int[] indicesArray = new int[indices.size()];
         for (int i = 0; i < indices.size(); i++) {
-            indicesArray[i] = (int) indices.get(i);
+            indicesArray[i] = indices.get(i);
         }
 
         //convert the textureCoord objects into usable array
         float[] textureCoordArray = new float[textureCoord.size()];
         for (int i = 0; i < textureCoord.size(); i++) {
-            textureCoordArray[i] = (float) textureCoord.get(i);
+            textureCoordArray[i] = textureCoord.get(i);
         }
 
         playerMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, playerTexture);
