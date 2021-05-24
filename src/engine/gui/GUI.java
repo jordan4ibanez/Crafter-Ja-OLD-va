@@ -170,6 +170,10 @@ public class GUI {
     }
 
     public static void rebuildMiningMesh(int level) {
+        
+        if (miningCrackMesh != null){
+            miningCrackMesh.cleanUp(false);
+        }
 
         float min = -0.0001f;
         float max = 1.0001f;
