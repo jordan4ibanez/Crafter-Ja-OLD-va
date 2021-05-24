@@ -28,6 +28,38 @@ public class CraftRecipes {
 
         //everything is case sensitive
 
+
+        for (String material : materials) {
+            String[][] pick = {
+                    {material, material, material},
+                    {"",       "stick",  ""},
+                    {"",       "stick",  ""}
+            };
+            generateRecipe(pick, material + "pick", 1);
+
+            String[][] shovel = {
+                    {material},
+                    {"stick"},
+                    {"stick"}
+            };
+            generateRecipe(shovel, material + "shovel", 1);
+
+            //create symmetrical axes
+            String[][] axeLeft = {
+                    {material, material},
+                    {material, "stick"},
+                    {"",       "stick"}
+            };
+            generateRecipe(axeLeft, material + "axe", 1);
+
+            String[][] axeRight = {
+                    {material, material},
+                    {"stick",  material},
+                    {"stick",  ""      }
+            };
+            generateRecipe(axeRight, material + axeRight, 1);
+        }
+
         String[][] wood = {
                 {"Tree"}
         };

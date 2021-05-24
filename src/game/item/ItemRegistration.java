@@ -32,6 +32,12 @@ public class ItemRegistration {
             registerItem(material + "pickaxe", "textures/tools/" + material + "pick.png", null);
             registerItem(material + "shovel", "textures/tools/" + material + "shovel.png", null);
             registerItem(material + "axe", "textures/tools/" + material + "axe.png", null);
+
+            if (!material.equals("wood") && !material.equals("stone")){
+                registerItem(material, "textures/items/" + material + ".png", null);
+            }
+
+
         }
 
 
