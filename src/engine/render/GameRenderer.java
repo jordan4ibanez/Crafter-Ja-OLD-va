@@ -627,7 +627,7 @@ public class GameRenderer {
                 {
                     modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d((getPlayerInventorySelection() - 4) * (windowScale / 9.1d),  (-windowSize.y / 2f) + ((windowScale / 8.25f) / 2f), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 8.25f, windowScale / 8.25f, windowScale / 8.25f));
                     hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                    getSelectionMesh().render();
+                    getHotBarSelectionMesh().render();
                 }
 
                 //THESE GO LAST!

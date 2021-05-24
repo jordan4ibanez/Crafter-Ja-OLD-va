@@ -34,15 +34,15 @@ public class GUI {
     private static Texture miningCrack;
 
     //meshes
-    private static Mesh thisHotBarMesh;
-    private static Mesh thisSelectionMesh;
+    private static Mesh hotBarMesh;
+    private static Mesh hotBarSelectionMesh;
+
     private static Mesh inventoryMesh;
     private static Mesh inventoryBackdropMesh;
     private static Mesh thisWorldSelectionMesh;
     private static Mesh thisCrossHairMesh;
     private static Mesh playerMesh;
     private static Mesh versionInfoText;
-    private static Mesh inventorySelectionMesh;
     private static Mesh wieldHandMesh;
     private static Mesh inventorySlotMesh;
     private static Mesh inventorySlotSelectedMesh;
@@ -65,12 +65,11 @@ public class GUI {
     public static void createGUI() throws Exception {
 
         //2D mesh creations
-        thisHotBarMesh = create2DMesh(0.5f,0.06043956043f, "textures/hotbar.png");
+        hotBarMesh = create2DMesh(0.5f,0.06043956043f, "textures/hotbar.png");
         inventoryMesh = create2DMesh(0.5f,0.46335697399f,  "textures/inventory.png");
         inventoryBackdropMesh = create2DMesh(0.5f,0.46335697399f,  "textures/inventory_backdrop.png");
-        thisSelectionMesh = create2DMesh(0.5f, 0.5f, "textures/hotbar_selected.png");
+        hotBarSelectionMesh = create2DMesh(0.5f, 0.5f, "textures/hotbar_selected.png");
         thisCrossHairMesh = create2DMesh(0.5f, 0.5f, "textures/crosshair.png");
-        inventorySelectionMesh = create2DMesh(0.5f, 0.5f, "textures/hotbar_selected.png");
         inventorySlotMesh = create2DMesh(0.5f,0.5f,"textures/inventory_slot.png");
         inventorySlotSelectedMesh = create2DMesh(0.5f,0.5f, "textures/inventory_slot_selected.png");
         menuBgMesh = create2DMesh(0.5f,0.5f, "textures/menu_bg.png");
@@ -120,11 +119,11 @@ public class GUI {
     }
 
     public static Mesh getHotBarMesh(){
-        return thisHotBarMesh;
+        return hotBarMesh;
     }
 
-    public static Mesh getSelectionMesh(){
-        return thisSelectionMesh;
+    public static Mesh getHotBarSelectionMesh(){
+        return hotBarSelectionMesh;
     }
 
     public static Mesh getInventoryMesh(){
@@ -146,16 +145,8 @@ public class GUI {
         return playerMesh;
     }
 
-    public static Vector3f getPlayerHudScale(){
-        return playerScale;
-    }
-
     public static Mesh getVersionInfoText(){
         return versionInfoText;
-    }
-
-    public static Mesh getInventorySelectionMesh(){
-        return inventorySelectionMesh;
     }
 
     public static Mesh getWieldHandMesh(){
