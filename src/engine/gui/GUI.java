@@ -4,20 +4,15 @@ package engine.gui;
 
 import engine.graph.Mesh;
 import engine.graph.Texture;
-
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static engine.Timer.getFpsCounted;
-import static engine.Time.getDelta;
-import static engine.Window.*;
-
-import static engine.gui.TextHandling.*;
+import static engine.gui.TextHandling.createTextWithShadow;
 import static game.Crafter.getVersionName;
 import static game.chunk.ChunkMesh.convertLight;
-import static game.player.Player.*;
 
 public class GUI {
 
