@@ -193,7 +193,7 @@ public class InventoryLogic {
                             Item thisItem = inventory.get(selection.x, selection.y);
 
                             //mouse splits stack
-                            if (mouseItem == null) {
+                            if (mouseItem == null && thisItem != null) {
                                 int first = thisItem.stack;
                                 int subtraction = thisItem.stack / 2;
                                 int remainder = thisItem.stack / 2;
@@ -231,7 +231,7 @@ public class InventoryLogic {
                                     foundInventory = inventory.name;
                                 }
                                 //mouse creating initial stack
-                            } else {
+                            } else if (mouseItem != null){
                                 //single add to non-existing
 
                                 int mouseItemStack = mouseItem.stack;
