@@ -87,6 +87,12 @@ public class CraftRecipes {
         };
         generateRecipe(door, "Door", 1);
 
+        String[][] stick = {
+                {"Wood"},
+                {"Wood"}
+        };
+        generateRecipe(stick, "stick", 1);
+
 
         finalizeRecipes();
     }
