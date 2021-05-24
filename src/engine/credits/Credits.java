@@ -23,7 +23,7 @@ public class Credits {
         creditParts[4] = create2DMesh(2f,2f,"textures/jordan4ibanez.png");
 
         creditParts[5] = createTextCenteredWithShadow("Textures: gerold55", 1,1,1);
-        creditParts[6] = create2DMesh(2f,2f,"textures/stone_pickaxe.png");
+        creditParts[6] = create2DMesh(2f,2f,"textures/tools/stonepick.png");
 
         creditParts[7] = createTextCenteredWithShadow("Textures: MineClone 2", 1,1,1);
         creditParts[8] = create2DMesh(9.34782608696f,1f,"textures/mineclone2.png");

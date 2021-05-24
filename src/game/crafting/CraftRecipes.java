@@ -9,8 +9,19 @@ import static game.crafting.Inventory.isAtCraftingBench;
 
 public class CraftRecipes {
     private static CraftRecipeObject[] recipes;
-
     private static ArrayList<CraftRecipeObject> craftRecipeAccumulator = new ArrayList<>();
+
+    private final static String[] materials = new String[]{
+            "wood",
+            "stone",
+            "iron",
+            "gold",
+            "lapis",
+            "diamond",
+            "emerald",
+            "sapphire",
+            "ruby",
+    };
 
     //craft recipe initializer
     public static void registerCraftRecipes(){

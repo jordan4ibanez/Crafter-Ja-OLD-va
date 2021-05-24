@@ -12,9 +12,27 @@ import static game.player.Player.getCurrentInventorySelection;
 import static game.player.Player.getPlayerDir;
 
 public class ItemRegistration {
+
+    private final static String[] materials = new String[]{
+            "wood",
+            "coal",
+            "stone",
+            "iron",
+            "gold",
+            "lapis",
+            "diamond",
+            "emerald",
+            "sapphire",
+            "ruby",
+    };
+
     public static void registerTools(){
 
-        registerItem("Stone_pickaxe", "textures/stone_pickaxe.png", null);
+        for (String material : materials) {
+            registerItem(material + "pickaxe", "textures/tools/" + material + "pick.png", null);
+            registerItem(material + "shovel", "textures/tools/" + material + "shovel.png", null);
+            registerItem(material + "axe", "textures/tools/" + material + "axe.png", null);
+        }
 
 
         ItemModifier test = new ItemModifier() {
