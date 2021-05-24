@@ -40,7 +40,11 @@ public class Particle {
 
         while (!deletionQueue.isEmpty()) {
             Integer key = deletionQueue.pop();
-            particles.get(key).mesh.cleanUp(false);
+            ParticleObject deletingParticle = particles.get(key);
+            if (deletingParticle != null && deletingParticle.mesh != null) {
+                deletingParticle.mesh.cleanUp(false);
+            }
+
             particles.remove(key);
         }
 
