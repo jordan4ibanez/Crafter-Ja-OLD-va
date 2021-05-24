@@ -127,6 +127,7 @@ public class Chunk {
         saveTimer += getDelta();
         //save interval is 3 seconds
         if (saveTimer >= 3f){
+            updateWorldsPathToAvoidCrash();
             savePlayerPos(getPlayerPos());
             for (ChunkObject thisChunk : map.values()){
                 if (thisChunk.modified) {
@@ -174,6 +175,7 @@ public class Chunk {
     }
 
     public static void globalFinalChunkSaveToDisk(){
+        updateWorldsPathToAvoidCrash();
         for (ChunkObject thisChunk : map.values()){
             instantSave(thisChunk);
             thisChunk.modified = false;

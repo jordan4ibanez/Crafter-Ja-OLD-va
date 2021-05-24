@@ -73,6 +73,11 @@ public class Disk {
         }
     }
 
+    public static void updateWorldsPathToAvoidCrash(){
+        createWorldsDir();
+        createAlphaWorldFolder();
+    }
+
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
