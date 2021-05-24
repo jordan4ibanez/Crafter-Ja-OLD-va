@@ -2,8 +2,6 @@ package engine.debug;
 
 import engine.graph.Mesh;
 
-import java.util.Set;
-
 import static engine.Time.getDelta;
 import static engine.gui.TextHandling.createTextWithShadow;
 
