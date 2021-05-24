@@ -157,22 +157,11 @@ public class Item {
     public void rebuildLightMesh(Item self) {
         ItemDefinition temp = getItemDefinition(self.name);
 
-        //clean up old mesh - this causes a texture null pointer
-        /*
-        if (self.mesh != null){
-            //don't delete the world texture
-            boolean cleanUpTexture = (temp.texture != getTextureAtlas());
-            System.out.println(cleanUpTexture);
-            self.mesh.cleanUp(cleanUpTexture);
-        }
-         */
-
         //clone the light array
         float[] newLightArray = new float[temp.lightArray.length];
 
         //convert the 0-15 light value to 0.0-1.0
         float floatedLightValue = convertLight((float)self.light/15f);
-        //System.out.println(self.light);
 
         Arrays.fill(newLightArray, floatedLightValue);
 
