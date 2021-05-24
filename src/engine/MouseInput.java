@@ -3,9 +3,6 @@ package engine;
 import org.joml.Vector2d;
 import org.joml.Vector2f;
 
-import java.nio.DoubleBuffer;
-import java.util.Arrays;
-
 import static engine.Window.*;
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -43,18 +40,14 @@ public class MouseInput {
             currentPos.y = ypos;
         });
 
-        glfwSetCursorEnterCallback(getWindowHandle(), (windowHandle, entered) -> {
-            inWindow = entered;
-        });
+        glfwSetCursorEnterCallback(getWindowHandle(), (windowHandle, entered) -> inWindow = entered);
 
         glfwSetMouseButtonCallback(getWindowHandle(), (windowHandle, button, action, mode) -> {
             leftButtonPressed = button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS;
             rightButtonPressed = button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS;
         });
 
-        glfwSetScrollCallback(getWindowHandle(), (windowHandle, xOffset, yOffset) -> {
-            scroll = (float)yOffset;
-        });
+        glfwSetScrollCallback(getWindowHandle(), (windowHandle, xOffset, yOffset) -> scroll = (float)yOffset);
     }
 
     public static Vector2f getMouseDisplVec() {
