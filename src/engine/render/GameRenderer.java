@@ -460,16 +460,14 @@ public class GameRenderer {
         {
             //wield hand
             if (getItemInInventorySlot(getPlayerInventorySelection(),0) == null){
-                Mesh thisMesh = getWieldHandMesh();
                 modelViewMatrix = getGenericMatrixWithPosRotationScale(getWieldHandAnimationPos(), getWieldHandAnimationRot(), new Vector3d(5d, 5d, 5d), new Matrix4d());
                 hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                thisMesh.render();
+                getWieldHandMesh().render();
             //block/item
             } else if (getWieldInventory() != null){
-                Mesh thisMesh = getWieldInventory().mesh;
                 modelViewMatrix = getGenericMatrixWithPosRotationScale(getWieldHandAnimationPos(), getWieldHandAnimationRot(), new Vector3d(20d, 20d, 20d), new Matrix4d());
                 hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                thisMesh.render();
+                getWieldInventory().mesh.render();
             }
         }
 
@@ -581,8 +579,6 @@ public class GameRenderer {
                     }
                 }
             } else {
-
-
 
                 //health bar
                 {
@@ -904,6 +900,10 @@ public class GameRenderer {
 
         if (hudShaderProgram != null){
             hudShaderProgram.cleanup();
+        }
+
+        if (glassLikeShaderProgram != null){
+            glassLikeShaderProgram.cleanup();
         }
     }
 
