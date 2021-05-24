@@ -1,7 +1,5 @@
 package engine.gui;
 
-//this is a complex mess
-
 import engine.graph.Mesh;
 import engine.graph.Texture;
 import org.joml.Vector3f;
