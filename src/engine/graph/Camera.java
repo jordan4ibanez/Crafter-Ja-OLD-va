@@ -16,6 +16,8 @@ public class Camera {
 
     private static final float   MOUSE_SENSITIVITY   = 0.09f;
 
+    private static byte cameraPerspective = 0;
+
     public static Vector3d getCameraPosition(){
         return position;
     }
@@ -40,6 +42,28 @@ public class Camera {
         if (offsetY != 0) {
             position.y += offsetY;
         }
+    }
+
+    public static void toggleCameraPerspective(){
+        cameraPerspective++;
+
+        //flip camera
+        if (cameraPerspective == 2){
+            rotation.x *= -1;
+            rotation.y += 180;
+        }
+        //reset
+        if (cameraPerspective > 2){
+            cameraPerspective = 0;
+
+            //flip camera
+            rotation.x *= -1;
+            rotation.y += 180;
+        }
+    }
+
+    public static byte getCameraPerspective(){
+        return cameraPerspective;
     }
 
     public static Vector3f getCameraRotation(){
@@ -69,21 +93,24 @@ public class Camera {
 
     public static void updateCamera(){
 
-        setCameraPosition(getPlayerPosWithEyeHeight().x, getPlayerPosWithEyeHeight().y + getSneakOffset(), getPlayerPosWithEyeHeight().z);
-        moveCameraPosition(getPlayerViewBobbing().x,getPlayerViewBobbing().y, getPlayerViewBobbing().z);
+        if (cameraPerspective == 0) {
+            moveCameraPosition(getPlayerViewBobbing().x, getPlayerViewBobbing().y, getPlayerViewBobbing().z);
+            setCameraPosition(getPlayerPosWithEyeHeight().x, getPlayerPosWithEyeHeight().y + getSneakOffset(), getPlayerPosWithEyeHeight().z);
+        }
 
-//        update camera based on mouse
+        //update camera based on mouse
         Vector2f rotVec = getMouseDisplVec();
         moveCameraRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
 
-//        limit camera pitch
+        //limit camera pitch
         if (getCameraRotation().x < -90f) {
             moveCameraRotation((90f + getCameraRotation().x) * -1f, 0, 0);
         }
         if (getCameraRotation().x > 90f){
             moveCameraRotation((getCameraRotation().x - 90f) * -1f , 0, 0);
         }
-//        loop camera yaw
+
+        //loop camera yaw
         if (getCameraRotation().y < -180f){
             moveCameraRotation(0,360f, 0);
         }
@@ -91,8 +118,13 @@ public class Camera {
             moveCameraRotation(0,-360f, 0);
         }
 
-        //System.out.println(getHurtCameraRotation());
-
-        //setCameraRotation(rotation.x, rotation.y, getHurtCameraRotation());
+        //these must go after camera rotation
+        //or weird inertia effect happens
+        if (cameraPerspective > 0){
+            Vector3d posAdder = new Vector3d(getCameraRotationVector());
+            posAdder.normalize();
+            posAdder.mul(-3d);
+            setCameraPosition(getPlayerPosWithEyeHeight().x + posAdder.x, getPlayerPosWithEyeHeight().y + posAdder.y, getPlayerPosWithEyeHeight().z + posAdder.z);
+        }
     }
 }

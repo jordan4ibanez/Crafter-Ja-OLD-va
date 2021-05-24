@@ -63,6 +63,21 @@ public class Player {
     private static boolean doHurtRotation = false;
     private static boolean hurtRotationUp = true;
 
+    //animation data
+    private static final Vector3f[] bodyRotations = new Vector3f[]{
+            new Vector3f(0,0,0),
+            new Vector3f(0,0,0),
+            new Vector3f(0,0,0),
+            new Vector3f(0,0,0),
+            new Vector3f(0,0,0),
+            new Vector3f(0,0,0),
+    };
+    private static float animationTimer = 0f;
+
+    public static Vector3f[] getPlayerBodyRotations(){
+        return bodyRotations;
+    }
+
     public static float getHurtCameraRotation(){
         return hurtCameraRotation;
     }
@@ -77,6 +92,7 @@ public class Player {
         mining = false;
         placing = false;
     }
+
 
     public static boolean getIfPlayerIsJumping(){
         return(playerIsJumping);
@@ -712,6 +728,23 @@ public class Player {
                 }
             }
             oldY = currentY;
+        }
+
+        //body animation scope
+        {
+            Vector3f inertia2D = new Vector3f(inertia.x, 0, inertia.z);
+
+            animationTimer += delta * (inertia2D.length() / maxWalkSpeed);
+
+            if (animationTimer >= 1f) {
+                animationTimer -= 1f;
+            }
+
+            bodyRotations[2] = new Vector3f((float) Math.toDegrees(Math.sin(animationTimer * Math.PI * 2f)), 0, 0);
+            bodyRotations[3] = new Vector3f((float) Math.toDegrees(Math.sin(animationTimer * Math.PI * -2f)), 0, 0);
+
+            bodyRotations[4] = new Vector3f((float) Math.toDegrees(Math.sin(animationTimer * Math.PI * -2f)), 0, 0);
+            bodyRotations[5] = new Vector3f((float) Math.toDegrees(Math.sin(animationTimer * Math.PI * 2f)), 0, 0);
         }
 
         updatePlayerHandInertia();

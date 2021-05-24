@@ -28,6 +28,8 @@ import static engine.settings.Settings.*;
 import static game.crafting.InventoryLogic.getPlayerHudRotation;
 import static game.falling.FallingEntity.getFallingEntities;
 import static game.item.ItemEntity.*;
+import static game.mob.Human.getHumanBodyOffsets;
+import static game.mob.Human.getHumanMeshes;
 import static game.mob.Mob.getAllMobs;
 import static game.particle.Particle.getAllParticles;
 import static game.tnt.TNTEntity.*;
@@ -343,6 +345,37 @@ public class GameRenderer {
             }
         }
 
+        //todo: remove dependency of Human mob
+        if (getCameraPerspective() > 0){
+            Mesh[] playerMeshes = getHumanMeshes();
+            Vector3f[] playerBodyOffsets = getHumanBodyOffsets();
+            Vector3f[] playerBodyRotation = getPlayerBodyRotations();
+            Vector3d pos = getPlayerPos();
+            int offsetIndex = 0;
+            for (Mesh thisMesh : playerMeshes) {
+                if (getCameraPerspective() == 1) {
+                    float headRot = 0; //pitch
+                    if (offsetIndex == 0){
+                        headRot = getCameraRotation().x;
+                    }
+                    modelViewMatrix = getMobMatrix(new Vector3d(pos), playerBodyOffsets[offsetIndex], new Vector3f(0, getCameraRotation().y, 0), new Vector3f(headRot + playerBodyRotation[offsetIndex].x,playerBodyRotation[offsetIndex].y,playerBodyRotation[offsetIndex].z), new Vector3d(1f, 1f, 1f), viewMatrix);
+                } else {
+                    float headRot = 0; //pitch
+                    if (offsetIndex == 0){
+                        headRot = getCameraRotation().x * -1f;
+                    }
+                    modelViewMatrix = getMobMatrix(new Vector3d(pos), playerBodyOffsets[offsetIndex], new Vector3f(0, getCameraRotation().y + 180f, 0), new Vector3f(headRot + playerBodyRotation[offsetIndex].x,playerBodyRotation[offsetIndex].y,playerBodyRotation[offsetIndex].z), new Vector3d(1f, 1f, 1f), viewMatrix);
+                }
+                if (graphicsMode) {
+                    glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                } else {
+                    hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                }
+                thisMesh.render();
+                offsetIndex++;
+            }
+        }
+
 
         //render particles
         for (ParticleObject thisParticle : getAllParticles()){
@@ -457,7 +490,7 @@ public class GameRenderer {
         shaderProgram.setUniform("projectionMatrix", projectionMatrix);
 
         //draw wield hand or item
-        {
+        if (getCameraPerspective() == 0) {
             //wield hand
             if (getItemInInventorySlot(getPlayerInventorySelection(),0) == null){
                 modelViewMatrix = getGenericMatrixWithPosRotationScale(getWieldHandAnimationPos(), getWieldHandAnimationRot(), new Vector3d(5d, 5d, 5d), new Matrix4d());
@@ -494,7 +527,7 @@ public class GameRenderer {
         glClear(GL_DEPTH_BUFFER_BIT);
 
         //render inverted crosshair
-        {
+        if (getCameraPerspective() == 0){
             glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
             modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(0,0,0),new Vector3f(0,0,0), new Vector3d(windowScale/20f,windowScale/20f,windowScale/20f));
             hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);

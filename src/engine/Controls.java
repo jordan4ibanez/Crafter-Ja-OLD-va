@@ -7,6 +7,8 @@ import static engine.MouseInput.*;
 import static engine.MouseInput.getMouseScroll;
 import static engine.Window.isKeyPressed;
 import static engine.Window.toggleFullScreen;
+import static engine.graph.Camera.getCameraPerspective;
+import static engine.graph.Camera.toggleCameraPerspective;
 import static engine.gui.GUILogic.isPaused;
 import static engine.gui.GUILogic.togglePauseMenu;
 import static engine.settings.Settings.*;
@@ -26,6 +28,7 @@ public class Controls {
     private static boolean F11Pushed           = false;
     private static boolean escapePushed        = false;
     private static boolean F3Pushed            = false;
+    private static boolean F5Pushed = false;
 
     public static void gameInput() {
 
@@ -158,6 +161,17 @@ public class Controls {
             } else if (scroll > 0) {
                 changeScrollSelection(-1);
             }
+        }
+
+        //toggle camera
+        if (isKeyPressed(GLFW_KEY_F5)) {
+            if (!F5Pushed) {
+                F5Pushed = true;
+                toggleCameraPerspective();
+                System.out.println("CAMERA PERSPECTIVE IS NOW: " + getCameraPerspective());
+            }
+        } else if (!isKeyPressed(GLFW_KEY_F5)){
+            F5Pushed = false;
         }
     }
 
