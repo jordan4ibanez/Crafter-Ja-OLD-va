@@ -1,19 +1,17 @@
 package engine.disk;
 
-import com.fasterxml.jackson.annotation.JacksonAnnotation;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import game.chunk.ChunkObject;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.zip.GZIPOutputStream;
 
-
 import static engine.Window.windowShouldClose;
-import static engine.disk.Disk.getCurrentActiveWorld;
 
 public class SaveQueue {
 
@@ -49,13 +47,6 @@ public class SaveQueue {
 
                         String stringedChunk = mapper.writeValueAsString(savingObject);
 
-                        //crate new file if does not exist
-                        File test = new File("Worlds/world" + currentActiveWorld + "/" + savingObject.I + ".chunk");
-                        if (!test.canRead()){
-                            File newFile = new File("Worlds/world" + currentActiveWorld + "/" + savingObject.I + ".chunk");
-                            newFile.createNewFile();
-                        }
-
                         //learned from https://www.journaldev.com/966/java-gzip-example-compress-decompress-file
                         ByteArrayInputStream bais = new ByteArrayInputStream(stringedChunk.getBytes());
                         FileOutputStream fos = new FileOutputStream("Worlds/world" + currentActiveWorld + "/" + savingObject.I + ".chunk");
@@ -85,7 +76,6 @@ public class SaveQueue {
     public static void instantSave(ChunkObject thisChunk){
         ObjectMapper mapper = new ObjectMapper();
         try {
-            //System.out.println("SAVED WORLD!");
             ChunkSavingObject savingObject = new ChunkSavingObject();
 
             savingObject.I = thisChunk.ID;
@@ -98,13 +88,6 @@ public class SaveQueue {
             savingObject.e = thisChunk.lightLevel;
 
             String stringedChunk = mapper.writeValueAsString(savingObject);
-
-            //crate new file if does not exist
-            File test = new File("Worlds/world" + currentActiveWorld + "/" + savingObject.I + ".chunk");
-            if (!test.canRead()){
-                File newFile = new File("Worlds/world" + currentActiveWorld + "/" + savingObject.I + ".chunk");
-                newFile.createNewFile();
-            }
 
             //learned from https://www.journaldev.com/966/java-gzip-example-compress-decompress-file
             ByteArrayInputStream bais = new ByteArrayInputStream(stringedChunk.getBytes());
