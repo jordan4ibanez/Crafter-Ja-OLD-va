@@ -26,18 +26,16 @@ public class ItemRegistration {
             "ruby",
     };
 
-    public static void registerTools(){
+    public static void registerItems(){
 
         for (String material : materials) {
-            registerItem(material + "pickaxe", "textures/tools/" + material + "pick.png", null);
+            registerItem(material + "pick", "textures/tools/" + material + "pick.png", null);
             registerItem(material + "shovel", "textures/tools/" + material + "shovel.png", null);
             registerItem(material + "axe", "textures/tools/" + material + "axe.png", null);
 
             if (!material.equals("wood") && !material.equals("stone")){
                 registerItem(material, "textures/items/" + material + ".png", null);
             }
-
-
         }
 
 
@@ -58,5 +56,7 @@ public class ItemRegistration {
         registerItem("Door", "textures/door.png", test);
 
         registerItem("Boat", "textures/boatitem.png", null);
+
+        registerItem("stick", "textures/items/stick.png", null);
     }
 }

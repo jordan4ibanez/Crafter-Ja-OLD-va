@@ -27,7 +27,7 @@ import static game.chunk.ChunkUpdateHandler.chunkUpdater;
 import static game.crafting.Inventory.generateRandomInventory;
 import static game.crafting.InventoryLogic.inventoryMenuOnTick;
 import static game.falling.FallingEntity.fallingEntityOnStep;
-import static game.item.ItemRegistration.registerTools;
+import static game.item.ItemRegistration.registerItems;
 import static game.mainMenu.MainMenu.doMainMenuLogic;
 import static game.mainMenu.MainMenu.selectTitleScreenGag;
 import static game.mob.Mob.initializeMobRegister;
@@ -58,7 +58,7 @@ public class SceneHandler {
         if (newScene == 1){
             setWindowClearColor(0.53f,0.81f,0.92f,0.f);
             calculateHealthBarElements();
-            registerTools();
+            registerItems();
             initializeMobRegister();
             initialChunkPayload();
             generateRandomInventory();
