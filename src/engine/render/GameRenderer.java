@@ -45,8 +45,6 @@ public class GameRenderer {
 
     private static final float Z_NEAR = 0.1f;
 
-    private static float itemRotation = 0f;
-
     private static float windowScale = 0f;
 
     private static final Vector2d windowSize = new Vector2d();
