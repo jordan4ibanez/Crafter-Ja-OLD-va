@@ -1,55 +1,125 @@
 package game.crafting;
 
 import game.item.Item;
-import org.joml.Vector2i;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+
+import static game.crafting.Inventory.isAtCraftingBench;
 
 public class CraftRecipes {
     private static CraftRecipeObject[] recipes;
 
+    private static ArrayList<CraftRecipeObject> craftRecipeAccumulator = new ArrayList<>();
+
     //craft recipe initializer
     public static void registerCraftRecipes(){
-
-        ArrayList<CraftRecipeObject> craftRecipeAccumulator = new ArrayList<>();
-
 
         //everything is case sensitive
 
         String[][] wood = {
-                {"Tree"},
+                {"Tree"}
         };
-        craftRecipeAccumulator.add(new CraftRecipeObject(wood, "Wood", 4, new Vector2i(1)));
+        generateRecipe(wood, "Wood", 4);
 
 
         String[][] workbench = {
-                {"Wood","Wood" },
-                {"Wood","Wood" }
+                {"Wood","Wood",},
+                {"Wood","Wood"}
         };
-        craftRecipeAccumulator.add(new CraftRecipeObject(workbench, "Workbench", 1, new Vector2i(2)));
+        generateRecipe(workbench, "Workbench", 1);
+
 
         String[][] boat = {
-                {"Wood",""    , "Wood" },
-                {"Wood","Wood", "Wood" },
-                {"","", "" }
+                {"Wood",""    , "Wood" ,},
+                {"Wood","Wood", "Wood" ,}
         };
-        craftRecipeAccumulator.add(new CraftRecipeObject(boat, "Boat", 1, new Vector2i(3)));
+        generateRecipe(boat, "Boat", 1);
 
-        String[][] boat2 = {
-                {"","", "" },
-                {"Wood",""    , "Wood" },
-                {"Wood","Wood", "Wood" },
-        };
-        craftRecipeAccumulator.add(new CraftRecipeObject(boat2, "Boat", 1, new Vector2i(3)));
 
         String[][] door = {
-                {"","Wood", "Wood" },
-                {"","Wood", "Wood" },
-                {"","Wood", "Wood" },
+                {"Wood", "Wood",},
+                {"Wood", "Wood",},
+                {"Wood", "Wood"}
         };
-        craftRecipeAccumulator.add(new CraftRecipeObject(door, "Door", 1, new Vector2i(3)));
+        generateRecipe(door, "Door", 1);
 
 
+        finalizeRecipes();
+    }
+
+
+    //pre-pattern every recipe because I'm horrible at pattern matching
+    //this is absolute brute force, do not use this after alpha unless can't figure out a better way
+    //this consumes memory, kb, but still memory
+    private static void generateRecipe(String[][] recipe, String output, int amount) {
+        int widthX = 0;
+        int widthY = recipe.length;
+
+        //find out max recipe width
+        for (String[] strings : recipe) {
+            if (strings.length > widthX) {
+                widthX = strings.length;
+            }
+        }
+
+        //System.out.println(widthX + " " + widthY);
+
+        //int count=0;
+        //large crafting grid
+        //4 because 1 greater than large crafting grid
+        for (int adjustmentX = 0; adjustmentX < 4 - widthX; adjustmentX++){
+            for (int adjustmentY = 0; adjustmentY < 4 - widthY; adjustmentY++) {
+
+                String[][] workerRecipeArray = {
+                        {"", "", ""},
+                        {"", "", ""},
+                        {"", "", ""}
+                };
+
+                for (int recipeX = 0; recipeX < widthX; recipeX++) {
+                    for (int recipeY = 0; recipeY < widthY; recipeY++) {
+                        workerRecipeArray[recipeY + adjustmentY][recipeX + adjustmentX] = recipe[recipeY][recipeX];
+                    }
+                }
+
+                //System.out.println(Arrays.deepToString(workerRecipeArray));
+
+                craftRecipeAccumulator.add(new CraftRecipeObject(workerRecipeArray, output, amount));
+                //count++;
+            }
+        }
+
+        //small crafting grid
+        //3 because 1 greater than small crafting grid
+        //see if recipe size is less than 3
+        if (widthY < 3 && widthX < 3) {
+            for (int adjustmentX = 0; adjustmentX < 3 - widthX; adjustmentX++) {
+                for (int adjustmentY = 0; adjustmentY < 3 - widthY; adjustmentY++) {
+
+                    String[][] workerRecipeArray = {
+                            {"", ""},
+                            {"", ""},
+                    };
+
+                    for (int recipeX = 0; recipeX < widthX; recipeX++) {
+                        for (int recipeY = 0; recipeY < widthY; recipeY++) {
+                            workerRecipeArray[recipeY + adjustmentY][recipeX + adjustmentX] = recipe[recipeY][recipeX];
+                        }
+                    }
+
+                    //System.out.println(Arrays.deepToString(workerRecipeArray));
+
+                    craftRecipeAccumulator.add(new CraftRecipeObject(workerRecipeArray, output, amount));
+                    //count++;
+                }
+            }
+        }
+
+        //System.out.println(output + " created " + count + " recipes!");
+    }
+
+    private static void finalizeRecipes(){
         //dump recipes into the recipe array
         recipes = new CraftRecipeObject[craftRecipeAccumulator.toArray().length];
         int count = 0;
@@ -57,76 +127,54 @@ public class CraftRecipes {
             recipes[count] = thisRecipe;
             count++;
         }
+        count--;
+        System.out.println("RECIPES FINALIZED - CONVERTED FROM OBJECT ARRAYLIST TO PRIMITIVE OBJECT ARRAY");
+        System.out.println("TOTAL RECIPES: " + count);
+        craftRecipeAccumulator.clear();
+        craftRecipeAccumulator = null; //force this to go to GC
     }
 
 
     public static CraftRecipeObject recipeScan(InventoryObject inventory){
-        String returningRecipe = null;
-        for (int i = 0; i < recipes.length; i++){
-            CraftRecipeObject thisRecipe = recipes[i];
+        CraftRecipeObject returningRecipe = null;
 
-            //skip recipes that are too big
-            if (thisRecipe.size.x > inventory.getSize().x || thisRecipe.size.y > inventory.getSize().y){
-                continue;
-            }
+        String[][] inventoryToStringArray;
 
+        //create basic 2d string array
+        //3x3
+        if (isAtCraftingBench()){
+            inventoryToStringArray = new String[][]{
+                    {"", "", ""},
+                    {"", "", ""},
+                    {"", "", ""}
+            };
+        }
+        //2x2
+        else {
+            inventoryToStringArray = new String[][]{
+                    {"", ""},
+                    {"", ""},
+            };
+        }
 
-            //lockouts
-            boolean found = false;
-            boolean lockOut = false;
-
-
-            //System.out.println(thisRecipe.size.x);
-            //single item recipe
-            if (thisRecipe.size.x == 1){
-                for (int x = 0; x < inventory.getSize().x; x++){
-                    for (int y = 0; y < inventory.getSize().y; y++){
-                        Item thisItem = inventory.get(x,y);
-                        if (thisItem != null){
-                            if (thisItem.name.equals(thisRecipe.recipe[0][0])){
-                                found = !lockOut;
-                                lockOut = true;
-                            } else {
-                                lockOut = true;
-                                found = false;
-                            }
-                        }
-                    }
+        //dump item strings into array
+        for (int x = 0; x < inventory.getSize().x; x++) {
+            for (int y = 0; y < inventory.getSize().y; y++) {
+                Item thisItem = inventory.get(x, y);
+                if (thisItem != null) {
+                    inventoryToStringArray[y][x] = thisItem.name;
+                } else {
+                    inventoryToStringArray[y][x] = "";
                 }
-
-            //width 2-3 recipe
-            } else {
-                for (int x = 0; x < inventory.getSize().x; x++) {
-                    for (int y = 0; y < inventory.getSize().y; y++) {
-
-                        //keep it inside for now (top left corner
-                        if (x < thisRecipe.size.x && y < thisRecipe.size.y){
-                            Item thisItem = inventory.get(x,y);
-                            if (thisItem != null) {
-                                if (thisItem.name.equals(thisRecipe.recipe[x][y])) {
-                                    if (!lockOut){
-                                        found = true;
-                                    }
-                                } else {
-                                    lockOut = true;
-                                    found = false;
-                                }
-                            } else {
-                                if (!thisRecipe.recipe[x][y].equals("")) {
-                                    lockOut = true;
-                                    found = false;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (found){
-                //System.out.println("Found: " + thisRecipe.output);
-                return thisRecipe;
             }
         }
-        return null;
+
+        for (CraftRecipeObject thisRecipe : recipes) {
+            if (Arrays.deepEquals(thisRecipe.recipe, inventoryToStringArray)){
+                returningRecipe = thisRecipe;
+            }
+        }
+
+        return returningRecipe;
     }
 }

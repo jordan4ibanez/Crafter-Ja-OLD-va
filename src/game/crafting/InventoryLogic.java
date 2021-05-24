@@ -263,11 +263,9 @@ public class InventoryLogic {
                     CraftRecipeObject newItems;
                     //small craft recipe scan
                     if (foundInventory.equals("smallCraft")){
-                        System.out.println("small recipe scan");
                         newItems = recipeScan(getSmallCraftInventory());
                         //large craft recipe scan
                     } else {
-                        System.out.println("BIG RECIPE SCAN");
                         newItems = recipeScan(getBigCraftInventory());
                     }
 
