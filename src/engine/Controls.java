@@ -33,13 +33,20 @@ public class Controls {
     public static void gameInput() {
 
         if (!isPlayerInventoryOpen() && !isPaused()) {
-            setPlayerForward(isKeyPressed(getKeyForward()));
-
-            setPlayerBackward(isKeyPressed(getKeyBack()));
-
-            setPlayerLeft(isKeyPressed(getKeyLeft()));
-
-            setPlayerRight(isKeyPressed(getKeyRight()));
+            //normal inputs
+            if (getCameraPerspective() < 2) {
+                setPlayerForward(isKeyPressed(getKeyForward()));
+                setPlayerBackward(isKeyPressed(getKeyBack()));
+                setPlayerLeft(isKeyPressed(getKeyLeft()));
+                setPlayerRight(isKeyPressed(getKeyRight()));
+            }
+            //reversed inputs
+            else {
+                setPlayerForward(isKeyPressed(getKeyBack()));
+                setPlayerBackward(isKeyPressed(getKeyForward()));
+                setPlayerLeft(isKeyPressed(getKeyRight()));
+                setPlayerRight(isKeyPressed(getKeyLeft()));
+            }
 
             //sneaking
             setPlayerSneaking(isKeyPressed(getKeySneak()));
@@ -168,7 +175,7 @@ public class Controls {
             if (!F5Pushed) {
                 F5Pushed = true;
                 toggleCameraPerspective();
-                System.out.println("CAMERA PERSPECTIVE IS NOW: " + getCameraPerspective());
+                //System.out.println("CAMERA PERSPECTIVE IS NOW: " + getCameraPerspective());
             }
         } else if (!isKeyPressed(GLFW_KEY_F5)){
             F5Pushed = false;
