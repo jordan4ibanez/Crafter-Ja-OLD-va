@@ -1,8 +1,6 @@
 package game.item;
 
-import engine.graph.Mesh;
 import engine.graph.Texture;
-import game.blocks.BlockShape;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -787,8 +785,6 @@ public class ItemDefinition {
         self.lightArray = lightArray;
         self.indicesArray = indicesArray;
         self.textureCoordArray = textureCoordArray;
-
-        //return new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, thisTexture);
     }
 
     public static ItemDefinition getRandomItemDefinition(){
