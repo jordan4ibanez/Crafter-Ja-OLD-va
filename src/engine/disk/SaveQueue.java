@@ -27,14 +27,18 @@ public class SaveQueue {
         new Thread(() -> {
             final ObjectMapper mapper = new ObjectMapper();
 
+            ChunkSavingObject savingObject;
+
             ChunkObject thisChunk;
+
             saveQueue = new ArrayDeque<>();
+
             while(!windowShouldClose()) {
                 if (!saveQueue.isEmpty()) {
                     try {
                         thisChunk = saveQueue.pop();
 
-                        ChunkSavingObject savingObject = new ChunkSavingObject();
+                        savingObject = new ChunkSavingObject();
 
                         savingObject.I = thisChunk.ID;
                         savingObject.x = thisChunk.x;
