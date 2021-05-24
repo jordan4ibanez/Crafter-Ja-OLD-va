@@ -170,7 +170,7 @@ public class GUI {
     }
 
     public static void rebuildMiningMesh(int level) {
-        
+
         if (miningCrackMesh != null){
             miningCrackMesh.cleanUp(false);
         }
@@ -860,6 +860,10 @@ public class GUI {
     }
 
     private static void createWieldHandMesh(byte lightLevel){
+
+        if (wieldHandMesh != null){
+            wieldHandMesh.cleanUp(false);
+        }
 
         float floatedLight = convertLight((float)lightLevel/15f);
 
