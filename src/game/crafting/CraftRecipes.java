@@ -57,7 +57,7 @@ public class CraftRecipes {
                     {"stick",  material},
                     {"stick",  ""      }
             };
-            generateRecipe(axeRight, material + axeRight, 1);
+            generateRecipe(axeRight, material + "axe", 1);
         }
 
         String[][] wood = {
