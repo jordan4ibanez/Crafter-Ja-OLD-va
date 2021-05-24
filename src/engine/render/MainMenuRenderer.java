@@ -4,17 +4,17 @@ import engine.graph.Mesh;
 import engine.graph.ShaderProgram;
 import engine.gui.GUIObject;
 import org.joml.Matrix4d;
-import org.joml.Vector2d;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
+import static engine.Window.getWindowHeight;
+import static engine.Window.getWindowWidth;
 import static engine.credits.Credits.getCreditParts;
+import static engine.graph.Transformation.*;
+import static engine.gui.GUI.getButtonMesh;
+import static engine.gui.GUI.getButtonSelectedMesh;
 import static engine.gui.TextHandling.createTextCentered;
 import static engine.render.GameRenderer.*;
-import static engine.gui.GUI.*;
-import static engine.Window.*;
-import static engine.graph.Transformation.*;
-
 import static game.mainMenu.MainMenu.*;
 import static game.mainMenu.MainMenuAssets.getTitleBackGroundMeshTile;
 import static game.mainMenu.MainMenuAssets.getTitleBlockMesh;
@@ -35,7 +35,9 @@ public class MainMenuRenderer {
         ShaderProgram hudShaderProgram = getHudShaderProgram();
 
         Mesh workerMesh;
+
         clearScreen();
+
         rescaleWindow();
         shaderProgram.bind();
 
@@ -52,10 +54,8 @@ public class MainMenuRenderer {
 
         boolean onTitleScreen = getMainMenuPage() == 0;
         boolean onWorldsScreen = getMainMenuPage() == 3;
-        boolean onCreditsScreen = getMainMenuPage() == 4;
 
-        //set initial random float variables
-
+        //get background tile mesh
         workerMesh = getTitleBackGroundMeshTile();
 
         //render scrolling background
