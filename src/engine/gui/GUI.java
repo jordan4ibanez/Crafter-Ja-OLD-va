@@ -8,6 +8,7 @@ import engine.graph.Texture;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static engine.Timer.getFpsCounted;
 import static engine.Time.getDelta;
@@ -19,14 +20,6 @@ import static game.chunk.ChunkMesh.convertLight;
 import static game.player.Player.*;
 
 public class GUI {
-    private static final Vector3f playerScale = new Vector3f(0.7f,0.8f,0.7f);
-
-    //health bar elements
-    //calculated per half heart
-    private static final byte[] healthHudArray = new byte[10];
-    private static byte healthHudFloatIndex = 9;
-    private static boolean heartUp = true;
-    private static final float[] healthHudFloatArray = new float[10];
 
     //textures
     private static Texture worldSelection;
@@ -50,9 +43,6 @@ public class GUI {
     private static Mesh buttonSelectedMesh;
     private static Mesh buttonPushedMesh;
     private static Mesh menuBgMesh;
-    private static Mesh continueMesh;
-    private static Mesh toggleVsyncMesh;
-    private static Mesh quitGameMesh;
     private static Mesh miningCrackMesh;
     private static Mesh globalWaterEffectMesh;
     private static Mesh heartHudMesh;
@@ -82,15 +72,8 @@ public class GUI {
         heartShadowHudMesh = create2DMesh(0.5f, 0.5f, "textures/heart_shadow.png");
 
         //2D text creations
-        continueMesh = createTextCentered("CONTINUE", 1,1,1);
-        toggleVsyncMesh = createTextCentered("VSYNC:ON", 1,1,1);
-        quitGameMesh = createTextCentered("QUIT", 1,1,1);
-
         fpsMesh = createTextWithShadow("FPS: " + getFpsCounted(), 1f, 1f, 1f);
-
         versionInfoText = createTextWithShadow(getVersionName(), 1,1,1);
-
-
 
         //3D mesh creations
         createWieldHandMesh((byte)15);
@@ -166,16 +149,6 @@ public class GUI {
         return menuBgMesh;
     }
 
-    public static Mesh getContinueMesh(){
-        return continueMesh;
-    }
-    public static Mesh getToggleVsyncMesh(){
-        return toggleVsyncMesh;
-    }
-    public static Mesh getQuitGameMesh(){
-        return quitGameMesh;
-    }
-
     public static Mesh getInventorySlotMesh(){
         return inventorySlotMesh;
     }
@@ -189,72 +162,6 @@ public class GUI {
 
     public static Mesh getGlobalWaterEffectMesh(){
         return globalWaterEffectMesh;
-    }
-
-    public static void calculateHealthBarElements(){
-        int health = getPlayerHealth();
-
-        byte z = 1; //this needs to start from 1 like lua
-
-        //compare health elements (base 2), generate new health bar
-        for (byte i = 0; i < 10; i++){
-            int compare = health - (z * 2);
-
-            if (compare >= 0){
-                healthHudArray[i] = 2;
-            } else if (compare == -1){
-                healthHudArray[i] = 1;
-            } else {
-                healthHudArray[i] = 0;
-            }
-            z++;
-        }
-        //System.out.println(Arrays.toString(healthHudArray));
-    }
-
-    public static void makeHeartsJiggle(){
-        float delta = getDelta();
-        if (heartUp) {
-            healthHudFloatArray[healthHudFloatIndex] += delta * 200f;
-            if (healthHudFloatArray[healthHudFloatIndex] > 10f){
-                healthHudFloatArray[healthHudFloatIndex] = 10f;
-                heartUp = false;
-            }
-        } else {
-            healthHudFloatArray[healthHudFloatIndex] -= delta * 200f;
-            if (healthHudFloatArray[healthHudFloatIndex] < 0f){
-                healthHudFloatArray[healthHudFloatIndex] = 0f;
-
-                heartUp = true;
-
-                //cycle through hearts
-                healthHudFloatIndex -= 1;
-                if (healthHudFloatIndex < 0){
-                    healthHudFloatIndex = 9;
-                }
-
-            }
-        }
-
-
-    }
-
-    public static byte[] getHealthHudArray(){
-        return healthHudArray;
-    }
-
-    public static float[] getHealthHudFloatArray(){
-        return healthHudFloatArray;
-    }
-
-    public static void toggleVsyncMesh(){
-        if (isvSync()) {
-            toggleVsyncMesh = createTextCentered("VSYNC:ON", 1, 1, 1);
-            System.out.println("vsync on");
-        } else {
-            toggleVsyncMesh = createTextCentered("VSYNC:OFF", 1, 1, 1);
-            System.out.println("vsync off");
-        }
     }
 
     public static void buildFPSMesh() {
@@ -274,10 +181,10 @@ public class GUI {
         float max = 1.0001f;
         int indicesCount = 0;
 
-        ArrayList positions = new ArrayList();
-        ArrayList textureCoord = new ArrayList();
-        ArrayList indices = new ArrayList();
-        ArrayList light = new ArrayList();
+        List<Float> positions = new ArrayList<>();
+        List<Float> textureCoord = new ArrayList<>();
+        List<Integer> indices = new ArrayList<>();
+        List<Float> light = new ArrayList<>();
 
         float maxLevels = 9;
 
@@ -309,10 +216,10 @@ public class GUI {
             light.add(frontLight);
         }
         //front
-        indices.add(0 + indicesCount);
+        indices.add(0);
         indices.add(1 + indicesCount);
         indices.add(2 + indicesCount);
-        indices.add(0 + indicesCount);
+        indices.add(0);
         indices.add(2 + indicesCount);
         indices.add(3 + indicesCount);
         indicesCount += 4;
@@ -331,8 +238,6 @@ public class GUI {
         textureCoord.add(1f);//1
         textureCoord.add(textureMax);//3
 
-
-        //todo///////////////////////////////////////////////////////
 
         //back
         positions.add(min);
@@ -357,10 +262,10 @@ public class GUI {
             light.add(backLight);
         }
         //back
-        indices.add(0 + indicesCount);
+        indices.add(indicesCount);
         indices.add(1 + indicesCount);
         indices.add(2 + indicesCount);
-        indices.add(0 + indicesCount);
+        indices.add(indicesCount);
         indices.add(2 + indicesCount);
         indices.add(3 + indicesCount);
         indicesCount += 4;
@@ -378,8 +283,6 @@ public class GUI {
         textureCoord.add(1f);//1
         textureCoord.add(textureMax);//3
 
-
-        //todo///////////////////////////////////////////////////////
 
         //right
         positions.add(max);
@@ -405,10 +308,10 @@ public class GUI {
             light.add(rightLight);
         }
         //right
-        indices.add(0 + indicesCount);
+        indices.add(indicesCount);
         indices.add(1 + indicesCount);
         indices.add(2 + indicesCount);
-        indices.add(0 + indicesCount);
+        indices.add(indicesCount);
         indices.add(2 + indicesCount);
         indices.add(3 + indicesCount);
         indicesCount += 4;
@@ -426,8 +329,6 @@ public class GUI {
         textureCoord.add(1f);//1
         textureCoord.add(textureMax);//3
 
-
-        //todo///////////////////////////////////////////////////////
 
         //left
         positions.add(min);
@@ -452,10 +353,10 @@ public class GUI {
             light.add(leftLight);
         }
         //left
-        indices.add(0 + indicesCount);
+        indices.add(indicesCount);
         indices.add(1 + indicesCount);
         indices.add(2 + indicesCount);
-        indices.add(0 + indicesCount);
+        indices.add(indicesCount);
         indices.add(2 + indicesCount);
         indices.add(3 + indicesCount);
         indicesCount += 4;
@@ -473,8 +374,6 @@ public class GUI {
         textureCoord.add(1f);//1
         textureCoord.add(textureMax);//3
 
-
-        //todo///////////////////////////////////////////////////////
 
         //top
         positions.add(min);
@@ -499,10 +398,10 @@ public class GUI {
             light.add(topLight);
         }
         //top
-        indices.add(0 + indicesCount);
+        indices.add(indicesCount);
         indices.add(1 + indicesCount);
         indices.add(2 + indicesCount);
-        indices.add(0 + indicesCount);
+        indices.add(indicesCount);
         indices.add(2 + indicesCount);
         indices.add(3 + indicesCount);
         indicesCount += 4;
@@ -520,8 +419,6 @@ public class GUI {
         textureCoord.add(1f);//1
         textureCoord.add(textureMax);//3
 
-
-        //todo///////////////////////////////////////////////////////
 
         //bottom
         positions.add(min);
@@ -547,13 +444,12 @@ public class GUI {
             light.add(bottomLight);
         }
         //bottom
-        indices.add(0 + indicesCount);
+        indices.add(indicesCount);
         indices.add(1 + indicesCount);
         indices.add(2 + indicesCount);
-        indices.add(0 + indicesCount);
+        indices.add(indicesCount);
         indices.add(2 + indicesCount);
         indices.add(3 + indicesCount);
-        indicesCount += 4;
 
 
         //-x +x  -y +y

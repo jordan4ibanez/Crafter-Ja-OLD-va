@@ -3,6 +3,7 @@ package engine.gui;
 import org.joml.Vector2d;
 
 import static engine.MouseInput.*;
+import static engine.Time.getDelta;
 import static engine.Window.*;
 import static engine.render.GameRenderer.getWindowScale;
 import static engine.render.GameRenderer.getWindowSize;
@@ -11,6 +12,7 @@ import static engine.settings.Settings.*;
 import static engine.sound.SoundAPI.playSound;
 import static game.mainMenu.MainMenu.resetMainMenu;
 import static game.mainMenu.MainMenu.resetMainMenuPage;
+import static game.player.Player.getPlayerHealth;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
 public class GUILogic {
@@ -22,6 +24,13 @@ public class GUILogic {
     private static boolean pollingButtonInputs = false;
 
     private static byte lockedOnButtonInput = -1;
+
+    //health bar elements
+    //calculated per half heart
+    private static final byte[] healthHudArray = new byte[10];
+    private static byte healthHudFloatIndex = 9;
+    private static boolean heartUp = true;
+    private static final float[] healthHudFloatArray = new float[10];
 
     //0 main
     //1 settings base
@@ -421,5 +430,59 @@ public class GUILogic {
         }
 
         return selected;
+    }
+
+    public static void makeHeartsJiggle(){
+        float delta = getDelta();
+        if (heartUp) {
+            healthHudFloatArray[healthHudFloatIndex] += delta * 200f;
+            if (healthHudFloatArray[healthHudFloatIndex] > 10f){
+                healthHudFloatArray[healthHudFloatIndex] = 10f;
+                heartUp = false;
+            }
+        } else {
+            healthHudFloatArray[healthHudFloatIndex] -= delta * 200f;
+            if (healthHudFloatArray[healthHudFloatIndex] < 0f){
+                healthHudFloatArray[healthHudFloatIndex] = 0f;
+
+                heartUp = true;
+
+                //cycle through hearts
+                healthHudFloatIndex -= 1;
+                if (healthHudFloatIndex < 0){
+                    healthHudFloatIndex = 9;
+                }
+
+            }
+        }
+    }
+
+    public static void calculateHealthBarElements(){
+        int health = getPlayerHealth();
+
+        byte z = 1; //this needs to start from 1 like lua
+
+        //compare health elements (base 2), generate new health bar
+        for (byte i = 0; i < 10; i++){
+            int compare = health - (z * 2);
+
+            if (compare >= 0){
+                healthHudArray[i] = 2;
+            } else if (compare == -1){
+                healthHudArray[i] = 1;
+            } else {
+                healthHudArray[i] = 0;
+            }
+            z++;
+        }
+        //System.out.println(Arrays.toString(healthHudArray));
+    }
+
+    public static byte[] getHealthHudArray(){
+        return healthHudArray;
+    }
+
+    public static float[] getHealthHudFloatArray(){
+        return healthHudFloatArray;
     }
 }

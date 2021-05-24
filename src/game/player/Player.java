@@ -9,6 +9,8 @@ import static engine.Time.getDelta;
 import static engine.disk.Disk.loadPlayerPos;
 import static engine.graph.Camera.*;
 import static engine.gui.GUI.*;
+import static engine.gui.GUILogic.calculateHealthBarElements;
+import static engine.gui.GUILogic.makeHeartsJiggle;
 import static engine.sound.SoundAPI.playSound;
 import static game.blocks.BlockDefinition.getBlockDefinition;
 import static game.blocks.BlockDefinition.isBlockLiquid;

@@ -13,7 +13,7 @@ import static engine.debug.RenderDebug.initializeDebugRenderShader;
 import static engine.debug.RenderDebug.renderDebug;
 import static engine.debug.debug.debugInput;
 import static engine.graph.Camera.*;
-import static engine.gui.GUI.calculateHealthBarElements;
+import static engine.gui.GUILogic.calculateHealthBarElements;
 import static engine.gui.GUILogic.pauseMenuOnTick;
 import static engine.render.MainMenuRenderer.renderMainMenu;
 import static engine.render.GameRenderer.renderGame;
