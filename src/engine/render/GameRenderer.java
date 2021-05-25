@@ -27,6 +27,7 @@ import static engine.gui.TextHandling.*;
 import static engine.settings.Settings.*;
 import static game.crafting.InventoryLogic.getPlayerHudRotation;
 import static game.falling.FallingEntity.getFallingEntities;
+import static game.item.ItemDefinition.getItemDefinition;
 import static game.item.ItemEntity.*;
 import static game.mob.Human.getHumanBodyOffsets;
 import static game.mob.Human.getHumanMeshes;
@@ -738,11 +739,16 @@ public class GameRenderer {
                 //render items in hotbar
                 for (int x = 1; x <= 9; x++) {
 
-                    if (getItemInInventorySlot(x - 1, 0) != null) {
+                    Item thisItem = getItemInInventorySlot(x - 1, 0);
+                    if (thisItem != null) {
 
                         glClear(GL_DEPTH_BUFFER_BIT);
 
-                        modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((x - 5d) * (windowScale / 9.1d)),  (-windowSize.y / 2d) + (windowScale / 24d), 0), new Vector3f(45, 45, 0), new Vector3d(windowScale / 8d, windowScale / 8d, windowScale / 8d));
+                        if (getItemDefinition(thisItem.name).isItem) {
+                            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((x - 5d) * (windowScale / 9.1d)), (-windowSize.y / 2d) + (windowScale / 48d), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 5d, windowScale / 5d, windowScale / 5d));
+                        } else {
+                            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((x - 5d) * (windowScale / 9.1d)), (-windowSize.y / 2d) + (windowScale / 24d), 0), new Vector3f(45, 45, 0), new Vector3d(windowScale / 8.01d, windowScale / 8.01d, windowScale / 8.01d));
+                        }
                         hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                         getItemInInventorySlot(x - 1, 0).mesh.render();
 

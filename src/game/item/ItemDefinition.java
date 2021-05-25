@@ -25,7 +25,6 @@ public class ItemDefinition {
     public boolean isRightClickable;
     public boolean isOnPlaced;
 
-
     //overhead variable constants
     public String texturePath;
     public Texture texture;
