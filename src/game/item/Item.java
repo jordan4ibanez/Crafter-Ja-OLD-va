@@ -25,6 +25,7 @@ public class Item {
     public boolean exists;
     public boolean collecting;
     public float collectionTimer = 0;
+    public boolean deletionOkay = false;
     public Vector3f rotation;
     public Vector3f inertia;
     public int ID;
@@ -166,6 +167,10 @@ public class Item {
         float floatedLightValue = convertLight((float)self.light/15f);
 
         Arrays.fill(newLightArray, floatedLightValue);
+
+        if (self.mesh != null){
+            self.mesh.cleanUp(false);
+        }
 
         self.mesh = new Mesh(temp.positionsArray, newLightArray, temp.indicesArray, temp.textureCoordArray, temp.texture);
     }
