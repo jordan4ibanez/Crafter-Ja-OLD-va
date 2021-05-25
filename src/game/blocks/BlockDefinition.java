@@ -47,6 +47,7 @@ public class BlockDefinition {
     public float dirtHardness;
     public float woodHardness;
     public float leafHardness;
+    public String droppedItem;
 
     public BlockDefinition(
             int ID,
@@ -72,7 +73,8 @@ public class BlockDefinition {
             boolean isRightClickable,
             boolean isOnPlaced,
             float viscosity,
-            boolean pointable
+            boolean pointable,
+            String droppedItem
 
     ){
 
@@ -100,6 +102,7 @@ public class BlockDefinition {
         this.isOnPlaced = isOnPlaced;
         this.viscosity = viscosity;
         this.pointable = pointable;
+        this.droppedItem = droppedItem;
         blockIDs[ID] = this;
 
         registerItem(name, ID);
@@ -108,7 +111,14 @@ public class BlockDefinition {
     public static void onDigCall(int ID, Vector3d pos) {
         if(blockIDs[ID] != null){
             if(blockIDs[ID].dropsItem){
-                createItem(blockIDs[ID].name, pos.add(0.5d,0.5d,0.5d), 1, 2.5f);
+                //dropped defined item
+                if (blockIDs[ID].droppedItem != null){
+                    createItem(blockIDs[ID].droppedItem, pos.add(0.5d, 0.5d, 0.5d), 1, 2.5f);
+                }
+                //drop self
+                else {
+                    createItem(blockIDs[ID].name, pos.add(0.5d, 0.5d, 0.5d), 1, 2.5f);
+                }
             }
             if(blockIDs[ID].blockModifier != null){
                 try {
@@ -304,7 +314,8 @@ public class BlockDefinition {
                 false,
                 false,
                 0,
-                false
+                false,
+                null
         );
 
         new BlockDefinition(
@@ -331,7 +342,8 @@ public class BlockDefinition {
                 false,
                 false,
                 0,
-                true
+                true,
+                null
         );
 
         new BlockDefinition(
@@ -358,7 +370,8 @@ public class BlockDefinition {
                 false,
                 false,
                 0,
-                true
+                true,
+                "dirt"
         );
 
         new BlockDefinition(
@@ -385,7 +398,8 @@ public class BlockDefinition {
                 false,
                 false,
                 0,
-                true
+                true,
+                "cobblestone"
         );
 
         new BlockDefinition(
@@ -412,7 +426,8 @@ public class BlockDefinition {
                 false,
                 false,
                 0,
-                true
+                true,
+                null
         );
 
         new BlockDefinition(
@@ -439,7 +454,8 @@ public class BlockDefinition {
                 false,
                 false,
                 0,
-                true
+                true,
+                null
         );
 
 
@@ -475,7 +491,8 @@ public class BlockDefinition {
                 false,
                 false,
                 0,
-                true
+                true,
+                null
         );
 
         new BlockDefinition(
@@ -485,7 +502,7 @@ public class BlockDefinition {
                 -1,
                 -1,
                 "water",
-                true,
+                false,
                 new int[]{10,0}, //front
                 new int[]{10,0}, //back
                 new int[]{10,0}, //right
@@ -502,7 +519,8 @@ public class BlockDefinition {
                 false,
                 false,
                 40,
-                false
+                false,
+                null
         );
 
         new BlockDefinition(
@@ -529,7 +547,8 @@ public class BlockDefinition {
                 false,
                 false,
                 0,
-                true
+                true,
+                "coal"
         );
 
         new BlockDefinition(
@@ -556,7 +575,8 @@ public class BlockDefinition {
                 false,
                 false,
                 0,
-                true
+                true,
+                null
         );
 
         new BlockDefinition(
@@ -583,7 +603,8 @@ public class BlockDefinition {
                 false,
                 false,
                 0,
-                true
+                true,
+                null
         );
 
         new BlockDefinition(
@@ -610,7 +631,8 @@ public class BlockDefinition {
                 false,
                 false,
                 0,
-                true
+                true,
+                "diamond"
         );
 
         new BlockDefinition(
@@ -637,7 +659,8 @@ public class BlockDefinition {
                 false,
                 false,
                 0,
-                true
+                true,
+                "emerald"
         );
 
         new BlockDefinition(
@@ -664,7 +687,8 @@ public class BlockDefinition {
                 false,
                 false,
                 0,
-                true
+                true,
+                "lapis"
         );
 
         new BlockDefinition(
@@ -691,7 +715,8 @@ public class BlockDefinition {
                 false,
                 false,
                 0,
-                true
+                true,
+                "sapphire"
         );
 
         new BlockDefinition(
@@ -718,7 +743,8 @@ public class BlockDefinition {
                 false,
                 false,
                 0,
-                true
+                true,
+                "ruby"
         );
 
         new BlockDefinition(
@@ -745,7 +771,8 @@ public class BlockDefinition {
                 false,
                 false,
                 0,
-                true
+                true,
+                null
         );
 
 
@@ -773,7 +800,8 @@ public class BlockDefinition {
                 false,
                 false,
                 0,
-                true
+                true,
+                null
         );
         new BlockDefinition(
                 18,
@@ -799,7 +827,8 @@ public class BlockDefinition {
                 false,
                 false,
                 0,
-                true
+                true,
+                null
         );
         new BlockDefinition(
                 19,
@@ -825,7 +854,8 @@ public class BlockDefinition {
                 false,
                 false,
                 0,
-                true
+                true,
+                null
         );
 
         //falling sand
@@ -862,7 +892,8 @@ public class BlockDefinition {
                 false,
                 false,
                 0,
-                true
+                true,
+                null
         );
 
         //door open
@@ -872,8 +903,6 @@ public class BlockDefinition {
                                 {0f,0f,0f,2f/16f,1f,1f}
                         }
                 );
-
-
 
         new BlockDefinition(
                 21,
@@ -917,7 +946,8 @@ public class BlockDefinition {
                 true,
                 false,
                 0,
-                true
+                true,
+                null
         );
 
         new BlockDefinition(
@@ -963,7 +993,8 @@ public class BlockDefinition {
                 true,
                 false,
                 0,
-                true
+                true,
+                null
         );
 
         //door closed
@@ -1017,7 +1048,8 @@ public class BlockDefinition {
                 true,
                 false,
                 0,
-                true
+                true,
+                null
         );
 
         new BlockDefinition(
@@ -1063,7 +1095,8 @@ public class BlockDefinition {
                 true,
                 false,
                 0,
-                true
+                true,
+                null
         );
 
         new BlockDefinition(
@@ -1090,7 +1123,8 @@ public class BlockDefinition {
                 false,
                 false,
                 0,
-                true
+                true,
+                null
         );
 
         new BlockDefinition(
@@ -1100,7 +1134,7 @@ public class BlockDefinition {
                 0,
                 1,
                 "Leaves",
-                true,
+                false,
                 new int[]{28,0}, //front
                 new int[]{28,0}, //back
                 new int[]{28,0}, //right
@@ -1117,7 +1151,8 @@ public class BlockDefinition {
                 false,
                 false,
                 0,
-                true
+                true,
+                null
         );
 
         new BlockDefinition(
@@ -1144,7 +1179,8 @@ public class BlockDefinition {
                 false,
                 false,
                 0,
-                true
+                true,
+                null
         );
 
         BlockModifier workBench = new BlockModifier() {
@@ -1179,7 +1215,8 @@ public class BlockDefinition {
                 true,
                 false,
                 0,
-                true
+                true,
+                null
         );
     }
 

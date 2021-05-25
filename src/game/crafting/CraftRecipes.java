@@ -93,7 +93,6 @@ public class CraftRecipes {
         };
         generateRecipe(stick, "stick", 4);
 
-
         finalizeRecipes();
     }
 
