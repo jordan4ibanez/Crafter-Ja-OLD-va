@@ -246,7 +246,7 @@ public class Player {
             wieldHandAnimationRot.x = (float) Math.toDegrees(wieldHandAnimationRot.x);
             wieldHandAnimationRot.y = (float) Math.toDegrees(wieldHandAnimationRot.y);
             wieldHandAnimationRot.z = (float) Math.toDegrees(wieldHandAnimationRot.z);
-        } else if (getItemInInventorySlot(getPlayerInventorySelection(),0).definition.isTool){
+        } else if (getItemInInventorySlot(getPlayerInventorySelection(),0).definition.isItem){
 
             Vector3f wieldHandAnimationPosBaseTool = new Vector3f(10f,-6.5f,-8f);
 

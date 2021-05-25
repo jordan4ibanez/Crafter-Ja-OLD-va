@@ -20,12 +20,11 @@ public class ItemDefinition {
     public final String name;
     public int blockID;
 
-    public final boolean isTool;
+    public final boolean isItem;
     public final ItemModifier itemModifier;
     public boolean isRightClickable;
     public boolean isOnPlaced;
 
-    //public Mesh mesh = new Mesh();
 
     //overhead variable constants
     public String texturePath;
@@ -40,7 +39,7 @@ public class ItemDefinition {
         this.name = name;
         this.blockID = blockID;
         createItemBlockMesh(blockID, this);
-        this.isTool = false;
+        this.isItem = false;
         this.itemModifier = null;
         this.isRightClickable = getRightClickable(blockID);
         this.isOnPlaced = getIsOnPlaced(blockID);
@@ -50,7 +49,7 @@ public class ItemDefinition {
     public ItemDefinition(String name, String texturePath, ItemModifier itemModifier){
         this.name = name;
         this.texturePath = texturePath;
-        this.isTool = true;
+        this.isItem = true;
         createItemToolMesh(texturePath, this);
         this.itemModifier = itemModifier;
     }
