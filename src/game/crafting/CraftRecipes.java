@@ -30,32 +30,36 @@ public class CraftRecipes {
 
 
         for (String material : materials) {
+            String recipeItem = material;
+            if (recipeItem.equals("stone")){
+                recipeItem = "cobblestone";
+            }
             String[][] pick = {
-                    {material, material, material},
-                    {"",       "stick",  ""},
-                    {"",       "stick",  ""}
+                    {recipeItem, recipeItem, recipeItem},
+                    {"",         "stick",    ""},
+                    {"",         "stick",    ""}
             };
             generateRecipe(pick, material + "pick", 1);
 
             String[][] shovel = {
-                    {material},
-                    {"stick"},
-                    {"stick"}
+                    {recipeItem},
+                    {"stick"   },
+                    {"stick"   }
             };
             generateRecipe(shovel, material + "shovel", 1);
 
             //create symmetrical axes
             String[][] axeLeft = {
-                    {material, material},
-                    {material, "stick"},
-                    {"",       "stick"}
+                    {recipeItem, recipeItem},
+                    {recipeItem, "stick"},
+                    {"",         "stick"}
             };
             generateRecipe(axeLeft, material + "axe", 1);
 
             String[][] axeRight = {
-                    {material, material},
-                    {"stick",  material},
-                    {"stick",  ""      }
+                    {recipeItem, recipeItem},
+                    {"stick",    recipeItem},
+                    {"stick",    ""        }
             };
             generateRecipe(axeRight, material + "axe", 1);
         }
