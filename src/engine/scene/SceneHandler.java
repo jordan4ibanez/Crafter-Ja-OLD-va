@@ -123,7 +123,7 @@ public class SceneHandler {
 
         //indexLight();
         mouseInput();
-        updateCamera();
+
         countFPS();
         updateWorldChunkLoader();
         popChunkMeshQueue(); //this actually transmits the data from the other threads into main thread
@@ -133,7 +133,7 @@ public class SceneHandler {
         globalChunkSaveToDisk();
         gameInput();
         gameUpdate();
-
+        updateCamera();
         renderGame();
         windowUpdate();
 
