@@ -7,28 +7,27 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import static game.blocks.BlockDefinition.getBlockDefinition;
-import static game.blocks.BlockDefinition.getBlockName;
 import static game.chunk.Chunk.placeBlock;
-import static game.chunk.Chunk.setBlock;
 import static game.collision.Collision.applyInertia;
-import static game.item.ItemDefinition.getItemDefinition;
+import static game.item.ItemDefinition.createItemBlockMeshReturnsMesh;
 
 public class FallingEntity {
     private final static Map<Integer, FallingEntityObject> objects = new HashMap<>();
     private static int currentID = 0;
 
     public static void addFallingEntity(Vector3d pos, Vector3f inertia, int blockID){
-        System.out.println("falling entities are disabled, fix this");
-        //objects.put(currentID, new FallingEntityObject(pos, inertia, getItemDefinition(getBlockName(blockID)).mesh, currentID));
+        objects.put(currentID, new FallingEntityObject(pos, inertia, createItemBlockMeshReturnsMesh(blockID), currentID, blockID));
         currentID++;
     }
 
     public static void fallingEntityOnStep(){
         for (FallingEntityObject thisObject : objects.values()){
-            applyInertia(thisObject.pos, thisObject.inertia, false, 0.45f, 1f, true, false, true, false, false);
-            if (thisObject.inertia.y == 0){
-                placeBlock((int)Math.floor(thisObject.pos.x), (int)Math.floor(thisObject.pos.y), (int)Math.floor(thisObject.pos.z), 23, 0);
+            boolean onGround = applyInertia(thisObject.pos, thisObject.inertia, false, 0.45f, 1f, true, false, true, false, false);
+            if (thisObject.inertia.y == 0 || onGround){
+                placeBlock((int)Math.floor(thisObject.pos.x), (int)Math.floor(thisObject.pos.y), (int)Math.floor(thisObject.pos.z), thisObject.ID, 0);
+                if (thisObject.mesh != null){
+                    thisObject.mesh.cleanUp(false);
+                }
                 objects.remove(thisObject.key);
                 return;
             }

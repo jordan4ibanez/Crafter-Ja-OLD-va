@@ -9,11 +9,13 @@ public class FallingEntityObject {
     public Vector3f inertia;
     public Mesh mesh;
     public int key;
+    public int ID;
 
-    public FallingEntityObject(Vector3d pos, Vector3f inertia, Mesh mesh, int key){
+    public FallingEntityObject(Vector3d pos, Vector3f inertia, Mesh mesh, int key, int ID){
         this.pos = pos;
         this.inertia = inertia;
         this.mesh = mesh;
         this.key = key;
+        this.ID = ID;
     }
 }
