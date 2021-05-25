@@ -734,7 +734,7 @@ public class Player {
         {
             Vector3f inertia2D = new Vector3f(inertia.x, 0, inertia.z);
 
-            animationTimer += delta * (inertia2D.length() / maxWalkSpeed);
+            animationTimer += delta * (inertia2D.length() / maxWalkSpeed) * 2f;
 
             if (animationTimer >= 1f) {
                 animationTimer -= 1f;
