@@ -59,7 +59,7 @@ public class SceneHandler {
             registerItems();
             initializeMobRegister();
             initialChunkPayload();
-            generateRandomInventory();
+            //generateRandomInventory();
         }
 
         currentScene = newScene;
