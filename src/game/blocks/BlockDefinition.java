@@ -43,9 +43,18 @@ public class BlockDefinition {
     public boolean isOnPlaced;
     public float viscosity;
     public boolean pointable;
+    public float stoneHardness;
+    public float dirtHardness;
+    public float woodHardness;
+    public float leafHardness;
 
     public BlockDefinition(
-            int ID,String name,
+            int ID,
+            float stoneHardness,
+            float dirtHardness,
+            float woodHardness,
+            float leafHardness,
+            String name,
             boolean dropsItem,
             int[] front,
             int[] back,
@@ -68,6 +77,10 @@ public class BlockDefinition {
     ){
 
         this.ID   = ID;
+        this.stoneHardness = stoneHardness;
+        this.dirtHardness = dirtHardness;
+        this.woodHardness = woodHardness;
+        this.leafHardness = leafHardness;
         this.name = name;
         this.dropsItem = dropsItem;
         this.frontTexture  = calculateTexture(  front[0],  front[1] );
@@ -269,6 +282,10 @@ public class BlockDefinition {
 
         new BlockDefinition(
                 0,
+                -1f,
+                -1f,
+                -1f,
+                -1f,
                 "air",
                 false,
                 new int[]{-1,-1}, //front
@@ -292,6 +309,10 @@ public class BlockDefinition {
 
         new BlockDefinition(
                 1,
+                0f,
+                1f,
+                0f,
+                0f,
                 "dirt",
                 true,
                 new int[]{0,0}, //front
@@ -315,6 +336,10 @@ public class BlockDefinition {
 
         new BlockDefinition(
                 2,
+                0,
+                2f,
+                0,
+                0,
                 "grass",
                 true,
                 new int[]{5,0}, //front
@@ -338,6 +363,10 @@ public class BlockDefinition {
 
         new BlockDefinition(
                 3,
+                1,
+                0,
+                0,
+                0,
                 "stone",
                 true,
                 new int[]{1,0}, //front
@@ -361,6 +390,10 @@ public class BlockDefinition {
 
         new BlockDefinition(
                 4,
+                1.5f,
+                0,
+                0,
+                0,
                 "cobblestone",
                 true,
                 new int[]{2,0}, //front
@@ -384,6 +417,10 @@ public class BlockDefinition {
 
         new BlockDefinition(
                 5,
+                -1,
+                -1,
+                -1,
+                -1,
                 "bedrock",
                 false,
                 new int[]{6,0}, //front
@@ -416,6 +453,10 @@ public class BlockDefinition {
 
         new BlockDefinition(
                 6,
+                0,
+                0,
+                2,
+                0,
                 "tnt",
                 false,
                 new int[]{7,0}, //front
@@ -439,6 +480,10 @@ public class BlockDefinition {
 
         new BlockDefinition(
                 7,
+                -1,
+                -1,
+                -1,
+                -1,
                 "water",
                 true,
                 new int[]{10,0}, //front
@@ -462,6 +507,10 @@ public class BlockDefinition {
 
         new BlockDefinition(
                 8,
+                2,
+                0,
+                0,
+                0,
                 "coal ore",
                 true,
                 new int[]{11,0}, //front
@@ -485,6 +534,10 @@ public class BlockDefinition {
 
         new BlockDefinition(
                 9,
+                3,
+                0,
+                0,
+                0,
                 "iron ore",
                 true,
                 new int[]{12,0}, //front
@@ -508,6 +561,10 @@ public class BlockDefinition {
 
         new BlockDefinition(
                 10,
+                4,
+                0,
+                0,
+                0,
                 "gold ore",
                 true,
                 new int[]{13,0}, //front
@@ -531,6 +588,10 @@ public class BlockDefinition {
 
         new BlockDefinition(
                 11,
+                5,
+                0,
+                0,
+                0,
                 "diamond ore",
                 true,
                 new int[]{14,0}, //front
@@ -554,6 +615,10 @@ public class BlockDefinition {
 
         new BlockDefinition(
                 12,
+                6,
+                0,
+                0,
+                0,
                 "emerald ore",
                 true,
                 new int[]{15,0}, //front
@@ -577,6 +642,10 @@ public class BlockDefinition {
 
         new BlockDefinition(
                 13,
+                5,
+                0,
+                0,
+                0,
                 "lapis lazuli",
                 true,
                 new int[]{16,0}, //front
@@ -600,6 +669,10 @@ public class BlockDefinition {
 
         new BlockDefinition(
                 14,
+                7,
+                0,
+                0,
+                0,
                 "sapphire ore",
                 true,
                 new int[]{17,0}, //front
@@ -623,6 +696,10 @@ public class BlockDefinition {
 
         new BlockDefinition(
                 15,
+                8,
+                0,
+                0,
+                0,
                 "ruby ore",
                 true,
                 new int[]{18,0}, //front
@@ -646,6 +723,10 @@ public class BlockDefinition {
 
         new BlockDefinition(
                 16,
+                2,
+                0,
+                0,
+                0,
                 "cobblestone stair",
                 true,
                 new int[]{2,0}, //front
@@ -670,6 +751,10 @@ public class BlockDefinition {
 
         new BlockDefinition(
                 17,
+                0,
+                0,
+                1,
+                0,
                 "pumpkin",
                 true,
                 new int[]{19,0}, //front
@@ -692,6 +777,10 @@ public class BlockDefinition {
         );
         new BlockDefinition(
                 18,
+                0,
+                0,
+                1,
+                0,
                 "jack 'o lantern unlit",
                 true,
                 new int[]{21,0}, //front
@@ -714,6 +803,10 @@ public class BlockDefinition {
         );
         new BlockDefinition(
                 19,
+                0,
+                0,
+                1,
+                0,
                 "jack 'o lantern lit",
                 true,
                 new int[]{22,0}, //front
@@ -747,6 +840,10 @@ public class BlockDefinition {
         };
         new BlockDefinition(
                 20,
+                0,
+                1,
+                0,
+                0,
                 "sand",
                 true,
                 new int[]{23,0}, //front
@@ -780,6 +877,10 @@ public class BlockDefinition {
 
         new BlockDefinition(
                 21,
+                0,
+                0,
+                1,
+                0,
                 "doorOpenTop",
                 false,
                 new int[]{24,0}, //front
@@ -821,6 +922,10 @@ public class BlockDefinition {
 
         new BlockDefinition(
                 22,
+                0,
+                0,
+                1,
+                0,
                 "doorOpenBottom",
                 false,
                 new int[]{25,0}, //front
@@ -871,6 +976,10 @@ public class BlockDefinition {
 
         new BlockDefinition(
                 23,
+                0,
+                0,
+                1,
+                0,
                 "doorClosedTop",
                 false,
                 new int[]{24,0}, //front
@@ -913,6 +1022,10 @@ public class BlockDefinition {
 
         new BlockDefinition(
                 24,
+                0,
+                0,
+                1,
+                0,
                 "doorClosedBottom",
                 false,
                 new int[]{25,0}, //front
@@ -955,6 +1068,10 @@ public class BlockDefinition {
 
         new BlockDefinition(
                 25,
+                0,
+                0,
+                2,
+                0,
                 "Tree",
                 true,
                 new int[]{26,0}, //front
@@ -978,6 +1095,10 @@ public class BlockDefinition {
 
         new BlockDefinition(
                 26,
+                0,
+                0,
+                0,
+                1,
                 "Leaves",
                 true,
                 new int[]{28,0}, //front
@@ -1001,6 +1122,10 @@ public class BlockDefinition {
 
         new BlockDefinition(
                 27,
+                0,
+                0,
+                1,
+                0,
                 "Wood",
                 true,
                 new int[]{29,0}, //front
@@ -1032,6 +1157,10 @@ public class BlockDefinition {
 
         new BlockDefinition(
                 28,
+                0,
+                0,
+                2,
+                0,
                 "Workbench",
                 true,
                 new int[]{31,0}, //front
