@@ -33,6 +33,11 @@ public class ItemDefinition {
     public int[] indicesArray;
     public float[] textureCoordArray;
 
+    public float stoneMiningLevel;
+    public float dirtMiningLevel;
+    public float woodMiningLevel;
+    public float leafMiningLevel;
+
     //block item
     public ItemDefinition(String name, int blockID){
         this.name = name;
@@ -44,7 +49,7 @@ public class ItemDefinition {
         this.isOnPlaced = getIsOnPlaced(blockID);
     }
 
-    //tool item
+    //craft item
     public ItemDefinition(String name, String texturePath, ItemModifier itemModifier){
         this.name = name;
         this.texturePath = texturePath;
@@ -53,16 +58,36 @@ public class ItemDefinition {
         this.itemModifier = itemModifier;
     }
 
+    //tool item
+    public ItemDefinition(String name, String texturePath, ItemModifier itemModifier, float stoneMiningLevel, float dirtMiningLevel, float woodMiningLevel, float leafMiningLevel){
+        this.name = name;
+        this.texturePath = texturePath;
+        this.isItem = true;
+        createItemToolMesh(texturePath, this);
+        this.itemModifier = itemModifier;
+        this.stoneMiningLevel = stoneMiningLevel;
+        this.dirtMiningLevel = dirtMiningLevel;
+        this.woodMiningLevel = woodMiningLevel;
+        this.leafMiningLevel = leafMiningLevel;
+    }
+
     public static ItemModifier getItemModifier(String name){
         return definitions.get(name).itemModifier;
     }
 
+    //block item
     public static void registerItem(String name, int blockID){
         definitions.put(name, new ItemDefinition(name, blockID));
     }
 
+    //craft item
     public static void registerItem(String name, String texturePath, ItemModifier itemModifier){
         definitions.put(name, new ItemDefinition(name, texturePath, itemModifier));
+    }
+
+    //tool
+    public static void registerItem(String name, float stoneMiningLevel, float dirtMiningLevel, float woodMiningLevel, float leafMiningLevel, String texturePath, ItemModifier itemModifier){
+        definitions.put(name, new ItemDefinition(name, texturePath, itemModifier, stoneMiningLevel, dirtMiningLevel, woodMiningLevel, leafMiningLevel));
     }
 
     public static ItemDefinition getItemDefinition(String name){
