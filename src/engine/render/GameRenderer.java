@@ -762,17 +762,9 @@ public class GameRenderer {
                         //render hotbar counts if greater than 1
 
                         if (getItemInInventorySlot(x - 1, 0).stack > 1) {
-
-                            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((x - 4.98d) * (windowScale / 9.1d)),  (-windowSize.y / 2d) + (windowScale / 26d), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 48, windowScale / 48, windowScale / 48));
+                            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((x - 4.8d) * (windowScale / 9.1d)),  (-windowSize.y / 2d) + (windowScale / 32d), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 48, windowScale / 48, windowScale / 48));
                             hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                            workerMesh = createText(Integer.toString(getItemInInventorySlot(x - 1, 0).stack), 0f, 0f, 0f);
-                            workerMesh.render();
-                            workerMesh.cleanUp(false);
-
-                            glClear(GL_DEPTH_BUFFER_BIT);
-                            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((x - 5d) * (windowScale / 9.1d)),  (-windowSize.y / 2d) + (windowScale / 24d), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 48, windowScale / 48, windowScale / 48));
-                            hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                            workerMesh = createText(Integer.toString(getItemInInventorySlot(x - 1, 0).stack), 1f, 1f, 1f);
+                            workerMesh = createTextCenteredWithShadow(Integer.toString(getItemInInventorySlot(x - 1, 0).stack), 1f, 1f, 1f);
                             workerMesh.render();
                             workerMesh.cleanUp(false);
                         }
