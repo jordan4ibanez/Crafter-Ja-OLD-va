@@ -800,7 +800,8 @@ public class GameRenderer {
         //it also makes the default spacing of (0)
         //they bunch up right next to each other with 0
         double scale = windowScale/10.5d;
-        double itemScale = windowScale / 8d;
+        double blockScale = windowScale / 8d;
+        double itemScale = windowScale / 5d;
         double textScale = windowScale / 48;
 
         //this is the spacing between the slots
@@ -844,14 +845,18 @@ public class GameRenderer {
 
                         //render item
                         glClear(GL_DEPTH_BUFFER_BIT);
-                        modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((double) x + 0.5d - offset.x + startingPoint.x) * (scale + spacing), ((y * -1d) - 0.5d + startingPoint.y + offset.y + yProgram) * (scale + spacing) - (itemScale / 7d), 0), new Vector3f(45, 45, 0), new Vector3d(itemScale, itemScale, itemScale));
+                        if (getItemDefinition(thisItem.name).isItem) {
+                            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((double) x + 0.5d - offset.x + startingPoint.x) * (scale + spacing), ((y * -1d) - 0.5d + startingPoint.y + offset.y + yProgram) * (scale + spacing) - (blockScale / 3.25d), 0), new Vector3f(0, 0, 0), new Vector3d(itemScale, itemScale, itemScale));
+                        } else {
+                            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((double) x + 0.5d - offset.x + startingPoint.x) * (scale + spacing), ((y * -1d) - 0.5d + startingPoint.y + offset.y + yProgram) * (scale + spacing) - (blockScale / 7d), 0), new Vector3f(45, 45, 0), new Vector3d(blockScale, blockScale, blockScale));
+                        }
                         hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                         thisItem.mesh.render();
 
                         //render item stack number
                         if (thisItem.stack > 1) {
                             glClear(GL_DEPTH_BUFFER_BIT);
-                            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((double) x + 0.7d - offset.x + startingPoint.x) * (scale + spacing), ((y * -1d) - 0.6d + startingPoint.y + offset.y + yProgram) * (scale + spacing) - (itemScale / 7d), 0), new Vector3f(0, 0, 0), new Vector3d(textScale, textScale, textScale));
+                            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((double) x + 0.7d - offset.x + startingPoint.x) * (scale + spacing), ((y * -1d) - 0.6d + startingPoint.y + offset.y + yProgram) * (scale + spacing) - (blockScale / 7d), 0), new Vector3f(0, 0, 0), new Vector3d(textScale, textScale, textScale));
                             hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                             Mesh itemStackLabel = createTextCenteredWithShadow(Integer.toString(thisItem.stack), 1, 1, 1);
                             itemStackLabel.render();
@@ -885,14 +890,18 @@ public class GameRenderer {
 
                         //render item
                         glClear(GL_DEPTH_BUFFER_BIT);
-                        modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((double) x + 0.5d - offset.x + startingPoint.x) * (scale + spacing), ((y * -1d) - 0.5d + startingPoint.y + offset.y) * (scale + spacing) - (itemScale / 7d), 0), new Vector3f(45, 45, 0), new Vector3d(itemScale, itemScale, itemScale));
+                        if (getItemDefinition(thisItem.name).isItem) {
+                            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((double) x + 0.5d - offset.x + startingPoint.x) * (scale + spacing), ((y * -1d) - 0.5d + startingPoint.y + offset.y) * (scale + spacing) - (blockScale / 3.25d), 0), new Vector3f(0, 0, 0), new Vector3d(itemScale, itemScale, itemScale));
+                        } else {
+                            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((double) x + 0.5d - offset.x + startingPoint.x) * (scale + spacing), ((y * -1d) - 0.5d + startingPoint.y + offset.y) * (scale + spacing) - (blockScale / 7d), 0), new Vector3f(45, 45, 0), new Vector3d(blockScale, blockScale, blockScale));
+                        }
                         hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                         thisItem.mesh.render();
 
                         //render item stack number
                         if (thisItem.stack > 1) {
                             glClear(GL_DEPTH_BUFFER_BIT);
-                            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((double) x + 0.7d - offset.x + startingPoint.x) * (scale + spacing), ((y * -1d) - 0.6d + startingPoint.y + offset.y) * (scale + spacing) - (itemScale / 7d), 0), new Vector3f(0, 0, 0), new Vector3d(textScale, textScale, textScale));
+                            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((double) x + 0.7d - offset.x + startingPoint.x) * (scale + spacing), ((y * -1d) - 0.6d + startingPoint.y + offset.y) * (scale + spacing) - (blockScale / 7d), 0), new Vector3f(0, 0, 0), new Vector3d(textScale, textScale, textScale));
                             hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                             Mesh itemStackLabel = createTextCenteredWithShadow(Integer.toString(thisItem.stack), 1, 1, 1);
                             itemStackLabel.render();
