@@ -11,7 +11,7 @@ void main()
 {
 
    //thank you Th3HolyMoose!
-    vec4 p = texture2D( texture_sampler, outTexCoord);
+    vec4 p = texture( texture_sampler, outTexCoord);
     if (p.a == 0.0) {
         discard;
     }
