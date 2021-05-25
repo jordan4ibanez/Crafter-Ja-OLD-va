@@ -72,7 +72,7 @@ public class Player {
     private static float leafHardness = 0f;
 
     //tool mining level cache
-    private static float stoneMiningLevel = 1f;
+    private static float stoneMiningLevel = 0.3f;
     private static float dirtMiningLevel = 1f;
     private static float woodMiningLevel = 1f;
     private static float leafMiningLevel = 1f;

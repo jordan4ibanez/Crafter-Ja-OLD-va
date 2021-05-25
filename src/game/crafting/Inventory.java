@@ -75,7 +75,7 @@ public class Inventory {
         //don't update if wield hand
         if (newItem == null){
             //System.out.println("RESET TO 1");
-            updatePlayerMiningLevelCache(1,1,1,1);
+            updatePlayerMiningLevelCache(0.3f,1,1,1);
             return;
         }
 
@@ -91,7 +91,7 @@ public class Inventory {
 
                 //LEVEL OR 1
                 updatePlayerMiningLevelCache(
-                        newDef.stoneMiningLevel != 0 ? newDef.stoneMiningLevel : 1,
+                        newDef.stoneMiningLevel != 0 ? newDef.stoneMiningLevel : 0.3f,
                         newDef.dirtMiningLevel  != 0 ? newDef.dirtMiningLevel  : 1,
                         newDef.woodMiningLevel  != 0 ? newDef.woodMiningLevel  : 1,
                         newDef.leafMiningLevel  != 0 ? newDef.leafMiningLevel  : 1);
