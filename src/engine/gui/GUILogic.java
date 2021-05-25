@@ -28,7 +28,7 @@ public class GUILogic {
     //health bar elements
     //calculated per half heart
     private static final byte[] healthHudArray = new byte[10];
-    private static byte healthHudFloatIndex = 9;
+    private static byte healthHudFloatIndex = 0;
     private static boolean heartUp = true;
     private static final float[] healthHudFloatArray = new float[10];
 
@@ -432,27 +432,45 @@ public class GUILogic {
         return selected;
     }
 
+    private static boolean baseOdd = true;
+
     public static void makeHeartsJiggle(){
+
         float delta = getDelta();
+
+        boolean odd = baseOdd;
+
+        byte baseHeart;
+        if (baseOdd){
+            baseHeart = 0;
+        } else {
+            baseHeart = 1;
+        }
+
         if (heartUp) {
-            healthHudFloatArray[healthHudFloatIndex] += delta * 200f;
-            if (healthHudFloatArray[healthHudFloatIndex] > 10f){
-                healthHudFloatArray[healthHudFloatIndex] = 10f;
+            float workerHealth = healthHudFloatArray[baseHeart] += delta * 200f;
+            if (workerHealth >= 10f){
+                workerHealth = 10f;
                 heartUp = false;
             }
-        } else {
-            healthHudFloatArray[healthHudFloatIndex] -= delta * 200f;
-            if (healthHudFloatArray[healthHudFloatIndex] < 0f){
-                healthHudFloatArray[healthHudFloatIndex] = 0f;
-
-                heartUp = true;
-
-                //cycle through hearts
-                healthHudFloatIndex -= 1;
-                if (healthHudFloatIndex < 0){
-                    healthHudFloatIndex = 9;
+            for (int i = 0; i < 10; i++){
+                if (odd){
+                    healthHudFloatArray[i] = workerHealth;
                 }
-
+                odd = !odd;
+            }
+        } else {
+            float workerHealth = healthHudFloatArray[baseHeart] -= delta * 200f;
+            if (workerHealth <= 0f){
+                workerHealth = 0f;
+                heartUp = true;
+                baseOdd = !baseOdd;
+            }
+            for (int i = 0; i < 10; i++){
+                if (odd){
+                    healthHudFloatArray[i] = workerHealth;
+                }
+                odd = !odd;
             }
         }
     }
