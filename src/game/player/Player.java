@@ -1076,7 +1076,6 @@ public class Player {
             //System.out.println("The player's health is: " + health);
             calculateHealthBarElements();
         }
-
     }
 
     public static void hurtPlayer(int hurt){

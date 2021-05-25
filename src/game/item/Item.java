@@ -125,6 +125,7 @@ public class Item {
         currentID++;
     }
 
+    //clone item
     public Item(Item thisItem) {
         this.name = thisItem.name;
         if (thisItem.pos == null){
@@ -154,6 +155,7 @@ public class Item {
     }
 
 
+    //rebuild the items mesh
     public void rebuildLightMesh(Item self) {
         ItemDefinition temp = getItemDefinition(self.name);
 
