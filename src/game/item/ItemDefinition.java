@@ -86,7 +86,7 @@ public class ItemDefinition {
     }
 
     //tool
-    public static void registerItem(String name, float stoneMiningLevel, float dirtMiningLevel, float woodMiningLevel, float leafMiningLevel, String texturePath, ItemModifier itemModifier){
+    public static void registerItem(String name,String texturePath, ItemModifier itemModifier, float stoneMiningLevel, float dirtMiningLevel, float woodMiningLevel, float leafMiningLevel){
         definitions.put(name, new ItemDefinition(name, texturePath, itemModifier, stoneMiningLevel, dirtMiningLevel, woodMiningLevel, leafMiningLevel));
     }
 

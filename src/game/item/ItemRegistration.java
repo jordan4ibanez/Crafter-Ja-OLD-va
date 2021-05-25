@@ -28,14 +28,17 @@ public class ItemRegistration {
 
     public static void registerItems(){
 
+        int toolLevel = 2;
         for (String material : materials) {
-            registerItem(material + "pick", "textures/tools/" + material + "pick.png", null);
-            registerItem(material + "shovel", "textures/tools/" + material + "shovel.png", null);
-            registerItem(material + "axe", "textures/tools/" + material + "axe.png", null);
+            registerItem(material + "pick", "textures/tools/" + material + "pick.png", null, toolLevel,0,0,0);
+            registerItem(material + "shovel", "textures/tools/" + material + "shovel.png", null,0,toolLevel,0,0);
+            registerItem(material + "axe", "textures/tools/" + material + "axe.png", null,0,0,toolLevel,0);
 
             if (!material.equals("wood") && !material.equals("stone")){
                 registerItem(material, "textures/items/" + material + ".png", null);
             }
+
+            toolLevel++;
         }
 
 
