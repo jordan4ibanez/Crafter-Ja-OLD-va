@@ -724,14 +724,25 @@ public class Player {
             rebuildMiningMesh(diggingFrame);
         }
         if (mining && worldSelectionPos != null) {
-            float progress;
+            float progress = 0;
             //don't let players even attempt to dig undiggable blocks
-            if (leafHardness == -1 && dirtHardness == -1 && woodHardness == -1 && stoneHardness == -1){
-                progress = 0;
-            } else {
-                progress = 1f;
+            if (leafHardness > -1 && dirtHardness > -1 && woodHardness > -1 && stoneHardness > -1){
+                //scan through max quickness for current tool
+                if (leafHardness > 0 && leafMiningLevel / leafHardness > progress){
+                    progress = leafMiningLevel / leafHardness;
+                }
+                if (dirtHardness > 0 && dirtMiningLevel / dirtHardness > progress){
+                    progress = dirtMiningLevel / dirtHardness;
+                }
+                if (stoneHardness > 0 && stoneMiningLevel / stoneHardness > progress){
+                    progress = stoneMiningLevel / stoneHardness;
+                }
+                if (woodHardness > 0 && woodMiningLevel / woodHardness > progress){
+                    progress = woodMiningLevel / woodHardness;
+                }
             }
 
+            System.out.println(progress);
 
             diggingProgress += delta * progress;
             if (diggingProgress >= 0.1f) {
