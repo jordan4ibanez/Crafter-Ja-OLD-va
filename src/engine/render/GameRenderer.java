@@ -594,8 +594,12 @@ public class GameRenderer {
                     mousePos.x -= (getWindowSize().x / 2f);
                     mousePos.y -= (getWindowSize().y / 2f);
                     mousePos.y *= -1f;
+                    if (getItemDefinition(getMouseInventory().name).isItem) {
+                        modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d((float) mousePos.x, (float) mousePos.y - (windowScale / 27d), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 5d, windowScale / 5d, windowScale / 5d));
+                    } else {
+                        modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d((float) mousePos.x, (float) mousePos.y - (windowScale / 55d), 0), new Vector3f(45, 45, 0), new Vector3d(windowScale / 8d, windowScale / 8d, windowScale / 8d));
+                    }
 
-                    modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d((float) mousePos.x, (float) mousePos.y - (windowScale / 55d), 0), new Vector3f(45, 45, 0), new Vector3d(windowScale / 8d, windowScale / 8d, windowScale / 8d));
                     hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
 
                     getMouseInventory().mesh.render();
