@@ -669,7 +669,7 @@ public class BlockDefinition {
                 0,
                 0,
                 0,
-                "lapis lazuli",
+                "lapis ore",
                 true,
                 new int[]{16,0}, //front
                 new int[]{16,0}, //back
@@ -1105,7 +1105,7 @@ public class BlockDefinition {
                 0,
                 3,
                 0,
-                "Tree",
+                "tree",
                 true,
                 new int[]{26,0}, //front
                 new int[]{26,0}, //back
@@ -1133,7 +1133,7 @@ public class BlockDefinition {
                 0,
                 0,
                 1,
-                "Leaves",
+                "leaves",
                 false,
                 new int[]{28,0}, //front
                 new int[]{28,0}, //back
@@ -1161,7 +1161,7 @@ public class BlockDefinition {
                 0,
                 2,
                 0,
-                "Wood",
+                "wood",
                 true,
                 new int[]{29,0}, //front
                 new int[]{29,0}, //back
@@ -1197,7 +1197,7 @@ public class BlockDefinition {
                 0,
                 2,
                 0,
-                "Workbench",
+                "workbench",
                 true,
                 new int[]{31,0}, //front
                 new int[]{31,0}, //back

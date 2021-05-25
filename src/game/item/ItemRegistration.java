@@ -56,9 +56,9 @@ public class ItemRegistration {
             }
         };
 
-        registerItem("Door", "textures/door.png", test);
+        registerItem("door", "textures/door.png", test);
 
-        registerItem("Boat", "textures/boatitem.png", null);
+        registerItem("boat", "textures/boatitem.png", null);
 
         registerItem("stick", "textures/items/stick.png", null);
     }

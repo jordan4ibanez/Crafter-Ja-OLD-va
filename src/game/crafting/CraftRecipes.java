@@ -61,35 +61,35 @@ public class CraftRecipes {
         }
 
         String[][] wood = {
-                {"Tree"}
+                {"tree"}
         };
-        generateRecipe(wood, "Wood", 4);
+        generateRecipe(wood, "wood", 4);
 
 
         String[][] workbench = {
-                {"Wood","Wood",},
-                {"Wood","Wood"}
+                {"wood","wood",},
+                {"wood","wood"}
         };
-        generateRecipe(workbench, "Workbench", 1);
+        generateRecipe(workbench, "workbench", 1);
 
 
         String[][] boat = {
-                {"Wood",""    , "Wood" ,},
-                {"Wood","Wood", "Wood" ,}
+                {"wood",""    , "wood" ,},
+                {"wood","wood", "wood" ,}
         };
-        generateRecipe(boat, "Boat", 1);
+        generateRecipe(boat, "boat", 1);
 
 
         String[][] door = {
-                {"Wood", "Wood",},
-                {"Wood", "Wood",},
-                {"Wood", "Wood"}
+                {"wood", "wood",},
+                {"wood", "wood",},
+                {"wood", "wood"}
         };
-        generateRecipe(door, "Door", 1);
+        generateRecipe(door, "door", 1);
 
         String[][] stick = {
-                {"Wood"},
-                {"Wood"}
+                {"wood"},
+                {"wood"}
         };
         generateRecipe(stick, "stick", 4);
 
