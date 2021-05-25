@@ -45,8 +45,6 @@ public class SceneHandler {
 
         //move the camera into position for the main menu
         if (newScene == 0){
-            setCameraPosition(0,-8,0);
-            setCameraRotation(0,0,0);
             setWindowClearColor(0,0,0,1);
             selectTitleScreenGag();
             if (isMouseLocked()){
@@ -99,18 +97,18 @@ public class SceneHandler {
 
     private static void debugLoop(){
         calculateDelta();
-
         mouseInput();
         debugInput();
-
         renderDebug();
         windowUpdate();
     }
 
 
     private static void mainMenuLoop(){
-        calculateDelta();
+        setCameraPosition(0,-8,0);
+        setCameraRotation(0,0,0);
 
+        calculateDelta();
         mainMenuInput();
         doMainMenuLogic();
         renderMainMenu();

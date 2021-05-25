@@ -225,7 +225,6 @@ public class MainMenu {
             toggleMouseLock();
         }
 
-
         makeBackGroundScroll();
 
         //title screen

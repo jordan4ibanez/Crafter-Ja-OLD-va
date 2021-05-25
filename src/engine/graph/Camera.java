@@ -62,6 +62,10 @@ public class Camera {
         }
     }
 
+    public static void setCameraPerspective(byte perspective){
+        cameraPerspective = perspective;
+    }
+
     public static byte getCameraPerspective(){
         return cameraPerspective;
     }

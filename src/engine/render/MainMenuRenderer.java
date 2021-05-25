@@ -62,7 +62,6 @@ public class MainMenuRenderer {
         //ultra wide screen compatible, for some reason
         for (int x = -15; x <= 15; x++){
             for (int y = -15; y <= 15; y++) {
-
                 float scale = 5f;
                 //these calculations are done to perfectly center the background in front of the camera (hopefully)
                 modelViewMatrix = getGenericMatrixWithPosRotationScale(new Vector3d(x * scale, (y + getBackGroundScroll()) * scale, -18), new Vector3f(0, 0, 0), new Vector3d(scale, scale, 0), viewMatrix);
