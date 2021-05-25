@@ -48,7 +48,13 @@ public class ItemEntity {
 
             if (thisItem.collectionTimer > 0f){
                 thisItem.collectionTimer -= delta;
+
+                if (thisItem.collectionTimer <= 0){
+                    thisItem.deletionOkay = true;
+                }
             }
+
+            System.out.println(thisItem.timer);
             thisItem.timer += delta;
             thisItem.lightUpdateTimer += delta;
 
@@ -77,7 +83,6 @@ public class ItemEntity {
             //delete items that are too old
             if (thisItem.timer > 50f){
                 deletionQueue.add(thisItem.ID);
-                continue;
             }
 
             //collect items after 3 seconds
@@ -103,9 +108,8 @@ public class ItemEntity {
                     }
                 }
 
-                if (getDistance(thisItem.pos, getPlayerPosWithCollectionHeight()) < 0.2f || thisItem.collectionTimer <= 0){
+                if (getDistance(thisItem.pos, getPlayerPosWithCollectionHeight()) < 0.2f || thisItem.deletionOkay){
                     deletionQueue.add(thisItem.ID);
-                    continue;
                 }
             }
 
