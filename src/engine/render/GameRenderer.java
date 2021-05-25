@@ -774,6 +774,7 @@ public class GameRenderer {
 
             }
         } else {
+            //render inventory base
             {
                 modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(0, 0, 0), new Vector3f(0, 0, 0), new Vector3d(windowSize.x, windowSize.y, windowScale));
                 hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
