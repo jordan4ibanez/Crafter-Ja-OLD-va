@@ -778,103 +778,103 @@ public class Player {
                 int randomDir = (int)Math.floor(Math.random()*6f);
                 int block;
                 int miningBlock = getBlock(worldSelectionPos.x, worldSelectionPos.y, worldSelectionPos.z);
-                switch (randomDir){
-                    case 0:
-                        block = getBlock(worldSelectionPos.x+1, worldSelectionPos.y, worldSelectionPos.z);
-                        if (block == 0){
+                switch (randomDir) {
+                    case 0 -> {
+                        block = getBlock(worldSelectionPos.x + 1, worldSelectionPos.y, worldSelectionPos.z);
+                        if (block == 0) {
                             Vector3d particlePos = new Vector3d(worldSelectionPos);
                             particlePos.x += 1.1f;
                             particlePos.z += Math.random();
                             particlePos.y += Math.random();
 
                             Vector3f particleInertia = new Vector3f();
-                            particleInertia.x = (float)Math.random()*2f;
-                            particleInertia.y = (float)Math.random()*2f;
-                            particleInertia.z = (float)(Math.random()-0.5f)*2f;
+                            particleInertia.x = (float) Math.random() * 2f;
+                            particleInertia.y = (float) Math.random() * 2f;
+                            particleInertia.z = (float) (Math.random() - 0.5f) * 2f;
 
                             createParticle(particlePos, particleInertia, miningBlock);
                         }
-                        break;
-                    case 1:
-                        block = getBlock(worldSelectionPos.x-1, worldSelectionPos.y, worldSelectionPos.z);
-                        if (block == 0){
+                    }
+                    case 1 -> {
+                        block = getBlock(worldSelectionPos.x - 1, worldSelectionPos.y, worldSelectionPos.z);
+                        if (block == 0) {
                             Vector3d particlePos = new Vector3d(worldSelectionPos);
                             particlePos.x -= 0.1f;
                             particlePos.z += Math.random();
                             particlePos.y += Math.random();
 
                             Vector3f particleInertia = new Vector3f();
-                            particleInertia.x = (float)Math.random()*-2f;
-                            particleInertia.y = (float)Math.random()*2f;
-                            particleInertia.z = (float)(Math.random()-0.5f)*2f;
+                            particleInertia.x = (float) Math.random() * -2f;
+                            particleInertia.y = (float) Math.random() * 2f;
+                            particleInertia.z = (float) (Math.random() - 0.5f) * 2f;
 
                             createParticle(particlePos, particleInertia, miningBlock);
                         }
-                        break;
-                    case 2:
-                        block = getBlock(worldSelectionPos.x, worldSelectionPos.y+1, worldSelectionPos.z);
-                        if (block == 0){
+                    }
+                    case 2 -> {
+                        block = getBlock(worldSelectionPos.x, worldSelectionPos.y + 1, worldSelectionPos.z);
+                        if (block == 0) {
                             Vector3d particlePos = new Vector3d(worldSelectionPos);
                             particlePos.y += 1.1f;
                             particlePos.z += Math.random();
                             particlePos.x += Math.random();
 
                             Vector3f particleInertia = new Vector3f();
-                            particleInertia.x = (float)(Math.random()-0.5f)*2f;
-                            particleInertia.y = (float)Math.random()*2f;
-                            particleInertia.z = (float)(Math.random()-0.5f)*2f;
+                            particleInertia.x = (float) (Math.random() - 0.5f) * 2f;
+                            particleInertia.y = (float) Math.random() * 2f;
+                            particleInertia.z = (float) (Math.random() - 0.5f) * 2f;
 
                             createParticle(particlePos, particleInertia, miningBlock);
                         }
-                        break;
-                    case 3:
-                        block = getBlock(worldSelectionPos.x, worldSelectionPos.y-1, worldSelectionPos.z);
-                        if (block == 0){
+                    }
+                    case 3 -> {
+                        block = getBlock(worldSelectionPos.x, worldSelectionPos.y - 1, worldSelectionPos.z);
+                        if (block == 0) {
                             Vector3d particlePos = new Vector3d(worldSelectionPos);
                             particlePos.y -= 0.1f;
                             particlePos.z += Math.random();
                             particlePos.x += Math.random();
 
                             Vector3f particleInertia = new Vector3f();
-                            particleInertia.x = (float)(Math.random()-0.5f)*2f;
-                            particleInertia.y = (float)Math.random()*-1f;
-                            particleInertia.z = (float)(Math.random()-0.5f)*2f;
+                            particleInertia.x = (float) (Math.random() - 0.5f) * 2f;
+                            particleInertia.y = (float) Math.random() * -1f;
+                            particleInertia.z = (float) (Math.random() - 0.5f) * 2f;
 
                             createParticle(particlePos, particleInertia, miningBlock);
                         }
-                        break;
-                    case 4:
-                        block = getBlock(worldSelectionPos.x, worldSelectionPos.y, worldSelectionPos.z+1);
-                        if (block == 0){
+                    }
+                    case 4 -> {
+                        block = getBlock(worldSelectionPos.x, worldSelectionPos.y, worldSelectionPos.z + 1);
+                        if (block == 0) {
                             Vector3d particlePos = new Vector3d(worldSelectionPos);
                             particlePos.z += 1.1f;
                             particlePos.x += Math.random();
                             particlePos.y += Math.random();
 
                             Vector3f particleInertia = new Vector3f();
-                            particleInertia.z = (float)Math.random()*2f;
-                            particleInertia.y = (float)Math.random()*2f;
-                            particleInertia.x = (float)(Math.random()-0.5f)*2f;
+                            particleInertia.z = (float) Math.random() * 2f;
+                            particleInertia.y = (float) Math.random() * 2f;
+                            particleInertia.x = (float) (Math.random() - 0.5f) * 2f;
 
                             createParticle(particlePos, particleInertia, miningBlock);
                         }
-                        break;
-                    case 5:
-                        block = getBlock(worldSelectionPos.x, worldSelectionPos.y, worldSelectionPos.z-1);
-                        if (block == 0){
+                    }
+                    case 5 -> {
+                        block = getBlock(worldSelectionPos.x, worldSelectionPos.y, worldSelectionPos.z - 1);
+                        if (block == 0) {
                             Vector3d particlePos = new Vector3d(worldSelectionPos);
                             particlePos.z -= 0.1f;
                             particlePos.x += Math.random();
                             particlePos.y += Math.random();
 
                             Vector3f particleInertia = new Vector3f();
-                            particleInertia.z = (float)Math.random()*-2f;
-                            particleInertia.y = (float)Math.random()*2f;
-                            particleInertia.x = (float)(Math.random()-0.5f)*2f;
+                            particleInertia.z = (float) Math.random() * -2f;
+                            particleInertia.y = (float) Math.random() * 2f;
+                            particleInertia.x = (float) (Math.random() - 0.5f) * 2f;
 
                             createParticle(particlePos, particleInertia, miningBlock);
                         }
-                        break;
+                    }
                 }
                 particleBufferTimer = 0f;
             }
