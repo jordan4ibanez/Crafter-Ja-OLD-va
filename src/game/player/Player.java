@@ -742,7 +742,7 @@ public class Player {
                 }
             }
 
-            System.out.println(progress);
+            //System.out.println(progress);
 
             diggingProgress += delta * progress;
             if (diggingProgress >= 0.1f) {
