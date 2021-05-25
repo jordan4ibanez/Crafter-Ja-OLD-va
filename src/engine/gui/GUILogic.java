@@ -28,7 +28,6 @@ public class GUILogic {
     //health bar elements
     //calculated per half heart
     private static final byte[] healthHudArray = new byte[10];
-    private static byte healthHudFloatIndex = 0;
     private static boolean heartUp = true;
     private static final float[] healthHudFloatArray = new float[10];
 
@@ -207,55 +206,46 @@ public class GUILogic {
 
                     mouseButtonPushed = true;
 
-                    switch (selection){
-                        case 0:
-                            //goto controls menu
-                            menuPage = 2;
-                            break;
-                        case 1:
+                    switch (selection) {
+                        case 0 ->
+                                //goto controls menu
+                                menuPage = 2;
+                        case 1 -> {
                             boolean vSync = !getSettingsVsync();
                             setSettingsVsync(vSync);
                             gameSettingsMenuGUI[1].updateTextCenteredFixed("VSYNC: " + boolToString(vSync));
                             saveSettings();
-                            break;
-                        case 2:
+                        }
+                        case 2 -> {
                             boolean graphicsMode = !getGraphicsMode();
                             setGraphicsMode(graphicsMode);
                             gameSettingsMenuGUI[2].updateTextCenteredFixed("GRAPHICS: " + graphicsThing(graphicsMode));
                             saveSettings();
-                            break;
-                        case 3:
+                        }
+                        case 3 -> {
                             int renderDistance = getRenderDistance();
-                            switch (renderDistance){
-                                case 3:
-                                    renderDistance = 5;
-                                    break;
-                                case 5:
-                                    renderDistance = 7;
-                                    break;
-                                case 7:
-                                    renderDistance = 9;
-                                    break;
-                                case 9:
-                                    renderDistance = 3;
-                            }
+                            renderDistance = switch (renderDistance) {
+                                case 3 -> 5;
+                                case 5 -> 7;
+                                case 7 -> 9;
+                                case 9 -> 3;
+                                default -> getRenderDistance();
+                            };
                             setRenderDistance(renderDistance, true);
                             gameSettingsMenuGUI[3].updateTextCenteredFixed("RENDER DISTANCE: " + renderDistance);
                             saveSettings();
-                            break;
-                        case 4:
+                        }
+                        case 4 -> {
                             byte chunkLoad = getSettingsChunkLoad();
                             chunkLoad++;
-                            if (chunkLoad > 5){
+                            if (chunkLoad > 5) {
                                 chunkLoad = 0;
                             }
                             gameSettingsMenuGUI[4].updateTextCenteredFixed("CHUNK LOADING: " + convertChunkLoadText(chunkLoad));
                             setSettingsChunkLoad(chunkLoad);
                             saveSettings();
-                            break;
-                        case 5:
-                            menuPage = 0;
-                            break;
+                        }
+                        case 5 -> menuPage = 0;
                     }
                 } else if (!isLeftButtonPressed()) {
                     mouseButtonPushed = false;
@@ -343,51 +333,51 @@ public class GUILogic {
 
                     playSound("button");
 
-                    switch (selection){
-                        case 0:
+                    switch (selection) {
+                        case 0 -> {
                             lockedOnButtonInput = 0;
                             pollingButtonInputs = true;
                             controlsMenuGUI[0].updateTextCenteredFixed("FORWARD:>" + quickConvertKeyCode(getKeyForward()) + "<");
-                            break;
-                        case 1:
+                        }
+                        case 1 -> {
                             lockedOnButtonInput = 1;
                             pollingButtonInputs = true;
                             controlsMenuGUI[1].updateTextCenteredFixed("BACK:>" + quickConvertKeyCode(getKeyBack()) + "<");
-                            break;
-                        case 2:
+                        }
+                        case 2 -> {
                             lockedOnButtonInput = 2;
                             pollingButtonInputs = true;
                             controlsMenuGUI[2].updateTextCenteredFixed("LEFT:>" + quickConvertKeyCode(getKeyLeft()) + "<");
-                            break;
-                        case 3:
+                        }
+                        case 3 -> {
                             lockedOnButtonInput = 3;
                             pollingButtonInputs = true;
                             controlsMenuGUI[3].updateTextCenteredFixed("RIGHT:>" + quickConvertKeyCode(getKeyRight()) + "<");
-                            break;
-                        case 4:
+                        }
+                        case 4 -> {
                             lockedOnButtonInput = 4;
                             pollingButtonInputs = true;
                             controlsMenuGUI[4].updateTextCenteredFixed("SNEAK:>" + quickConvertKeyCode(getKeySneak()) + "<");
-                            break;
-                        case 5:
+                        }
+                        case 5 -> {
                             lockedOnButtonInput = 5;
                             pollingButtonInputs = true;
                             controlsMenuGUI[5].updateTextCenteredFixed("DROP:>" + quickConvertKeyCode(getKeyDrop()) + "<");
-                            break;
-                        case 6:
+                        }
+                        case 6 -> {
                             lockedOnButtonInput = 6;
                             pollingButtonInputs = true;
                             controlsMenuGUI[6].updateTextCenteredFixed("JUMP:>" + quickConvertKeyCode(getKeyJump()) + "<");
-                            break;
-                        case 7:
+                        }
+                        case 7 -> {
                             lockedOnButtonInput = 7;
                             pollingButtonInputs = true;
                             controlsMenuGUI[7].updateTextCenteredFixed("INVENTORY:>" + quickConvertKeyCode(getKeyInventory()) + "<");
-                            break;
-                        case 8:
+                        }
+                        case 8 -> {
                             menuPage = 1;
                             mouseButtonPushed = true;
-                            break;
+                        }
                     }
                 } else if (!isLeftButtonPressed()) {
                     mouseButtonPushed = false;
