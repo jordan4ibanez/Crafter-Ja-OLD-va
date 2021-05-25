@@ -42,6 +42,7 @@ public class Player {
     private static final String name                   = "singleplayer";
     private static final Vector3f viewBobbing          = new Vector3f(0,0,0);
     private static int currentInventorySelection = 0;
+    private static int oldInventorySelection = 0;
     private static Vector3i oldWorldSelectionPos = new Vector3i();
     private static Vector3i worldSelectionPos    = new Vector3i();
     private static float sneakOffset = 0;
@@ -64,10 +65,17 @@ public class Player {
     private static boolean doHurtRotation = false;
     private static boolean hurtRotationUp = true;
 
+    //block hardness cache
     private static float stoneHardness = 0f;
     private static float dirtHardness = 0f;
     private static float woodHardness = 0f;
     private static float leafHardness = 0f;
+
+    //tool mining level cache
+    private static float stoneMiningLevel = 1f;
+    private static float dirtMiningLevel = 1f;
+    private static float woodMiningLevel = 1f;
+    private static float leafMiningLevel = 1f;
 
     //animation data
     private static final Vector3f[] bodyRotations = new Vector3f[]{
@@ -79,6 +87,14 @@ public class Player {
             new Vector3f(0,0,0),
     };
     private static float animationTimer = 0f;
+
+    public static void updatePlayerMiningLevelCache(float newStoneMiningLevel, float newDirtMiningLevel, float newWoodMiningLevel, float newLeafMiningLevel){
+        //System.out.println("New levels: " + newStoneMiningLevel + " " + newDirtMiningLevel + " " + newWoodMiningLevel + " " + newLeafMiningLevel);
+        stoneMiningLevel = newStoneMiningLevel;
+        dirtMiningLevel = newDirtMiningLevel;
+        woodMiningLevel = newWoodMiningLevel;
+        leafMiningLevel = newLeafMiningLevel;
+    }
 
     public static Vector3f[] getPlayerBodyRotations(){
         return bodyRotations;
@@ -238,6 +254,7 @@ public class Player {
             handSetUp = true;
         }
 
+        //hand
         if (getItemInInventorySlot(getPlayerInventorySelection(),0) == null) {
             wieldHandAnimationPos.x = (float) (-5f * Math.sin(Math.pow(diggingAnimation, 0.8f) * Math.PI)) + wieldHandAnimationPosBaseEmpty.x;
             wieldHandAnimationPos.y = (float) (5f * Math.sin(diggingAnimation * 2f * Math.PI)) + wieldHandAnimationPosBaseEmpty.y;
@@ -254,6 +271,7 @@ public class Player {
             wieldHandAnimationRot.y = (float) Math.toDegrees(wieldHandAnimationRot.y);
             wieldHandAnimationRot.z = (float) Math.toDegrees(wieldHandAnimationRot.z);
             wieldHandAnimationRot.x += 180f;
+            //block
         } else if (getItemInInventorySlot(getPlayerInventorySelection(),0).definition.blockID > 0) {
             wieldHandAnimationPos.x = wieldHandAnimationPosBaseEmpty.x;
             wieldHandAnimationPos.y = wieldHandAnimationPosBaseEmpty.y;
@@ -270,6 +288,7 @@ public class Player {
             wieldHandAnimationRot.x = (float) Math.toDegrees(wieldHandAnimationRot.x);
             wieldHandAnimationRot.y = (float) Math.toDegrees(wieldHandAnimationRot.y);
             wieldHandAnimationRot.z = (float) Math.toDegrees(wieldHandAnimationRot.z);
+            //item/tool
         } else if (getItemInInventorySlot(getPlayerInventorySelection(),0).definition.isItem){
 
             Vector3f wieldHandAnimationPosBaseTool = new Vector3f(10f,-6.5f,-8f);
@@ -600,7 +619,7 @@ public class Player {
         return onGround;
     }
 
-    private static float animationTest = 0f;
+    private static float diggingProgress = 0f;
     private static int diggingFrame = -1;
     private static boolean hasDug = false;
 
@@ -699,20 +718,29 @@ public class Player {
         //mining timer
         hasDug = false;
         //reset mining timer
-        if (mining && worldSelectionPos != null && !worldSelectionPos.equals(oldWorldSelectionPos)){
-            diggingFrame = 0;
-            animationTest = 0f;
+        if ((mining && worldSelectionPos != null && !worldSelectionPos.equals(oldWorldSelectionPos)) || (currentInventorySelection != oldInventorySelection)){
+            diggingFrame = -1;
+            diggingProgress = 0f;
             rebuildMiningMesh(diggingFrame);
         }
         if (mining && worldSelectionPos != null) {
-            animationTest += delta * 20;
-            if (animationTest >= 0.1f) {
+            float progress;
+            //don't let players even attempt to dig undiggable blocks
+            if (leafHardness == -1 && dirtHardness == -1 && woodHardness == -1 && stoneHardness == -1){
+                progress = 0;
+            } else {
+                progress = 1f;
+            }
+
+
+            diggingProgress += delta * progress;
+            if (diggingProgress >= 0.1f) {
                 diggingFrame++;
                 if (diggingFrame > 8) {
                     diggingFrame = 0;
                     hasDug = true;
                 }
-                animationTest = 0;
+                diggingProgress = 0;
                 rebuildMiningMesh(diggingFrame);
             }
         } else if (diggingFrame != -1){
@@ -966,6 +994,7 @@ public class Player {
         oldPos = newFlooredPos;
         oldRealPos = new Vector3d(pos);
         wasOnGround = onGround;
+        oldInventorySelection = currentInventorySelection;
     }
 
     public static void updateWorldChunkLoader(){

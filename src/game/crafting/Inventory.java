@@ -7,6 +7,7 @@ import org.joml.Vector2d;
 
 import static engine.Time.getDelta;
 import static game.blocks.BlockDefinition.getBlockDefinition;
+import static game.item.ItemDefinition.getItemDefinition;
 import static game.item.ItemDefinition.getRandomItemDefinition;
 import static game.item.ItemEntity.createItem;
 import static engine.graph.Camera.getCameraRotationVector;
@@ -73,6 +74,8 @@ public class Inventory {
 
         //don't update if wield hand
         if (newItem == null){
+            //System.out.println("RESET TO 1");
+            updatePlayerMiningLevelCache(1,1,1,1);
             return;
         }
 
@@ -84,6 +87,14 @@ public class Inventory {
             //update item
             if (!newItemName.equals(oldItemName)){
                 wieldInventory = new Item(newItemName, 1);
+                ItemDefinition newDef = getItemDefinition(newItemName);
+
+                //LEVEL OR 1
+                updatePlayerMiningLevelCache(
+                        newDef.stoneMiningLevel != 0 ? newDef.stoneMiningLevel : 1,
+                        newDef.dirtMiningLevel  != 0 ? newDef.dirtMiningLevel  : 1,
+                        newDef.woodMiningLevel  != 0 ? newDef.woodMiningLevel  : 1,
+                        newDef.leafMiningLevel  != 0 ? newDef.leafMiningLevel  : 1);
             }
             //update light level
             wieldInventory.light = light;
