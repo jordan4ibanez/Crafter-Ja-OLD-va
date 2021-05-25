@@ -1,5 +1,6 @@
 package game.player;
 
+import game.blocks.BlockDefinition;
 import org.joml.Quaternionf;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
@@ -63,6 +64,11 @@ public class Player {
     private static boolean doHurtRotation = false;
     private static boolean hurtRotationUp = true;
 
+    private static float stoneHardness = 0f;
+    private static float dirtHardness = 0f;
+    private static float woodHardness = 0f;
+    private static float leafHardness = 0f;
+
     //animation data
     private static final Vector3f[] bodyRotations = new Vector3f[]{
             new Vector3f(0,0,0),
@@ -109,6 +115,24 @@ public class Player {
     public static void setPlayerWorldSelectionPos(Vector3i thePos){
         if (worldSelectionPos != null) {
             oldWorldSelectionPos = new Vector3i(worldSelectionPos);
+        }
+        if (thePos != null){
+            int block = getBlock(thePos.x, thePos.y,thePos.z);
+            //add in block hardness levels
+            if (block > 0){
+                BlockDefinition thisDef = getBlockDefinition(block);
+                stoneHardness = thisDef.stoneHardness;
+                dirtHardness = thisDef.dirtHardness;
+                woodHardness = thisDef.woodHardness;
+                leafHardness = thisDef.leafHardness;
+            }
+            //reset when not pointing at any block
+            else {
+                stoneHardness = -1;
+                dirtHardness = -1;
+                woodHardness = -1;
+                leafHardness = -1;
+            }
         }
         worldSelectionPos = thePos;
     }
@@ -681,7 +705,7 @@ public class Player {
             rebuildMiningMesh(diggingFrame);
         }
         if (mining && worldSelectionPos != null) {
-            animationTest += delta;
+            animationTest += delta * 20;
             if (animationTest >= 0.1f) {
                 diggingFrame++;
                 if (diggingFrame > 8) {
