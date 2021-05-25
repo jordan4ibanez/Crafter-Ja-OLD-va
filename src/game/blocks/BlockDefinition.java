@@ -525,7 +525,7 @@ public class BlockDefinition {
 
         new BlockDefinition(
                 8,
-                2,
+                4,
                 0,
                 0,
                 0,
@@ -553,7 +553,7 @@ public class BlockDefinition {
 
         new BlockDefinition(
                 9,
-                3,
+                6,
                 0,
                 0,
                 0,
@@ -581,7 +581,7 @@ public class BlockDefinition {
 
         new BlockDefinition(
                 10,
-                4,
+                8,
                 0,
                 0,
                 0,
@@ -609,7 +609,7 @@ public class BlockDefinition {
 
         new BlockDefinition(
                 11,
-                5,
+                10,
                 0,
                 0,
                 0,
@@ -637,7 +637,7 @@ public class BlockDefinition {
 
         new BlockDefinition(
                 12,
-                6,
+                12,
                 0,
                 0,
                 0,
@@ -665,7 +665,7 @@ public class BlockDefinition {
 
         new BlockDefinition(
                 13,
-                5,
+                10,
                 0,
                 0,
                 0,
@@ -693,7 +693,7 @@ public class BlockDefinition {
 
         new BlockDefinition(
                 14,
-                7,
+                14,
                 0,
                 0,
                 0,
@@ -721,7 +721,7 @@ public class BlockDefinition {
 
         new BlockDefinition(
                 15,
-                8,
+                16,
                 0,
                 0,
                 0,
