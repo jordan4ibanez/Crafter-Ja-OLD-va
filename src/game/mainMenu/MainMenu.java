@@ -16,11 +16,9 @@ import static engine.disk.Disk.worldSize;
 import static engine.gui.GUILogic.doGUIMouseCollisionDetection;
 import static engine.scene.SceneHandler.setScene;
 import static engine.settings.Settings.*;
-import static engine.settings.Settings.getKeyInventory;
 import static engine.sound.SoundAPI.playMusic;
 import static engine.sound.SoundAPI.playSound;
 import static game.Crafter.getVersionName;
-import static game.crafting.Inventory.generateRandomInventory;
 import static game.mainMenu.MainMenuAssets.createMainMenuBackGroundTile;
 import static game.mainMenu.MainMenuAssets.createMenuMenuTitleBlock;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
@@ -291,42 +289,35 @@ public class MainMenu {
                 mouseButtonPushed = true;
 
                 switch (selection) {
-                    case 0:
-                        //goto controls menu
-                        menuPage = 2;
-                        break;
-                    case 1:
+                    case 0 ->
+                            //goto controls menu
+                            menuPage = 2;
+                    case 1 -> {
                         boolean vSync = !getSettingsVsync();
                         setSettingsVsync(vSync);
                         mainMenuSettingsMenuGUI[1].updateTextCenteredFixed("VSYNC: " + boolToString(vSync));
                         saveSettings();
-                        break;
-                    case 2:
+                    }
+                    case 2 -> {
                         boolean graphicsMode = !getGraphicsMode();
                         setGraphicsMode(graphicsMode);
                         mainMenuSettingsMenuGUI[2].updateTextCenteredFixed("GRAPHICS: " + graphicsThing(graphicsMode));
                         saveSettings();
-                        break;
-                    case 3:
+                    }
+                    case 3 -> {
                         int renderDistance = getRenderDistance();
-                        switch (renderDistance) {
-                            case 3:
-                                renderDistance = 5;
-                                break;
-                            case 5:
-                                renderDistance = 7;
-                                break;
-                            case 7:
-                                renderDistance = 9;
-                                break;
-                            case 9:
-                                renderDistance = 3;
-                        }
+                        renderDistance = switch (renderDistance) {
+                            case 3 -> 5;
+                            case 5 -> 7;
+                            case 7 -> 9;
+                            case 9 -> 3;
+                            default -> throw new IllegalStateException("Unexpected value: " + renderDistance);
+                        };
                         setRenderDistance(renderDistance, false);
                         mainMenuSettingsMenuGUI[3].updateTextCenteredFixed("RENDER DISTANCE: " + renderDistance);
                         saveSettings();
-                        break;
-                    case 4:
+                    }
+                    case 4 -> {
                         byte chunkLoad = getSettingsChunkLoad();
                         chunkLoad++;
                         if (chunkLoad > 5) {
@@ -335,10 +326,8 @@ public class MainMenu {
                         mainMenuSettingsMenuGUI[4].updateTextCenteredFixed("CHUNK LOADING: " + convertChunkLoadText(chunkLoad));
                         setSettingsChunkLoad(chunkLoad);
                         saveSettings();
-                        break;
-                    case 5:
-                        menuPage = 0;
-                        break;
+                    }
+                    case 5 -> menuPage = 0;
                 }
             } else if (!isLeftButtonPressed()) {
                 mouseButtonPushed = false;
