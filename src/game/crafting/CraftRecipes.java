@@ -91,7 +91,7 @@ public class CraftRecipes {
                 {"Wood"},
                 {"Wood"}
         };
-        generateRecipe(stick, "stick", 1);
+        generateRecipe(stick, "stick", 4);
 
 
         finalizeRecipes();
