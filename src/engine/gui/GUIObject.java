@@ -1,6 +1,6 @@
 package engine.gui;
 
-import engine.graph.Mesh;
+import engine.graphics.Mesh;
 import org.joml.Vector2d;
 import org.joml.Vector2f;
 

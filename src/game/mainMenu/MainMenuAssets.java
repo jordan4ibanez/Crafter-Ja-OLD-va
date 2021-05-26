@@ -1,7 +1,7 @@
 package game.mainMenu;
 
-import engine.graph.Mesh;
-import engine.graph.Texture;
+import engine.graphics.Mesh;
+import engine.graphics.Texture;
 
 import java.util.ArrayList;
 

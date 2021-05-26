@@ -1,7 +1,7 @@
 package engine.gui;
 
-import engine.graph.Mesh;
-import engine.graph.Texture;
+import engine.graphics.Mesh;
+import engine.graphics.Texture;
 
 public class TextHandling {
 

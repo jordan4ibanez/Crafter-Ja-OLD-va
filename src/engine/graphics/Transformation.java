@@ -1,4 +1,4 @@
-package engine.graph;
+package engine.graphics;
 
 import org.joml.Matrix4d;
 import org.joml.Vector3d;
@@ -7,8 +7,8 @@ import org.joml.Vector3f;
 import static engine.render.GameRenderer.getWindowSize;
 import static game.tnt.TNTEntity.getTNTPosition;
 import static game.tnt.TNTEntity.getTNTScale;
-import static engine.graph.Camera.getCameraPosition;
-import static engine.graph.Camera.getCameraRotation;
+import static engine.graphics.Camera.getCameraPosition;
+import static engine.graphics.Camera.getCameraRotation;
 
 public class Transformation {
 

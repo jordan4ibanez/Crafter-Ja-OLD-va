@@ -1,7 +1,7 @@
 package engine.render;
 
 import engine.Utils;
-import engine.graph.*;
+import engine.graphics.*;
 import engine.gui.GUIObject;
 import game.chunk.ChunkObject;
 import game.crafting.InventoryObject;
@@ -18,9 +18,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import static engine.FancyMath.getDistance;
 import static engine.MouseInput.getMousePos;
 import static engine.debug.CheckRuntimeInfo.getRuntimeInfoText;
-import static engine.graph.Camera.*;
-import static engine.graph.Transformation.*;
-import static engine.graph.Transformation.buildOrthoProjModelMatrix;
+import static engine.graphics.Camera.*;
+import static engine.graphics.Transformation.*;
+import static engine.graphics.Transformation.buildOrthoProjModelMatrix;
 import static engine.gui.GUI.*;
 import static engine.gui.GUILogic.*;
 import static engine.gui.TextHandling.*;

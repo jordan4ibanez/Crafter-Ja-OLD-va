@@ -1,4 +1,4 @@
-package engine.graph;
+package engine.graphics;
 
 import org.joml.Vector2f;
 import org.joml.Vector3d;
@@ -6,7 +6,6 @@ import org.joml.Vector3f;
 
 import static engine.MouseInput.getMouseDisplVec;
 import static game.player.Player.*;
-import static game.player.Player.getHurtCameraRotation;
 
 public class Camera {
 

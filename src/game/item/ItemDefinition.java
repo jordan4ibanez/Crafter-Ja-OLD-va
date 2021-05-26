@@ -1,7 +1,7 @@
 package game.item;
 
-import engine.graph.Mesh;
-import engine.graph.Texture;
+import engine.graphics.Mesh;
+import engine.graphics.Texture;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

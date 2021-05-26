@@ -1,7 +1,7 @@
 package engine.render;
 
-import engine.graph.Mesh;
-import engine.graph.ShaderProgram;
+import engine.graphics.Mesh;
+import engine.graphics.ShaderProgram;
 import engine.gui.GUIObject;
 import org.joml.Matrix4d;
 import org.joml.Vector3d;
@@ -10,7 +10,7 @@ import org.joml.Vector3f;
 import static engine.Window.getWindowHeight;
 import static engine.Window.getWindowWidth;
 import static engine.credits.Credits.getCreditParts;
-import static engine.graph.Transformation.*;
+import static engine.graphics.Transformation.*;
 import static engine.gui.GUI.getButtonMesh;
 import static engine.gui.GUI.getButtonSelectedMesh;
 import static engine.gui.TextHandling.createTextCentered;

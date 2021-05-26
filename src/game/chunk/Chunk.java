@@ -1,7 +1,7 @@
 package game.chunk;
 
 import engine.FastNoise;
-import engine.graph.Mesh;
+import engine.graphics.Mesh;
 import org.joml.Vector3i;
 
 import java.io.IOException;

@@ -1,6 +1,5 @@
 package game.crafting;
 
-import game.blocks.BlockDefinition;
 import game.item.Item;
 import game.item.ItemDefinition;
 import org.joml.Vector2d;
@@ -10,7 +9,7 @@ import static game.blocks.BlockDefinition.getBlockDefinition;
 import static game.item.ItemDefinition.getItemDefinition;
 import static game.item.ItemDefinition.getRandomItemDefinition;
 import static game.item.ItemEntity.createItem;
-import static engine.graph.Camera.getCameraRotationVector;
+import static engine.graphics.Camera.getCameraRotationVector;
 import static game.player.Player.*;
 
 public class Inventory {

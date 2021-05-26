@@ -1,7 +1,7 @@
 package engine.debug;
 
 import engine.Utils;
-import engine.graph.ShaderProgram;
+import engine.graphics.ShaderProgram;
 import org.joml.Matrix4d;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
@@ -10,7 +10,7 @@ import static engine.Time.getDelta;
 import static engine.Window.getWindowHeight;
 import static engine.Window.getWindowWidth;
 import static engine.debug.DebugTerrainDrawTypes.getDebugMesh;
-import static engine.graph.Transformation.*;
+import static engine.graphics.Transformation.*;
 import static engine.render.GameRenderer.*;
 import static org.lwjgl.opengl.GL11.GL_ALPHA_TEST;
 import static org.lwjgl.opengl.GL11C.*;

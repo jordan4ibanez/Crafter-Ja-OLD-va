@@ -1,10 +1,8 @@
-package engine.graph;
+package engine.graphics;
 
 import org.joml.Matrix4d;
-import org.joml.Matrix4f;
 import org.lwjgl.system.MemoryStack;
 
-import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Map;
 

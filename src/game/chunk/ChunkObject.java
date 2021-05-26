@@ -1,6 +1,6 @@
 package game.chunk;
 
-import engine.graph.Mesh;
+import engine.graphics.Mesh;
 
 public class ChunkObject {
     public String ID;

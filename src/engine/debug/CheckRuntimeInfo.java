@@ -1,6 +1,6 @@
 package engine.debug;
 
-import engine.graph.Mesh;
+import engine.graphics.Mesh;
 
 import static engine.Time.getDelta;
 import static engine.gui.TextHandling.createTextWithShadow;

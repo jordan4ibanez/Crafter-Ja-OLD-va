@@ -1,11 +1,8 @@
 package engine.sound;
 
-import engine.graph.Camera;
-import engine.graph.Transformation;
+import engine.graphics.Transformation;
 import org.joml.Matrix4d;
-import org.joml.Matrix4f;
 import org.joml.Vector3d;
-import org.joml.Vector3f;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.ALCCapabilities;
@@ -13,8 +10,8 @@ import org.lwjgl.openal.ALCCapabilities;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
-import static engine.graph.Camera.getCameraPosition;
-import static engine.graph.Camera.getCameraRotation;
+import static engine.graphics.Camera.getCameraPosition;
+import static engine.graphics.Camera.getCameraRotation;
 import static org.lwjgl.openal.AL10.alDistanceModel;
 import static org.lwjgl.openal.ALC10.*;
 import static org.lwjgl.system.MemoryUtil.NULL;

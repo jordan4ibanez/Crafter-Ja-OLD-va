@@ -8,7 +8,7 @@ import org.joml.Vector3i;
 
 import static engine.Time.getDelta;
 import static engine.disk.Disk.loadPlayerPos;
-import static engine.graph.Camera.*;
+import static engine.graphics.Camera.*;
 import static engine.gui.GUI.*;
 import static engine.gui.GUILogic.calculateHealthBarElements;
 import static engine.gui.GUILogic.makeHeartsJiggle;

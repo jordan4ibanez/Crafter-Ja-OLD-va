@@ -1,6 +1,6 @@
 package engine.debug;
 
-import engine.graph.Mesh;
+import engine.graphics.Mesh;
 
 import static game.blocks.BlockDefinition.*;
 import static game.chunk.ChunkMesh.getTextureAtlas;

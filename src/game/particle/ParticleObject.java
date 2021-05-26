@@ -1,6 +1,6 @@
 package game.particle;
 
-import engine.graph.Mesh;
+import engine.graphics.Mesh;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 

@@ -6,7 +6,7 @@ import static engine.MouseInput.getMouseDisplVec;
 import static engine.MouseInput.toggleMouseLock;
 import static engine.Time.getDelta;
 import static engine.Window.*;
-import static engine.graph.Camera.*;
+import static engine.graphics.Camera.*;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class debug {

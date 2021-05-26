@@ -1,7 +1,7 @@
 package game.weather;
 
-import engine.graph.Mesh;
-import engine.graph.Texture;
+import engine.graphics.Mesh;
+import engine.graphics.Texture;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 

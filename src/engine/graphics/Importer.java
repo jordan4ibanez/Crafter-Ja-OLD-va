@@ -1,4 +1,4 @@
-package engine.graph;
+package engine.graphics;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
