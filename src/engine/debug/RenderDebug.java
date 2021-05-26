@@ -12,8 +12,8 @@ import static engine.Window.getWindowWidth;
 import static engine.debug.DebugTerrainDrawTypes.getDebugMesh;
 import static engine.graphics.Transformation.*;
 import static engine.render.GameRenderer.*;
-import static org.lwjgl.opengl.GL11.GL_ALPHA_TEST;
-import static org.lwjgl.opengl.GL11C.*;
+import static org.lwjgl.opengl.GL44.GL_ALPHA_TEST;
+import static org.lwjgl.opengl.GL44C.*;
 
 public class RenderDebug {
 

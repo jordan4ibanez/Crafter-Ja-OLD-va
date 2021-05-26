@@ -6,7 +6,7 @@ import org.lwjgl.system.MemoryStack;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL44.*;
 
 public class ShaderProgram {
     private final int programId;

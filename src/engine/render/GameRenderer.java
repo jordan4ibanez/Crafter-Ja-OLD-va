@@ -38,9 +38,9 @@ import static engine.Window.*;
 import static game.chunk.Chunk.*;
 import static game.crafting.Inventory.*;
 import static game.player.Player.*;
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL11C.GL_BLEND;
-import static org.lwjgl.opengl.GL11C.glDisable;
+import static org.lwjgl.opengl.GL44.*;
+import static org.lwjgl.opengl.GL44C.GL_BLEND;
+import static org.lwjgl.opengl.GL44C.glDisable;
 
 public class GameRenderer {
 

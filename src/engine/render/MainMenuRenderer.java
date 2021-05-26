@@ -18,8 +18,8 @@ import static engine.render.GameRenderer.*;
 import static game.mainMenu.MainMenu.*;
 import static game.mainMenu.MainMenuAssets.getTitleBackGroundMeshTile;
 import static game.mainMenu.MainMenuAssets.getTitleBlockMesh;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL44.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL44.glClear;
 
 public class MainMenuRenderer {
 
