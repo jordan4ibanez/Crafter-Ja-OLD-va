@@ -12,42 +12,28 @@ import static engine.sound.SoundAPI.playSound;
 import static game.chunk.Chunk.getLight;
 import static game.collision.Collision.applyInertia;
 import static game.crafting.Inventory.addItemToInventory;
+import static game.item.Item.getCurrentID;
 import static game.player.Player.getPlayerPosWithCollectionHeight;
 
 public class ItemEntity {
     private final static Map<Integer, Item> items = new HashMap<>();
 
-    private static int currentID = 0;
-
     private final static float itemCollisionWidth = 0.2f;
 
     public static void createItem(String name, Vector3d pos, int stack){
-        items.put(currentID, new Item(name, pos, stack));
-        tickUpCurrentID();
+        items.put(getCurrentID(), new Item(name, pos, stack));
     }
 
     public static void createItem(String name, Vector3d pos, int stack, float life){
-        items.put(currentID, new Item(name, pos, stack, life));
-        tickUpCurrentID();
+        items.put(getCurrentID(), new Item(name, pos, stack, life));
     }
 
     public static void createItem(String name, Vector3d pos, Vector3f inertia, int stack){
-        items.put(currentID, new Item(name, pos, inertia, stack));
-        tickUpCurrentID();
+        items.put(getCurrentID(), new Item(name, pos, inertia, stack));
     }
 
     public static void createItem(String name, Vector3d pos, Vector3f inertia, int stack, float life){
-        items.put(currentID, new Item(name, pos, inertia, stack, life));
-        tickUpCurrentID();
-    }
-
-    //yes this is ridiculous, but it is also safe
-    //internal integer overflow to 0
-    private static void tickUpCurrentID(){
-        currentID++;
-        if (currentID == 2147483647){
-            currentID = 0;
-        }
+        items.put(getCurrentID(), new Item(name, pos, inertia, stack, life));
     }
 
     public static Collection<Item> getAllItems(){
@@ -61,8 +47,8 @@ public class ItemEntity {
         for (Item thisItem : items.values()){
 
             if (thisItem.collectionTimer > 0f){
-                thisItem.collectionTimer -= delta;
 
+                thisItem.collectionTimer -= delta;
                 if (thisItem.collectionTimer <= 0){
                     thisItem.deletionOkay = true;
                 }
@@ -105,6 +91,7 @@ public class ItemEntity {
                             thisItem.collectionTimer = 0.1f;
                         }
                     }
+                    //do not do else-if here, can go straight to this logic
                     if (thisItem.collecting) {
                         Vector3d normalizedPos = new Vector3d(getPlayerPosWithCollectionHeight());
                         normalizedPos.sub(thisItem.pos).normalize().mul(15f);

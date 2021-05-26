@@ -12,6 +12,11 @@ import static game.chunk.ChunkMesh.convertLight;
 import static game.item.ItemDefinition.getItemDefinition;
 
 public class Item {
+
+    //KEEP THIS IN THIS CLASS
+    //IT'S TOO COMPLEX TO REMOVE THIS OUT OF THIS CLASS!
+    private static int currentID = 0;
+
     public String name;
     public int stack;
     public ItemDefinition definition;
@@ -34,13 +39,27 @@ public class Item {
     public Vector3i oldFlooredPos = new Vector3i(0,0,0);
 
 
+    //yes this is ridiculous, but it is also safe
+    //internal integer overflow to 0
+    private static void tickUpCurrentID(){
+        currentID++;
+        if (currentID == 2147483647){
+            currentID = 0;
+        }
+    }
+
+    public static int getCurrentID(){
+        return currentID;
+    }
+
     //inventory item
     public Item(String name, int stack){
         this.name = name;
         this.definition = getItemDefinition(name);
         this.stack = stack;
-
+        this.ID = currentID;
         rebuildLightMesh(this);
+        tickUpCurrentID();
     }
 
     //item being mined
@@ -57,7 +76,9 @@ public class Item {
         this.collecting = false;
         this.scale = 1f;
         this.timer = 0f;
+        this.ID = currentID;
         rebuildLightMesh(this);
+        tickUpCurrentID();
     }
 
     //item being mined with life
@@ -74,7 +95,9 @@ public class Item {
         this.collecting = false;
         this.scale = 1f;
         this.timer = life;
+        this.ID = currentID;
         rebuildLightMesh(this);
+        tickUpCurrentID();
     }
 
     //item with inertia vector when spawned (mined, blown up, etc)
@@ -91,7 +114,9 @@ public class Item {
         this.collecting = false;
         this.scale = 1f;
         this.timer = 0f;
+        this.ID = currentID;
         rebuildLightMesh(this);
+        tickUpCurrentID();
     }
 
     //item with inertia vector when spawned (mined, blown up, etc)
@@ -108,7 +133,9 @@ public class Item {
         this.collecting = false;
         this.scale = 1f;
         this.timer = life;
+        this.ID = currentID;
         rebuildLightMesh(this);
+        tickUpCurrentID();
     }
 
     //clone item
@@ -133,7 +160,9 @@ public class Item {
         this.collecting = false;
         this.scale = 1f;
         this.timer = 0f;
+        this.ID = currentID;
         rebuildLightMesh(this);
+        tickUpCurrentID();
     }
 
 
