@@ -217,6 +217,7 @@ public class Window {
     public static void updateWindowTitle(String newTitle){
         glfwSetWindowTitle(windowHandle, newTitle);
     }
+
     public static void windowUpdate(){
         glfwSwapBuffers(windowHandle);
         glfwPollEvents();

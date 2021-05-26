@@ -95,23 +95,22 @@ public class SceneHandler {
 
 
     private static void debugLoop(){
+        windowUpdate();
         calculateDelta();
         mouseInput();
         debugInput();
         renderDebug();
-        windowUpdate();
     }
 
 
     private static void mainMenuLoop(){
         setCameraPosition(0,-8,0);
         setCameraRotation(0,0,0);
-
+        windowUpdate();
         calculateDelta();
         mainMenuInput();
         doMainMenuLogic();
         renderMainMenu();
-        windowUpdate();
     }
 
     //main game loop
