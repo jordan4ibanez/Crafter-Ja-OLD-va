@@ -12,8 +12,6 @@ import static game.chunk.ChunkMesh.convertLight;
 import static game.item.ItemDefinition.getItemDefinition;
 
 public class Item {
-    private static int currentID = 0;
-
     public String name;
     public int stack;
     public ItemDefinition definition;
@@ -59,11 +57,7 @@ public class Item {
         this.collecting = false;
         this.scale = 1f;
         this.timer = 0f;
-        this.ID = currentID;
-
         rebuildLightMesh(this);
-
-        currentID++;
     }
 
     //item being mined with life
@@ -80,10 +74,7 @@ public class Item {
         this.collecting = false;
         this.scale = 1f;
         this.timer = life;
-        this.ID = currentID;
-
         rebuildLightMesh(this);
-        currentID++;
     }
 
     //item with inertia vector when spawned (mined, blown up, etc)
@@ -100,10 +91,7 @@ public class Item {
         this.collecting = false;
         this.scale = 1f;
         this.timer = 0f;
-        this.ID = currentID;
-
         rebuildLightMesh(this);
-        currentID++;
     }
 
     //item with inertia vector when spawned (mined, blown up, etc)
@@ -120,10 +108,7 @@ public class Item {
         this.collecting = false;
         this.scale = 1f;
         this.timer = life;
-        this.ID = currentID;
-
         rebuildLightMesh(this);
-        currentID++;
     }
 
     //clone item
@@ -148,11 +133,7 @@ public class Item {
         this.collecting = false;
         this.scale = 1f;
         this.timer = 0f;
-        this.ID = currentID;
-
         rebuildLightMesh(this);
-
-        currentID++;
     }
 
 
@@ -173,12 +154,5 @@ public class Item {
         }
 
         self.mesh = new Mesh(temp.positionsArray, newLightArray, temp.indicesArray, temp.textureCoordArray, temp.texture);
-    }
-
-    //this is for the ItemEntity class to create
-    //a new itemID in it's map without overwriting.
-    //works in conjunction with this class.
-    public static int getCurrentID(){
-        return currentID;
     }
 }

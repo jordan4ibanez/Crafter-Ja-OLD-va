@@ -6,34 +6,48 @@ import org.joml.Vector3i;
 
 import java.util.*;
 
-import static engine.FancyMath.*;
+import static engine.FancyMath.getDistance;
 import static engine.Time.getDelta;
 import static engine.sound.SoundAPI.playSound;
 import static game.chunk.Chunk.getLight;
 import static game.collision.Collision.applyInertia;
-import static game.item.Item.getCurrentID;
 import static game.crafting.Inventory.addItemToInventory;
 import static game.player.Player.getPlayerPosWithCollectionHeight;
 
 public class ItemEntity {
     private final static Map<Integer, Item> items = new HashMap<>();
 
+    private static int currentID = 0;
+
     private final static float itemCollisionWidth = 0.2f;
 
     public static void createItem(String name, Vector3d pos, int stack){
-        items.put(getCurrentID(), new Item(name, pos, stack));
+        items.put(currentID, new Item(name, pos, stack));
+        tickUpCurrentID();
     }
 
     public static void createItem(String name, Vector3d pos, int stack, float life){
-        items.put(getCurrentID(), new Item(name, pos, stack, life));
+        items.put(currentID, new Item(name, pos, stack, life));
+        tickUpCurrentID();
     }
 
     public static void createItem(String name, Vector3d pos, Vector3f inertia, int stack){
-        items.put(getCurrentID(), new Item(name, pos, inertia, stack));
+        items.put(currentID, new Item(name, pos, inertia, stack));
+        tickUpCurrentID();
     }
 
     public static void createItem(String name, Vector3d pos, Vector3f inertia, int stack, float life){
-        items.put(getCurrentID(), new Item(name, pos, inertia, stack, life));
+        items.put(currentID, new Item(name, pos, inertia, stack, life));
+        tickUpCurrentID();
+    }
+
+    //yes this is ridiculous, but it is also safe
+    //internal integer overflow to 0
+    private static void tickUpCurrentID(){
+        currentID++;
+        if (currentID == 2147483647){
+            currentID = 0;
+        }
     }
 
     public static Collection<Item> getAllItems(){
@@ -54,7 +68,6 @@ public class ItemEntity {
                 }
             }
 
-            System.out.println(thisItem.timer);
             thisItem.timer += delta;
             thisItem.lightUpdateTimer += delta;
 
@@ -76,9 +89,6 @@ public class ItemEntity {
             }
 
             thisItem.oldFlooredPos = currentFlooredPos;
-
-            //System.out.println(lightUpdateTimer);
-            //System.out.println(thisItem.light);
 
             //delete items that are too old
             if (thisItem.timer > 50f){
