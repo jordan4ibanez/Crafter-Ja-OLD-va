@@ -156,7 +156,7 @@ public class ItemEntity {
         while (!deletionQueue.isEmpty()){
             int thisItemKey = deletionQueue.pop();
             Item thisItem = items.get(thisItemKey);
-            if (thisItem.mesh != null){
+            if (thisItem != null && thisItem.mesh != null){
                 thisItem.mesh.cleanUp(false);
             }
             items.remove(thisItemKey);
