@@ -22,7 +22,7 @@ import static game.crafting.Inventory.removeItemFromInventory;
 import static game.player.Player.*;
 
 public class Ray {
-    public static void rayCast(Vector3d pos, Vector3f dir, float length, boolean mining, boolean placing, boolean hasMined) {
+    public static void playerRayCast(Vector3d pos, Vector3f dir, float length, boolean mining, boolean placing, boolean hasMined) {
 
         Vector3d finalPos = new Vector3d();
 

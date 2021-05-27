@@ -20,7 +20,7 @@ import static game.collision.Collision.applyInertia;
 import static game.crafting.Inventory.getItemInInventorySlot;
 import static game.crafting.Inventory.updateWieldInventory;
 import static game.particle.Particle.createParticle;
-import static game.ray.Ray.rayCast;
+import static game.ray.Ray.playerRayCast;
 
 
 public class Player {
@@ -946,14 +946,14 @@ public class Player {
         calculateRunningFOV();
 
         if(mining && hasDug) {
-            rayCast(getCameraPosition(), getCameraRotationVector(), reach, true, false, true);
+            playerRayCast(getCameraPosition(), getCameraRotationVector(), reach, true, false, true);
         } else if(mining) {
-                rayCast(getCameraPosition(), getCameraRotationVector(), reach,  true, false, false);
+                playerRayCast(getCameraPosition(), getCameraRotationVector(), reach,  true, false, false);
         } else if (placing && placeTimer <= 0){
-            rayCast(getCameraPosition(), getCameraRotationVector(), reach,  false, true, false);
+            playerRayCast(getCameraPosition(), getCameraRotationVector(), reach,  false, true, false);
             placeTimer = 0.25f; // every quarter second you can place
         } else {
-            rayCast(getCameraPosition(), getCameraRotationVector(), reach,  false, false, false);
+            playerRayCast(getCameraPosition(), getCameraRotationVector(), reach,  false, false, false);
         }
 
 
