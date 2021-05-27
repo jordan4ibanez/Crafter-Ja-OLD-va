@@ -1,4 +1,4 @@
-package game.player;
+package game.ray;
 
 import game.mob.MobObject;
 import org.joml.Vector3d;

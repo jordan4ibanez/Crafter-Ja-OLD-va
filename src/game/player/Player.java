@@ -20,7 +20,7 @@ import static game.collision.Collision.applyInertia;
 import static game.crafting.Inventory.getItemInInventorySlot;
 import static game.crafting.Inventory.updateWieldInventory;
 import static game.particle.Particle.createParticle;
-import static game.player.Ray.rayCast;
+import static game.ray.Ray.rayCast;
 
 
 public class Player {
