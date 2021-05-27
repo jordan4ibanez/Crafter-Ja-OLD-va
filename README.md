@@ -25,11 +25,7 @@ You can try these flags for a performance boost, if you want.
 
 2. Implement torches
 
-3. Implement crafting with basic craft recipe handling
+3. Implement day/night
 
-4. Implement day/night
-
-5. Implement mobs
-
-6. Save map to disk better
+4. Implement multiplayer
 
