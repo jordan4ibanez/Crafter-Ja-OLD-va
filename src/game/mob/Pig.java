@@ -27,16 +27,15 @@ public class Pig {
     private final static MobInterface mobInterface = new MobInterface() {
         @Override
         public void onTick(MobObject thisObject) {
-
             float delta = getDelta();
 
             thisObject.timer += delta;
 
 
-            if (thisObject.timer > 1.5f){
+            if (thisObject.timer > 1.5f) {
                 thisObject.stand = !thisObject.stand;
-                thisObject.timer = (float)Math.random() * -2f;
-                thisObject.rotation = (float)(Math.toDegrees(Math.PI * Math.random() * randomDirFloat()));
+                thisObject.timer = (float) Math.random() * -2f;
+                thisObject.rotation = (float) (Math.toDegrees(Math.PI * Math.random() * randomDirFloat()));
             }
 
             //head test
@@ -56,11 +55,11 @@ public class Pig {
 
             float maxSpeed = maxWalkSpeed;
 
-            if (thisObject.health <= 0){
+            if (thisObject.health <= 0) {
                 maxSpeed = 0.01f;
             }
 
-            if(inertia2D.length() > maxSpeed){
+            if (inertia2D.length() > maxSpeed) {
                 inertia2D = inertia2D.normalize().mul(maxSpeed);
                 thisObject.inertia.x = inertia2D.x;
                 thisObject.inertia.z = inertia2D.z;
@@ -69,15 +68,13 @@ public class Pig {
 
             thisObject.animationTimer += delta * (inertia2D.length() / maxSpeed);
 
-            if (thisObject.animationTimer >= 1f){
+            if (thisObject.animationTimer >= 1f) {
                 thisObject.animationTimer = 0f;
             }
 
             boolean onGround = applyInertia(thisObject.pos, thisObject.inertia, false, thisObject.width, thisObject.height, true, false, true, false, false);
 
             thisObject.onGround = onGround;
-
-
 
 
             if (thisObject.health > 0) {
@@ -103,7 +100,6 @@ public class Pig {
             doHeadCode(thisObject);
 
             thisObject.lastPos = new Vector3d(thisObject.pos);
-
 
         }
     };
@@ -196,17 +192,17 @@ public class Pig {
                 //body
 
                 //front
-                calculateTexture(46,8,56,16),
+                calculateTexture(54,6,64,14),
                 //back
-                calculateTexture(36,8,46,16),
+                calculateTexture(44,6,54,14),
                 //right
-                calculateTexture(46,16,56,32),
+                calculateTexture(48,23,64,32),
                 //left
-                calculateTexture(28,16,36,32),
+                calculateTexture(48,23,64,32),
                 //top
-                calculateTexture(36,16,46,32),
+                calculateTexture(32,23,48,32),
                 //bottom
-                calculateTexture(56,16,64,32),
+                calculateTexture(48,14,64,23),
 
 
                 //right arm
