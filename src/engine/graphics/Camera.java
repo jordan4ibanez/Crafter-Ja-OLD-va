@@ -6,6 +6,7 @@ import org.joml.Vector3f;
 
 import static engine.MouseInput.getMouseDisplVec;
 import static game.player.Player.*;
+import static game.ray.Ray.genericWorldRaycast;
 
 public class Camera {
 
@@ -124,10 +125,8 @@ public class Camera {
         //these must go after camera rotation
         //or weird inertia effect happens
         if (cameraPerspective > 0){
-            Vector3d posAdder = new Vector3d(getCameraRotationVector());
-            posAdder.normalize();
-            posAdder.mul(-3d);
-            setCameraPosition(getPlayerPosWithEyeHeight().x + posAdder.x, getPlayerPosWithEyeHeight().y + posAdder.y, getPlayerPosWithEyeHeight().z + posAdder.z);
+            Vector3d newCameraPos = genericWorldRaycast(getPlayerPosWithEyeHeight(), getCameraRotationVector().mul(-1), 3);
+            setCameraPosition(newCameraPos.x,newCameraPos.y, newCameraPos.z);
         }
     }
 }

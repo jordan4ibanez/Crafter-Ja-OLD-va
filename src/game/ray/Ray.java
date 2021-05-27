@@ -23,19 +23,12 @@ import static game.player.Player.*;
 
 public class Ray {
     public static void playerRayCast(Vector3d pos, Vector3f dir, float length, boolean mining, boolean placing, boolean hasMined) {
-
         Vector3d finalPos = new Vector3d();
-
         Vector3d newPos   = new Vector3d();
-
         Vector3d realNewPos = new Vector3d();
-
         Vector3d lastPos  = new Vector3d();
-
         Vector3d cachePos = new Vector3d();
-
         int foundBlock = -1;
-
         MobObject[] mobs = null;
 
         if (mining){
@@ -146,5 +139,36 @@ public class Ray {
         onPlaceCall(ID, flooredPos);
 
         removeItemFromInventory(getCurrentInventorySelection(), 0);
+    }
+
+
+    public static Vector3d genericWorldRaycast(Vector3d pos, Vector3f dir, float length){
+        Vector3d newPos   = new Vector3d();
+        Vector3d realNewPos = new Vector3d();
+        Vector3d lastPos  = new Vector3d();
+        Vector3d cachePos = new Vector3d();
+        int foundBlock;
+
+        for(float step = 0f; step <= length ; step += 0.001d) {
+            cachePos.x = dir.x * step;
+            cachePos.y = dir.y * step;
+            cachePos.z = dir.z * step;
+            newPos.x = Math.floor(pos.x + cachePos.x);
+            newPos.y = Math.floor(pos.y + cachePos.y);
+            newPos.z = Math.floor(pos.z + cachePos.z);
+            realNewPos.x = pos.x + cachePos.x;
+            realNewPos.y = pos.y + cachePos.y;
+            realNewPos.z = pos.z + cachePos.z;
+            //stop wasting cpu resources
+            if (newPos.x != lastPos.x || newPos.y != lastPos.y || newPos.z != lastPos.z) {
+                foundBlock = getBlock((int) newPos.x, (int) newPos.y, (int) newPos.z);
+                if (foundBlock > 0 && isBlockPointable(foundBlock)) {
+                    break;
+                }
+            }
+            lastPos = new Vector3d(newPos);
+        }
+
+        return realNewPos;
     }
 }
