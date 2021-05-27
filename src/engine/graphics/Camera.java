@@ -70,7 +70,7 @@ public class Camera {
     }
 
     public static Vector3f getCameraRotation(){
-        return rotation;
+        return new Vector3f(rotation);
     }
 
     public static void setCameraRotation(float x, float y, float z){
@@ -97,8 +97,8 @@ public class Camera {
     public static void updateCamera(){
 
         if (cameraPerspective == 0) {
-            moveCameraPosition(getPlayerViewBobbing().x, getPlayerViewBobbing().y, getPlayerViewBobbing().z);
             setCameraPosition(getPlayerPosWithEyeHeight().x, getPlayerPosWithEyeHeight().y + getSneakOffset(), getPlayerPosWithEyeHeight().z);
+            moveCameraPosition(getPlayerViewBobbing().x, getPlayerViewBobbing().y, getPlayerViewBobbing().z);
         }
 
         //update camera based on mouse

@@ -363,7 +363,24 @@ public class Player {
 
 
     public static Vector3d getPlayerPosWithViewBobbing(){
-        return new Vector3d(pos.x, pos.y + eyeHeight, pos.z);
+        Vector3d position = getPlayerPosWithEyeHeight();
+        if (getCameraPerspective() == 0) {
+            Vector3f cameraRotation = getCameraRotation();
+            if (viewBobbing.z != 0) {
+                position.x += (float) Math.sin(Math.toRadians(cameraRotation.y)) * -1.0f * viewBobbing.z;
+                position.z += (float) Math.cos(Math.toRadians(cameraRotation.y)) * viewBobbing.z;
+            }
+
+            if (viewBobbing.x != 0) {
+                position.x += (float) Math.sin(Math.toRadians(cameraRotation.y - 90f)) * -1.0f * viewBobbing.x;
+                position.z += (float) Math.cos(Math.toRadians(cameraRotation.y - 90f)) * viewBobbing.x;
+            }
+
+            if (viewBobbing.y != 0) {
+                position.y += viewBobbing.y;
+            }
+        }
+        return position;
     }
 
     public static Vector3d getPlayerPosWithCollectionHeight(){
@@ -945,15 +962,28 @@ public class Player {
 
         calculateRunningFOV();
 
-        if(mining && hasDug) {
-            playerRayCast(getCameraPosition(), getCameraRotationVector(), reach, true, false, true);
-        } else if(mining) {
-                playerRayCast(getCameraPosition(), getCameraRotationVector(), reach,  true, false, false);
-        } else if (placing && placeTimer <= 0){
-            playerRayCast(getCameraPosition(), getCameraRotationVector(), reach,  false, true, false);
-            placeTimer = 0.25f; // every quarter second you can place
+        if (getCameraPerspective() < 2) {
+            if (mining && hasDug) {
+                playerRayCast(getPlayerPosWithViewBobbing(), getCameraRotationVector(), reach, true, false, true);
+            } else if (mining) {
+                playerRayCast(getPlayerPosWithViewBobbing(), getCameraRotationVector(), reach, true, false, false);
+            } else if (placing && placeTimer <= 0) {
+                playerRayCast(getPlayerPosWithViewBobbing(), getCameraRotationVector(), reach, false, true, false);
+                placeTimer = 0.25f; // every quarter second you can place
+            } else {
+                playerRayCast(getPlayerPosWithViewBobbing(), getCameraRotationVector(), reach, false, false, false);
+            }
         } else {
-            playerRayCast(getCameraPosition(), getCameraRotationVector(), reach,  false, false, false);
+            if (mining && hasDug) {
+                playerRayCast(getPlayerPosWithViewBobbing(), getCameraRotationVector().mul(-1), reach, true, false, true);
+            } else if (mining) {
+                playerRayCast(getPlayerPosWithViewBobbing(), getCameraRotationVector().mul(-1), reach, true, false, false);
+            } else if (placing && placeTimer <= 0) {
+                playerRayCast(getPlayerPosWithViewBobbing(), getCameraRotationVector().mul(-1), reach, false, true, false);
+                placeTimer = 0.25f; // every quarter second you can place
+            } else {
+                playerRayCast(getPlayerPosWithViewBobbing(), getCameraRotationVector().mul(-1), reach, false, false, false);
+            }
         }
 
 
