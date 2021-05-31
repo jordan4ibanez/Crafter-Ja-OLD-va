@@ -10,7 +10,7 @@ public class GUIObject {
     /*
     types:
     0 - button
-    1 - slider bar
+    1 - text input
      */
 
     public byte type;

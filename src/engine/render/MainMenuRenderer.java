@@ -11,8 +11,7 @@ import static engine.Window.getWindowHeight;
 import static engine.Window.getWindowWidth;
 import static engine.credits.Credits.getCreditParts;
 import static engine.graphics.Transformation.*;
-import static engine.gui.GUI.getButtonMesh;
-import static engine.gui.GUI.getButtonSelectedMesh;
+import static engine.gui.GUI.*;
 import static engine.gui.TextHandling.createTextCentered;
 import static engine.render.GameRenderer.*;
 import static game.mainMenu.MainMenu.*;
@@ -263,9 +262,9 @@ public class MainMenuRenderer {
                 modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(xPos, yPos, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / xAdder, windowScale / yAdder, windowScale / 20d));
                 hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 if (thisGUIObject.selected) {
-                    getButtonSelectedMesh().render();
+                    getTextInputSelectedMesh().render();
                 } else {
-                    getButtonMesh().render();
+                    getTextInputMesh().render();
                 }
 
             }

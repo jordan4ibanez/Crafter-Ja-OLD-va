@@ -98,9 +98,9 @@ public class MainMenu {
     };
 
     private static final GUIObject[] multiPlayerGUI = new GUIObject[]{
-            new GUIObject(new Vector2d(0, 10), 10, 1),
+            new GUIObject(new Vector2d(0, 15), 10, 1),
             new GUIObject("CONNECT" , new Vector2d(0, 0), 10,1),
-            new GUIObject("BACK" , new Vector2d(0, -10), 10,1),
+            new GUIObject("BACK" , new Vector2d(0, -30), 10,1),
     };
 
     public static byte getMainMenuPage(){

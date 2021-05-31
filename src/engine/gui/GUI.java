@@ -60,8 +60,8 @@ public class GUI {
         buttonMesh = create2DMesh(0.5f,0.5f,"textures/button.png");
         buttonSelectedMesh = create2DMesh(0.5f,0.5f,"textures/button_selected.png");
         buttonPushedMesh = create2DMesh(0.5f,0.5f,"textures/button_pushed.png");
-        textInputMesh = create2DMesh(0.5f,0.5f,"textures/text_input.png");
-        textInputSelectedMesh = create2DMesh(0.5f,0.5f,"textures/text_input_selected.png");
+        textInputMesh = create2DMesh(0.5f,0.5f,"textures/text_box.png");
+        textInputSelectedMesh = create2DMesh(0.5f,0.5f,"textures/text_box_selected.png");
         globalWaterEffectMesh = create2DMesh(0.5f,0.5f, "textures/water_overlay.png");
         heartHudMesh = create2DMesh(0.5f, 0.5f, "textures/heart.png");
         halfHeartHudMesh = create2DMesh(0.5f, 0.5f, 0.5f, "textures/heart.png");
@@ -145,7 +145,7 @@ public class GUI {
     public static Mesh getTextInputSelectedMesh(){
         return textInputSelectedMesh;
     }
-    
+
     public static Mesh getButtonPushedMesh(){
         return buttonPushedMesh;
     }
