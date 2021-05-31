@@ -211,32 +211,65 @@ public class MainMenuRenderer {
     }
 
     private static void renderMainMenuGUI(){
-        for (GUIObject thisButton : getMainMenuGUI()) {
-            ShaderProgram hudShaderProgram = getHudShaderProgram();
+        ShaderProgram hudShaderProgram = getHudShaderProgram();
+        hudShaderProgram.bind();
 
-            float windowScale = getWindowScale();
+        for (GUIObject thisGUIObject : getMainMenuGUI()) {
+            //button type
+            if (thisGUIObject.type == 0) {
+                float windowScale = getWindowScale();
 
-            //TODO: USE THIS FOR MOUSE COLLISION DETECTION
-            double xPos = thisButton.pos.x * (windowScale / 100d);
-            double yPos = thisButton.pos.y * (windowScale / 100d);
-
-
-            Matrix4d modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(xPos, yPos, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 20d, windowScale / 20d, windowScale / 20d));
-            hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            thisButton.textMesh.render();
+                //TODO: USE THIS FOR MOUSE COLLISION DETECTION
+                double xPos = thisGUIObject.pos.x * (windowScale / 100d);
+                double yPos = thisGUIObject.pos.y * (windowScale / 100d);
 
 
-            //TODO: USE THIS FOR MOUSE COLLISION DETECTION
-            float xAdder = 20 / thisButton.buttonScale.x;
-            float yAdder = 20 / thisButton.buttonScale.y;
+                Matrix4d modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(xPos, yPos, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 20d, windowScale / 20d, windowScale / 20d));
+                hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                thisGUIObject.textMesh.render();
 
-            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(xPos, yPos, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / xAdder, windowScale / yAdder, windowScale / 20d));
-            hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            if (thisButton.selected){
-                getButtonSelectedMesh().render();
-            } else {
-                getButtonMesh().render();
+
+                //TODO: USE THIS FOR MOUSE COLLISION DETECTION
+                float xAdder = 20 / thisGUIObject.buttonScale.x;
+                float yAdder = 20 / thisGUIObject.buttonScale.y;
+
+                modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(xPos, yPos, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / xAdder, windowScale / yAdder, windowScale / 20d));
+                hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                if (thisGUIObject.selected) {
+                    getButtonSelectedMesh().render();
+                } else {
+                    getButtonMesh().render();
+                }
+            }
+            //text input box type
+            else if (thisGUIObject.type == 1){
+
+                float windowScale = getWindowScale();
+
+                //TODO: USE THIS FOR MOUSE COLLISION DETECTION
+                double xPos = thisGUIObject.pos.x * (windowScale / 100d);
+                double yPos = thisGUIObject.pos.y * (windowScale / 100d);
+
+
+                Matrix4d modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(xPos, yPos, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 20d, windowScale / 20d, windowScale / 20d));
+                hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                thisGUIObject.textMesh.render();
+
+
+                //TODO: USE THIS FOR MOUSE COLLISION DETECTION
+                float xAdder = 20 / thisGUIObject.buttonScale.x;
+                float yAdder = 20 / thisGUIObject.buttonScale.y;
+
+                modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(xPos, yPos, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / xAdder, windowScale / yAdder, windowScale / 20d));
+                hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                if (thisGUIObject.selected) {
+                    getButtonSelectedMesh().render();
+                } else {
+                    getButtonMesh().render();
+                }
+
             }
         }
+        hudShaderProgram.unbind();
     }
 }
