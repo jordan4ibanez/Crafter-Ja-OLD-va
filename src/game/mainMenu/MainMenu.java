@@ -686,7 +686,7 @@ public class MainMenu {
         titleScreenGag = titleScreenGags[random.nextInt(titleScreenGags.length)];
 
         if (titleScreenGag.equals("Look at the window title!")){
-            updateWindowTitle("Got em!");
+            updateWindowTitle("Got you!");
         } else {
             updateWindowTitle(getVersionName());
         }
@@ -818,6 +818,9 @@ public class MainMenu {
             "Has been to space!",
             "Climbs mountains!",
             "Polls your inputs!",
-            "Written in Rust...Go...Java!"
+            "Written in Rust...Go...Java!",
+            "Appends data to objects!",
+            "Found on the internet!",
+            "Reverts changes!"
     };
 }
