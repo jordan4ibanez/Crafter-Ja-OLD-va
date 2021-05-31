@@ -57,11 +57,12 @@ public class MainMenu {
     //2 buttons settings
     //3 singleplayer worlds menu
     //4 credits
+    //5 multiplayer
     private static byte menuPage = 0;
 
     private static final GUIObject[] mainMenuGUI = new GUIObject[]{
             new GUIObject("SINGLEPLAYER" , new Vector2d(0, 10), 10, 1),
-            new GUIObject("MULTIPLAYER (NOT YET)" , new Vector2d(0, -3), 10,1),
+            new GUIObject("MULTIPLAYER" , new Vector2d(0, -3), 10,1),
             new GUIObject("SETTINGS" , new Vector2d(0, -16), 10,1),
             new GUIObject("CREDITS" , new Vector2d(0, -29), 10,1),
             new GUIObject("QUIT" , new Vector2d(0, -42), 10,1),
@@ -96,6 +97,12 @@ public class MainMenu {
             new GUIObject("BACK" , new Vector2d(0, -42), 10,1),
     };
 
+    private static final GUIObject[] multiPlayerGUI = new GUIObject[]{
+            new GUIObject(new Vector2d(0, 10), 10, 1),
+            new GUIObject("CONNECT" , new Vector2d(0, 0), 10,1),
+            new GUIObject("BACK" , new Vector2d(0, -10), 10,1),
+    };
+
     public static byte getMainMenuPage(){
         return menuPage;
     }
@@ -109,6 +116,8 @@ public class MainMenu {
             return controlsMenuGUI;
         } else if (menuPage == 3){
             return worldSelectionGUI;
+        } else if (menuPage == 5){
+            return multiPlayerGUI;
         }
 
         //have to return something
@@ -251,7 +260,8 @@ public class MainMenu {
                 }
 
                 if (selection == 1) {
-                    System.out.println("THERE'S NO MULTIPLAYER OH NO");
+                    resetMainMenu();
+                    menuPage = 5;
                 }
 
                 if (selection == 2) {
@@ -263,7 +273,6 @@ public class MainMenu {
                     titleMusic.stop();
                     menuPage = 4;
                     creditsMusic.play();
-                    System.out.println("YOU FORGOT TO ADD THE CREDITS ARGHH");
                 }
 
                 if (selection == 4) {
@@ -495,6 +504,10 @@ public class MainMenu {
                 menuPage = 0;
                 creditsScroll = -6f;
             }
+        } else if (menuPage == 5){
+            byte selection = doGUIMouseCollisionDetection(multiPlayerGUI);
+
+            System.out.println(selection);
         }
 
         mouseButtonWasPushed = isLeftButtonPressed();

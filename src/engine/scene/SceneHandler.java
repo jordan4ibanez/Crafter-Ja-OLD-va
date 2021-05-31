@@ -24,6 +24,7 @@ import static engine.sound.SoundManager.updateListenerPosition;
 import static game.chunk.Chunk.*;
 import static game.chunk.ChunkMesh.popChunkMeshQueue;
 import static game.chunk.ChunkUpdateHandler.chunkUpdater;
+import static game.crafting.Inventory.generateRandomInventory;
 import static game.crafting.InventoryLogic.inventoryMenuOnTick;
 import static game.falling.FallingEntity.fallingEntityOnStep;
 import static game.item.ItemRegistration.registerItems;
@@ -58,7 +59,7 @@ public class SceneHandler {
             registerItems();
             initializeMobRegister();
             initialChunkPayload();
-            //generateRandomInventory();
+            generateRandomInventory();
         }
 
         currentScene = newScene;
