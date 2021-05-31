@@ -273,6 +273,7 @@ public class MainMenu {
                     titleMusic.stop();
                     menuPage = 4;
                     creditsMusic.play();
+                    resetMainMenu();
                 }
 
                 if (selection == 4) {
@@ -806,5 +807,17 @@ public class MainMenu {
             "Jump for joy!",
             "Now with more binary!",
             "Algorithmic!",
+            "Now multiplayer!",
+            "Duplicate pointers!",
+            "Crashes on command!",
+            "Doesn't burn your toast!",
+            "Widescreen compatible!",
+            "Now with more code!",
+            "Binary until compiled!",
+            "Go west to head east!",
+            "Has been to space!",
+            "Climbs mountains!",
+            "Polls your inputs!",
+            "Written in Rust...Go...Java!"
     };
 }
