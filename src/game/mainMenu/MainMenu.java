@@ -60,6 +60,7 @@ public class MainMenu {
     //3 singleplayer worlds menu
     //4 credits
     //5 multiplayer
+    //6 multiplayer loading screen
     private static byte menuPage = 0;
 
     private static final GUIObject[] mainMenuGUI = new GUIObject[]{
@@ -105,6 +106,11 @@ public class MainMenu {
             new GUIObject("BACK" , new Vector2d(0, -30), 10,1),
     };
 
+    private static final GUIObject[] multiPlayerLoadingGUI = new GUIObject[]{
+            new GUIObject("CONNECTING..." , true, new Vector2d(0, 5)),
+            new GUIObject("BACK" , new Vector2d(0, -5), 10,1),
+    };
+
     public static byte getMainMenuPage(){
         return menuPage;
     }
@@ -120,6 +126,8 @@ public class MainMenu {
             return worldSelectionGUI;
         } else if (menuPage == 5){
             return multiPlayerGUI;
+        } else if (menuPage == 6){
+            return multiPlayerLoadingGUI;
         }
 
         //have to return something
@@ -559,11 +567,28 @@ public class MainMenu {
                     } else {
                         System.out.println("Address is: " + multiPlayerGUI[0].inputText);
                         System.out.println("BEGIN CONNECTION");
+                        menuPage = 6;
                     }
                 } else if (selection == 2){
                     menuPage = 0;
                 }
 
+
+            } else if (!isLeftButtonPressed()) {
+                mouseButtonPushed = false;
+            }
+        } else if (menuPage == 6){
+
+            byte selection = doGUIMouseCollisionDetection(multiPlayerLoadingGUI);
+
+            if (isLeftButtonPressed() && selection >= 0 && !mouseButtonPushed && !mouseButtonWasPushed) {
+                playSound("button");
+                mouseButtonPushed = true;
+
+                if (selection == 1){
+                    System.out.println("CANCELING CONNECTION");
+                    menuPage = 5;
+                }
 
             } else if (!isLeftButtonPressed()) {
                 mouseButtonPushed = false;

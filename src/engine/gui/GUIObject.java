@@ -11,6 +11,7 @@ public class GUIObject {
     types:
     0 - button
     1 - text input
+    2 - just text
      */
 
     public byte type;
@@ -48,6 +49,14 @@ public class GUIObject {
         this.selected = false;
     }
 
+    //initializer for generic text object
+    public GUIObject(String text, boolean isJustText, Vector2d pos){
+        this.textMesh = createTextCenteredWithShadow(text, 1,1,1);
+        this.pos = pos;
+        this.type = 2;
+        this.selected = false;
+    }
+
     //initializer for button with fixed width and height
     public GUIObject(String text, Vector2d pos, float width, float height){
         this.textMesh = createTextCenteredWithShadow(text, 1,1,1);
@@ -69,6 +78,8 @@ public class GUIObject {
         this.selected = false;
         this.pointerTimer = 0.5f;
     }
+
+
 
     //initializer for text input box with preset text
     public GUIObject(Vector2d pos, float width, float height, String existingText){

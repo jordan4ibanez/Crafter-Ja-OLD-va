@@ -213,11 +213,11 @@ public class MainMenuRenderer {
     private static void renderMainMenuGUI(){
         ShaderProgram hudShaderProgram = getHudShaderProgram();
         hudShaderProgram.bind();
+        float windowScale = getWindowScale();
 
         for (GUIObject thisGUIObject : getMainMenuGUI()) {
             //button type
             if (thisGUIObject.type == 0) {
-                float windowScale = getWindowScale();
 
                 double xPos = thisGUIObject.pos.x * (windowScale / 100d);
                 double yPos = thisGUIObject.pos.y * (windowScale / 100d);
@@ -253,8 +253,6 @@ public class MainMenuRenderer {
                     thisGUIObject.updateInputBoxText(thisGUIObject.inputText + '_');
                 }
 
-                float windowScale = getWindowScale();
-
                 double xPos = thisGUIObject.pos.x * (windowScale / 100d);
                 double yPos = thisGUIObject.pos.y * (windowScale / 100d);
 
@@ -275,7 +273,15 @@ public class MainMenuRenderer {
                 } else {
                     getTextInputMesh().render();
                 }
+            }
+            //plain text type
+            else if (thisGUIObject.type == 2) {
+                double xPos = thisGUIObject.pos.x * (windowScale / 100d);
+                double yPos = thisGUIObject.pos.y * (windowScale / 100d);
 
+                Matrix4d modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(xPos, yPos, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 20d, windowScale / 20d, windowScale / 20d));
+                hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                thisGUIObject.textMesh.render();
             }
         }
         hudShaderProgram.unbind();
