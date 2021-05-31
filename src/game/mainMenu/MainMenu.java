@@ -52,6 +52,8 @@ public class MainMenu {
     private static boolean pollingButtonInputs = false;
     private static byte lockedOnButtonInput = -1;
 
+    private static int multiplayerScreenTextInput = -1;
+
     //0 main
     //1 settings base
     //2 buttons settings
@@ -508,7 +510,64 @@ public class MainMenu {
         } else if (menuPage == 5){
             byte selection = doGUIMouseCollisionDetection(multiPlayerGUI);
 
-            System.out.println(selection);
+            /*
+                0 - text input box
+                1 - connect
+                2 - back
+             */
+
+            int dumpedKey = getDumpedKey();
+
+            if (dumpedKey != -1 && dumpedKey != multiplayerScreenTextInput){
+                multiplayerScreenTextInput = dumpedKey;
+
+                //this is a HORRIBLE way to filter text input
+                if ((dumpedKey >= 65 && dumpedKey <= 90) || dumpedKey == 47 || dumpedKey == 59 || dumpedKey == 46){
+
+                    char newChar;
+
+                    if (dumpedKey == 47){
+                        newChar = '/';
+                    } else if (dumpedKey == 46){
+                        newChar = '.';
+                    } else if (dumpedKey == 59){
+                        newChar = ':';
+                    } else {
+                        newChar = (char)dumpedKey;
+                    }
+
+                    multiPlayerGUI[0].inputText = multiPlayerGUI[0].inputText + newChar;
+                    multiPlayerGUI[0].updateInputBoxText(multiPlayerGUI[0].inputText);
+
+                } else if (dumpedKey == 259){
+                    multiPlayerGUI[0].inputText = multiPlayerGUI[0].inputText.replaceAll(".$", "");
+                    multiPlayerGUI[0].updateInputBoxText(multiPlayerGUI[0].inputText);
+                }
+
+            } else if (dumpedKey == -1) {
+                multiplayerScreenTextInput = -1;
+            }
+
+
+            if (isLeftButtonPressed() && selection >= 0 && !mouseButtonPushed && !mouseButtonWasPushed) {
+                playSound("button");
+                mouseButtonPushed = true;
+
+                if (selection == 1){
+                    if (multiPlayerGUI[0].inputText.equals("")){
+                        System.out.println("NO ADDRESS INPUTTED!");
+                    } else {
+                        System.out.println("Address is: " + multiPlayerGUI[0].inputText);
+                        System.out.println("BEGIN CONNECTION");
+                    }
+                } else if (selection == 2){
+                    menuPage = 0;
+                }
+
+
+            } else if (!isLeftButtonPressed()) {
+                mouseButtonPushed = false;
+            }
         }
 
         mouseButtonWasPushed = isLeftButtonPressed();

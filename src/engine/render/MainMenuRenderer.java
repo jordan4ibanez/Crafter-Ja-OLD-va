@@ -218,7 +218,7 @@ public class MainMenuRenderer {
             //button type
             if (thisGUIObject.type == 0) {
                 float windowScale = getWindowScale();
-                
+
                 double xPos = thisGUIObject.pos.x * (windowScale / 100d);
                 double yPos = thisGUIObject.pos.y * (windowScale / 100d);
 
