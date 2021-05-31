@@ -35,6 +35,8 @@ public class GUI {
     private static Mesh buttonMesh;
     private static Mesh buttonSelectedMesh;
     private static Mesh buttonPushedMesh;
+    private static Mesh textInputMesh;
+    private static Mesh textInputSelectedMesh;
     private static Mesh menuBgMesh;
     private static Mesh miningCrackMesh;
     private static Mesh globalWaterEffectMesh;
@@ -58,6 +60,8 @@ public class GUI {
         buttonMesh = create2DMesh(0.5f,0.5f,"textures/button.png");
         buttonSelectedMesh = create2DMesh(0.5f,0.5f,"textures/button_selected.png");
         buttonPushedMesh = create2DMesh(0.5f,0.5f,"textures/button_pushed.png");
+        textInputMesh = create2DMesh(0.5f,0.5f,"textures/text_input.png");
+        textInputSelectedMesh = create2DMesh(0.5f,0.5f,"textures/text_input_selected.png");
         globalWaterEffectMesh = create2DMesh(0.5f,0.5f, "textures/water_overlay.png");
         heartHudMesh = create2DMesh(0.5f, 0.5f, "textures/heart.png");
         halfHeartHudMesh = create2DMesh(0.5f, 0.5f, 0.5f, "textures/heart.png");
@@ -134,6 +138,14 @@ public class GUI {
     public static Mesh getButtonSelectedMesh(){
         return buttonSelectedMesh;
     }
+
+    public static Mesh getTextInputMesh(){
+        return textInputMesh;
+    }
+    public static Mesh getTextInputSelectedMesh(){
+        return textInputSelectedMesh;
+    }
+    
     public static Mesh getButtonPushedMesh(){
         return buttonPushedMesh;
     }
