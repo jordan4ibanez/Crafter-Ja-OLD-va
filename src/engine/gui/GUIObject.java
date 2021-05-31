@@ -19,6 +19,8 @@ public class GUIObject {
     public Vector2f buttonScale = new Vector2f();
     public boolean selected;
     public String inputText;
+    public char pointer;
+    public float pointerTimer;
 
     //initializer for button (auto scaled width)
     public GUIObject(String text, Vector2d pos){
@@ -59,18 +61,31 @@ public class GUIObject {
     //initializer for text input box
     public GUIObject(Vector2d pos, float width, float height){
         this.inputText = "";
-        this.textMesh = createTextCenteredWithShadow(this.inputText, 1,1,1);
+        this.textMesh = createText(this.inputText, 1,1,1);
         this.buttonScale.x = width * 2.1f;
         this.buttonScale.y = height * 2.1f;
         this.pos = pos;
         this.type = 1;
         this.selected = false;
+        this.pointerTimer = 0.5f;
+    }
+
+    //initializer for text input box with preset text
+    public GUIObject(Vector2d pos, float width, float height, String existingText){
+        this.inputText = existingText;
+        this.textMesh = createText(this.inputText, 1,1,1);
+        this.buttonScale.x = width * 2.1f;
+        this.buttonScale.y = height * 2.1f;
+        this.pos = pos;
+        this.type = 1;
+        this.selected = false;
+        this.pointerTimer = 0.5f;
     }
 
     //updater for text input box
     public void updateInputBoxText(String text){
         this.textMesh.cleanUp(false);
-        this.textMesh = createTextCenteredWithShadow(text, 1,1,1);
+        this.textMesh = createText(text, 1,1,1);
     }
 
     public String getInputText(){
@@ -81,6 +96,11 @@ public class GUIObject {
     public void updateTextCenteredFixed(String text){
         this.textMesh.cleanUp(false);
         this.textMesh = createTextCenteredWithShadow(text, 1,1,1);
+    }
+
+    public void updateTextStandard(String text){
+        this.textMesh.cleanUp(false);
+        this.textMesh = createTextWithShadow(text, 1,1,1);
     }
 
     //updating dynamically scaled button text

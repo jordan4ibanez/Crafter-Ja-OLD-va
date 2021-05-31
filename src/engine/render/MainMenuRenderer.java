@@ -7,6 +7,7 @@ import org.joml.Matrix4d;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
+import static engine.Time.getDelta;
 import static engine.Window.getWindowHeight;
 import static engine.Window.getWindowWidth;
 import static engine.credits.Credits.getCreditParts;
@@ -217,8 +218,7 @@ public class MainMenuRenderer {
             //button type
             if (thisGUIObject.type == 0) {
                 float windowScale = getWindowScale();
-
-                //TODO: USE THIS FOR MOUSE COLLISION DETECTION
+                
                 double xPos = thisGUIObject.pos.x * (windowScale / 100d);
                 double yPos = thisGUIObject.pos.y * (windowScale / 100d);
 
@@ -227,8 +227,6 @@ public class MainMenuRenderer {
                 hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 thisGUIObject.textMesh.render();
 
-
-                //TODO: USE THIS FOR MOUSE COLLISION DETECTION
                 float xAdder = 20 / thisGUIObject.buttonScale.x;
                 float yAdder = 20 / thisGUIObject.buttonScale.y;
 
@@ -243,19 +241,30 @@ public class MainMenuRenderer {
             //text input box type
             else if (thisGUIObject.type == 1){
 
+                thisGUIObject.pointerTimer += getDelta();
+
+                //cycles pointer: "_ ..   .. _ ..   .. _"
+                if (thisGUIObject.pointerTimer >= 0.5f){
+                    thisGUIObject.pointerTimer = -0.5f;
+                    thisGUIObject.pointer = ' ';
+                    thisGUIObject.updateInputBoxText(thisGUIObject.inputText + " ");
+                } else if (thisGUIObject.pointerTimer >= 0 && thisGUIObject.pointer == ' '){
+                    thisGUIObject.pointer = '_';
+                    thisGUIObject.updateInputBoxText(thisGUIObject.inputText + '_');
+                }
+
                 float windowScale = getWindowScale();
 
-                //TODO: USE THIS FOR MOUSE COLLISION DETECTION
                 double xPos = thisGUIObject.pos.x * (windowScale / 100d);
                 double yPos = thisGUIObject.pos.y * (windowScale / 100d);
 
+                double textOffset = (windowScale / 42d) * thisGUIObject.buttonScale.x;
 
-                Matrix4d modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(xPos, yPos, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 20d, windowScale / 20d, windowScale / 20d));
+
+                Matrix4d modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(xPos - textOffset, yPos, 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 20d, windowScale / 20d, windowScale / 20d));
                 hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 thisGUIObject.textMesh.render();
 
-
-                //TODO: USE THIS FOR MOUSE COLLISION DETECTION
                 float xAdder = 20 / thisGUIObject.buttonScale.x;
                 float yAdder = 20 / thisGUIObject.buttonScale.y;
 
