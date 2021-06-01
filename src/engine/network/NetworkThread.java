@@ -2,12 +2,14 @@ package engine.network;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import engine.Vector3dn;
+import engine.disk.ChunkSavingObject;
 import game.chunk.ChunkObject;
 
-import java.io.DataInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.util.zip.GZIPInputStream;
 
 import static engine.Window.windowShouldClose;
 import static game.chunk.Chunk.setChunk;
@@ -113,13 +115,28 @@ public class NetworkThread {
                             }
                             //receive chunk objects
                             case 3 -> {
-                                try {
-                                    String newChunk = dataInputStream.readUTF(); //chunk object
-                                    ChunkObject thisNewChunk = objectMapper.readValue(newChunk, ChunkObject.class);
-                                    setChunk(thisNewChunk.x, thisNewChunk.z, thisNewChunk);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
+                                byte[] newChunk = dataInputStream.readAllBytes(); //chunk object
+
+                                ByteArrayInputStream bais = new ByteArrayInputStream(newChunk);
+                                GZIPInputStream gzipIn = new GZIPInputStream(bais);
+                                ObjectInputStream objectIn = new ObjectInputStream(gzipIn);
+                                String stringedChunk = (String) objectIn.readObject();
+                                objectIn.close();
+
+                                ChunkSavingObject thisChunkLoaded = objectMapper.readValue(stringedChunk, ChunkSavingObject.class);
+
+                                ChunkObject abstractedChunk = new ChunkObject();
+
+                                abstractedChunk.ID = thisChunkLoaded.I;
+                                abstractedChunk.x = thisChunkLoaded.x;
+                                abstractedChunk.z = thisChunkLoaded.z;
+                                abstractedChunk.block = thisChunkLoaded.b;
+                                abstractedChunk.rotation = thisChunkLoaded.r;
+                                abstractedChunk.light = thisChunkLoaded.l;
+                                abstractedChunk.heightMap = thisChunkLoaded.h;
+                                abstractedChunk.lightLevel = thisChunkLoaded.e;
+
+                                setChunk(thisChunkLoaded.x, thisChunkLoaded.z, abstractedChunk);
                             }
                             default -> readingData = false;
                         }
@@ -131,6 +148,8 @@ public class NetworkThread {
                         e.printStackTrace();
                     }
                 }
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
             } finally {
                 try {
                     if (socket != null){

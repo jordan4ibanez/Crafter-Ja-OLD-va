@@ -129,6 +129,7 @@ public class SceneHandler {
         gameUpdate();
         updateCamera();
         renderGame();
+        processOldChunks();
     }
 
 
