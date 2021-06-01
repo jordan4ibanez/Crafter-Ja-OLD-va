@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
 
-import static engine.network.NetworkThread.getGamePort;
+import static engine.network.NetworkThread.getGameOutputPort;
 import static game.player.Player.getName;
 
 public class NetworkOutput {
@@ -14,7 +14,7 @@ public class NetworkOutput {
         Socket socket = null;
         {
             try {
-                socket = new Socket("localhost", getGamePort());
+                socket = new Socket("localhost", getGameOutputPort());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -67,7 +67,7 @@ public class NetworkOutput {
         Socket socket = null;
         {
             try {
-                socket = new Socket("localhost", getGamePort());
+                socket = new Socket("localhost", getGameOutputPort());
             } catch (IOException e) {
                 e.printStackTrace();
             }

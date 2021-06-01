@@ -14,10 +14,15 @@ import static game.player.Player.getPlayerName;
 
 public class NetworkThread {
 
-    private static final int port = 30_151; //minetest, why not
+    private static final int inputPort = 30_151; //minetest, why not
+    private static final int outputPort = 30_150; //minetest, why not
 
-    public static int getGamePort(){
-        return port;
+    public static int getGameInputPort(){
+        return inputPort;
+    }
+
+    public static int getGameOutputPort(){
+        return outputPort;
     }
 
     //if players send garbage data, break connection, destroy player object
@@ -34,14 +39,12 @@ public class NetworkThread {
     public static void startNetworkThread() {
         networkingThread = new Thread(() -> {
 
-
-
             //used for raw data conversion
             final ObjectMapper objectMapper = new ObjectMapper();
 
             ServerSocket serverSocket = null;
             try {
-                serverSocket = new ServerSocket(getGamePort());
+                serverSocket = new ServerSocket(inputPort);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -129,13 +132,13 @@ public class NetworkThread {
                     assert socket != null;
                     socket.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
 
                 try {
                     serverSocket.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
             }
         });
