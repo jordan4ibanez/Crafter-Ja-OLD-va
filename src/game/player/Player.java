@@ -39,7 +39,7 @@ public class Player {
     private static boolean placing               = false;
     private static float placeTimer              = 0;
     private static final float accelerationMultiplier  = 0.07f;
-    private static final String name                   = "singleplayer";
+    private static final String name                   = "fasfdsasf";
     private static final Vector3f viewBobbing          = new Vector3f(0,0,0);
     private static int currentInventorySelection = 0;
     private static int oldInventorySelection = 0;
@@ -76,6 +76,10 @@ public class Player {
     private static float dirtMiningLevel = 1f;
     private static float woodMiningLevel = 1f;
     private static float leafMiningLevel = 1f;
+
+    public static String getName(){
+        return name;
+    }
 
     //animation data
     private static final Vector3f[] bodyRotations = new Vector3f[]{

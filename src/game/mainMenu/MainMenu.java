@@ -14,6 +14,7 @@ import static engine.credits.Credits.initializeCredits;
 import static engine.disk.Disk.setCurrentActiveWorld;
 import static engine.disk.Disk.worldSize;
 import static engine.gui.GUILogic.doGUIMouseCollisionDetection;
+import static engine.network.NetworkOutput.sendOutHandshake;
 import static engine.scene.SceneHandler.setScene;
 import static engine.settings.Settings.*;
 import static engine.sound.SoundAPI.playMusic;
@@ -567,7 +568,9 @@ public class MainMenu {
                     } else {
                         System.out.println("Address is: " + multiPlayerGUI[0].inputText);
                         System.out.println("BEGIN CONNECTION");
-                        menuPage = 6;
+
+                        sendOutHandshake();
+                        //menuPage = 6;
                     }
                 } else if (selection == 2){
                     menuPage = 0;
@@ -905,6 +908,7 @@ public class MainMenu {
             "Written in Rust...Go...Java!",
             "Appends data to objects!",
             "Found on the internet!",
-            "Reverts changes!"
+            "Reverts changes!",
+            "Now recyclable!"
     };
 }
