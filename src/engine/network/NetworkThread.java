@@ -2,19 +2,15 @@ package engine.network;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import engine.Vector3dn;
-import game.player.Player;
 
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
-import java.net.SocketOption;
 
 import static engine.Window.windowShouldClose;
 import static game.mainMenu.MainMenu.setMenuPage;
 import static game.player.Player.getPlayerName;
-import static java.net.SocketOptions.SO_TIMEOUT;
 
 public class NetworkThread {
 
@@ -130,6 +126,7 @@ public class NetworkThread {
                 }
             } finally {
                 try {
+                    assert socket != null;
                     socket.close();
                 } catch (IOException e) {
                     e.printStackTrace();
