@@ -13,6 +13,7 @@ import static engine.Time.getDelta;
 import static engine.disk.Disk.*;
 import static engine.disk.SaveQueue.instantSave;
 import static engine.disk.SaveQueue.saveChunk;
+import static engine.network.NetworkOutput.sendOutChunkRequest;
 import static engine.settings.Settings.getRenderDistance;
 import static engine.settings.Settings.getSettingsChunkLoad;
 import static game.chunk.ChunkMath.posToIndex;
@@ -46,6 +47,19 @@ public class Chunk {
                         chunkUpdate(x,z,y);
                         //generateChunkMesh(x,z,y); <- this one causes serious startup lag for slow pcs
                     }
+                }
+            }
+        }
+    }
+
+    public static void initialChunkPayloadMultiplayer(){
+        //create the initial map in memory
+        int chunkRenderDistance = getRenderDistance();
+        Vector3i currentChunk = getPlayerCurrentChunk();
+        for (int x = -chunkRenderDistance + currentChunk.x; x < chunkRenderDistance + currentChunk.x; x++){
+            for (int z = -chunkRenderDistance + currentChunk.z; z< chunkRenderDistance + currentChunk.z; z++){
+                if (getChunkDistanceFromPlayer(x,z) <= chunkRenderDistance){
+                    sendOutChunkRequest(x + " " + z);
                 }
             }
         }
@@ -512,6 +526,28 @@ public class Chunk {
         for (ChunkObject thisChunk : map.values()){
             if (getChunkDistanceFromPlayer(thisChunk.x,thisChunk.z) > chunkRenderDistance){
                 addChunkToDeletionQueue(thisChunk.x,thisChunk.z);
+            }
+        }
+    }
+
+    public static void requestNewChunks(){
+        //create the initial map in memory
+        int chunkRenderDistance = getRenderDistance();
+        Vector3i currentChunk = getPlayerCurrentChunk();
+        String currChunk;
+        //scan for not-generated/loaded chunks
+        for (int x = -chunkRenderDistance + currentChunk.x; x < chunkRenderDistance + currentChunk.x; x++){
+            for (int z = -chunkRenderDistance + currentChunk.z; z< chunkRenderDistance + currentChunk.z; z++){
+                if (getChunkDistanceFromPlayer(x,z) <= chunkRenderDistance){
+                    currChunk = x + " " + z;
+                    if (map.get(currChunk) == null){
+                        sendOutChunkRequest(currChunk);
+                        for (int y = 0; y < 8; y++) {
+                            chunkUpdate(x, z, y);
+                        }
+                        fullNeighborUpdate(x, z);
+                    }
+                }
             }
         }
     }

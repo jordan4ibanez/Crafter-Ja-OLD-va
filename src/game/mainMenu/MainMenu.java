@@ -15,6 +15,7 @@ import static engine.disk.Disk.setCurrentActiveWorld;
 import static engine.disk.Disk.worldSize;
 import static engine.gui.GUILogic.doGUIMouseCollisionDetection;
 import static engine.network.NetworkOutput.sendOutHandshake;
+import static engine.network.NetworkOutput.setHostLock;
 import static engine.scene.SceneHandler.setScene;
 import static engine.settings.Settings.*;
 import static engine.sound.SoundAPI.playMusic;
@@ -22,6 +23,7 @@ import static engine.sound.SoundAPI.playSound;
 import static game.Crafter.getVersionName;
 import static game.mainMenu.MainMenuAssets.createMainMenuBackGroundTile;
 import static game.mainMenu.MainMenuAssets.createMenuMenuTitleBlock;
+import static game.player.Player.setPlayerName;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
 public class MainMenu {
@@ -54,6 +56,8 @@ public class MainMenu {
     private static byte lockedOnButtonInput = -1;
 
     private static int multiplayerScreenTextInput = -1;
+
+    private static boolean serverConnected = false;
 
     public static void setMenuPage(byte page){
         menuPage = page;
@@ -106,9 +110,15 @@ public class MainMenu {
     };
 
     private static final GUIObject[] multiPlayerGUI = new GUIObject[]{
-            new GUIObject(new Vector2d(0, 15), 10, 1),
-            new GUIObject("CONNECT" , new Vector2d(0, 0), 10,1),
-            new GUIObject("BACK" , new Vector2d(0, -30), 10,1),
+            new GUIObject("Name:" , true, new Vector2d(0, 40)),
+            new GUIObject(new Vector2d(0, 30), 10, 1),
+
+            new GUIObject("IP Address:" , true, new Vector2d(0, 10)),
+            new GUIObject(new Vector2d(0, 0), 10, 1),
+
+            new GUIObject("CONNECT" , new Vector2d(0, -20), 10,1),
+
+            new GUIObject("BACK" , new Vector2d(0, -40), 10,1),
     };
 
     private static final GUIObject[] multiPlayerLoadingGUI = new GUIObject[]{
@@ -524,9 +534,12 @@ public class MainMenu {
             byte selection = doGUIMouseCollisionDetection(multiPlayerGUI);
 
             /*
-                0 - text input box
-                1 - connect
-                2 - back
+                0 - name text
+                1 - name input box
+                2 - IP address text
+                3 - ip adddress input box
+                4 - connect
+                5 - back
              */
 
             int dumpedKey = getDumpedKey();
@@ -534,8 +547,10 @@ public class MainMenu {
             if (dumpedKey != -1 && dumpedKey != multiplayerScreenTextInput){
                 multiplayerScreenTextInput = dumpedKey;
 
+                System.out.println(dumpedKey);
+
                 //this is a HORRIBLE way to filter text input
-                if ((dumpedKey >= 65 && dumpedKey <= 90) || dumpedKey == 47 || dumpedKey == 59 || dumpedKey == 46){
+                if ((dumpedKey >= 65 && dumpedKey <= 90) || (dumpedKey >= 48 && dumpedKey <= 57) || dumpedKey == 47 || dumpedKey == 59 || dumpedKey == 46){
 
                     char newChar;
 
@@ -549,13 +564,26 @@ public class MainMenu {
                         newChar = (char)dumpedKey;
                     }
 
-                    multiPlayerGUI[0].inputText = multiPlayerGUI[0].inputText + newChar;
-                    multiPlayerGUI[0].updateInputBoxText(multiPlayerGUI[0].inputText);
+                    if (selection == 1) {
+                        multiPlayerGUI[1].inputText = multiPlayerGUI[1].inputText + newChar;
+                        multiPlayerGUI[1].updateInputBoxText(multiPlayerGUI[1].inputText);
+                    } else if (selection == 3){
+                        multiPlayerGUI[3].inputText = multiPlayerGUI[3].inputText + newChar;
+                        multiPlayerGUI[3].updateInputBoxText(multiPlayerGUI[3].inputText);
+                    }
 
                 } else if (dumpedKey == 259){
-                    multiPlayerGUI[0].inputText = multiPlayerGUI[0].inputText.replaceAll(".$", "");
-                    multiPlayerGUI[0].updateInputBoxText(multiPlayerGUI[0].inputText);
+                    if (selection == 1) {
+                        multiPlayerGUI[1].inputText = multiPlayerGUI[1].inputText.replaceAll(".$", "");
+                        multiPlayerGUI[1].updateInputBoxText(multiPlayerGUI[1].inputText);
+                    } else if (selection == 3){
+                        multiPlayerGUI[3].inputText = multiPlayerGUI[3].inputText.replaceAll(".$", "");
+                        multiPlayerGUI[3].updateInputBoxText(multiPlayerGUI[3].inputText);
+                    }
                 }
+
+                //literally dumping the object data into the name
+                setPlayerName(multiPlayerGUI[1].inputText);
 
             } else if (dumpedKey == -1) {
                 multiplayerScreenTextInput = -1;
@@ -566,17 +594,17 @@ public class MainMenu {
                 playSound("button");
                 mouseButtonPushed = true;
 
-                if (selection == 1){
-                    if (multiPlayerGUI[0].inputText.equals("")){
-                        System.out.println("NO ADDRESS INPUTTED!");
+                if (selection == 4){
+                    if (multiPlayerGUI[3].inputText.equals("") || multiPlayerGUI[1].inputText.equals("")){
+                        System.out.println("NO ADDRESS OR NAME INPUTTED!");
                     } else {
-                        System.out.println("Address is: " + multiPlayerGUI[0].inputText);
-                        System.out.println("BEGIN CONNECTION");
+                        //System.out.println("Address is: " + multiPlayerGUI[0].inputText);
+                        //System.out.println("BEGIN CONNECTION");
 
-                        sendOutHandshake();
-                        //menuPage = 6;
+                        sendOutHandshake(multiPlayerGUI[3].inputText);
+                        menuPage = 6;
                     }
-                } else if (selection == 2){
+                } else if (selection == 5){
                     menuPage = 0;
                 }
 
@@ -585,6 +613,14 @@ public class MainMenu {
                 mouseButtonPushed = false;
             }
         } else if (menuPage == 6){
+
+            if (serverConnected){
+                serverConnected = false;
+                System.out.println("CONNECT TO SERVER");
+                setHostLock(multiPlayerGUI[3].inputText);
+                setScene((byte)3);
+                return;
+            }
 
             byte selection = doGUIMouseCollisionDetection(multiPlayerLoadingGUI);
 
@@ -603,6 +639,11 @@ public class MainMenu {
         }
 
         mouseButtonWasPushed = isLeftButtonPressed();
+    }
+
+
+    public static void quickToggleServerConnectedBoolean(){
+        serverConnected = true;
     }
 
     public static float getTitleBounce(){

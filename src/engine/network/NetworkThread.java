@@ -9,6 +9,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import static engine.Window.windowShouldClose;
+import static game.mainMenu.MainMenu.quickToggleServerConnectedBoolean;
 import static game.mainMenu.MainMenu.setMenuPage;
 import static game.player.Player.getPlayerName;
 
@@ -90,7 +91,7 @@ public class NetworkThread {
                                     String confirmation = dataInputStream.readUTF(); //name or kill
 
                                     if (confirmation.equals(getPlayerName())) {
-                                        System.out.println("SWITCH TO MULTIPLAYER LOOP AND LOCK!");
+                                        quickToggleServerConnectedBoolean();
                                     } else if (confirmation.equals("KILL")) {
                                         System.out.println("REJECTED FROM SERVER!");
                                         setMenuPage((byte) 5);
@@ -129,14 +130,17 @@ public class NetworkThread {
                 }
             } finally {
                 try {
-                    assert socket != null;
-                    socket.close();
+                    if (socket != null){
+                        socket.close();
+                    }
                 } catch (IOException e) {
                     //e.printStackTrace();
                 }
 
                 try {
-                    serverSocket.close();
+                    if (serverSocket != null) {
+                        serverSocket.close();
+                    }
                 } catch (IOException e) {
                     //e.printStackTrace();
                 }

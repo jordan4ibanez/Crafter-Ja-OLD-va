@@ -39,6 +39,8 @@ public class SceneHandler {
     //0 main menu
     //1 gameplay
     //2 debug
+    //3 multiplayer
+
     private static byte currentScene = 0;
 
     public static void setScene(byte newScene){
@@ -62,6 +64,19 @@ public class SceneHandler {
             generateRandomInventory();
         }
 
+        if (newScene == 3){
+            setWindowClearColor(0.53f,0.81f,0.92f,0.f);
+            calculateHealthBarElements();
+            registerItems();
+            initializeMobRegister();
+            if (!isMouseLocked()){
+                toggleMouseLock();
+            }
+            initialChunkPayloadMultiplayer();
+            //initialChunkPayload();
+            //generateRandomInventory();
+        }
+
         currentScene = newScene;
 
     }
@@ -80,6 +95,7 @@ public class SceneHandler {
             generateDebugChunkMesh();
         }
 
+
         while (!windowShouldClose()){
             if (getDebugInfo()) {
                 doRuntimeInfoUpdate();
@@ -89,9 +105,30 @@ public class SceneHandler {
                 case 0 -> mainMenuLoop();
                 case 1 -> gameLoop();
                 case 2 -> debugLoop();
+                case 3 -> multiPlayerLoop();
             }
         }
 
+    }
+
+    private static void multiPlayerLoop() throws Exception {
+        windowUpdate();
+        calculateDelta();
+
+        //indexLight();
+        mouseInput();
+
+        countFPS();
+        updateMultiplayerWorldChunkLoader();
+        popChunkMeshQueue(); //this actually transmits the data from the other threads into main thread
+
+        updateListenerPosition();
+
+        chunkUpdater();
+        gameInput();
+        gameUpdate();
+        updateCamera();
+        renderGame();
     }
 
 

@@ -1,5 +1,6 @@
 package engine.network;
 
+import javax.swing.*;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -10,13 +11,23 @@ import static game.player.Player.getName;
 
 public class NetworkOutput {
 
-    public static void sendOutHandshake() {
+    private static String hostLock;
+
+    public static void setHostLock(String newAddress){
+        hostLock = newAddress;
+    }
+
+    public static void sendOutHandshake(String host) {
         Socket socket = null;
         {
             try {
-                socket = new Socket("localhost", getGameOutputPort());
+
+                socket = new Socket(host, getGameOutputPort());
+                socket.setSoTimeout(2);
             } catch (IOException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
+                System.out.println("YOU HAVE PUT IN A NULL ADDRESS! >:(");
+                return;
             }
         }
 
@@ -111,5 +122,58 @@ public class NetworkOutput {
         dataOutPut.close();
 
          */
+    }
+
+    public static void sendOutChunkRequest(String chunkID) {
+        Socket socket;
+        {
+            try {
+                socket = new Socket(hostLock, getGameOutputPort());
+                socket.setSoTimeout(2);
+            } catch (IOException e) {
+                //e.printStackTrace();
+                return;
+            }
+        }
+
+        OutputStream outputStream = null;
+
+        {
+            try {
+                outputStream = socket.getOutputStream();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
+
+        try {
+            dataOutputStream.writeByte(3);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            dataOutputStream.writeUTF(chunkID);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            dataOutputStream.flush(); // Send off the data
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            dataOutputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

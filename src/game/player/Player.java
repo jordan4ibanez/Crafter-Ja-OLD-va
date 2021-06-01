@@ -39,7 +39,7 @@ public class Player {
     private static boolean placing               = false;
     private static float placeTimer              = 0;
     private static final float accelerationMultiplier  = 0.07f;
-    private static final String name                   = "fasfdsasf";
+    private static String name                   = "";
     private static final Vector3f viewBobbing          = new Vector3f(0,0,0);
     private static int currentInventorySelection = 0;
     private static int oldInventorySelection = 0;
@@ -79,6 +79,10 @@ public class Player {
 
     public static String getName(){
         return name;
+    }
+
+    public static void setPlayerName(String newName){
+        name = newName;
     }
 
     //animation data
@@ -1050,6 +1054,17 @@ public class Player {
             currentChunk.x = newChunkX;
             currentChunk.z = newChunkZ;
             generateNewChunks();
+        }
+    }
+
+    public static void updateMultiplayerWorldChunkLoader(){
+        int newChunkX = (int)Math.floor(pos.x / 16f);
+        int newChunkZ = (int)Math.floor(pos.z / 16f);
+
+        if (newChunkX != currentChunk.x || newChunkZ != currentChunk.z) {
+            currentChunk.x = newChunkX;
+            currentChunk.z = newChunkZ;
+            requestNewChunks();
         }
     }
 
