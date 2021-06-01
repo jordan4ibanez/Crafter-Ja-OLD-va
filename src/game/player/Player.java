@@ -795,7 +795,10 @@ public class Player {
         //values for application of inertia
         applyPlayerInertiaBuffer();
 
-        onGround = applyInertia(pos, inertia, true, width, height,true, sneaking, true, true, true);
+        //stop players from falling forever
+        if (getChunk(currentChunk.x, currentChunk.z) != null) {
+            onGround = applyInertia(pos, inertia, true, width, height, true, sneaking, true, true, true);
+        }
 
 
 
