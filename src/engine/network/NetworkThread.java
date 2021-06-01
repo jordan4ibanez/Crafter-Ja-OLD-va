@@ -49,83 +49,86 @@ public class NetworkThread {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            Socket socket;
+            Socket socket = null;
 
-
-            while (!windowShouldClose()) {
-                try {
-                    assert serverSocket != null;
-                    serverSocket.setSoTimeout(10);
-                    socket = serverSocket.accept();
-                } catch (IOException e) {
-                    //e.printStackTrace(); <-THIS WILL SPAM YOUR TERMINAL LIKE CRAZY
-                    //System.out.println("SKIPPIN");
-                    continue;
-                }
-
-                DataInputStream dataInputStream = null;
-
-                try {
-                    assert socket != null;
-                    dataInputStream = new DataInputStream(socket.getInputStream());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                System.out.println("5e");
-
-
-                boolean readingData = true;
-                while (readingData) {
-                    byte messageType = 0;
+            try {
+                while (!windowShouldClose()) {
                     try {
-                        assert dataInputStream != null;
-                        messageType = dataInputStream.readByte();
+                        assert serverSocket != null;
+                        serverSocket.setSoTimeout(10);
+                        socket = serverSocket.accept();
+                    } catch (IOException e) {
+                        //e.printStackTrace(); <-THIS WILL SPAM YOUR TERMINAL LIKE CRAZY
+                        //System.out.println("SKIPPIN");
+                        continue;
+                    }
+
+                    DataInputStream dataInputStream = null;
+
+                    try {
+                        assert socket != null;
+                        dataInputStream = new DataInputStream(socket.getInputStream());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
 
-                    switch (messageType) {
 
-                        //confirm server handshake
-                        case 1 -> {
-                            try {
-                                String confirmation =  dataInputStream.readUTF(); //name or kill
-
-                                if (confirmation.equals(getPlayerName())){
-                                    System.out.println("SWITCH TO MULTIPLAYER LOOP AND LOCK!");
-                                } else if (confirmation.equals("KILL")){
-                                    System.out.println("REJECTED FROM SERVER!");
-                                    setMenuPage((byte)5);
-                                }
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
+                    boolean readingData = true;
+                    while (readingData) {
+                        byte messageType;
+                        try {
+                            assert dataInputStream != null;
+                            messageType = dataInputStream.readByte();
+                        } catch (IOException e) {
+                            break;
                         }
-                        //get other player's position
-                        case 2 ->
-                                {
-                                    try {
-                                        String position =  dataInputStream.readUTF(); //vector 3dn
 
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
+                        switch (messageType) {
+
+                            //confirm server handshake
+                            case 1 -> {
+                                try {
+                                    String confirmation = dataInputStream.readUTF(); //name or kill
+
+                                    if (confirmation.equals(getPlayerName())) {
+                                        System.out.println("SWITCH TO MULTIPLAYER LOOP AND LOCK!");
+                                    } else if (confirmation.equals("KILL")) {
+                                        System.out.println("REJECTED FROM SERVER!");
+                                        setMenuPage((byte) 5);
                                     }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
                                 }
-                        //receive chunk objects
-                        case 3 ->
-                                {
-                                    try {
-                                        String position =  dataInputStream.readUTF(); //chunk object
-                                        Vector3dn newPosition = objectMapper.readValue(position, Vector3dn.class);
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
+                            }
+                            //get other player's position
+                            case 2 -> {
+                                try {
+                                    String position = dataInputStream.readUTF(); //vector 3dn
+
+                                } catch (IOException e) {
+                                    e.printStackTrace();
                                 }
-                        default -> readingData = false;
+                            }
+                            //receive chunk objects
+                            case 3 -> {
+                                try {
+                                    String position = dataInputStream.readUTF(); //chunk object
+                                    Vector3dn newPosition = objectMapper.readValue(position, Vector3dn.class);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            default -> readingData = false;
+                        }
+                    }
+
+                    try {
+                        dataInputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 }
-
+            } finally {
                 try {
                     socket.close();
                 } catch (IOException e) {
@@ -137,7 +140,6 @@ public class NetworkThread {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
             }
         });
         networkingThread.start();
