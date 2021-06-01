@@ -35,6 +35,18 @@ public class Chunk {
         return map.get(x + " " + z);
     }
 
+    public static void setChunk(int x, int z, ChunkObject newChunk){
+        if (map.get(x + " " + z) != null){
+            map.remove(x + " " + z);
+        }
+
+        map.put(x + " " + z, newChunk);
+
+        for (int y = 0; y < 8; y++) {
+            chunkUpdate(x, z, y);
+        }
+    }
+
     public static void initialChunkPayload(){
         //create the initial map in memory
         int chunkRenderDistance = getRenderDistance();

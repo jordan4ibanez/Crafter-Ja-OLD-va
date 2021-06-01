@@ -36,7 +36,6 @@ public class NetworkOutput {
 
         {
             try {
-                assert socket != null;
                 outputStream = socket.getOutputStream();
             } catch (IOException e) {
                 e.printStackTrace();

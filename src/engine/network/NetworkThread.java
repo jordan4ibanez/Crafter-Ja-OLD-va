@@ -2,6 +2,7 @@ package engine.network;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import engine.Vector3dn;
+import game.chunk.ChunkObject;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -9,14 +10,15 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import static engine.Window.windowShouldClose;
+import static game.chunk.Chunk.setChunk;
 import static game.mainMenu.MainMenu.quickToggleServerConnectedBoolean;
 import static game.mainMenu.MainMenu.setMenuPage;
 import static game.player.Player.getPlayerName;
 
 public class NetworkThread {
 
-    private static final int inputPort = 30_151; //minetest, why not
-    private static final int outputPort = 30_150; //minetest, why not
+    private static final int inputPort = 30_151;
+    private static final int outputPort = 30_150;
 
     public static int getGameInputPort(){
         return inputPort;
@@ -112,8 +114,9 @@ public class NetworkThread {
                             //receive chunk objects
                             case 3 -> {
                                 try {
-                                    String position = dataInputStream.readUTF(); //chunk object
-                                    Vector3dn newPosition = objectMapper.readValue(position, Vector3dn.class);
+                                    String newChunk = dataInputStream.readUTF(); //chunk object
+                                    ChunkObject thisNewChunk = objectMapper.readValue(newChunk, ChunkObject.class);
+                                    setChunk(thisNewChunk.x, thisNewChunk.z, thisNewChunk);
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
