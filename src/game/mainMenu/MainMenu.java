@@ -55,6 +55,10 @@ public class MainMenu {
 
     private static int multiplayerScreenTextInput = -1;
 
+    public static void setMenuPage(byte page){
+        menuPage = page;
+    }
+
     //0 main
     //1 settings base
     //2 buttons settings

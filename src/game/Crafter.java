@@ -10,6 +10,8 @@ import java.awt.*;
 
 import static engine.disk.Disk.*;
 import static engine.disk.SaveQueue.startSaveThread;
+import static engine.network.NetworkThread.killNetworkingThread;
+import static engine.network.NetworkThread.startNetworkThread;
 import static engine.scene.SceneHandler.handleSceneLogic;
 import static engine.settings.Settings.getSettingsVsync;
 import static engine.settings.Settings.loadSettings;
@@ -51,8 +53,7 @@ public class Crafter {
             initGame();
             createWorldsDir();
             startSaveThread();
-
-
+            startNetworkThread();
             initMainMenu();
             //this is the scene controller
             handleSceneLogic();
@@ -64,6 +65,7 @@ public class Crafter {
             globalFinalChunkSaveToDisk();
             savePlayerPos(getPlayerPos());
             cleanup();
+            killNetworkingThread();
         }
     }
 

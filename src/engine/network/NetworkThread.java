@@ -8,12 +8,17 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
+import java.net.SocketOption;
 
 import static engine.Window.windowShouldClose;
+import static game.mainMenu.MainMenu.setMenuPage;
+import static game.player.Player.getPlayerName;
+import static java.net.SocketOptions.SO_TIMEOUT;
 
 public class NetworkThread {
 
-    private static final int port = 30_150; //minetest, why not
+    private static final int port = 30_151; //minetest, why not
 
     public static int getGamePort(){
         return port;
@@ -23,33 +28,39 @@ public class NetworkThread {
 
     /*
     data chart: (base 1 like LUA - 0 reserved for null data)
-    1 - get other player's data
-    2 - receive chunk data (JACKSON CONVERSION)
-    3 -
+    1 - confirm handshake
+    2 - get other player's data
+    3 - receive chunk data (JACKSON CONVERSION)
+    4 -
      */
+    private static Thread networkingThread;
 
     public static void startNetworkThread() {
-        new Thread(() -> {
+        networkingThread = new Thread(() -> {
+
+
 
             //used for raw data conversion
             final ObjectMapper objectMapper = new ObjectMapper();
 
+            ServerSocket serverSocket = null;
+            try {
+                serverSocket = new ServerSocket(getGamePort());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Socket socket;
+
+
             while (!windowShouldClose()) {
-
-                ServerSocket server = null;
-                Socket socket = null;
-
                 try {
-                    server = new ServerSocket(port);
+                    assert serverSocket != null;
+                    serverSocket.setSoTimeout(10);
+                    socket = serverSocket.accept();
                 } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                try {
-                    assert server != null;
-                    socket = server.accept();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    //e.printStackTrace(); <-THIS WILL SPAM YOUR TERMINAL LIKE CRAZY
+                    //System.out.println("SKIPPIN");
+                    continue;
                 }
 
                 DataInputStream dataInputStream = null;
@@ -61,6 +72,7 @@ public class NetworkThread {
                     e.printStackTrace();
                 }
 
+                System.out.println("5e");
 
 
                 boolean readingData = true;
@@ -75,8 +87,23 @@ public class NetworkThread {
 
                     switch (messageType) {
 
+                        //confirm server handshake
+                        case 1 -> {
+                            try {
+                                String confirmation =  dataInputStream.readUTF(); //name or kill
+
+                                if (confirmation.equals(getPlayerName())){
+                                    System.out.println("SWITCH TO MULTIPLAYER LOOP AND LOCK!");
+                                } else if (confirmation.equals("KILL")){
+                                    System.out.println("REJECTED FROM SERVER!");
+                                    setMenuPage((byte)5);
+                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
                         //get other player's position
-                        case 1 ->
+                        case 2 ->
                                 {
                                     try {
                                         String position =  dataInputStream.readUTF(); //vector 3dn
@@ -86,7 +113,7 @@ public class NetworkThread {
                                     }
                                 }
                         //receive chunk objects
-                        case 2 ->
+                        case 3 ->
                                 {
                                     try {
                                         String position =  dataInputStream.readUTF(); //chunk object
@@ -106,12 +133,19 @@ public class NetworkThread {
                 }
 
                 try {
-                    server.close();
+                    serverSocket.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
 
             }
-        }).start();
+        });
+        networkingThread.start();
+    }
+
+    public static void killNetworkingThread(){
+        System.out.println("KILLING NETWORK THREAD");
+        networkingThread.interrupt();
+        networkingThread = null;
     }
 }
