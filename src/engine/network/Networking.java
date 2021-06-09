@@ -91,7 +91,7 @@ public class Networking {
                     setChunk(encodedChunk.x, encodedChunk.z, abstractedChunk);
 
                     //received other player position data
-                } else if (object instanceof PlayerPosObject encodedPlayer){
+                } else if (object instanceof PlayerPosObject encodedPlayer) {
                     updateOtherPlayer(encodedPlayer);
                 }
             }
