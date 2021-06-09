@@ -2,6 +2,7 @@ package game.chunk;
 
 import engine.FastNoise;
 import engine.graphics.Mesh;
+import engine.network.ChunkRequest;
 import org.joml.Vector3i;
 
 import java.io.IOException;
@@ -13,7 +14,7 @@ import static engine.Time.getDelta;
 import static engine.disk.Disk.*;
 import static engine.disk.SaveQueue.instantSave;
 import static engine.disk.SaveQueue.saveChunk;
-import static engine.network.NetworkOutput.sendOutChunkRequest;
+import static engine.network.Networking.sendOutChunkRequest;
 import static engine.settings.Settings.getRenderDistance;
 import static engine.settings.Settings.getSettingsChunkLoad;
 import static game.chunk.ChunkMath.posToIndex;
@@ -74,7 +75,7 @@ public class Chunk {
         for (int x = -chunkRenderDistance + currentChunk.x; x < chunkRenderDistance + currentChunk.x; x++){
             for (int z = -chunkRenderDistance + currentChunk.z; z< chunkRenderDistance + currentChunk.z; z++){
                 if (getChunkDistanceFromPlayer(x,z) <= chunkRenderDistance){
-                    sendOutChunkRequest(x + " " + z);
+                    sendOutChunkRequest(new ChunkRequest(x,z));
                 }
             }
         }
@@ -556,7 +557,7 @@ public class Chunk {
                 if (getChunkDistanceFromPlayer(x,z) <= chunkRenderDistance){
                     currChunk = x + " " + z;
                     if (map.get(currChunk) == null){
-                        sendOutChunkRequest(currChunk);
+                        sendOutChunkRequest(new ChunkRequest(x,z));
                     }
                 }
             }
