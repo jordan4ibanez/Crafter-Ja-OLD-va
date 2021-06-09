@@ -10,6 +10,7 @@ import org.joml.Vector3d;
 
 import java.io.IOException;
 
+import static engine.graphics.Camera.getCameraRotation;
 import static game.chunk.Chunk.setChunk;
 import static game.mainMenu.MainMenu.*;
 import static game.player.OtherPlayers.updateOtherPlayer;
@@ -98,7 +99,7 @@ public class Networking {
         PlayerPosObject myPosition = new PlayerPosObject();
         myPosition.pos = getPlayerPos();
         myPosition.name = getPlayerName();
-        myPosition.rotation = 0;
+        myPosition.rotation = getCameraRotation().y;
         client.sendTCP(myPosition);
     }
 
