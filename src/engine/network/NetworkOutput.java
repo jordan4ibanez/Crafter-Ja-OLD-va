@@ -22,7 +22,7 @@ public class NetworkOutput {
             try {
 
                 socket = new Socket(host, getGameOutputPort());
-                socket.setSoTimeout(2);
+                socket.setSoTimeout(5000);
             } catch (IOException e) {
                 //e.printStackTrace();
                 System.out.println("YOU HAVE PUT IN A NULL ADDRESS! >:(");
