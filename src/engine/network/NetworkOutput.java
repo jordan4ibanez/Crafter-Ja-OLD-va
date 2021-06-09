@@ -1,6 +1,5 @@
 package engine.network;
 
-import javax.swing.*;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;

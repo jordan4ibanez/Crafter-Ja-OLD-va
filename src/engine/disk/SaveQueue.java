@@ -54,7 +54,7 @@ public class SaveQueue {
                         ByteArrayInputStream bais = new ByteArrayInputStream(stringedChunk.getBytes());
                         FileOutputStream fos = new FileOutputStream("Worlds/world" + currentActiveWorld + "/" + savingObject.I + ".chunk");
                         GZIPOutputStream gzipOS = new GZIPOutputStream(fos);
-                        byte[] buffer = new byte[1024];
+                        byte[] buffer = new byte[4096];
                         int len;
                         while((len=bais.read(buffer)) != -1){
                             gzipOS.write(buffer, 0, len);
@@ -96,7 +96,7 @@ public class SaveQueue {
             ByteArrayInputStream bais = new ByteArrayInputStream(stringedChunk.getBytes());
             FileOutputStream fos = new FileOutputStream("Worlds/world" + currentActiveWorld + "/" + savingObject.I + ".chunk");
             GZIPOutputStream gzipOS = new GZIPOutputStream(fos);
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[4096];
             int len;
             while((len=bais.read(buffer)) != -1){
                 gzipOS.write(buffer, 0, len);

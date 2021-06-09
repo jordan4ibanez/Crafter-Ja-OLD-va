@@ -129,14 +129,13 @@ public class Disk {
         try {
             FileInputStream fis = new FileInputStream(dir);
             GZIPInputStream gis = new GZIPInputStream(fis);
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[4096];
             int len;
             bais = new ByteArrayOutputStream();
             while((len = gis.read(buffer)) != -1){
                 bais.write(buffer, 0, len);
             }
             //close resources
-            bais.close();
             gis.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -148,6 +147,8 @@ public class Disk {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        bais.close();
 
         if (thisChunkLoaded == null){
             return null;

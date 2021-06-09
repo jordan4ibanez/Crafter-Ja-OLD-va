@@ -3,6 +3,7 @@ package engine.render;
 import engine.Utils;
 import engine.graphics.*;
 import engine.gui.GUIObject;
+import engine.network.PlayerPosObject;
 import game.chunk.ChunkObject;
 import game.crafting.InventoryObject;
 import game.falling.FallingEntityObject;
@@ -33,6 +34,7 @@ import static game.mob.Human.getHumanBodyOffsets;
 import static game.mob.Human.getHumanMeshes;
 import static game.mob.Mob.getAllMobs;
 import static game.particle.Particle.getAllParticles;
+import static game.player.OtherPlayers.getOtherPlayers;
 import static game.tnt.TNTEntity.*;
 import static engine.Window.*;
 import static game.chunk.Chunk.*;
@@ -345,6 +347,29 @@ public class GameRenderer {
                 offsetIndex++;
             }
         }
+
+        //render other players
+        for (PlayerPosObject thisOtherPlayer : getOtherPlayers()){
+            if (thisOtherPlayer == null){
+                continue;
+            }
+            int offsetIndex = 0;
+
+            Mesh[] playerMeshes = getHumanMeshes();
+            Vector3f[] playerBodyOffsets = getHumanBodyOffsets();
+            Vector3f[] playerBodyRotation = getPlayerBodyRotations();
+            for (Mesh thisMesh : playerMeshes) {
+                modelViewMatrix = getMobMatrix(new Vector3d(thisOtherPlayer.pos), playerBodyOffsets[offsetIndex], new Vector3f(0, thisOtherPlayer.rotation, 0), new Vector3f(playerBodyRotation[offsetIndex]), new Vector3d(1f, 1f, 1f), viewMatrix);
+                if (graphicsMode) {
+                    glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                } else {
+                    hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                }
+                thisMesh.render();
+                offsetIndex++;
+            }
+        }
+
 
         //todo: remove dependency of Human mob
         if (getCameraPerspective() > 0){

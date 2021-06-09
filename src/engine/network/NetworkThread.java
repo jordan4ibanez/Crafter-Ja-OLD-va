@@ -1,20 +1,19 @@
 package engine.network;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import engine.Vector3dn;
 import engine.disk.ChunkSavingObject;
 import game.chunk.ChunkObject;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 import java.util.zip.GZIPInputStream;
 
 import static engine.Window.windowShouldClose;
 import static game.chunk.Chunk.setChunk;
 import static game.mainMenu.MainMenu.quickToggleServerConnectedBoolean;
 import static game.mainMenu.MainMenu.setMenuPage;
+import static game.player.OtherPlayers.updateOtherPlayer;
 import static game.player.Player.getPlayerName;
 
 public class NetworkThread {
@@ -35,9 +34,9 @@ public class NetworkThread {
     /*
     data chart: (base 1 like LUA - 0 reserved for null data)
     1 - confirm handshake
-    2 - get other player's data
+    2 - TODO
     3 - receive chunk data (JACKSON CONVERSION)
-    4 -
+    4 - get other player's data
      */
     private static Thread networkingThread;
 
@@ -104,7 +103,7 @@ public class NetworkThread {
                                     e.printStackTrace();
                                 }
                             }
-                            //get other player's position
+                            //TODO
                             case 2 -> {
                                 try {
                                     String position = dataInputStream.readUTF(); //vector 3dn
@@ -137,6 +136,24 @@ public class NetworkThread {
                                 abstractedChunk.lightLevel = thisChunkLoaded.e;
 
                                 setChunk(thisChunkLoaded.x, thisChunkLoaded.z, abstractedChunk);
+                            }
+                            case 4 -> {
+                                try {
+                                    byte[] newChunk = dataInputStream.readAllBytes(); //player object
+
+                                    ByteArrayInputStream bais = new ByteArrayInputStream(newChunk);
+                                    GZIPInputStream gzipIn = new GZIPInputStream(bais);
+                                    ObjectInputStream objectIn = new ObjectInputStream(gzipIn);
+                                    String stringedPlayer = (String) objectIn.readObject();
+                                    objectIn.close();
+
+                                    PlayerPosObject thisPlayerLoaded = objectMapper.readValue(stringedPlayer, PlayerPosObject.class);
+
+                                    updateOtherPlayer(thisPlayerLoaded);
+
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                             }
                             default -> readingData = false;
                         }

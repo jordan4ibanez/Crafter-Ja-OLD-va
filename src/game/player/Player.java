@@ -190,10 +190,8 @@ public class Player {
     }
 
 
-    private static boolean wasPlacing = false;
-
     public static void setPlayerPlacing( boolean isPlacing) {
-        wasPlacing = placing;
+        boolean wasPlacing = placing;
         placing = isPlacing;
 
         //allow players to spam click to place
@@ -214,7 +212,7 @@ public class Player {
     private static final Vector3f wieldRotationItemEnd   = new Vector3f((float) Math.toRadians(90f), (float) Math.toRadians(45f), (float) Math.toRadians(0f));
 
 
-    private static Vector3f wieldHandAnimationPos = new Vector3f(0, 0, 0);
+    private static final Vector3f wieldHandAnimationPos = new Vector3f(0, 0, 0);
     private static Vector3f wieldHandAnimationRot = new Vector3f(0, 0, 0);
 
     private static float diggingAnimation = 0f;

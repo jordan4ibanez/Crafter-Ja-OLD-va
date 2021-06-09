@@ -35,6 +35,7 @@ public class Chunk {
         return map.get(x + " " + z);
     }
 
+    //multiplayer chunk update
     public static void setChunk(int x, int z, ChunkObject newChunk){
         if (map.get(x + " " + z) != null){
             map.remove(x + " " + z);
@@ -45,6 +46,8 @@ public class Chunk {
         for (int y = 0; y < 8; y++) {
             chunkUpdate(x, z, y);
         }
+
+        fullNeighborUpdate(x,z);
     }
 
     public static void initialChunkPayload(){
@@ -554,10 +557,6 @@ public class Chunk {
                     currChunk = x + " " + z;
                     if (map.get(currChunk) == null){
                         sendOutChunkRequest(currChunk);
-                        for (int y = 0; y < 8; y++) {
-                            chunkUpdate(x, z, y);
-                        }
-                        fullNeighborUpdate(x, z);
                     }
                 }
             }

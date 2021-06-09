@@ -114,24 +114,28 @@ public class SceneHandler {
     private static void multiPlayerLoop() throws Exception {
         windowUpdate();
         calculateDelta();
-
-        //indexLight();
         mouseInput();
-
         countFPS();
-        updateMultiplayerWorldChunkLoader();
         popChunkMeshQueue(); //this actually transmits the data from the other threads into main thread
-
         updateListenerPosition();
-
         chunkUpdater();
         gameInput();
-        gameUpdate();
+        multiPlayerUpdate();
+        updateMultiplayerWorldChunkLoader();
         updateCamera();
         renderGame();
-        processOldChunks();
+
     }
 
+
+    private static void multiPlayerUpdate() throws Exception {
+        testPlayerDiggingAnimation();
+        playerOnTick();
+        pauseMenuOnTick();
+        inventoryMenuOnTick();
+        particlesOnStep();
+        //rainDropsOnTick();
+    }
 
     private static void debugLoop(){
         windowUpdate();
