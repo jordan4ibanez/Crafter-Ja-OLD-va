@@ -1,5 +1,9 @@
 package game;
 
+import com.esotericsoftware.kryo.Kryo;
+import engine.network.ChunkRequest;
+import engine.network.NetworkHandshake;
+import engine.network.PlayerPosObject;
 import engine.sound.SoundListener;
 import game.chunk.Chunk;
 import game.item.ItemDefinition;
@@ -10,8 +14,6 @@ import java.awt.*;
 
 import static engine.disk.Disk.*;
 import static engine.disk.SaveQueue.startSaveThread;
-import static engine.network.NetworkThread.killNetworkingThread;
-import static engine.network.NetworkThread.startNetworkThread;
 import static engine.scene.SceneHandler.handleSceneLogic;
 import static engine.settings.Settings.getSettingsVsync;
 import static engine.settings.Settings.loadSettings;
@@ -40,6 +42,9 @@ public class Crafter {
     //load everything
     public static void main(String[] args){
         try{
+
+
+
             Toolkit tk = Toolkit.getDefaultToolkit();
             Dimension d = tk.getScreenSize();
 
@@ -53,7 +58,6 @@ public class Crafter {
             initGame();
             createWorldsDir();
             startSaveThread();
-            startNetworkThread();
             initMainMenu();
             //this is the scene controller
             handleSceneLogic();
@@ -65,7 +69,6 @@ public class Crafter {
             globalFinalChunkSaveToDisk();
             savePlayerPos(getPlayerPos());
             cleanup();
-            killNetworkingThread();
         }
     }
 

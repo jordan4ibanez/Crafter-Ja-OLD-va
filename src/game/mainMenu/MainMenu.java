@@ -16,7 +16,6 @@ import static engine.disk.Disk.setCurrentActiveWorld;
 import static engine.disk.Disk.worldSize;
 import static engine.gui.GUILogic.doGUIMouseCollisionDetection;
 import static engine.network.Networking.sendOutHandshake;
-import static engine.network.Networking.setHostLock;
 import static engine.scene.SceneHandler.setScene;
 import static engine.settings.Settings.*;
 import static engine.sound.SoundAPI.playMusic;
@@ -616,9 +615,8 @@ public class MainMenu {
         } else if (menuPage == 6){
 
             if (serverConnected){
-                serverConnected = false;
+                //serverConnected = false;
                 System.out.println("CONNECT TO SERVER");
-                setHostLock(multiPlayerGUI[3].inputText);
                 setScene((byte)3);
                 return;
             }
@@ -643,8 +641,8 @@ public class MainMenu {
     }
 
 
-    public static void quickToggleServerConnectedBoolean(){
-        serverConnected = true;
+    public static void setServerConnected(boolean truth){
+        serverConnected = truth;
     }
 
     public static float getTitleBounce(){

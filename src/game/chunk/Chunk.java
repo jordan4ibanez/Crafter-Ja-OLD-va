@@ -21,8 +21,7 @@ import static game.chunk.ChunkMath.posToIndex;
 import static game.chunk.ChunkMesh.generateChunkMesh;
 import static game.chunk.ChunkUpdateHandler.chunkUpdate;
 import static game.light.Light.*;
-import static game.player.Player.getPlayerCurrentChunk;
-import static game.player.Player.getPlayerPos;
+import static game.player.Player.*;
 
 public class Chunk {
 
@@ -75,7 +74,7 @@ public class Chunk {
         for (int x = -chunkRenderDistance + currentChunk.x; x < chunkRenderDistance + currentChunk.x; x++){
             for (int z = -chunkRenderDistance + currentChunk.z; z< chunkRenderDistance + currentChunk.z; z++){
                 if (getChunkDistanceFromPlayer(x,z) <= chunkRenderDistance){
-                    sendOutChunkRequest(new ChunkRequest(x,z));
+                    sendOutChunkRequest(new ChunkRequest(x,z, getPlayerName()));
                 }
             }
         }
@@ -557,7 +556,7 @@ public class Chunk {
                 if (getChunkDistanceFromPlayer(x,z) <= chunkRenderDistance){
                     currChunk = x + " " + z;
                     if (map.get(currChunk) == null){
-                        sendOutChunkRequest(new ChunkRequest(x,z));
+                        sendOutChunkRequest(new ChunkRequest(x,z, getPlayerName()));
                     }
                 }
             }

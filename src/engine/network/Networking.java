@@ -1,5 +1,6 @@
 package engine.network;
 
+import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
@@ -9,8 +10,7 @@ import game.chunk.ChunkObject;
 import java.io.IOException;
 
 import static game.chunk.Chunk.setChunk;
-import static game.mainMenu.MainMenu.quickToggleServerConnectedBoolean;
-import static game.mainMenu.MainMenu.setMenuPage;
+import static game.mainMenu.MainMenu.*;
 import static game.player.OtherPlayers.updateOtherPlayer;
 import static game.player.Player.*;
 
@@ -18,11 +18,33 @@ public class Networking {
 
     private static final int port = 30_150;
 
-    private static final Client client = new Client();
+    private static final Client client = new Client(1_000_000,1_000_000);
+
+
+
+    public static void disconnectClient(){
+        client.stop();
+        client.close();
+        System.out.println("disconnected");
+    }
+
 
     public static void sendOutHandshake(String host) {
 
         client.start();
+
+
+
+        Kryo kryo = client.getKryo();
+
+        kryo.register(NetworkHandshake.class);
+        kryo.register(PlayerPosObject.class);
+        kryo.register(ChunkRequest.class);
+        kryo.register(ChunkObject.class);
+        kryo.register(ChunkSavingObject.class);
+        kryo.register(int[].class);
+        kryo.register(byte[][].class);
+        kryo.register(byte[].class);
 
         //5000 = 5000ms = 5 seconds
         try {
@@ -30,19 +52,22 @@ public class Networking {
         } catch (IOException e) {
             e.printStackTrace();
             client.stop();
+            setServerConnected(false);
             return;
         }
 
-        client.sendTCP(getPlayerName());
+        client.sendTCP(new NetworkHandshake(getPlayerName()));
 
         //client event listener
         client.addListener(new Listener() {
             public void received (Connection connection, Object object) {
                 if (object instanceof NetworkHandshake encodedName) {
                     if (encodedName.name != null && encodedName.name.equals(getPlayerName())){
-                        quickToggleServerConnectedBoolean();
+                        setServerConnected(true);
                         System.out.println("connected to server");
                     } else {
+                        client.stop();
+                        setServerConnected(false);
                         System.out.println("REJECTED FROM SERVER!");
                         setMenuPage((byte) 5);
                     }
@@ -56,7 +81,9 @@ public class Networking {
                     abstractedChunk.light = encodedChunk.l;
                     abstractedChunk.heightMap = encodedChunk.h;
                     abstractedChunk.lightLevel = encodedChunk.e;
+
                     setChunk(encodedChunk.x, encodedChunk.z, abstractedChunk);
+
                 } else if (object instanceof PlayerPosObject encodedPlayer){
                     updateOtherPlayer(encodedPlayer);
                 }

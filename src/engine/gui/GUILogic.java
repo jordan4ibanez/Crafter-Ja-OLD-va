@@ -5,6 +5,7 @@ import org.joml.Vector2d;
 import static engine.MouseInput.*;
 import static engine.Time.getDelta;
 import static engine.Window.*;
+import static engine.network.Networking.disconnectClient;
 import static engine.render.GameRenderer.getWindowScale;
 import static engine.render.GameRenderer.getWindowSize;
 import static engine.scene.SceneHandler.setScene;
@@ -183,8 +184,10 @@ public class GUILogic {
                         resetMainMenuPage();
                         resetMainMenu();
                         setScene((byte) 0);
+                        disconnectClient();
                         setPaused(false);
                     } else if (selection == 3) {
+                        disconnectClient();
                         glfwSetWindowShouldClose(getWindowHandle(), true);
                     }
                 } else if (!isLeftButtonPressed()) {

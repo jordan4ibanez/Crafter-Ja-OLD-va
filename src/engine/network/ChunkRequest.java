@@ -1,5 +1,6 @@
 package engine.network;
 public class ChunkRequest {
+    public String name;
     public int x;
     public int z;
 
@@ -8,7 +9,8 @@ public class ChunkRequest {
     }
 
     //data creation
-    public ChunkRequest(int x, int z){
+    public ChunkRequest(int x, int z, String name){
+        this.name = name;
         this.x = x;
         this.z = z;
     }
