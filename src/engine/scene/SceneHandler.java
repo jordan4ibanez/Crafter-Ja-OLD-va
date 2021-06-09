@@ -17,6 +17,7 @@ import static engine.debug.debug.debugInput;
 import static engine.graphics.Camera.*;
 import static engine.gui.GUILogic.calculateHealthBarElements;
 import static engine.gui.GUILogic.pauseMenuOnTick;
+import static engine.network.Networking.sendPositionData;
 import static engine.render.MainMenuRenderer.renderMainMenu;
 import static engine.render.GameRenderer.renderGame;
 import static engine.Time.calculateDelta;
@@ -137,6 +138,7 @@ public class SceneHandler {
         inventoryMenuOnTick();
         particlesOnStep();
         //rainDropsOnTick();
+        sendPositionData();
     }
 
     private static void debugLoop(){

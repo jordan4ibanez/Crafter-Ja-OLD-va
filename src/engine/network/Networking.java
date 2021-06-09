@@ -6,6 +6,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import engine.disk.ChunkSavingObject;
 import game.chunk.ChunkObject;
+import org.joml.Vector3d;
 
 import java.io.IOException;
 
@@ -18,7 +19,7 @@ public class Networking {
 
     private static final int port = 30_150;
 
-    private static final Client client = new Client(1_000_000,1_000_000);
+    private static final Client client = new Client(10_000_000,10_000_000);
 
 
 
@@ -45,6 +46,7 @@ public class Networking {
         kryo.register(int[].class);
         kryo.register(byte[][].class);
         kryo.register(byte[].class);
+        kryo.register(Vector3d.class);
 
         //5000 = 5000ms = 5 seconds
         try {
@@ -85,6 +87,7 @@ public class Networking {
                     setChunk(encodedChunk.x, encodedChunk.z, abstractedChunk);
 
                 } else if (object instanceof PlayerPosObject encodedPlayer){
+                    //System.out.println("recieved the thing from the server");
                     updateOtherPlayer(encodedPlayer);
                 }
             }
@@ -92,7 +95,11 @@ public class Networking {
     }
 
     public static void sendPositionData() {
-        client.sendTCP(getPlayerPos());
+        PlayerPosObject myPosition = new PlayerPosObject();
+        myPosition.pos = getPlayerPos();
+        myPosition.name = getPlayerName();
+        myPosition.rotation = 0;
+        client.sendTCP(myPosition);
     }
 
     public static void sendOutChunkRequest(ChunkRequest chunkRequest) {

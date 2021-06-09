@@ -20,9 +20,9 @@ public class OtherPlayers {
         } else {
             PlayerPosObject currentUpdating = otherPlayers.get(thisPlayerObject.name);
             currentUpdating.pos = new Vector3d(thisPlayerObject.pos);
+            //System.out.println(currentUpdating.pos.x);
             currentUpdating.rotation = thisPlayerObject.rotation;
-
-            System.out.println("updated: " + currentUpdating.name);
+            //System.out.println("updated: " + currentUpdating.name);
         }
     }
 }
