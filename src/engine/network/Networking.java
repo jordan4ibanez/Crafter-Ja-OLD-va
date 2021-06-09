@@ -7,6 +7,7 @@ import com.esotericsoftware.kryonet.Listener;
 import engine.disk.ChunkSavingObject;
 import game.chunk.ChunkObject;
 import org.joml.Vector3d;
+import org.joml.Vector3f;
 
 import java.io.IOException;
 
@@ -49,6 +50,7 @@ public class Networking {
         kryo.register(byte[][].class);
         kryo.register(byte[].class);
         kryo.register(Vector3d.class);
+        kryo.register(Vector3f.class);
 
         //5000 = 5000ms = 5 seconds
         try {
@@ -103,7 +105,7 @@ public class Networking {
         PlayerPosObject myPosition = new PlayerPosObject();
         myPosition.pos = getPlayerPos();
         myPosition.name = getPlayerName();
-        myPosition.rotation = getCameraRotation().y;
+        myPosition.cameraRot = new Vector3f(getCameraRotation());
         client.sendTCP(myPosition);
     }
 

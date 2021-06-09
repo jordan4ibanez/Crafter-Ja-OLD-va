@@ -359,7 +359,11 @@ public class GameRenderer {
             Vector3f[] playerBodyOffsets = getHumanBodyOffsets();
             Vector3f[] playerBodyRotation = getPlayerBodyRotations();
             for (Mesh thisMesh : playerMeshes) {
-                modelViewMatrix = getMobMatrix(new Vector3d(thisOtherPlayer.pos), playerBodyOffsets[offsetIndex], new Vector3f(0, thisOtherPlayer.rotation, 0), new Vector3f(playerBodyRotation[offsetIndex]), new Vector3d(1f, 1f, 1f), viewMatrix);
+                if (offsetIndex == 0) {
+                    modelViewMatrix = getMobMatrix(new Vector3d(thisOtherPlayer.pos), playerBodyOffsets[offsetIndex], new Vector3f(0, thisOtherPlayer.cameraRot.y, 0), new Vector3f(thisOtherPlayer.cameraRot.x + playerBodyRotation[offsetIndex].x, playerBodyRotation[offsetIndex].y, playerBodyRotation[offsetIndex].z), new Vector3d(1f, 1f, 1f), viewMatrix);
+                } else {
+                    modelViewMatrix = getMobMatrix(new Vector3d(thisOtherPlayer.pos), playerBodyOffsets[offsetIndex], new Vector3f(0, thisOtherPlayer.cameraRot.y, 0), new Vector3f(playerBodyRotation[offsetIndex]), new Vector3d(1f, 1f, 1f), viewMatrix);
+                }
                 if (graphicsMode) {
                     glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 } else {
