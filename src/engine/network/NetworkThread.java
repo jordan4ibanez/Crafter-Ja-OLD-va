@@ -58,7 +58,7 @@ public class NetworkThread {
                 while (!windowShouldClose()) {
                     try {
                         assert serverSocket != null;
-                        serverSocket.setSoTimeout(10);
+                        serverSocket.setSoTimeout(1);
                         socket = serverSocket.accept();
                     } catch (IOException e) {
                         //e.printStackTrace(); <-THIS WILL SPAM YOUR TERMINAL LIKE CRAZY
@@ -75,9 +75,9 @@ public class NetworkThread {
                         e.printStackTrace();
                     }
 
-
                     boolean readingData = true;
                     while (readingData) {
+
                         byte messageType;
                         try {
                             assert dataInputStream != null;
@@ -93,8 +93,11 @@ public class NetworkThread {
                                 try {
                                     String confirmation = dataInputStream.readUTF(); //name or kill
 
+                                    System.out.println("CONFIRMING SERVER HANDSHAKE");
+
                                     if (confirmation.equals(getPlayerName())) {
                                         quickToggleServerConnectedBoolean();
+                                        System.out.println("connected to server");
                                     } else if (confirmation.equals("KILL")) {
                                         System.out.println("REJECTED FROM SERVER!");
                                         setMenuPage((byte) 5);

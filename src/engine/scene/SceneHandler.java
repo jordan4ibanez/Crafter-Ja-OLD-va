@@ -3,6 +3,8 @@ package engine.scene;
 import game.item.ItemEntity;
 import game.tnt.TNTEntity;
 
+import java.io.IOException;
+
 import static engine.Controls.gameInput;
 import static engine.Controls.mainMenuInput;
 import static engine.MouseInput.*;
@@ -146,7 +148,7 @@ public class SceneHandler {
     }
 
 
-    private static void mainMenuLoop(){
+    private static void mainMenuLoop() throws IOException {
         setCameraPosition(0,-8,0);
         setCameraRotation(0,0,0);
         windowUpdate();

@@ -4,6 +4,7 @@ import engine.gui.GUIObject;
 import engine.sound.SoundSource;
 import org.joml.Vector2d;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.Random;
 
@@ -122,7 +123,7 @@ public class MainMenu {
     };
 
     private static final GUIObject[] multiPlayerLoadingGUI = new GUIObject[]{
-            new GUIObject("CONNECTING..." , true, new Vector2d(0, 5)),
+            new GUIObject("COULD NOT CONNECT TO SERVER" , true, new Vector2d(0, 5)),
             new GUIObject("BACK" , new Vector2d(0, -5), 10,1),
     };
 
@@ -251,7 +252,7 @@ public class MainMenu {
     }
 
 
-    public static void doMainMenuLogic(){
+    public static void doMainMenuLogic() throws IOException {
         if (isMouseLocked()){
             //System.out.println("unlocking");
             toggleMouseLock();

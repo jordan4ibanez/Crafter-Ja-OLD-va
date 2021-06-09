@@ -3,7 +3,10 @@ package engine.network;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketAddress;
 
 import static engine.network.NetworkThread.getGameOutputPort;
 import static game.player.Player.getName;
@@ -17,58 +20,67 @@ public class NetworkOutput {
     }
 
     public static void sendOutHandshake(String host) {
-        Socket socket = null;
-        {
-            try {
-
-                socket = new Socket(host, getGameOutputPort());
-                socket.setSoTimeout(5000);
-            } catch (IOException e) {
-                //e.printStackTrace();
-                System.out.println("YOU HAVE PUT IN A NULL ADDRESS! >:(");
-                return;
+        int tries = 4;
+        while (tries < 5) {
+            tries++;
+            Socket socket;
+            {
+                try {
+                    System.out.println("trying to connect to: " + host);
+                    socket = new Socket(host, getGameOutputPort());
+                    socket.setSoTimeout(3);
+                } catch (IOException e) {
+                    //e.printStackTrace();
+                    System.out.println("CANNOT CONNECT TO SERVER!");
+                    continue;
+                }
             }
-        }
 
 
-        OutputStream outputStream = null;
+            OutputStream outputStream = null;
 
-        {
+            {
+                try {
+                    outputStream = socket.getOutputStream();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
+
             try {
-                outputStream = socket.getOutputStream();
+                dataOutputStream.writeByte(1);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+            try {
+                dataOutputStream.writeUTF(getName());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                dataOutputStream.flush(); // Send off the data
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-        DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
+            try {
+                dataOutputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-        try {
-            dataOutputStream.writeByte(1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            dataOutputStream.writeUTF(getName());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            dataOutputStream.flush(); // Send off the data
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-        try {
-            dataOutputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        try {
-            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("connected!");
+
+            tries = 10;
         }
     }
 
