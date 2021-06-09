@@ -1,5 +1,6 @@
 package engine.network;
 
+import com.esotericsoftware.kryonet.Client;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import engine.disk.ChunkSavingObject;
 import game.chunk.ChunkObject;
@@ -17,30 +18,29 @@ import static game.player.OtherPlayers.updateOtherPlayer;
 import static game.player.Player.getPlayerName;
 
 public class NetworkThread {
+    private static final int port = 30_150;
 
-    private static final int inputPort = 30_151;
-    private static final int outputPort = 30_150;
-
-    public static int getGameInputPort(){
-        return inputPort;
-    }
-
-    public static int getGameOutputPort(){
-        return outputPort;
+    public static int getGamePort(){
+        return port;
     }
 
     //if players send garbage data, break connection, destroy player object
 
     /*
     data chart: (base 1 like LUA - 0 reserved for null data)
+    0 - null data
     1 - confirm handshake
     2 - TODO
     3 - receive chunk data (JACKSON CONVERSION)
     4 - get other player's data
      */
-    private static Thread networkingThread;
+    //private static Thread networkingThread;
 
-    public static void startNetworkThread() {
+
+
+    public static void startNetworkThread() throws IOException {
+
+        /*
         networkingThread = new Thread(() -> {
 
             //used for raw data conversion
@@ -48,7 +48,7 @@ public class NetworkThread {
 
             ServerSocket serverSocket = null;
             try {
-                serverSocket = new ServerSocket(inputPort);
+                serverSocket = new ServerSocket(port);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -189,11 +189,12 @@ public class NetworkThread {
             }
         });
         networkingThread.start();
+         */
     }
 
     public static void killNetworkingThread(){
-        System.out.println("KILLING NETWORK THREAD");
-        networkingThread.interrupt();
-        networkingThread = null;
+        //System.out.println("KILLING NETWORK THREAD");
+        //networkingThread.interrupt();
+        //networkingThread = null;
     }
 }

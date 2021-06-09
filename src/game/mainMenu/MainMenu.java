@@ -548,10 +548,8 @@ public class MainMenu {
             if (dumpedKey != -1 && dumpedKey != multiplayerScreenTextInput){
                 multiplayerScreenTextInput = dumpedKey;
 
-                System.out.println(dumpedKey);
-
                 //this is a HORRIBLE way to filter text input
-                if ((dumpedKey >= 65 && dumpedKey <= 90) || (dumpedKey >= 48 && dumpedKey <= 57) || dumpedKey == 47 || dumpedKey == 59 || dumpedKey == 46){
+                if ((dumpedKey >= 65 && dumpedKey <= 90) || (dumpedKey >= 48 && dumpedKey <= 57) || dumpedKey == 45 || dumpedKey == 47 || dumpedKey == 59 || dumpedKey == 46){
 
                     char newChar;
 
@@ -559,8 +557,10 @@ public class MainMenu {
                         newChar = '/';
                     } else if (dumpedKey == 46){
                         newChar = '.';
-                    } else if (dumpedKey == 59){
+                    } else if (dumpedKey == 59) {
                         newChar = ':';
+                    } else if (dumpedKey == 45){
+                        newChar = '-';
                     } else {
                         newChar = (char)dumpedKey;
                     }

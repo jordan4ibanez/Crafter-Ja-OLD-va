@@ -4,7 +4,7 @@
       <root url="jar://$PROJECT_DIR$/lib/jackson-databind-2.11.3.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/jackson-annotations-2.11.3.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/jackson-core-2.11.3.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/netty-all-4.1.66.Final-20210607.022204-41.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/kryonet-2.21-all.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

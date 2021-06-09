@@ -1,5 +1,7 @@
 package engine.network;
 
+import com.esotericsoftware.kryonet.Client;
+
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -8,7 +10,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 
-import static engine.network.NetworkThread.getGameOutputPort;
+import static engine.network.NetworkThread.getGamePort;
 import static game.player.Player.getName;
 
 public class NetworkOutput {
@@ -20,6 +22,20 @@ public class NetworkOutput {
     }
 
     public static void sendOutHandshake(String host) {
+        Client client = new Client();
+        client.start();
+        //5000 = 5000ms = 5 seconds
+        try {
+            client.connect(5000, "192.0.0.1", getGamePort());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        String test = "succ";
+        client.sendTCP(test);
+
+        /*
         int tries = 4;
         while (tries < 5) {
             tries++;
@@ -27,7 +43,7 @@ public class NetworkOutput {
             {
                 try {
                     System.out.println("trying to connect to: " + host);
-                    socket = new Socket(host, getGameOutputPort());
+                    socket = new Socket(host, getGamePort());
                     socket.setSoTimeout(3);
                 } catch (IOException e) {
                     //e.printStackTrace();
@@ -88,7 +104,7 @@ public class NetworkOutput {
         Socket socket = null;
         {
             try {
-                socket = new Socket("localhost", getGameOutputPort());
+                socket = new Socket("localhost", getGamePort());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -138,7 +154,7 @@ public class NetworkOutput {
         Socket socket;
         {
             try {
-                socket = new Socket(hostLock, getGameOutputPort());
+                socket = new Socket(hostLock, getGamePort());
                 socket.setSoTimeout(2);
             } catch (IOException e) {
                 //e.printStackTrace();
