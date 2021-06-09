@@ -6,6 +6,7 @@ import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 import static engine.FancyMath.getDistance;
+import static engine.network.Networking.*;
 import static game.chunk.Chunk.*;
 import static game.blocks.BlockDefinition.*;
 import static game.collision.Collision.wouldCollidePlacing;
@@ -119,15 +120,19 @@ public class Ray {
     }
 
     private static void destroyBlock(Vector3d flooredPos) {
-        int thisBlock = getBlock((int)flooredPos.x, (int)flooredPos.y, (int)flooredPos.z);
-        if (thisBlock < 0){
+
+        int thisBlock = getBlock((int) flooredPos.x, (int) flooredPos.y, (int) flooredPos.z);
+
+        if (thisBlock < 0) {
             return;
         }
-        digBlock((int)flooredPos.x, (int)flooredPos.y, (int)flooredPos.z);
-        onDigCall(thisBlock, flooredPos);
 
-
-
+        if (getIfMultiplayer()){
+            sendOutNetworkBlockBreak((int) flooredPos.x, (int) flooredPos.y, (int) flooredPos.z);
+        } else {
+            digBlock((int) flooredPos.x, (int) flooredPos.y, (int) flooredPos.z);
+            onDigCall(thisBlock, flooredPos);
+        }
         for (int i = 0; i < 40 + (int)(Math.random() * 15); i++) {
             createParticle(new Vector3d(flooredPos.x + (Math.random()-0.5d), flooredPos.y + (Math.random()-0.5d), flooredPos.z + (Math.random()-0.5d)), new Vector3f((float)(Math.random()-0.5f) * 2f, 0f, (float)(Math.random()-0.5f) * 2f), thisBlock);
         }

@@ -8,6 +8,7 @@ import engine.disk.ChunkSavingObject;
 import game.chunk.ChunkObject;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
+import org.joml.Vector3i;
 
 import java.io.IOException;
 
@@ -33,6 +34,10 @@ public class Networking {
         System.out.println("disconnected");
     }
 
+    public static boolean getIfMultiplayer(){
+        return client.isConnected();
+    }
+
 
     public static void sendOutHandshake(String host) {
 
@@ -51,6 +56,8 @@ public class Networking {
         kryo.register(byte[].class);
         kryo.register(Vector3d.class);
         kryo.register(Vector3f.class);
+        kryo.register(BreakBlockClassThing.class);
+        kryo.register(Vector3i.class);
 
         //5000 = 5000ms = 5 seconds
         try {
@@ -99,6 +106,13 @@ public class Networking {
             }
         });
     }
+
+    public static void sendOutNetworkBlockBreak(int x, int y, int z){
+        BreakBlockClassThing thisBlockThing = new BreakBlockClassThing();
+        thisBlockThing.breakingPos = new Vector3i(x,y,z);
+        client.sendTCP(thisBlockThing);
+    }
+
 
     //send position data to server
     public static void sendPositionData() {
