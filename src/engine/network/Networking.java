@@ -18,11 +18,13 @@ import static game.player.Player.*;
 
 public class Networking {
 
-    private static final int port = 30_150;
+    private static int port = 30_150;
 
     private static final Client client = new Client(10_000_000,10_000_000);
 
-
+    public static void updatePort(int newPort){
+        port = newPort;
+    }
 
     public static void disconnectClient(){
         client.stop();
@@ -35,10 +37,9 @@ public class Networking {
 
         client.start();
 
-
-
         Kryo kryo = client.getKryo();
 
+        //register classes to be serialized
         kryo.register(NetworkHandshake.class);
         kryo.register(PlayerPosObject.class);
         kryo.register(ChunkRequest.class);
@@ -64,6 +65,7 @@ public class Networking {
         //client event listener
         client.addListener(new Listener() {
             public void received (Connection connection, Object object) {
+                //handshake receival
                 if (object instanceof NetworkHandshake encodedName) {
                     if (encodedName.name != null && encodedName.name.equals(getPlayerName())){
                         setServerConnected(true);
@@ -74,6 +76,7 @@ public class Networking {
                         System.out.println("REJECTED FROM SERVER!");
                         setMenuPage((byte) 5);
                     }
+                    //received chunk data
                 } else if (object instanceof ChunkSavingObject encodedChunk){
                     ChunkObject abstractedChunk = new ChunkObject();
                     abstractedChunk.ID = encodedChunk.I;
@@ -87,14 +90,15 @@ public class Networking {
 
                     setChunk(encodedChunk.x, encodedChunk.z, abstractedChunk);
 
+                    //received other player position data
                 } else if (object instanceof PlayerPosObject encodedPlayer){
-                    //System.out.println("recieved the thing from the server");
                     updateOtherPlayer(encodedPlayer);
                 }
             }
         });
     }
 
+    //send position data to server
     public static void sendPositionData() {
         PlayerPosObject myPosition = new PlayerPosObject();
         myPosition.pos = getPlayerPos();
@@ -103,6 +107,7 @@ public class Networking {
         client.sendTCP(myPosition);
     }
 
+    //request chunk data from server
     public static void sendOutChunkRequest(ChunkRequest chunkRequest) {
         client.sendTCP(chunkRequest);
     }
