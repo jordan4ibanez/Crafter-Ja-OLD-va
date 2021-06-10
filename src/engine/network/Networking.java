@@ -59,6 +59,7 @@ public class Networking {
         kryo.register(Vector3f.class);
         kryo.register(BreakBlockClassThing.class);
         kryo.register(Vector3i.class);
+        kryo.register(BlockBreakingReceiver.class);
 
         //5000 = 5000ms = 5 seconds
         try {
