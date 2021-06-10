@@ -13,6 +13,7 @@ import org.joml.Vector3i;
 import java.io.IOException;
 
 import static engine.graphics.Camera.getCameraRotation;
+import static game.chunk.Chunk.digBlock;
 import static game.chunk.Chunk.setChunk;
 import static game.mainMenu.MainMenu.*;
 import static game.player.OtherPlayers.updateOtherPlayer;
@@ -102,6 +103,9 @@ public class Networking {
                     //received other player position data
                 } else if (object instanceof PlayerPosObject encodedPlayer) {
                     updateOtherPlayer(encodedPlayer);
+                } else if (object instanceof  BlockBreakingReceiver blockBreakingReceiver){
+                    Vector3i c = blockBreakingReceiver.receivedPos;
+                    digBlock(c.x, c.y, c.z);
                 }
             }
         });
