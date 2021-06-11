@@ -5,6 +5,8 @@ import engine.sound.SoundSource;
 import org.joml.Vector2d;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Random;
 
@@ -15,7 +17,7 @@ import static engine.credits.Credits.initializeCredits;
 import static engine.disk.Disk.setCurrentActiveWorld;
 import static engine.disk.Disk.worldSize;
 import static engine.gui.GUILogic.doGUIMouseCollisionDetection;
-import static engine.network.Networking.sendOutHandshake;
+import static engine.network.Networking.*;
 import static engine.scene.SceneHandler.setScene;
 import static engine.settings.Settings.*;
 import static engine.sound.SoundAPI.playMusic;
@@ -582,6 +584,17 @@ public class MainMenu {
                     }
                 }
 
+                //literally split the text into 2
+                String[] texted = multiPlayerGUI[3].inputText.split(":");
+
+                if (texted.length == 2){
+                    int newPort = Integer.parseInt(texted[1]);
+                    setPort(newPort);
+                } else {
+                    //reset to default port
+                    setPort(30_150);
+                }
+
                 //literally dumping the object data into the name
                 setPlayerName(multiPlayerGUI[1].inputText);
 
@@ -594,14 +607,19 @@ public class MainMenu {
                 playSound("button");
                 mouseButtonPushed = true;
 
+                //literally split the text into 2
+                String[] texted = multiPlayerGUI[3].inputText.split(":");
+
                 if (selection == 4){
-                    if (multiPlayerGUI[3].inputText.equals("") || multiPlayerGUI[1].inputText.equals("")){
+                    System.out.println(Arrays.toString(texted));
+                    System.out.println("port is: " + getPort());
+                    if (texted[0] != null && texted[0].equals("")){
                         System.out.println("NO ADDRESS OR NAME INPUTTED!");
-                    } else {
+                    } else if (texted[0] != null) {
                         //System.out.println("Address is: " + multiPlayerGUI[0].inputText);
                         //System.out.println("BEGIN CONNECTION");
 
-                        sendOutHandshake(multiPlayerGUI[3].inputText);
+                        sendOutHandshake(texted[0]);
                         menuPage = 6;
                     }
                 } else if (selection == 5){
@@ -953,6 +971,15 @@ public class MainMenu {
             "Appends data to objects!",
             "Found on the internet!",
             "Reverts changes!",
-            "Now recyclable!"
+            "Now recyclable!",
+            "No smokin', and no flash photography!",
+            "Walks like it talks!",
+            "Dries off in seconds!",
+            "Machine washable!",
+            "Does what others do and less!",
+            "Goes 0-60 in -0 seconds!",
+            "Folds into a neat swan!",
+            "Reads bytes!",
+            "Web capable!",
     };
 }

@@ -25,8 +25,12 @@ public class Networking {
 
     private static final Client client = new Client(10_000_000,10_000_000);
 
-    public static void updatePort(int newPort){
+    public static void setPort(int newPort){
         port = newPort;
+    }
+
+    public static int getPort(){
+        return port;
     }
 
     public static void disconnectClient(){
