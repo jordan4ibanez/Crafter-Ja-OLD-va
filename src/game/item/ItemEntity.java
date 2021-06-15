@@ -14,6 +14,7 @@ import static game.chunk.Chunk.getLight;
 import static game.collision.Collision.applyInertia;
 import static game.crafting.Inventory.addItemToInventory;
 import static game.item.Item.getCurrentID;
+import static game.player.Player.getPlayerPos;
 import static game.player.Player.getPlayerPosWithCollectionHeight;
 
 public class ItemEntity {
@@ -40,7 +41,7 @@ public class ItemEntity {
     public static Collection<Item> getAllItems() {
         return items.values();
     }
-    
+
     public static boolean itemKeyExists(int ID) {
         return items.containsKey(ID);
     }
@@ -68,6 +69,7 @@ public class ItemEntity {
 
     public static void itemsOnTick(){
         float delta = getDelta();
+
         for (Item thisItem : items.values()){
 
             if (thisItem.collectionTimer > 0f){
@@ -177,6 +179,19 @@ public class ItemEntity {
     public static void itemsOnTickMultiplayer(){
         float delta = getDelta();
         for (Item thisItem : items.values()){
+
+            thisItem.timer += delta;
+
+            //client side deletion
+            if (thisItem.timer > 50){
+                deletionQueue.add(thisItem.ID);
+            }
+
+            //client side deletion if too far
+            if (getDistance(getPlayerPos(), thisItem.pos) > 15f){
+                deletionQueue.add(thisItem.ID);
+            }
+
             thisItem.lightUpdateTimer += delta;
 
             Vector3i currentFlooredPos = new Vector3i((int)Math.floor(thisItem.pos.x), (int)Math.floor(thisItem.pos.y), (int)Math.floor(thisItem.pos.z));
@@ -213,6 +228,15 @@ public class ItemEntity {
                     thisItem.floatUp = true;
                 }
             }
+        }
+
+        while (!deletionQueue.isEmpty()){
+            int thisItemKey = deletionQueue.pop();
+            Item thisItem = items.get(thisItemKey);
+            if (thisItem != null && thisItem.mesh != null){
+                thisItem.mesh.cleanUp(false);
+            }
+            items.remove(thisItemKey);
         }
     }
 
