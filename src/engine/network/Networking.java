@@ -17,8 +17,7 @@ import static engine.sound.SoundAPI.playSound;
 import static game.chunk.Chunk.digBlock;
 import static game.chunk.Chunk.setChunk;
 import static game.crafting.Inventory.addItemToInventory;
-import static game.item.ItemEntity.addItemToCollectionQueue;
-import static game.item.ItemEntity.addItemToQueueToBeUpdated;
+import static game.item.ItemEntity.*;
 import static game.mainMenu.MainMenu.*;
 import static game.player.OtherPlayers.updateOtherPlayer;
 import static game.player.Player.*;
@@ -70,6 +69,7 @@ public class Networking {
         kryo.register(BlockBreakingReceiver.class);
         kryo.register(ItemSendingObject.class);
         kryo.register(ItemPickupNotification.class);
+        kryo.register(ItemDeletionSender.class);
 
         //5000 = 5000ms = 5 seconds
         try {
@@ -123,6 +123,8 @@ public class Networking {
                     addItemToQueueToBeUpdated(itemSendingObject);
                 } else if (object instanceof ItemPickupNotification itemPickupNotification){
                     addItemToCollectionQueue(itemPickupNotification.name);
+                } else if (object instanceof ItemDeletionSender itemDeletionSender){
+                    deleteItem(itemDeletionSender.ID);
                 }
             }
 

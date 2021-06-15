@@ -42,6 +42,7 @@ public class ItemEntity {
         return items.values();
     }
 
+
     public static boolean itemKeyExists(int ID) {
         return items.containsKey(ID);
     }
@@ -66,6 +67,10 @@ public class ItemEntity {
     }
 
     private static final Deque<Integer> deletionQueue = new ArrayDeque<>();
+
+    public static void deleteItem(int ID){
+        deletionQueue.add(ID);
+    }
 
     public static void itemsOnTick(){
         float delta = getDelta();
