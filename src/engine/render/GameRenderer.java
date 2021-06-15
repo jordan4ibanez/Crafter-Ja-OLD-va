@@ -372,6 +372,15 @@ public class GameRenderer {
                 thisMesh.render();
                 offsetIndex++;
             }
+
+            //finally render their name
+            //this is a temporary hack to see what other people are playing
+            modelViewMatrix = getGenericMatrixWithPosRotationScale(new Vector3d(thisOtherPlayer.pos).add(0,2.05d,0), new Vector3f(0, getCameraRotation().y, 0), new Vector3d(0.25d,0.25d,0.25d), viewMatrix);
+
+            hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            workerMesh = createTextCentered(thisOtherPlayer.name, 1f, 1f, 1f);
+            workerMesh.render();
+            workerMesh.cleanUp(false);
         }
 
 
