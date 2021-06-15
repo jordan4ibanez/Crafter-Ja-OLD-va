@@ -15,6 +15,7 @@ import java.io.IOException;
 import static engine.graphics.Camera.getCameraRotation;
 import static game.chunk.Chunk.digBlock;
 import static game.chunk.Chunk.setChunk;
+import static game.item.ItemEntity.addItemToQueueToBeUpdated;
 import static game.mainMenu.MainMenu.*;
 import static game.player.OtherPlayers.updateOtherPlayer;
 import static game.player.Player.*;
@@ -114,7 +115,8 @@ public class Networking {
                     Vector3i c = blockBreakingReceiver.receivedPos;
                     digBlock(c.x, c.y, c.z);
                 } else if (object instanceof ItemSendingObject itemSendingObject){
-                    System.out.println("we have received an item entity");
+                    //System.out.println("we have received an item entity");
+                    addItemToQueueToBeUpdated(itemSendingObject);
                 }
             }
 

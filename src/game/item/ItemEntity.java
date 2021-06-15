@@ -1,5 +1,6 @@
 package game.item;
 
+import engine.network.ItemSendingObject;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
@@ -20,29 +21,52 @@ public class ItemEntity {
 
     private final static float itemCollisionWidth = 0.2f;
 
-    public static void createItem(String name, Vector3d pos, int stack){
+    public static void createItem(String name, Vector3d pos, int stack) {
         items.put(getCurrentID(), new Item(name, pos, stack));
     }
 
-    public static void createItem(String name, Vector3d pos, int stack, float life){
+    public static void createItem(String name, Vector3d pos, int stack, float life) {
         items.put(getCurrentID(), new Item(name, pos, stack, life));
     }
 
-    public static void createItem(String name, Vector3d pos, Vector3f inertia, int stack){
+    public static void createItem(String name, Vector3d pos, Vector3f inertia, int stack) {
         items.put(getCurrentID(), new Item(name, pos, inertia, stack));
     }
 
-    public static void createItem(String name, Vector3d pos, Vector3f inertia, int stack, float life){
+    public static void createItem(String name, Vector3d pos, Vector3f inertia, int stack, float life) {
         items.put(getCurrentID(), new Item(name, pos, inertia, stack, life));
     }
 
-    public static Collection<Item> getAllItems(){
+    public static Collection<Item> getAllItems() {
         return items.values();
+    }
+    
+    public static boolean itemKeyExists(int ID) {
+        return items.containsKey(ID);
+    }
+
+    private static final Deque<ItemSendingObject> addingUpdatingList = new ArrayDeque<>();
+
+    public static void processQueuedItemsToBeAddedInMultiplayer() {
+        while (!addingUpdatingList.isEmpty()) {
+            ItemSendingObject itemSendingObject = addingUpdatingList.pop();
+
+            if (itemKeyExists(itemSendingObject.ID)) {
+                Item thisEntity = items.get(itemSendingObject.ID);
+                thisEntity.pos = itemSendingObject.pos;
+            } else {
+                items.put(itemSendingObject.ID, new Item(itemSendingObject.name, itemSendingObject.pos, 1));
+            }
+        }
+    }
+
+    public static void addItemToQueueToBeUpdated(ItemSendingObject itemSendingObject){
+        addingUpdatingList.add(itemSendingObject);
     }
 
     private static final Deque<Integer> deletionQueue = new ArrayDeque<>();
 
-    public static void onStep(){
+    public static void itemsOnTick(){
         float delta = getDelta();
         for (Item thisItem : items.values()){
 
@@ -147,6 +171,48 @@ public class ItemEntity {
                 thisItem.mesh.cleanUp(false);
             }
             items.remove(thisItemKey);
+        }
+    }
+
+    public static void itemsOnTickMultiplayer(){
+        float delta = getDelta();
+        for (Item thisItem : items.values()){
+            thisItem.lightUpdateTimer += delta;
+
+            Vector3i currentFlooredPos = new Vector3i((int)Math.floor(thisItem.pos.x), (int)Math.floor(thisItem.pos.y), (int)Math.floor(thisItem.pos.z));
+
+            //poll local light every half second
+            if (thisItem.lightUpdateTimer >= 0.25f || !currentFlooredPos.equals(thisItem.oldFlooredPos)){
+
+                byte newLight = getLight(currentFlooredPos.x, currentFlooredPos.y, currentFlooredPos.z);
+
+                //don't do extra work if nothing changed
+                if (newLight != thisItem.light){
+                    thisItem.light = newLight;
+                    //System.out.println("rebuild light mesh");
+                    thisItem.rebuildLightMesh(thisItem);
+                }
+
+                thisItem.lightUpdateTimer = 0f;
+            }
+
+            thisItem.rotation.y += delta * 50;
+
+            if (thisItem.rotation.y > 360f) {
+                thisItem.rotation.y -= 360f;
+            }
+
+            if (thisItem.floatUp){
+                thisItem.hover += delta / 10;
+                if (thisItem.hover >= 0.5f){
+                    thisItem.floatUp = false;
+                }
+            } else {
+                thisItem.hover -= delta / 10;
+                if (thisItem.hover <= 0.0f){
+                    thisItem.floatUp = true;
+                }
+            }
         }
     }
 

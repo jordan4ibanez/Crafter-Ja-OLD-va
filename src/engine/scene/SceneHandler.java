@@ -26,9 +26,9 @@ import static game.chunk.ChunkUpdateHandler.chunkUpdater;
 import static game.crafting.Inventory.generateRandomInventory;
 import static game.crafting.InventoryLogic.inventoryMenuOnTick;
 import static game.falling.FallingEntity.fallingEntityOnStep;
-import static game.item.ItemRegistration.registerItems;
+import static game.item.ItemEntity.itemsOnTickMultiplayer;
+import static game.item.ItemEntity.processQueuedItemsToBeAddedInMultiplayer;
 import static game.mainMenu.MainMenu.*;
-import static game.mob.Mob.initializeMobRegister;
 import static game.mob.Mob.mobsOnTick;
 import static game.particle.Particle.particlesOnStep;
 import static game.player.Player.*;
@@ -111,6 +111,8 @@ public class SceneHandler {
         calculateDelta();
         mouseInput();
         countFPS();
+        processQueuedItemsToBeAddedInMultiplayer();
+        itemsOnTickMultiplayer();
         popChunkMeshQueue(); //this actually transmits the data from the other threads into main thread
         updateListenerPosition();
         chunkUpdater();
@@ -170,7 +172,7 @@ public class SceneHandler {
     private static void gameUpdate() throws Exception {
         testPlayerDiggingAnimation();
         playerOnTick();
-        ItemEntity.onStep();
+        ItemEntity.itemsOnTick();
         TNTEntity.onTNTStep();
         pauseMenuOnTick();
         inventoryMenuOnTick();
