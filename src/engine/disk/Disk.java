@@ -166,6 +166,7 @@ public class Disk {
         abstractedChunk.block = thisChunkLoaded.b;
         abstractedChunk.rotation = thisChunkLoaded.r;
         abstractedChunk.naturalLight = thisChunkLoaded.l;
+        abstractedChunk.torchLight = thisChunkLoaded.t;
         abstractedChunk.heightMap = thisChunkLoaded.h;
 
         return(abstractedChunk);
