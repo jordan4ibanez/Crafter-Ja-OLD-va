@@ -240,6 +240,21 @@ public class ItemEntity {
         }
     }
 
+    private static Deque<String> itemsAddingQueue = new ArrayDeque<>();
+
+    public static void addItemToCollectionQueue(String item){
+        itemsAddingQueue.add(item);
+    }
+
+    public static void popItemsAddingQueue(){
+        if (!itemsAddingQueue.isEmpty()) {
+            String newItem = itemsAddingQueue.pop();
+            if (addItemToInventory(newItem)) {
+                playSound("pickup");
+            }
+        }
+    }
+
     public static void clearItems(){
         items.clear();
     }

@@ -26,8 +26,7 @@ import static game.chunk.ChunkUpdateHandler.chunkUpdater;
 import static game.crafting.Inventory.generateRandomInventory;
 import static game.crafting.InventoryLogic.inventoryMenuOnTick;
 import static game.falling.FallingEntity.fallingEntityOnStep;
-import static game.item.ItemEntity.itemsOnTickMultiplayer;
-import static game.item.ItemEntity.processQueuedItemsToBeAddedInMultiplayer;
+import static game.item.ItemEntity.*;
 import static game.mainMenu.MainMenu.*;
 import static game.mob.Mob.mobsOnTick;
 import static game.particle.Particle.particlesOnStep;
@@ -113,6 +112,7 @@ public class SceneHandler {
         countFPS();
         processQueuedItemsToBeAddedInMultiplayer();
         itemsOnTickMultiplayer();
+        popItemsAddingQueue();
         popChunkMeshQueue(); //this actually transmits the data from the other threads into main thread
         updateListenerPosition();
         chunkUpdater();

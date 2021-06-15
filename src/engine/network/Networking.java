@@ -13,8 +13,11 @@ import org.joml.Vector3i;
 import java.io.IOException;
 
 import static engine.graphics.Camera.getCameraRotation;
+import static engine.sound.SoundAPI.playSound;
 import static game.chunk.Chunk.digBlock;
 import static game.chunk.Chunk.setChunk;
+import static game.crafting.Inventory.addItemToInventory;
+import static game.item.ItemEntity.addItemToCollectionQueue;
 import static game.item.ItemEntity.addItemToQueueToBeUpdated;
 import static game.mainMenu.MainMenu.*;
 import static game.player.OtherPlayers.updateOtherPlayer;
@@ -66,6 +69,7 @@ public class Networking {
         kryo.register(Vector3i.class);
         kryo.register(BlockBreakingReceiver.class);
         kryo.register(ItemSendingObject.class);
+        kryo.register(ItemPickupNotification.class);
 
         //5000 = 5000ms = 5 seconds
         try {
@@ -117,6 +121,8 @@ public class Networking {
                 } else if (object instanceof ItemSendingObject itemSendingObject){
                     //System.out.println("we have received an item entity");
                     addItemToQueueToBeUpdated(itemSendingObject);
+                } else if (object instanceof ItemPickupNotification itemPickupNotification){
+                    addItemToCollectionQueue(itemPickupNotification.name);
                 }
             }
 
