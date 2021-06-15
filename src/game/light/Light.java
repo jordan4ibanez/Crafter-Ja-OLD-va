@@ -54,7 +54,7 @@ public class Light {
     public static byte getImmediateLight(int x, int y, int z){
         int theBlock = getBlock(x, y, z);
         if (theBlock == 0 && underSunLight(x, y, z)){
-            return currentLightLevel;
+            return maxLightLevel;
         }
 
         byte maxLight = 0;
@@ -147,7 +147,7 @@ public class Light {
 
                     Deque<LightUpdate> lightSteps = new ArrayDeque<>();
 
-                    lightSteps.push(new LightUpdate(thisUpdate.x, thisUpdate.y, thisUpdate.z, currentLightLevel));
+                    lightSteps.push(new LightUpdate(thisUpdate.x, thisUpdate.y, thisUpdate.z, maxLightLevel));
 
                     while (!lightSteps.isEmpty()) {
                         LightUpdate newUpdate = lightSteps.pop();

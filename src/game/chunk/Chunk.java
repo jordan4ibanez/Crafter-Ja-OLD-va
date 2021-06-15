@@ -174,34 +174,12 @@ public class Chunk {
     public static void testLightCycleFlood(){
         byte currentLightLevel = getCurrentGlobalLightLevel();
         for (ChunkObject thisChunk : map.values()){
-            if (thisChunk.lightLevel != currentLightLevel){
-                floodChunkWithNewGlobalLight(thisChunk, thisChunk.lightLevel, currentLightLevel);
+            //if (thisChunk.lightLevel != currentLightLevel){
                 thisChunk.lightLevel = currentLightLevel;
-            }
-        }
-    }
-
-    //this is for testing the day/night cycle
-    private static void floodChunkWithNewGlobalLight(ChunkObject thisChunk, byte oldLight, byte newLight){
-
-        /* this causes SERIOUS lag
-        Vector3i thisPos = indexToPos(i);
-
-        int blockX = (int)(thisPos.x + (16d*thisChunk.x));
-        int blockZ = (int)(thisPos.z + (16d*thisChunk.z));
-
-        if (thisChunk.block[i] == 0 && !underSunLight(blockX, thisPos.y, blockZ)) {
-            lightFloodFill(blockX, thisPos.y, blockZ);
-        }
-
-        if (thisChunk.light[i] == oldLight) {
-          System.out.println("something broken");
-        }
-         */
-        Arrays.fill(thisChunk.naturalLight, newLight);
-
-        for (int y = 0; y < 8; y++) {
-            generateChunkMesh(thisChunk.x, thisChunk.z, y);
+                for (int y = 0; y < 8; y++) {
+                    chunkUpdate(thisChunk.x, thisChunk.z, y);
+                }
+            //}
         }
     }
 
@@ -784,7 +762,7 @@ public class Chunk {
                             if (gennedSand || gennedGrass) {
                                 thisChunk.naturalLight[posToIndex(generationX, generationY, generationZ)] = 0;
                             } else {
-                                thisChunk.naturalLight[posToIndex(generationX, generationY, generationZ)] = getCurrentGlobalLightLevel();
+                                thisChunk.naturalLight[posToIndex(generationX, generationY, generationZ)] = 15;
                             }
                         }
                     }
