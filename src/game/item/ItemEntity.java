@@ -55,9 +55,10 @@ public class ItemEntity {
 
             if (itemKeyExists(itemSendingObject.ID)) {
                 Item thisEntity = items.get(itemSendingObject.ID);
-                thisEntity.pos = itemSendingObject.pos;
+                thisEntity.goalPos = itemSendingObject.pos;
             } else {
-                items.put(itemSendingObject.ID, new Item(itemSendingObject.name, itemSendingObject.pos, 1));
+                //initial internal pos
+                items.put(itemSendingObject.ID, new Item(itemSendingObject.name, itemSendingObject.pos, itemSendingObject.pos, 1));
             }
         }
     }
@@ -186,6 +187,10 @@ public class ItemEntity {
         for (Item thisItem : items.values()){
 
             thisItem.timer += delta;
+
+            //interpolate position to goal position
+            //the second argument is the smoothing factor - higher is choppier but more accurate
+            thisItem.pos.lerp(thisItem.goalPos, 0.25);
 
             //client side deletion
             if (thisItem.timer > 50){

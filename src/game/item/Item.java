@@ -21,6 +21,7 @@ public class Item {
     public int stack;
     public ItemDefinition definition;
     public Vector3d pos;
+    public Vector3d goalPos;
     public float scale;
     public float timer;
     public float hover;
@@ -40,7 +41,7 @@ public class Item {
 
 
     //yes this is ridiculous, but it is also safe
-    //internal integer overflow to 0
+    //internal automatic integer overflow to 0
     private static void tickUpCurrentID(){
         currentID++;
         if (currentID == 2147483647){
@@ -66,6 +67,26 @@ public class Item {
     public Item(String name, Vector3d pos, int stack) {
         this.name = name;
         this.pos = pos;
+        this.definition = getItemDefinition(name);
+        this.stack = stack;
+        this.inertia = new Vector3f(randomForceValue(2f), (float) Math.random() * 4f, randomForceValue(2f));
+        this.rotation = new Vector3f(0, 0, 0);
+        this.hover = 0f;
+        this.floatUp = true;
+        this.exists = true;
+        this.collecting = false;
+        this.scale = 1f;
+        this.timer = 0f;
+        this.ID = currentID;
+        rebuildLightMesh(this);
+        tickUpCurrentID();
+    }
+
+    //item being mined with interpolation
+    public Item(String name, Vector3d pos, Vector3d goalPos, int stack) {
+        this.name = name;
+        this.pos = pos;
+        this.goalPos = goalPos;
         this.definition = getItemDefinition(name);
         this.stack = stack;
         this.inertia = new Vector3f(randomForceValue(2f), (float) Math.random() * 4f, randomForceValue(2f));
