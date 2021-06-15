@@ -3,6 +3,9 @@ package game.chunk;
 import engine.graphics.Mesh;
 
 public class ChunkObject {
+
+    private final static int arraySize = 128 * 16 * 16;
+
     public String ID;
 
     public int x;
@@ -10,9 +13,10 @@ public class ChunkObject {
 
     public byte lightLevel = 15;
 
-    public int [] block = new int[128 * 16 * 16];
-    public byte[] rotation = new byte[128 * 16 * 16];
-    public byte[] light = new byte[128 * 16 * 16];
+    public int [] block = new int[arraySize];
+    public byte[] rotation = new byte[arraySize];
+    public byte[] naturalLight = new byte[arraySize];
+    public byte[] torchLight = new byte[arraySize];
     public byte[][] heightMap  = new byte[16][16];
 
     public Mesh[] normalMesh = new Mesh[8];

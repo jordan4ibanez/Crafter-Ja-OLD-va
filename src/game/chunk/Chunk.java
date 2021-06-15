@@ -196,7 +196,7 @@ public class Chunk {
           System.out.println("something broken");
         }
          */
-        Arrays.fill(thisChunk.light, newLight);
+        Arrays.fill(thisChunk.naturalLight, newLight);
 
         for (int y = 0; y < 8; y++) {
             generateChunkMesh(thisChunk.x, thisChunk.z, y);
@@ -360,7 +360,7 @@ public class Chunk {
         if (thisChunk.block == null){
             return;
         }
-        thisChunk.light[posToIndex(blockX, y, blockZ)] = newLight;
+        thisChunk.naturalLight[posToIndex(blockX, y, blockZ)] = newLight;
         chunkUpdate(chunkX,chunkZ,yPillar);
         updateNeighbor(chunkX, chunkZ,blockX,y,blockZ);
     }
@@ -395,7 +395,7 @@ public class Chunk {
         }
         lightFloodFill(x, y, z);
         thisChunk.modified = true;
-        thisChunk.light[posToIndex(blockX, y, blockZ)] = getImmediateLight(x,y,z);
+        thisChunk.naturalLight[posToIndex(blockX, y, blockZ)] = getImmediateLight(x,y,z);
         generateChunkMesh(chunkX,chunkZ,yPillar);//instant update
         instantUpdateNeighbor(chunkX, chunkZ,blockX,y,blockZ);//instant update
     }
@@ -441,10 +441,10 @@ public class Chunk {
         if (thisChunk == null){
             return 0;
         }
-        if (thisChunk.light == null){
+        if (thisChunk.naturalLight == null){
             return 0;
         }
-        return thisChunk.light[posToIndex(blockX, y, blockZ)];
+        return thisChunk.naturalLight[posToIndex(blockX, y, blockZ)];
     }
 
     private static void instantUpdateNeighbor(int chunkX, int chunkZ, int x, int y, int z){
@@ -762,9 +762,9 @@ public class Chunk {
                             }
 
                             if (gennedSand || gennedGrass) {
-                                thisChunk.light[posToIndex(generationX, generationY, generationZ)] = 0;
+                                thisChunk.naturalLight[posToIndex(generationX, generationY, generationZ)] = 0;
                             } else {
-                                thisChunk.light[posToIndex(generationX, generationY, generationZ)] = getCurrentGlobalLightLevel();
+                                thisChunk.naturalLight[posToIndex(generationX, generationY, generationZ)] = getCurrentGlobalLightLevel();
                             }
                         }
                     }

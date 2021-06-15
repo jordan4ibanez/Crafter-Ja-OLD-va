@@ -181,7 +181,7 @@ public class ChunkMesh {
                                     if (z + 1 > 15) {
                                         lightValue = getLight(realX, y, realZ + 1);
                                     } else {
-                                        lightValue = thisChunk.light[posToIndex(x,y,z + 1)];
+                                        lightValue = thisChunk.naturalLight[posToIndex(x,y,z + 1)];
                                     }
 
                                     lightValue = convertLight(lightValue / maxLight);
@@ -238,7 +238,7 @@ public class ChunkMesh {
                                     if (z - 1 < 0) {
                                         lightValue = getLight(realX, y, realZ - 1);
                                     } else {
-                                        lightValue = thisChunk.light[posToIndex(x,y,z - 1)];
+                                        lightValue = thisChunk.naturalLight[posToIndex(x,y,z - 1)];
                                     }
 
                                     lightValue = convertLight(lightValue / maxLight);
@@ -294,7 +294,7 @@ public class ChunkMesh {
                                     if (x + 1 > 15) {
                                         lightValue = getLight(realX + 1, y, realZ);
                                     } else {
-                                        lightValue = thisChunk.light[posToIndex(x+1,y,z)];
+                                        lightValue = thisChunk.naturalLight[posToIndex(x+1,y,z)];
                                     }
 
                                     lightValue = convertLight(lightValue / maxLight);
@@ -351,7 +351,7 @@ public class ChunkMesh {
                                     if (x - 1 < 0) {
                                         lightValue = getLight(realX - 1, y, realZ);
                                     } else {
-                                        lightValue = thisChunk.light[posToIndex(x - 1, y, z)];
+                                        lightValue = thisChunk.naturalLight[posToIndex(x - 1, y, z)];
                                     }
 
                                     lightValue = convertLight(lightValue / maxLight);
@@ -407,7 +407,7 @@ public class ChunkMesh {
 
                                     //y doesn't need a check since it has no neighbors
                                     if (y + 1 < 128) {
-                                        lightValue = thisChunk.light[posToIndex(x, y + 1, z)];
+                                        lightValue = thisChunk.naturalLight[posToIndex(x, y + 1, z)];
                                     } else {
                                         lightValue = maxLight;
                                     }
@@ -465,7 +465,7 @@ public class ChunkMesh {
 
                                     //doesn't need a neighbor chunk, chunks are 2D
                                     if (y - 1 > 0) {
-                                        lightValue = thisChunk.light[posToIndex(x, y - 1, z)];
+                                        lightValue = thisChunk.naturalLight[posToIndex(x, y - 1, z)];
                                     } else {
                                         lightValue = 0;
                                     }
@@ -525,7 +525,7 @@ public class ChunkMesh {
                                     if (z + 1 > 15) {
                                         lightValue = getLight(realX, y, realZ + 1);
                                     } else {
-                                        lightValue = thisChunk.light[posToIndex(x, y, z + 1)];
+                                        lightValue = thisChunk.naturalLight[posToIndex(x, y, z + 1)];
                                     }
 
                                     lightValue = convertLight(lightValue / maxLight);
@@ -581,7 +581,7 @@ public class ChunkMesh {
                                     if (z - 1 < 0) {
                                         lightValue = getLight(realX, y, realZ - 1);
                                     } else {
-                                        lightValue = thisChunk.light[posToIndex(x, y, z - 1)];
+                                        lightValue = thisChunk.naturalLight[posToIndex(x, y, z - 1)];
                                     }
 
                                     lightValue = convertLight(lightValue / maxLight);
@@ -636,7 +636,7 @@ public class ChunkMesh {
                                     if (x + 1 > 15) {
                                         lightValue = getLight(realX + 1, y, realZ);
                                     } else {
-                                        lightValue = thisChunk.light[posToIndex(x + 1, y, z)];
+                                        lightValue = thisChunk.naturalLight[posToIndex(x + 1, y, z)];
                                     }
 
                                     lightValue = convertLight(lightValue / maxLight);
@@ -691,7 +691,7 @@ public class ChunkMesh {
                                     if (x - 1 < 0) {
                                         lightValue = getLight(realX - 1, y, realZ);
                                     } else {
-                                        lightValue = thisChunk.light[posToIndex(x - 1, y, z)];
+                                        lightValue = thisChunk.naturalLight[posToIndex(x - 1, y, z)];
                                     }
 
                                     lightValue = convertLight(lightValue / maxLight);
@@ -742,7 +742,7 @@ public class ChunkMesh {
 
                                     //top
                                     if (y + 1 < 128) {
-                                        lightValue = thisChunk.light[posToIndex(x, y + 1, z)];
+                                        lightValue = thisChunk.naturalLight[posToIndex(x, y + 1, z)];
                                     } else {
                                         lightValue = maxLight;
                                     }
@@ -796,7 +796,7 @@ public class ChunkMesh {
 
                                     //bottom
                                     if (y - 1 > 0) {
-                                        lightValue = thisChunk.light[posToIndex(x, y - 1, z)];
+                                        lightValue = thisChunk.naturalLight[posToIndex(x, y - 1, z)];
                                     } else {
                                         lightValue = 0;
                                     }
@@ -850,7 +850,7 @@ public class ChunkMesh {
                                     if (z + 1 > 15) {
                                         lightValue = getLight(realX, y, realZ + 1);
                                     } else {
-                                        lightValue = thisChunk.light[posToIndex(x, y, z + 1)];
+                                        lightValue = thisChunk.naturalLight[posToIndex(x, y, z + 1)];
                                     }
 
                                     lightValue = convertLight(lightValue / maxLight);
@@ -902,7 +902,7 @@ public class ChunkMesh {
                                     if (z - 1 < 0) {
                                         lightValue = getLight(realX, y, realZ - 1);
                                     } else {
-                                        lightValue = thisChunk.light[posToIndex(x, y, z - 1)];
+                                        lightValue = thisChunk.naturalLight[posToIndex(x, y, z - 1)];
                                     }
 
                                     lightValue = convertLight(lightValue / maxLight);
@@ -952,7 +952,7 @@ public class ChunkMesh {
                                     if (x + 1 > 15) {
                                         lightValue = getLight(realX + 1, y, realZ);
                                     } else {
-                                        lightValue = thisChunk.light[posToIndex(x + 1, y, z)];
+                                        lightValue = thisChunk.naturalLight[posToIndex(x + 1, y, z)];
                                     }
 
                                     lightValue = convertLight(lightValue / maxLight);
@@ -1002,7 +1002,7 @@ public class ChunkMesh {
                                     if (x - 1 < 0) {
                                         lightValue = getLight(realX - 1, y, realZ);
                                     } else {
-                                        lightValue = thisChunk.light[posToIndex(x - 1, y, z)];
+                                        lightValue = thisChunk.naturalLight[posToIndex(x - 1, y, z)];
                                     }
 
                                     lightValue = convertLight(lightValue / maxLight);
@@ -1050,7 +1050,7 @@ public class ChunkMesh {
                                     //top
 
                                     if (y + 1 < 128) {
-                                        lightValue = thisChunk.light[posToIndex(x, y + 1, z)];
+                                        lightValue = thisChunk.naturalLight[posToIndex(x, y + 1, z)];
                                     } else {
                                         lightValue = maxLight;
                                     }
@@ -1102,7 +1102,7 @@ public class ChunkMesh {
                                     //bottom
 
                                     if (y - 1 > 0) {
-                                        lightValue = thisChunk.light[posToIndex(x, y - 1, z)];
+                                        lightValue = thisChunk.naturalLight[posToIndex(x, y - 1, z)];
                                     } else {
                                         lightValue = 0;
                                     }
@@ -1160,7 +1160,7 @@ public class ChunkMesh {
                                     if (z + 1 > 15) {
                                         lightValue = getLight(realX, y, realZ + 1);
                                     } else {
-                                        lightValue = thisChunk.light[posToIndex(x, y, z + 1)];
+                                        lightValue = thisChunk.naturalLight[posToIndex(x, y, z + 1)];
                                     }
 
                                     lightValue = convertLight(lightValue / maxLight);
@@ -1214,7 +1214,7 @@ public class ChunkMesh {
                                     if (z - 1 < 0) {
                                         lightValue = getLight(realX, y, realZ - 1);
                                     } else {
-                                        lightValue = thisChunk.light[posToIndex(x, y, z - 1)];
+                                        lightValue = thisChunk.naturalLight[posToIndex(x, y, z - 1)];
                                     }
 
 
@@ -1264,7 +1264,7 @@ public class ChunkMesh {
                                     if (x + 1 > 15) {
                                         lightValue = getLight(realX + 1, y, realZ);
                                     } else {
-                                        lightValue = thisChunk.light[posToIndex(x + 1, y, z)];
+                                        lightValue = thisChunk.naturalLight[posToIndex(x + 1, y, z)];
                                     }
                                     lightValue = convertLight(lightValue / maxLight);
                                     //right
@@ -1320,7 +1320,7 @@ public class ChunkMesh {
                                     if (x - 1 < 0) {
                                         lightValue = getLight(realX - 1, y, realZ);
                                     } else {
-                                        lightValue = thisChunk.light[posToIndex(x - 1, y, z)];
+                                        lightValue = thisChunk.naturalLight[posToIndex(x - 1, y, z)];
                                     }
                                     lightValue = convertLight(lightValue / maxLight);
                                     //left
@@ -1365,7 +1365,7 @@ public class ChunkMesh {
 
                                     //top
                                     if (y + 1 < 128) {
-                                        lightValue = thisChunk.light[posToIndex(x, y + 1, z)];
+                                        lightValue = thisChunk.naturalLight[posToIndex(x, y + 1, z)];
                                     } else {
                                         lightValue = maxLight;
                                     }
@@ -1419,7 +1419,7 @@ public class ChunkMesh {
 
                                     //bottom
                                     if (y - 1 > 0) {
-                                        lightValue = thisChunk.light[posToIndex(x, y - 1, z)];
+                                        lightValue = thisChunk.naturalLight[posToIndex(x, y - 1, z)];
                                     } else {
                                         lightValue = 0;
                                     }

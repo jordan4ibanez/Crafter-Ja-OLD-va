@@ -15,7 +15,6 @@ import java.io.IOException;
 import static engine.graphics.Camera.getCameraRotation;
 import static engine.sound.SoundAPI.playSound;
 import static game.chunk.Chunk.*;
-import static game.crafting.Inventory.addItemToInventory;
 import static game.item.ItemEntity.*;
 import static game.mainMenu.MainMenu.*;
 import static game.player.OtherPlayers.updateOtherPlayer;
@@ -107,7 +106,7 @@ public class Networking {
                     abstractedChunk.z = encodedChunk.z;
                     abstractedChunk.block = encodedChunk.b;
                     abstractedChunk.rotation = encodedChunk.r;
-                    abstractedChunk.light = encodedChunk.l;
+                    abstractedChunk.naturalLight = encodedChunk.l;
                     abstractedChunk.heightMap = encodedChunk.h;
                     abstractedChunk.lightLevel = encodedChunk.e;
 

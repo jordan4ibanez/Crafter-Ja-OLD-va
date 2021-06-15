@@ -44,7 +44,7 @@ public class SaveQueue {
                         savingObject.z = thisChunk.z;
                         savingObject.b = thisChunk.block;
                         savingObject.r = thisChunk.rotation;
-                        savingObject.l = thisChunk.light;
+                        savingObject.l = thisChunk.naturalLight;
                         savingObject.h = thisChunk.heightMap;
                         savingObject.e = thisChunk.lightLevel;
 
@@ -86,7 +86,7 @@ public class SaveQueue {
             savingObject.z = thisChunk.z;
             savingObject.b = thisChunk.block;
             savingObject.r = thisChunk.rotation;
-            savingObject.l = thisChunk.light;
+            savingObject.l = thisChunk.naturalLight;
             savingObject.h = thisChunk.heightMap;
             savingObject.e = thisChunk.lightLevel;
 
