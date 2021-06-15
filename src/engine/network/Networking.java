@@ -70,6 +70,7 @@ public class Networking {
         kryo.register(ItemPickupNotification.class);
         kryo.register(ItemDeletionSender.class);
         kryo.register(BlockPlacingReceiver.class);
+        kryo.register(NetworkMovePositionDemand.class);
 
         //5000 = 5000ms = 5 seconds
         try {
@@ -128,6 +129,9 @@ public class Networking {
                 } else if (object instanceof BlockPlacingReceiver blockPlacingReceiver){
                     Vector3i c = blockPlacingReceiver.receivedPos;
                     placeBlock(c.x,c.y, c.z, blockPlacingReceiver.ID,blockPlacingReceiver.rotation);
+                } else if(object instanceof NetworkMovePositionDemand networkMovePositionDemand){
+                    setPlayerPos(networkMovePositionDemand.newPos);
+                    //System.out.println(networkMovePositionDemand.newPos.x + " " + networkMovePositionDemand.newPos.y + " " + networkMovePositionDemand.newPos.z);
                 }
             }
 
