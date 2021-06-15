@@ -55,23 +55,16 @@ public class SceneHandler {
         if (newScene == 1){
             setWindowClearColor(0.53f,0.81f,0.92f,0.f);
             calculateHealthBarElements();
-            //registerItems();
-            //initializeMobRegister();
             initialChunkPayload();
-            generateRandomInventory();
         }
 
         if (newScene == 3){
             setWindowClearColor(0.53f,0.81f,0.92f,0.f);
             calculateHealthBarElements();
-            //registerItems();
-            //initializeMobRegister();
             if (!isMouseLocked()){
                 toggleMouseLock();
             }
             initialChunkPayloadMultiplayer();
-            //initialChunkPayload();
-            //generateRandomInventory();
         }
 
         currentScene = newScene;

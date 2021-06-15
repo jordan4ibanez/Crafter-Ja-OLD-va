@@ -21,6 +21,7 @@ import static game.chunk.Chunk.*;
 import static engine.gui.GUI.*;
 import static engine.MouseInput.*;
 import static game.crafting.CraftRecipes.registerCraftRecipes;
+import static game.item.ItemRegistration.registerItems;
 import static game.mainMenu.MainMenu.initMainMenu;
 import static game.tnt.TNTEntity.createTNTEntityMesh;
 import static engine.Window.*;
@@ -83,6 +84,7 @@ public class Crafter {
         setAttenuationModel(AL11.AL_LINEAR_DISTANCE);
         setListener(new SoundListener(new Vector3d()));
         createGUI();
+        registerItems();
         registerCraftRecipes();
     }
 
