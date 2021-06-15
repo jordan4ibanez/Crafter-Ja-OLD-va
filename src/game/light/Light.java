@@ -4,6 +4,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 import static engine.Time.getDelta;
+import static engine.Window.setWindowClearColor;
 import static game.chunk.Chunk.*;
 
 public class Light {
@@ -44,6 +45,8 @@ public class Light {
                     goUp = true;
                 }
             }
+
+            setWindowClearColor(0.53f * (currentLightLevel/15f),0.81f * (currentLightLevel/15f),0.92f * (currentLightLevel/15f),1.f);
 
             System.out.println(currentLightLevel);
 
