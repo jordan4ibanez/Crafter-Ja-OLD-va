@@ -127,7 +127,7 @@ public class Networking {
                     deleteItem(itemDeletionSender.ID);
                 } else if (object instanceof BlockPlacingReceiver blockPlacingReceiver){
                     Vector3i c = blockPlacingReceiver.receivedPos;
-                    placeBlock(c.x,c.y, c.z, blockPlacingReceiver.ID, blockPlacingReceiver.ID);
+                    placeBlock(c.x,c.y, c.z, blockPlacingReceiver.ID,blockPlacingReceiver.rotation);
                 }
             }
 
