@@ -56,6 +56,7 @@ public class SceneHandler {
             setWindowClearColor(0.53f,0.81f,0.92f,0.f);
             calculateHealthBarElements();
             initialChunkPayload();
+            generateRandomInventory();
         }
 
         if (newScene == 3){

@@ -1218,6 +1218,34 @@ public class BlockDefinition {
                 true,
                 null
         );
+
+        new BlockDefinition(
+                29,
+                0,
+                0,
+                0,
+                1,
+                "torch",
+                false,
+                new int[]{28,0}, //front
+                new int[]{28,0}, //back
+                new int[]{28,0}, //right
+                new int[]{28,0}, //left
+                new int[]{28,0}, //top
+                new int[]{28,0},  //bottom
+                4, //allfaces
+                false,
+                false,
+                false,
+                null,
+                "wood_1",
+                "wood_2",
+                false,
+                false,
+                0,
+                true,
+                null
+        );
     }
 
     public static BlockDefinition getBlockDefinition(int ID){
