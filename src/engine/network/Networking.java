@@ -14,8 +14,7 @@ import java.io.IOException;
 
 import static engine.graphics.Camera.getCameraRotation;
 import static engine.sound.SoundAPI.playSound;
-import static game.chunk.Chunk.digBlock;
-import static game.chunk.Chunk.setChunk;
+import static game.chunk.Chunk.*;
 import static game.crafting.Inventory.addItemToInventory;
 import static game.item.ItemEntity.*;
 import static game.mainMenu.MainMenu.*;
@@ -70,6 +69,7 @@ public class Networking {
         kryo.register(ItemSendingObject.class);
         kryo.register(ItemPickupNotification.class);
         kryo.register(ItemDeletionSender.class);
+        kryo.register(BlockPlacingReceiver.class);
 
         //5000 = 5000ms = 5 seconds
         try {
@@ -125,6 +125,9 @@ public class Networking {
                     addItemToCollectionQueue(itemPickupNotification.name);
                 } else if (object instanceof ItemDeletionSender itemDeletionSender){
                     deleteItem(itemDeletionSender.ID);
+                } else if (object instanceof BlockPlacingReceiver blockPlacingReceiver){
+                    Vector3i c = blockPlacingReceiver.receivedPos;
+                    placeBlock(c.x,c.y, c.z, blockPlacingReceiver.ID, blockPlacingReceiver.ID);
                 }
             }
 
@@ -142,6 +145,10 @@ public class Networking {
         BreakBlockClassThing thisBlockThing = new BreakBlockClassThing();
         thisBlockThing.breakingPos = new Vector3i(x,y,z);
         client.sendTCP(thisBlockThing);
+    }
+
+    public static void sendOutNetworkBlockPlace(int x, int y, int z, int ID, byte rotation){
+        client.sendTCP(new BlockPlacingReceiver(new Vector3i(x,y,z), ID, rotation));
     }
 
 

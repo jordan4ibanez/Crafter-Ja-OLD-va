@@ -138,10 +138,13 @@ public class Ray {
         }
     }
     private static void rayPlaceBlock(Vector3d flooredPos, int ID) {
+        if (getIfMultiplayer()){
+            sendOutNetworkBlockPlace((int) flooredPos.x, (int) flooredPos.y, (int) flooredPos.z, ID, getPlayerDir());
+        } else {
+            placeBlock((int) flooredPos.x, (int) flooredPos.y, (int) flooredPos.z, ID, getPlayerDir());
 
-        placeBlock((int) flooredPos.x, (int) flooredPos.y, (int) flooredPos.z, ID, getPlayerDir());
-
-        onPlaceCall(ID, flooredPos);
+            onPlaceCall(ID, flooredPos);
+        }
 
         removeItemFromInventory(getCurrentInventorySelection(), 0);
     }
