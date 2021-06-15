@@ -35,7 +35,7 @@ public class Chunk {
         return map.get(x + " " + z);
     }
 
-    private static byte globalLight = 15;
+
 
     //multiplayer chunk update
     public static void setChunk(int x, int z, ChunkObject newChunk){
@@ -172,14 +172,10 @@ public class Chunk {
 
     //this is for testing the day/night cycle
     public static void testLightCycleFlood(){
-        byte currentLightLevel = getCurrentGlobalLightLevel();
         for (ChunkObject thisChunk : map.values()){
-            //if (thisChunk.lightLevel != currentLightLevel){
-                thisChunk.lightLevel = currentLightLevel;
-                for (int y = 0; y < 8; y++) {
-                    chunkUpdate(thisChunk.x, thisChunk.z, y);
-                }
-            //}
+            for (int y = 0; y < 8; y++) {
+                chunkUpdate(thisChunk.x, thisChunk.z, y);
+            }
         }
     }
 
@@ -432,8 +428,10 @@ public class Chunk {
 
         byte naturalLightOfBlock = thisChunk.naturalLight[index];
 
-        if (naturalLightOfBlock > globalLight){
-            naturalLightOfBlock = globalLight;
+        byte currentGlobalLightLevel = getCurrentGlobalLightLevel();
+
+        if (naturalLightOfBlock > currentGlobalLightLevel){
+            naturalLightOfBlock = currentGlobalLightLevel;
         }
 
         byte torchLight = thisChunk.torchLight[index];

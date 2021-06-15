@@ -46,7 +46,6 @@ public class SaveQueue {
                         savingObject.r = thisChunk.rotation;
                         savingObject.l = thisChunk.naturalLight;
                         savingObject.h = thisChunk.heightMap;
-                        savingObject.e = thisChunk.lightLevel;
 
                         String stringedChunk = mapper.writeValueAsString(savingObject);
 
@@ -88,7 +87,6 @@ public class SaveQueue {
             savingObject.r = thisChunk.rotation;
             savingObject.l = thisChunk.naturalLight;
             savingObject.h = thisChunk.heightMap;
-            savingObject.e = thisChunk.lightLevel;
 
             String stringedChunk = mapper.writeValueAsString(savingObject);
 

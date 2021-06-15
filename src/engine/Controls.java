@@ -23,7 +23,6 @@ import static org.lwjgl.glfw.GLFW.*;
 public class Controls {
 
     private static boolean throwButtonPushed = false;
-    private static boolean mobSpawningButtonPushed = false;
     private static boolean inventoryButtonPushed = false;
     private static boolean F11Pushed           = false;
     private static boolean escapePushed        = false;
@@ -53,19 +52,6 @@ public class Controls {
 
             setPlayerJump(isKeyPressed(getKeyJump()));
         }
-
-
-        /*
-        if (isKeyPressed(GLFW_KEY_G)) {
-            clearItems();
-        }
-
-        if (isKeyPressed(GLFW_KEY_R)) {
-            setPlayerRunning(true);
-        } else {
-            setPlayerRunning(false);
-        }
-         */
 
 
         //debug info
@@ -135,6 +121,7 @@ public class Controls {
 
 
         //spawn human mob
+        /*
         if (isKeyPressed(GLFW_KEY_T)) {
             if (!mobSpawningButtonPushed) {
                 mobSpawningButtonPushed = true;
@@ -143,6 +130,7 @@ public class Controls {
         } else if (!isKeyPressed(GLFW_KEY_T)){
             mobSpawningButtonPushed = false;
         }
+         */
 
 
         if (!isPlayerInventoryOpen() && !isPaused()) {

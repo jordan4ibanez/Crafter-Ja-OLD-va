@@ -13,6 +13,7 @@ import static engine.settings.Settings.getSettingsChunkLoad;
 import static game.chunk.Chunk.*;
 import static game.blocks.BlockDefinition.*;
 import static game.chunk.ChunkMath.posToIndex;
+import static game.light.Light.getCurrentGlobalLightLevel;
 
 public class ChunkMesh {
 
@@ -140,7 +141,7 @@ public class ChunkMesh {
             int x,y,z;
             int neighborBlock;
 
-            byte chunkLightLevel = thisChunk.lightLevel;
+            byte chunkLightLevel = getCurrentGlobalLightLevel();
 
             for (x = 0; x < 16; x++) {
                 realX = (chunkX * 16) + x;

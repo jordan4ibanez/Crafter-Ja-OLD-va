@@ -11,8 +11,6 @@ public class ChunkObject {
     public int x;
     public int z;
 
-    public byte lightLevel = 15;
-
     public int [] block = new int[arraySize];
     public byte[] rotation = new byte[arraySize];
     public byte[] naturalLight = new byte[arraySize];
