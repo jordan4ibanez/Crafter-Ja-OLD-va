@@ -91,7 +91,7 @@ public class Networking {
                         client.stop();
                         setServerConnected(false);
                         System.out.println("REJECTED FROM SERVER!");
-                        setMenuPage((byte) 5);
+                        setMenuPage((byte) 7);
                     }
                     //received chunk data
                 } else if (object instanceof ChunkSavingObject encodedChunk){
