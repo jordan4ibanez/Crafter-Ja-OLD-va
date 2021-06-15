@@ -91,6 +91,16 @@ public class Transformation {
         return new Matrix4d(matrix).mul(modelViewMatrix);
     }
 
+    public static  Matrix4d updateTextIn3DSpaceViewMatrix(Vector3d position, Vector3f rotation, Vector3d scale, Matrix4d matrix) {
+        // First do the rotation so camera rotates over its position
+        modelViewMatrix.identity().identity().translate(position).
+                rotateY(Math.toRadians(-rotation.y)).
+                rotateZ(Math.toRadians(-rotation.z)).
+                rotateX(Math.toRadians(-rotation.x)).
+                scale(scale);
+        return new Matrix4d(matrix).mul(modelViewMatrix);
+    }
+
 
     public static Matrix4d getGenericMatrixWithPosRotationScale(Vector3d position, Vector3f rotation,Vector3d scale, Matrix4d matrix){
         modelViewMatrix.identity().identity().translate(position.x, position.y, position.z).
