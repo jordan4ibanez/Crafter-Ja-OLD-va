@@ -10,10 +10,6 @@ import static engine.Controls.mainMenuInput;
 import static engine.MouseInput.*;
 import static engine.Window.*;
 import static engine.debug.CheckRuntimeInfo.doRuntimeInfoUpdate;
-import static engine.debug.DebugTerrainDrawTypes.generateDebugChunkMesh;
-import static engine.debug.RenderDebug.initializeDebugRenderShader;
-import static engine.debug.RenderDebug.renderDebug;
-import static engine.debug.debug.debugInput;
 import static engine.graphics.Camera.*;
 import static engine.gui.GUILogic.calculateHealthBarElements;
 import static engine.gui.GUILogic.pauseMenuOnTick;
@@ -90,13 +86,6 @@ public class SceneHandler {
             setCameraPosition(0,-8,0);
         }
 
-        //for debugging
-        if (currentScene == 2){
-            initializeDebugRenderShader();
-            setWindowClearColor(0f,0f,0f,0f);
-            generateDebugChunkMesh();
-        }
-
 
         while (!windowShouldClose()){
             if (getDebugInfo()) {
@@ -106,7 +95,6 @@ public class SceneHandler {
             switch (currentScene) {
                 case 0 -> mainMenuLoop();
                 case 1 -> gameLoop();
-                case 2 -> debugLoop();
                 case 3 -> multiPlayerLoop();
             }
         }
@@ -143,14 +131,6 @@ public class SceneHandler {
         particlesOnStep();
         //rainDropsOnTick();
         sendPositionData();
-    }
-
-    private static void debugLoop(){
-        windowUpdate();
-        calculateDelta();
-        mouseInput();
-        debugInput();
-        renderDebug();
     }
 
 
