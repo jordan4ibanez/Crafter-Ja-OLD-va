@@ -141,6 +141,9 @@ public class Networking {
                 super.disconnected(connection);
                 //killConnection();
                 System.out.println("Disconnected from server!");
+                client.stop();
+                client.close();
+                client.removeListener(this);
             }
         });
     }
