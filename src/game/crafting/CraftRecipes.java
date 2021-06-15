@@ -97,6 +97,13 @@ public class CraftRecipes {
         };
         generateRecipe(stick, "stick", 4);
 
+
+        String[][] torch = {
+                {"coal"},
+                {"stick"}
+        };
+        generateRecipe(torch, "torch", 4);
+
         finalizeRecipes();
     }
 

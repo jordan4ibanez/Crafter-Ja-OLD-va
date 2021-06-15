@@ -1226,13 +1226,13 @@ public class BlockDefinition {
                 0,
                 1,
                 "torch",
-                false,
-                new int[]{28,0}, //front
-                new int[]{28,0}, //back
-                new int[]{28,0}, //right
-                new int[]{28,0}, //left
-                new int[]{28,0}, //top
-                new int[]{28,0},  //bottom
+                true,
+                new int[]{0,1}, //front
+                new int[]{0,1}, //back
+                new int[]{0,1}, //right
+                new int[]{0,1}, //left
+                new int[]{0,1}, //top
+                new int[]{0,1},  //bottom
                 4, //allfaces
                 false,
                 false,
