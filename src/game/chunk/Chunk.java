@@ -35,6 +35,8 @@ public class Chunk {
         return map.get(x + " " + z);
     }
 
+    private static byte globalLight = 15;
+
     //multiplayer chunk update
     public static void setChunk(int x, int z, ChunkObject newChunk){
         if (map.get(x + " " + z) != null){
@@ -436,15 +438,33 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
+
         String key = chunkX + " " + chunkZ;
         ChunkObject thisChunk = map.get(key);
+
         if (thisChunk == null){
             return 0;
         }
         if (thisChunk.naturalLight == null){
             return 0;
         }
-        return thisChunk.naturalLight[posToIndex(blockX, y, blockZ)];
+
+
+        int index = posToIndex(blockX, y, blockZ);
+
+        byte naturalLightOfBlock = thisChunk.naturalLight[index];
+
+        if (naturalLightOfBlock > globalLight){
+            naturalLightOfBlock = globalLight;
+        }
+
+        byte torchLight = thisChunk.torchLight[index];
+
+        if (naturalLightOfBlock > torchLight){
+            return naturalLightOfBlock;
+        } else {
+            return torchLight;
+        }
     }
 
     private static void instantUpdateNeighbor(int chunkX, int chunkZ, int x, int y, int z){
