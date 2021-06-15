@@ -17,7 +17,7 @@ import static engine.debug.debug.debugInput;
 import static engine.graphics.Camera.*;
 import static engine.gui.GUILogic.calculateHealthBarElements;
 import static engine.gui.GUILogic.pauseMenuOnTick;
-import static engine.network.Networking.sendPositionData;
+import static engine.network.Networking.*;
 import static engine.render.MainMenuRenderer.renderMainMenu;
 import static engine.render.GameRenderer.renderGame;
 import static engine.Time.calculateDelta;
@@ -31,8 +31,7 @@ import static game.crafting.Inventory.generateRandomInventory;
 import static game.crafting.InventoryLogic.inventoryMenuOnTick;
 import static game.falling.FallingEntity.fallingEntityOnStep;
 import static game.item.ItemRegistration.registerItems;
-import static game.mainMenu.MainMenu.doMainMenuLogic;
-import static game.mainMenu.MainMenu.selectTitleScreenGag;
+import static game.mainMenu.MainMenu.*;
 import static game.mob.Mob.initializeMobRegister;
 import static game.mob.Mob.mobsOnTick;
 import static game.particle.Particle.particlesOnStep;
@@ -61,8 +60,8 @@ public class SceneHandler {
         if (newScene == 1){
             setWindowClearColor(0.53f,0.81f,0.92f,0.f);
             calculateHealthBarElements();
-            registerItems();
-            initializeMobRegister();
+            //registerItems();
+            //initializeMobRegister();
             initialChunkPayload();
             generateRandomInventory();
         }
@@ -70,8 +69,8 @@ public class SceneHandler {
         if (newScene == 3){
             setWindowClearColor(0.53f,0.81f,0.92f,0.f);
             calculateHealthBarElements();
-            registerItems();
-            initializeMobRegister();
+            //registerItems();
+            //initializeMobRegister();
             if (!isMouseLocked()){
                 toggleMouseLock();
             }
@@ -115,6 +114,11 @@ public class SceneHandler {
     }
 
     private static void multiPlayerLoop() throws Exception {
+        if (!getIfConnected()){
+            setScene((byte)0);
+            setMenuPage((byte)7);
+            return;
+        }
         windowUpdate();
         calculateDelta();
         mouseInput();

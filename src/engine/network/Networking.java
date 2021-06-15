@@ -64,14 +64,16 @@ public class Networking {
         kryo.register(BreakBlockClassThing.class);
         kryo.register(Vector3i.class);
         kryo.register(BlockBreakingReceiver.class);
+        kryo.register(ItemSendingObject.class);
 
         //5000 = 5000ms = 5 seconds
         try {
             client.connect(5000, host, port);
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace(); <-spam
             client.stop();
             setServerConnected(false);
+            setConnectionFailure();
             return;
         }
 
@@ -111,7 +113,17 @@ public class Networking {
                 } else if (object instanceof  BlockBreakingReceiver blockBreakingReceiver){
                     Vector3i c = blockBreakingReceiver.receivedPos;
                     digBlock(c.x, c.y, c.z);
+                } else if (object instanceof ItemSendingObject itemSendingObject){
+                    System.out.println("we have received an item entity");
                 }
+            }
+
+            @Override
+            public void disconnected(Connection connection) {
+                //kick player back to the menu
+                super.disconnected(connection);
+                //killConnection();
+                System.out.println("Disconnected from server!");
             }
         });
     }
@@ -135,5 +147,10 @@ public class Networking {
     //request chunk data from server
     public static void sendOutChunkRequest(ChunkRequest chunkRequest) {
         client.sendTCP(chunkRequest);
+    }
+
+    //allow main loop to send player back to multiplayer page
+    public static boolean getIfConnected(){
+        return client.isConnected();
     }
 }

@@ -63,6 +63,7 @@ public class MainMenu {
 
     public static void setMenuPage(byte page){
         menuPage = page;
+        System.out.println("menu page is now " + menuPage);
     }
 
     //0 main
@@ -71,7 +72,8 @@ public class MainMenu {
     //3 singleplayer worlds menu
     //4 credits
     //5 multiplayer
-    //6 multiplayer loading screen
+    //6 connecting to server
+    //7 could not connect to server
     private static byte menuPage = 0;
 
     private static final GUIObject[] mainMenuGUI = new GUIObject[]{
@@ -124,6 +126,11 @@ public class MainMenu {
     };
 
     private static final GUIObject[] multiPlayerLoadingGUI = new GUIObject[]{
+            new GUIObject("CONNECTING TO SERVER..." , true, new Vector2d(0, 5)),
+            new GUIObject("BACK" , new Vector2d(0, -5), 10,1),
+    };
+
+    private static final GUIObject[] multiplayerFailureGUI = new GUIObject[]{
             new GUIObject("COULD NOT CONNECT TO SERVER" , true, new Vector2d(0, 5)),
             new GUIObject("BACK" , new Vector2d(0, -5), 10,1),
     };
@@ -145,6 +152,8 @@ public class MainMenu {
             return multiPlayerGUI;
         } else if (menuPage == 6){
             return multiPlayerLoadingGUI;
+        } else if (menuPage == 7){
+            return multiplayerFailureGUI;
         }
 
         //have to return something
@@ -252,8 +261,20 @@ public class MainMenu {
         return worldTitleOffsets;
     }
 
+    private static boolean connectionFailure = false;
+
+    public static void setConnectionFailure(){
+        connectionFailure = true;
+    }
 
     public static void doMainMenuLogic() throws IOException {
+
+        if(connectionFailure){
+            connectionFailure = false;
+            menuPage = 7;
+        }
+
+
         if (isMouseLocked()){
             //System.out.println("unlocking");
             toggleMouseLock();
@@ -619,6 +640,7 @@ public class MainMenu {
                         //System.out.println("Address is: " + multiPlayerGUI[0].inputText);
                         //System.out.println("BEGIN CONNECTION");
 
+                        //this freezes the main menu
                         sendOutHandshake(texted[0]);
                         menuPage = 6;
                     }
@@ -647,6 +669,21 @@ public class MainMenu {
 
                 if (selection == 1){
                     System.out.println("CANCELING CONNECTION");
+                    menuPage = 5;
+                }
+
+            } else if (!isLeftButtonPressed()) {
+                mouseButtonPushed = false;
+            }
+        } else if (menuPage == 7){
+
+            byte selection = doGUIMouseCollisionDetection(multiplayerFailureGUI);
+
+            if (isLeftButtonPressed() && selection >= 0 && !mouseButtonPushed && !mouseButtonWasPushed) {
+                playSound("button");
+                mouseButtonPushed = true;
+
+                if (selection == 1){
                     menuPage = 5;
                 }
 
@@ -961,6 +998,7 @@ public class MainMenu {
             "Crashes on command!",
             "Doesn't burn your toast!",
             "Widescreen compatible!",
+            "Jeb is cool!",
             "Now with more code!",
             "Binary until compiled!",
             "Go west to head east!",
@@ -972,6 +1010,7 @@ public class MainMenu {
             "Found on the internet!",
             "Reverts changes!",
             "Now recyclable!",
+            "Notch is cool!",
             "No smokin', and no flash photography!",
             "Walks like it talks!",
             "Dries off in seconds!",
@@ -981,5 +1020,22 @@ public class MainMenu {
             "Folds into a neat swan!",
             "Reads bytes!",
             "Web capable!",
+            "No nodes here!",
+            "They're minerals!",
+            "Green flag! Go go go!",
+            "java.lang.nullpointerexception!",
+            "Supported by an open web!",
+            "Buffalo buffalo Buffalo buffalo buffalo buffalo Buffalo buffalo!",
+            "Tom Scott's bound to find it!",
+            "It's pretty alright!",
+            "Holy macaroni!",
+            "Do a barrel roll!",
+            "Fish on!",
+            "Puts pixels on your screen!",
+            "Final public static!",
+            "Public static final!",
+            "Made with no artificial ingredients!",
+            "MIT Licensed!",
+            "Can be used as a floatation device!"
     };
 }
