@@ -168,8 +168,8 @@ public class ChunkMesh {
                                     liquidPositions.add(1f + x);
                                     liquidPositions.add(1f + y);
                                     liquidPositions.add(1f + z);
-                                    liquidPositions.add (0f + x);
-                                    liquidPositions.add (1f + y);
+                                    liquidPositions.add(0f + x);
+                                    liquidPositions.add(1f + y);
                                     liquidPositions.add(1f + z);
                                     liquidPositions.add(0f + x);
                                     liquidPositions.add(0f + y);
