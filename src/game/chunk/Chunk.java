@@ -621,14 +621,10 @@ public class Chunk {
             0.009f, //NORMAL
             0.004f, //FASTER
             0.002f, //INSANE
-            0.0005f, //FUTURE PC
+            0.0001f, //FUTURE PC
     };
 
-    private static float goalTimer = goalTimerArray[getSettingsChunkLoad()];
-
-    public static void updateChunkUnloadingSpeed(){
-        goalTimer = goalTimerArray[getSettingsChunkLoad()];
-    }
+    private static final float goalTimer = 0.0001f;//goalTimerArray[getSettingsChunkLoad()];
 
     private static float chunkDeletionTimer = 0f;
 

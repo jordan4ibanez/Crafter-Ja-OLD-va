@@ -4,10 +4,7 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static engine.Time.getDelta;
-import static engine.settings.Settings.getSettingsChunkLoad;
 import static game.chunk.Chunk.chunkStackContainsBlock;
-import static game.chunk.Chunk.updateChunkUnloadingSpeed;
-import static game.chunk.ChunkMeshGenerationHandler.updateChunkMeshLoadingSpeed;
 import static game.chunk.ChunkMeshGenerator.generateChunkMesh;
 
 public class ChunkUpdateHandler {
@@ -34,14 +31,15 @@ public class ChunkUpdateHandler {
             0.0001f, //FUTURE PC
     };
 
-    private static float goalTimer = goalTimerArray[getSettingsChunkLoad()];
+    private static final float goalTimer = 0.00005f;//goalTimerArray[getSettingsChunkLoad()];
 
     public static void updateChunkLoadingSpeed(){
-        goalTimer = goalTimerArray[getSettingsChunkLoad()];
+        System.out.println("this doesn't do anything anymore");
+        //goalTimer = goalTimerArray[getSettingsChunkLoad()];
         //also update unload speed timer
-        updateChunkUnloadingSpeed();
+        //updateChunkUnloadingSpeed();
         //also update chunk mesh loading speed timer
-        updateChunkMeshLoadingSpeed();
+        //updateChunkMeshLoadingSpeed();
     }
 
     private static float chunkUpdateTimer = 0f;

@@ -51,11 +51,7 @@ public class ChunkMeshGenerationHandler {
             0.0001f, //FUTURE PC
     };
 
-    private static float goalTimer = goalTimerArray[getSettingsChunkLoad()];
-
-    public static void updateChunkMeshLoadingSpeed() {
-        goalTimer = goalTimerArray[getSettingsChunkLoad()];
-    }
+    private static final float goalTimer = 0.00005f;//goalTimerArray[getSettingsChunkLoad()];
 
     private static float chunkUpdateTimer = 0;
 
