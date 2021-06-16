@@ -341,6 +341,28 @@ public class Chunk {
         updateNeighbor(chunkX, chunkZ,blockX,y,blockZ);
     }
 
+    public static void setTorchLight(int x,int y,int z, byte newLight){
+        if (y > 127 || y < 0){
+            return;
+        }
+        int yPillar = (int)Math.floor(y/16d);
+        int chunkX = (int)Math.floor(x/16d);
+        int chunkZ = (int)Math.floor(z/16d);
+        int blockX = (int)(x - (16d*chunkX));
+        int blockZ = (int)(z - (16d*chunkZ));
+        String key = chunkX + " " + chunkZ;
+        ChunkObject thisChunk = map.get(key);
+        if (thisChunk == null){
+            return;
+        }
+        if (thisChunk.block == null){
+            return;
+        }
+        thisChunk.torchLight[posToIndex(blockX, y, blockZ)] = newLight;
+        chunkUpdate(chunkX,chunkZ,yPillar);
+        updateNeighbor(chunkX, chunkZ,blockX,y,blockZ);
+    }
+
 
     public static void digBlock(int x,int y,int z){
         if (y > 127 || y < 0){
@@ -441,6 +463,31 @@ public class Chunk {
         } else {
             return torchLight;
         }
+    }
+
+    public static byte getTorchLight(int x,int y,int z){
+        if (y > 127 || y < 0){
+            return 0;
+        }
+        int chunkX = (int)Math.floor(x/16d);
+        int chunkZ = (int)Math.floor(z/16d);
+        int blockX = (int)(x - (16d*chunkX));
+        int blockZ = (int)(z - (16d*chunkZ));
+
+        String key = chunkX + " " + chunkZ;
+        ChunkObject thisChunk = map.get(key);
+
+        if (thisChunk == null){
+            return 0;
+        }
+        if (thisChunk.torchLight == null){
+            return 0;
+        }
+
+
+        int index = posToIndex(blockX, y, blockZ);
+
+        return thisChunk.torchLight[index];
     }
 
     private static void instantUpdateNeighbor(int chunkX, int chunkZ, int x, int y, int z){

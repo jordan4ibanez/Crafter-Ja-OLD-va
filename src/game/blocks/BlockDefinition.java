@@ -9,6 +9,7 @@ import static game.crafting.InventoryLogic.openCraftingInventory;
 import static game.falling.FallingEntity.addFallingEntity;
 import static game.item.ItemDefinition.registerItem;
 import static game.item.ItemEntity.createItem;
+import static game.light.Light.torchFloodFill;
 import static game.tnt.TNTEntity.createTNT;
 
 public class BlockDefinition {
@@ -1219,6 +1220,14 @@ public class BlockDefinition {
                 null
         );
 
+
+        BlockModifier torchPlace = new BlockModifier() {
+            @Override
+            public void onPlace(Vector3d pos) {
+                torchFloodFill((int)pos.x, (int)pos.y, (int)pos.z);
+            }
+        };
+
         new BlockDefinition(
                 29,
                 0,
@@ -1237,11 +1246,11 @@ public class BlockDefinition {
                 false,
                 false,
                 false,
-                null,
+                torchPlace,
                 "wood_1",
                 "wood_2",
                 false,
-                false,
+                true,
                 0,
                 true,
                 null
