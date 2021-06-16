@@ -48,7 +48,7 @@ public class ChunkMeshGenerationHandler {
             0.009f, //NORMAL
             0.004f, //FASTER
             0.002f, //INSANE
-            0.0005f, //FUTURE PC
+            0.0001f, //FUTURE PC
     };
 
     private static float goalTimer = goalTimerArray[getSettingsChunkLoad()];

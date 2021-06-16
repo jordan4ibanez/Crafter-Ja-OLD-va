@@ -19,6 +19,7 @@ import static engine.settings.Settings.getRenderDistance;
 import static engine.settings.Settings.getSettingsChunkLoad;
 import static game.chunk.ChunkMath.posToIndex;
 import static game.chunk.ChunkMeshGenerator.generateChunkMesh;
+import static game.chunk.ChunkMeshGenerator.instantGeneration;
 import static game.chunk.ChunkUpdateHandler.chunkUpdate;
 import static game.light.Light.*;
 import static game.player.Player.*;
@@ -394,7 +395,7 @@ public class Chunk {
         lightFloodFill(x, y, z);
         thisChunk.modified = true;
         thisChunk.naturalLight[posToIndex(blockX, y, blockZ)] = getImmediateLight(x,y,z);
-        generateChunkMesh(chunkX,chunkZ,yPillar);//instant update
+        instantGeneration(chunkX,chunkZ,yPillar);
         instantUpdateNeighbor(chunkX, chunkZ,blockX,y,blockZ);//instant update
     }
 
@@ -422,7 +423,7 @@ public class Chunk {
         }
         lightFloodFill(x, y, z);
         thisChunk.modified = true;
-        generateChunkMesh(chunkX,chunkZ,yPillar);//instant update
+        instantGeneration(chunkX,chunkZ,yPillar);
         instantUpdateNeighbor(chunkX, chunkZ,blockX,y,blockZ);//instant update
     }
 
@@ -500,16 +501,16 @@ public class Chunk {
             case 111, 95, 79, 63, 47, 31, 15 -> generateChunkMesh(chunkX, chunkZ, yPillar + 1);
         }
         if (x == 15){ //update neighbor
-            generateChunkMesh(chunkX+1, chunkZ, yPillar);
+            instantGeneration(chunkX+1, chunkZ, yPillar);
         }
         if (x == 0){
-            generateChunkMesh(chunkX-1, chunkZ, yPillar);
+            instantGeneration(chunkX-1, chunkZ, yPillar);
         }
         if (z == 15){
-            generateChunkMesh(chunkX, chunkZ+1, yPillar);
+            instantGeneration(chunkX, chunkZ+1, yPillar);
         }
         if (z == 0){
-            generateChunkMesh(chunkX, chunkZ-1, yPillar);
+            instantGeneration(chunkX, chunkZ-1, yPillar);
         }
     }
 

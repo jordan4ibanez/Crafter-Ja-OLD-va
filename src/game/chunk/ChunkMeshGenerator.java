@@ -28,24 +28,82 @@ public class ChunkMeshGenerator implements Runnable{
         generationQueue.add(new Vector3i(chunkX,yHeight, chunkZ));
     }
 
+    public static void instantGeneration(int chunkX, int chunkZ, int yHeight){
+        generationQueue.addFirst(new Vector3i(chunkX,yHeight, chunkZ));
+    }
+
+    //cache data
+
     private final static byte maxLight = 15;
+    private static int chunkX;
+    private static int chunkZ;
+    private static int yHeight;
+    private static ChunkObject thisChunk;
+
+    private static ChunkObject chunkNeighborXPlus;
+    private static ChunkObject chunkNeighborXMinus;
+    private static ChunkObject chunkNeighborZPlus;
+    private static ChunkObject chunkNeighborZMinus;
+
+    //normal block mesh data
+    private static final List<Float> positions = new ArrayList<>();
+    private static final List<Float> textureCoord = new ArrayList<>();
+    private static final List<Integer> indices = new ArrayList<>();
+    private static final List<Float> light = new ArrayList<>();
+    private static int indicesCount;
+
+    //liquid block mesh data
+    private static final List<Float> liquidPositions = new ArrayList<>();
+    private static final List<Float> liquidTextureCoord = new ArrayList<>();
+    private static final List<Integer> liquidIndices = new ArrayList<>();
+    private static final List<Float> liquidLight = new ArrayList<>();
+    private static int liquidIndicesCount;
+
+    //allFaces block mesh data
+    private static final List<Float> allFacesPositions = new ArrayList<>();
+    private static final List<Float> allFacesTextureCoord = new ArrayList<>();
+    private static final List<Integer> allFacesIndices = new ArrayList<>();
+    private static final List<Float> allFacesLight = new ArrayList<>();
+    private static int allFacesIndicesCount;
+
+    private static int thisBlock;
+    private static byte thisRotation;
+    private static float lightValue;
+    private static float[] textureWorker;
+    private static int x, y, z;
+    private static int neighborBlock;
+    private static byte chunkLightLevel;
+
+    //reduces lookup time
+    private static int[] blockData;
+    private static byte[] rotationData;
+    private static byte[] naturalLightData;
+    private static byte[] torchLightData;
+
+    private static Vector3i updateRawData;
+
 
     private static void pollQueue(){
         if (!generationQueue.isEmpty()) {
 
-            Vector3i updateRawData = generationQueue.pop();
+            //long startTime = System.nanoTime();
 
-            int chunkX = updateRawData.x;
-            int chunkZ = updateRawData.z;
-            int yHeight = updateRawData.y;
+            try {
+                updateRawData = generationQueue.pop();
+            } catch (Exception exp){
+                return; //don't crash, basically
+            }
 
-            long startTime = System.nanoTime();
-            ChunkObject thisChunk = getChunk(chunkX, chunkZ);
+            chunkX = updateRawData.x;
+            chunkZ = updateRawData.z;
+            yHeight = updateRawData.y;
 
-            ChunkObject chunkNeighborXPlus = getChunk(chunkX + 1, chunkZ);
-            ChunkObject chunkNeighborXMinus = getChunk(chunkX - 1, chunkZ);
-            ChunkObject chunkNeighborZPlus = getChunk(chunkX, chunkZ + 1);
-            ChunkObject chunkNeighborZMinus = getChunk(chunkX, chunkZ - 1);
+            thisChunk = getChunk(chunkX, chunkZ);
+
+            chunkNeighborXPlus = getChunk(chunkX + 1, chunkZ);
+            chunkNeighborXMinus = getChunk(chunkX - 1, chunkZ);
+            chunkNeighborZPlus = getChunk(chunkX, chunkZ + 1);
+            chunkNeighborZMinus = getChunk(chunkX, chunkZ - 1);
 
             //don't bother if the chunk doesn't exist
             if (thisChunk == null) {
@@ -53,46 +111,40 @@ public class ChunkMeshGenerator implements Runnable{
             }
 
             //normal block mesh data
-            final List<Float> positions = new ArrayList<>();
-            final List<Float> textureCoord = new ArrayList<>();
-            final List<Integer> indices = new ArrayList<>();
-            final List<Float> light = new ArrayList<>();
-            int indicesCount = 0;
+            positions.clear();
+            textureCoord.clear();
+            indices.clear();
+            light.clear();
+            indicesCount = 0;
 
             //liquid block mesh data
-            final List<Float> liquidPositions = new ArrayList<>();
-            final List<Float> liquidTextureCoord = new ArrayList<>();
-            final List<Integer> liquidIndices = new ArrayList<>();
-            final List<Float> liquidLight = new ArrayList<>();
-            int liquidIndicesCount = 0;
+            liquidPositions.clear();
+            liquidTextureCoord.clear();
+            liquidIndices.clear();
+            liquidLight.clear();
+            liquidIndicesCount = 0;
 
             //allFaces block mesh data
-            final List<Float> allFacesPositions = new ArrayList<>();
-            final List<Float> allFacesTextureCoord = new ArrayList<>();
-            final List<Integer> allFacesIndices = new ArrayList<>();
-            final List<Float> allFacesLight = new ArrayList<>();
-            int allFacesIndicesCount = 0;
+            allFacesPositions.clear();
+            allFacesTextureCoord.clear();
+            allFacesIndices.clear();
+            allFacesLight.clear();
+            allFacesIndicesCount = 0;
 
-            //cache data
-            int thisBlock;
-            byte thisRotation;
-            int realX;
-            int realZ;
-            float lightValue;
-            float[] textureWorker;
-            int x, y, z;
-            int neighborBlock;
+            chunkLightLevel = getCurrentGlobalLightLevel();
 
-            byte chunkLightLevel = getCurrentGlobalLightLevel();
+            //reduces lookup time
+            blockData = thisChunk.block;
+            rotationData = thisChunk.rotation;
+            naturalLightData = thisChunk.naturalLight;
+            torchLightData = thisChunk.torchLight;
 
             for (x = 0; x < 16; x++) {
-                realX = (chunkX * 16) + x;
                 for (z = 0; z < 16; z++) {
-                    realZ = (chunkZ * 16) + z;
                     for (y = yHeight * 16; y < (yHeight + 1) * 16; y++) {
 
-                        thisBlock = thisChunk.block[posToIndex(x, y, z)];
-                        thisRotation = thisChunk.rotation[posToIndex(x, y, z)];
+                        thisBlock = blockData[posToIndex(x, y, z)];
+                        thisRotation = rotationData[posToIndex(x, y, z)];
 
                         if (thisBlock > 0) {
 
@@ -103,7 +155,7 @@ public class ChunkMeshGenerator implements Runnable{
                                 if (z + 1 > 15) {
                                     neighborBlock = getNeighborBlock(chunkNeighborZPlus, x, y, 0);
                                 } else {
-                                    neighborBlock = thisChunk.block[posToIndex(x, y, z + 1)];
+                                    neighborBlock = blockData[posToIndex(x, y, z + 1)];
                                 }
 
                                 if (neighborBlock >= 0 && getBlockDrawType(neighborBlock) != 1) {
@@ -125,9 +177,9 @@ public class ChunkMeshGenerator implements Runnable{
 
                                     //front
                                     if (z + 1 > 15) {
-                                        lightValue = getLight(realX, y, realZ + 1);
+                                        lightValue = getNeighborLight(chunkNeighborZPlus, x,y,0);
                                     } else {
-                                        lightValue = calculateBlockLight(chunkLightLevel, thisChunk.naturalLight[posToIndex(x,y,z + 1)], thisChunk.torchLight[posToIndex(x,y,z + 1)]);
+                                        lightValue = calculateBlockLight(chunkLightLevel, naturalLightData[posToIndex(x,y,z + 1)], torchLightData[posToIndex(x,y,z + 1)]);
                                     }
 
                                     lightValue = convertLight(lightValue / maxLight);
@@ -162,7 +214,7 @@ public class ChunkMeshGenerator implements Runnable{
                                 if (z - 1 < 0) {
                                     neighborBlock = getNeighborBlock(chunkNeighborZMinus, x, y, 15);
                                 } else {
-                                    neighborBlock = thisChunk.block[posToIndex(x, y, z - 1)];
+                                    neighborBlock = blockData[posToIndex(x, y, z - 1)];
                                 }
 
                                 if (neighborBlock >= 0 && getBlockDrawType(neighborBlock) != 1) {
@@ -182,9 +234,9 @@ public class ChunkMeshGenerator implements Runnable{
 
                                     //back
                                     if (z - 1 < 0) {
-                                        lightValue = getLight(realX, y, realZ - 1);
+                                        lightValue = getNeighborLight(chunkNeighborZMinus, x,y,15);
                                     } else {
-                                        lightValue = calculateBlockLight(chunkLightLevel,thisChunk.naturalLight[posToIndex(x,y,z - 1)], thisChunk.torchLight[posToIndex(x,y,z - 1)]);
+                                        lightValue = calculateBlockLight(chunkLightLevel,naturalLightData[posToIndex(x,y,z - 1)], torchLightData[posToIndex(x,y,z - 1)]);
                                     }
 
                                     lightValue = convertLight(lightValue / maxLight);
@@ -217,7 +269,7 @@ public class ChunkMeshGenerator implements Runnable{
                                 if (x + 1 > 15) {
                                     neighborBlock = getNeighborBlock(chunkNeighborXPlus, 0, y, z);
                                 } else {
-                                    neighborBlock = thisChunk.block[posToIndex(x + 1, y, z)];
+                                    neighborBlock = blockData[posToIndex(x + 1, y, z)];
                                 }
 
                                 if (neighborBlock >= 0 && getBlockDrawType(neighborBlock) != 1) {
@@ -238,9 +290,9 @@ public class ChunkMeshGenerator implements Runnable{
                                     //right
 
                                     if (x + 1 > 15) {
-                                        lightValue = getLight(realX + 1, y, realZ);
+                                        lightValue = getNeighborLight(chunkNeighborXPlus, 0,y,z);
                                     } else {
-                                        lightValue = calculateBlockLight(chunkLightLevel, thisChunk.naturalLight[posToIndex(x+1,y,z)], thisChunk.torchLight[posToIndex(x+1,y,z)]);
+                                        lightValue = calculateBlockLight(chunkLightLevel, naturalLightData[posToIndex(x+1,y,z)], torchLightData[posToIndex(x+1,y,z)]);
                                     }
 
                                     lightValue = convertLight(lightValue / maxLight);
@@ -274,7 +326,7 @@ public class ChunkMeshGenerator implements Runnable{
                                 if (x - 1 < 0) {
                                     neighborBlock = getNeighborBlock(chunkNeighborXMinus, 15, y, z);
                                 } else {
-                                    neighborBlock = thisChunk.block[posToIndex(x - 1, y, z)];
+                                    neighborBlock = blockData[posToIndex(x - 1, y, z)];
                                 }
 
                                 if (neighborBlock >= 0 && getBlockDrawType(neighborBlock) != 1) {
@@ -295,9 +347,9 @@ public class ChunkMeshGenerator implements Runnable{
                                     //left
 
                                     if (x - 1 < 0) {
-                                        lightValue = getLight(realX - 1, y, realZ);
+                                        lightValue = getNeighborLight(chunkNeighborXMinus, 15,y,z);
                                     } else {
-                                        lightValue = calculateBlockLight(chunkLightLevel, thisChunk.naturalLight[posToIndex(x - 1, y, z)], thisChunk.torchLight[posToIndex(x - 1, y, z)]);
+                                        lightValue = calculateBlockLight(chunkLightLevel, naturalLightData[posToIndex(x - 1, y, z)], torchLightData[posToIndex(x - 1, y, z)]);
                                     }
 
                                     lightValue = convertLight(lightValue / maxLight);
@@ -330,7 +382,7 @@ public class ChunkMeshGenerator implements Runnable{
 
                                 //y doesn't need a check since it has no neighbors
                                 if (y + 1 < 128) {
-                                    neighborBlock = thisChunk.block[posToIndex(x, y + 1, z)];
+                                    neighborBlock = blockData[posToIndex(x, y + 1, z)];
                                 }
 
                                 if (y == 127 || (neighborBlock >= 0 && getBlockDrawType(neighborBlock) != 1)) {
@@ -353,7 +405,7 @@ public class ChunkMeshGenerator implements Runnable{
 
                                     //y doesn't need a check since it has no neighbors
                                     if (y + 1 < 128) {
-                                        lightValue = calculateBlockLight(chunkLightLevel, thisChunk.naturalLight[posToIndex(x, y + 1, z)], thisChunk.torchLight[posToIndex(x, y + 1, z)]);
+                                        lightValue = calculateBlockLight(chunkLightLevel, naturalLightData[posToIndex(x, y + 1, z)], torchLightData[posToIndex(x, y + 1, z)]);
                                     } else {
                                         lightValue = maxLight;
                                     }
@@ -388,7 +440,7 @@ public class ChunkMeshGenerator implements Runnable{
 
                                 //doesn't need a neighbor chunk, chunks are 2D
                                 if (y - 1 > 0) {
-                                    neighborBlock = thisChunk.block[posToIndex(x, y - 1, z)];
+                                    neighborBlock = blockData[posToIndex(x, y - 1, z)];
                                 }
 
                                 //don't render bottom of world
@@ -411,7 +463,7 @@ public class ChunkMeshGenerator implements Runnable{
 
                                     //doesn't need a neighbor chunk, chunks are 2D
                                     if (y - 1 > 0) {
-                                        lightValue = calculateBlockLight(chunkLightLevel, thisChunk.naturalLight[posToIndex(x, y - 1, z)], thisChunk.torchLight[posToIndex(x, y - 1, z)]);
+                                        lightValue = calculateBlockLight(chunkLightLevel, naturalLightData[posToIndex(x, y - 1, z)], torchLightData[posToIndex(x, y - 1, z)]);
                                     } else {
                                         lightValue = 0;
                                     }
@@ -449,7 +501,7 @@ public class ChunkMeshGenerator implements Runnable{
                                 if (z + 1 > 15) {
                                     neighborBlock = getNeighborBlock(chunkNeighborZPlus, x, y, 0);
                                 } else {
-                                    neighborBlock = thisChunk.block[posToIndex(x, y, z + 1)];
+                                    neighborBlock = blockData[posToIndex(x, y, z + 1)];
                                 }
 
                                 if (neighborBlock >= 0 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
@@ -469,9 +521,9 @@ public class ChunkMeshGenerator implements Runnable{
 
                                     //front
                                     if (z + 1 > 15) {
-                                        lightValue = getLight(realX, y, realZ + 1);
+                                        lightValue = getNeighborLight(chunkNeighborZPlus, x,y,0);
                                     } else {
-                                        lightValue = calculateBlockLight(chunkLightLevel, thisChunk.naturalLight[posToIndex(x, y, z + 1)], thisChunk.torchLight[posToIndex(x, y, z + 1)]);
+                                        lightValue = calculateBlockLight(chunkLightLevel, naturalLightData[posToIndex(x, y, z + 1)], torchLightData[posToIndex(x, y, z + 1)]);
                                     }
 
                                     lightValue = convertLight(lightValue / maxLight);
@@ -505,7 +557,7 @@ public class ChunkMeshGenerator implements Runnable{
                                 if (z - 1 < 0) {
                                     neighborBlock = getNeighborBlock(chunkNeighborZMinus, x, y, 15);
                                 } else {
-                                    neighborBlock = thisChunk.block[posToIndex(x, y, z - 1)];
+                                    neighborBlock = blockData[posToIndex(x, y, z - 1)];
                                 }
 
                                 if (neighborBlock >= 0 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
@@ -525,9 +577,9 @@ public class ChunkMeshGenerator implements Runnable{
 
                                     //back
                                     if (z - 1 < 0) {
-                                        lightValue = getLight(realX, y, realZ - 1);
+                                        lightValue = getNeighborLight(chunkNeighborZMinus, x,y,15);
                                     } else {
-                                        lightValue = calculateBlockLight(chunkLightLevel, thisChunk.naturalLight[posToIndex(x, y, z - 1)], thisChunk.torchLight[posToIndex(x, y, z - 1)]);
+                                        lightValue = calculateBlockLight(chunkLightLevel, naturalLightData[posToIndex(x, y, z - 1)], torchLightData[posToIndex(x, y, z - 1)]);
                                     }
 
                                     lightValue = convertLight(lightValue / maxLight);
@@ -560,7 +612,7 @@ public class ChunkMeshGenerator implements Runnable{
                                 if (x + 1 > 15) {
                                     neighborBlock = getNeighborBlock(chunkNeighborXPlus, 0, y, z);
                                 } else {
-                                    neighborBlock = thisChunk.block[posToIndex(x + 1, y, z)];
+                                    neighborBlock = blockData[posToIndex(x + 1, y, z)];
                                 }
 
                                 if (neighborBlock >= 0 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
@@ -580,9 +632,9 @@ public class ChunkMeshGenerator implements Runnable{
 
                                     //right
                                     if (x + 1 > 15) {
-                                        lightValue = getLight(realX + 1, y, realZ);
+                                        lightValue = getNeighborLight(chunkNeighborXPlus, 0,y,z);
                                     } else {
-                                        lightValue = calculateBlockLight(chunkLightLevel, thisChunk.naturalLight[posToIndex(x + 1, y, z)], thisChunk.torchLight[posToIndex(x + 1, y, z)]);
+                                        lightValue = calculateBlockLight(chunkLightLevel, naturalLightData[posToIndex(x + 1, y, z)], torchLightData[posToIndex(x + 1, y, z)]);
                                     }
 
                                     lightValue = convertLight(lightValue / maxLight);
@@ -615,7 +667,7 @@ public class ChunkMeshGenerator implements Runnable{
                                 if (x - 1 < 0) {
                                     neighborBlock = getNeighborBlock(chunkNeighborXMinus, 15, y, z);
                                 } else {
-                                    neighborBlock = thisChunk.block[posToIndex(x - 1, y, z)];
+                                    neighborBlock = blockData[posToIndex(x - 1, y, z)];
                                 }
 
                                 if (neighborBlock >= 0 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
@@ -635,9 +687,9 @@ public class ChunkMeshGenerator implements Runnable{
 
                                     //left
                                     if (x - 1 < 0) {
-                                        lightValue = getLight(realX - 1, y, realZ);
+                                        lightValue = getNeighborLight(chunkNeighborXMinus, 15,y,z);
                                     } else {
-                                        lightValue = calculateBlockLight(chunkLightLevel, thisChunk.naturalLight[posToIndex(x - 1, y, z)], thisChunk.torchLight[posToIndex(x - 1, y, z)]);
+                                        lightValue = calculateBlockLight(chunkLightLevel, naturalLightData[posToIndex(x - 1, y, z)], torchLightData[posToIndex(x - 1, y, z)]);
                                     }
 
                                     lightValue = convertLight(lightValue / maxLight);
@@ -668,7 +720,7 @@ public class ChunkMeshGenerator implements Runnable{
                                 }
 
                                 if (y + 1 < 128) {
-                                    neighborBlock = thisChunk.block[posToIndex(x, y + 1, z)];
+                                    neighborBlock = blockData[posToIndex(x, y + 1, z)];
                                 }
 
                                 if (y == 127 || neighborBlock > -1 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
@@ -688,7 +740,7 @@ public class ChunkMeshGenerator implements Runnable{
 
                                     //top
                                     if (y + 1 < 128) {
-                                        lightValue = calculateBlockLight(chunkLightLevel, thisChunk.naturalLight[posToIndex(x, y + 1, z)], thisChunk.torchLight[posToIndex(x, y + 1, z)]);
+                                        lightValue = calculateBlockLight(chunkLightLevel, naturalLightData[posToIndex(x, y + 1, z)], torchLightData[posToIndex(x, y + 1, z)]);
                                     } else {
                                         lightValue = maxLight;
                                     }
@@ -722,7 +774,7 @@ public class ChunkMeshGenerator implements Runnable{
                                 }
 
                                 if (y - 1 > 0) {
-                                    neighborBlock = thisChunk.block[posToIndex(x, y - 1, z)];
+                                    neighborBlock = blockData[posToIndex(x, y - 1, z)];
                                 }
 
                                 if (y != 0 && neighborBlock >= 0 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
@@ -742,7 +794,7 @@ public class ChunkMeshGenerator implements Runnable{
 
                                     //bottom
                                     if (y - 1 > 0) {
-                                        lightValue = calculateBlockLight(chunkLightLevel, thisChunk.naturalLight[posToIndex(x, y - 1, z)], thisChunk.torchLight[posToIndex(x, y - 1, z)]);
+                                        lightValue = calculateBlockLight(chunkLightLevel, naturalLightData[posToIndex(x, y - 1, z)], torchLightData[posToIndex(x, y - 1, z)]);
                                     } else {
                                         lightValue = 0;
                                     }
@@ -795,9 +847,9 @@ public class ChunkMeshGenerator implements Runnable{
 
                                     //front
                                     if (z + 1 > 15) {
-                                        lightValue = getLight(realX, y, realZ + 1);
+                                        lightValue = getNeighborLight(chunkNeighborZPlus, x,y,0);
                                     } else {
-                                        lightValue = calculateBlockLight(chunkLightLevel, thisChunk.naturalLight[posToIndex(x, y, z + 1)], thisChunk.torchLight[posToIndex(x, y, z + 1)]);
+                                        lightValue = calculateBlockLight(chunkLightLevel, naturalLightData[posToIndex(x, y, z + 1)], torchLightData[posToIndex(x, y, z + 1)]);
                                     }
 
                                     lightValue = convertLight(lightValue / maxLight);
@@ -847,9 +899,9 @@ public class ChunkMeshGenerator implements Runnable{
                                     //back
 
                                     if (z - 1 < 0) {
-                                        lightValue = getLight(realX, y, realZ - 1);
+                                        lightValue = getNeighborLight(chunkNeighborZMinus, x,y,15);
                                     } else {
-                                        lightValue = calculateBlockLight(chunkLightLevel, thisChunk.naturalLight[posToIndex(x, y, z - 1)], thisChunk.torchLight[posToIndex(x, y, z - 1)]);
+                                        lightValue = calculateBlockLight(chunkLightLevel, naturalLightData[posToIndex(x, y, z - 1)], torchLightData[posToIndex(x, y, z - 1)]);
                                     }
 
                                     lightValue = convertLight(lightValue / maxLight);
@@ -897,9 +949,9 @@ public class ChunkMeshGenerator implements Runnable{
                                     //right
 
                                     if (x + 1 > 15) {
-                                        lightValue = getLight(realX + 1, y, realZ);
+                                        lightValue = getNeighborLight(chunkNeighborXPlus, 0,y,z);
                                     } else {
-                                        lightValue = calculateBlockLight(chunkLightLevel, thisChunk.naturalLight[posToIndex(x + 1, y, z)], thisChunk.torchLight[posToIndex(x + 1, y, z)]);
+                                        lightValue = calculateBlockLight(chunkLightLevel, naturalLightData[posToIndex(x + 1, y, z)], torchLightData[posToIndex(x + 1, y, z)]);
                                     }
 
                                     lightValue = convertLight(lightValue / maxLight);
@@ -947,9 +999,9 @@ public class ChunkMeshGenerator implements Runnable{
                                     //left
 
                                     if (x - 1 < 0) {
-                                        lightValue = getLight(realX - 1, y, realZ);
+                                        lightValue = getNeighborLight(chunkNeighborXMinus, 15,y,z);
                                     } else {
-                                        lightValue = calculateBlockLight(chunkLightLevel, thisChunk.naturalLight[posToIndex(x - 1, y, z)], thisChunk.torchLight[posToIndex(x - 1, y, z)]);
+                                        lightValue = calculateBlockLight(chunkLightLevel, naturalLightData[posToIndex(x - 1, y, z)], torchLightData[posToIndex(x - 1, y, z)]);
                                     }
 
                                     lightValue = convertLight(lightValue / maxLight);
@@ -997,7 +1049,7 @@ public class ChunkMeshGenerator implements Runnable{
                                     //top
 
                                     if (y + 1 < 128) {
-                                        lightValue = calculateBlockLight(chunkLightLevel, thisChunk.naturalLight[posToIndex(x, y + 1, z)], thisChunk.torchLight[posToIndex(x, y + 1, z)]);
+                                        lightValue = calculateBlockLight(chunkLightLevel, naturalLightData[posToIndex(x, y + 1, z)], torchLightData[posToIndex(x, y + 1, z)]);
                                     } else {
                                         lightValue = maxLight;
                                     }
@@ -1049,7 +1101,7 @@ public class ChunkMeshGenerator implements Runnable{
                                     //bottom
 
                                     if (y - 1 > 0) {
-                                        lightValue = calculateBlockLight(chunkLightLevel, thisChunk.naturalLight[posToIndex(x, y - 1, z)], thisChunk.torchLight[posToIndex(x, y - 1, z)]);
+                                        lightValue = calculateBlockLight(chunkLightLevel, naturalLightData[posToIndex(x, y - 1, z)], torchLightData[posToIndex(x, y - 1, z)]);
                                     } else {
                                         lightValue = 0;
                                     }
@@ -1105,9 +1157,9 @@ public class ChunkMeshGenerator implements Runnable{
 
                                     //front
                                     if (z + 1 > 15) {
-                                        lightValue = getLight(realX, y, realZ + 1);
+                                        lightValue = getNeighborLight(chunkNeighborZPlus, x,y,0);
                                     } else {
-                                        lightValue = calculateBlockLight(chunkLightLevel, thisChunk.naturalLight[posToIndex(x, y, z + 1)], thisChunk.torchLight[posToIndex(x, y, z + 1)]);
+                                        lightValue = calculateBlockLight(chunkLightLevel, naturalLightData[posToIndex(x, y, z + 1)], torchLightData[posToIndex(x, y, z + 1)]);
                                     }
 
                                     lightValue = convertLight(lightValue / maxLight);
@@ -1159,9 +1211,9 @@ public class ChunkMeshGenerator implements Runnable{
 
                                     //back
                                     if (z - 1 < 0) {
-                                        lightValue = getLight(realX, y, realZ - 1);
+                                        lightValue = getNeighborLight(chunkNeighborZMinus, x,y,15);
                                     } else {
-                                        lightValue = calculateBlockLight(chunkLightLevel, thisChunk.naturalLight[posToIndex(x, y, z - 1)], thisChunk.torchLight[posToIndex(x, y, z - 1)]);
+                                        lightValue = calculateBlockLight(chunkLightLevel, naturalLightData[posToIndex(x, y, z - 1)], torchLightData[posToIndex(x, y, z - 1)]);
                                     }
 
 
@@ -1209,9 +1261,9 @@ public class ChunkMeshGenerator implements Runnable{
 
                                     //right
                                     if (x + 1 > 15) {
-                                        lightValue = getLight(realX + 1, y, realZ);
+                                        lightValue = getNeighborLight(chunkNeighborXPlus, 0,y,z);
                                     } else {
-                                        lightValue = calculateBlockLight(chunkLightLevel, thisChunk.naturalLight[posToIndex(x + 1, y, z)], thisChunk.torchLight[posToIndex(x + 1, y, z)]);
+                                        lightValue = calculateBlockLight(chunkLightLevel, naturalLightData[posToIndex(x + 1, y, z)], torchLightData[posToIndex(x + 1, y, z)]);
                                     }
                                     lightValue = convertLight(lightValue / maxLight);
                                     //right
@@ -1265,9 +1317,9 @@ public class ChunkMeshGenerator implements Runnable{
 
                                     //left
                                     if (x - 1 < 0) {
-                                        lightValue = getLight(realX - 1, y, realZ);
+                                        lightValue = getNeighborLight(chunkNeighborXMinus, 15,y,z);
                                     } else {
-                                        lightValue = calculateBlockLight(chunkLightLevel, thisChunk.naturalLight[posToIndex(x - 1, y, z)], thisChunk.torchLight[posToIndex(x - 1, y, z)]);
+                                        lightValue = calculateBlockLight(chunkLightLevel, naturalLightData[posToIndex(x - 1, y, z)], torchLightData[posToIndex(x - 1, y, z)]);
                                     }
                                     lightValue = convertLight(lightValue / maxLight);
                                     //left
@@ -1312,7 +1364,7 @@ public class ChunkMeshGenerator implements Runnable{
 
                                     //top
                                     if (y + 1 < 128) {
-                                        lightValue = calculateBlockLight(chunkLightLevel, thisChunk.naturalLight[posToIndex(x, y + 1, z)], thisChunk.torchLight[posToIndex(x, y + 1, z)]);
+                                        lightValue = calculateBlockLight(chunkLightLevel, naturalLightData[posToIndex(x, y + 1, z)], torchLightData[posToIndex(x, y + 1, z)]);
                                     } else {
                                         lightValue = maxLight;
                                     }
@@ -1366,7 +1418,7 @@ public class ChunkMeshGenerator implements Runnable{
 
                                     //bottom
                                     if (y - 1 > 0) {
-                                        lightValue = calculateBlockLight(chunkLightLevel, thisChunk.naturalLight[posToIndex(x, y - 1, z)], thisChunk.torchLight[posToIndex(x, y - 1, z)]);
+                                        lightValue = calculateBlockLight(chunkLightLevel, naturalLightData[posToIndex(x, y - 1, z)], torchLightData[posToIndex(x, y - 1, z)]);
                                     } else {
                                         lightValue = 0;
                                     }
@@ -1412,6 +1464,14 @@ public class ChunkMeshGenerator implements Runnable{
             }
 
 
+            /*
+            long endTime = System.nanoTime();
+            long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
+            double seconds = (double) duration / 1_000_000_000.0;
+            System.out.println("This took: " + seconds + " seconds to generate chunk mesh");
+
+             */
+
             ChunkMeshDataObject newChunkData = new ChunkMeshDataObject();
 
             newChunkData.chunkX = chunkX;
@@ -1419,6 +1479,7 @@ public class ChunkMeshGenerator implements Runnable{
             newChunkData.yHeight = yHeight;
 
 
+            //Thread cache
             int workerCounter = 0;
 
             if (positions.size() > 0) {
@@ -1566,17 +1627,12 @@ public class ChunkMeshGenerator implements Runnable{
                 newChunkData.allFacesMeshIsNull = true;
             }
 
+
+
             //finally add it into the queue to be popped
             String keyName = chunkX + " " + chunkZ + " " + yHeight;
             addToChunkMeshQueue(keyName, newChunkData);
 
-
-            long endTime = System.nanoTime();
-            long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
-
-            double seconds = (double) duration / 1_000_000_000.0;
-
-            System.out.println("This took: " + seconds + " seconds to generate chunk mesh");
         }
     }
 
@@ -1601,8 +1657,34 @@ public class ChunkMeshGenerator implements Runnable{
         if (neighborChunk.block == null){
             return 0;
         }
-
         return neighborChunk.block[posToIndex(x,y,z)];
+    }
+
+    private static byte getNeighborLight(ChunkObject neighborChunk, int x, int y, int z){
+        if (neighborChunk == null){
+            return 0;
+        }
+        if (neighborChunk.block == null){
+            return 0;
+        }
+
+        int index = posToIndex(x, y, z);
+
+        byte naturalLightOfBlock = neighborChunk.naturalLight[index];
+
+        byte currentGlobalLightLevel = getCurrentGlobalLightLevel();
+
+        if (naturalLightOfBlock > currentGlobalLightLevel){
+            naturalLightOfBlock = currentGlobalLightLevel;
+        }
+
+        byte torchLight = neighborChunk.torchLight[index];
+
+        if (naturalLightOfBlock > torchLight){
+            return naturalLightOfBlock;
+        } else {
+            return torchLight;
+        }
     }
 
     private static float convertLight(float lightByte){
