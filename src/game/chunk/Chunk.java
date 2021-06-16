@@ -18,7 +18,7 @@ import static engine.network.Networking.sendOutChunkRequest;
 import static engine.settings.Settings.getRenderDistance;
 import static engine.settings.Settings.getSettingsChunkLoad;
 import static game.chunk.ChunkMath.posToIndex;
-import static game.chunk.ChunkMesh.generateChunkMesh;
+import static game.chunk.ChunkMeshGenerator.generateChunkMesh;
 import static game.chunk.ChunkUpdateHandler.chunkUpdate;
 import static game.light.Light.*;
 import static game.player.Player.*;

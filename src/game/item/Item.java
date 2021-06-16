@@ -7,8 +7,8 @@ import org.joml.Vector3i;
 
 import java.util.Arrays;
 
+import static engine.FancyMath.convertLight;
 import static engine.FancyMath.randomForceValue;
-import static game.chunk.ChunkMesh.convertLight;
 import static game.item.ItemDefinition.getItemDefinition;
 
 public class Item {

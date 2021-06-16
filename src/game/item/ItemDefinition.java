@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import static game.blocks.BlockDefinition.*;
-import static game.chunk.ChunkMesh.getTextureAtlas;
+import static game.chunk.ChunkMeshGenerationHandler.getTextureAtlas;
 
 public class ItemDefinition {
     private final static float itemSize   = 0.4f;

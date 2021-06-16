@@ -27,4 +27,8 @@ public class FancyMath {
         return Math.hypot((x1 - x2), Math.hypot((y1 - y2),(z1 - z2)));
     }
 
+
+    public static float convertLight(float lightByte){
+        return (float) Math.pow(Math.pow(lightByte, 1.5), 1.5);
+    }
 }

@@ -6,6 +6,7 @@ import engine.network.NetworkHandshake;
 import engine.network.PlayerPosObject;
 import engine.sound.SoundListener;
 import game.chunk.Chunk;
+import game.chunk.ChunkMeshGenerator;
 import game.item.ItemDefinition;
 import org.joml.Vector3d;
 import org.lwjgl.openal.AL11;
@@ -43,9 +44,6 @@ public class Crafter {
     //load everything
     public static void main(String[] args){
         try{
-
-
-
             Toolkit tk = Toolkit.getDefaultToolkit();
             Dimension d = tk.getScreenSize();
 
@@ -60,6 +58,12 @@ public class Crafter {
             createWorldsDir();
             startSaveThread();
             initMainMenu();
+
+            //this is the chunk mesh generator thread
+            ChunkMeshGenerator chunkMeshGenerator = new ChunkMeshGenerator();
+            Thread chunkThread = new Thread(chunkMeshGenerator);
+            chunkThread.start();
+
             //this is the scene controller
             handleSceneLogic();
 

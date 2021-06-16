@@ -7,10 +7,10 @@ import org.joml.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
 
+import static engine.FancyMath.convertLight;
 import static engine.Timer.getFpsCounted;
 import static engine.gui.TextHandling.createTextWithShadow;
 import static game.Crafter.getVersionName;
-import static game.chunk.ChunkMesh.convertLight;
 
 public class GUI {
 

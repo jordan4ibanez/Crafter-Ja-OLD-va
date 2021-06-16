@@ -21,7 +21,7 @@ import static engine.Timer.countFPS;
 import static engine.settings.Settings.getDebugInfo;
 import static engine.sound.SoundManager.updateListenerPosition;
 import static game.chunk.Chunk.*;
-import static game.chunk.ChunkMesh.popChunkMeshQueue;
+import static game.chunk.ChunkMeshGenerationHandler.popChunkMeshQueue;
 import static game.chunk.ChunkUpdateHandler.chunkUpdater;
 import static game.crafting.Inventory.generateRandomInventory;
 import static game.crafting.InventoryLogic.inventoryMenuOnTick;

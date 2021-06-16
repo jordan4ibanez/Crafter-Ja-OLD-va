@@ -8,7 +8,7 @@ import java.util.*;
 
 import static engine.Time.getDelta;
 import static game.blocks.BlockDefinition.*;
-import static game.chunk.ChunkMesh.getTextureAtlas;
+import static game.chunk.ChunkMeshGenerationHandler.getTextureAtlas;
 import static game.collision.ParticleCollision.applyParticleInertia;
 
 public class Particle {
