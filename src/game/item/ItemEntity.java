@@ -190,7 +190,7 @@ public class ItemEntity {
 
             //interpolate position to goal position
             //the second argument is the smoothing factor - higher is choppier but more accurate
-            thisItem.pos.lerp(thisItem.goalPos, 0.25);
+            thisItem.pos.lerp(thisItem.goalPos, delta * 50d, thisItem.pos);
 
             //client side deletion
             if (thisItem.timer > 50){
