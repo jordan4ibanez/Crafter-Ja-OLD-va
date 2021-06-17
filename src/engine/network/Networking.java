@@ -107,6 +107,7 @@ public class Networking {
                     abstractedChunk.block = encodedChunk.b;
                     abstractedChunk.rotation = encodedChunk.r;
                     abstractedChunk.naturalLight = encodedChunk.l;
+                    abstractedChunk.torchLight = encodedChunk.t;
                     abstractedChunk.heightMap = encodedChunk.h;
 
                     setChunk(encodedChunk.x, encodedChunk.z, abstractedChunk);
