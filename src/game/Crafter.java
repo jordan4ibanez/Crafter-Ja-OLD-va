@@ -34,7 +34,7 @@ import static game.player.Player.*;
 public class Crafter {
 
     //fields
-    private static final String versionName = "Crafter 0.04a Survival Test";
+    private static final String versionName = "Crafter 0.04b Survival Test";
 
     public static String getVersionName(){
         return versionName;
