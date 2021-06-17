@@ -250,7 +250,7 @@ public class ItemEntity {
         }
     }
 
-    private static Deque<String> itemsAddingQueue = new ArrayDeque<>();
+    private static final Deque<String> itemsAddingQueue = new ArrayDeque<>();
 
     public static void addItemToCollectionQueue(String item){
         itemsAddingQueue.add(item);
