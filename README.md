@@ -21,7 +21,7 @@ You can try these flags for a performance boost, if you want.
 `
 
 
-# Todo List:
+# Todo List: (This is probably outdated)
 
 1. Re-implement basic lighting
 
