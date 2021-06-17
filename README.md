@@ -10,6 +10,8 @@ Required Java version (JRE): 16
 
 You can get this version at: https://jdk.java.net/16/
 
+Fedora: `sudo dnf install java-latest-openjdk-devel.x86_64`
+
 Or you can install openJDK on most linux distros.
 
 You can try these flags for a performance boost, if you want.
