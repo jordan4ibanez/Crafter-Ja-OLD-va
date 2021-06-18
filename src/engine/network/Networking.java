@@ -24,7 +24,7 @@ public class Networking {
 
     private static int port = 30_150;
 
-    private static final Client client = new Client(20_000_000,20_000_000);
+    private static final Client client = new Client(1_000_000,1_000_000);
 
     public static void setPort(int newPort){
         port = newPort;
@@ -39,6 +39,8 @@ public class Networking {
         client.close();
         System.out.println("disconnected");
     }
+
+    private static ChunkObject workerChunk;
 
     public static boolean getIfMultiplayer(){
         return client.isConnected();
@@ -55,8 +57,6 @@ public class Networking {
         kryo.register(NetworkHandshake.class);
         kryo.register(PlayerPosObject.class);
         kryo.register(ChunkRequest.class);
-        kryo.register(ChunkObject.class);
-        kryo.register(ChunkSavingObject.class);
         kryo.register(int[].class);
         kryo.register(byte[][].class);
         kryo.register(byte[].class);
@@ -70,6 +70,14 @@ public class Networking {
         kryo.register(ItemDeletionSender.class);
         kryo.register(BlockPlacingReceiver.class);
         kryo.register(NetworkMovePositionDemand.class);
+
+        kryo.register(CDB.class);
+        kryo.register(CDC.class);
+        kryo.register(CDH.class);
+        kryo.register(CDN.class);
+        kryo.register(CDQ.class);
+        kryo.register(CDR.class);
+        kryo.register(CDT.class);
 
         //5000 = 5000ms = 5 seconds
         try {
@@ -99,20 +107,6 @@ public class Networking {
                         setMenuPage((byte) 7);
                     }
                     //received chunk data
-                } else if (object instanceof ChunkSavingObject encodedChunk){
-                    ChunkObject abstractedChunk = new ChunkObject();
-                    abstractedChunk.ID = encodedChunk.I;
-                    abstractedChunk.x = encodedChunk.x;
-                    abstractedChunk.z = encodedChunk.z;
-                    abstractedChunk.block = encodedChunk.b;
-                    abstractedChunk.rotation = encodedChunk.r;
-                    abstractedChunk.naturalLight = encodedChunk.l;
-                    abstractedChunk.torchLight = encodedChunk.t;
-                    abstractedChunk.heightMap = encodedChunk.h;
-
-                    setChunk(encodedChunk.x, encodedChunk.z, abstractedChunk);
-
-                    //received other player position data
                 } else if (object instanceof PlayerPosObject encodedPlayer) {
                     updateOtherPlayer(encodedPlayer);
                 } else if (object instanceof  BlockBreakingReceiver blockBreakingReceiver){
@@ -128,9 +122,27 @@ public class Networking {
                 } else if (object instanceof BlockPlacingReceiver blockPlacingReceiver){
                     Vector3i c = blockPlacingReceiver.receivedPos;
                     placeBlock(c.x,c.y, c.z, blockPlacingReceiver.ID,blockPlacingReceiver.rotation);
-                } else if(object instanceof NetworkMovePositionDemand networkMovePositionDemand){
+                } else if (object instanceof NetworkMovePositionDemand networkMovePositionDemand){
                     setPlayerPos(networkMovePositionDemand.newPos);
                     //System.out.println(networkMovePositionDemand.newPos.x + " " + networkMovePositionDemand.newPos.y + " " + networkMovePositionDemand.newPos.z);
+                }
+
+                //BEGIN CHUNK DECODE
+
+                else if (object instanceof CDQ cdq){ //initialize blank chunk
+                    workerChunk = new ChunkObject(cdq.x, cdq.z);
+                } else if (object instanceof CDB cdb){ //block data
+                    workerChunk.block = cdb.b;
+                } else if (object instanceof CDR cdr){ //rotation data
+                    workerChunk.rotation = cdr.r;
+                } else if (object instanceof CDN cdn){ //natural light data
+                    workerChunk.naturalLight = cdn.n;
+                } else if (object instanceof CDT cdt){ //torch light data
+                    workerChunk.torchLight = cdt.t;
+                } else if (object instanceof CDH cdh){ //height map data
+                    workerChunk.heightMap = cdh.h;
+                } else if (object instanceof CDC){ //done sending chunk data
+                    setChunk(workerChunk.x, workerChunk.z, workerChunk);
                 }
             }
 

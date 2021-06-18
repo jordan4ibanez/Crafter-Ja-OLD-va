@@ -320,7 +320,7 @@ public class Chunk {
         updateNeighbor(chunkX, chunkZ,blockX,y,blockZ);
     }
 
-    public static void setLight(int x,int y,int z, byte newLight){
+    public static void setNaturalLight(int x, int y, int z, byte newLight){
         if (y > 127 || y < 0){
             return;
         }
@@ -464,6 +464,28 @@ public class Chunk {
         } else {
             return torchLight;
         }
+    }
+
+    public static byte getNaturalLight(int x,int y,int z){
+        if (y > 127 || y < 0){
+            return 0;
+        }
+        int chunkX = (int)Math.floor(x/16d);
+        int chunkZ = (int)Math.floor(z/16d);
+        int blockX = (int)(x - (16d*chunkX));
+        int blockZ = (int)(z - (16d*chunkZ));
+
+        String key = chunkX + " " + chunkZ;
+        ChunkObject thisChunk = map.get(key);
+
+        if (thisChunk == null){
+            return 0;
+        }
+        if (thisChunk.naturalLight == null){
+            return 0;
+        }
+
+        return thisChunk.naturalLight[posToIndex(blockX, y, blockZ)];
     }
 
     public static byte getTorchLight(int x,int y,int z){

@@ -64,37 +64,37 @@ public class Light {
         byte maxLight = 0;
 
         if (getBlock(x + 1, y, z) == 0) {
-            byte gottenLight = getLight(x + 1, y, z);
+            byte gottenLight = getNaturalLight(x + 1, y, z);
             if (gottenLight > maxLight + 1){
                 maxLight = (byte)(gottenLight - 1);
             }
         }
         if (getBlock(x - 1, y, z) == 0) {
-            byte gottenLight = getLight(x - 1, y, z);
+            byte gottenLight = getNaturalLight(x - 1, y, z);
             if (gottenLight > maxLight + 1){
                 maxLight = (byte)(gottenLight - 1);
             }
         }
         if (getBlock(x, y + 1, z) == 0) {
-            byte gottenLight = getLight(x, y + 1, z);
+            byte gottenLight = getNaturalLight(x, y + 1, z);
             if (gottenLight > maxLight + 1){
                 maxLight = (byte)(gottenLight - 1);
             }
         }
         if (getBlock(x, y - 1, z) == 0) {
-            byte gottenLight = getLight(x, y - 1, z);
+            byte gottenLight = getNaturalLight(x, y - 1, z);
             if (gottenLight > maxLight + 1){
                 maxLight = (byte)(gottenLight - 1);
             }
         }
         if (getBlock(x, y, z + 1) == 0) {
-            byte gottenLight = getLight(x, y, z + 1);
+            byte gottenLight = getNaturalLight(x, y, z + 1);
             if (gottenLight > maxLight + 1){
                 maxLight = (byte)(gottenLight - 1);
             }
         }
         if (getBlock(x, y, z - 1) == 0) {
-            byte gottenLight = getLight(x, y, z - 1);
+            byte gottenLight = getNaturalLight(x, y, z - 1);
             if (gottenLight > maxLight + 1){
                 maxLight = (byte)(gottenLight - 1);
             }
@@ -113,22 +113,22 @@ public class Light {
                             int theBlock = getBlock(x, y, z);
                             if (theBlock == 0 && underSunLight(x, y, z)) {
                                 int skipCheck = 0;
-                                if (getBlock(x + 1, y, z) == 0 && underSunLight(x + 1, y, z) && getLight(x + 1, y, z) == currentLightLevel) {
+                                if (getBlock(x + 1, y, z) == 0 && underSunLight(x + 1, y, z) && getNaturalLight(x + 1, y, z) == currentLightLevel) {
                                     skipCheck++;
                                 }
-                                if (getBlock(x - 1, y, z) == 0 && underSunLight(x - 1, y, z) && getLight(x - 1, y, z) == currentLightLevel) {
+                                if (getBlock(x - 1, y, z) == 0 && underSunLight(x - 1, y, z) && getNaturalLight(x - 1, y, z) == currentLightLevel) {
                                     skipCheck++;
                                 }
-                                if (getBlock(x, y + 1, z) == 0 && underSunLight(x, y + 1, z) && getLight(x, y + 1, z) == currentLightLevel) {
+                                if (getBlock(x, y + 1, z) == 0 && underSunLight(x, y + 1, z) && getNaturalLight(x, y + 1, z) == currentLightLevel) {
                                     skipCheck++;
                                 }
-                                if (getBlock(x, y - 1, z) == 0 && underSunLight(x, y - 1, z) && getLight(x, y - 1, z) == currentLightLevel) {
+                                if (getBlock(x, y - 1, z) == 0 && underSunLight(x, y - 1, z) && getNaturalLight(x, y - 1, z) == currentLightLevel) {
                                     skipCheck++;
                                 }
-                                if (getBlock(x, y, z + 1) == 0 && underSunLight(x, y, z + 1) && getLight(x, y, z + 1) == currentLightLevel) {
+                                if (getBlock(x, y, z + 1) == 0 && underSunLight(x, y, z + 1) && getNaturalLight(x, y, z + 1) == currentLightLevel) {
                                     skipCheck++;
                                 }
-                                if (getBlock(x, y, z - 1) == 0 && underSunLight(x, y, z - 1) && getLight(x, y, z - 1) == currentLightLevel) {
+                                if (getBlock(x, y, z - 1) == 0 && underSunLight(x, y, z - 1) && getNaturalLight(x, y, z - 1) == currentLightLevel) {
                                     skipCheck++;
                                 }
                                 if (skipCheck < 6) {
@@ -219,7 +219,7 @@ public class Light {
                     for (int y = posY - lightDistance; y <= posY + lightDistance; y++) {
                         for (int z = posZ - lightDistance; z <= posZ + lightDistance; z++) {
                             if (memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance] != blockIndicator) {
-                                setLight(x, y, z, memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance]);
+                                setNaturalLight(x, y, z, memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance]);
                             }
                         }
                     }
