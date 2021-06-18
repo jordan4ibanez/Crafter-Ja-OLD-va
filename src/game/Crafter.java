@@ -33,8 +33,6 @@ import static game.player.Player.*;
 
 public class Crafter {
 
-    private static int test;
-
     //fields
     private static final String versionName = "Crafter 0.04b Survival Test";
 
