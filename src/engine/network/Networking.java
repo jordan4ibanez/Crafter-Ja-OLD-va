@@ -24,7 +24,7 @@ public class Networking {
 
     private static int port = 30_150;
 
-    private static final Client client = new Client(500000_000,500000_000);
+    private static final Client client = new Client(50_000,50_000);
 
     public static void setPort(int newPort){
         port = newPort;
