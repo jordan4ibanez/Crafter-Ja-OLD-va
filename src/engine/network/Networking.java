@@ -125,7 +125,6 @@ public class Networking {
                 } else if (object instanceof NetworkMovePositionDemand networkMovePositionDemand){
                     setPlayerPos(networkMovePositionDemand.newPos);
                 } else if (object instanceof NetChunk netChunk){
-                    System.out.println(netChunk.b.length);
                     decodeNetChunk(netChunk);
                 }
 
