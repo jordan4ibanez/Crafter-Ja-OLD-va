@@ -4,13 +4,19 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import engine.disk.ChunkSavingObject;
 import game.chunk.ChunkObject;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.zip.GZIPInputStream;
 
 import static engine.graphics.Camera.getCameraRotation;
 import static engine.sound.SoundAPI.playSound;
@@ -23,6 +29,8 @@ import static game.player.Player.*;
 public class Networking {
 
     private static int port = 30_150;
+
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     private static final Client client = new Client(1_000_000,1_000_000);
 
@@ -39,8 +47,6 @@ public class Networking {
         client.close();
         System.out.println("disconnected");
     }
-
-    private static ChunkObject workerChunk;
 
     public static boolean getIfMultiplayer(){
         return client.isConnected();
@@ -70,14 +76,7 @@ public class Networking {
         kryo.register(ItemDeletionSender.class);
         kryo.register(BlockPlacingReceiver.class);
         kryo.register(NetworkMovePositionDemand.class);
-
-        kryo.register(CDB.class);
-        kryo.register(CDC.class);
-        kryo.register(CDH.class);
-        kryo.register(CDN.class);
-        kryo.register(CDQ.class);
-        kryo.register(CDR.class);
-        kryo.register(CDT.class);
+        kryo.register(NetChunk.class);
 
         //5000 = 5000ms = 5 seconds
         try {
@@ -113,7 +112,6 @@ public class Networking {
                     Vector3i c = blockBreakingReceiver.receivedPos;
                     digBlock(c.x, c.y, c.z);
                 } else if (object instanceof ItemSendingObject itemSendingObject){
-                    //System.out.println("we have received an item entity");
                     addItemToQueueToBeUpdated(itemSendingObject);
                 } else if (object instanceof ItemPickupNotification itemPickupNotification){
                     addItemToCollectionQueue(itemPickupNotification.name);
@@ -124,26 +122,10 @@ public class Networking {
                     placeBlock(c.x,c.y, c.z, blockPlacingReceiver.ID,blockPlacingReceiver.rotation);
                 } else if (object instanceof NetworkMovePositionDemand networkMovePositionDemand){
                     setPlayerPos(networkMovePositionDemand.newPos);
-                    //System.out.println(networkMovePositionDemand.newPos.x + " " + networkMovePositionDemand.newPos.y + " " + networkMovePositionDemand.newPos.z);
+                } else if (object instanceof NetChunk netChunk){
+                    decodeNetChunk(netChunk);
                 }
 
-                //BEGIN CHUNK DECODE
-
-                else if (object instanceof CDQ cdq){ //initialize blank chunk
-                    workerChunk = new ChunkObject(cdq.x, cdq.z);
-                } else if (object instanceof CDB cdb){ //block data
-                    workerChunk.block = cdb.b;
-                } else if (object instanceof CDR cdr){ //rotation data
-                    workerChunk.rotation = cdr.r;
-                } else if (object instanceof CDN cdn){ //natural light data
-                    workerChunk.naturalLight = cdn.n;
-                } else if (object instanceof CDT cdt){ //torch light data
-                    workerChunk.torchLight = cdt.t;
-                } else if (object instanceof CDH cdh){ //height map data
-                    workerChunk.heightMap = cdh.h;
-                } else if (object instanceof CDC){ //done sending chunk data
-                    setChunk(workerChunk.x, workerChunk.z, workerChunk);
-                }
             }
 
             @Override
@@ -157,6 +139,64 @@ public class Networking {
                 client.removeListener(this);
             }
         });
+    }
+
+    private static void decodeNetChunk(NetChunk netChunk){
+        //decode compressed network packet
+
+        //decoding stream
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        //System.out.println(Arrays.toString(netChunk.b));
+
+        try {
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(netChunk.b);
+            GZIPInputStream gzipInputStream = new GZIPInputStream(byteArrayInputStream);
+            byte[] buffer = new byte[4096];
+            int len;
+            while((len = gzipInputStream.read(buffer)) != -1){
+                byteArrayOutputStream.write(buffer, 0, len);
+            }
+            //close resources
+            gzipInputStream.close();
+            byteArrayInputStream.close();
+            byteArrayOutputStream.close();
+
+        } catch (IOException e) {
+            System.out.println(e);
+            System.out.println("ERROR IN decodeNetChunk!");
+            return;
+        }
+
+        ChunkSavingObject thisChunkLoaded = null;
+
+        try {
+            thisChunkLoaded = mapper.readValue(byteArrayOutputStream.toString(), ChunkSavingObject.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        if (thisChunkLoaded == null){
+            return;
+        }
+
+        if (thisChunkLoaded.b == null){
+            return;
+        }
+
+        ChunkObject abstractedChunk = new ChunkObject();
+
+        abstractedChunk.ID = thisChunkLoaded.I;
+        abstractedChunk.x = thisChunkLoaded.x;
+        abstractedChunk.z = thisChunkLoaded.z;
+        abstractedChunk.block = thisChunkLoaded.b;
+        abstractedChunk.rotation = thisChunkLoaded.r;
+        abstractedChunk.naturalLight = thisChunkLoaded.l;
+        abstractedChunk.torchLight = thisChunkLoaded.t;
+        abstractedChunk.heightMap = thisChunkLoaded.h;
+
+        setChunk(abstractedChunk.x, abstractedChunk.z, abstractedChunk);
     }
 
     public static void sendOutNetworkBlockBreak(int x, int y, int z){

@@ -51,18 +51,21 @@ public class SaveQueue {
                         String stringedChunk = mapper.writeValueAsString(savingObject);
 
                         //learned from https://www.journaldev.com/966/java-gzip-example-compress-decompress-file
-                        ByteArrayInputStream bais = new ByteArrayInputStream(stringedChunk.getBytes());
-                        FileOutputStream fos = new FileOutputStream("Worlds/world" + currentActiveWorld + "/" + savingObject.I + ".chunk");
-                        GZIPOutputStream gzipOS = new GZIPOutputStream(fos);
+                        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(stringedChunk.getBytes());
+
+                        FileOutputStream fileOutputStream = new FileOutputStream("Worlds/world" + currentActiveWorld + "/" + savingObject.I + ".chunk");
+                        GZIPOutputStream gzipOutputStream = new GZIPOutputStream(fileOutputStream);
+
                         byte[] buffer = new byte[4096];
                         int len;
-                        while((len=bais.read(buffer)) != -1){
-                            gzipOS.write(buffer, 0, len);
+                        while((len=byteArrayInputStream.read(buffer)) != -1){
+                            gzipOutputStream.write(buffer, 0, len);
                         }
+
                         //close resources
-                        gzipOS.close();
-                        fos.close();
-                        bais.close();
+                        gzipOutputStream.close();
+                        fileOutputStream.close();
+                        byteArrayInputStream.close();
 
                     } catch (IOException e) {
                         e.printStackTrace();
