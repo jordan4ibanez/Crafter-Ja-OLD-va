@@ -12,6 +12,8 @@ import static engine.graphics.Camera.*;
 import static engine.gui.GUI.*;
 import static engine.gui.GUILogic.calculateHealthBarElements;
 import static engine.gui.GUILogic.makeHeartsJiggle;
+import static engine.network.Networking.getIfMultiplayer;
+import static engine.network.Networking.sendInventorySlot;
 import static engine.sound.SoundAPI.playSound;
 import static game.blocks.BlockDefinition.getBlockDefinition;
 import static game.blocks.BlockDefinition.isBlockLiquid;
@@ -1134,6 +1136,11 @@ public class Player {
         }
         if (currentInventorySelection > 8) {
             currentInventorySelection = 0;
+        }
+
+        //send out data if playing in multiplayer
+        if (getIfMultiplayer()){
+            sendInventorySlot(currentInventorySelection);
         }
     }
 

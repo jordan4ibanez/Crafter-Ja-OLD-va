@@ -68,6 +68,7 @@ public class Networking {
         kryo.register(ItemDeletionSender.class);
         kryo.register(NetworkMovePositionDemand.class);
         kryo.register(NetChunk.class);
+        kryo.register(HotBarSlotUpdate.class);
 
         //5000 = 5000ms = 5 seconds
         try {
@@ -134,7 +135,6 @@ public class Networking {
 
     private static void decodeNetChunk(NetChunk netChunk){
         //decode compressed network packet
-
         ChunkObject decomp = null;
 
         try {
@@ -168,6 +168,10 @@ public class Networking {
         myPosition.name = getPlayerName();
         myPosition.cameraRot = new Vector3f(getCameraRotation());
         client.sendTCP(myPosition);
+    }
+
+    public static void sendInventorySlot(int slot){
+        client.sendTCP(new HotBarSlotUpdate(slot));
     }
 
     //request chunk data from server
