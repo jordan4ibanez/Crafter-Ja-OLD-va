@@ -22,6 +22,7 @@ public class InventoryObject {
         this.mainInventory = isMainInventory;
     }
 
+
     public void set(int x, int y, Item newItem){
         inventory[y][x] = newItem;
     }

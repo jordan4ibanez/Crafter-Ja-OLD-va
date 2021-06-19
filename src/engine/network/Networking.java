@@ -5,15 +5,16 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import game.chunk.ChunkObject;
-import org.joml.Vector3d;
-import org.joml.Vector3f;
-import org.joml.Vector3i;
+import game.crafting.InventoryObject;
+import game.item.Item;
+import org.joml.*;
 
 import java.io.IOException;
 
 import static engine.compression.Compression.decompressByteArrayToChunkObject;
 import static engine.graphics.Camera.getCameraRotation;
 import static game.chunk.Chunk.*;
+import static game.crafting.Inventory.getMainInventory;
 import static game.item.ItemEntity.*;
 import static game.mainMenu.MainMenu.*;
 import static game.player.OtherPlayers.updateOtherPlayer;
@@ -23,7 +24,7 @@ public class Networking {
 
     private static int port = 30_150;
 
-    private static final Client client = new Client(50_000,50_000);
+    private static final Client client = new Client(500_000,500_000);
 
     public static void setPort(int newPort){
         port = newPort;
@@ -55,6 +56,9 @@ public class Networking {
         kryo.register(int[].class);
         kryo.register(byte[][].class);
         kryo.register(byte[].class);
+        kryo.register(String.class);
+        kryo.register(String[].class);
+        kryo.register(String[][].class);
         kryo.register(Vector3d.class);
         kryo.register(Vector3f.class);
         kryo.register(Vector3i.class);
@@ -69,6 +73,8 @@ public class Networking {
         kryo.register(NetworkMovePositionDemand.class);
         kryo.register(NetChunk.class);
         kryo.register(HotBarSlotUpdate.class);
+        kryo.register(NetworkInventory.class);
+
 
         //5000 = 5000ms = 5 seconds
         try {
@@ -91,6 +97,7 @@ public class Networking {
                 if (object instanceof NetworkHandshake encodedName) {
                     if (encodedName.name != null && encodedName.name.equals(getPlayerName())){
                         setServerConnected(true);
+                        sendServerUpdatedInventory();
                         System.out.println("connected to server");
                     } else {
                         client.stop();
@@ -168,6 +175,22 @@ public class Networking {
         myPosition.name = getPlayerName();
         myPosition.cameraRot = new Vector3f(getCameraRotation());
         client.sendTCP(myPosition);
+    }
+
+    public static void sendServerUpdatedInventory(){
+        InventoryObject mainInv = getMainInventory();
+        NetworkInventory inv = new NetworkInventory(mainInv.getSize().x, mainInv.getSize().y);
+        for (int x = 0; x < mainInv.getSize().x; x++){
+            for (int y = 0; y < mainInv.getSize().y; y++){
+                String name = null;
+                if (mainInv.get(x,y) != null){
+                    name = mainInv.get(x,y).name;
+                }
+                inv.inventory[x][y] = name;
+            }
+        }
+        //send compacted inventory
+        client.sendTCP(inv);
     }
 
     public static void sendInventorySlot(int slot){

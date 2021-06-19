@@ -8,6 +8,8 @@ import org.joml.Vector3f;
 import static engine.MouseInput.*;
 import static engine.Window.getWindowHeight;
 import static engine.Window.getWindowWidth;
+import static engine.network.Networking.getIfMultiplayer;
+import static engine.network.Networking.sendServerUpdatedInventory;
 import static engine.render.GameRenderer.getWindowScale;
 import static engine.render.GameRenderer.getWindowSize;
 import static game.crafting.CraftRecipes.recipeScan;
@@ -75,7 +77,10 @@ public class InventoryLogic {
             collideMouseWithInventory(getArmorInventory());
 
 
+
             String foundInventory = null;
+
+            boolean inventoryUpdate = false;
 
             //normal left click moving items
             if (isLeftButtonPressed() && !leftMouseButtonPushed && !leftMouseButtonWasPushed) {
@@ -88,8 +93,8 @@ public class InventoryLogic {
                 for (InventoryObject inventory : tempInventoryObjectArray) {
 
                     //handle output inventory separately
+                    Vector2i selection = inventory.getSelection();
                     if (!inventory.name.equals("output")) {
-                        Vector2i selection = inventory.getSelection();
                         if (selection.x >= 0 && selection.y >= 0) {
                             Item thisItem = inventory.get(selection.x, selection.y);
                             Item mouseItem = getMouseInventory();
@@ -99,13 +104,15 @@ public class InventoryLogic {
                                 setMouseInventory(thisItem);
                                 inventory.set(selection.x, selection.y, null);
                                 foundInventory = inventory.name;
+                                inventoryUpdate = true;
                                 //add to blank space
                             } else if (mouseItem != null && thisItem == null) {
                                 inventory.set(selection.x, selection.y, mouseItem);
                                 setMouseInventory(null);
                                 foundInventory = inventory.name;
+                                inventoryUpdate = true;
                                 //two stacks to compare
-                            } else if (mouseItem != null && thisItem != null) {
+                            } else if (mouseItem != null) {
                                 //try to add into the inventory stack or swap
                                 if (thisItem.name.equals(mouseItem.name)) {
 
@@ -117,6 +124,7 @@ public class InventoryLogic {
                                         setMouseInventory(thisItem);
                                         inventory.set(selection.x, selection.y, mouseItem);
                                         foundInventory = inventory.name;
+                                        inventoryUpdate = true;
                                         //add into stack
                                     } else {
                                         int mouseStack = mouseItem.stack;
@@ -129,11 +137,13 @@ public class InventoryLogic {
                                             mouseItem.stack = adder - 64;
                                             thisItem.stack = 64;
                                             foundInventory = inventory.name;
+                                            inventoryUpdate = true;
                                             //dump full stack in
                                         } else {
                                             thisItem.stack = adder;
                                             setMouseInventory(null);
                                             foundInventory = inventory.name;
+                                            inventoryUpdate = true;
                                         }
                                     }
                                     //swap mouse item with inventory item
@@ -141,12 +151,12 @@ public class InventoryLogic {
                                     setMouseInventory(thisItem);
                                     inventory.set(selection.x, selection.y, mouseItem);
                                     foundInventory = inventory.name;
+                                    inventoryUpdate = true;
                                 }
                             }
                         }
                     //handle craft output
                     } else {
-                        Vector2i selection = inventory.getSelection();
                         if (selection.x >= 0 && selection.y >= 0) {
                             Item thisItem = inventory.get(selection.x, selection.y);
                             Item mouseItem = getMouseInventory();
@@ -156,6 +166,7 @@ public class InventoryLogic {
                                 setMouseInventory(thisItem);
                                 setOutputInventory(null);
                                 updateCraftingGrid();
+                                inventoryUpdate = true;
                             //add to existing stack
                             } else if (mouseItem != null && thisItem != null && mouseItem.name.equals(thisItem.name)){
                                 int first = mouseItem.stack;
@@ -166,6 +177,7 @@ public class InventoryLogic {
                                     mouseItem.stack = adder;
                                     setOutputInventory(null);
                                     updateCraftingGrid();
+                                    inventoryUpdate = true;
                                 }
                             }
                         }
@@ -214,6 +226,8 @@ public class InventoryLogic {
                                 Item newMouseItem = new Item(thisItem);
                                 newMouseItem.stack = subtraction;
                                 setMouseInventory(newMouseItem);
+
+                                inventoryUpdate = true;
                             }
                             //mouse single place into existing stack
                             else if (thisItem != null) {
@@ -228,6 +242,7 @@ public class InventoryLogic {
                                         mouseItem.stack = mouseItemStack;
                                         setMouseInventory(mouseItem);
                                     }
+                                    inventoryUpdate = true;
                                     foundInventory = inventory.name;
                                 }
                                 //mouse creating initial stack
@@ -249,6 +264,7 @@ public class InventoryLogic {
                                     mouseItem.stack = mouseItemStack;
                                     setMouseInventory(mouseItem);
                                 }
+                                inventoryUpdate = true;
                                 foundInventory = inventory.name;
                             }
                         }
@@ -278,6 +294,11 @@ public class InventoryLogic {
                         setOutputInventory(null);
                     }
                 }
+            }
+
+            //update the server inventory
+            if (inventoryUpdate && getIfMultiplayer()){
+                sendServerUpdatedInventory();
             }
 
             leftMouseButtonWasPushed = leftMouseButtonPushed;
