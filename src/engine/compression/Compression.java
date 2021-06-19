@@ -1,6 +1,5 @@
 package engine.compression;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import engine.disk.ChunkSavingObject;
 import game.chunk.ChunkObject;
