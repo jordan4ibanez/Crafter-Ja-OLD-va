@@ -74,6 +74,7 @@ public class Networking {
         kryo.register(NetChunk.class,108);
         kryo.register(HotBarSlotUpdate.class,109);
         kryo.register(NetworkInventory.class,110);
+        kryo.register(ThrowItemUpdate.class, 111);
 
 
 
@@ -203,6 +204,10 @@ public class Networking {
 
     public static void sendInventorySlot(int slot){
         client.sendTCP(new HotBarSlotUpdate(slot));
+    }
+
+    public static void sendOutThrowItemUpdate(){
+        client.sendTCP(new ThrowItemUpdate());
     }
 
     //request chunk data from server

@@ -189,6 +189,7 @@ public class Item {
 
     //rebuild the items mesh
     public void rebuildLightMesh(Item self) {
+
         ItemDefinition temp = getItemDefinition(self.name);
 
         //clone the light array

@@ -5,6 +5,7 @@ import game.item.ItemDefinition;
 import org.joml.Vector2d;
 
 import static engine.Time.getDelta;
+import static engine.network.Networking.*;
 import static game.blocks.BlockDefinition.getBlockDefinition;
 import static game.item.ItemDefinition.getItemDefinition;
 import static game.item.ItemDefinition.getRandomItemDefinition;
@@ -140,6 +141,9 @@ public class Inventory {
             for (int x = 0; x < 9; x++) {
                 if (mainInventory.get(x,y) != null && mainInventory.get(x,y).name.equals(name)){
                     mainInventory.get(x,y).stack++;
+                    if (getIfMultiplayer()){
+                        sendServerUpdatedInventory();
+                    }
                     return true;
                 }
             }
@@ -149,6 +153,9 @@ public class Inventory {
             for (int x = 0; x < 9; x++) {
                 if (mainInventory.get(x,y) == null){
                     mainInventory.set(x,y,new Item(name, 1));
+                    if (getIfMultiplayer()){
+                        sendServerUpdatedInventory();
+                    }
                     return true;
                 }
             }
@@ -163,7 +170,11 @@ public class Inventory {
             if (layer2 != null) {
                 String name = layer2.name;
                 if (name != null) {
-                    createItem(name, getPlayerPosWithEyeHeight(), getCameraRotationVector().mul(10f).add(getPlayerInertia()), test.stack);
+                    if (getIfMultiplayer()){
+                        sendOutThrowItemUpdate();
+                    } else {
+                        createItem(name, getPlayerPosWithEyeHeight(), getCameraRotationVector().mul(10f).add(getPlayerInertia()), test.stack);
+                    }
                     removeItemFromInventory(getPlayerInventorySelection(), 0);
                 }
             }
