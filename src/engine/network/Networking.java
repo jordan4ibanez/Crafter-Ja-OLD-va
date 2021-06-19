@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.zip.GZIPInputStream;
 
+import static engine.compression.Compression.decompressByteArrayToChunkObject;
 import static engine.graphics.Camera.getCameraRotation;
 import static engine.sound.SoundAPI.playSound;
 import static game.chunk.Chunk.*;
@@ -146,59 +147,21 @@ public class Networking {
     private static void decodeNetChunk(NetChunk netChunk){
         //decode compressed network packet
 
-        //decoding stream
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-        //System.out.println(Arrays.toString(netChunk.b));
+        ChunkObject decomp = null;
 
         try {
-            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(netChunk.b);
-            GZIPInputStream gzipInputStream = new GZIPInputStream(byteArrayInputStream);
-            byte[] buffer = new byte[4096];
-            int len;
-            while((len = gzipInputStream.read(buffer)) != -1){
-                byteArrayOutputStream.write(buffer, 0, len);
-            }
-            //close resources
-            gzipInputStream.close();
-            byteArrayInputStream.close();
-            byteArrayOutputStream.close();
-
-        } catch (IOException e) {
-            System.out.println(e);
-            System.out.println("ERROR IN decodeNetChunk!");
+            decomp = decompressByteArrayToChunkObject(netChunk.b);
+        } catch (IOException e){
+            //silent return
             return;
         }
 
-        ChunkSavingObject thisChunkLoaded = null;
-
-        try {
-            thisChunkLoaded = mapper.readValue(byteArrayOutputStream.toString(), ChunkSavingObject.class);
-        } catch (IOException e) {
-            e.printStackTrace();
+        //silent return
+        if (decomp == null){
             return;
         }
 
-        if (thisChunkLoaded == null){
-            return;
-        }
-
-        if (thisChunkLoaded.b == null){
-            return;
-        }
-
-        ChunkObject abstractedChunk = new ChunkObject();
-
-        abstractedChunk.ID = thisChunkLoaded.I;
-        abstractedChunk.x = thisChunkLoaded.x;
-        abstractedChunk.z = thisChunkLoaded.z;
-        abstractedChunk.block = thisChunkLoaded.b;
-        abstractedChunk.rotation = thisChunkLoaded.r;
-        abstractedChunk.naturalLight = thisChunkLoaded.l;
-        abstractedChunk.torchLight = thisChunkLoaded.t;
-        abstractedChunk.heightMap = thisChunkLoaded.h;
-
-        setChunk(abstractedChunk.x, abstractedChunk.z, abstractedChunk);
+        setChunk(decomp.x, decomp.z, decomp);
     }
 
     public static void sendOutNetworkBlockBreak(int x, int y, int z){
