@@ -45,6 +45,7 @@ public class SceneHandler {
 
         //move the camera into position for the main menu
         if (newScene == 0){
+            cleanItemMemory();
             setWindowClearColor(0,0,0,1);
             selectTitleScreenGag();
             if (isMouseLocked()){

@@ -22,6 +22,10 @@ public class ItemEntity {
 
     private final static float itemCollisionWidth = 0.2f;
 
+    public static void cleanItemMemory(){
+        items.clear();
+    }
+
     public static void createItem(String name, Vector3d pos, int stack) {
         items.put(getCurrentID(), new Item(name, pos, stack));
     }
