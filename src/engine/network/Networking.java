@@ -4,23 +4,15 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import engine.disk.ChunkSavingObject;
 import game.chunk.ChunkObject;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.zip.GZIPInputStream;
 
 import static engine.compression.Compression.decompressByteArrayToChunkObject;
 import static engine.graphics.Camera.getCameraRotation;
-import static engine.sound.SoundAPI.playSound;
 import static game.chunk.Chunk.*;
 import static game.item.ItemEntity.*;
 import static game.mainMenu.MainMenu.*;
@@ -30,8 +22,6 @@ import static game.player.Player.*;
 public class Networking {
 
     private static int port = 30_150;
-
-    private static final ObjectMapper mapper = new ObjectMapper();
 
     private static final Client client = new Client(50_000,50_000);
 
@@ -61,21 +51,21 @@ public class Networking {
         Kryo kryo = client.getKryo();
 
         //register classes to be serialized
-        kryo.register(NetworkHandshake.class);
-        kryo.register(PlayerPosObject.class);
-        kryo.register(ChunkRequest.class);
+        //DO PRIMITIVE CLASS FIRST!
         kryo.register(int[].class);
         kryo.register(byte[][].class);
         kryo.register(byte[].class);
         kryo.register(Vector3d.class);
         kryo.register(Vector3f.class);
-        kryo.register(BreakBlockClassThing.class);
         kryo.register(Vector3i.class);
-        kryo.register(BlockBreakingReceiver.class);
+        kryo.register(NetworkHandshake.class);
+        kryo.register(PlayerPosObject.class);
+        kryo.register(ChunkRequest.class);
+        kryo.register(BlockBreakUpdate.class);
+        kryo.register(BlockPlaceUpdate.class);
         kryo.register(ItemSendingObject.class);
         kryo.register(ItemPickupNotification.class);
         kryo.register(ItemDeletionSender.class);
-        kryo.register(BlockPlacingReceiver.class);
         kryo.register(NetworkMovePositionDemand.class);
         kryo.register(NetChunk.class);
 
@@ -110,18 +100,17 @@ public class Networking {
                     //received chunk data
                 } else if (object instanceof PlayerPosObject encodedPlayer) {
                     updateOtherPlayer(encodedPlayer);
-                } else if (object instanceof  BlockBreakingReceiver blockBreakingReceiver){
-                    Vector3i c = blockBreakingReceiver.receivedPos;
-                    digBlock(c.x, c.y, c.z);
+                } else if (object instanceof  BlockBreakUpdate blockBreakUpdate){
+                    digBlock(blockBreakUpdate.pos.x, blockBreakUpdate.pos.y, blockBreakUpdate.pos.z);
                 } else if (object instanceof ItemSendingObject itemSendingObject){
                     addItemToQueueToBeUpdated(itemSendingObject);
                 } else if (object instanceof ItemPickupNotification itemPickupNotification){
                     addItemToCollectionQueue(itemPickupNotification.name);
                 } else if (object instanceof ItemDeletionSender itemDeletionSender){
                     deleteItem(itemDeletionSender.ID);
-                } else if (object instanceof BlockPlacingReceiver blockPlacingReceiver){
-                    Vector3i c = blockPlacingReceiver.receivedPos;
-                    placeBlock(c.x,c.y, c.z, blockPlacingReceiver.ID,blockPlacingReceiver.rotation);
+                } else if (object instanceof BlockPlaceUpdate blockPlaceUpdate){
+                    Vector3i c = blockPlaceUpdate.pos;
+                    placeBlock(c.x,c.y, c.z, blockPlaceUpdate.ID, blockPlaceUpdate.rot);
                 } else if (object instanceof NetworkMovePositionDemand networkMovePositionDemand){
                     setPlayerPos(networkMovePositionDemand.newPos);
                 } else if (object instanceof NetChunk netChunk){
@@ -164,13 +153,11 @@ public class Networking {
     }
 
     public static void sendOutNetworkBlockBreak(int x, int y, int z){
-        BreakBlockClassThing thisBlockThing = new BreakBlockClassThing();
-        thisBlockThing.breakingPos = new Vector3i(x,y,z);
-        client.sendTCP(thisBlockThing);
+        client.sendTCP(new BlockBreakUpdate( new Vector3i(x,y,z)));
     }
 
     public static void sendOutNetworkBlockPlace(int x, int y, int z, int ID, byte rotation){
-        client.sendTCP(new BlockPlacingReceiver(new Vector3i(x,y,z), ID, rotation));
+        client.sendTCP(new BlockPlaceUpdate(new Vector3i(x,y,z), ID, rotation));
     }
 
 
