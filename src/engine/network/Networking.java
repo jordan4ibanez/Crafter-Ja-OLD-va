@@ -32,7 +32,7 @@ public class Networking {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    private static final Client client = new Client(1_000_000,1_000_000);
+    private static final Client client = new Client(50_000,50_000);
 
     public static void setPort(int newPort){
         port = newPort;
@@ -94,6 +94,7 @@ public class Networking {
         //client event listener
         client.addListener(new Listener() {
             public void received (Connection connection, Object object) {
+
                 //handshake receival
                 if (object instanceof NetworkHandshake encodedName) {
                     if (encodedName.name != null && encodedName.name.equals(getPlayerName())){
@@ -123,6 +124,7 @@ public class Networking {
                 } else if (object instanceof NetworkMovePositionDemand networkMovePositionDemand){
                     setPlayerPos(networkMovePositionDemand.newPos);
                 } else if (object instanceof NetChunk netChunk){
+                    System.out.println(netChunk.b.length);
                     decodeNetChunk(netChunk);
                 }
 
