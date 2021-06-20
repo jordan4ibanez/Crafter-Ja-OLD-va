@@ -43,6 +43,7 @@ public class GUI {
     private static Mesh heartHudMesh;
     private static Mesh halfHeartHudMesh;
     private static Mesh heartShadowHudMesh;
+    private static Mesh chatBox;
 
     private static Mesh fpsMesh;
 
@@ -66,6 +67,7 @@ public class GUI {
         heartHudMesh = create2DMesh(0.5f, 0.5f, "textures/heart.png");
         halfHeartHudMesh = create2DMesh(0.5f, 0.5f, 0.5f, "textures/heart.png");
         heartShadowHudMesh = create2DMesh(0.5f, 0.5f, "textures/heart_shadow.png");
+        chatBox = create2DMeshOffsetRight(0.5f, 0.5f, "textures/chat_box.png");
 
         //2D text creations
         fpsMesh = createTextWithShadow("FPS: " + getFpsCounted(), 1f, 1f, 1f);
@@ -83,6 +85,10 @@ public class GUI {
         worldSelection = new Texture("textures/selection.png");
         playerTexture = new Texture("textures/player.png");
         miningCrack = new Texture("textures/crack_anylength.png");
+    }
+
+    public static Mesh getChatBoxMesh(){
+        return chatBox;
     }
 
     public static Mesh getHeartHudMesh(){
@@ -1683,6 +1689,48 @@ public class GUI {
         positions[7] = (-height);
         positions[8] = (0f);
         positions[9] = (width);
+        positions[10] = (-height);
+        positions[11] = (0f);
+
+        for (int i = 0; i < 12; i++) {
+            light[i] = 1f;
+        }
+
+        indices[0] = (0);
+        indices[1] = (1);
+        indices[2] = (2);
+        indices[3] = (0);
+        indices[4] = (2);
+        indices[5] = (3);
+
+        textureCoord[0] = (1f);
+        textureCoord[1] = (0f);
+        textureCoord[2] = (0f);
+        textureCoord[3] = (0f);
+        textureCoord[4] = (0f);
+        textureCoord[5] = (1f);
+        textureCoord[6] = (1f);
+        textureCoord[7] = (1f);
+
+        return new Mesh(positions, light, indices, textureCoord, new Texture(texture));
+    }
+
+    public static Mesh create2DMeshOffsetRight(float width, float height, String texture) throws Exception {
+        float[] positions = new float[12];
+        float[] textureCoord = new float[8];
+        int[] indices = new int[6];
+        float[] light = new float[12];
+
+        positions[0] = (width*2f);
+        positions[1] = (height);
+        positions[2] = (0f);
+        positions[3] = (0);
+        positions[4] = (height);
+        positions[5] = (0f);
+        positions[6] = (0);
+        positions[7] = (-height);
+        positions[8] = (0f);
+        positions[9] = (width*2f);
         positions[10] = (-height);
         positions[11] = (0f);
 

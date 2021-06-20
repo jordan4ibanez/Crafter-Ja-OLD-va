@@ -75,6 +75,7 @@ public class Networking {
         kryo.register(HotBarSlotUpdate.class,109);
         kryo.register(NetworkInventory.class,110);
         kryo.register(ThrowItemUpdate.class, 111);
+        kryo.register(ChatMessage.class,112);
 
 
 

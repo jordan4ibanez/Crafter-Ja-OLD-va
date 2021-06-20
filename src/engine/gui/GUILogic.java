@@ -6,19 +6,25 @@ import static engine.MouseInput.*;
 import static engine.Time.getDelta;
 import static engine.Window.*;
 import static engine.network.Networking.disconnectClient;
+import static engine.network.Networking.setPort;
 import static engine.render.GameRenderer.getWindowScale;
 import static engine.render.GameRenderer.getWindowSize;
 import static engine.scene.SceneHandler.setScene;
 import static engine.settings.Settings.*;
 import static engine.sound.SoundAPI.playSound;
+import static game.chat.Chat.getCurrentChatMessage;
+import static game.chat.Chat.setCurrentChatMessage;
 import static game.mainMenu.MainMenu.resetMainMenu;
 import static game.mainMenu.MainMenu.resetMainMenuPage;
 import static game.player.Player.getPlayerHealth;
+import static game.player.Player.setPlayerName;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
 public class GUILogic {
 
     private static boolean paused = false;
+    private static boolean chatOpen = false;
+    private static int chatBoxEntryKey = 84;
 
     private static boolean mouseButtonPushed = false;
     private static boolean mouseButtonWasPushed = false;
@@ -137,11 +143,26 @@ public class GUILogic {
             pollingButtonInputs = false;
             lockedOnButtonInput = -1;
             flushControlsMenu();
+
+            if (chatOpen){
+                setChatOpen(false);
+            }
         }
     }
 
     public static boolean isPaused(){
         return paused;
+    }
+
+    public static boolean isChatOpen(){
+        return chatOpen;
+    }
+
+    public static void setChatOpen(boolean truth){
+        chatOpen = truth;
+        toggleMouseLock();
+        chatBoxEntryKey = 84;
+        setCurrentChatMessage("");
     }
 
     public static void setPaused(boolean truth){
@@ -387,6 +408,52 @@ public class GUILogic {
                 }
             }
             mouseButtonWasPushed = isLeftButtonPressed();
+        } else if (chatOpen){
+
+            int dumpedKey = getDumpedKey();
+
+            if (dumpedKey != -1 && dumpedKey != chatBoxEntryKey){
+                chatBoxEntryKey = dumpedKey;
+
+                String textInput = getCurrentChatMessage();
+
+                if (textInput == null){
+                    textInput = "";
+                }
+
+                //this is a HORRIBLE way to filter text input
+                if ((dumpedKey >= 65 && dumpedKey <= 90) || (dumpedKey >= 48 && dumpedKey <= 57) || dumpedKey == 45 || dumpedKey == 47 || dumpedKey == 59 || dumpedKey == 46 || dumpedKey == 32){
+
+                    char newChar;
+
+                    if (dumpedKey == 47){
+                        newChar = '/';
+                    } else if (dumpedKey == 46){
+                        newChar = '.';
+                    } else if (dumpedKey == 59) {
+                        newChar = ':';
+                    } else if (dumpedKey == 45) {
+                        newChar = '-';
+                    }else if (dumpedKey == 32){
+                        newChar = ' ';
+                    } else {
+                        newChar = (char)dumpedKey;
+                    }
+
+
+
+                    //add it to the messages
+                    if (textInput.length() < 256){
+                        setCurrentChatMessage(textInput + newChar);
+                    }
+
+                } else if (dumpedKey == 259){
+                    textInput  = textInput.replaceAll(".$", "");
+                    setCurrentChatMessage(textInput);
+                }
+            } else if (dumpedKey == -1) {
+                chatBoxEntryKey = -1;
+            }
         }
     }
 

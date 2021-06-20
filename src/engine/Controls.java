@@ -9,8 +9,7 @@ import static engine.Window.isKeyPressed;
 import static engine.Window.toggleFullScreen;
 import static engine.graphics.Camera.getCameraPerspective;
 import static engine.graphics.Camera.toggleCameraPerspective;
-import static engine.gui.GUILogic.isPaused;
-import static engine.gui.GUILogic.togglePauseMenu;
+import static engine.gui.GUILogic.*;
 import static engine.settings.Settings.*;
 import static game.crafting.Inventory.*;
 import static game.crafting.InventoryLogic.closeCraftingInventory;
@@ -28,10 +27,11 @@ public class Controls {
     private static boolean escapePushed        = false;
     private static boolean F3Pushed            = false;
     private static boolean F5Pushed = false;
+    private static boolean chatButtonPushed = false;
 
     public static void gameInput() {
 
-        if (!isPlayerInventoryOpen() && !isPaused()) {
+        if (!isPlayerInventoryOpen() && !isPaused() && !isChatOpen()) {
             //normal inputs
             if (getCameraPerspective() < 2) {
                 setPlayerForward(isKeyPressed(getKeyForward()));
@@ -49,8 +49,17 @@ public class Controls {
 
             //sneaking
             setPlayerSneaking(isKeyPressed(getKeySneak()));
-
             setPlayerJump(isKeyPressed(getKeyJump()));
+
+            //drop
+            if (isKeyPressed(getKeyDrop())) {
+                if (!throwButtonPushed) {
+                    throwButtonPushed = true;
+                    throwItem();
+                }
+            } else if (!isKeyPressed(getKeyDrop())){
+                throwButtonPushed = false;
+            }
         }
 
 
@@ -65,16 +74,6 @@ public class Controls {
         }
 
 
-        //drop
-        if (isKeyPressed(getKeyDrop())) {
-            if (!throwButtonPushed) {
-                throwButtonPushed = true;
-                throwItem();
-            }
-        } else if (!isKeyPressed(getKeyDrop())){
-            throwButtonPushed = false;
-        }
-
         //fullscreen
         if (isKeyPressed(GLFW_KEY_F11)) {
             if (!F11Pushed) {
@@ -85,13 +84,29 @@ public class Controls {
             F11Pushed = false;
         }
 
-        //esape
+        //chat
+        if (isKeyPressed(GLFW_KEY_T)){
+            if (!chatButtonPushed){
+                chatButtonPushed = true;
+                if (!isChatOpen() && !isPlayerInventoryOpen() && !isPaused()) {
+                    setChatOpen(true);
+                }
+            }
+        } else if (!isKeyPressed(GLFW_KEY_T)){
+            chatButtonPushed = false;
+        }
+
+
+        //escape
         if (isKeyPressed(GLFW_KEY_ESCAPE)) {
             if (!escapePushed) {
                 escapePushed = true;
                 //close inventory
-                if(isPlayerInventoryOpen()){
+                if(isPlayerInventoryOpen()) {
                     closeCraftingInventory();
+                //close chat box
+                }else if (isChatOpen()){
+                    setChatOpen(false);
                 //pause game
                 } else {
                     toggleMouseLock();
@@ -106,7 +121,7 @@ public class Controls {
 
 
         //inventory
-        if (isKeyPressed(getKeyInventory()) && !isPaused()) {
+        if (isKeyPressed(getKeyInventory()) && !isPaused() && !isChatOpen()) {
             if (!inventoryButtonPushed) {
                 inventoryButtonPushed = true;
                 if (isPlayerInventoryOpen()){

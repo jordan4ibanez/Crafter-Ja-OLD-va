@@ -26,6 +26,7 @@ import static engine.gui.GUI.*;
 import static engine.gui.GUILogic.*;
 import static engine.gui.TextHandling.*;
 import static engine.settings.Settings.*;
+import static game.chat.Chat.getCurrentMessageMesh;
 import static game.crafting.InventoryLogic.getPlayerHudRotation;
 import static game.falling.FallingEntity.getFallingEntities;
 import static game.item.ItemDefinition.getItemDefinition;
@@ -586,6 +587,7 @@ public class GameRenderer {
 
         glClear(GL_DEPTH_BUFFER_BIT);
 
+
         if (!isPaused()) {
 
             if (isPlayerInventoryOpen()) {
@@ -832,6 +834,23 @@ public class GameRenderer {
             glClear(GL_DEPTH_BUFFER_BIT);
 
             renderGameGUI();
+        }
+
+        //render chat bar
+        if (isChatOpen()){
+
+            //render background
+            glClear(GL_DEPTH_BUFFER_BIT);
+            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d((-windowSize.x / 2d), (-windowSize.y / 2.9d), 0), new Vector3f(0, 0, 0), new Vector3d(windowSize.x / 1.5d, windowScale / 15d, windowScale / 5d));
+            hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            getChatBoxMesh().render();
+
+            //render typing text
+            glClear(GL_DEPTH_BUFFER_BIT);
+            modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d((-windowSize.x / 2d), (-windowSize.y / 2.9d), 0), new Vector3f(0, 0, 0), new Vector3d(windowScale / 30d, windowScale / 30d, windowScale / 30d));
+            hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            getCurrentMessageMesh().render();
+
         }
 
         hudShaderProgram.unbind();
