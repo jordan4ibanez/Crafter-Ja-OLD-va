@@ -131,7 +131,6 @@ public class Ray {
             sendOutNetworkBlockBreak((int) flooredPos.x, (int) flooredPos.y, (int) flooredPos.z);
         } else {
             digBlock((int) flooredPos.x, (int) flooredPos.y, (int) flooredPos.z);
-            onDigCall(thisBlock, flooredPos);
         }
         for (int i = 0; i < 40 + (int)(Math.random() * 15); i++) {
             createParticle(new Vector3d(flooredPos.x + (Math.random()-0.5d), flooredPos.y + (Math.random()-0.5d), flooredPos.z + (Math.random()-0.5d)), new Vector3f((float)(Math.random()-0.5f) * 2f, 0f, (float)(Math.random()-0.5f) * 2f), thisBlock);
@@ -142,8 +141,6 @@ public class Ray {
             sendOutNetworkBlockPlace((int) flooredPos.x, (int) flooredPos.y, (int) flooredPos.z, ID, getPlayerDir());
         } else {
             placeBlock((int) flooredPos.x, (int) flooredPos.y, (int) flooredPos.z, ID, getPlayerDir());
-
-            onPlaceCall(ID, flooredPos);
         }
 
         removeItemFromInventory(getCurrentInventorySelection(), 0);

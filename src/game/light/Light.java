@@ -15,7 +15,7 @@ public class Light {
     private static final byte lightDistance = 15;
     private static final byte max = (lightDistance * 2) + 1;
 
-    private static byte currentLightLevel = 15;
+    private static byte currentLightLevel = 4;
     private static boolean goUp = false;
     private static float dayLightTimer = 0.f;
 
@@ -24,6 +24,11 @@ public class Light {
     }
 
     public static void testLightLevel(){
+
+        if (true){
+            return;
+        }
+
         float delta = getDelta();
         dayLightTimer += delta;
 
@@ -236,16 +241,28 @@ public class Light {
             final Deque<LightUpdate> lightSources = new ArrayDeque<>();
             final byte[][][] memoryMap = new byte[(lightDistance * 2) + 1][(lightDistance * 2) + 1][(lightDistance * 2) + 1];
 
-            lightSources.add(new LightUpdate(lightDistance, lightDistance, lightDistance, maxTorchLightLevel));
+            //lightSources.add(new LightUpdate(lightDistance, lightDistance, lightDistance, getTorchLight(posX,posY,posZ)));
+
+            int minX = posX - lightDistance;
+            int maxX = posX + lightDistance;
+            int minY = posY - lightDistance;
+            int maxY = posY + lightDistance;
+            int minZ = posZ - lightDistance;
+            int maxZ = posZ + lightDistance;
 
             for (int x = posX - lightDistance; x <= posX + lightDistance; x++) {
                 for (int y = posY - lightDistance; y <= posY + lightDistance; y++) {
                     for (int z = posZ - lightDistance; z <= posZ + lightDistance; z++) {
                         int theBlock = getBlock(x, y, z);
-                        if (theBlock == 0) {
+                        if (theBlock == 29){
+                            System.out.println("found le torch");
+                            lightSources.add(new LightUpdate( x - posX + lightDistance, y - posY + lightDistance, z - posZ + lightDistance, maxTorchLightLevel));
+                        } else if (theBlock == 0 && (x == minX || x == maxX || y == minY || y == maxY || z == minZ || z == maxZ)) {
                             memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance] = getTorchLight(x, y, z);
-                        } else {
+                        } else if (theBlock != 0){
                             memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance] = blockIndicator;
+                        } else { //everything else is zeroed out
+                            memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance] = 0;
                         }
                     }
                 }
@@ -332,8 +349,6 @@ public class Light {
                     }
                 }
             }
-            lightSources.clear();
-            //}
         }).start();
     }
 }

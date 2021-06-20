@@ -3,6 +3,7 @@ package game.chunk;
 import engine.FastNoise;
 import engine.graphics.Mesh;
 import engine.network.ChunkRequest;
+import org.joml.Vector3d;
 import org.joml.Vector3i;
 
 import java.io.IOException;
@@ -17,6 +18,8 @@ import static engine.disk.SaveQueue.saveChunk;
 import static engine.network.Networking.sendOutChunkRequest;
 import static engine.settings.Settings.getRenderDistance;
 import static engine.settings.Settings.getSettingsChunkLoad;
+import static game.blocks.BlockDefinition.onDigCall;
+import static game.blocks.BlockDefinition.onPlaceCall;
 import static game.chunk.ChunkMath.posToIndex;
 import static game.chunk.ChunkMeshGenerator.generateChunkMesh;
 import static game.chunk.ChunkMeshGenerator.instantGeneration;
@@ -382,6 +385,9 @@ public class Chunk {
         if (thisChunk.block == null){
             return;
         }
+
+        int oldBlock = thisChunk.block[posToIndex(blockX, y, blockZ)];
+
         thisChunk.block[posToIndex(blockX, y, blockZ)] = 0;
         thisChunk.rotation[posToIndex(blockX, y, blockZ)] = 0;
         if (thisChunk.heightMap[blockX][blockZ] == y){
@@ -397,6 +403,8 @@ public class Chunk {
         thisChunk.naturalLight[posToIndex(blockX, y, blockZ)] = getImmediateLight(x,y,z);
         instantGeneration(chunkX,chunkZ,yPillar);
         instantUpdateNeighbor(chunkX, chunkZ,blockX,y,blockZ);//instant update
+
+        onDigCall(oldBlock, new Vector3d(x,y,z));
     }
 
     public static void placeBlock(int x,int y,int z, int ID, int rot){
@@ -423,6 +431,9 @@ public class Chunk {
         }
         lightFloodFill(x, y, z);
         thisChunk.modified = true;
+
+        onPlaceCall(ID, new Vector3d(x,y,z));
+
         instantGeneration(chunkX,chunkZ,yPillar);
         instantUpdateNeighbor(chunkX, chunkZ,blockX,y,blockZ);//instant update
     }

@@ -1226,6 +1226,11 @@ public class BlockDefinition {
             public void onPlace(Vector3d pos) {
                 torchFloodFill((int)pos.x, (int)pos.y, (int)pos.z);
             }
+
+            @Override
+            public void onDig(Vector3d pos){
+                torchFloodFill((int)pos.x, (int)pos.y, (int)pos.z);
+            }
         };
 
         new BlockDefinition(
