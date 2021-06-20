@@ -15,7 +15,7 @@ public class Light {
     private static final byte lightDistance = 15;
     private static final byte max = (lightDistance * 2) + 1;
 
-    private static byte currentLightLevel = 4;
+    private static byte currentLightLevel = 15;
     private static boolean goUp = false;
     private static float dayLightTimer = 0.f;
 
@@ -24,10 +24,6 @@ public class Light {
     }
 
     public static void testLightLevel(){
-
-        if (true){
-            return;
-        }
 
         float delta = getDelta();
         dayLightTimer += delta;
