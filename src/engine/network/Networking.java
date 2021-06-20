@@ -13,6 +13,8 @@ import java.io.IOException;
 
 import static engine.compression.Compression.decompressByteArrayToChunkObject;
 import static engine.graphics.Camera.getCameraRotation;
+import static game.chat.Chat.addChatMessage;
+import static game.chat.Chat.addToChatMessageBuffer;
 import static game.chunk.Chunk.*;
 import static game.crafting.Inventory.getMainInventory;
 import static game.item.ItemEntity.*;
@@ -130,6 +132,8 @@ public class Networking {
                     setPlayerPos(networkMovePositionDemand.newPos);
                 } else if (object instanceof NetChunk netChunk){
                     decodeNetChunk(netChunk);
+                } else if (object instanceof  ChatMessage message){
+                    addToChatMessageBuffer(message.message);
                 }
 
             }
@@ -214,6 +218,14 @@ public class Networking {
     //request chunk data from server
     public static void sendOutChunkRequest(ChunkRequest chunkRequest) {
         client.sendTCP(chunkRequest);
+    }
+
+    public static void sendChatMessage(String message){
+        //stop spam, kind of
+        if (message == null || message.equals("")){
+            return;
+        }
+        client.sendTCP(new ChatMessage(message));
     }
 
     //allow main loop to send player back to multiplayer page

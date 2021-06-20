@@ -20,6 +20,7 @@ import static engine.Time.calculateDelta;
 import static engine.Timer.countFPS;
 import static engine.settings.Settings.getDebugInfo;
 import static engine.sound.SoundManager.updateListenerPosition;
+import static game.chat.Chat.*;
 import static game.chunk.Chunk.*;
 import static game.chunk.ChunkMeshGenerationHandler.popChunkMeshQueue;
 import static game.chunk.ChunkUpdateHandler.chunkUpdater;
@@ -106,6 +107,9 @@ public class SceneHandler {
         calculateDelta();
         mouseInput();
         countFPS();
+        popChatMessageBuffer();
+        tickUpChatTimers();
+        deleteOldChatMeshes();
         processQueuedItemsToBeAddedInMultiplayer();
         itemsOnTickMultiplayer();
         popItemsAddingQueue();

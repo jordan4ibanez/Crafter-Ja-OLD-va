@@ -5,15 +5,13 @@ import org.joml.Vector2d;
 import static engine.MouseInput.*;
 import static engine.Time.getDelta;
 import static engine.Window.*;
-import static engine.network.Networking.disconnectClient;
-import static engine.network.Networking.setPort;
+import static engine.network.Networking.*;
 import static engine.render.GameRenderer.getWindowScale;
 import static engine.render.GameRenderer.getWindowSize;
 import static engine.scene.SceneHandler.setScene;
 import static engine.settings.Settings.*;
 import static engine.sound.SoundAPI.playSound;
-import static game.chat.Chat.getCurrentChatMessage;
-import static game.chat.Chat.setCurrentChatMessage;
+import static game.chat.Chat.*;
 import static game.mainMenu.MainMenu.resetMainMenu;
 import static game.mainMenu.MainMenu.resetMainMenuPage;
 import static game.player.Player.getPlayerHealth;
@@ -72,6 +70,12 @@ public class GUILogic {
 
             new GUIObject("BACK" , new Vector2d(0, -30), 5, 1),
     };
+
+    public static void sendAndFlushChatMessage(){
+        sendChatMessage(getCurrentChatMessage());
+        clearCurrentChatMessage();
+        setChatOpen(false);
+    }
 
 
     private static String quickConvertKeyCode(int keyCode){

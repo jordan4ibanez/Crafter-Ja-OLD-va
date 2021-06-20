@@ -10,6 +10,7 @@ import static engine.Window.toggleFullScreen;
 import static engine.graphics.Camera.getCameraPerspective;
 import static engine.graphics.Camera.toggleCameraPerspective;
 import static engine.gui.GUILogic.*;
+import static engine.network.Networking.getIfMultiplayer;
 import static engine.settings.Settings.*;
 import static game.crafting.Inventory.*;
 import static game.crafting.InventoryLogic.closeCraftingInventory;
@@ -28,6 +29,7 @@ public class Controls {
     private static boolean F3Pushed            = false;
     private static boolean F5Pushed = false;
     private static boolean chatButtonPushed = false;
+    private static boolean enterPushed = false;
 
     public static void gameInput() {
 
@@ -63,6 +65,18 @@ public class Controls {
         }
 
 
+        //send chat message
+        if (isKeyPressed(GLFW_KEY_ENTER)){
+            if (!enterPushed){
+                if (isChatOpen()){
+                    sendAndFlushChatMessage();
+                    enterPushed = true;
+                }
+            }
+        } else if (!isKeyPressed(GLFW_KEY_ENTER)){
+            enterPushed = false;
+        }
+
         //debug info
         if (isKeyPressed(GLFW_KEY_F3)) {
             if (!F3Pushed) {
@@ -88,8 +102,10 @@ public class Controls {
         if (isKeyPressed(GLFW_KEY_T)){
             if (!chatButtonPushed){
                 chatButtonPushed = true;
-                if (!isChatOpen() && !isPlayerInventoryOpen() && !isPaused()) {
-                    setChatOpen(true);
+                if (getIfMultiplayer()) { //only allow in multiplayer
+                    if (!isChatOpen() && !isPlayerInventoryOpen() && !isPaused()) {
+                        setChatOpen(true);
+                    }
                 }
             }
         } else if (!isKeyPressed(GLFW_KEY_T)){
