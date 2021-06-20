@@ -255,7 +255,6 @@ public class Light {
                     for (int z = posZ - lightDistance; z <= posZ + lightDistance; z++) {
                         int theBlock = getBlock(x, y, z);
                         if (theBlock == 29){
-                            System.out.println("found le torch");
                             lightSources.add(new LightUpdate( x - posX + lightDistance, y - posY + lightDistance, z - posZ + lightDistance, maxTorchLightLevel));
                         } else if (theBlock == 0 && (x == minX || x == maxX || y == minY || y == maxY || z == minZ || z == maxZ)) {
                             memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance] = getTorchLight(x, y, z);

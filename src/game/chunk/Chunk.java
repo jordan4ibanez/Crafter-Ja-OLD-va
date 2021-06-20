@@ -399,6 +399,7 @@ public class Chunk {
             }
         }
         lightFloodFill(x, y, z);
+        torchFloodFill(x,y,z);
         thisChunk.modified = true;
         thisChunk.naturalLight[posToIndex(blockX, y, blockZ)] = getImmediateLight(x,y,z);
         instantGeneration(chunkX,chunkZ,yPillar);
@@ -429,7 +430,10 @@ public class Chunk {
         if (thisChunk.heightMap[blockX][blockZ] < y){
             thisChunk.heightMap[blockX][blockZ] = (byte) y;
         }
+
         lightFloodFill(x, y, z);
+        torchFloodFill(x,y,z);
+
         thisChunk.modified = true;
 
         onPlaceCall(ID, new Vector3d(x,y,z));
