@@ -22,6 +22,23 @@ You can try these flags for a performance boost, if you want.
 -Xmx1G -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:-UseAdaptiveSizePolicy -Xmn128M
 `
 
+#Building with ANT:
+
+You must install ANT (Another Neat Tool) for the build to work.
+
+Once you have ANT installed, you can simply CD to the Crafter directory.
+
+Check build.properties to make sure that ``jdk.home.11=`` is pointing to your openJDK 16 install.
+
+Run ``ant -keep-going``
+
+Once it says build successful, you must create a folder for the game, preferably on your desktop.
+
+Drop the jar from the build directory (WHEREVER/Crafter/out/artifacts/Crafter_jar/Crafter.jar) to your new folder directory.
+
+Copy the /textures/ and /sounds/ folders into the new directory.
+
+You should now be able to run the game using java -jar Crafter.jar in the folder you created, or double clicking the jar in Windows.
 
 # Todo List: (This is probably outdated)
 
