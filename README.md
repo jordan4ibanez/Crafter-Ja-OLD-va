@@ -22,7 +22,7 @@ You can try these flags for a performance boost, if you want.
 -Xmx1G -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:-UseAdaptiveSizePolicy -Xmn128M
 `
 
-#Building with ANT:
+# Building with ANT:
 
 You must install ANT (Another Neat Tool) for the build to work.
 
