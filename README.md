@@ -30,6 +30,8 @@ Once you have ANT installed, you can simply CD to the Crafter directory.
 
 Check build.properties to make sure that ``jdk.home.11=`` is pointing to your openJDK 16 install.
 
+You can find this with: ``readlink -f $(which java)``
+
 Run ``ant -keep-going``
 
 Once it says build successful, you must create a folder for the game, preferably on your desktop.
