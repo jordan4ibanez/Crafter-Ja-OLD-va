@@ -12,7 +12,9 @@ You can get this version at: https://jdk.java.net/16/
 
 Or you can install openJDK on most linux distros.
 
-Fedora: `sudo dnf install java-latest-openjdk-devel.x86_64`
+Ubuntu: ``sudo apt install openjdk-16-jdk``
+
+Fedora: ``sudo dnf install java-latest-openjdk-devel.x86_64``
 
 To update default JRE: `sudo update-alternatives --config java`
 
