@@ -32,7 +32,7 @@ Once you have ANT installed, you can simply CD to the Crafter directory.
 
 Check build.properties to make sure that ``jdk.home.11=`` is pointing to your openJDK 16 install.
 
-You can find this with: ``readlink -f $(which java)``
+You can find this with: ``readlink -f $(which java)`` (Don't copy the bin/java part)
 
 Run ``ant -keep-going``
 
