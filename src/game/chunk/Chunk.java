@@ -15,6 +15,7 @@ import static engine.Time.getDelta;
 import static engine.disk.Disk.*;
 import static engine.disk.SaveQueue.instantSave;
 import static engine.disk.SaveQueue.saveChunk;
+import static engine.network.Networking.getIfMultiplayer;
 import static engine.network.Networking.sendOutChunkRequest;
 import static engine.settings.Settings.getRenderDistance;
 import static engine.settings.Settings.getSettingsChunkLoad;
@@ -402,10 +403,13 @@ public class Chunk {
         torchFloodFill(x,y,z);
         thisChunk.modified = true;
         thisChunk.naturalLight[posToIndex(blockX, y, blockZ)] = getImmediateLight(x,y,z);
+
+        if (!getIfMultiplayer()) {
+            onDigCall(oldBlock, new Vector3d(x, y, z));
+        }
+
         instantGeneration(chunkX,chunkZ,yPillar);
         instantUpdateNeighbor(chunkX, chunkZ,blockX,y,blockZ);//instant update
-
-        onDigCall(oldBlock, new Vector3d(x,y,z));
     }
 
     public static void placeBlock(int x,int y,int z, int ID, int rot){
@@ -436,7 +440,9 @@ public class Chunk {
 
         thisChunk.modified = true;
 
-        onPlaceCall(ID, new Vector3d(x,y,z));
+        if (!getIfMultiplayer()) {
+            onPlaceCall(ID, new Vector3d(x, y, z));
+        }
 
         instantGeneration(chunkX,chunkZ,yPillar);
         instantUpdateNeighbor(chunkX, chunkZ,blockX,y,blockZ);//instant update
