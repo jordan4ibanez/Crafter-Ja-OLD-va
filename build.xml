@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="crafter" default="all">
+  
+  
+  <property file="build.properties"/>
+  <!-- Uncomment the following property if no tests compilation is needed -->
+  <!-- 
+  <property name="skip.tests" value="true"/>
+   -->
+  
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="700m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/*.pyc/**"/>
+    <exclude name="**/*.pyo/**"/>
+    <exclude name="**/*.rbc/**"/>
+    <exclude name="**/*.yarb/**"/>
+    <exclude name="**/*~/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.git/**"/>
+    <exclude name="**/.hg/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/__pycache__/**"/>
+    <exclude name="**/_svn/**"/>
+    <exclude name="**/vssver.scc/**"/>
+    <exclude name="**/vssver2.scc/**"/>
+  </patternset>
+  <patternset id="library.patterns">
+    <include name="*.egg"/>
+    <include name="*.zip"/>
+    <include name="*.war"/>
+    <include name="*.swc"/>
+    <include name="*.ear"/>
+    <include name="*.jar"/>
+    <include name="*.klib"/>
+    <include name="*.ane"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <exclude name="**/?*.java"/>
+    <exclude name="**/?*.form"/>
+    <exclude name="**/?*.class"/>
+    <exclude name="**/?*.groovy"/>
+    <exclude name="**/?*.scala"/>
+    <exclude name="**/?*.flex"/>
+    <exclude name="**/?*.kt"/>
+    <exclude name="**/?*.clj"/>
+    <exclude name="**/?*.aj"/>
+  </patternset>
+  
+  <!-- JDK definitions -->
+  
+  <property name="jdk.bin.11" value="${jdk.home.11}/bin"/>
+  <path id="jdk.classpath.11">
+    <fileset dir="${jdk.home.11}">
+      <include name="../java-16-openjdk!/java.base"/>
+      <include name="../java-16-openjdk!/java.compiler"/>
+      <include name="../java-16-openjdk!/java.datatransfer"/>
+      <include name="../java-16-openjdk!/java.desktop"/>
+      <include name="../java-16-openjdk!/java.instrument"/>
+      <include name="../java-16-openjdk!/java.logging"/>
+      <include name="../java-16-openjdk!/java.management"/>
+      <include name="../java-16-openjdk!/java.management.rmi"/>
+      <include name="../java-16-openjdk!/java.naming"/>
+      <include name="../java-16-openjdk!/java.net.http"/>
+      <include name="../java-16-openjdk!/java.prefs"/>
+      <include name="../java-16-openjdk!/java.rmi"/>
+      <include name="../java-16-openjdk!/java.scripting"/>
+      <include name="../java-16-openjdk!/java.se"/>
+      <include name="../java-16-openjdk!/java.security.jgss"/>
+      <include name="../java-16-openjdk!/java.security.sasl"/>
+      <include name="../java-16-openjdk!/java.smartcardio"/>
+      <include name="../java-16-openjdk!/java.sql"/>
+      <include name="../java-16-openjdk!/java.sql.rowset"/>
+      <include name="../java-16-openjdk!/java.transaction.xa"/>
+      <include name="../java-16-openjdk!/java.xml"/>
+      <include name="../java-16-openjdk!/java.xml.crypto"/>
+      <include name="../java-16-openjdk!/jdk.accessibility"/>
+      <include name="../java-16-openjdk!/jdk.aot"/>
+      <include name="../java-16-openjdk!/jdk.attach"/>
+      <include name="../java-16-openjdk!/jdk.charsets"/>
+      <include name="../java-16-openjdk!/jdk.compiler"/>
+      <include name="../java-16-openjdk!/jdk.crypto.cryptoki"/>
+      <include name="../java-16-openjdk!/jdk.crypto.ec"/>
+      <include name="../java-16-openjdk!/jdk.dynalink"/>
+      <include name="../java-16-openjdk!/jdk.editpad"/>
+      <include name="../java-16-openjdk!/jdk.hotspot.agent"/>
+      <include name="../java-16-openjdk!/jdk.httpserver"/>
+      <include name="../java-16-openjdk!/jdk.incubator.foreign"/>
+      <include name="../java-16-openjdk!/jdk.incubator.vector"/>
+      <include name="../java-16-openjdk!/jdk.internal.ed"/>
+      <include name="../java-16-openjdk!/jdk.internal.jvmstat"/>
+      <include name="../java-16-openjdk!/jdk.internal.le"/>
+      <include name="../java-16-openjdk!/jdk.internal.opt"/>
+      <include name="../java-16-openjdk!/jdk.internal.vm.ci"/>
+      <include name="../java-16-openjdk!/jdk.internal.vm.compiler"/>
+      <include name="../java-16-openjdk!/jdk.internal.vm.compiler.management"/>
+      <include name="../java-16-openjdk!/jdk.jartool"/>
+      <include name="../java-16-openjdk!/jdk.javadoc"/>
+      <include name="../java-16-openjdk!/jdk.jcmd"/>
+      <include name="../java-16-openjdk!/jdk.jconsole"/>
+      <include name="../java-16-openjdk!/jdk.jdeps"/>
+      <include name="../java-16-openjdk!/jdk.jdi"/>
+      <include name="../java-16-openjdk!/jdk.jdwp.agent"/>
+      <include name="../java-16-openjdk!/jdk.jfr"/>
+      <include name="../java-16-openjdk!/jdk.jlink"/>
+      <include name="../java-16-openjdk!/jdk.jpackage"/>
+      <include name="../java-16-openjdk!/jdk.jshell"/>
+      <include name="../java-16-openjdk!/jdk.jsobject"/>
+      <include name="../java-16-openjdk!/jdk.jstatd"/>
+      <include name="../java-16-openjdk!/jdk.localedata"/>
+      <include name="../java-16-openjdk!/jdk.management"/>
+      <include name="../java-16-openjdk!/jdk.management.agent"/>
+      <include name="../java-16-openjdk!/jdk.management.jfr"/>
+      <include name="../java-16-openjdk!/jdk.naming.dns"/>
+      <include name="../java-16-openjdk!/jdk.naming.rmi"/>
+      <include name="../java-16-openjdk!/jdk.net"/>
+      <include name="../java-16-openjdk!/jdk.nio.mapmode"/>
+      <include name="../java-16-openjdk!/jdk.sctp"/>
+      <include name="../java-16-openjdk!/jdk.security.auth"/>
+      <include name="../java-16-openjdk!/jdk.security.jgss"/>
+      <include name="../java-16-openjdk!/jdk.unsupported"/>
+      <include name="../java-16-openjdk!/jdk.unsupported.desktop"/>
+      <include name="../java-16-openjdk!/jdk.xml.dom"/>
+      <include name="../java-16-openjdk!/jdk.zipfs"/>
+    </fileset>
+  </path>
+  
+  <property name="project.jdk.home" value="${jdk.home.11}"/>
+  <property name="project.jdk.bin" value="${jdk.bin.11}"/>
+  <property name="project.jdk.classpath" value="jdk.classpath.11"/>
+  
+  
+  <!-- Project Libraries -->
+  
+  <path id="library.lib.classpath">
+    <pathelement location="${basedir}/lib/jackson-annotations-2.11.3.jar"/>
+    <pathelement location="${basedir}/lib/jackson-core-2.11.3.jar"/>
+    <pathelement location="${basedir}/lib/jackson-databind-2.11.3.jar"/>
+    <pathelement location="${basedir}/lib/kryonet-2.21-all.jar"/>
+  </path>
+  
+  <path id="library.linux.classpath">
+    <pathelement location="${basedir}/lib/linux/joml-1.9.25-javadoc.jar"/>
+    <pathelement location="${basedir}/lib/linux/joml-1.9.25-sources.jar"/>
+    <pathelement location="${basedir}/lib/linux/joml-1.9.25.jar"/>
+    <pathelement location="${basedir}/lib/linux/lwjgl-assimp-javadoc.jar"/>
+    <pathelement location="${basedir}/lib/linux/lwjgl-assimp-natives-linux.jar"/>
+    <pathelement location="${basedir}/lib/linux/lwjgl-assimp-sources.jar"/>
+    <pathelement location="${basedir}/lib/linux/lwjgl-assimp.jar"/>
+    <pathelement location="${basedir}/lib/linux/lwjgl-glfw-javadoc.jar"/>
+    <pathelement location="${basedir}/lib/linux/lwjgl-glfw-natives-linux.jar"/>
+    <pathelement location="${basedir}/lib/linux/lwjgl-glfw-sources.jar"/>
+    <pathelement location="${basedir}/lib/linux/lwjgl-glfw.jar"/>
+    <pathelement location="${basedir}/lib/linux/lwjgl-javadoc.jar"/>
+    <pathelement location="${basedir}/lib/linux/lwjgl-natives-linux.jar"/>
+    <pathelement location="${basedir}/lib/linux/lwjgl-openal-javadoc.jar"/>
+    <pathelement location="${basedir}/lib/linux/lwjgl-openal-natives-linux.jar"/>
+    <pathelement location="${basedir}/lib/linux/lwjgl-openal-sources.jar"/>
+    <pathelement location="${basedir}/lib/linux/lwjgl-openal.jar"/>
+    <pathelement location="${basedir}/lib/linux/lwjgl-opengl-javadoc.jar"/>
+    <pathelement location="${basedir}/lib/linux/lwjgl-opengl-natives-linux.jar"/>
+    <pathelement location="${basedir}/lib/linux/lwjgl-opengl-sources.jar"/>
+    <pathelement location="${basedir}/lib/linux/lwjgl-opengl.jar"/>
+    <pathelement location="${basedir}/lib/linux/lwjgl-sources.jar"/>
+    <pathelement location="${basedir}/lib/linux/lwjgl-stb-javadoc.jar"/>
+    <pathelement location="${basedir}/lib/linux/lwjgl-stb-natives-linux.jar"/>
+    <pathelement location="${basedir}/lib/linux/lwjgl-stb-sources.jar"/>
+    <pathelement location="${basedir}/lib/linux/lwjgl-stb.jar"/>
+    <pathelement location="${basedir}/lib/linux/lwjgl.jar"/>
+  </path>
+  
+  <path id="library.windows.classpath">
+    <pathelement location="${basedir}/lib/windows/joml-1.9.25-javadoc.jar"/>
+    <pathelement location="${basedir}/lib/windows/joml-1.9.25-sources.jar"/>
+    <pathelement location="${basedir}/lib/windows/joml-1.9.25.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-assimp-javadoc.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-assimp-natives-windows.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-assimp-sources.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-assimp.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-bgfx-javadoc.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-bgfx-natives-windows.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-bgfx-sources.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-bgfx.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-glfw-javadoc.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-glfw-natives-windows.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-glfw-sources.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-glfw.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-javadoc.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-nanovg-javadoc.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-nanovg-natives-windows.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-nanovg-sources.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-nanovg.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-natives-windows.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-nuklear-javadoc.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-nuklear-natives-windows.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-nuklear-sources.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-nuklear.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-openal-javadoc.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-openal-natives-windows.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-openal-sources.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-openal.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-opengl-javadoc.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-opengl-natives-windows.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-opengl-sources.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-opengl.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-par-javadoc.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-par-natives-windows.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-par-sources.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-par.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-sources.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-stb-javadoc.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-stb-natives-windows.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-stb-sources.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-stb.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-vulkan-javadoc.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-vulkan-sources.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl-vulkan.jar"/>
+    <pathelement location="${basedir}/lib/windows/lwjgl.jar"/>
+    <pathelement location="${basedir}/lib/windows/pngdecoder.jar"/>
+  </path>
+  
+  <!-- Modules -->
+  
+  
+  <!-- Module Crafter -->
+  
+  <dirname property="module.crafter.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.crafter" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.crafter" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.crafter" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.crafter" value="-encoding UTF-8 -source 16 -target 16 ${compiler.args}"/>
+  
+  <property name="crafter.output.dir" value="${module.crafter.basedir}/out/production/Crafter"/>
+  <property name="crafter.testoutput.dir" value="${module.crafter.basedir}/out/test/Crafter"/>
+  
+  <path id="crafter.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="crafter.module.production.classpath">
+    <path refid="${module.jdk.classpath.crafter}"/>
+    <path refid="library.windows.classpath"/>
+    <path refid="library.lib.classpath"/>
+    <path refid="library.linux.classpath"/>
+  </path>
+  
+  <path id="crafter.runtime.production.module.classpath">
+    <pathelement location="${crafter.output.dir}"/>
+    <path refid="library.windows.classpath"/>
+    <path refid="library.lib.classpath"/>
+    <path refid="library.linux.classpath"/>
+  </path>
+  
+  <path id="crafter.module.classpath">
+    <path refid="${module.jdk.classpath.crafter}"/>
+    <pathelement location="${crafter.output.dir}"/>
+    <path refid="library.windows.classpath"/>
+    <path refid="library.lib.classpath"/>
+    <path refid="library.linux.classpath"/>
+  </path>
+  
+  <path id="crafter.runtime.module.classpath">
+    <pathelement location="${crafter.testoutput.dir}"/>
+    <pathelement location="${crafter.output.dir}"/>
+    <path refid="library.windows.classpath"/>
+    <path refid="library.lib.classpath"/>
+    <path refid="library.linux.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.crafter">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.crafter">
+    <patternset refid="excluded.from.module.crafter"/>
+  </patternset>
+  
+  <path id="crafter.module.sourcepath">
+    <dirset dir="${module.crafter.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.crafter" depends="compile.module.crafter.production,compile.module.crafter.tests" description="Compile module Crafter"/>
+  
+  <target name="compile.module.crafter.production" description="Compile module Crafter; production classes">
+    <mkdir dir="${crafter.output.dir}"/>
+    <javac destdir="${crafter.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.crafter}/javac">
+      <compilerarg line="${compiler.args.crafter}"/>
+      <bootclasspath refid="crafter.module.bootclasspath"/>
+      <classpath refid="crafter.module.production.classpath"/>
+      <src refid="crafter.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.crafter"/>
+    </javac>
+    
+    <copy todir="${crafter.output.dir}">
+      <fileset dir="${module.crafter.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.crafter.tests" depends="compile.module.crafter.production" description="compile module Crafter; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.crafter" description="cleanup module">
+    <delete dir="${crafter.output.dir}"/>
+    <delete dir="${crafter.testoutput.dir}"/>
+  </target>
+  
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+  
+  <target name="clean" depends="clean.module.crafter" description="cleanup all"/>
+  
+  <target name="build.modules" depends="init, clean, compile.module.crafter" description="build all modules"/>
+  
+  <target name="init.artifacts">
+    <property name="artifacts.temp.dir" value="${basedir}/__artifacts_temp"/>
+    <property name="artifact.output.crafter:jar" value="${basedir}/out/artifacts/Crafter_jar"/>
+    <mkdir dir="${artifacts.temp.dir}"/>
+    <property name="temp.jar.path.Crafter.jar" value="${artifacts.temp.dir}/Crafter.jar"/>
+  </target>
+  
+  <target name="artifact.crafter:jar" depends="init.artifacts, compile.module.crafter" description="Build &#39;Crafter:jar&#39; artifact">
+    <property name="artifact.temp.output.crafter:jar" value="${artifacts.temp.dir}/Crafter_jar"/>
+    <mkdir dir="${artifact.temp.output.crafter:jar}"/>
+    <jar destfile="${temp.jar.path.Crafter.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
+      <manifest>
+        <attribute name="Main-Class" value="game.Crafter" />
+      </manifest>
+      <zipfileset dir="${crafter.output.dir}"/>
+      <zipfileset src="${basedir}/lib/jackson-databind-2.11.3.jar"/>
+      <zipfileset src="${basedir}/lib/jackson-annotations-2.11.3.jar"/>
+      <zipfileset src="${basedir}/lib/jackson-core-2.11.3.jar"/>
+      <zipfileset src="${basedir}/lib/kryonet-2.21-all.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-bgfx-natives-windows.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-openal-natives-windows.jar"/>
+      <zipfileset src="${basedir}/lib/windows/pngdecoder.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-nanovg-sources.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-assimp-sources.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-par.jar"/>
+      <zipfileset src="${basedir}/lib/windows/joml-1.9.25.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-glfw-natives-windows.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-stb.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-nanovg-javadoc.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-opengl-javadoc.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-nuklear-natives-windows.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-vulkan.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-assimp-natives-windows.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-opengl-sources.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-stb-sources.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-openal.jar"/>
+      <zipfileset src="${basedir}/lib/windows/joml-1.9.25-javadoc.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-openal-javadoc.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-javadoc.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-nanovg.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-par-natives-windows.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-opengl-natives-windows.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-glfw.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-stb-javadoc.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-sources.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-bgfx.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-stb-natives-windows.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-vulkan-sources.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-vulkan-javadoc.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-assimp.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-par-sources.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-nuklear.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-openal-sources.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-bgfx-sources.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-nuklear-javadoc.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-glfw-sources.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-par-javadoc.jar"/>
+      <zipfileset src="${basedir}/lib/windows/joml-1.9.25-sources.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-opengl.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-nuklear-sources.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-natives-windows.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-nanovg-natives-windows.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-glfw-javadoc.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-bgfx-javadoc.jar"/>
+      <zipfileset src="${basedir}/lib/windows/lwjgl-assimp-javadoc.jar"/>
+      <zipfileset src="${basedir}/lib/linux/joml-1.9.25-javadoc.jar"/>
+      <zipfileset src="${basedir}/lib/linux/lwjgl-openal-javadoc.jar"/>
+      <zipfileset src="${basedir}/lib/linux/lwjgl-opengl-sources.jar"/>
+      <zipfileset src="${basedir}/lib/linux/lwjgl-glfw.jar"/>
+      <zipfileset src="${basedir}/lib/linux/lwjgl-glfw-sources.jar"/>
+      <zipfileset src="${basedir}/lib/linux/joml-1.9.25-sources.jar"/>
+      <zipfileset src="${basedir}/lib/linux/lwjgl-glfw-javadoc.jar"/>
+      <zipfileset src="${basedir}/lib/linux/lwjgl-assimp-sources.jar"/>
+      <zipfileset src="${basedir}/lib/linux/lwjgl.jar"/>
+      <zipfileset src="${basedir}/lib/linux/lwjgl-opengl-javadoc.jar"/>
+      <zipfileset src="${basedir}/lib/linux/joml-1.9.25.jar"/>
+      <zipfileset src="${basedir}/lib/linux/lwjgl-stb-sources.jar"/>
+      <zipfileset src="${basedir}/lib/linux/lwjgl-opengl.jar"/>
+      <zipfileset src="${basedir}/lib/linux/lwjgl-stb-javadoc.jar"/>
+      <zipfileset src="${basedir}/lib/linux/lwjgl-stb.jar"/>
+      <zipfileset src="${basedir}/lib/linux/lwjgl-sources.jar"/>
+      <zipfileset src="${basedir}/lib/linux/lwjgl-assimp-javadoc.jar"/>
+      <zipfileset src="${basedir}/lib/linux/lwjgl-glfw-natives-linux.jar"/>
+      <zipfileset src="${basedir}/lib/linux/lwjgl-assimp-natives-linux.jar"/>
+      <zipfileset src="${basedir}/lib/linux/lwjgl-openal-sources.jar"/>
+      <zipfileset src="${basedir}/lib/linux/lwjgl-javadoc.jar"/>
+      <zipfileset src="${basedir}/lib/linux/lwjgl-openal-natives-linux.jar"/>
+      <zipfileset src="${basedir}/lib/linux/lwjgl-opengl-natives-linux.jar"/>
+      <zipfileset src="${basedir}/lib/linux/lwjgl-assimp.jar"/>
+      <zipfileset src="${basedir}/lib/linux/lwjgl-openal.jar"/>
+      <zipfileset src="${basedir}/lib/linux/lwjgl-stb-natives-linux.jar"/>
+      <zipfileset src="${basedir}/lib/linux/lwjgl-natives-linux.jar"/>
+    </jar>
+    <copy file="${temp.jar.path.Crafter.jar}" tofile="${artifact.temp.output.crafter:jar}/Crafter.jar"/>
+  </target>
+  
+  <target name="build.all.artifacts" depends="artifact.crafter:jar" description="Build all artifacts">
+    <mkdir dir="${artifact.output.crafter:jar}"/>
+    <copy todir="${artifact.output.crafter:jar}">
+      <fileset dir="${artifact.temp.output.crafter:jar}"/>
+    </copy>
+    
+    <!-- Delete temporary files -->
+    <delete dir="${artifacts.temp.dir}"/>
+  </target>
+  
+  <target name="all" depends="build.modules, build.all.artifacts" description="build all"/>
+</project>
