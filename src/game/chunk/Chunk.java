@@ -3,6 +3,7 @@ package game.chunk;
 import engine.FastNoise;
 import engine.graphics.Mesh;
 import engine.network.ChunkRequest;
+import org.joml.Vector2i;
 import org.joml.Vector3d;
 import org.joml.Vector3i;
 
@@ -31,25 +32,38 @@ import static game.player.Player.*;
 
 public class Chunk {
 
-    private static final ConcurrentHashMap<String, ChunkObject> map = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Vector2i, ChunkObject> map = new ConcurrentHashMap<>();
 
     public static Collection<ChunkObject> getMap(){
         return map.values();
     }
 
     public static ChunkObject getChunk(int x, int z){
-        return map.get(x + " " + z);
+        return map.get(new Vector2i(x,z));
     }
 
 
 
     //multiplayer chunk update
     public static void setChunk(int x, int z, ChunkObject newChunk){
-        if (map.get(x + " " + z) != null){
-            map.remove(x + " " + z);
+        if (map.get(new Vector2i(x,z)) != null){
+            //stop memory leak
+            ChunkObject thisChunk = map.get(new Vector2i(x,z));
+            for (int i = 0; i < 8; i++) {
+                if (thisChunk.allFacesMesh != null && thisChunk.allFacesMesh[i] != null){
+                    thisChunk.allFacesMesh[i].cleanUp(false);
+                }
+                if (thisChunk.liquidMesh != null && thisChunk.liquidMesh[i] != null){
+                    thisChunk.liquidMesh[i].cleanUp(false);
+                }
+                if (thisChunk.normalMesh != null && thisChunk.normalMesh[i] != null){
+                    thisChunk.normalMesh[i].cleanUp(false);
+                }
+            }
+            map.remove(new Vector2i(x,z));
         }
 
-        map.put(x + " " + z, newChunk);
+        map.put(new Vector2i(x,z), newChunk);
 
         for (int y = 0; y < 8; y++) {
             chunkUpdate(x, z, y);
