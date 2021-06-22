@@ -4,7 +4,7 @@ import game.item.Item;
 import game.item.ItemDefinition;
 import org.joml.Vector2d;
 
-import static engine.Time.getDelta;
+import static engine.time.Time.getDelta;
 import static engine.network.Networking.*;
 import static game.blocks.BlockDefinition.getBlockDefinition;
 import static game.item.ItemDefinition.getItemDefinition;

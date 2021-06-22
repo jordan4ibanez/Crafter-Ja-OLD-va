@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.Random;
 
 import static engine.MouseInput.*;
-import static engine.Time.getDelta;
+import static engine.time.Time.getDelta;
 import static engine.Window.*;
 import static engine.credits.Credits.initializeCredits;
 import static engine.disk.Disk.setCurrentActiveWorld;

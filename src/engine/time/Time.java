@@ -1,4 +1,4 @@
-package engine;
+package engine.time;
 
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
 
@@ -16,8 +16,6 @@ public class Time {
         delta =  (float)(time - lastLoopTime);
         lastLoopTime = time;
     }
-
-
 
     public static double getDelta() {
         return(delta);

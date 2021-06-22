@@ -7,7 +7,7 @@ import org.joml.Vector3i;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static engine.Time.getDelta;
+import static engine.time.Time.getDelta;
 import static game.chunk.Chunk.*;
 
 public class ChunkMeshGenerationHandler {

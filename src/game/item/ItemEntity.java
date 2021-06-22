@@ -8,7 +8,7 @@ import org.joml.Vector3i;
 import java.util.*;
 
 import static engine.FancyMath.getDistance;
-import static engine.Time.getDelta;
+import static engine.time.Time.getDelta;
 import static engine.sound.SoundAPI.playSound;
 import static game.chunk.Chunk.getLight;
 import static game.collision.Collision.applyInertia;

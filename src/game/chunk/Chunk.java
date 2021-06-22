@@ -13,7 +13,7 @@ import java.util.Deque;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static engine.FancyMath.getDistance;
-import static engine.Time.getDelta;
+import static engine.time.Time.getDelta;
 import static engine.disk.Disk.*;
 import static engine.disk.SaveQueue.instantSave;
 import static engine.disk.SaveQueue.saveChunk;

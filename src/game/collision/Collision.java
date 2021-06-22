@@ -3,7 +3,7 @@ package game.collision;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import static engine.Time.getDelta;
+import static engine.time.Time.getDelta;
 import static game.chunk.Chunk.getBlock;
 import static game.blocks.BlockDefinition.*;
 import static game.chunk.Chunk.getBlockRotation;

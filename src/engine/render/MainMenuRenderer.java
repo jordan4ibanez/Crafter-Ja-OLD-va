@@ -7,7 +7,7 @@ import org.joml.Matrix4d;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import static engine.Time.getDelta;
+import static engine.time.Time.getDelta;
 import static engine.Window.getWindowHeight;
 import static engine.Window.getWindowWidth;
 import static engine.credits.Credits.getCreditParts;

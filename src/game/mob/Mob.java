@@ -3,7 +3,7 @@ package game.mob;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import static engine.Time.getDelta;
+import static engine.time.Time.getDelta;
 import static engine.sound.SoundAPI.playSound;
 import static game.mob.Human.registerHumanMob;
 import static game.mob.Pig.registerPigMob;

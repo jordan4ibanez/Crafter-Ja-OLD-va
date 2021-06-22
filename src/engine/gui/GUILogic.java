@@ -3,7 +3,7 @@ package engine.gui;
 import org.joml.Vector2d;
 
 import static engine.MouseInput.*;
-import static engine.Time.getDelta;
+import static engine.time.Time.getDelta;
 import static engine.Window.*;
 import static engine.network.Networking.*;
 import static engine.render.GameRenderer.getWindowScale;
@@ -15,7 +15,6 @@ import static game.chat.Chat.*;
 import static game.mainMenu.MainMenu.resetMainMenu;
 import static game.mainMenu.MainMenu.resetMainMenuPage;
 import static game.player.Player.getPlayerHealth;
-import static game.player.Player.setPlayerName;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
 public class GUILogic {

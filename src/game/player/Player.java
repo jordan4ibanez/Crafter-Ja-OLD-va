@@ -6,7 +6,7 @@ import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
-import static engine.Time.getDelta;
+import static engine.time.Time.getDelta;
 import static engine.disk.Disk.loadPlayerPos;
 import static engine.graphics.Camera.*;
 import static engine.gui.GUI.*;

@@ -5,7 +5,7 @@ import org.joml.Vector3i;
 
 import java.util.Random;
 
-import static engine.Time.getDelta;
+import static engine.time.Time.getDelta;
 import static game.chunk.Chunk.chunkStackContainsBlock;
 import static game.chunk.ChunkMeshGenerator.generateChunkMesh;
 

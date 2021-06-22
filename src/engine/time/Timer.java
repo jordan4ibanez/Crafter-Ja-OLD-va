@@ -1,25 +1,13 @@
-package engine;
+package engine.time;
 
 import static engine.Window.updateWindowTitle;
 import static engine.gui.GUI.buildFPSMesh;
 import static game.Crafter.getVersionName;
 
 public class Timer {
-    private static double lastLoopTime = System.nanoTime();
 
     public static double timerGetTime(){
         return System.nanoTime();
-    }
-
-    public static double timerGetElapsedTime(){
-        double time = timerGetTime();
-        double elapsedTime = time - lastLoopTime;
-        lastLoopTime = time;
-        return elapsedTime;
-    }
-
-    public static double timerGetLastLoopTime(){
-        return lastLoopTime;
     }
 
 
@@ -40,7 +28,6 @@ public class Timer {
         elapsedTime += currentElapsedTime;
         framesPerSecond++;
         if (elapsedTime >= 1_000_000_000) {
-//            System.out.println("framerate :" +  framesPerSecond);
             updateWindowTitle(getVersionName() + " | FPS: " + framesPerSecond);
             currentFpsCount = framesPerSecond;
             //dumpHeapSize();

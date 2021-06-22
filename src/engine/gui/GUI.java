@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static engine.FancyMath.convertLight;
-import static engine.Timer.getFpsCounted;
+import static engine.time.Timer.getFpsCounted;
 import static engine.gui.TextHandling.createTextWithShadow;
 import static game.Crafter.getVersionName;
 

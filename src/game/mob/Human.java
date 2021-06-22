@@ -8,7 +8,7 @@ import org.joml.Vector3f;
 import java.util.ArrayList;
 
 import static engine.FancyMath.randomDirFloat;
-import static engine.Time.getDelta;
+import static engine.time.Time.getDelta;
 import static game.chunk.Chunk.getBlock;
 import static game.collision.Collision.applyInertia;
 import static game.mob.MobUtilityCode.doHeadCode;
