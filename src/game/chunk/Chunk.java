@@ -108,7 +108,7 @@ public class Chunk {
     }
 
     public static void setChunkNormalMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
-        ChunkObject thisChunk = map.get(chunkX + " " + chunkZ);
+        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
         if (thisChunk == null){
             if (newMesh != null) {
                 newMesh.cleanUp(false);
@@ -130,7 +130,7 @@ public class Chunk {
     }
 
     public static void setChunkLiquidMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
-        ChunkObject thisChunk = map.get(chunkX + " " + chunkZ);
+        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
         if (thisChunk == null){
             if (newMesh != null) {
                 newMesh.cleanUp(false);
@@ -152,7 +152,7 @@ public class Chunk {
     }
 
     public static void setChunkAllFacesMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
-        ChunkObject thisChunk = map.get(chunkX + " " + chunkZ);
+        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
         if (thisChunk == null){
             if (newMesh != null) {
                 newMesh.cleanUp(false);
@@ -209,7 +209,7 @@ public class Chunk {
     }
 
     public static boolean chunkStackContainsBlock(int chunkX, int chunkZ, int yHeight){
-        ChunkObject thisChunk = map.get(chunkX + " " + chunkZ);
+        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
         if (thisChunk == null || thisChunk.block == null){
             return false;
         }
@@ -232,8 +232,7 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
-        String key = chunkX + " " + chunkZ;
-        ChunkObject thisChunk = map.get(key);
+        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
         if (thisChunk == null){
             return 555;
         }
@@ -252,8 +251,7 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
-        String key = chunkX + " " + chunkZ;
-        ChunkObject thisChunk = map.get(key);
+        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
         if (thisChunk == null){
             return false;
         }
@@ -271,8 +269,7 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
-        String key = chunkX + " " + chunkZ;
-        ChunkObject thisChunk = map.get(key);
+        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
         if (thisChunk == null){
             return -1;
         }
@@ -290,8 +287,7 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
-        String key = chunkX + " " + chunkZ;
-        ChunkObject thisChunk = map.get(key);
+        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
         if (thisChunk == null){
             return 0;
         }
@@ -310,8 +306,7 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
-        String key = chunkX + " " + chunkZ;
-        ChunkObject thisChunk = map.get(key);
+        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
         if (thisChunk == null){
             return;
         }
@@ -348,8 +343,7 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
-        String key = chunkX + " " + chunkZ;
-        ChunkObject thisChunk = map.get(key);
+        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
         if (thisChunk == null){
             return;
         }
@@ -370,8 +364,7 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
-        String key = chunkX + " " + chunkZ;
-        ChunkObject thisChunk = map.get(key);
+        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
         if (thisChunk == null){
             return;
         }
@@ -393,8 +386,7 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
-        String key = chunkX + " " + chunkZ;
-        ChunkObject thisChunk = map.get(key);
+        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
         if (thisChunk == null){
             return;
         }
@@ -436,8 +428,7 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (x - (16*chunkX));
         int blockZ = (z - (16*chunkZ));
-        String key = chunkX + " " + chunkZ;
-        ChunkObject thisChunk = map.get(key);
+        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
         if (thisChunk == null){
             return;
         }
@@ -472,8 +463,7 @@ public class Chunk {
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
 
-        String key = chunkX + " " + chunkZ;
-        ChunkObject thisChunk = map.get(key);
+        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
 
         if (thisChunk == null){
             return 0;
@@ -511,8 +501,7 @@ public class Chunk {
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
 
-        String key = chunkX + " " + chunkZ;
-        ChunkObject thisChunk = map.get(key);
+        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
 
         if (thisChunk == null){
             return 0;
@@ -533,8 +522,7 @@ public class Chunk {
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
 
-        String key = chunkX + " " + chunkZ;
-        ChunkObject thisChunk = map.get(key);
+        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
 
         if (thisChunk == null){
             return 0;
@@ -596,22 +584,29 @@ public class Chunk {
     }
 
     private static void fullNeighborUpdate(int chunkX, int chunkZ){
-        if (map.get(chunkX+1 + " " + chunkZ) != null){
+
+        if (map.get(new Vector2i(chunkX + 1, chunkZ)) != null){
             for (int y = 0; y < 8; y++){
                 chunkUpdate(chunkX+1, chunkZ, y);
             }
         }
-        if (map.get(chunkX-1 + " " + chunkZ) != null){
+
+
+        if (map.get(new Vector2i(chunkX-1, chunkZ)) != null){
             for (int y = 0; y < 8; y++){
                 chunkUpdate(chunkX-1, chunkZ, y);
             }
         }
-        if (map.get(chunkX + " " + (chunkZ+1)) != null){
+
+
+        if (map.get(new Vector2i(chunkX, chunkZ+1)) != null){
             for (int y = 0; y < 8; y++){
                 chunkUpdate(chunkX, chunkZ+1, y);
             }
         }
-        if (map.get(chunkX + " " + (chunkZ-1)) != null){
+
+
+        if (map.get(new Vector2i(chunkX, chunkZ-1)) != null){
             for (int y = 0; y < 8; y++){
                 chunkUpdate(chunkX, chunkZ-1, y);
             }
@@ -623,13 +618,11 @@ public class Chunk {
         //create the initial map in memory
         int chunkRenderDistance = getRenderDistance();
         Vector3i currentChunk = getPlayerCurrentChunk();
-        String currChunk;
         //scan for not-generated/loaded chunks
         for (int x = -chunkRenderDistance + currentChunk.x; x < chunkRenderDistance + currentChunk.x; x++){
             for (int z = -chunkRenderDistance + currentChunk.z; z< chunkRenderDistance + currentChunk.z; z++){
                 if (getChunkDistanceFromPlayer(x,z) <= chunkRenderDistance){
-                    currChunk = x + " " + z;
-                    if (map.get(currChunk) == null){
+                    if (map.get(new Vector2i(x,z)) == null){
                         genBiome(x,z);
                         for (int y = 0; y < 8; y++) {
                             chunkUpdate(x, z, y);
@@ -651,13 +644,11 @@ public class Chunk {
         //create the initial map in memory
         int chunkRenderDistance = getRenderDistance();
         Vector3i currentChunk = getPlayerCurrentChunk();
-        String currChunk;
         //scan for not-generated/loaded chunks
         for (int x = -chunkRenderDistance + currentChunk.x; x < chunkRenderDistance + currentChunk.x; x++){
             for (int z = -chunkRenderDistance + currentChunk.z; z< chunkRenderDistance + currentChunk.z; z++){
                 if (getChunkDistanceFromPlayer(x,z) <= chunkRenderDistance){
-                    currChunk = x + " " + z;
-                    if (map.get(currChunk) == null){
+                    if (map.get(new Vector2i(x,z)) == null){
                         sendOutChunkRequest(new ChunkRequest(x,z, getPlayerName()));
                     }
                 }
@@ -665,10 +656,10 @@ public class Chunk {
         }
     }
 
-    private static final Deque<String> deletionQueue = new ArrayDeque<>();
+    private static final Deque<Vector2i> deletionQueue = new ArrayDeque<>();
 
     private static void addChunkToDeletionQueue(int chunkX, int chunkZ) {
-        deletionQueue.add(chunkX + " " + chunkZ);
+        deletionQueue.add(new Vector2i(chunkX, chunkZ));
     }
 
     private static final float goalTimer = 0.0001f;//goalTimerArray[getSettingsChunkLoad()];
@@ -689,7 +680,7 @@ public class Chunk {
 
         for (int i = 0; i < updateAmount; i++) {
             if (!deletionQueue.isEmpty()) {
-                String key = deletionQueue.pop();
+                Vector2i key = deletionQueue.pop();
                 ChunkObject thisChunk = map.get(key);
                 if (thisChunk == null) {
                     return;
@@ -748,19 +739,21 @@ public class Chunk {
                 e.printStackTrace();
             }
             if (loadedChunk != null) {
-                map.put(chunkX + " " + chunkZ, loadedChunk);
+                map.put(new Vector2i(chunkX, chunkZ), loadedChunk);
 
                 //dump everything into the chunk updater
                 for (int i = 0; i < 8; i++) {
                     chunkUpdate(loadedChunk.x, loadedChunk.z, i); //delayed
                 }
             } else {
-                ChunkObject thisChunk = map.get(chunkX + " " + chunkZ);
+                ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
 
                 if (thisChunk == null) {
                     thisChunk = new ChunkObject(chunkX,chunkZ);
-                    map.put(chunkX + " " + chunkZ, thisChunk);
+                } else {
+                    return;
                 }
+
                 thisChunk.modified = true;
                 //biome max 128 trees
                 Vector3i[] treePosArray = new Vector3i[128];
@@ -923,13 +916,15 @@ public class Chunk {
 
                 }
 
+                map.put(new Vector2i(chunkX, chunkZ), thisChunk);
+
                 //dump everything into the chunk updater
                 for (int i = 0; i < 8; i++) {
                     //generateChunkMesh(thisChunk.x, thisChunk.z, i); //instant
                     chunkUpdate(thisChunk.x, thisChunk.z, i); //delayed
                 }
 
-                instantSave(thisChunk);
+                //instantSave(thisChunk);
             }
         }).start();
     }
