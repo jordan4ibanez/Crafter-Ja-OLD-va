@@ -253,13 +253,14 @@ public class GameRenderer {
             double timeOfDayLinear = getTimeOfDayLinear();
 
             //daytime sky
-            if (timeOfDayLinear <= 0.8 && timeOfDayLinear >= 0.2) {
+            if (timeOfDayLinear <= 0.85 && timeOfDayLinear >= 0.15) {
                 modelViewMatrix = updateSunMatrix(viewMatrix);
                 shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 getSunMesh().render();
 
+            }
             //nighttime sky
-            } else if (timeOfDayLinear > 0.6 || timeOfDayLinear < 0.2){
+            if (timeOfDayLinear > 0.65 || timeOfDayLinear < 0.35){
                 modelViewMatrix = updateMoonMatrix(viewMatrix);
                 shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 getMoonMesh().render();
