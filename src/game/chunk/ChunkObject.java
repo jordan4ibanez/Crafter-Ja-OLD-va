@@ -6,8 +6,6 @@ public class ChunkObject {
 
     private final static int arraySize = 128 * 16 * 16;
 
-    public String ID;
-
     public int x;
     public int z;
 
@@ -28,7 +26,6 @@ public class ChunkObject {
     }
 
     public ChunkObject(int x, int z){
-        this.ID = x + " " + z;
 
         this.x = x;
         this.z = z;

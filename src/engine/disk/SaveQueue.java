@@ -39,7 +39,6 @@ public class SaveQueue {
 
                         savingObject = new ChunkSavingObject();
 
-                        savingObject.I = thisChunk.ID;
                         savingObject.x = thisChunk.x;
                         savingObject.z = thisChunk.z;
                         savingObject.b = thisChunk.block;
@@ -53,7 +52,7 @@ public class SaveQueue {
                         //learned from https://www.journaldev.com/966/java-gzip-example-compress-decompress-file
                         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(stringedChunk.getBytes());
 
-                        FileOutputStream fileOutputStream = new FileOutputStream("Worlds/world" + currentActiveWorld + "/" + savingObject.I + ".chunk");
+                        FileOutputStream fileOutputStream = new FileOutputStream("Worlds/world" + currentActiveWorld + "/" + savingObject.x + " " + savingObject.z + ".chunk");
                         GZIPOutputStream gzipOutputStream = new GZIPOutputStream(fileOutputStream);
 
                         byte[] buffer = new byte[4096];
@@ -84,7 +83,6 @@ public class SaveQueue {
         try {
             ChunkSavingObject savingObject = new ChunkSavingObject();
 
-            savingObject.I = thisChunk.ID;
             savingObject.x = thisChunk.x;
             savingObject.z = thisChunk.z;
             savingObject.b = thisChunk.block;
@@ -97,7 +95,7 @@ public class SaveQueue {
 
             //learned from https://www.journaldev.com/966/java-gzip-example-compress-decompress-file
             ByteArrayInputStream bais = new ByteArrayInputStream(stringedChunk.getBytes());
-            FileOutputStream fos = new FileOutputStream("Worlds/world" + currentActiveWorld + "/" + savingObject.I + ".chunk");
+            FileOutputStream fos = new FileOutputStream("Worlds/world" + currentActiveWorld + "/" + savingObject.x + " " + savingObject.z + ".chunk");
             GZIPOutputStream gzipOS = new GZIPOutputStream(fos);
             byte[] buffer = new byte[4096];
             int len;

@@ -17,7 +17,6 @@ public class Compression {
     public static byte[] convertChunkToCompressedByteArray(ChunkObject thisChunk) throws IOException {
         ChunkSavingObject savingObject = new ChunkSavingObject();
 
-        savingObject.I = thisChunk.ID;
         savingObject.x = thisChunk.x;
         savingObject.z = thisChunk.z;
         savingObject.b = thisChunk.block;
@@ -103,7 +102,6 @@ public class Compression {
         //assign compressed variables to full variable names
         ChunkObject abstractedChunk = new ChunkObject();
 
-        abstractedChunk.ID = thisChunkLoaded.I;
         abstractedChunk.x = thisChunkLoaded.x;
         abstractedChunk.z = thisChunkLoaded.z;
         abstractedChunk.block = thisChunkLoaded.b;

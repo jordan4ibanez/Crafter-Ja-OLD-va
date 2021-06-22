@@ -160,7 +160,6 @@ public class Disk {
 
         ChunkObject abstractedChunk = new ChunkObject();
 
-        abstractedChunk.ID = thisChunkLoaded.I;
         abstractedChunk.x = thisChunkLoaded.x;
         abstractedChunk.z = thisChunkLoaded.z;
         abstractedChunk.block = thisChunkLoaded.b;

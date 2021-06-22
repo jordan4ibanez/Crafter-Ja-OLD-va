@@ -1,7 +1,6 @@
 package engine.disk;
 
 public class ChunkSavingObject {
-    public String I;
 
     public int x;
     public int z;
