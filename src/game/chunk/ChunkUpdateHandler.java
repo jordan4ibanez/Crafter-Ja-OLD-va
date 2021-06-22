@@ -43,8 +43,8 @@ public class ChunkUpdateHandler {
         for (int i = 0; i < updateAmount; i++) {
             if (!queue.isEmpty()) {
 
-                Vector3i[] queueAsArray = (Vector3i[]) queue.toArray();
-                Vector3i key = queueAsArray[random.nextInt(queueAsArray.length)];
+                Object[] queueAsArray = queue.toArray();
+                Vector3i key = (Vector3i) queueAsArray[random.nextInt(queueAsArray.length)];
 
                 //sometimes it is null
                 if (key != null && chunkStackContainsBlock(key.x, key.z, key.y)) {
