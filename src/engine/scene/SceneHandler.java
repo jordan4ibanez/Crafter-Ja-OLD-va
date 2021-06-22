@@ -17,6 +17,7 @@ import static engine.network.Networking.*;
 import static engine.render.MainMenuRenderer.renderMainMenu;
 import static engine.render.GameRenderer.renderGame;
 import static engine.time.Time.calculateDelta;
+import static engine.time.TimeOfDay.tickUpTimeOfDay;
 import static engine.time.Timer.countFPS;
 import static engine.settings.Settings.getDebugInfo;
 import static engine.sound.SoundManager.updateListenerPosition;
@@ -152,6 +153,8 @@ public class SceneHandler {
 
         //indexLight();
         mouseInput();
+
+        tickUpTimeOfDay();
 
         countFPS();
         updateWorldChunkLoader();

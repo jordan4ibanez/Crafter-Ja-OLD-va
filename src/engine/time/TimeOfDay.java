@@ -5,16 +5,14 @@ import static engine.time.Time.getDelta;
 public class TimeOfDay {
     private static double timeOfDay = 0d;
 
-    private static double timeSpeed = 72d;
+    private static double timeSpeed = 72d; //following Minetest wiki - 72 times faster (following time_speed in minetest.conf)
 
     public static void tickUpTimeOfDay(){
-        timeOfDay += getDelta() * timeSpeed;
+        timeOfDay += getDelta() * timeSpeed; //this calculation was ridiculous to get
 
-        if (timeOfDay >= 24000){
-            timeOfDay -= 24000;
+        if (timeOfDay >= 86_400){ //mt day lasts 20 minutes - 86_400 seconds in a day - synced perfectly with real life speed
+            timeOfDay -= 86_400; //time precision lost here
         }
-
-        System.out.println(timeOfDay);
     }
 
     public static double getTimeOfDay(){
