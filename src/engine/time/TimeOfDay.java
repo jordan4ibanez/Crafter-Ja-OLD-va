@@ -54,10 +54,6 @@ public class TimeOfDay {
     you can find these values in 24 hour time by multiplying them by 2400
     or you can chuck them into getTimeOfDay24H()
 
-    the sun/moon time scale is a bit messed up
-
-    sky colors need to be interpolated soon - vector 3f? vector 3d?
-
     moon comes up at 0.7  or 7:20pm
     sun goes down at 0.3 or 7:20am
 
@@ -202,7 +198,5 @@ public class TimeOfDay {
 
             oldStageLight = dayStageLight[currentDayStage];
         }
-
-        //setWindowClearColor(0.53f * (currentLightLevel/15f),0.81f * (currentLightLevel/15f),0.92f * (currentLightLevel/15f),1.f);
     }
 }
