@@ -9,18 +9,14 @@
       <root url="jar://$PROJECT_DIR$/lib/generic/jackson-databind-2.11.3.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/generic/joml-1.9.25.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/generic/kryonet-2.21-all.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/generic/lwjgl-par-natives-windows.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/generic/lwjgl-par.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/generic/pngdecoder.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$PROJECT_DIR$/lib/generic/joml-1.9.25-javadoc.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/generic/lwjgl-par-javadoc.jar!/" />
     </JAVADOC>
     <SOURCES>
       <root url="jar://$PROJECT_DIR$/lib/generic/joml-1.9.25-sources.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/generic/joml-1.9.25-sources.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/generic/lwjgl-par-sources.jar!/" />
     </SOURCES>
   </library>
 </component>
