@@ -16,44 +16,18 @@ public class Light {
     private static final byte max = (lightDistance * 2) + 1;
 
     private static byte currentLightLevel = 15;
-    private static boolean goUp = false;
-    private static float dayLightTimer = 0.f;
 
     public static byte getCurrentGlobalLightLevel(){
         return currentLightLevel;
     }
 
-    public static void testLightLevel(){
+    public static void setCurrentLightLevel(byte currentLightLevel) {
+        Light.currentLightLevel = currentLightLevel;
+        updateChunksWithNewLightLevel();
+    }
 
-        double delta = getDelta();
-        dayLightTimer += delta;
-
-        if (dayLightTimer >= 5.f){
-            //System.out.println("CurrentLight:" + currentLightLevel);
-            dayLightTimer = 0;
-
-            if (goUp){
-
-                currentLightLevel += 1;
-
-                if (currentLightLevel == maxLightLevel){
-                    goUp = false;
-                }
-            } else {
-
-                currentLightLevel -= 1;
-
-                if (currentLightLevel == 0){
-                    goUp = true;
-                }
-            }
-
-            setWindowClearColor(0.53f * (currentLightLevel/15f),0.81f * (currentLightLevel/15f),0.92f * (currentLightLevel/15f),1.f);
-
-            System.out.println(currentLightLevel);
-
-            testLightCycleFlood();
-        }
+    private static void updateChunksWithNewLightLevel(){
+        floodChunksWithNewLight();
     }
 
     public static byte getImmediateLight(int x, int y, int z){

@@ -191,8 +191,8 @@ public class Chunk {
         }
     }
 
-    //this is for testing the day/night cycle
-    public static void testLightCycleFlood(){
+    //this re-generates chunk meshes with the light level
+    public static void floodChunksWithNewLight(){
         for (ChunkObject thisChunk : map.values()){
             for (int y = 0; y < 8; y++) {
                 chunkUpdate(thisChunk.x, thisChunk.z, y);

@@ -13,14 +13,15 @@ import static engine.debug.CheckRuntimeInfo.doRuntimeInfoUpdate;
 import static engine.graphics.Camera.*;
 import static engine.gui.GUILogic.calculateHealthBarElements;
 import static engine.gui.GUILogic.pauseMenuOnTick;
-import static engine.network.Networking.*;
-import static engine.render.MainMenuRenderer.renderMainMenu;
+import static engine.network.Networking.getIfConnected;
+import static engine.network.Networking.sendPositionData;
 import static engine.render.GameRenderer.renderGame;
+import static engine.render.MainMenuRenderer.renderMainMenu;
+import static engine.settings.Settings.getDebugInfo;
+import static engine.sound.SoundManager.updateListenerPosition;
 import static engine.time.Time.calculateDelta;
 import static engine.time.TimeOfDay.tickUpTimeOfDay;
 import static engine.time.Timer.countFPS;
-import static engine.settings.Settings.getDebugInfo;
-import static engine.sound.SoundManager.updateListenerPosition;
 import static game.chat.Chat.*;
 import static game.chunk.Chunk.*;
 import static game.chunk.ChunkMeshGenerationHandler.popChunkMeshQueue;
@@ -29,7 +30,6 @@ import static game.crafting.Inventory.generateRandomInventory;
 import static game.crafting.InventoryLogic.inventoryMenuOnTick;
 import static game.falling.FallingEntity.fallingEntityOnStep;
 import static game.item.ItemEntity.*;
-import static game.light.Light.testLightLevel;
 import static game.mainMenu.MainMenu.*;
 import static game.mob.Mob.mobsOnTick;
 import static game.particle.Particle.particlesOnStep;
@@ -170,8 +170,6 @@ public class SceneHandler {
         windowUpdate();
 
         processOldChunks();
-
-        testLightLevel();
     }
 
     private static void gameUpdate() throws Exception {
