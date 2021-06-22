@@ -1,5 +1,8 @@
 package engine.time;
 
+import org.joml.Vector3f;
+import org.joml.Vector3i;
+
 import static engine.Window.setWindowClearColor;
 import static engine.time.Time.getDelta;
 import static game.light.Light.setCurrentLightLevel;
@@ -8,7 +11,7 @@ public class TimeOfDay {
 
     private static final double dayCompletion = 86_400d;
     private static double timeOfDay = 21_600d; //6AM 0600 Hours //21_600d
-    private static double timeSpeed = 9000d; //following Minetest wiki - 72 times faster (following time_speed in minetest.conf)
+    private static double timeSpeed = 72d; //following Minetest wiki - 72 times faster (following time_speed in minetest.conf)
 
     public static void tickUpTimeOfDay(){
         timeOfDay += getDelta() * timeSpeed; //this calculation was ridiculous to get
@@ -62,27 +65,27 @@ public class TimeOfDay {
 
     custom light levels for every stage - 21 stages in total - loops
 
-    stage 0 : light level 5  - 0.30 - night ends - morning begins
-    stage 1 : light level 6  - 0.31
-    stage 2 : light level 7  - 0.32
-    stage 3 : light level 8  - 0.33
-    stage 4 : light level 9  - 0.34
-    stage 5 : light level 10 - 0.35
-    stage 6 : light level 11 - 0.36
-    stage 7 : light level 12 - 0.37
-    stage 8 : light level 13 - 0.38
-    stage 9 : light level 14 - 0.39 - mid day - sun is at highest
-    stage 10: light level 15 - 0.60
-    stage 11: light level 14 - 0.61 - evening begins
-    stage 12: light level 13 - 0.62
-    stage 13: light level 12 - 0.63
-    stage 14: light level 11 - 0.64
-    stage 15: light level 10 - 0.65
-    stage 16: light level 9  - 0.66
-    stage 17: light level 8  - 0.67
-    stage 18: light level 7  - 0.68
-    stage 19: light level 6  - 0.69 - night begins
-    stage 20: light level 5  - 1.00
+    stage 0 : light level 5  - night ends - morning begins
+    stage 1 : light level 6
+    stage 2 : light level 7
+    stage 3 : light level 8
+    stage 4 : light level 9
+    stage 5 : light level 10
+    stage 6 : light level 11
+    stage 7 : light level 12
+    stage 8 : light level 13
+    stage 9 : light level 14 - mid day - sun is at highest
+    stage 10: light level 15
+    stage 11: light level 14 - evening begins
+    stage 12: light level 13
+    stage 13: light level 12
+    stage 14: light level 11
+    stage 15: light level 10
+    stage 16: light level 9
+    stage 17: light level 8
+    stage 18: light level 7
+    stage 19: light level 6
+    stage 20: light level 5 - night begins
     loops to stage 0
      */
 
@@ -111,7 +114,7 @@ public class TimeOfDay {
             5,  // stage 20
     };
 
-    private static byte oldStageLight = 0;
+
 
 
     //can afford float imprecision
@@ -140,9 +143,35 @@ public class TimeOfDay {
             1.00f, // stage 20
     };
 
+    //I completely winged these colors :T
+    private static final Vector3f[] skyColors = new Vector3f[]{
+            new Vector3f(0,0,0),
+            new Vector3f( 20, 20, 20), // night ends - morning begins
+            new Vector3f( 45, 55, 50),
+            new Vector3f( 70, 90, 95),
+            new Vector3f( 90, 130, 155),
+            new Vector3f( 100, 155, 175),
+            new Vector3f( 123, 185, 205),
+            new Vector3f( 132, 195, 220),
+            new Vector3f( 132, 200, 225),
+            new Vector3f( 135, 206, 235), // mid day - sun is at highest
+            new Vector3f( 132, 200, 225),// evening begins
+            new Vector3f( 132, 190, 210),
+            new Vector3f( 130, 175, 195),
+            new Vector3f( 125, 160, 170),
+            new Vector3f( 115, 150, 150),
+            new Vector3f( 105, 135, 145),
+            new Vector3f( 95, 115, 125),
+            new Vector3f( 70, 90, 95),
+            new Vector3f( 55, 70, 75),
+            new Vector3f( 54, 55, 45),
+            new Vector3f( 0, 0, 0), // night begins
+    };
+
     private static byte currentDayStage = 0;
     private static float currentDayTimeGoal = dayStageGoal[currentDayStage];
     private static final byte maxStage = 20;
+    private static byte oldStageLight = 0;
 
     private static void triggerNextStage(){
         double linearTime = getTimeOfDayLinear();
@@ -153,6 +182,7 @@ public class TimeOfDay {
 
             if (dayStageLight[currentDayStage] != oldStageLight){
                 setCurrentLightLevel(dayStageLight[currentDayStage]);
+                setWindowClearColor(skyColors[currentDayStage].x/255f,skyColors[currentDayStage].y/255f, skyColors[currentDayStage].z/255f, 1f);
             }
             oldStageLight = dayStageLight[currentDayStage];
 
@@ -167,6 +197,8 @@ public class TimeOfDay {
             if (dayStageLight[currentDayStage] != oldStageLight){
                 setCurrentLightLevel(dayStageLight[currentDayStage]);
             }
+            setWindowClearColor(skyColors[currentDayStage].x/255f,skyColors[currentDayStage].y/255f, skyColors[currentDayStage].z/255f, 1f);
+
             oldStageLight = dayStageLight[currentDayStage];
         }
 
