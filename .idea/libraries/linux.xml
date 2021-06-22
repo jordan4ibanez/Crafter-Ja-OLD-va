@@ -1,17 +1,14 @@
 <component name="libraryTable">
   <library name="linux">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/lib/linux/joml-1.9.25-javadoc.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/linux/lwjgl-openal-javadoc.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/linux/lwjgl-opengl-sources.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/linux/lwjgl-glfw.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/linux/lwjgl-glfw-sources.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/linux/joml-1.9.25-sources.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/linux/lwjgl-glfw-javadoc.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/linux/lwjgl-assimp-sources.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/linux/lwjgl.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/linux/lwjgl-opengl-javadoc.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/linux/joml-1.9.25.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/linux/lwjgl-stb-sources.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/linux/lwjgl-opengl.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/linux/lwjgl-stb-javadoc.jar!/" />
