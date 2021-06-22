@@ -26,6 +26,7 @@ import static engine.gui.GUI.*;
 import static engine.gui.GUILogic.*;
 import static engine.gui.TextHandling.*;
 import static engine.settings.Settings.*;
+import static engine.time.TimeOfDay.getTimeOfDayLinear;
 import static game.chat.Chat.getCurrentMessageMesh;
 import static game.chat.Chat.getViewableChatMessages;
 import static game.crafting.InventoryLogic.getPlayerHudRotation;
@@ -248,12 +249,24 @@ public class GameRenderer {
         //render the sun and moon
         //glDisable(GL_CULL_FACE);
         {
-            modelViewMatrix = updateSunMatrix(viewMatrix);
-            shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            getSunMesh().render();
 
+            double timeOfDayLinear = getTimeOfDayLinear();
+
+
+            //daytime sky
+            if (timeOfDayLinear <= 0.8 && timeOfDayLinear >= 0.2) {
+                modelViewMatrix = updateSunMatrix(viewMatrix);
+                shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                getSunMesh().render();
+
+            //nighttime sky
+            } else if (timeOfDayLinear > 0.6 || timeOfDayLinear < 0.2){
+                modelViewMatrix = updateMoonMatrix(viewMatrix);
+                shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                getMoonMesh().render();
+            }
         }
-        //glEnable(GL_CULL_FACE);
+        //glEnable(GL_CULL_FACE);//debugging
 
         glClear(GL_DEPTH_BUFFER_BIT);
 

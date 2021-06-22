@@ -11,6 +11,7 @@ import static game.tnt.TNTEntity.getTNTScale;
 import static engine.graphics.Camera.getCameraPosition;
 import static engine.graphics.Camera.getCameraRotation;
 
+//so much math
 public class Transformation {
 
     private static final Matrix4d projectionMatrix = new Matrix4d();
@@ -54,27 +55,37 @@ public class Transformation {
 
     public static Matrix4d updateSunMatrix(Matrix4d matrix) {
 
-        //getCameraPosition()
         Vector3d pos = new Vector3d();
+        Vector3d basePos = new Vector3d(getCameraPosition());
 
+        double timeLinear = getTimeOfDayLinear() - 0.5d;
+
+        System.out.println(timeLinear);
+
+        pos.x = Math.sin(timeLinear * 2f * Math.PI);
+        pos.y = Math.cos(timeLinear * 2f * Math.PI);
+        pos.mul(5);
+        pos.add(basePos);
+
+        modelViewMatrix.identity().identity().translate(pos).
+                rotateY(Math.toRadians(90)).
+                rotateZ(0).
+                rotateX(Math.toRadians((timeLinear + 0.25d) * 360)).
+                scale(1f);
+        return new Matrix4d(matrix).mul(modelViewMatrix);
+    }
+
+    public static Matrix4d updateMoonMatrix(Matrix4d matrix) {
+
+        Vector3d pos = new Vector3d();
         Vector3d basePos = new Vector3d(getCameraPosition());
 
         double timeLinear = getTimeOfDayLinear();
 
-        //System.out.println(test);
-
-        System.out.println(Math.toRadians(timeLinear * 360));
-
         pos.x = Math.sin(timeLinear * 2f * Math.PI);
         pos.y = Math.cos(timeLinear * 2f * Math.PI);
-
         pos.mul(5);
-
         pos.add(basePos);
-
-        // First do the rotation so camera rotates over its position
-
-
 
         modelViewMatrix.identity().identity().translate(pos).
                 rotateY(Math.toRadians(90)).

@@ -8,7 +8,7 @@ public class TimeOfDay {
 
     private static double timeOfDay = 0d; //6AM 0600 Hours //21_600d
 
-    private static double timeSpeed = 20000d; //following Minetest wiki - 72 times faster (following time_speed in minetest.conf)
+    private static double timeSpeed = 10000d; //following Minetest wiki - 72 times faster (following time_speed in minetest.conf)
 
     public static void tickUpTimeOfDay(){
         timeOfDay += getDelta() * timeSpeed; //this calculation was ridiculous to get
