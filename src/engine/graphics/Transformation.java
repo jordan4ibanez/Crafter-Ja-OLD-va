@@ -60,8 +60,6 @@ public class Transformation {
 
         double timeLinear = getTimeOfDayLinear() - 0.5d;
 
-        System.out.println(timeLinear);
-
         pos.x = Math.sin(timeLinear * 2f * Math.PI);
         pos.y = Math.cos(timeLinear * 2f * Math.PI);
         pos.mul(5);

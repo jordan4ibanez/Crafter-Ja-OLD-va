@@ -252,7 +252,6 @@ public class GameRenderer {
 
             double timeOfDayLinear = getTimeOfDayLinear();
 
-
             //daytime sky
             if (timeOfDayLinear <= 0.8 && timeOfDayLinear >= 0.2) {
                 modelViewMatrix = updateSunMatrix(viewMatrix);
