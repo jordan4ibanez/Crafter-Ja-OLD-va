@@ -32,7 +32,7 @@ import static game.player.Player.*;
 
 public class Chunk {
 
-    //todo: this is an experiment, if all of a sudden stuff starts crashing, this is why
+    //todo: this is an experiment, if all of a sudden stuff starts crashing, this is why - this is disabled for now
     //private static final Object2ObjectOpenHashMap<Vector2i, ChunkObject> map = new Object2ObjectOpenHashMap<>();
     private static final ConcurrentHashMap<Vector2i, ChunkObject> map = new ConcurrentHashMap<>();
 

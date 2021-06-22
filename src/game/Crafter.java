@@ -1,10 +1,7 @@
 package game;
 
-import com.esotericsoftware.kryo.Kryo;
-import engine.network.ChunkRequest;
-import engine.network.NetworkHandshake;
-import engine.network.PlayerPosObject;
 import engine.sound.SoundListener;
+import game.chunk.BiomeGenerator;
 import game.chunk.Chunk;
 import game.chunk.ChunkMeshGenerator;
 import game.item.ItemDefinition;
@@ -13,23 +10,26 @@ import org.lwjgl.openal.AL11;
 
 import java.awt.*;
 
-import static engine.disk.Disk.*;
+import static engine.MouseInput.initMouseInput;
+import static engine.Window.initWindow;
+import static engine.disk.Disk.createWorldsDir;
+import static engine.disk.Disk.savePlayerPos;
 import static engine.disk.SaveQueue.startSaveThread;
+import static engine.gui.GUI.createGUI;
+import static engine.gui.GUI.initializeHudAtlas;
+import static engine.render.GameRenderer.cleanupRenderer;
+import static engine.render.GameRenderer.initRenderer;
 import static engine.scene.SceneHandler.handleSceneLogic;
 import static engine.settings.Settings.getSettingsVsync;
 import static engine.settings.Settings.loadSettings;
-import static game.chunk.Chunk.*;
-import static engine.gui.GUI.*;
-import static engine.MouseInput.*;
+import static engine.sound.SoundManager.*;
+import static game.blocks.BlockDefinition.initializeBlocks;
+import static game.chunk.Chunk.globalFinalChunkSaveToDisk;
 import static game.crafting.CraftRecipes.registerCraftRecipes;
 import static game.item.ItemRegistration.registerItems;
 import static game.mainMenu.MainMenu.initMainMenu;
+import static game.player.Player.getPlayerPos;
 import static game.tnt.TNTEntity.createTNTEntityMesh;
-import static engine.Window.*;
-import static engine.sound.SoundManager.*;
-import static engine.render.GameRenderer.*;
-import static game.blocks.BlockDefinition.initializeBlocks;
-import static game.player.Player.*;
 
 public class Crafter {
 
@@ -62,7 +62,15 @@ public class Crafter {
             //this is the chunk mesh generator thread
             ChunkMeshGenerator chunkMeshGenerator = new ChunkMeshGenerator();
             Thread chunkThread = new Thread(chunkMeshGenerator);
+
             chunkThread.start();
+
+            //this is the biome generator thread
+            BiomeGenerator biomeGenerator = new BiomeGenerator();
+            Thread biomeThread = new Thread(biomeGenerator);
+
+            biomeThread.start();
+
 
             //this is the scene controller
             handleSceneLogic();
