@@ -14,9 +14,10 @@ import static game.tnt.TNTEntity.createTNT;
 
 public class BlockDefinition {
 
-    private final static BlockDefinition[] blockIDs = new BlockDefinition[256];
+    //holds BlockDefinition data
+    private final static BlockDefinition[] blockIDs = new BlockDefinition[30];
 
-    //0: normal,
+    //holds the blockshape data
     private final static BlockShape[] blockShapeMap = new BlockShape[8];
 
     //fixed fields for the class
