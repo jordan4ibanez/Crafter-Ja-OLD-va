@@ -500,7 +500,7 @@ public class GUILogic {
 
     public static void makeHeartsJiggle(){
 
-        float delta = getDelta();
+        double delta = getDelta();
 
         boolean odd = baseOdd;
 

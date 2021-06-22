@@ -710,7 +710,7 @@ public class MainMenu {
     //infinitely scrolling background
     private static void makeBackGroundScroll(){
 
-        float delta = getDelta();
+        double delta = getDelta();
 
         backGroundScroll += delta / 2f;
 
@@ -723,7 +723,7 @@ public class MainMenu {
     //scrolling credits
     private static void makeCreditsScroll(){
 
-        float delta = getDelta();
+        double delta = getDelta();
 
         if (creditsScroll < lockScroll) {
             creditsScroll += delta / 1.3501f;
@@ -740,7 +740,7 @@ public class MainMenu {
     }
 
     private static void makeTitleBounce(){
-        float delta = getDelta();
+        double delta = getDelta();
 
         /*
         if (initialBounce){
@@ -774,7 +774,7 @@ public class MainMenu {
 
         boolean found = false;
 
-        float delta = getDelta();
+        double delta = getDelta();
         //set initial random float variables
         for (int x = 0; x < 5; x++){
             //assume equal lengths
@@ -801,7 +801,7 @@ public class MainMenu {
 
         boolean found = false;
 
-        float delta = getDelta();
+        double delta = getDelta();
         //set initial random float variables
         for (int x = 0; x < 5; x++){
             //assume equal lengths

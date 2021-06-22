@@ -67,7 +67,7 @@ public class Inventory {
 
     public static void updateWieldInventory(byte light){
 
-        float delta = getDelta();
+        double delta = getDelta();
 
         int newSelectionPos = getCurrentInventorySelection();
         Item newItem = getItemInInventorySlot(newSelectionPos, 0);

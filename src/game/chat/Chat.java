@@ -18,10 +18,10 @@ public class Chat {
 
     //private static final HashMap<Integer,String> chatString = new HashMap<>(); not needed for now
     private static final ConcurrentHashMap<Integer, Mesh> chatMesh   = new ConcurrentHashMap<>();
-    private static final ConcurrentHashMap<Integer, Float>  chatTimer   = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Integer, Double>  chatTimer   = new ConcurrentHashMap<>();
     private static final ArrayDeque<String> chatBuffer = new ArrayDeque<>();
 
-    private static float oldChatDeletionTimer = 0f;
+    private static double oldChatDeletionTimer = 0f;
 
     private static String currentMessage;
     private static Mesh currentMessageMesh;
@@ -30,10 +30,10 @@ public class Chat {
     private static final float chatTimerLimit = 5f;
 
     public static void tickUpChatTimers(){
-        float delta = getDelta();
+        double delta = getDelta();
         int index = ID - chatHeightLimit;
         while (index < ID){
-            Float thisTimer = chatTimer.get(index);
+            Double thisTimer = chatTimer.get(index);
             if (thisTimer != null) {
                 thisTimer += delta;
                 if (thisTimer > chatTimerLimit) {
@@ -162,7 +162,7 @@ public class Chat {
             chatMesh.put(ID, createTextWithShadow(strings[i], 1, 1, 1));
 
             //set timer
-            chatTimer.put(ID, 0f);
+            chatTimer.put(ID, 0d);
 
             //tick up ID
             ID++;

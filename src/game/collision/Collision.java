@@ -16,11 +16,11 @@ import static game.player.Player.setPlayerInWater;
 public class Collision {
     private static float inWater = 0;
 
-    private static float adjustedDelta;
+    private static double adjustedDelta;
 
     //this probably definitely absolutely should not take isPlayer as a value
     public static boolean applyInertia(Vector3d pos, Vector3f inertia, boolean onGround, float width, float height, boolean gravity, boolean sneaking, boolean applyCollision, boolean airFriction, boolean isPlayer){
-        float delta = getDelta();
+        double delta = getDelta();
 
         //the precision goal for delta is 0.001f, this adjusts it to be so
         //the side effect, is the lower your FPS, the more it has to loop
@@ -28,7 +28,7 @@ public class Collision {
 
         if (delta >  0.001f){
             loops = (int)Math.floor(delta / 0.001f);
-            adjustedDelta = (delta/(float)loops);
+            adjustedDelta = (delta/(double)loops);
         } else {
             adjustedDelta = delta;
         }

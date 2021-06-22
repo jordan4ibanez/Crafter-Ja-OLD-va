@@ -39,7 +39,7 @@ public class MobUtilityCode {
 
     //todo: shortest distance
     public static void mobSmoothRotation(MobObject thisObject){
-        float delta = getDelta();
+        double delta = getDelta();
 
         float diff = thisObject.rotation - thisObject.smoothRotation;
 

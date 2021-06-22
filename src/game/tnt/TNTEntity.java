@@ -63,7 +63,7 @@ public class TNTEntity {
     }
 
     public static void onTNTStep() throws Exception {
-        float delta = getDelta();
+        double delta = getDelta();
         for (int i = 0; i < totalTNT; i++){
             tntTimer[i] += delta;
             applyInertia(tntPos[i], tntInertia[i], true, tntSize, tntSize * 2, true, false, true, false, false);

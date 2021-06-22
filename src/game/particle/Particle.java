@@ -25,7 +25,7 @@ public class Particle {
 
     public static void particlesOnStep(){
 
-        float delta = getDelta();
+        double delta = getDelta();
 
         for (ParticleObject thisParticle : particles.values()){
 

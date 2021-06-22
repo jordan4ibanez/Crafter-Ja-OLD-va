@@ -1,10 +1,6 @@
 package engine;
 
-import org.joml.Vector3d;
-import org.joml.Vector3f;
-
 import static engine.MouseInput.*;
-import static engine.MouseInput.getMouseScroll;
 import static engine.Window.isKeyPressed;
 import static engine.Window.toggleFullScreen;
 import static engine.graphics.Camera.getCameraPerspective;
@@ -15,9 +11,7 @@ import static engine.settings.Settings.*;
 import static game.crafting.Inventory.*;
 import static game.crafting.InventoryLogic.closeCraftingInventory;
 import static game.crafting.InventoryLogic.openCraftingInventory;
-import static game.mob.Mob.spawnMob;
 import static game.player.Player.*;
-import static game.player.Player.changeScrollSelection;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Controls {

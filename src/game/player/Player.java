@@ -493,7 +493,7 @@ public class Player {
 
     private static void updatePlayerHandInertia(){
 
-        float delta = getDelta();
+        double delta = getDelta();
 
         float yaw = (float)Math.toRadians(getCameraRotation().y) + (float)Math.PI;
 
@@ -564,7 +564,7 @@ public class Player {
     }
 
     public static void setPlayerInertiaBuffer(){
-        float delta = getDelta();
+        double delta = getDelta();
 
         if (forward){
             float yaw = (float)Math.toRadians(getCameraRotation().y) + (float)Math.PI;
@@ -668,7 +668,7 @@ public class Player {
 
     public static void playerOnTick() {
 
-        float delta = getDelta();
+        double delta = getDelta();
 
         //camera underwater effect trigger
         Vector3d camPos = new Vector3d(getCameraPosition());
@@ -1077,9 +1077,9 @@ public class Player {
 
     private static void applyViewBobbing() {
 
-        float delta = getDelta();
+        double delta = getDelta();
 
-        float viewBobbingAddition = delta  * 250f;
+        double viewBobbingAddition = delta  * 250f;
 
         //System.out.println(viewBobbingAddition);
 
@@ -1111,7 +1111,7 @@ public class Player {
 
     private static void returnPlayerViewBobbing(){
 
-        float delta = getDelta();
+        double delta = getDelta();
 
         if ((Math.abs(xBobPos)) <= 300 * delta){
             xBobPos = 0;
@@ -1150,7 +1150,7 @@ public class Player {
     }
 
     private static void calculateRunningFOV(){
-        float delta = getDelta();
+        double delta = getDelta();
         if (playerIsMoving() && running){
             if (runningFOVAdder < 0.3f){
                 runningFOVAdder += delta;
@@ -1181,7 +1181,7 @@ public class Player {
     private static float healthTimer = 0;
 
     private static void doHealthTest(){
-        float delta = getDelta();
+        double delta = getDelta();
 
         healthTimer += delta;
 

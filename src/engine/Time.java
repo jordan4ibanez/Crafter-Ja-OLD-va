@@ -5,8 +5,7 @@ import static org.lwjgl.glfw.GLFW.glfwGetTime;
 public class Time {
 
     private static double lastLoopTime = getTime();
-
-    private static float delta;
+    private static double delta;
 
     private static double getTime() {
         return glfwGetTime();
@@ -18,7 +17,9 @@ public class Time {
         lastLoopTime = time;
     }
 
-    public static float getDelta() {
+
+
+    public static double getDelta() {
         return(delta);
     }
 }

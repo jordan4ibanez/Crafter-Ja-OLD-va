@@ -12,17 +12,17 @@ import static game.collision.CustomBlockBox.*;
 
 public class ParticleCollision {
 
-    private static float adjustedDelta;
+    private static double adjustedDelta;
 
     public static boolean applyParticleInertia(Vector3d pos, Vector3f inertia, boolean onGround, boolean gravity, boolean applyCollision){
 
-        float delta = getDelta();
+        double delta = getDelta();
 
         int loops = 1;
 
         if (delta >  0.001f){
             loops = (int)Math.floor(delta / 0.001f);
-            adjustedDelta = (delta/(float)loops);
+            adjustedDelta = (delta/(double)loops);
         } else {
             adjustedDelta = delta;
         }

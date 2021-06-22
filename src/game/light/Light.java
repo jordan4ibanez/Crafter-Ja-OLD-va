@@ -25,7 +25,7 @@ public class Light {
 
     public static void testLightLevel(){
 
-        float delta = getDelta();
+        double delta = getDelta();
         dayLightTimer += delta;
 
         if (dayLightTimer >= 5.f){

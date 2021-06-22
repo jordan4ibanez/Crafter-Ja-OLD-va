@@ -78,7 +78,7 @@ public class ItemEntity {
     }
 
     public static void itemsOnTick(){
-        float delta = getDelta();
+        double delta = getDelta();
 
         for (Item thisItem : items.values()){
 
@@ -187,7 +187,7 @@ public class ItemEntity {
     }
 
     public static void itemsOnTickMultiplayer(){
-        float delta = getDelta();
+        double delta = getDelta();
         for (Item thisItem : items.values()){
 
             thisItem.timer += delta;
