@@ -7,7 +7,9 @@ import org.joml.Vector3d;
 import org.joml.Vector3i;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Collection;
+import java.util.Deque;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static engine.FancyMath.getDistance;
@@ -18,7 +20,6 @@ import static engine.disk.SaveQueue.saveChunk;
 import static engine.network.Networking.getIfMultiplayer;
 import static engine.network.Networking.sendOutChunkRequest;
 import static engine.settings.Settings.getRenderDistance;
-import static engine.settings.Settings.getSettingsChunkLoad;
 import static game.blocks.BlockDefinition.onDigCall;
 import static game.blocks.BlockDefinition.onPlaceCall;
 import static game.chunk.ChunkMath.posToIndex;
@@ -655,17 +656,6 @@ public class Chunk {
     private static void addChunkToDeletionQueue(int chunkX, int chunkZ) {
         deletionQueue.add(chunkX + " " + chunkZ);
     }
-
-    //the higher this is set, the lazier chunk deletion gets
-    //set it too high, and chunk deletion barely works
-    private static final float[] goalTimerArray = new float[]{
-            0.05f, //SNAIL
-            0.025f, //SLOWER
-            0.009f, //NORMAL
-            0.004f, //FASTER
-            0.002f, //INSANE
-            0.0001f, //FUTURE PC
-    };
 
     private static final float goalTimer = 0.0001f;//goalTimerArray[getSettingsChunkLoad()];
 

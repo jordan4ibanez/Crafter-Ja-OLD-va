@@ -3,17 +3,11 @@ package game.chunk;
 import engine.graphics.Mesh;
 import engine.graphics.Texture;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static engine.Time.getDelta;
-import static engine.settings.Settings.getSettingsChunkLoad;
 import static game.chunk.Chunk.*;
-import static game.blocks.BlockDefinition.*;
-import static game.chunk.ChunkMath.posToIndex;
-import static game.light.Light.getCurrentGlobalLightLevel;
 
 public class ChunkMeshGenerationHandler {
 
@@ -37,19 +31,7 @@ public class ChunkMeshGenerationHandler {
         return textureAtlas;
     }
 
-    private final static float maxLight = 15;
     private static final Random random = new Random();
-
-    //the higher this is set, the lazier chunk mesh loading gets
-    //set it too high, and chunk mesh loading barely works
-    private static final float[] goalTimerArray = new float[]{
-            0.05f, //SNAIL
-            0.025f, //SLOWER
-            0.009f, //NORMAL
-            0.004f, //FASTER
-            0.002f, //INSANE
-            0.0001f, //FUTURE PC
-    };
 
     private static final float goalTimer = 0.00005f;//goalTimerArray[getSettingsChunkLoad()];
 

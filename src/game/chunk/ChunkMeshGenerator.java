@@ -2,10 +2,7 @@ package game.chunk;
 
 import org.joml.Vector3i;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.List;
+import java.util.*;
 
 import static engine.Window.windowShouldClose;
 import static game.blocks.BlockDefinition.*;
@@ -32,15 +29,17 @@ public class ChunkMeshGenerator implements Runnable{
         generationQueue.addFirst(new Vector3i(chunkX,yHeight, chunkZ));
     }
 
-    //cache data
 
+
+    //cache data
+    //these are held on the heap
     private final static byte maxLight = 15;
 
     //normal block mesh data
-    private static final List<Float> positions = new ArrayList<>();
-    private static final List<Float> textureCoord = new ArrayList<>();
-    private static final List<Integer> indices = new ArrayList<>();
-    private static final List<Float> light = new ArrayList<>();
+    private static final Stack<Float> positions = new Stack<>();
+    private static final List<Float> textureCoord = new Stack<>();
+    private static final List<Integer> indices = new Stack<>();
+    private static final List<Float> light = new Stack<>();
 
     //liquid block mesh data
     private static final List<Float> liquidPositions = new ArrayList<>();
