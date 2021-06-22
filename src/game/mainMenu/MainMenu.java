@@ -5,7 +5,6 @@ import engine.sound.SoundSource;
 import org.joml.Vector2d;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Random;
@@ -1036,6 +1035,11 @@ public class MainMenu {
             "Public static final!",
             "Made with no artificial ingredients!",
             "MIT Licensed!",
-            "Can be used as a floatation device!"
+            "Can be used as a floatation device!",
+            "TYPES LIKE THIS!",
+            "YELLS QUITE A LOT!",
+            "Has been under the ocean!",
+            "Made with electrons!",
+            "Knows where to go!",
     };
 }
