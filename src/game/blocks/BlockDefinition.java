@@ -17,7 +17,7 @@ public class BlockDefinition {
     private final static BlockDefinition[] blockIDs = new BlockDefinition[256];
 
     //0: normal,
-    private final static BlockShape[] blockShapeMap = new BlockShape[128];
+    private final static BlockShape[] blockShapeMap = new BlockShape[8];
 
     //fixed fields for the class
     private static final byte atlasSizeX = 32;
@@ -289,6 +289,25 @@ public class BlockDefinition {
                 new BlockShape(new double[][]{
                                 {0f,0f,0f,1f,1f,1f}
                         });
+
+        //door open
+        blockShapeMap[5] =
+                new BlockShape(
+                        new double[][]{
+                                {0f,0f,0f,2f/16f,1f,1f}
+                        }
+                );
+
+        //door closed
+        blockShapeMap[6] =
+                new BlockShape(
+                        new double[][]{
+                                {0f,0f,14f/16f,1f,1f,1f}
+                        }
+                );
+
+        //torch
+        blockShapeMap[7] = new BlockShape(new double[][]{{0f,0f,0f,1f,1f,1f}});
 
 
         new BlockDefinition(
@@ -897,14 +916,6 @@ public class BlockDefinition {
                 null
         );
 
-        //door open
-        blockShapeMap[5] =
-                new BlockShape(
-                        new double[][]{
-                                {0f,0f,0f,2f/16f,1f,1f}
-                        }
-                );
-
         new BlockDefinition(
                 21,
                 0,
@@ -997,14 +1008,6 @@ public class BlockDefinition {
                 true,
                 null
         );
-
-        //door closed
-        blockShapeMap[6] =
-                new BlockShape(
-                        new double[][]{
-                                {0f,0f,14f/16f,1f,1f,1f}
-                        }
-                );
 
         new BlockDefinition(
                 23,
@@ -1133,7 +1136,7 @@ public class BlockDefinition {
                 0,
                 0,
                 0,
-                1,
+                0.1f,
                 "leaves",
                 false,
                 new int[]{28,0}, //front
@@ -1238,7 +1241,7 @@ public class BlockDefinition {
                 0,
                 0,
                 0,
-                1,
+                0.25f,
                 "torch",
                 true,
                 new int[]{0,1}, //front
@@ -1247,7 +1250,7 @@ public class BlockDefinition {
                 new int[]{0,1}, //left
                 new int[]{0,1}, //top
                 new int[]{0,1},  //bottom
-                4, //allfaces
+                7, //torch like
                 false,
                 false,
                 false,
