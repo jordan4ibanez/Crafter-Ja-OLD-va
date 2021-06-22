@@ -5,6 +5,7 @@ import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import static engine.render.GameRenderer.getWindowSize;
+import static engine.time.TimeOfDay.getTimeOfDayLinear;
 import static game.tnt.TNTEntity.getTNTPosition;
 import static game.tnt.TNTEntity.getTNTScale;
 import static engine.graphics.Camera.getCameraPosition;
@@ -18,7 +19,7 @@ public class Transformation {
     private static final Matrix4d orthoMatrix = new Matrix4d();
     private static final Matrix4d orthoModelMatrix = new Matrix4d();
 
-    public static final Matrix4d getViewMatrix(){
+    public static Matrix4d getViewMatrix(){
         Vector3d cameraPos = getCameraPosition();
         Vector3f rotation = getCameraRotation();
         viewMatrix.identity();
@@ -51,23 +52,47 @@ public class Transformation {
     }
 
 
-    public static Matrix4d getModelViewMatrix(Matrix4d viewMatrix){
-        Vector3f rotation = new Vector3f(0,0,0);
-        modelViewMatrix.identity().translate(new Vector3f(0,0,0)).
-                rotateX(Math.toRadians(-rotation.x)).
-                rotateY(Math.toRadians(-rotation.y)).
-                rotateZ(Math.toRadians(-rotation.z)).
+    public static Matrix4d updateSunMatrix(Matrix4d matrix) {
+
+        //getCameraPosition()
+        Vector3d pos = new Vector3d();
+
+        Vector3d basePos = new Vector3d(getCameraPosition());
+
+        double timeLinear = getTimeOfDayLinear();
+
+        //System.out.println(test);
+
+        System.out.println(Math.toRadians(timeLinear * 360));
+
+        pos.x = Math.sin(timeLinear * 2f * Math.PI);
+        pos.y = Math.cos(timeLinear * 2f * Math.PI);
+
+        pos.mul(5);
+
+        pos.add(basePos);
+
+        // First do the rotation so camera rotates over its position
+
+
+
+        modelViewMatrix.identity().identity().translate(pos).
+                rotateY(Math.toRadians(90)).
+                rotateZ(0).
+                rotateX(Math.toRadians((timeLinear + 0.25d) * 360)).
                 scale(1f);
-        Matrix4d viewCurr = new Matrix4d(viewMatrix);
-        return viewCurr.mul(modelViewMatrix);
+        return new Matrix4d(matrix).mul(modelViewMatrix);
     }
 
-    public static Matrix4d updateGenericViewMatrix(Vector3d position, Vector3f rotation, Matrix4d matrix) {
+
+    public static void updateGenericViewMatrix(Vector3d position, Vector3f rotation, Matrix4d matrix) {
         // First do the rotation so camera rotates over its position
-        return matrix.rotationX(Math.toRadians(rotation.x))
+        matrix.rotationX(Math.toRadians(rotation.x))
                 .rotateY(Math.toRadians(rotation.y))
                 .translate(-position.x, -position.y, -position.z);
     }
+
+
 
     public static  Matrix4d updateModelViewMatrix(Vector3d position, Vector3f rotation, Matrix4d matrix) {
 

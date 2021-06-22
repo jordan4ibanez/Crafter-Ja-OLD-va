@@ -176,6 +176,9 @@ public class GameRenderer {
 
         Matrix4d modelViewMatrix;
 
+
+
+
         //todo chunk sorting ---------------------------------------------------------------------------------------------
 
         Vector3d camPos = getCameraPosition();
@@ -228,6 +231,7 @@ public class GameRenderer {
 
         //todo end chunk sorting ---------------------------------------------------------------------------------------------
 
+
         //get fast or fancy
         boolean graphicsMode = getGraphicsMode();
 
@@ -240,6 +244,18 @@ public class GameRenderer {
             shaderProgram.setUniform("projectionMatrix", projectionMatrix);
             shaderProgram.setUniform("texture_sampler", 0);
         }
+
+        //render the sun and moon
+        //glDisable(GL_CULL_FACE);
+        {
+            modelViewMatrix = updateSunMatrix(viewMatrix);
+            shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            getSunMesh().render();
+
+        }
+        //glEnable(GL_CULL_FACE);
+
+        glClear(GL_DEPTH_BUFFER_BIT);
 
         glDisable(GL_BLEND);
 

@@ -45,6 +45,9 @@ public class GUI {
     private static Mesh heartShadowHudMesh;
     private static Mesh chatBox;
 
+    private static Mesh sun;
+    private static Mesh moon;
+
     private static Mesh fpsMesh;
 
     public static void createGUI() throws Exception {
@@ -68,6 +71,8 @@ public class GUI {
         halfHeartHudMesh = create2DMesh(0.5f, 0.5f, 0.5f, "textures/heart.png");
         heartShadowHudMesh = create2DMesh(0.5f, 0.5f, "textures/heart_shadow.png");
         chatBox = create2DMeshOffsetRight(0.5f, 0.5f, "textures/chat_box.png");
+        sun = create2DMesh(0.5f, 0.5f, "textures/sun.png");
+        moon = create2DMesh(0.5f, 0.5f, "textures/moon.png");
 
         //2D text creations
         fpsMesh = createTextWithShadow("FPS: " + getFpsCounted(), 1f, 1f, 1f);
@@ -85,6 +90,14 @@ public class GUI {
         worldSelection = new Texture("textures/selection.png");
         playerTexture = new Texture("textures/player.png");
         miningCrack = new Texture("textures/crack_anylength.png");
+    }
+
+    public static Mesh getSunMesh(){
+        return sun;
+    }
+
+    public static Mesh getMoonMesh(){
+        return moon;
     }
 
     public static Mesh getChatBoxMesh(){
