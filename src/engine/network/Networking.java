@@ -6,14 +6,14 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import game.chunk.ChunkObject;
 import game.crafting.InventoryObject;
-import game.item.Item;
-import org.joml.*;
+import org.joml.Vector3d;
+import org.joml.Vector3f;
+import org.joml.Vector3i;
 
 import java.io.IOException;
 
 import static engine.compression.Compression.decompressByteArrayToChunkObject;
 import static engine.graphics.Camera.getCameraRotation;
-import static game.chat.Chat.addChatMessage;
 import static game.chat.Chat.addToChatMessageBuffer;
 import static game.chunk.Chunk.*;
 import static game.crafting.Inventory.getMainInventory;
@@ -158,6 +158,7 @@ public class Networking {
         try {
             decomp = decompressByteArrayToChunkObject(netChunk.b);
         } catch (IOException e){
+            //System.out.println(e);
             //silent return
             return;
         }
@@ -167,7 +168,7 @@ public class Networking {
             return;
         }
 
-        setChunk(decomp.x, decomp.z, decomp);
+        setChunk(decomp);
     }
 
     public static void sendOutNetworkBlockBreak(int x, int y, int z){

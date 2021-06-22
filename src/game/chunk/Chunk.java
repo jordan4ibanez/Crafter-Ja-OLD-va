@@ -45,31 +45,32 @@ public class Chunk {
     }
 
     //multiplayer chunk update
-    public static void setChunk(int x, int z, ChunkObject newChunk){
-        if (map.get(new Vector2i(x,z)) != null){
-            //stop memory leak
-            ChunkObject thisChunk = map.get(new Vector2i(x,z));
-            for (int i = 0; i < 8; i++) {
-                if (thisChunk.allFacesMesh != null && thisChunk.allFacesMesh[i] != null){
-                    thisChunk.allFacesMesh[i].cleanUp(false);
-                }
-                if (thisChunk.liquidMesh != null && thisChunk.liquidMesh[i] != null){
-                    thisChunk.liquidMesh[i].cleanUp(false);
-                }
-                if (thisChunk.normalMesh != null && thisChunk.normalMesh[i] != null){
-                    thisChunk.normalMesh[i].cleanUp(false);
-                }
-            }
-            map.remove(new Vector2i(x,z));
+    public static void setChunk(ChunkObject newChunk) {
+
+        if (newChunk == null){
+            return;
         }
 
-        map.put(new Vector2i(x,z), newChunk);
+        int x = newChunk.x;
+        int z = newChunk.z;
+
+        //don't allow old vertex data to leak - instead clone primitives
+        ChunkObject gottenChunk = map.get(new Vector2i(x, z));
+        if (gottenChunk != null) {
+            gottenChunk.block = newChunk.block.clone();
+            gottenChunk.naturalLight = newChunk.naturalLight.clone();
+            gottenChunk.torchLight = newChunk.torchLight.clone();
+            gottenChunk.heightMap = newChunk.heightMap.clone();
+            gottenChunk.rotation = newChunk.rotation.clone();
+        } else {
+            map.put(new Vector2i(x, z), newChunk);
+        }
 
         for (int y = 0; y < 8; y++) {
             chunkUpdate(x, z, y);
         }
 
-        fullNeighborUpdate(x,z);
+        fullNeighborUpdate(x, z);
     }
 
     public static void initialChunkPayload(){

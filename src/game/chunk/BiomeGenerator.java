@@ -220,7 +220,7 @@ public class BiomeGenerator implements Runnable{
 
             }
 
-            setChunk(chunkX, chunkZ, thisChunk);
+            setChunk(thisChunk);
 
             //dump everything into the chunk updater
             for (int i = 0; i < 8; i++) {

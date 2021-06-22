@@ -26,7 +26,6 @@ public class ChunkObject {
     }
 
     public ChunkObject(int x, int z){
-
         this.x = x;
         this.z = z;
     }
