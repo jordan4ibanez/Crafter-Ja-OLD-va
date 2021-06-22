@@ -1,9 +1,9 @@
 package game.chunk;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.joml.Vector3i;
 
 import java.util.Random;
-import java.util.concurrent.ConcurrentLinkedDeque;
 
 import static engine.Time.getDelta;
 import static game.chunk.Chunk.chunkStackContainsBlock;
@@ -11,9 +11,9 @@ import static game.chunk.ChunkMeshGenerator.generateChunkMesh;
 
 public class ChunkUpdateHandler {
 
-
-    private final static ConcurrentLinkedDeque<Vector3i> queue = new ConcurrentLinkedDeque<>();
-
+    //the data type allows the program to thread crash or have concurrency problems
+    //and just keep running, this is pretty awesome
+    private static final ObjectArrayList<Vector3i> queue = new ObjectArrayList<>();
 
     public static void chunkUpdate( int x, int z , int y){
 
@@ -43,13 +43,15 @@ public class ChunkUpdateHandler {
         for (int i = 0; i < updateAmount; i++) {
             if (!queue.isEmpty()) {
 
-                Object[] queueAsArray = queue.toArray();
-                Vector3i key = (Vector3i) queueAsArray[random.nextInt(queueAsArray.length)];
+                Vector3i[] queueAsArray = (Vector3i[]) queue.toArray();
+                Vector3i key = queueAsArray[random.nextInt(queueAsArray.length)];
 
-                if (chunkStackContainsBlock(key.x, key.z, key.y)) {
+                //sometimes it is null
+                if (key != null && chunkStackContainsBlock(key.x, key.z, key.y)) {
                     generateChunkMesh(key.x, key.z, key.y);
                 }
 
+                //can attempt to remove null, so it's okay
                 queue.remove(key);
             }
         }
