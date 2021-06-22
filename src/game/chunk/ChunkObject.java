@@ -4,7 +4,7 @@ import engine.graphics.Mesh;
 
 public class ChunkObject {
 
-    //private final static int arraySize = 128 * 16 * 16;
+    //private final static int arraySize = 128 * 16 * 16; //32768
 
     public int x;
     public int z;

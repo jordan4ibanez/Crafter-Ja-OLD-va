@@ -2,12 +2,13 @@ package game.chunk;
 
 import org.joml.Vector3i;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.LinkedList;
 
 import static engine.Window.windowShouldClose;
 import static game.blocks.BlockDefinition.*;
-import static game.blocks.BlockDefinition.getBottomTexturePoints;
-import static game.chunk.Chunk.*;
+import static game.chunk.Chunk.getChunk;
 import static game.chunk.ChunkMeshGenerationHandler.addToChunkMeshQueue;
 import static game.light.Light.getCurrentGlobalLightLevel;
 
@@ -29,33 +30,15 @@ public class ChunkMeshGenerator implements Runnable{
         generationQueue.addFirst(new Vector3i(chunkX,yHeight, chunkZ));
     }
 
-
-
     //cache data
     //these are held on the heap
     private final static byte maxLight = 15;
 
-    //normal block mesh data
-    private static final Stack<Float> positions = new Stack<>();
-    private static final List<Float> textureCoord = new Stack<>();
-    private static final List<Integer> indices = new Stack<>();
-    private static final List<Float> light = new Stack<>();
-
-    //liquid block mesh data
-    private static final List<Float> liquidPositions = new ArrayList<>();
-    private static final List<Float> liquidTextureCoord = new ArrayList<>();
-    private static final List<Integer> liquidIndices = new ArrayList<>();
-    private static final List<Float> liquidLight = new ArrayList<>();
-
-    //allFaces block mesh data
-    private static final List<Float> allFacesPositions = new ArrayList<>();
-    private static final List<Float> allFacesTextureCoord = new ArrayList<>();
-    private static final List<Integer> allFacesIndices = new ArrayList<>();
-    private static final List<Float> allFacesLight = new ArrayList<>();
-
-
     private static void pollQueue(){
-        if (!generationQueue.isEmpty()) {
+
+        boolean solved = false;
+
+        while (!generationQueue.isEmpty() && !solved) {
 
             //long startTime = System.nanoTime();
 
@@ -66,41 +49,48 @@ public class ChunkMeshGenerator implements Runnable{
                 return; //don't crash, basically
             }
 
-            int chunkX = updateRawData.x;
-            int chunkZ = updateRawData.z;
-            int yHeight = updateRawData.y;
 
-            ChunkObject thisChunk = getChunk(chunkX, chunkZ);
-
-            ChunkObject chunkNeighborXPlus = getChunk(chunkX + 1, chunkZ);
-            ChunkObject chunkNeighborXMinus = getChunk(chunkX - 1, chunkZ);
-            ChunkObject chunkNeighborZPlus = getChunk(chunkX, chunkZ + 1);
-            ChunkObject chunkNeighborZMinus = getChunk(chunkX, chunkZ - 1);
+            ChunkObject thisChunk = getChunk(updateRawData.x, updateRawData.z);
 
             //don't bother if the chunk doesn't exist
             if (thisChunk == null) {
                 return;
             }
 
+            int chunkX = updateRawData.x;
+            int chunkZ = updateRawData.z;
+            int yHeight = updateRawData.y;
+
+            ChunkObject chunkNeighborXPlus = getChunk(chunkX + 1, chunkZ);
+            ChunkObject chunkNeighborXMinus = getChunk(chunkX - 1, chunkZ);
+            ChunkObject chunkNeighborZPlus = getChunk(chunkX, chunkZ + 1);
+            ChunkObject chunkNeighborZMinus = getChunk(chunkX, chunkZ - 1);
+
             //normal block mesh data
-            positions.clear();
-            textureCoord.clear();
-            indices.clear();
-            light.clear();
+            final LinkedList<Float> positions = new LinkedList<>();
+            final LinkedList<Float> textureCoord = new LinkedList<>();
+            final LinkedList<Integer> indices = new LinkedList<>();
+            final LinkedList<Float> light = new LinkedList<>();
+
+            //liquid block mesh data
+            final LinkedList<Float> liquidPositions = new LinkedList<>();
+            final LinkedList<Float> liquidTextureCoord = new LinkedList<>();
+            final LinkedList<Integer> liquidIndices = new LinkedList<>();
+            final LinkedList<Float> liquidLight = new LinkedList<>();
+
+            //allFaces block mesh data
+            final LinkedList<Float> allFacesPositions = new LinkedList<>();
+            final LinkedList<Float> allFacesTextureCoord = new LinkedList<>();
+            final LinkedList<Integer> allFacesIndices = new LinkedList<>();
+            final LinkedList<Float> allFacesLight = new LinkedList<>();
+
+            //normal block mesh data
             int indicesCount = 0;
 
             //liquid block mesh data
-            liquidPositions.clear();
-            liquidTextureCoord.clear();
-            liquidIndices.clear();
-            liquidLight.clear();
             int liquidIndicesCount = 0;
 
             //allFaces block mesh data
-            allFacesPositions.clear();
-            allFacesTextureCoord.clear();
-            allFacesIndices.clear();
-            allFacesLight.clear();
             int allFacesIndicesCount = 0;
 
             byte chunkLightLevel = getCurrentGlobalLightLevel();
@@ -1461,10 +1451,9 @@ public class ChunkMeshGenerator implements Runnable{
             //Thread cache
             int workerCounter = 0;
 
-            if (positions.size() > 0) {
+            if (!positions.isEmpty()) {
 
                 //convert all ArrayLists<>() into primitive[]
-
                 float[] positionsArray = new float[positions.size()];
                 for (Float data : positions) {
                     //auto casted from Float to float
@@ -1512,7 +1501,7 @@ public class ChunkMeshGenerator implements Runnable{
 
             workerCounter = 0;
 
-            if (liquidPositions.size() > 0) {
+            if (!liquidPositions.isEmpty()) {
 
                 float[] liquidPositionsArray = new float[liquidPositions.size()];
                 for (Float data : liquidPositions) {
@@ -1560,7 +1549,7 @@ public class ChunkMeshGenerator implements Runnable{
 
             workerCounter = 0;
 
-            if (allFacesPositions.size() > 0) {
+            if (!allFacesPositions.isEmpty()) {
 
                 float[] allFacesPositionsArray = new float[allFacesPositions.size()];
                 for (Float data : allFacesPositions) {
@@ -1607,11 +1596,27 @@ public class ChunkMeshGenerator implements Runnable{
             }
 
 
+            //clear linked lists
+            positions.clear();
+            textureCoord.clear();
+            indices.clear();
+            light.clear();
+            liquidPositions.clear();
+            liquidTextureCoord.clear();
+            liquidIndices.clear();
+            liquidLight.clear();
+            allFacesPositions.clear();
+            allFacesTextureCoord.clear();
+            allFacesIndices.clear();
+            allFacesLight.clear();
+
 
             //finally add it into the queue to be popped
-            String keyName = chunkX + " " + chunkZ + " " + yHeight;
-            addToChunkMeshQueue(keyName, newChunkData);
+            addToChunkMeshQueue(new Vector3i(chunkX,chunkZ,yHeight), newChunkData);
 
+
+            //solved - stop looping
+            solved = true;
         }
     }
 
@@ -1671,11 +1676,11 @@ public class ChunkMeshGenerator implements Runnable{
     }
 
     //this is an internal duplicate specific to this thread
-    private final static int xMax = 16;
-    private final static int yMax = 128;
-    private final static int length = xMax * yMax;
+    //private final static int xMax = 16;
+    //private final static int yMax = 128;
+    //private final static int length = xMax * yMax; //2048
     private static int posToIndex( int x, int y, int z ) {
-        return (z * length) + (y * xMax) + x;
+        return (z * 2048) + (y * 16) + x;
     }
 
 }

@@ -26,7 +26,7 @@ public class ChunkUpdateHandler {
 
     private static final Random random = new Random();
 
-    private static final float goalTimer = 0.00001f;
+    private static final float goalTimer = 0.00005f;
 
     private static float chunkUpdateTimer = 0f;
 
@@ -37,6 +37,7 @@ public class ChunkUpdateHandler {
 
         if (chunkUpdateTimer >= goalTimer){
             updateAmount = (int)(Math.ceil(chunkUpdateTimer / goalTimer));
+
             chunkUpdateTimer = 0;
         }
 

@@ -2,6 +2,7 @@ package game.chunk;
 
 import engine.graphics.Mesh;
 import engine.graphics.Texture;
+import org.joml.Vector3i;
 
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,10 +12,10 @@ import static game.chunk.Chunk.*;
 
 public class ChunkMeshGenerationHandler {
 
-    private static final ConcurrentHashMap<String, ChunkMeshDataObject> queue = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Vector3i, ChunkMeshDataObject> queue = new ConcurrentHashMap<>();
 
-    public static void addToChunkMeshQueue(String keyName, ChunkMeshDataObject chunkMeshDataObject){
-        queue.put(keyName, chunkMeshDataObject);
+    public static void addToChunkMeshQueue(Vector3i key, ChunkMeshDataObject chunkMeshDataObject){
+        queue.put(key, chunkMeshDataObject);
     }
 
     private static Texture textureAtlas;
@@ -50,13 +51,9 @@ public class ChunkMeshGenerationHandler {
         for (int i = 0; i < updateAmount; i++) {
             if (!queue.isEmpty()) {
                 Object[] queueAsArray = queue.keySet().toArray();
-                String thisKey = (String) queueAsArray[random.nextInt(queueAsArray.length)];
+                Vector3i thisKey = (Vector3i) queueAsArray[random.nextInt(queueAsArray.length)];
 
                 ChunkMeshDataObject newChunkMeshData = queue.get(thisKey);
-
-                String keyName = newChunkMeshData.chunkX + " " + newChunkMeshData.chunkZ + " " + newChunkMeshData.yHeight;
-
-                queue.remove(keyName);
 
                 if (!newChunkMeshData.normalMeshIsNull) {
                     setChunkNormalMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, new Mesh(newChunkMeshData.positionsArray, newChunkMeshData.lightArray, newChunkMeshData.indicesArray, newChunkMeshData.textureCoordArray, textureAtlas));
@@ -75,6 +72,8 @@ public class ChunkMeshGenerationHandler {
                 } else {
                     setChunkAllFacesMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, null);
                 }
+
+                queue.remove(thisKey);
             }
         }
     }

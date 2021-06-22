@@ -3,7 +3,6 @@ package game.chunk;
 import engine.FastNoise;
 import engine.graphics.Mesh;
 import engine.network.ChunkRequest;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.joml.Vector2i;
 import org.joml.Vector3d;
 import org.joml.Vector3i;
@@ -12,6 +11,7 @@ import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static engine.FancyMath.getDistance;
 import static engine.Time.getDelta;
@@ -33,8 +33,8 @@ import static game.player.Player.*;
 public class Chunk {
 
     //todo: this is an experiment, if all of a sudden stuff starts crashing, this is why
-    private static final Object2ObjectOpenHashMap<Vector2i, ChunkObject> map = new Object2ObjectOpenHashMap<>();
-    //private static final ConcurrentHashMap<Vector2i, ChunkObject> map = new ConcurrentHashMap<>();
+    //private static final Object2ObjectOpenHashMap<Vector2i, ChunkObject> map = new Object2ObjectOpenHashMap<>();
+    private static final ConcurrentHashMap<Vector2i, ChunkObject> map = new ConcurrentHashMap<>();
 
     public static Collection<ChunkObject> getMap(){
         return map.values();
@@ -632,6 +632,7 @@ public class Chunk {
                 }
             }
         }
+
         //scan map for out of range chunks
         for (ChunkObject thisChunk : map.values()){
             if (getChunkDistanceFromPlayer(thisChunk.x,thisChunk.z) > chunkRenderDistance){
