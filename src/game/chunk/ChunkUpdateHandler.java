@@ -1,7 +1,9 @@
 package game.chunk;
 
+import org.joml.Vector3i;
+
 import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 import static engine.Time.getDelta;
 import static game.chunk.Chunk.chunkStackContainsBlock;
@@ -9,12 +11,16 @@ import static game.chunk.ChunkMeshGenerator.generateChunkMesh;
 
 public class ChunkUpdateHandler {
 
-    private static final ConcurrentHashMap<String, ChunkUpdate> queue = new ConcurrentHashMap<>();
+
+    private final static ConcurrentLinkedDeque<Vector3i> queue = new ConcurrentLinkedDeque<>();
+
 
     public static void chunkUpdate( int x, int z , int y){
-        String keyName = x + " " + z + " " + y;
-        if (queue.get(keyName) == null) {
-            queue.put(keyName, new ChunkUpdate(x, z, y));
+
+        Vector3i key = new Vector3i(x, y, z);
+
+        if (!queue.contains(key)) {
+            queue.add(new Vector3i(key));
         }
     }
 
@@ -36,22 +42,15 @@ public class ChunkUpdateHandler {
 
         for (int i = 0; i < updateAmount; i++) {
             if (!queue.isEmpty()) {
-                String key = "";
 
-                Object[] queueAsArray = queue.keySet().toArray();
-                String thisKey = (String)queueAsArray[random.nextInt(queueAsArray.length)];
+                Object[] queueAsArray = queue.toArray();
+                Vector3i key = (Vector3i) queueAsArray[random.nextInt(queueAsArray.length)];
 
-                ChunkUpdate thisUpdate = queue.get(thisKey);
-
-                if (!chunkStackContainsBlock(thisUpdate.x, thisUpdate.z, thisUpdate.y)) {
-                    key = thisUpdate.key;
-                } else {
-                    generateChunkMesh(thisUpdate.x, thisUpdate.z, thisUpdate.y);
-                    queue.remove(thisUpdate.key);
+                if (chunkStackContainsBlock(key.x, key.z, key.y)) {
+                    generateChunkMesh(key.x, key.z, key.y);
                 }
-                if (!key.equals("")) {
-                    queue.remove(key);
-                }
+
+                queue.remove(key);
             }
         }
     }
