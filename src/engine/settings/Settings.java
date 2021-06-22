@@ -4,7 +4,6 @@ import static engine.Window.setVSync;
 import static engine.disk.Disk.loadSettingsFromDisk;
 import static engine.disk.Disk.saveSettingsToDisk;
 import static game.chunk.Chunk.generateNewChunks;
-import static game.chunk.ChunkUpdateHandler.updateChunkLoadingSpeed;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Settings {
@@ -137,7 +136,6 @@ public class Settings {
     public static void setSettingsChunkLoad(byte truth){
         chunkLoading = truth;
         settings.chunkLoading = truth;
-        updateChunkLoadingSpeed();
     }
     public static byte getSettingsChunkLoad(){
         return chunkLoading;

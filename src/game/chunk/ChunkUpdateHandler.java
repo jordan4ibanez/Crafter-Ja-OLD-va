@@ -20,27 +20,7 @@ public class ChunkUpdateHandler {
 
     private static final Random random = new Random();
 
-    //the higher this is set, the lazier chunk mesh loading gets
-    //set it too high, and chunk mesh loading barely works
-    private static final float[] goalTimerArray = new float[]{
-            0.05f, //SNAIL
-            0.025f, //SLOWER
-            0.009f, //NORMAL
-            0.004f, //FASTER
-            0.002f, //INSANE
-            0.0001f, //FUTURE PC
-    };
-
-    private static final float goalTimer = 0.00005f;//goalTimerArray[getSettingsChunkLoad()];
-
-    public static void updateChunkLoadingSpeed(){
-        System.out.println("this doesn't do anything anymore");
-        //goalTimer = goalTimerArray[getSettingsChunkLoad()];
-        //also update unload speed timer
-        //updateChunkUnloadingSpeed();
-        //also update chunk mesh loading speed timer
-        //updateChunkMeshLoadingSpeed();
-    }
+    private static final float goalTimer = 0.00001f;
 
     private static float chunkUpdateTimer = 0f;
 
