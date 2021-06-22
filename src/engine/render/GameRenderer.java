@@ -162,6 +162,10 @@ public class GameRenderer {
     private static Mesh workerMesh;
 
     public static void renderGame(){
+
+
+        processClearColorInterpolation();
+
         clearScreen();
 
         rescaleWindow();

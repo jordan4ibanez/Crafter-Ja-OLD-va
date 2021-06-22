@@ -1,5 +1,7 @@
 package engine;
 
+import org.joml.Vector3d;
+import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.opengl.GL;
@@ -9,6 +11,7 @@ import java.awt.*;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
+import static engine.time.Time.getDelta;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL44.*;
 import static org.lwjgl.stb.STBImage.stbi_load;
@@ -135,8 +138,23 @@ public class Window {
         return windowHandle;
     }
 
+    private static Vector3f currentClearColor = new Vector3f();
+    private static Vector3f clearColorGoal  = new Vector3f();
+
     public static void setWindowClearColor(float r, float g, float b, float alpha){
         glClearColor(r, g, b, alpha);
+        currentClearColor = new Vector3f(r,g,b);
+        clearColorGoal = new Vector3f(r,g,b);
+    }
+
+
+    public static void setWindowClearColorGoal(float r, float g, float b, float alpha){
+        clearColorGoal = new Vector3f(r,g,b);
+    }
+
+    public static void processClearColorInterpolation(){
+        currentClearColor.lerp(clearColorGoal, (float) getDelta() * 2f);
+        glClearColor(currentClearColor.x, currentClearColor.y, currentClearColor.z,1f);
     }
 
     public static boolean isKeyPressed(int keyCode){
