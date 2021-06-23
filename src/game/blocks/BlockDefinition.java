@@ -15,10 +15,10 @@ import static game.tnt.TNTEntity.createTNT;
 public class BlockDefinition {
 
     //holds BlockDefinition data
-    private final static BlockDefinition[] blockIDs = new BlockDefinition[30];
+    private final static BlockDefinition[] blockIDs = new BlockDefinition[(byte)30];
 
     //holds the blockshape data
-    private final static BlockShape[] blockShapeMap = new BlockShape[8];
+    private final static BlockShape[] blockShapeMap = new BlockShape[(byte)8];
 
     //fixed fields for the class
     private static final byte atlasSizeX = 32;
