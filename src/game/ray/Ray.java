@@ -136,7 +136,7 @@ public class Ray {
             createParticle(new Vector3d(flooredPos.x + (Math.random()-0.5d), flooredPos.y + (Math.random()-0.5d), flooredPos.z + (Math.random()-0.5d)), new Vector3f((float)(Math.random()-0.5f) * 2f, 0f, (float)(Math.random()-0.5f) * 2f), thisBlock);
         }
     }
-    private static void rayPlaceBlock(Vector3d flooredPos, int ID) {
+    private static void rayPlaceBlock(Vector3d flooredPos, byte ID) {
         if (getIfMultiplayer()){
             sendOutNetworkBlockPlace((int) flooredPos.x, (int) flooredPos.y, (int) flooredPos.z, ID, getPlayerDir());
         } else {

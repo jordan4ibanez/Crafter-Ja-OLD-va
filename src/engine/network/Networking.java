@@ -170,7 +170,7 @@ public class Networking {
         client.sendTCP(new BlockBreakUpdate( new Vector3i(x,y,z)));
     }
 
-    public static void sendOutNetworkBlockPlace(int x, int y, int z, int ID, byte rotation){
+    public static void sendOutNetworkBlockPlace(int x, int y, int z, byte ID, byte rotation){
         client.sendTCP(new BlockPlaceUpdate(new Vector3i(x,y,z), ID, rotation));
     }
 

@@ -20,7 +20,7 @@ public class ItemDefinition {
     private final static Map<String, ItemDefinition> definitions = new HashMap<>();
 
     public final String name;
-    public int blockID;
+    public byte blockID;
 
     public final boolean isItem;
     public final ItemModifier itemModifier;
@@ -41,7 +41,7 @@ public class ItemDefinition {
     public float leafMiningLevel;
 
     //block item
-    public ItemDefinition(String name, int blockID){
+    public ItemDefinition(String name, byte blockID){
         this.name = name;
         this.blockID = blockID;
         createItemBlockMesh(blockID, this);
@@ -78,7 +78,7 @@ public class ItemDefinition {
     }
 
     //block item
-    public static void registerItem(String name, int blockID){
+    public static void registerItem(String name, byte blockID){
         definitions.put(name, new ItemDefinition(name, blockID));
     }
 

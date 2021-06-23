@@ -58,8 +58,7 @@ public class Chunk {
         ChunkObject gottenChunk = map.get(new Vector2i(x, z));
         if (gottenChunk != null) {
             gottenChunk.block = newChunk.block.clone();
-            gottenChunk.naturalLight = newChunk.naturalLight.clone();
-            gottenChunk.torchLight = newChunk.torchLight.clone();
+            gottenChunk.light = newChunk.light.clone();
             gottenChunk.heightMap = newChunk.heightMap.clone();
             gottenChunk.rotation = newChunk.rotation.clone();
         } else {
@@ -298,7 +297,7 @@ public class Chunk {
         return thisChunk.rotation[posToIndex(blockX, y, blockZ)];
     }
 
-    public static void setBlock(int x,int y,int z, int newBlock, int rot){
+    public static void setBlock(int x,int y,int z, byte newBlock, int rot){
         if (y > 127 || y < 0){
             return;
         }
@@ -351,7 +350,7 @@ public class Chunk {
         if (thisChunk.block == null){
             return;
         }
-        thisChunk.naturalLight[posToIndex(blockX, y, blockZ)] = newLight;
+        thisChunk.light[posToIndex(blockX, y, blockZ)] = setByteNaturalLight(thisChunk.light[posToIndex(blockX, y, blockZ)],newLight);
         chunkUpdate(chunkX,chunkZ,yPillar);
         updateNeighbor(chunkX, chunkZ,blockX,y,blockZ);
     }
@@ -372,7 +371,8 @@ public class Chunk {
         if (thisChunk.block == null){
             return;
         }
-        thisChunk.torchLight[posToIndex(blockX, y, blockZ)] = newLight;
+
+        thisChunk.light[posToIndex(blockX, y, blockZ)] = setByteTorchLight(thisChunk.light[posToIndex(blockX, y, blockZ)], newLight);
         chunkUpdate(chunkX,chunkZ,yPillar);
         updateNeighbor(chunkX, chunkZ,blockX,y,blockZ);
     }
@@ -407,10 +407,13 @@ public class Chunk {
                 }
             }
         }
+
         lightFloodFill(x, y, z);
         torchFloodFill(x,y,z);
+
         thisChunk.modified = true;
-        thisChunk.naturalLight[posToIndex(blockX, y, blockZ)] = getImmediateLight(x,y,z);
+
+        thisChunk.light[posToIndex(blockX, y, blockZ)] = setByteNaturalLight(thisChunk.light[posToIndex(blockX, y, blockZ)], getImmediateLight(x,y,z));
 
         if (!getIfMultiplayer()) {
             onDigCall(oldBlock, new Vector3d(x, y, z));
@@ -420,7 +423,7 @@ public class Chunk {
         instantUpdateNeighbor(chunkX, chunkZ,blockX,y,blockZ);//instant update
     }
 
-    public static void placeBlock(int x,int y,int z, int ID, int rot){
+    public static void placeBlock(int x,int y,int z, byte ID, int rot){
         if (y > 127 || y < 0){
             return;
         }
@@ -469,14 +472,14 @@ public class Chunk {
         if (thisChunk == null){
             return 0;
         }
-        if (thisChunk.naturalLight == null){
+        if (thisChunk.light == null){
             return 0;
         }
 
 
         int index = posToIndex(blockX, y, blockZ);
 
-        byte naturalLightOfBlock = thisChunk.naturalLight[index];
+        byte naturalLightOfBlock = getByteNaturalLight(thisChunk.light[index]);
 
         byte currentGlobalLightLevel = getCurrentGlobalLightLevel();
 
@@ -484,7 +487,7 @@ public class Chunk {
             naturalLightOfBlock = currentGlobalLightLevel;
         }
 
-        byte torchLight = thisChunk.torchLight[index];
+        byte torchLight = getByteTorchLight(thisChunk.light[index]);
 
         if (naturalLightOfBlock > torchLight){
             return naturalLightOfBlock;
@@ -507,11 +510,11 @@ public class Chunk {
         if (thisChunk == null){
             return 0;
         }
-        if (thisChunk.naturalLight == null){
+        if (thisChunk.light == null){
             return 0;
         }
 
-        return thisChunk.naturalLight[posToIndex(blockX, y, blockZ)];
+        return getByteNaturalLight(thisChunk.light[posToIndex(blockX, y, blockZ)]);
     }
 
     public static byte getTorchLight(int x,int y,int z){
@@ -528,15 +531,37 @@ public class Chunk {
         if (thisChunk == null){
             return 0;
         }
-        if (thisChunk.torchLight == null){
+        if (thisChunk.light == null){
             return 0;
         }
 
-
         int index = posToIndex(blockX, y, blockZ);
 
-        return thisChunk.torchLight[index];
+        return getByteTorchLight(thisChunk.light[index]);
     }
+
+
+    //Thanks a lot Lars!!
+    public static byte getByteTorchLight(byte input){
+        return (byte) (input & ((1 << 4) - 1));
+    }
+    public static byte getByteNaturalLight(byte input){
+        return (byte) (((1 << 4) - 1) & input >> 4);
+    }
+
+    public static byte setByteTorchLight(byte input, byte newValue){
+        byte naturalLight = getByteNaturalLight(input);
+        return (byte) (naturalLight << 4 | newValue);
+    }
+
+    public static byte setByteNaturalLight(byte input, byte newValue){
+        byte torchLight = getByteTorchLight(input);
+        return (byte) (newValue << 4 | torchLight);
+    }
+
+
+
+
 
     private static void instantUpdateNeighbor(int chunkX, int chunkZ, int x, int y, int z){
         if (y > 127 || y < 0){
@@ -613,7 +638,6 @@ public class Chunk {
             }
         }
     }
-
 
     public static void generateNewChunks(){
         //create the initial map in memory

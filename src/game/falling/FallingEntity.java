@@ -15,7 +15,7 @@ public class FallingEntity {
     private final static Map<Integer, FallingEntityObject> objects = new HashMap<>();
     private static int currentID = 0;
 
-    public static void addFallingEntity(Vector3d pos, Vector3f inertia, int blockID){
+    public static void addFallingEntity(Vector3d pos, Vector3f inertia, byte blockID){
         objects.put(currentID, new FallingEntityObject(pos, inertia, createItemBlockMeshReturnsMesh(blockID), currentID, blockID));
         currentID++;
     }

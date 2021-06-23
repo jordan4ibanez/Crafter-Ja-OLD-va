@@ -21,8 +21,7 @@ public class Compression {
         savingObject.z = thisChunk.z;
         savingObject.b = thisChunk.block;
         savingObject.r = thisChunk.rotation;
-        savingObject.l = thisChunk.naturalLight;
-        savingObject.t = thisChunk.torchLight;
+        savingObject.l = thisChunk.light;
         savingObject.h = thisChunk.heightMap;
 
         String stringedChunk = mapper.writeValueAsString(savingObject);
@@ -106,8 +105,7 @@ public class Compression {
         abstractedChunk.z = thisChunkLoaded.z;
         abstractedChunk.block = thisChunkLoaded.b;
         abstractedChunk.rotation = thisChunkLoaded.r;
-        abstractedChunk.naturalLight = thisChunkLoaded.l;
-        abstractedChunk.torchLight = thisChunkLoaded.t;
+        abstractedChunk.light = thisChunkLoaded.l;
         abstractedChunk.heightMap = thisChunkLoaded.h;
 
         return abstractedChunk;

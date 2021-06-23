@@ -47,8 +47,8 @@ public class ItemRegistration {
             public void onPlace(Vector3d pos) {
                 if (isWalkable(getBlock((int)pos.x,(int)pos.y - 1, (int) pos.z))) {
                     byte rot = getPlayerDir();
-                    setBlock((int) pos.x, (int) pos.y + 1, (int) pos.z, 23, rot);
-                    setBlock((int) pos.x, (int) pos.y, (int) pos.z, 24, rot);
+                    setBlock((int) pos.x, (int) pos.y + 1, (int) pos.z, (byte) 23, rot);
+                    setBlock((int) pos.x, (int) pos.y, (int) pos.z, (byte) 24, rot);
                     playSound("wood_1");
 
                     removeItemFromInventory(getCurrentInventorySelection(), 0);
