@@ -29,6 +29,7 @@ public class Ray {
         Vector3d realNewPos = new Vector3d();
         Vector3d lastPos  = new Vector3d();
         Vector3d cachePos = new Vector3d();
+        Vector3i pointedThingAbove = new Vector3i();
         int foundBlock = -1;
         MobObject[] mobs = null;
 
@@ -76,6 +77,7 @@ public class Ray {
 
                 if (foundBlock > 0 && isBlockPointable(foundBlock)) {
                     finalPos = newPos;
+                    pointedThingAbove = new Vector3i((int)Math.floor(lastPos.x), (int)Math.floor(lastPos.y), (int)Math.floor(lastPos.z));
                     break;
                 }
             }
@@ -104,7 +106,7 @@ public class Ray {
                             rayPlaceBlock(lastPos, getItemInInventorySlot(getPlayerInventorySelection(), 0).definition.blockID);
                         } else if (getItemInInventorySlot(getPlayerInventorySelection(), 0) != null && getItemInInventorySlot(getPlayerInventorySelection(), 0).definition.isItem) {
                             if (getItemModifier(getItemInInventorySlot(getPlayerInventorySelection(), 0).name) != null) {
-                                getItemModifier(getItemInInventorySlot(getPlayerInventorySelection(), 0).name).onPlace(lastPos);
+                                getItemModifier(getItemInInventorySlot(getPlayerInventorySelection(), 0).name).onPlace(new Vector3i((int) finalPos.x, (int) finalPos.y, (int) finalPos.z), pointedThingAbove);
                             }
                         } else {
                             System.out.println("test3");

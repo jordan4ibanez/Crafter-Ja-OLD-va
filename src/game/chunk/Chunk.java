@@ -297,7 +297,7 @@ public class Chunk {
         return thisChunk.rotation[posToIndex(blockX, y, blockZ)];
     }
 
-    public static void setBlock(int x,int y,int z, byte newBlock, int rot){
+    public static void setBlock(int x,int y,int z, byte newBlock, byte rot){
         if (y > 127 || y < 0){
             return;
         }
@@ -314,7 +314,7 @@ public class Chunk {
             return;
         }
         thisChunk.block[posToIndex(blockX, y, blockZ)] = newBlock;
-        thisChunk.rotation[posToIndex(blockX, y, blockZ)] = (byte)rot;
+        thisChunk.rotation[posToIndex(blockX, y, blockZ)] = rot;
         if (newBlock == 0){
             if (thisChunk.heightMap[blockX][blockZ] == y){
                 for (int yCheck = thisChunk.heightMap[blockX][blockZ]; yCheck > 0; yCheck--){
@@ -423,7 +423,7 @@ public class Chunk {
         instantUpdateNeighbor(chunkX, chunkZ,blockX,y,blockZ);//instant update
     }
 
-    public static void placeBlock(int x,int y,int z, byte ID, int rot){
+    public static void placeBlock(int x,int y,int z, byte ID, byte rot){
         if (y > 127 || y < 0){
             return;
         }
@@ -440,7 +440,7 @@ public class Chunk {
             return;
         }
         thisChunk.block[posToIndex(blockX, y, blockZ)] = ID;
-        thisChunk.rotation[posToIndex(blockX, y, blockZ)] = (byte) rot;
+        thisChunk.rotation[posToIndex(blockX, y, blockZ)] =  rot;
         if (thisChunk.heightMap[blockX][blockZ] < y){
             thisChunk.heightMap[blockX][blockZ] = (byte) y;
         }

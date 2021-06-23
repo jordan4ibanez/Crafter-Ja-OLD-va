@@ -950,7 +950,7 @@ public class BlockDefinition {
                     @Override
                     public void onDig(Vector3d pos) {
                         if (getBlock((int)pos.x, (int)pos.y - 1, (int)pos.z) == 22) {
-                            setBlock((int)pos.x, (int)pos.y - 1, (int)pos.z, (byte) 0, 0);
+                            setBlock((int)pos.x, (int)pos.y - 1, (int)pos.z, (byte) 0, (byte) 0);
                             createItem("door", pos.add(0.5d,0.5d,0.5d), 1);
                         }
                     }
@@ -997,7 +997,7 @@ public class BlockDefinition {
                     @Override
                     public void onDig(Vector3d pos) {
                         if (getBlock((int)pos.x, (int)pos.y + 1, (int)pos.z) == 21) {
-                            setBlock((int)pos.x, (int)pos.y + 1, (int)pos.z, (byte) 0, 0);
+                            setBlock((int)pos.x, (int)pos.y + 1, (int)pos.z, (byte) 0, (byte) 0);
                             createItem("door", pos.add(0.5d,0.5d,0.5d), 1);
                         }
                     }
@@ -1044,7 +1044,7 @@ public class BlockDefinition {
                     @Override
                     public void onDig(Vector3d pos) {
                         if (getBlock((int)pos.x, (int)pos.y - 1, (int)pos.z) == 24) {
-                            setBlock((int)pos.x, (int)pos.y - 1, (int)pos.z, (byte) 0, 0);
+                            setBlock((int)pos.x, (int)pos.y - 1, (int)pos.z, (byte) 0, (byte) 0);
                             createItem("door", pos.add(0.5d,0.5d,0.5d), 1);
                         }
                     }
@@ -1091,7 +1091,7 @@ public class BlockDefinition {
                     @Override
                     public void onDig(Vector3d pos) {
                         if (getBlock((int)pos.x, (int)pos.y + 1, (int)pos.z) == 23) {
-                            setBlock((int)pos.x, (int)pos.y + 1, (int)pos.z, (byte) 0, 0);
+                            setBlock((int)pos.x, (int)pos.y + 1, (int)pos.z, (byte) 0, (byte) 0);
                             createItem("door", pos.add(0.5d,0.5d,0.5d), 1);
                         }
                     }
@@ -1273,7 +1273,7 @@ public class BlockDefinition {
                 true,
                 0,
                 true,
-                null
+                "torchItem"
         );
     }
 

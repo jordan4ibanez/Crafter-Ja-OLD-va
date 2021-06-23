@@ -1,6 +1,5 @@
 package game.chunk;
 
-import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
@@ -1131,6 +1130,73 @@ public class ChunkMeshGenerator implements Runnable{
                                 Vector3f bfr = new Vector3f(largeXZ, smallY, largeXZ); //bottom front right
 
 
+                                //floor
+                                if (thisRotation == 4){
+                                    trl = new Vector3f(smallXZ, largeY, smallXZ); //top rear left
+                                    trr = new Vector3f(largeXZ, largeY, smallXZ); //top rear right
+                                    tfl = new Vector3f(smallXZ, largeY, largeXZ); //top front left
+                                    tfr = new Vector3f(largeXZ, largeY, largeXZ); //top front right
+
+                                    brl = new Vector3f(smallXZ, smallY, smallXZ); //bottom rear left
+                                    brr = new Vector3f(largeXZ, smallY, smallXZ); //bottom rear right - also cold
+                                    bfl = new Vector3f(smallXZ, smallY, largeXZ); //bottom front left
+                                    bfr = new Vector3f(largeXZ, smallY, largeXZ); //bottom front right
+                                }
+                                //+x dir
+                                else if (thisRotation == 0){
+
+                                    trl = new Vector3f(smallXZ + 0.3f, largeY - 0.025f, smallXZ); //top rear left
+                                    trr = new Vector3f(largeXZ + 0.3f, largeY + 0.025f, smallXZ); //top rear right
+                                    tfl = new Vector3f(smallXZ + 0.3f, largeY - 0.025f, largeXZ); //top front left
+                                    tfr = new Vector3f(largeXZ + 0.3f, largeY + 0.025f, largeXZ); //top front right
+
+                                    brl = new Vector3f(smallXZ + 0.5f, smallY - 0.025f, smallXZ); //bottom rear left
+                                    brr = new Vector3f(largeXZ + 0.5f, smallY + 0.025f, smallXZ); //bottom rear right - also cold
+                                    bfl = new Vector3f(smallXZ + 0.5f, smallY - 0.025f, largeXZ); //bottom front left
+                                    bfr = new Vector3f(largeXZ + 0.5f, smallY + 0.025f, largeXZ); //bottom front right
+                                }
+                                //-x dir
+                                else if (thisRotation == 1){
+
+                                    trl = new Vector3f(smallXZ - 0.3f, largeY + 0.025f, smallXZ); //top rear left
+                                    trr = new Vector3f(largeXZ - 0.3f, largeY - 0.025f, smallXZ); //top rear right
+                                    tfl = new Vector3f(smallXZ - 0.3f, largeY + 0.025f, largeXZ); //top front left
+                                    tfr = new Vector3f(largeXZ - 0.3f, largeY - 0.025f, largeXZ); //top front right
+
+                                    brl = new Vector3f(smallXZ - 0.5f, smallY + 0.025f, smallXZ); //bottom rear left
+                                    brr = new Vector3f(largeXZ - 0.5f, smallY - 0.025f, smallXZ); //bottom rear right - also cold
+                                    bfl = new Vector3f(smallXZ - 0.5f, smallY + 0.025f, largeXZ); //bottom front left
+                                    bfr = new Vector3f(largeXZ - 0.5f, smallY - 0.025f, largeXZ); //bottom front right
+                                }
+
+                                //+z dir
+                                else if (thisRotation == 2){
+
+                                    trl = new Vector3f(smallXZ, largeY - 0.025f, smallXZ + 0.3f); //top rear left
+                                    trr = new Vector3f(largeXZ, largeY - 0.025f, smallXZ + 0.3f); //top rear right
+                                    tfl = new Vector3f(smallXZ, largeY + 0.025f, largeXZ + 0.3f); //top front left
+                                    tfr = new Vector3f(largeXZ, largeY + 0.025f, largeXZ + 0.3f); //top front right
+
+                                    brl = new Vector3f(smallXZ, smallY - 0.025f, smallXZ + 0.5f); //bottom rear left
+                                    brr = new Vector3f(largeXZ, smallY - 0.025f, smallXZ + 0.5f); //bottom rear right - also cold
+                                    bfl = new Vector3f(smallXZ, smallY + 0.025f, largeXZ + 0.5f); //bottom front left
+                                    bfr = new Vector3f(largeXZ, smallY + 0.025f, largeXZ + 0.5f); //bottom front right
+                                }
+
+                                //-z dir
+                                else if (thisRotation == 3){
+
+                                    trl = new Vector3f(smallXZ, largeY + 0.025f, smallXZ - 0.3f); //top rear left
+                                    trr = new Vector3f(largeXZ, largeY + 0.025f, smallXZ - 0.3f); //top rear right
+                                    tfl = new Vector3f(smallXZ, largeY - 0.025f, largeXZ - 0.3f); //top front left
+                                    tfr = new Vector3f(largeXZ, largeY - 0.025f, largeXZ - 0.3f); //top front right
+
+                                    brl = new Vector3f(smallXZ, smallY + 0.025f, smallXZ - 0.5f); //bottom rear left
+                                    brr = new Vector3f(largeXZ, smallY + 0.025f, smallXZ - 0.5f); //bottom rear right - also cold
+                                    bfl = new Vector3f(smallXZ, smallY - 0.025f, largeXZ - 0.5f); //bottom front left
+                                    bfr = new Vector3f(largeXZ, smallY - 0.025f, largeXZ - 0.5f); //bottom front right
+                                }
+
                                 textureWorker = getFrontTexturePoints(thisBlock, thisRotation);
                                     /*
                                     0 -x
@@ -1380,7 +1446,6 @@ public class ChunkMeshGenerator implements Runnable{
                                     indices.add(3 + indicesCount);
                                     indicesCount += 4;
 
-                                    textureWorker = getLeftTexturePoints(thisBlock, thisRotation);
                                     //left
                                     textureCoord.add(sizeXHigh);
                                     textureCoord.add(sizeYLow);
