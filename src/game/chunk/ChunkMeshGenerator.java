@@ -110,6 +110,7 @@ public class ChunkMeshGenerator implements Runnable{
                     for (y = yHeight * 16; y < (yHeight + 1) * 16; y++) {
 
                         int thisBlock = blockData[posToIndex(x, y, z)];
+                        int thisBlockDrawType = getBlockDrawType(thisBlock);
                         byte thisRotation = rotationData[posToIndex(x, y, z)];
 
                         if (thisBlock > 0) {
@@ -465,7 +466,7 @@ public class ChunkMeshGenerator implements Runnable{
                                 }
                             }
                             //todo --------------------------------------- THE NORMAL DRAWTYPE (standard blocks)
-                            else if (getBlockDrawType(thisBlock) == 1) {
+                            else if (thisBlockDrawType == 1) {
 
                                 if (z + 1 > 15) {
                                     neighborBlock = getNeighborBlock(chunkNeighborZPlus, x, y, 0);
@@ -798,7 +799,7 @@ public class ChunkMeshGenerator implements Runnable{
                             }
                             //todo --------------------------------------- THE ALLFACES DRAWTYPE
 
-                            else if (getBlockDrawType(thisBlock) == 4) {
+                            else if (thisBlockDrawType == 4) {
                                 {
                                     //front
                                     allFacesPositions.add(1f + x);
@@ -1102,9 +1103,11 @@ public class ChunkMeshGenerator implements Runnable{
                                     allFacesTextureCoord.add(textureWorker[3]);
                                 }
 
-                            }
-                            //todo: ---------------------------------------------------------- the block box draw type
-                            else {
+                                //todo: -------------------------------------------- torchlike drawtype
+                            } else if (thisBlockDrawType == 7) {
+
+                                //todo: ---------------------------------------------------------- the block box draw type
+                            }else {
                                 for (double[] thisBlockBox : getBlockShape(thisBlock, thisRotation)) {
                                     // 0, 1, 2, 3, 4, 5
                                     //-x,-y,-z, x, y, z
