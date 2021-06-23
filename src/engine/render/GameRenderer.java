@@ -29,6 +29,7 @@ import static engine.settings.Settings.*;
 import static engine.time.TimeOfDay.getTimeOfDayLinear;
 import static game.chat.Chat.getCurrentMessageMesh;
 import static game.chat.Chat.getViewableChatMessages;
+import static game.clouds.Cloud.*;
 import static game.crafting.InventoryLogic.getPlayerHudRotation;
 import static game.falling.FallingEntity.getFallingEntities;
 import static game.item.ItemDefinition.getItemDefinition;
@@ -273,6 +274,24 @@ public class GameRenderer {
         //glEnable(GL_CULL_FACE);//debugging
 
         glClear(GL_DEPTH_BUFFER_BIT);
+
+        //debug render cloud
+        {
+            boolean[][] cloudData = getCloudData();
+            float cloudScale = getCloudScale();
+            Vector2i cloudPos = getCloudPos();
+            float cloudScroll = getCloudScroll();
+            for (int x = 0; x < 16; x++) {
+                for (int z = 0; z < 16; z++) {
+                    if (cloudData[x][z]) {
+                        modelViewMatrix = updateModelViewMatrix(new Vector3d((x*cloudScale) + ((cloudPos.x-8) * 16d), 130, (z*cloudScale) + ((cloudPos.y-8) * 16d) + cloudScroll), new Vector3f(0, 0, 0), viewMatrix);
+                        shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                        //getCloud2DMesh().render();
+                        getCloud3DMesh().render();
+                    }
+                }
+            }
+        }
 
         glDisable(GL_BLEND);
 

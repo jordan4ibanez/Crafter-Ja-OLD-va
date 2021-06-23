@@ -18,6 +18,7 @@ import static engine.sound.SoundAPI.playSound;
 import static game.blocks.BlockDefinition.getBlockDefinition;
 import static game.blocks.BlockDefinition.isBlockLiquid;
 import static game.chunk.Chunk.*;
+import static game.clouds.Cloud.setCloudPos;
 import static game.collision.Collision.applyInertia;
 import static game.crafting.Inventory.getItemInInventorySlot;
 import static game.crafting.Inventory.updateWieldInventory;
@@ -1057,6 +1058,7 @@ public class Player {
             currentChunk.x = newChunkX;
             currentChunk.z = newChunkZ;
             generateNewChunks();
+            setCloudPos(newChunkX,newChunkZ);
         }
     }
 

@@ -2,14 +2,11 @@ package game.chunk;
 
 import org.joml.Vector3i;
 
-//https://stackoverflow.com/a/34363187
-//ported from C++ to Java
 public class ChunkMath {
 
     //private final static int xMax = 16;
     //private final static int yMax = 128;
     //private final static int length = xMax * yMax; // 2048
-
     public static int posToIndex( int x, int y, int z ) {
         return (z * 2048) + (y * 16) + x;
     }

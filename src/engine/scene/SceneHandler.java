@@ -26,6 +26,8 @@ import static game.chat.Chat.*;
 import static game.chunk.Chunk.*;
 import static game.chunk.ChunkMeshGenerationHandler.popChunkMeshQueue;
 import static game.chunk.ChunkUpdateHandler.chunkUpdater;
+import static game.clouds.Cloud.generateCloudData;
+import static game.clouds.Cloud.makeCloudsMove;
 import static game.crafting.Inventory.generateRandomInventory;
 import static game.crafting.InventoryLogic.inventoryMenuOnTick;
 import static game.falling.FallingEntity.fallingEntityOnStep;
@@ -60,6 +62,7 @@ public class SceneHandler {
             setWindowClearColor(0.53f,0.81f,0.92f,0.f);
             calculateHealthBarElements();
             initialChunkPayload();
+            generateCloudData();
             generateRandomInventory();
         }
 
@@ -69,6 +72,7 @@ public class SceneHandler {
             if (!isMouseLocked()){
                 toggleMouseLock();
             }
+            generateCloudData();
             initialChunkPayloadMultiplayer();
         }
 
@@ -108,6 +112,7 @@ public class SceneHandler {
         calculateDelta();
         mouseInput();
         countFPS();
+        makeCloudsMove();
         popChatMessageBuffer();
         tickUpChatTimers();
         deleteOldChatMeshes();
@@ -153,9 +158,8 @@ public class SceneHandler {
 
         //indexLight();
         mouseInput();
-
         tickUpTimeOfDay();
-
+        makeCloudsMove();
         countFPS();
         updateWorldChunkLoader();
         popChunkMeshQueue(); //this actually transmits the data from the other threads into main thread
