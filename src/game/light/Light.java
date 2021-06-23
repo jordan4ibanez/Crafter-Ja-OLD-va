@@ -21,8 +21,8 @@ public class Light {
         return currentLightLevel;
     }
 
-    public static void setCurrentLightLevel(byte currentLightLevel) {
-        Light.currentLightLevel = currentLightLevel;
+    public static void setCurrentLightLevel(byte newLightLevel) {
+        currentLightLevel = newLightLevel;
         updateChunksWithNewLightLevel();
     }
 
