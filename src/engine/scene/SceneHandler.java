@@ -20,6 +20,7 @@ import static engine.render.MainMenuRenderer.renderMainMenu;
 import static engine.settings.Settings.getDebugInfo;
 import static engine.sound.SoundManager.updateListenerPosition;
 import static engine.time.Time.calculateDelta;
+import static engine.time.TimeOfDay.pollTimeOfDay;
 import static engine.time.TimeOfDay.tickUpTimeOfDay;
 import static engine.time.Timer.countFPS;
 import static game.chat.Chat.*;
@@ -114,6 +115,7 @@ public class SceneHandler {
         countFPS();
         makeCloudsMove();
         popChatMessageBuffer();
+        pollTimeOfDay(); //this needs to be in the main thread
         tickUpChatTimers();
         deleteOldChatMeshes();
         processQueuedItemsToBeAddedInMultiplayer();
@@ -159,6 +161,7 @@ public class SceneHandler {
         //indexLight();
         mouseInput();
         tickUpTimeOfDay();
+        pollTimeOfDay(); //this needs to be in the main thread
         makeCloudsMove();
         countFPS();
         updateWorldChunkLoader();

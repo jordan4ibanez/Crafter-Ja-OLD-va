@@ -44,7 +44,10 @@ public class TimeOfDay {
 
     public static void setTimeOfDay(double newTime){
         timeOfDay = newTime;
-        triggerNextStage(); //backup for multiplayer - not yet interpolated
+    }
+
+    public static void pollTimeOfDay(){
+        triggerNextStage();
     }
 
     public static void setTimeSpeed(double newSpeed){

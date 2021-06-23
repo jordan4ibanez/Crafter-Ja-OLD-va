@@ -4,6 +4,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import engine.time.Time;
 import game.chunk.ChunkObject;
 import game.crafting.InventoryObject;
 import org.joml.Vector3d;
@@ -14,6 +15,7 @@ import java.io.IOException;
 
 import static engine.compression.Compression.decompressByteArrayToChunkObject;
 import static engine.graphics.Camera.getCameraRotation;
+import static engine.time.TimeOfDay.setTimeOfDay;
 import static game.chat.Chat.addToChatMessageBuffer;
 import static game.chunk.Chunk.*;
 import static game.crafting.Inventory.getMainInventory;
@@ -78,6 +80,7 @@ public class Networking {
         kryo.register(NetworkInventory.class,110);
         kryo.register(ThrowItemUpdate.class, 111);
         kryo.register(ChatMessage.class,112);
+        kryo.register(TimeSend.class,113);
 
         //5000 = 5000ms = 5 seconds
         try {
@@ -127,8 +130,10 @@ public class Networking {
                     setPlayerPos(networkMovePositionDemand.newPos);
                 } else if (object instanceof NetChunk netChunk){
                     decodeNetChunk(netChunk);
-                } else if (object instanceof  ChatMessage message){
+                } else if (object instanceof ChatMessage message){
                     addToChatMessageBuffer(message.message);
+                } else if (object instanceof TimeSend timeSend){
+                    setTimeOfDay(timeSend.time);
                 }
 
             }
