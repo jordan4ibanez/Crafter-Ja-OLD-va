@@ -9,6 +9,7 @@ import game.crafting.InventoryObject;
 import game.falling.FallingEntityObject;
 import game.item.Item;
 import game.mob.MobObject;
+import game.particle.Particle;
 import game.particle.ParticleObject;
 import org.joml.*;
 
@@ -496,7 +497,11 @@ public class GameRenderer {
 
 
         //render particles
-        for (ParticleObject thisParticle : getAllParticles()){
+        for (Object loadedObject : getAllParticles()){
+
+            ParticleObject thisParticle = (ParticleObject) loadedObject;
+
+
             Mesh thisMesh = thisParticle.mesh;
 
             modelViewMatrix = updateParticleViewMatrix(thisParticle.pos, new Vector3f(getCameraRotation()), viewMatrix);

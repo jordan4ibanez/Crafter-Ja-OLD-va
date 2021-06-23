@@ -93,7 +93,7 @@ public class Cloud {
     //private static short cloudPosToIndex(byte x, byte z){
         //return (short) ((z * 16) + x);
     //}
-    
+
     private final static FastNoise noise = new FastNoise();
 
 

@@ -1,6 +1,7 @@
 package game.particle;
 
 import engine.graphics.Mesh;
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
@@ -12,7 +13,7 @@ import static game.chunk.ChunkMeshGenerationHandler.getTextureAtlas;
 import static game.collision.ParticleCollision.applyParticleInertia;
 
 public class Particle {
-    private final static Map<Integer, ParticleObject> particles = new HashMap<>();
+    private final static Int2ObjectArrayMap<ParticleObject> particles = new Int2ObjectArrayMap<>();
 
     private static int currentID = 0;
 
@@ -21,6 +22,7 @@ public class Particle {
         currentID++;
     }
 
+
     private static final Deque<Integer> deletionQueue = new ArrayDeque<>();
 
     public static void particlesOnStep(){
@@ -28,7 +30,6 @@ public class Particle {
         double delta = getDelta();
 
         for (ParticleObject thisParticle : particles.values()){
-
             applyParticleInertia(thisParticle.pos, thisParticle.inertia, true,true,true);
 
             thisParticle.timer += delta;
@@ -39,19 +40,23 @@ public class Particle {
         }
 
         while (!deletionQueue.isEmpty()) {
-            Integer key = deletionQueue.pop();
-            ParticleObject deletingParticle = particles.get(key);
-            if (deletingParticle != null && deletingParticle.mesh != null) {
-                deletingParticle.mesh.cleanUp(false);
-            }
 
-            particles.remove(key);
+            Integer key = deletionQueue.pop();
+
+            if (key != null) {
+                ParticleObject thisParticle = particles.get((int)key);
+
+                if (thisParticle != null && thisParticle.mesh != null) {
+                    thisParticle.mesh.cleanUp(false);
+                }
+                particles.remove((int)key);
+            }
         }
 
     }
 
-    public static Collection<ParticleObject> getAllParticles(){
-        return particles.values();
+    public static Object[] getAllParticles(){
+        return particles.values().toArray();
     }
 
     private static Mesh createParticleMesh(int blockID) {
