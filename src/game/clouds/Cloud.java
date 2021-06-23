@@ -10,6 +10,9 @@ import static game.clouds.CloudMesh.buildCloud3DMesh;
 
 public class Cloud {
 
+    //this holds the data from when the clouds are generated overhead
+    private static final boolean[][] cloudData = new boolean[16][16];
+    
     private static final Vector2i cloudPos = new Vector2i(0,0);
 
     private static int cloudOffset = 0;
@@ -64,8 +67,6 @@ public class Cloud {
         return cloud3DMesh;
     }
 
-    //this holds the data from when the clouds are generated overhead
-    private static final boolean[][] cloudData = new boolean[16][16];
 
 
     private static boolean getIfCloud(byte x, byte z){
