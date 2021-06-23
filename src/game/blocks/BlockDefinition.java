@@ -111,26 +111,27 @@ public class BlockDefinition {
     }
 
     public static void onDigCall(int ID, Vector3d pos) {
-        if(blockIDs[ID] != null){
-            if(blockIDs[ID].dropsItem){
+        BlockDefinition blockDefinition = blockIDs[ID];
+        if(blockDefinition != null){
+            if(blockDefinition.dropsItem){
                 //dropped defined item
-                if (blockIDs[ID].droppedItem != null){
-                    createItem(blockIDs[ID].droppedItem, pos.add(0.5d, 0.5d, 0.5d), 1, 2.5f);
+                if (blockDefinition.droppedItem != null){
+                    createItem(blockDefinition.droppedItem, pos.add(0.5d, 0.5d, 0.5d), 1, 2.5f);
                 }
                 //drop self
                 else {
-                    createItem(blockIDs[ID].name, pos.add(0.5d, 0.5d, 0.5d), 1, 2.5f);
+                    createItem(blockDefinition.name, pos.add(0.5d, 0.5d, 0.5d), 1, 2.5f);
                 }
             }
-            if(blockIDs[ID].blockModifier != null){
+            if(blockDefinition.blockModifier != null){
                 try {
-                    blockIDs[ID].blockModifier.onDig(pos);
+                    blockDefinition.blockModifier.onDig(pos);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-            if (!blockIDs[ID].digSound.equals("")) {
-                playSound(blockIDs[ID].digSound);
+            if (!blockDefinition.digSound.equals("")) {
+                playSound(blockDefinition.digSound);
             }
         }
     }
