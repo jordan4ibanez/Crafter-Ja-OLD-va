@@ -79,8 +79,6 @@ public class Networking {
         kryo.register(ThrowItemUpdate.class, 111);
         kryo.register(ChatMessage.class,112);
 
-
-
         //5000 = 5000ms = 5 seconds
         try {
             client.connect(5000, host, port);
@@ -96,9 +94,6 @@ public class Networking {
 
         //client event listener
         client.addListener(new Listener() {
-
-
-
 
             public void received (Connection connection, Object object) {
 

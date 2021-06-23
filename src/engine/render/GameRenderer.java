@@ -12,6 +12,7 @@ import game.item.Item;
 import game.item.ItemEntity;
 import game.mob.MobObject;
 import game.particle.ParticleObject;
+import game.player.PlayerObject;
 import org.joml.*;
 
 import java.lang.Math;
@@ -418,8 +419,11 @@ public class GameRenderer {
         }
 
         //render other players
-        for (PlayerPosObject thisOtherPlayer : getOtherPlayers()){
-            if (thisOtherPlayer == null){
+        for (Object thisObject : getOtherPlayers()){
+
+            PlayerObject thisPlayer = (PlayerObject) thisObject;
+
+            if (thisPlayer == null){
                 continue;
             }
             int offsetIndex = 0;
@@ -429,9 +433,9 @@ public class GameRenderer {
             Vector3f[] playerBodyRotation = getPlayerBodyRotations();
             for (Mesh thisMesh : playerMeshes) {
                 if (offsetIndex == 0) {
-                    modelViewMatrix = getMobMatrix(new Vector3d(thisOtherPlayer.pos), playerBodyOffsets[offsetIndex], new Vector3f(0, thisOtherPlayer.cameraRot.y, 0), new Vector3f(thisOtherPlayer.cameraRot.x + playerBodyRotation[offsetIndex].x, playerBodyRotation[offsetIndex].y, playerBodyRotation[offsetIndex].z), new Vector3d(1f, 1f, 1f), viewMatrix);
+                    modelViewMatrix = getMobMatrix(new Vector3d(thisPlayer.pos), playerBodyOffsets[offsetIndex], new Vector3f(0, thisPlayer.camRot.y, 0), new Vector3f(thisPlayer.camRot.x + playerBodyRotation[offsetIndex].x, playerBodyRotation[offsetIndex].y, playerBodyRotation[offsetIndex].z), new Vector3d(1f, 1f, 1f), viewMatrix);
                 } else {
-                    modelViewMatrix = getMobMatrix(new Vector3d(thisOtherPlayer.pos), playerBodyOffsets[offsetIndex], new Vector3f(0, thisOtherPlayer.cameraRot.y, 0), new Vector3f(playerBodyRotation[offsetIndex]), new Vector3d(1f, 1f, 1f), viewMatrix);
+                    modelViewMatrix = getMobMatrix(new Vector3d(thisPlayer.pos), playerBodyOffsets[offsetIndex], new Vector3f(0, thisPlayer.camRot.y, 0), new Vector3f(playerBodyRotation[offsetIndex]), new Vector3d(1f, 1f, 1f), viewMatrix);
                 }
                 if (graphicsMode) {
                     glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
@@ -444,10 +448,10 @@ public class GameRenderer {
 
             //finally render their name
             //this is a temporary hack to see what other people are playing
-            modelViewMatrix = updateTextIn3DSpaceViewMatrix(new Vector3d(thisOtherPlayer.pos).add(0,2.05d,0), new Vector3f(getCameraRotation()), new Vector3d(0.25d,0.25d,0.25d), viewMatrix);
+            modelViewMatrix = updateTextIn3DSpaceViewMatrix(new Vector3d(thisPlayer.pos).add(0,2.05d,0), new Vector3f(getCameraRotation()), new Vector3d(0.25d,0.25d,0.25d), viewMatrix);
 
             hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            workerMesh = createTextCentered(thisOtherPlayer.name, 1f, 1f, 1f);
+            workerMesh = createTextCentered(thisPlayer.name, 1f, 1f, 1f);
             workerMesh.render();
             workerMesh.cleanUp(false);
         }
