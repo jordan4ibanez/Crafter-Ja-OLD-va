@@ -383,7 +383,7 @@ public class CloudMesh {
         indices[4] = (2);
         indices[5] = (3);
 
-        float[] textureWorker = calculateTexture(0, 0);
+        float[] textureWorker = calculateTexture(1, 0);
         textureCoord[0] = (textureWorker[1]);
         textureCoord[1] = (textureWorker[2]);
         textureCoord[2] = (textureWorker[0]);
