@@ -7,12 +7,13 @@ import org.joml.Vector2i;
 import static engine.time.Time.getDelta;
 import static game.clouds.CloudMesh.buildCloud2DMesh;
 import static game.clouds.CloudMesh.buildCloud3DMesh;
+import static game.light.Light.getCurrentGlobalLightLevel;
 
 public class Cloud {
 
     //this holds the data from when the clouds are generated overhead
     private static final boolean[][] cloudData = new boolean[16][16];
-    
+
     private static final Vector2i cloudPos = new Vector2i(0,0);
 
     private static int cloudOffset = 0;
@@ -55,9 +56,19 @@ public class Cloud {
 
     }
 
-    private static final Mesh cloud2DMesh = buildCloud2DMesh();
+    private static Mesh cloud2DMesh = buildCloud2DMesh(getCurrentGlobalLightLevel());
+    private static Mesh cloud3DMesh = buildCloud3DMesh(getCurrentGlobalLightLevel());
 
-    private static final Mesh cloud3DMesh = buildCloud3DMesh();
+    public static void rebuildCloudMeshes(){
+        if (cloud2DMesh != null){
+            cloud2DMesh.cleanUp(false);
+        }
+        if (cloud3DMesh != null){
+            cloud3DMesh.cleanUp(false);
+        }
+        cloud2DMesh = buildCloud2DMesh(getCurrentGlobalLightLevel());
+        cloud3DMesh = buildCloud3DMesh(getCurrentGlobalLightLevel());
+    }
 
     public static Mesh getCloud2DMesh(){
         return cloud2DMesh;

@@ -27,14 +27,14 @@ public class CloudMesh {
 
 
 
-    public static Mesh buildCloud3DMesh(){
+    public static Mesh buildCloud3DMesh(float lightValue){
         final LinkedList<Float> positions = new LinkedList<>();
         final LinkedList<Float> textureCoord = new LinkedList<>();
         final LinkedList<Integer> indices = new LinkedList<>();
         final LinkedList<Float> light = new LinkedList<>();
 
         final byte maxLight = 15;
-        final float lightValue = 15;
+
         float digestedLight;
 
         float[] textureWorker;
@@ -348,11 +348,13 @@ public class CloudMesh {
         return new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, cloudTexture);
     }
 
-    public static Mesh buildCloud2DMesh() {
+    public static Mesh buildCloud2DMesh(float lightValue) {
         float[] positions = new float[12];
         float[] textureCoord = new float[8];
         int[] indices = new int[6];
         float[] light = new float[12];
+
+        final byte maxLight = 15;
 
         float width = getCloudScale();
 
@@ -372,8 +374,9 @@ public class CloudMesh {
         positions[10] = (0);
         positions[11] = (0);
 
+        float digestedLight = convertLight(lightValue / maxLight);
         for (int i = 0; i < 12; i++) {
-            light[i] = 1f;
+            light[i] = digestedLight;
         }
 
         indices[0] = (0);
