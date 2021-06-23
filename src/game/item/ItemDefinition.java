@@ -134,10 +134,10 @@ public class ItemDefinition {
                 light.add(thisLight);
             }
             //front
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
@@ -180,10 +180,10 @@ public class ItemDefinition {
                 light.add(thisLight);
             }
             //back
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
@@ -227,10 +227,10 @@ public class ItemDefinition {
                 light.add(thisLight);
             }
             //right
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
@@ -274,10 +274,10 @@ public class ItemDefinition {
                 light.add(thisLight);
             }
             //left
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
@@ -319,10 +319,10 @@ public class ItemDefinition {
                 light.add(thisLight);
             }
             //top
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
@@ -370,10 +370,10 @@ public class ItemDefinition {
                 light.add(thisLight);
             }
             //bottom
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
@@ -405,25 +405,25 @@ public class ItemDefinition {
         //convert the position objects into usable array
         float[] positionsArray = new float[positions.size()];
         for (int i = 0; i < positions.size(); i++) {
-            positionsArray[i] = (float)positions.get(i);
+            positionsArray[i] = positions.get(i);
         }
 
         //convert the light objects into usable array
         float[] lightArray = new float[light.size()];
         for (int i = 0; i < light.size(); i++) {
-            lightArray[i] = (float)light.get(i);
+            lightArray[i] = light.get(i);
         }
 
         //convert the indices objects into usable array
         int[] indicesArray = new int[indices.size()];
         for (int i = 0; i < indices.size(); i++) {
-            indicesArray[i] = (int)indices.get(i);
+            indicesArray[i] = indices.get(i);
         }
 
         //convert the textureCoord objects into usable array
         float[] textureCoordArray = new float[textureCoord.size()];
         for (int i = 0; i < textureCoord.size(); i++) {
-            textureCoordArray[i] = (float)textureCoord.get(i);
+            textureCoordArray[i] = textureCoord.get(i);
         }
 
         self.texture = getTextureAtlas();
@@ -464,13 +464,10 @@ public class ItemDefinition {
              for (int y = 0; y < 16; y++){
                  pixels[(x*16)+y] = new float[]{(float)x/16f, (float)y/16f, -0.05f, ((float)x+1f)/16f, ((float)y+1f)/16f, 0.05f};
 
+                 assert bufferboi != null;
                  int pixel = bufferboi.getRGB(x,y);
 
-                 if( (pixel>>24) == 0x00 ) {
-                     render[(x*16)+y] = false;
-                 } else {
-                     render[(x*16)+y] = true;
-                 }
+                 render[(x*16)+y] = (pixel >> 24) != 0x00;
              }
          }
 
@@ -504,10 +501,10 @@ public class ItemDefinition {
                 light.add(thisLight);
             }
             //front
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
@@ -552,10 +549,10 @@ public class ItemDefinition {
                 light.add(thisLight);
             }
             //back
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
@@ -596,10 +593,10 @@ public class ItemDefinition {
                 light.add(thisLight);
             }
             //right
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
@@ -644,10 +641,10 @@ public class ItemDefinition {
                 light.add(thisLight);
             }
             //left
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
@@ -692,10 +689,10 @@ public class ItemDefinition {
                 light.add(thisLight);
             }
             //top
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
@@ -741,10 +738,10 @@ public class ItemDefinition {
                 light.add(thisLight);
             }
             //bottom
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
@@ -775,25 +772,25 @@ public class ItemDefinition {
         //convert the position objects into usable array
         float[] positionsArray = new float[positions.size()];
         for (int i = 0; i < positions.size(); i++) {
-            positionsArray[i] = (float)positions.get(i);
+            positionsArray[i] = positions.get(i);
         }
 
         //convert the light objects into usable array
         float[] lightArray = new float[light.size()];
         for (int i = 0; i < light.size(); i++) {
-            lightArray[i] = (float)light.get(i);
+            lightArray[i] = light.get(i);
         }
 
         //convert the indices objects into usable array
         int[] indicesArray = new int[indices.size()];
         for (int i = 0; i < indices.size(); i++) {
-            indicesArray[i] = (int)indices.get(i);
+            indicesArray[i] = indices.get(i);
         }
 
         //convert the textureCoord objects into usable array
         float[] textureCoordArray = new float[textureCoord.size()];
         for (int i = 0; i < textureCoord.size(); i++) {
-            textureCoordArray[i] = (float)textureCoord.get(i);
+            textureCoordArray[i] = textureCoord.get(i);
         }
 
 
@@ -856,10 +853,10 @@ public class ItemDefinition {
                 light.add(thisLight);
             }
             //front
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
@@ -902,10 +899,10 @@ public class ItemDefinition {
                 light.add(thisLight);
             }
             //back
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
@@ -949,10 +946,10 @@ public class ItemDefinition {
                 light.add(thisLight);
             }
             //right
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
@@ -996,10 +993,10 @@ public class ItemDefinition {
                 light.add(thisLight);
             }
             //left
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
@@ -1041,10 +1038,10 @@ public class ItemDefinition {
                 light.add(thisLight);
             }
             //top
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
@@ -1092,10 +1089,10 @@ public class ItemDefinition {
                 light.add(thisLight);
             }
             //bottom
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(1 + indicesCount);
             indices.add(2 + indicesCount);
-            indices.add(0 + indicesCount);
+            indices.add(indicesCount);
             indices.add(2 + indicesCount);
             indices.add(3 + indicesCount);
             indicesCount += 4;
@@ -1127,36 +1124,28 @@ public class ItemDefinition {
         //convert the position objects into usable array
         float[] positionsArray = new float[positions.size()];
         for (int i = 0; i < positions.size(); i++) {
-            positionsArray[i] = (float)positions.get(i);
+            positionsArray[i] = positions.get(i);
         }
 
         //convert the light objects into usable array
         float[] lightArray = new float[light.size()];
         for (int i = 0; i < light.size(); i++) {
-            lightArray[i] = (float)light.get(i);
+            lightArray[i] = light.get(i);
         }
 
         //convert the indices objects into usable array
         int[] indicesArray = new int[indices.size()];
         for (int i = 0; i < indices.size(); i++) {
-            indicesArray[i] = (int)indices.get(i);
+            indicesArray[i] = indices.get(i);
         }
 
         //convert the textureCoord objects into usable array
         float[] textureCoordArray = new float[textureCoord.size()];
         for (int i = 0; i < textureCoord.size(); i++) {
-            textureCoordArray[i] = (float)textureCoord.get(i);
+            textureCoordArray[i] = textureCoord.get(i);
         }
 
 
         return new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, getTextureAtlas());
-    }
-
-    public static void cleanUp(){
-        for (ItemDefinition thisDefinition : definitions.values()){
-            //if (thisDefinition.mesh != null){
-                //thisDefinition.mesh.cleanUp(true);
-            //}
-        }
     }
 }

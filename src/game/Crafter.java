@@ -104,7 +104,6 @@ public class Crafter {
     private static void cleanup(){
         Chunk.cleanUp();
         cleanupSoundManager();
-        ItemDefinition.cleanUp();
         cleanupRenderer();
     }
 }
