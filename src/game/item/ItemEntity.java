@@ -268,8 +268,4 @@ public class ItemEntity {
             }
         }
     }
-
-    public static void clearItems(){
-        items.clear();
-    }
 }
