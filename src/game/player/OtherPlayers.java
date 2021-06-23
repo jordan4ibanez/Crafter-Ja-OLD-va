@@ -37,11 +37,15 @@ public class OtherPlayers {
         //create new PlayerObject
         if (otherPlayers.get(thisPlayerObject.ID) == null){
             PlayerObject newPlayer = new PlayerObject();
+            newPlayer.ID = thisPlayerObject.ID;
             newPlayer.name = thisPlayerObject.name;
+
             newPlayer.pos = new Vector3d(thisPlayerObject.pos);
             newPlayer.goalPos = new Vector3d(thisPlayerObject.pos);
-            newPlayer.ID = thisPlayerObject.ID;
-            newPlayer.camRot = thisPlayerObject.cameraRot;
+
+            newPlayer.camRot = new Vector3f(thisPlayerObject.cameraRot);
+            newPlayer.goalCamRot = new Vector3f(thisPlayerObject.cameraRot);
+
             otherPlayers.put(thisPlayerObject.ID, newPlayer);
         //get and expose data to new player data
         } else {
