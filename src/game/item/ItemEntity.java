@@ -1,6 +1,7 @@
 package game.item;
 
 import engine.network.ItemSendingObject;
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
@@ -18,7 +19,7 @@ import static game.player.Player.getPlayerPos;
 import static game.player.Player.getPlayerPosWithCollectionHeight;
 
 public class ItemEntity {
-    private final static Map<Integer, Item> items = new HashMap<>();
+    private final static Int2ObjectArrayMap<Item> items = new Int2ObjectArrayMap<>();
 
     private final static float itemCollisionWidth = 0.2f;
 
@@ -42,8 +43,8 @@ public class ItemEntity {
         items.put(getCurrentID(), new Item(name, pos, inertia, stack, life));
     }
 
-    public static Collection<Item> getAllItems() {
-        return items.values();
+    public static Object[] getAllItems() {
+        return items.values().toArray();
     }
 
 

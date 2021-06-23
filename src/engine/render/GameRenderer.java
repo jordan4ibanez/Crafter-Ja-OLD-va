@@ -1,15 +1,16 @@
 package engine.render;
 
 import engine.Utils;
-import engine.graphics.*;
+import engine.graphics.Mesh;
+import engine.graphics.ShaderProgram;
 import engine.gui.GUIObject;
 import engine.network.PlayerPosObject;
 import game.chunk.ChunkObject;
 import game.crafting.InventoryObject;
 import game.falling.FallingEntityObject;
 import game.item.Item;
+import game.item.ItemEntity;
 import game.mob.MobObject;
-import game.particle.Particle;
 import game.particle.ParticleObject;
 import org.joml.*;
 
@@ -19,10 +20,10 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static engine.FancyMath.getDistance;
 import static engine.MouseInput.getMousePos;
+import static engine.Window.*;
 import static engine.debug.CheckRuntimeInfo.getRuntimeInfoText;
 import static engine.graphics.Camera.*;
 import static engine.graphics.Transformation.*;
-import static engine.graphics.Transformation.buildOrthoProjModelMatrix;
 import static engine.gui.GUI.*;
 import static engine.gui.GUILogic.*;
 import static engine.gui.TextHandling.*;
@@ -30,21 +31,20 @@ import static engine.settings.Settings.*;
 import static engine.time.TimeOfDay.getTimeOfDayLinear;
 import static game.chat.Chat.getCurrentMessageMesh;
 import static game.chat.Chat.getViewableChatMessages;
+import static game.chunk.Chunk.getMap;
 import static game.clouds.Cloud.*;
+import static game.crafting.Inventory.*;
 import static game.crafting.InventoryLogic.getPlayerHudRotation;
 import static game.falling.FallingEntity.getFallingEntities;
 import static game.item.ItemDefinition.getItemDefinition;
-import static game.item.ItemEntity.*;
+import static game.item.ItemEntity.getAllItems;
 import static game.mob.Human.getHumanBodyOffsets;
 import static game.mob.Human.getHumanMeshes;
 import static game.mob.Mob.getAllMobs;
 import static game.particle.Particle.getAllParticles;
 import static game.player.OtherPlayers.getOtherPlayers;
-import static game.tnt.TNTEntity.*;
-import static engine.Window.*;
-import static game.chunk.Chunk.*;
-import static game.crafting.Inventory.*;
 import static game.player.Player.*;
+import static game.tnt.TNTEntity.*;
 import static org.lwjgl.opengl.GL44.*;
 import static org.lwjgl.opengl.GL44C.GL_BLEND;
 import static org.lwjgl.opengl.GL44C.glDisable;
@@ -54,8 +54,6 @@ public class GameRenderer {
     private static final float FOV = (float) Math.toRadians(72.0f); //todo: make this a calculator method ala calculateFOV(float);
 
     private static final float Z_NEAR = 0.1f;
-
-    private static final float Z_FAR = 1000.f;
 
     private static float windowScale = 0f;
 
@@ -362,7 +360,8 @@ public class GameRenderer {
         }
 
         //        render each item entity
-        for (Item thisItem : getAllItems()){
+        for (Object thisObject : getAllItems()){
+            Item thisItem = (Item) thisObject;
             modelViewMatrix = updateModelViewMatrix(new Vector3d(thisItem.pos).add(0,thisItem.hover,0), thisItem.rotation, viewMatrix);
             if (graphicsMode) {
                 glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
@@ -463,14 +462,13 @@ public class GameRenderer {
             Vector3d pos = getPlayerPos();
             int offsetIndex = 0;
             for (Mesh thisMesh : playerMeshes) {
+                float headRot = 0; //pitch
                 if (getCameraPerspective() == 1) {
-                    float headRot = 0; //pitch
                     if (offsetIndex == 0){
                         headRot = getCameraRotation().x;
                     }
                     modelViewMatrix = getMobMatrix(new Vector3d(pos), playerBodyOffsets[offsetIndex], new Vector3f(0, getCameraRotation().y, 0), new Vector3f(headRot + playerBodyRotation[offsetIndex].x,playerBodyRotation[offsetIndex].y,playerBodyRotation[offsetIndex].z), new Vector3d(1f, 1f, 1f), viewMatrix);
                 } else {
-                    float headRot = 0; //pitch
                     if (offsetIndex == 0){
                         headRot = getCameraRotation().x * -1f;
                     }
