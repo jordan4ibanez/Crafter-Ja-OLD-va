@@ -4,7 +4,6 @@ import engine.sound.SoundListener;
 import game.chunk.BiomeGenerator;
 import game.chunk.Chunk;
 import game.chunk.ChunkMeshGenerator;
-import game.item.ItemDefinition;
 import org.joml.Vector3d;
 import org.lwjgl.openal.AL11;
 
@@ -34,7 +33,7 @@ import static game.tnt.TNTEntity.createTNTEntityMesh;
 public class Crafter {
 
     //fields
-    private static final String versionName = "Crafter 0.04c Survival Test";
+    private static final String versionName = "Crafter 0.05a Survival Test";
 
     public static String getVersionName(){
         return versionName;
