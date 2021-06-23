@@ -1070,6 +1070,7 @@ public class Player {
             currentChunk.x = newChunkX;
             currentChunk.z = newChunkZ;
             requestNewChunks();
+            setCloudPos(newChunkX,newChunkZ);
         }
     }
 

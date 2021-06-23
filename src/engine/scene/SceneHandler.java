@@ -62,8 +62,8 @@ public class SceneHandler {
             setWindowClearColor(0.53f,0.81f,0.92f,0.f);
             calculateHealthBarElements();
             initialChunkPayload();
-            generateCloudData();
             generateRandomInventory();
+            generateCloudData();
         }
 
         if (newScene == 3){
@@ -72,8 +72,8 @@ public class SceneHandler {
             if (!isMouseLocked()){
                 toggleMouseLock();
             }
-            generateCloudData();
             initialChunkPayloadMultiplayer();
+            generateCloudData();
         }
 
         currentScene = newScene;
