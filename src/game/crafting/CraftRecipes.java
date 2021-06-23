@@ -102,7 +102,7 @@ public class CraftRecipes {
                 {"coal"},
                 {"stick"}
         };
-        generateRecipe(torch, "torch", 4);
+        generateRecipe(torch, "torchItem", 4);
 
         finalizeRecipes();
     }
