@@ -54,6 +54,8 @@ public class GameRenderer {
 
     private static final float Z_NEAR = 0.1f;
 
+    private static final float Z_FAR = 1000.f;
+
     private static float windowScale = 0f;
 
     private static final Vector2d windowSize = new Vector2d();
@@ -174,7 +176,7 @@ public class GameRenderer {
         int renderDistance = getRenderDistance();
 
         //update projection matrix
-        Matrix4d projectionMatrix = getProjectionMatrix(FOV + getRunningFOVAdder(), getWindowWidth(), getWindowHeight(), Z_NEAR, (renderDistance + 1) * 16f);
+        Matrix4d projectionMatrix = getProjectionMatrix(FOV + getRunningFOVAdder(), getWindowWidth(), getWindowHeight(), Z_NEAR, (renderDistance * 2) * 16f);
         //update the view matrix
         Matrix4d viewMatrix = getViewMatrix();
 
@@ -281,13 +283,26 @@ public class GameRenderer {
             float cloudScale = getCloudScale();
             Vector2i cloudPos = getCloudPos();
             float cloudScroll = getCloudScroll();
-            for (int x = 0; x < 16; x++) {
-                for (int z = 0; z < 16; z++) {
-                    if (cloudData[x][z]) {
-                        modelViewMatrix = updateModelViewMatrix(new Vector3d((x*cloudScale) + ((cloudPos.x-8) * 16d), 130, (z*cloudScale) + ((cloudPos.y-8) * 16d) + cloudScroll), new Vector3f(0, 0, 0), viewMatrix);
-                        shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                        //getCloud2DMesh().render();
-                        getCloud3DMesh().render();
+            if (graphicsMode) {
+                for (int x = 0; x < 16; x++) {
+                    for (int z = 0; z < 16; z++) {
+                        if (cloudData[x][z]) {
+                            modelViewMatrix = updateModelViewMatrix(new Vector3d((x * cloudScale) + ((cloudPos.x - 8) * 16d), 130, (z * cloudScale) + ((cloudPos.y - 8) * 16d) + cloudScroll), new Vector3f(0, 0, 0), viewMatrix);
+                            shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                            //getCloud2DMesh().render();
+                            getCloud3DMesh().render();
+                        }
+                    }
+                }
+            } else {
+                for (int x = 0; x < 16; x++) {
+                    for (int z = 0; z < 16; z++) {
+                        if (cloudData[x][z]) {
+                            modelViewMatrix = updateModelViewMatrix(new Vector3d((x * cloudScale) + ((cloudPos.x - 8) * 16d), 130, (z * cloudScale) + ((cloudPos.y - 8) * 16d) + cloudScroll), new Vector3f(0, 0, 0), viewMatrix);
+                            shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                            //getCloud2DMesh().render();
+                            getCloud2DMesh().render();
+                        }
                     }
                 }
             }

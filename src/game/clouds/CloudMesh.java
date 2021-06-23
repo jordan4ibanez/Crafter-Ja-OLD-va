@@ -360,17 +360,17 @@ public class CloudMesh {
         positions[1] = (0);
         positions[2] = (width);
 
-        positions[3] = (-width);
+        positions[3] = (0);
         positions[4] = (0);
         positions[5] = (width);
 
-        positions[6] = (-width);
+        positions[6] = (0);
         positions[7] = (0);
-        positions[8] = (-width);
+        positions[8] = (0);
 
         positions[9] = (width);
         positions[10] = (0);
-        positions[11] = (-width);
+        positions[11] = (0);
 
         for (int i = 0; i < 12; i++) {
             light[i] = 1f;
@@ -383,14 +383,15 @@ public class CloudMesh {
         indices[4] = (2);
         indices[5] = (3);
 
-        textureCoord[0] = (1f);
-        textureCoord[1] = (0f);
-        textureCoord[2] = (0f);
-        textureCoord[3] = (0f);
-        textureCoord[4] = (0f);
-        textureCoord[5] = (1f);
-        textureCoord[6] = (1f);
-        textureCoord[7] = (1f);
+        float[] textureWorker = calculateTexture(0, 0);
+        textureCoord[0] = (textureWorker[1]);
+        textureCoord[1] = (textureWorker[2]);
+        textureCoord[2] = (textureWorker[0]);
+        textureCoord[3] = (textureWorker[2]);
+        textureCoord[4] = (textureWorker[0]);
+        textureCoord[5] = (textureWorker[3]);
+        textureCoord[6] = (textureWorker[1]);
+        textureCoord[7] = (textureWorker[3]);
 
         return new Mesh(positions, light, indices, textureCoord, cloudTexture);
     }

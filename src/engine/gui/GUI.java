@@ -1737,12 +1737,15 @@ public class GUI {
         positions[0] = (width*2f);
         positions[1] = (height);
         positions[2] = (0f);
+
         positions[3] = (0);
         positions[4] = (height);
         positions[5] = (0f);
+
         positions[6] = (0);
         positions[7] = (-height);
         positions[8] = (0f);
+
         positions[9] = (width*2f);
         positions[10] = (-height);
         positions[11] = (0f);
