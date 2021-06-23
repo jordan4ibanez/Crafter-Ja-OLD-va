@@ -1515,19 +1515,19 @@ public class ChunkMeshGenerator implements Runnable{
                                     //y is constant
                                     //bottom
                                     positions.add(brl.x + x);
-                                    positions.add(0f + y);
+                                    positions.add(brl.y + y);
                                     positions.add(brl.z + z);
 
                                     positions.add(brr.x + x);
-                                    positions.add(0f + y);
+                                    positions.add(brr.y + y);
                                     positions.add(brr.z + z);
 
                                     positions.add(bfr.x + x);
-                                    positions.add(0f + y);
+                                    positions.add(bfr.y + y);
                                     positions.add(bfr.z + z);
 
                                     positions.add(bfl.x + x);
-                                    positions.add(0f + y);
+                                    positions.add(bfl.y + y);
                                     positions.add(bfl.z + z);
 
                                     //bottom
