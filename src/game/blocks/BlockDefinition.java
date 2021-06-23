@@ -137,16 +137,18 @@ public class BlockDefinition {
     }
 
     public static void onPlaceCall(int ID, Vector3d pos) {
-        if(blockIDs[ID] != null && blockIDs[ID].blockModifier != null) {
-            try {
-                blockIDs[ID].blockModifier.onPlace(pos);
-            } catch (Exception e) {
-                e.printStackTrace();
+        BlockDefinition blockDefinition = blockIDs[ID];
+        if (blockDefinition != null) {
+            if (blockDefinition.blockModifier != null){
+                try {
+                    blockDefinition.blockModifier.onPlace(pos);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-        }
-
-        if (!blockIDs[ID].placeSound.equals("")) {
-            playSound(blockIDs[ID].placeSound);
+            if (!blockDefinition.placeSound.equals("")) {
+                playSound(blockDefinition.placeSound);
+            }
         }
     }
 
