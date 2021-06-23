@@ -255,7 +255,7 @@ public class BlockDefinition {
             }
         }
 
-        return newBoxes/*blockShapeMap.get(blockIDs[ID].drawType).getBoxes()*/;
+        return newBoxes;
     }
 
     public static boolean isWalkable(int ID){
