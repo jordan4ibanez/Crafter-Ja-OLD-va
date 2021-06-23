@@ -101,11 +101,7 @@ public class Cloud {
     public static void generateCloudData(){
         for (byte x = 0; x < 16; x++){
             for (byte z = 0; z < 16; z++){
-                if (noise.GetWhiteNoise(x + cloudPos.x,z + cloudPos.y + cloudOffset) > 0.6f){
-                    cloudData[x][z] = true;
-                } else {
-                    cloudData[x][z] = false;
-                }
+                cloudData[x][z] = noise.GetWhiteNoise(x + cloudPos.x, z + cloudPos.y + cloudOffset) > 0.6f;
             }
         }
     }
