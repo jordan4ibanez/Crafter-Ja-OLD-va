@@ -24,6 +24,14 @@ public class BlockDefinition {
     private static final byte atlasSizeX = 32;
     private static final byte atlasSizeY = 32;
 
+    public static byte getAtlasSizeX(){
+        return atlasSizeX;
+    }
+
+    public static byte getAtlasSizeY(){
+        return atlasSizeY;
+    }
+
     //actual block object fields
     public byte     ID;
     public String  name;

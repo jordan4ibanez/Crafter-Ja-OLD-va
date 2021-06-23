@@ -1,5 +1,7 @@
 package game.chunk;
 
+import org.joml.Vector3d;
+import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 import java.util.ArrayDeque;
@@ -1103,7 +1105,398 @@ public class ChunkMeshGenerator implements Runnable{
                                 }
 
                                 //todo: -------------------------------------------- torchlike drawtype
-                            } else if (thisBlockDrawType == 7) {
+                            }
+
+                            //TODO: ------------------------------------- TORCHLIKE DRAWTYPE
+                            else if (thisBlockDrawType == 7) {
+
+
+                                //require 0.125 width
+                                float largeXZ = 0.5625f; //large
+                                float smallXZ = 0.4375f; //small
+
+                                float largeY = 0.625f;
+                                float smallY = 0.0f;
+
+                                float textXAdder = 0.1f;
+
+                                Vector3f trl = new Vector3f(smallXZ, largeY, smallXZ); //top rear left
+                                Vector3f trr = new Vector3f(largeXZ, largeY, smallXZ); //top rear right
+                                Vector3f tfl = new Vector3f(smallXZ, largeY, largeXZ); //top front left
+                                Vector3f tfr = new Vector3f(largeXZ, largeY, largeXZ); //top front right
+
+                                Vector3f brl = new Vector3f(smallXZ, smallY, smallXZ); //bottom rear left
+                                Vector3f brr = new Vector3f(largeXZ, smallY, smallXZ); //bottom rear right - also cold
+                                Vector3f bfl = new Vector3f(smallXZ, smallY, largeXZ); //bottom front left
+                                Vector3f bfr = new Vector3f(largeXZ, smallY, largeXZ); //bottom front right
+
+
+                                textureWorker = getFrontTexturePoints(thisBlock, thisRotation);
+                                    /*
+                                    0 -x
+                                    1 +x
+
+                                    2 -y
+                                    3 +y
+                                     */
+
+
+                                //assume 16 pixels wide
+                                float sizeXLow  = textureWorker[0] + ((1f / 32f / 16f) * 7f);
+                                float sizeXHigh = textureWorker[0] + ((1f / 32f / 16f) * 9f); //duplicates to work from same coordinate (it's easier for me this way)
+                                float sizeYLow  = textureWorker[2] + ((1f / 32f / 16f) * 6f);
+                                float sizeYHigh = textureWorker[2] + ((1f / 32f / 16f) * 16f);
+
+                                float topSizeXLow = textureWorker[0] + ((1f / 32f / 16f) * 7f);
+                                float topSizeXHigh = textureWorker[0] + ((1f / 32f / 16f) * 9f);
+                                float topSizeYLow = textureWorker[2] + ((1f / 32f / 16f) * 4f);
+                                float topSizeYHigh = textureWorker[2] + ((1f / 32f / 16f) * 6f);
+
+                                float bottomSizeXLow = textureWorker[0] + ((1f / 32f / 16f) * 7f);
+                                float bottomSizeXHigh = textureWorker[0] + ((1f / 32f / 16f) * 9f);
+                                float bottomSizeYLow = textureWorker[2] + ((1f / 32f / 16f) * 2f);
+                                float bottomSizeYHigh = textureWorker[2] + ((1f / 32f / 16f) * 4f);
+
+
+                                //this is pulled out of normal
+
+                                //thisRotation
+                                //front
+                                {
+                                    //z is the constant
+                                    //front
+
+                                    positions.add(tfr.x + x);
+                                    positions.add(tfr.y + y);
+                                    positions.add(tfr.z + z);
+
+                                    positions.add(tfl.x + x);
+                                    positions.add(tfl.y + y);
+                                    positions.add(tfl.z + z);
+
+                                    positions.add(bfl.x + x);
+                                    positions.add(bfl.y + y);
+                                    positions.add(bfl.z + z);
+
+                                    positions.add(bfr.x + x);
+                                    positions.add(bfr.y + y);
+                                    positions.add(bfr.z + z);
+
+                                    //front
+                                    if (z + 1 > 15) {
+                                        lightValue = getNeighborLight(chunkNeighborZPlus, x, y,0);
+                                    } else {
+                                        lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z + 1)]);
+                                    }
+
+                                    lightValue = convertLight(lightValue / maxLight);
+
+                                    //front
+                                    for (int i = 0; i < 12; i++) {
+                                        light.add(lightValue);
+                                    }
+
+                                    //front
+                                    indices.add(indicesCount);
+                                    indices.add(1 + indicesCount);
+                                    indices.add(2 + indicesCount);
+                                    indices.add(indicesCount);
+                                    indices.add(2 + indicesCount);
+                                    indices.add(3 + indicesCount);
+                                    indicesCount += 4;
+
+
+
+
+                                    //front
+                                    textureCoord.add(sizeXHigh);
+                                    textureCoord.add(sizeYLow);
+                                    textureCoord.add(sizeXLow);
+                                    textureCoord.add(sizeYLow);
+                                    textureCoord.add(sizeXLow);
+                                    textureCoord.add(sizeYHigh);
+                                    textureCoord.add(sizeXHigh);
+                                    textureCoord.add(sizeYHigh);
+                                }
+
+
+
+                                //back
+                                {
+                                    //z is the constant
+                                    //back
+                                    positions.add(trl.x + x);
+                                    positions.add(trl.y + y);
+                                    positions.add(trl.z + z);
+
+                                    positions.add(trr.x + x);
+                                    positions.add(trr.y + y);
+                                    positions.add(trr.z + z);
+
+                                    positions.add(brr.x + x);
+                                    positions.add(brr.y + y);
+                                    positions.add(brr.z + z);
+
+                                    positions.add(brl.x + x);
+                                    positions.add(brl.y + y);
+                                    positions.add(brl.z + z);
+
+                                    //back
+
+                                    if (z - 1 < 0) {
+                                        lightValue = getNeighborLight(chunkNeighborZMinus, x, y,15);
+                                    } else {
+                                        lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z - 1)]);
+                                    }
+
+                                    lightValue = convertLight(lightValue / maxLight);
+                                    //back
+                                    for (int i = 0; i < 12; i++) {
+                                        light.add(lightValue);
+                                    }
+
+                                    //back
+                                    indices.add(indicesCount);
+                                    indices.add(1 + indicesCount);
+                                    indices.add(2 + indicesCount);
+                                    indices.add(indicesCount);
+                                    indices.add(2 + indicesCount);
+                                    indices.add(3 + indicesCount);
+                                    indicesCount += 4;
+
+
+                                    /*
+                                    0 -x
+                                    1 +x
+
+                                    2 -y
+                                    3 +y
+                                     */
+
+                                    //back
+                                    textureCoord.add(sizeXHigh);
+                                    textureCoord.add(sizeYLow);
+                                    textureCoord.add(sizeXLow);
+                                    textureCoord.add(sizeYLow);
+                                    textureCoord.add(sizeXLow);
+                                    textureCoord.add(sizeYHigh);
+                                    textureCoord.add(sizeXHigh);
+                                    textureCoord.add(sizeYHigh);
+                                }
+
+
+                                {
+                                    //x is the constant
+                                    //right
+                                    positions.add(trr.x + x);
+                                    positions.add(trr.y + y);
+                                    positions.add(trr.z + z);
+
+                                    positions.add(tfr.x + x);
+                                    positions.add(tfr.y + y);
+                                    positions.add(tfr.z + z);
+
+                                    positions.add(bfr.x + x);
+                                    positions.add(bfr.y + y);
+                                    positions.add(bfr.z + z);
+
+                                    positions.add(brr.x + x);
+                                    positions.add(brr.y + y);
+                                    positions.add(brr.z + z);
+
+                                    //right
+
+                                    if (x + 1 > 15) {
+                                        lightValue = getNeighborLight(chunkNeighborXPlus, 0, y, z);
+                                    } else {
+                                        lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x + 1, y, z)]);
+                                    }
+
+                                    lightValue = convertLight(lightValue / maxLight);
+                                    //right
+                                    for (int i = 0; i < 12; i++) {
+                                        light.add(lightValue);
+                                    }
+
+                                    //right
+                                    indices.add(indicesCount);
+                                    indices.add(1 + indicesCount);
+                                    indices.add(2 + indicesCount);
+                                    indices.add(indicesCount);
+                                    indices.add(2 + indicesCount);
+                                    indices.add(3 + indicesCount);
+                                    indicesCount += 4;
+
+                                    //right
+                                    textureCoord.add(sizeXHigh);
+                                    textureCoord.add(sizeYLow);
+                                    textureCoord.add(sizeXLow);
+                                    textureCoord.add(sizeYLow);
+                                    textureCoord.add(sizeXLow);
+                                    textureCoord.add(sizeYHigh);
+                                    textureCoord.add(sizeXHigh);
+                                    textureCoord.add(sizeYHigh);
+                                }
+
+
+                                {
+                                    //x is the constant
+                                    //left
+                                    positions.add(tfl.x + x);
+                                    positions.add(tfl.y + y);
+                                    positions.add(tfl.z + z);
+
+                                    positions.add(trl.x + x);
+                                    positions.add(trl.y + y);
+                                    positions.add(trl.z + z);
+
+                                    positions.add(brl.x + x);
+                                    positions.add(brl.y + y);
+                                    positions.add(brl.z + z);
+
+                                    positions.add(bfl.x + x);
+                                    positions.add(bfl.y + y);
+                                    positions.add(bfl.z + z);
+
+                                    //left
+                                    if (x - 1 < 0) {
+                                        lightValue = getNeighborLight(chunkNeighborXMinus, 15, y, z);
+                                    } else {
+                                        lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x - 1, y, z)]);
+                                    }
+
+                                    lightValue = convertLight(lightValue / maxLight);
+                                    //left
+                                    for (int i = 0; i < 12; i++) {
+                                        light.add(lightValue);
+                                    }
+
+                                    //left
+                                    indices.add(indicesCount);
+                                    indices.add(1 + indicesCount);
+                                    indices.add(2 + indicesCount);
+                                    indices.add(indicesCount);
+                                    indices.add(2 + indicesCount);
+                                    indices.add(3 + indicesCount);
+                                    indicesCount += 4;
+
+                                    textureWorker = getLeftTexturePoints(thisBlock, thisRotation);
+                                    //left
+                                    textureCoord.add(sizeXHigh);
+                                    textureCoord.add(sizeYLow);
+                                    textureCoord.add(sizeXLow);
+                                    textureCoord.add(sizeYLow);
+                                    textureCoord.add(sizeXLow);
+                                    textureCoord.add(sizeYHigh);
+                                    textureCoord.add(sizeXHigh);
+                                    textureCoord.add(sizeYHigh);
+                                }
+
+                                {
+                                    //y is constant
+                                    //top
+                                    positions.add(trl.x + x);
+                                    positions.add(trl.y + y);
+                                    positions.add(trl.z + z);
+
+                                    positions.add(tfl.x + x);
+                                    positions.add(tfl.y + y);
+                                    positions.add(tfl.z + z);
+
+                                    positions.add(tfr.x + x);
+                                    positions.add(tfr.y + y);
+                                    positions.add(tfr.z + z);
+
+                                    positions.add(trr.x + x);
+                                    positions.add(trr.y + y);
+                                    positions.add(trr.z + z);
+
+                                    //top
+                                    if (y + 1 < 128) {
+                                        lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y + 1, z)]);
+                                    } else {
+                                        lightValue = maxLight;
+                                    }
+
+                                    lightValue = convertLight(lightValue / maxLight);
+
+                                    //top
+                                    for (int i = 0; i < 12; i++) {
+                                        light.add(lightValue);
+                                    }
+
+                                    //top
+                                    indices.add(indicesCount);
+                                    indices.add(1 + indicesCount);
+                                    indices.add(2 + indicesCount);
+                                    indices.add(indicesCount);
+                                    indices.add(2 + indicesCount);
+                                    indices.add(3 + indicesCount);
+                                    indicesCount += 4;
+
+                                    //top
+                                    textureCoord.add(topSizeXHigh);
+                                    textureCoord.add(topSizeYLow);
+                                    textureCoord.add(topSizeXLow);
+                                    textureCoord.add(topSizeYLow);
+                                    textureCoord.add(topSizeXLow);
+                                    textureCoord.add(topSizeYHigh);
+                                    textureCoord.add(topSizeXHigh);
+                                    textureCoord.add(topSizeYHigh);
+                                }
+
+
+                                {
+                                    //y is constant
+                                    //bottom
+                                    positions.add(brl.x + x);
+                                    positions.add(0f + y);
+                                    positions.add(brl.z + z);
+
+                                    positions.add(brr.x + x);
+                                    positions.add(0f + y);
+                                    positions.add(brr.z + z);
+
+                                    positions.add(bfr.x + x);
+                                    positions.add(0f + y);
+                                    positions.add(bfr.z + z);
+
+                                    positions.add(bfl.x + x);
+                                    positions.add(0f + y);
+                                    positions.add(bfl.z + z);
+
+                                    //bottom
+                                    if (y - 1 > 0) {
+                                        lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y - 1, z)]);
+                                    } else {
+                                        lightValue = 0;
+                                    }
+
+                                    lightValue = convertLight(lightValue / maxLight);
+                                    //bottom
+                                    for (int i = 0; i < 12; i++) {
+                                        light.add(lightValue);
+                                    }
+
+                                    //bottom
+                                    indices.add(indicesCount);
+                                    indices.add(1 + indicesCount);
+                                    indices.add(2 + indicesCount);
+                                    indices.add(indicesCount);
+                                    indices.add(2 + indicesCount);
+                                    indices.add(3 + indicesCount);
+                                    indicesCount += 4;
+
+                                    //bottom
+                                    textureCoord.add(bottomSizeXHigh);
+                                    textureCoord.add(bottomSizeYLow);
+                                    textureCoord.add(bottomSizeXLow);
+                                    textureCoord.add(bottomSizeYLow);
+                                    textureCoord.add(bottomSizeXLow);
+                                    textureCoord.add(bottomSizeYHigh);
+                                    textureCoord.add(bottomSizeXHigh);
+                                    textureCoord.add(bottomSizeYHigh);
+                                }
 
                                 //todo: ---------------------------------------------------------- the block box draw type
                             }else {
