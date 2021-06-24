@@ -36,7 +36,7 @@ public class ChunkMeshGenerationHandler {
         return textureAtlas;
     }
 
-    private static final float goalTimer = 0.0001f;
+    private static final float goalTimer = 0.00025f;
 
     private static float chunkUpdateTimer = 0;
 
@@ -71,6 +71,7 @@ public class ChunkMeshGenerationHandler {
                     } else {
                         setChunkLiquidMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, null);
                     }
+                     */
 
                     if (!newChunkMeshData.allFacesMeshIsNull) {
                         setChunkAllFacesMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, new Mesh(newChunkMeshData.allFacesPositionsArray, newChunkMeshData.allFacesLightArray, newChunkMeshData.allFacesIndicesArray, newChunkMeshData.allFacesTextureCoordArray, textureAtlas));
@@ -78,7 +79,7 @@ public class ChunkMeshGenerationHandler {
                         setChunkAllFacesMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, null);
                     }
 
-                     */
+
                 }
             } else {
                 return;
