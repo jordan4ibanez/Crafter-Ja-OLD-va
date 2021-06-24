@@ -2,8 +2,6 @@ package game.chunk;
 
 import game.blocks.BlockDefinition;
 import game.blocks.BlockShape;
-import it.unimi.dsi.fastutil.ints.Int2FloatLinkedOpenHashMap;
-import it.unimi.dsi.fastutil.ints.Int2IntLinkedOpenHashMap;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
@@ -17,7 +15,6 @@ import static game.light.Light.getCurrentGlobalLightLevel;
 public class ChunkMeshGenerator implements Runnable{
     //DO NOT CHANGE THE DATA CONTAINER
     private static final ConcurrentLinkedDeque<Vector3i> generationQueue = new ConcurrentLinkedDeque<>();
-
 
     //holds BlockDefinition data - on this thread
     private static BlockDefinition[] blockIDs;
@@ -56,7 +53,7 @@ public class ChunkMeshGenerator implements Runnable{
     private static void pollQueue(){
         if (!generationQueue.isEmpty()) {
 
-            //long startTime = System.nanoTime();
+            long startTime = System.nanoTime();
 
             Vector3i updateRawData;
             try {
@@ -113,43 +110,30 @@ public class ChunkMeshGenerator implements Runnable{
 
 
 
-            //thank you FastUtil for existing
-
             //normal block mesh data
-            final Int2FloatLinkedOpenHashMap positions    = new Int2FloatLinkedOpenHashMap();
-            int positionsCounter                          = 0;
-            final Int2FloatLinkedOpenHashMap textureCoord = new Int2FloatLinkedOpenHashMap();
-            int textureCoordCounter                       = 0;
-            final Int2IntLinkedOpenHashMap indices        = new Int2IntLinkedOpenHashMap();
-            int indicesCounter                            = 0;
-            final Int2FloatLinkedOpenHashMap light        = new Int2FloatLinkedOpenHashMap();
-            int lightCounter                              = 0;
+
+            final HyperFloatArray positions    = new HyperFloatArray();
+            final HyperFloatArray textureCoord = new HyperFloatArray();
+            final HyperIntArray indices        = new HyperIntArray();
+            final HyperFloatArray light        = new HyperFloatArray();
 
             int indicesCount = 0;
 
             //liquid block mesh data
 
-            final Int2FloatLinkedOpenHashMap liquidPositions    = new Int2FloatLinkedOpenHashMap();
-            int liquidPositionsCounter                          = 0;
-            final Int2FloatLinkedOpenHashMap liquidTextureCoord = new Int2FloatLinkedOpenHashMap();
-            int liquidTextureCoordCounter                       = 0;
-            final Int2IntLinkedOpenHashMap liquidIndices        = new Int2IntLinkedOpenHashMap();
-            int liquidIndicesCounter                            = 0;
-            final Int2FloatLinkedOpenHashMap liquidLight        = new Int2FloatLinkedOpenHashMap();
-            int liquidLightCounter                              = 0;
+            final HyperFloatArray liquidPositions    = new HyperFloatArray();
+            final HyperFloatArray liquidTextureCoord = new HyperFloatArray();
+            final HyperIntArray liquidIndices        = new HyperIntArray();
+            final HyperFloatArray liquidLight        = new HyperFloatArray();
 
             int liquidIndicesCount = 0;
 
 
             //allFaces block mesh data
-            final Int2FloatLinkedOpenHashMap allFacesPositions    = new Int2FloatLinkedOpenHashMap();
-            int allFacesPositionsCounter                    = 0;
-            final Int2FloatLinkedOpenHashMap allFacesTextureCoord = new Int2FloatLinkedOpenHashMap();
-            int allFacesTextureCoordCounter                 = 0;
-            final Int2IntLinkedOpenHashMap allFacesIndices        = new Int2IntLinkedOpenHashMap();
-            int allFacesIndicesCounter                      = 0;
-            final Int2FloatLinkedOpenHashMap allFacesLight        = new Int2FloatLinkedOpenHashMap();
-            int allFacesLightCounter                        = 0;
+            final HyperFloatArray allFacesPositions    = new HyperFloatArray();
+            final HyperFloatArray allFacesTextureCoord = new HyperFloatArray();
+            final HyperIntArray allFacesIndices        = new HyperIntArray();
+            final HyperFloatArray allFacesLight        = new HyperFloatArray();
 
             int allFacesIndicesCount = 0;
 
@@ -168,11 +152,11 @@ public class ChunkMeshGenerator implements Runnable{
             byte thisBlock;
             byte thisBlockDrawType;
             byte thisRotation;
-            int x,y,z,i; //dump all of this into the stack
+            byte neighborDrawtype;
 
-            for (x = 0; x < 16; x++) { ;
-                for (z = 0; z < 16; z++) {
-                    for (y = yHeight * 16; y < (yHeight + 1) * 16; y++) {
+            for (int x = 0; x < 16; x++) { ;
+                for (int z = 0; z < 16; z++) {
+                    for (int y = yHeight * 16; y < (yHeight + 1) * 16; y++) {
 
                         thisBlock = blockData[posToIndex(x, y, z)];
 
@@ -192,35 +176,11 @@ public class ChunkMeshGenerator implements Runnable{
                                 } else {
                                     neighborBlock = blockData[posToIndex(x, y, z + 1)];
                                 }
+                                neighborDrawtype = getBlockDrawType(neighborBlock);
 
-                                if (neighborBlock >= 0 && getBlockDrawType(neighborBlock) != 1) {
+                                if ((neighborDrawtype == 0 || neighborDrawtype > 1) && neighborDrawtype != 8) {
                                     //front
-                                    liquidPositions.put(liquidPositionsCounter,1f + x);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,1f + y);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,1f + z);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,0f + x);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,1f + y);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,1f + z);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,0f + x);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,0f + y);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,1f + z);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,1f + x);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,0f + y);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,1f + z);
-                                    liquidPositionsCounter++;
-
-
+                                    liquidPositions.pack(1f + x, 1f + y, 1f + z, 0f + x, 1f + y, 1f + z, 0f + x, 0f + y, 1f + z, 1f + x, 0f + y, 1f + z);
 
                                     //front
                                     if (z + 1 > 15) {
@@ -232,45 +192,18 @@ public class ChunkMeshGenerator implements Runnable{
                                     lightValue = convertLight(lightValue / maxLight);
 
                                     //front
-                                    for (i = 0; i < 12; i++) {
-                                        liquidLight.put(liquidLightCounter,lightValue);
-                                        liquidLightCounter++;
-                                    }
+                                    liquidLight.pack(lightValue);
+
 
                                     //front
-                                    liquidIndices.put(liquidIndicesCounter,liquidIndicesCount);
-                                    liquidIndicesCounter++;
-                                    liquidIndices.put(liquidIndicesCounter,1 + liquidIndicesCount);
-                                    liquidIndicesCounter++;
-                                    liquidIndices.put(liquidIndicesCounter,2 + liquidIndicesCount);
-                                    liquidIndicesCounter++;
-                                    liquidIndices.put(liquidIndicesCounter,liquidIndicesCount);
-                                    liquidIndicesCounter++;
-                                    liquidIndices.put(liquidIndicesCounter,2 + liquidIndicesCount);
-                                    liquidIndicesCounter++;
-                                    liquidIndices.put(liquidIndicesCounter,3 + liquidIndicesCount);
-                                    liquidIndicesCounter++;
+                                    liquidIndices.pack(liquidIndicesCount, 1 + liquidIndicesCount, 2 + liquidIndicesCount, liquidIndicesCount, 2 + liquidIndicesCount, 3 + liquidIndicesCount);
 
                                     liquidIndicesCount += 4;
 
                                     textureWorker = getFrontTexturePoints(thisBlock, thisRotation);
                                     //front
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[1]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[2]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[0]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[2]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[0]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[3]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[1]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[3]);
-                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]
+                                    );
                                 }
 
 
@@ -279,33 +212,11 @@ public class ChunkMeshGenerator implements Runnable{
                                 } else {
                                     neighborBlock = blockData[posToIndex(x, y, z - 1)];
                                 }
+                                neighborDrawtype = getBlockDrawType(neighborBlock);
 
-                                if (neighborBlock >= 0 && getBlockDrawType(neighborBlock) != 1) {
+                                if ((neighborDrawtype == 0 || neighborDrawtype > 1) && neighborDrawtype != 8) {
                                     //back
-                                    liquidPositions.put(liquidPositionsCounter,0f + x);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,1f + y);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,0f + z);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,1f + x);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,1f + y);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,0f + z);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,1f + x);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,0f + y);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,0f + z);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,0f + x);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,0f + y);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,0f + z);
-                                    liquidPositionsCounter++;
+                                    liquidPositions.pack(0f + x, 1f + y, 0f + z, 1f + x, 1f + y, 0f + z, 1f + x, 0f + y, 0f + z, 0f + x, 0f + y, 0f + z);
 
                                     //back
                                     if (z - 1 < 0) {
@@ -315,46 +226,18 @@ public class ChunkMeshGenerator implements Runnable{
                                     }
 
                                     lightValue = convertLight(lightValue / maxLight);
-                                    //back
-                                    for (i = 0; i < 12; i++) {
-                                        liquidLight.put(liquidLightCounter,lightValue);
-                                        liquidLightCounter++;
-                                    }
 
                                     //back
-                                    liquidIndices.put(liquidIndicesCounter,liquidIndicesCount);
-                                    liquidIndicesCounter++;
-                                    liquidIndices.put(liquidIndicesCounter,1 + liquidIndicesCount);
-                                    liquidIndicesCounter++;
-                                    liquidIndices.put(liquidIndicesCounter,2 + liquidIndicesCount);
-                                    liquidIndicesCounter++;
-                                    liquidIndices.put(liquidIndicesCounter,liquidIndicesCount);
-                                    liquidIndicesCounter++;
-                                    liquidIndices.put(liquidIndicesCounter,2 + liquidIndicesCount);
-                                    liquidIndicesCounter++;
-                                    liquidIndices.put(liquidIndicesCounter,3 + liquidIndicesCount);
-                                    liquidIndicesCounter++;
+                                    liquidLight.pack(lightValue);
+
+                                    //back
+                                    liquidIndices.pack(liquidIndicesCount, 1 + liquidIndicesCount, 2 + liquidIndicesCount, liquidIndicesCount, 2 + liquidIndicesCount, 3 + liquidIndicesCount);
 
                                     liquidIndicesCount += 4;
 
                                     textureWorker = getBackTexturePoints(thisBlock, thisRotation);
                                     //back
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[1]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[2]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[0]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[2]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[0]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[3]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[1]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[3]);
-                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
                                 }
 
                                 if (x + 1 > 15) {
@@ -362,33 +245,11 @@ public class ChunkMeshGenerator implements Runnable{
                                 } else {
                                     neighborBlock = blockData[posToIndex(x + 1, y, z)];
                                 }
+                                neighborDrawtype = getBlockDrawType(neighborBlock);
 
-                                if (neighborBlock >= 0 && getBlockDrawType(neighborBlock) != 1) {
+                                if ((neighborDrawtype == 0 || neighborDrawtype > 1) && neighborDrawtype != 8) {
                                     //right
-                                    liquidPositions.put(liquidPositionsCounter,1f + x);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,1f + y);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,0f + z);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,1f + x);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,1f + y);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,1f + z);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,1f + x);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,0f + y);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,1f + z);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,1f + x);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,0f + y);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,0f + z);
-                                    liquidPositionsCounter++;
+                                    liquidPositions.pack(1f + x, 1f + y, 0f + z, 1f + x, 1f + y, 1f + z, 1f + x, 0f + y, 1f + z, 1f + x, 0f + y, 0f + z);
 
                                     //right
 
@@ -399,47 +260,18 @@ public class ChunkMeshGenerator implements Runnable{
                                     }
 
                                     lightValue = convertLight(lightValue / maxLight);
-                                    //right
-                                    for (i = 0; i < 12; i++) {
-                                        liquidLight.put(liquidLightCounter,lightValue);
-                                        liquidLightCounter++;
-                                    }
-
 
                                     //right
-                                    liquidIndices.put(liquidIndicesCounter,liquidIndicesCount);
-                                    liquidIndicesCounter++;
-                                    liquidIndices.put(liquidIndicesCounter,1 + liquidIndicesCount);
-                                    liquidIndicesCounter++;
-                                    liquidIndices.put(liquidIndicesCounter,2 + liquidIndicesCount);
-                                    liquidIndicesCounter++;
-                                    liquidIndices.put(liquidIndicesCounter,liquidIndicesCount);
-                                    liquidIndicesCounter++;
-                                    liquidIndices.put(liquidIndicesCounter,2 + liquidIndicesCount);
-                                    liquidIndicesCounter++;
-                                    liquidIndices.put(liquidIndicesCounter,3 + liquidIndicesCount);
-                                    liquidIndicesCounter++;
+                                    liquidLight.pack(lightValue);
+
+                                    //right
+                                    liquidIndices.pack(liquidIndicesCount, 1 + liquidIndicesCount, 2 + liquidIndicesCount, liquidIndicesCount, 2 + liquidIndicesCount, 3 + liquidIndicesCount);
 
                                     liquidIndicesCount += 4;
 
                                     textureWorker = getRightTexturePoints(thisBlock, thisRotation);
                                     //right
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[1]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[2]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[0]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[2]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[0]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[3]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[1]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[3]);
-                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
                                 }
 
                                 if (x - 1 < 0) {
@@ -447,33 +279,11 @@ public class ChunkMeshGenerator implements Runnable{
                                 } else {
                                     neighborBlock = blockData[posToIndex(x - 1, y, z)];
                                 }
+                                neighborDrawtype = getBlockDrawType(neighborBlock);
 
-                                if (neighborBlock >= 0 && getBlockDrawType(neighborBlock) != 1) {
+                                if ((neighborDrawtype == 0 || neighborDrawtype > 1) && neighborDrawtype != 8) {
                                     //left
-                                    liquidPositions.put(liquidPositionsCounter,0f + x);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,1f + y);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,1f + z);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,0f + x);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,1f + y);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,0f + z);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,0f + x);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,0f + y);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,0f + z);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,0f + x);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,0f + y);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,1f + z);
-                                    liquidPositionsCounter++;
+                                    liquidPositions.pack(0f + x, 1f + y, 1f + z, 0f + x, 1f + y, 0f + z, 0f + x, 0f + y, 0f + z, 0f + x, 0f + y, 1f + z);
 
                                     //left
 
@@ -485,80 +295,28 @@ public class ChunkMeshGenerator implements Runnable{
 
                                     lightValue = convertLight(lightValue / maxLight);
                                     //left
-                                    for (i = 0; i < 12; i++) {
-                                        liquidLight.put(liquidLightCounter,lightValue);
-                                        liquidLightCounter++;
-                                    }
 
+                                    liquidLight.pack(lightValue);
 
                                     //left
-                                    liquidIndices.put(liquidIndicesCounter,liquidIndicesCount);
-                                    liquidIndicesCounter++;
-                                    liquidIndices.put(liquidIndicesCounter,1 + liquidIndicesCount);
-                                    liquidIndicesCounter++;
-                                    liquidIndices.put(liquidIndicesCounter,2 + liquidIndicesCount);
-                                    liquidIndicesCounter++;
-                                    liquidIndices.put(liquidIndicesCounter,liquidIndicesCount);
-                                    liquidIndicesCounter++;
-                                    liquidIndices.put(liquidIndicesCounter,2 + liquidIndicesCount);
-                                    liquidIndicesCounter++;
-                                    liquidIndices.put(liquidIndicesCounter,3 + liquidIndicesCount);
-                                    liquidIndicesCounter++;
+                                    liquidIndices.pack(liquidIndicesCount, 1 + liquidIndicesCount, 2 + liquidIndicesCount, liquidIndicesCount, 2 + liquidIndicesCount, 3 + liquidIndicesCount);
 
                                     liquidIndicesCount += 4;
 
                                     textureWorker = getLeftTexturePoints(thisBlock, thisRotation);
                                     //left
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[1]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[2]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[0]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[2]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[0]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[3]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[1]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[3]);
-                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
                                 }
 
                                 //y doesn't need a check since it has no neighbors
                                 if (y + 1 < 128) {
                                     neighborBlock = blockData[posToIndex(x, y + 1, z)];
                                 }
+                                neighborDrawtype = getBlockDrawType(neighborBlock);
 
-                                if (y == 127 || (neighborBlock >= 0 && getBlockDrawType(neighborBlock) != 1)) {
+                                if (y == 127 || ((neighborDrawtype == 0 || neighborDrawtype > 1) && neighborDrawtype != 8)) {
                                     //top
-                                    liquidPositions.put(liquidPositionsCounter,0f + x);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,1f + y);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,0f + z);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,0f + x);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,1f + y);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,1f + z);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,1f + x);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,1f + y);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,1f + z);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,1f + x);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,1f + y);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,0f + z);
-                                    liquidPositionsCounter++;
-
+                                    liquidPositions.pack(0f + x, 1f + y, 0f + z, 0f + x, 1f + y, 1f + z, 1f + x, 1f + y, 1f + z, 1f + x, 1f + y, 0f + z);
 
                                     //top
 
@@ -570,84 +328,34 @@ public class ChunkMeshGenerator implements Runnable{
                                     }
 
                                     lightValue = convertLight(lightValue / maxLight);
-                                    //top
-                                    for (i = 0; i < 12; i++) {
-                                        liquidLight.put(liquidLightCounter,lightValue);
-                                        liquidLightCounter++;
-                                    }
-
 
                                     //top
-                                    liquidIndices.put(liquidIndicesCounter,liquidIndicesCount);
-                                    liquidIndicesCounter++;
-                                    liquidIndices.put(liquidIndicesCounter,1 + liquidIndicesCount);
-                                    liquidIndicesCounter++;
-                                    liquidIndices.put(liquidIndicesCounter,2 + liquidIndicesCount);
-                                    liquidIndicesCounter++;
-                                    liquidIndices.put(liquidIndicesCounter,liquidIndicesCount);
-                                    liquidIndicesCounter++;
-                                    liquidIndices.put(liquidIndicesCounter,2 + liquidIndicesCount);
-                                    liquidIndicesCounter++;
-                                    liquidIndices.put(liquidIndicesCounter,3 + liquidIndicesCount);
-                                    liquidIndicesCounter++;
+                                    liquidLight.pack(lightValue);
+
+                                    //top
+                                    liquidIndices.pack(liquidIndicesCount, 1 + liquidIndicesCount, 2 + liquidIndicesCount, liquidIndicesCount, 2 + liquidIndicesCount, 3 + liquidIndicesCount);
 
                                     liquidIndicesCount += 4;
 
                                     textureWorker = getTopTexturePoints(thisBlock);
+
                                     //top
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[1]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[2]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[0]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[2]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[0]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[3]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[1]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[3]);
-                                    liquidTextureCoordCounter++;
+
+                                    liquidTextureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
                                 }
 
                                 //doesn't need a neighbor chunk, chunks are 2D
                                 if (y - 1 > 0) {
                                     neighborBlock = blockData[posToIndex(x, y - 1, z)];
                                 }
+                                neighborDrawtype = getBlockDrawType(neighborBlock);
 
                                 //don't render bottom of world
-                                if (y != 0 && neighborBlock >= 0 && getBlockDrawType(neighborBlock) != 1) {
+                                if (y != 0 && ((neighborDrawtype == 0 || neighborDrawtype > 1) && neighborDrawtype != 8)) {
                                     //bottom
-                                    liquidPositions.put(liquidPositionsCounter,0f + x);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,0f + y);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,1f + z);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,0f + x);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,0f + y);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,0f + z);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,1f + x);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,0f + y);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,0f + z);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,1f + x);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,0f + y);
-                                    liquidPositionsCounter++;
-                                    liquidPositions.put(liquidPositionsCounter,1f + z);
-                                    liquidPositionsCounter++;
+                                    liquidPositions.pack(0f + x, 0f + y, 1f + z, 0f + x, 0f + y, 0f + z, 1f + x, 0f + y, 0f + z, 1f + x, 0f + y, 1f + z);
 
                                     //bottom
-
                                     //doesn't need a neighbor chunk, chunks are 2D
                                     if (y - 1 > 0) {
                                         lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y - 1, z)]);
@@ -657,45 +365,18 @@ public class ChunkMeshGenerator implements Runnable{
 
                                     lightValue = convertLight(lightValue / maxLight);
                                     //bottom
-                                    for (i = 0; i < 12; i++) {
-                                        liquidLight.put(liquidLightCounter,lightValue);
-                                        liquidLightCounter++;
-                                    }
+
+                                    liquidLight.pack(lightValue);
+
 
                                     //bottom
-                                    liquidIndices.put(liquidIndicesCounter,liquidIndicesCount);
-                                    liquidIndicesCounter++;
-                                    liquidIndices.put(liquidIndicesCounter,1 + liquidIndicesCount);
-                                    liquidIndicesCounter++;
-                                    liquidIndices.put(liquidIndicesCounter,2 + liquidIndicesCount);
-                                    liquidIndicesCounter++;
-                                    liquidIndices.put(liquidIndicesCounter,liquidIndicesCount);
-                                    liquidIndicesCounter++;
-                                    liquidIndices.put(liquidIndicesCounter,2 + liquidIndicesCount);
-                                    liquidIndicesCounter++;
-                                    liquidIndices.put(liquidIndicesCounter,3 + liquidIndicesCount);
-                                    liquidIndicesCounter++;
+                                    liquidIndices.pack(liquidIndicesCount, 1 + liquidIndicesCount, 2 + liquidIndicesCount, liquidIndicesCount, 2 + liquidIndicesCount, 3 + liquidIndicesCount);
 
                                     liquidIndicesCount += 4;
 
                                     textureWorker = getBottomTexturePoints(thisBlock);
                                     //bottom
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[1]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[2]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[0]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[2]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[0]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[3]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[1]);
-                                    liquidTextureCoordCounter++;
-                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[3]);
-                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
                                 }
                             } else {
 
@@ -712,30 +393,18 @@ public class ChunkMeshGenerator implements Runnable{
                                         if (neighborBlock >= 0 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
                                             //front
 
-                                            positions.put(positionsCounter, 1f + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 1f + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 1f + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 0f + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 1f + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 1f + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 0f + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 0f + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 1f + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 1f + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 0f + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 1f + z);
-                                            positionsCounter++;
+                                            positions.put(1f + x);
+                                            positions.put(1f + y);
+                                            positions.put(1f + z);
+                                            positions.put(0f + x);
+                                            positions.put(1f + y);
+                                            positions.put(1f + z);
+                                            positions.put(0f + x);
+                                            positions.put(0f + y);
+                                            positions.put(1f + z);
+                                            positions.put(1f + x);
+                                            positions.put(0f + y);
+                                            positions.put(1f + z);
 
                                             //front
                                             if (z + 1 > 15) {
@@ -747,45 +416,30 @@ public class ChunkMeshGenerator implements Runnable{
                                             lightValue = convertLight(lightValue / maxLight);
 
                                             //front
-                                            for (i = 0; i < 12; i++) {
-                                                light.put(lightCounter, lightValue);
-                                                lightCounter++;
+                                            for (byte i = 0; i < 12; i++) {
+                                                light.put(lightValue);
                                             }
 
                                             //front
-                                            indices.put(indicesCounter, indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 1 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 2 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 2 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 3 + indicesCount);
-                                            indicesCounter++;
+                                            indices.put(indicesCount);
+                                            indices.put(1 + indicesCount);
+                                            indices.put(2 + indicesCount);
+                                            indices.put(indicesCount);
+                                            indices.put(2 + indicesCount);
+                                            indices.put(3 + indicesCount);
 
                                             indicesCount += 4;
 
                                             textureWorker = getFrontTexturePoints(thisBlock, thisRotation);
                                             //front
-                                            textureCoord.put(textureCoordCounter, textureWorker[1]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[2]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[0]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[2]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[0]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[3]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[1]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[3]);
-                                            textureCoordCounter++;
+                                            textureCoord.put(textureWorker[1]);
+                                            textureCoord.put(textureWorker[2]);
+                                            textureCoord.put(textureWorker[0]);
+                                            textureCoord.put(textureWorker[2]);
+                                            textureCoord.put(textureWorker[0]);
+                                            textureCoord.put(textureWorker[3]);
+                                            textureCoord.put(textureWorker[1]);
+                                            textureCoord.put(textureWorker[3]);
                                         }
 
                                         if (z - 1 < 0) {
@@ -796,30 +450,18 @@ public class ChunkMeshGenerator implements Runnable{
 
                                         if (neighborBlock >= 0 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
                                             //back
-                                            positions.put(positionsCounter, 0f + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 1f + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 0f + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 1f + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 1f + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 0f + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 1f + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 0f + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 0f + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 0f + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 0f + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 0f + z);
-                                            positionsCounter++;
+                                            positions.put(0f + x);
+                                            positions.put(1f + y);
+                                            positions.put(0f + z);
+                                            positions.put(1f + x);
+                                            positions.put(1f + y);
+                                            positions.put(0f + z);
+                                            positions.put(1f + x);
+                                            positions.put(0f + y);
+                                            positions.put(0f + z);
+                                            positions.put(0f + x);
+                                            positions.put(0f + y);
+                                            positions.put(0f + z);
 
                                             //back
                                             if (z - 1 < 0) {
@@ -830,45 +472,30 @@ public class ChunkMeshGenerator implements Runnable{
 
                                             lightValue = convertLight(lightValue / maxLight);
                                             //back
-                                            for (i = 0; i < 12; i++) {
-                                                light.put(lightCounter, lightValue);
-                                                lightCounter++;
+                                            for (byte i = 0; i < 12; i++) {
+                                                light.put(lightValue);
                                             }
 
                                             //back
-                                            indices.put(indicesCounter, indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 1 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 2 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 2 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 3 + indicesCount);
-                                            indicesCounter++;
+                                            indices.put(indicesCount);
+                                            indices.put(1 + indicesCount);
+                                            indices.put(2 + indicesCount);
+                                            indices.put(indicesCount);
+                                            indices.put(2 + indicesCount);
+                                            indices.put(3 + indicesCount);
 
                                             indicesCount += 4;
 
                                             textureWorker = getBackTexturePoints(thisBlock, thisRotation);
                                             //back
-                                            textureCoord.put(textureCoordCounter, textureWorker[1]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[2]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[0]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[2]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[0]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[3]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[1]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[3]);
-                                            textureCoordCounter++;
+                                            textureCoord.put(textureWorker[1]);
+                                            textureCoord.put(textureWorker[2]);
+                                            textureCoord.put(textureWorker[0]);
+                                            textureCoord.put(textureWorker[2]);
+                                            textureCoord.put(textureWorker[0]);
+                                            textureCoord.put(textureWorker[3]);
+                                            textureCoord.put(textureWorker[1]);
+                                            textureCoord.put(textureWorker[3]);
                                         }
 
                                         if (x + 1 > 15) {
@@ -879,30 +506,18 @@ public class ChunkMeshGenerator implements Runnable{
 
                                         if (neighborBlock >= 0 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
                                             //right
-                                            positions.put(positionsCounter, 1f + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 1f + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 0f + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 1f + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 1f + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 1f + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 1f + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 0f + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 1f + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 1f + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 0f + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 0f + z);
-                                            positionsCounter++;
+                                            positions.put(1f + x);
+                                            positions.put(1f + y);
+                                            positions.put(0f + z);
+                                            positions.put(1f + x);
+                                            positions.put(1f + y);
+                                            positions.put(1f + z);
+                                            positions.put(1f + x);
+                                            positions.put(0f + y);
+                                            positions.put(1f + z);
+                                            positions.put(1f + x);
+                                            positions.put(0f + y);
+                                            positions.put(0f + z);
 
                                             //right
                                             if (x + 1 > 15) {
@@ -913,45 +528,30 @@ public class ChunkMeshGenerator implements Runnable{
 
                                             lightValue = convertLight(lightValue / maxLight);
                                             //right
-                                            for (i = 0; i < 12; i++) {
-                                                light.put(lightCounter, lightValue);
-                                                lightCounter++;
+                                            for (byte i = 0; i < 12; i++) {
+                                                light.put(lightValue);
                                             }
 
                                             //right
-                                            indices.put(indicesCounter, indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 1 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 2 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 2 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 3 + indicesCount);
-                                            indicesCounter++;
+                                            indices.put(indicesCount);
+                                            indices.put(1 + indicesCount);
+                                            indices.put(2 + indicesCount);
+                                            indices.put(indicesCount);
+                                            indices.put(2 + indicesCount);
+                                            indices.put(3 + indicesCount);
 
                                             indicesCount += 4;
 
                                             textureWorker = getRightTexturePoints(thisBlock, thisRotation);
                                             //right
-                                            textureCoord.put(textureCoordCounter, textureWorker[1]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[2]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[0]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[2]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[0]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[3]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[1]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[3]);
-                                            textureCoordCounter++;
+                                            textureCoord.put(textureWorker[1]);
+                                            textureCoord.put(textureWorker[2]);
+                                            textureCoord.put(textureWorker[0]);
+                                            textureCoord.put(textureWorker[2]);
+                                            textureCoord.put(textureWorker[0]);
+                                            textureCoord.put(textureWorker[3]);
+                                            textureCoord.put(textureWorker[1]);
+                                            textureCoord.put(textureWorker[3]);
                                         }
 
                                         if (x - 1 < 0) {
@@ -962,30 +562,18 @@ public class ChunkMeshGenerator implements Runnable{
 
                                         if (neighborBlock >= 0 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
                                             //left
-                                            positions.put(positionsCounter, 0f + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 1f + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 1f + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 0f + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 1f + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 0f + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 0f + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 0f + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 0f + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 0f + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 0f + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 1f + z);
-                                            positionsCounter++;
+                                            positions.put(0f + x);
+                                            positions.put(1f + y);
+                                            positions.put(1f + z);
+                                            positions.put(0f + x);
+                                            positions.put(1f + y);
+                                            positions.put(0f + z);
+                                            positions.put(0f + x);
+                                            positions.put(0f + y);
+                                            positions.put(0f + z);
+                                            positions.put(0f + x);
+                                            positions.put(0f + y);
+                                            positions.put(1f + z);
 
                                             //left
                                             if (x - 1 < 0) {
@@ -996,45 +584,30 @@ public class ChunkMeshGenerator implements Runnable{
 
                                             lightValue = convertLight(lightValue / maxLight);
                                             //left
-                                            for (i = 0; i < 12; i++) {
-                                                light.put(lightCounter, lightValue);
-                                                lightCounter++;
+                                            for (byte i = 0; i < 12; i++) {
+                                                light.put(lightValue);
                                             }
 
                                             //left
-                                            indices.put(indicesCounter, indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 1 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 2 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 2 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 3 + indicesCount);
-                                            indicesCounter++;
+                                            indices.put(indicesCount);
+                                            indices.put(1 + indicesCount);
+                                            indices.put(2 + indicesCount);
+                                            indices.put(indicesCount);
+                                            indices.put(2 + indicesCount);
+                                            indices.put(3 + indicesCount);
 
                                             indicesCount += 4;
 
                                             textureWorker = getLeftTexturePoints(thisBlock, thisRotation);
                                             //left
-                                            textureCoord.put(textureCoordCounter, textureWorker[1]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[2]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[0]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[2]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[0]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[3]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[1]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[3]);
-                                            textureCoordCounter++;
+                                            textureCoord.put(textureWorker[1]);
+                                            textureCoord.put(textureWorker[2]);
+                                            textureCoord.put(textureWorker[0]);
+                                            textureCoord.put(textureWorker[2]);
+                                            textureCoord.put(textureWorker[0]);
+                                            textureCoord.put(textureWorker[3]);
+                                            textureCoord.put(textureWorker[1]);
+                                            textureCoord.put(textureWorker[3]);
                                         }
 
                                         if (y + 1 < 128) {
@@ -1043,30 +616,18 @@ public class ChunkMeshGenerator implements Runnable{
 
                                         if (y == 127 || neighborBlock > -1 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
                                             //top
-                                            positions.put(positionsCounter, 0f + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 1f + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 0f + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 0f + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 1f + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 1f + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 1f + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 1f + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 1f + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 1f + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 1f + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 0f + z);
-                                            positionsCounter++;
+                                            positions.put(0f + x);
+                                            positions.put(1f + y);
+                                            positions.put(0f + z);
+                                            positions.put(0f + x);
+                                            positions.put(1f + y);
+                                            positions.put(1f + z);
+                                            positions.put(1f + x);
+                                            positions.put(1f + y);
+                                            positions.put(1f + z);
+                                            positions.put(1f + x);
+                                            positions.put(1f + y);
+                                            positions.put(0f + z);
 
                                             //top
                                             if (y + 1 < 128) {
@@ -1078,45 +639,30 @@ public class ChunkMeshGenerator implements Runnable{
                                             lightValue = convertLight(lightValue / maxLight);
 
                                             //top
-                                            for (i = 0; i < 12; i++) {
-                                                light.put(lightCounter, lightValue);
-                                                lightCounter++;
+                                            for (byte i = 0; i < 12; i++) {
+                                                light.put(lightValue);
                                             }
 
                                             //top
-                                            indices.put(indicesCounter, indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 1 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 2 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 2 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 3 + indicesCount);
-                                            indicesCounter++;
+                                            indices.put(indicesCount);
+                                            indices.put(1 + indicesCount);
+                                            indices.put(2 + indicesCount);
+                                            indices.put(indicesCount);
+                                            indices.put(2 + indicesCount);
+                                            indices.put(3 + indicesCount);
 
                                             indicesCount += 4;
 
                                             textureWorker = getTopTexturePoints(thisBlock);
                                             //top
-                                            textureCoord.put(textureCoordCounter, textureWorker[1]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[2]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[0]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[2]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[0]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[3]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[1]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[3]);
-                                            textureCoordCounter++;
+                                            textureCoord.put(textureWorker[1]);
+                                            textureCoord.put(textureWorker[2]);
+                                            textureCoord.put(textureWorker[0]);
+                                            textureCoord.put(textureWorker[2]);
+                                            textureCoord.put(textureWorker[0]);
+                                            textureCoord.put(textureWorker[3]);
+                                            textureCoord.put(textureWorker[1]);
+                                            textureCoord.put(textureWorker[3]);
                                         }
 
                                         if (y - 1 > 0) {
@@ -1125,30 +671,18 @@ public class ChunkMeshGenerator implements Runnable{
 
                                         if (y != 0 && neighborBlock >= 0 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
                                             //bottom
-                                            positions.put(positionsCounter, 0f + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 0f + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 1f + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 0f + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 0f + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 0f + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 1f + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 0f + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 0f + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 1f + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 0f + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, 1f + z);
-                                            positionsCounter++;
+                                            positions.put(0f + x);
+                                            positions.put(0f + y);
+                                            positions.put(1f + z);
+                                            positions.put(0f + x);
+                                            positions.put(0f + y);
+                                            positions.put(0f + z);
+                                            positions.put(1f + x);
+                                            positions.put(0f + y);
+                                            positions.put(0f + z);
+                                            positions.put(1f + x);
+                                            positions.put(0f + y);
+                                            positions.put(1f + z);
 
                                             //bottom
                                             if (y - 1 > 0) {
@@ -1159,45 +693,30 @@ public class ChunkMeshGenerator implements Runnable{
 
                                             lightValue = convertLight(lightValue / maxLight);
                                             //bottom
-                                            for (i = 0; i < 12; i++) {
-                                                light.put(lightCounter, lightValue);
-                                                lightCounter++;
+                                            for (byte i = 0; i < 12; i++) {
+                                                light.put(lightValue);
                                             }
 
                                             //bottom
-                                            indices.put(indicesCounter, indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 1 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 2 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 2 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 3 + indicesCount);
-                                            indicesCounter++;
+                                            indices.put(indicesCount);
+                                            indices.put(1 + indicesCount);
+                                            indices.put(2 + indicesCount);
+                                            indices.put(indicesCount);
+                                            indices.put(2 + indicesCount);
+                                            indices.put(3 + indicesCount);
 
                                             indicesCount += 4;
 
                                             textureWorker = getBottomTexturePoints(thisBlock);
                                             //bottom
-                                            textureCoord.put(textureCoordCounter, textureWorker[1]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[2]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[0]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[2]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[0]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[3]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[1]);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, textureWorker[3]);
-                                            textureCoordCounter++;
+                                            textureCoord.put(textureWorker[1]);
+                                            textureCoord.put(textureWorker[2]);
+                                            textureCoord.put(textureWorker[0]);
+                                            textureCoord.put(textureWorker[2]);
+                                            textureCoord.put(textureWorker[0]);
+                                            textureCoord.put(textureWorker[3]);
+                                            textureCoord.put(textureWorker[1]);
+                                            textureCoord.put(textureWorker[3]);
                                         }
                                     }
                                     break;
@@ -1206,30 +725,18 @@ public class ChunkMeshGenerator implements Runnable{
 
                                         {
                                             //front
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + x);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + y);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + z);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + x);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + y);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + z);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + x);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + y);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + z);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + x);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + y);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + z);
-                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(1f + x);
+                                            allFacesPositions.put(1f + y);
+                                            allFacesPositions.put(1f + z);
+                                            allFacesPositions.put(0f + x);
+                                            allFacesPositions.put(1f + y);
+                                            allFacesPositions.put(1f + z);
+                                            allFacesPositions.put(0f + x);
+                                            allFacesPositions.put(0f + y);
+                                            allFacesPositions.put(1f + z);
+                                            allFacesPositions.put(1f + x);
+                                            allFacesPositions.put(0f + y);
+                                            allFacesPositions.put(1f + z);
 
                                             //front
                                             if (z + 1 > 15) {
@@ -1241,74 +748,47 @@ public class ChunkMeshGenerator implements Runnable{
                                             lightValue = convertLight(lightValue / maxLight);
 
                                             //front
-                                            for (i = 0; i < 12; i++) {
-                                                allFacesLight.put(allFacesLightCounter, lightValue);
-                                                allFacesLightCounter++;
+                                            for (byte i = 0; i < 12; i++) {
+                                                allFacesLight.put(lightValue);
                                             }
 
 
                                             //front
-                                            allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
-                                            allFacesIndices.put(allFacesIndicesCounter, 1 + allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
-                                            allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
-                                            allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
-                                            allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
-                                            allFacesIndices.put(allFacesIndicesCounter, 3 + allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCount);
+                                            allFacesIndices.put(1 + allFacesIndicesCount);
+                                            allFacesIndices.put(2 + allFacesIndicesCount);
+                                            allFacesIndices.put(allFacesIndicesCount);
+                                            allFacesIndices.put(2 + allFacesIndicesCount);
+                                            allFacesIndices.put(3 + allFacesIndicesCount);
 
                                             allFacesIndicesCount += 4;
 
                                             textureWorker = getFrontTexturePoints(thisBlock, thisRotation);
                                             //front
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
-                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(textureWorker[1]);
+                                            allFacesTextureCoord.put(textureWorker[2]);
+                                            allFacesTextureCoord.put(textureWorker[0]);
+                                            allFacesTextureCoord.put(textureWorker[2]);
+                                            allFacesTextureCoord.put(textureWorker[0]);
+                                            allFacesTextureCoord.put(textureWorker[3]);
+                                            allFacesTextureCoord.put(textureWorker[1]);
+                                            allFacesTextureCoord.put(textureWorker[3]);
                                         }
 
                                         {
                                             //back
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + x);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + y);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + z);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + x);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + y);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + z);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + x);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + y);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + z);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + x);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + y);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + z);
-                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(0f + x);
+                                            allFacesPositions.put(1f + y);
+                                            allFacesPositions.put(0f + z);
+                                            allFacesPositions.put(1f + x);
+                                            allFacesPositions.put(1f + y);
+                                            allFacesPositions.put(0f + z);
+                                            allFacesPositions.put(1f + x);
+                                            allFacesPositions.put(0f + y);
+                                            allFacesPositions.put(0f + z);
+                                            allFacesPositions.put(0f + x);
+                                            allFacesPositions.put(0f + y);
+                                            allFacesPositions.put(0f + z);
 
                                             //back
 
@@ -1320,73 +800,46 @@ public class ChunkMeshGenerator implements Runnable{
 
                                             lightValue = convertLight(lightValue / maxLight);
                                             //back
-                                            for (i = 0; i < 12; i++) {
-                                                allFacesLight.put(allFacesLightCounter, lightValue);
-                                                allFacesLightCounter++;
+                                            for (byte i = 0; i < 12; i++) {
+                                                allFacesLight.put(lightValue);
                                             }
 
                                             //back
-                                            allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
-                                            allFacesIndices.put(allFacesIndicesCounter, 1 + allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
-                                            allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
-                                            allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
-                                            allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
-                                            allFacesIndices.put(allFacesIndicesCounter, 3 + allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCount);
+                                            allFacesIndices.put(1 + allFacesIndicesCount);
+                                            allFacesIndices.put(2 + allFacesIndicesCount);
+                                            allFacesIndices.put(allFacesIndicesCount);
+                                            allFacesIndices.put(2 + allFacesIndicesCount);
+                                            allFacesIndices.put(3 + allFacesIndicesCount);
 
                                             allFacesIndicesCount += 4;
 
                                             textureWorker = getBackTexturePoints(thisBlock, thisRotation);
                                             //back
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
-                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(textureWorker[1]);
+                                            allFacesTextureCoord.put(textureWorker[2]);
+                                            allFacesTextureCoord.put(textureWorker[0]);
+                                            allFacesTextureCoord.put(textureWorker[2]);
+                                            allFacesTextureCoord.put(textureWorker[0]);
+                                            allFacesTextureCoord.put(textureWorker[3]);
+                                            allFacesTextureCoord.put(textureWorker[1]);
+                                            allFacesTextureCoord.put(textureWorker[3]);
                                         }
 
                                         {
                                             //right
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + x);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + y);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + z);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + x);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + y);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + z);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + x);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + y);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + z);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + x);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + y);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + z);
-                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(1f + x);
+                                            allFacesPositions.put(1f + y);
+                                            allFacesPositions.put(0f + z);
+                                            allFacesPositions.put(1f + x);
+                                            allFacesPositions.put(1f + y);
+                                            allFacesPositions.put(1f + z);
+                                            allFacesPositions.put(1f + x);
+                                            allFacesPositions.put(0f + y);
+                                            allFacesPositions.put(1f + z);
+                                            allFacesPositions.put(1f + x);
+                                            allFacesPositions.put(0f + y);
+                                            allFacesPositions.put(0f + z);
 
                                             //right
 
@@ -1398,73 +851,46 @@ public class ChunkMeshGenerator implements Runnable{
 
                                             lightValue = convertLight(lightValue / maxLight);
                                             //right
-                                            for (i = 0; i < 12; i++) {
-                                                allFacesLight.put(allFacesLightCounter, lightValue);
-                                                allFacesLightCounter++;
+                                            for (byte i = 0; i < 12; i++) {
+                                                allFacesLight.put(lightValue);
                                             }
 
                                             //right
-                                            allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
-                                            allFacesIndices.put(allFacesIndicesCounter, 1 + allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
-                                            allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
-                                            allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
-                                            allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
-                                            allFacesIndices.put(allFacesIndicesCounter, 3 + allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCount);
+                                            allFacesIndices.put(1 + allFacesIndicesCount);
+                                            allFacesIndices.put(2 + allFacesIndicesCount);
+                                            allFacesIndices.put(allFacesIndicesCount);
+                                            allFacesIndices.put(2 + allFacesIndicesCount);
+                                            allFacesIndices.put(3 + allFacesIndicesCount);
 
                                             allFacesIndicesCount += 4;
 
                                             textureWorker = getRightTexturePoints(thisBlock, thisRotation);
                                             //right
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
-                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(textureWorker[1]);
+                                            allFacesTextureCoord.put(textureWorker[2]);
+                                            allFacesTextureCoord.put(textureWorker[0]);
+                                            allFacesTextureCoord.put(textureWorker[2]);
+                                            allFacesTextureCoord.put(textureWorker[0]);
+                                            allFacesTextureCoord.put(textureWorker[3]);
+                                            allFacesTextureCoord.put(textureWorker[1]);
+                                            allFacesTextureCoord.put(textureWorker[3]);
                                         }
 
                                         {
                                             //left
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + x);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + y);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + z);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + x);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + y);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + z);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + x);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + y);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + z);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + x);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + y);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + z);
-                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(0f + x);
+                                            allFacesPositions.put(1f + y);
+                                            allFacesPositions.put(1f + z);
+                                            allFacesPositions.put(0f + x);
+                                            allFacesPositions.put(1f + y);
+                                            allFacesPositions.put(0f + z);
+                                            allFacesPositions.put(0f + x);
+                                            allFacesPositions.put(0f + y);
+                                            allFacesPositions.put(0f + z);
+                                            allFacesPositions.put(0f + x);
+                                            allFacesPositions.put(0f + y);
+                                            allFacesPositions.put(1f + z);
 
                                             //left
 
@@ -1476,73 +902,46 @@ public class ChunkMeshGenerator implements Runnable{
 
                                             lightValue = convertLight(lightValue / maxLight);
                                             //left
-                                            for (i = 0; i < 12; i++) {
-                                                allFacesLight.put(allFacesLightCounter, lightValue);
-                                                allFacesLightCounter++;
+                                            for (byte i = 0; i < 12; i++) {
+                                                allFacesLight.put(lightValue);
                                             }
 
                                             //left
-                                            allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
-                                            allFacesIndices.put(allFacesIndicesCounter, 1 + allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
-                                            allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
-                                            allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
-                                            allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
-                                            allFacesIndices.put(allFacesIndicesCounter, 3 + allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCount);
+                                            allFacesIndices.put(1 + allFacesIndicesCount);
+                                            allFacesIndices.put(2 + allFacesIndicesCount);
+                                            allFacesIndices.put(allFacesIndicesCount);
+                                            allFacesIndices.put(2 + allFacesIndicesCount);
+                                            allFacesIndices.put(3 + allFacesIndicesCount);
 
                                             allFacesIndicesCount += 4;
 
                                             textureWorker = getLeftTexturePoints(thisBlock, thisRotation);
                                             //left
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
-                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(textureWorker[1]);
+                                            allFacesTextureCoord.put(textureWorker[2]);
+                                            allFacesTextureCoord.put(textureWorker[0]);
+                                            allFacesTextureCoord.put(textureWorker[2]);
+                                            allFacesTextureCoord.put(textureWorker[0]);
+                                            allFacesTextureCoord.put(textureWorker[3]);
+                                            allFacesTextureCoord.put(textureWorker[1]);
+                                            allFacesTextureCoord.put(textureWorker[3]);
                                         }
 
                                         {
                                             //top
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + x);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + y);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + z);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + x);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + y);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + z);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + x);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + y);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + z);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + x);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + y);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + z);
-                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(0f + x);
+                                            allFacesPositions.put(1f + y);
+                                            allFacesPositions.put(0f + z);
+                                            allFacesPositions.put(0f + x);
+                                            allFacesPositions.put(1f + y);
+                                            allFacesPositions.put(1f + z);
+                                            allFacesPositions.put(1f + x);
+                                            allFacesPositions.put(1f + y);
+                                            allFacesPositions.put(1f + z);
+                                            allFacesPositions.put(1f + x);
+                                            allFacesPositions.put(1f + y);
+                                            allFacesPositions.put(0f + z);
 
                                             //top
 
@@ -1555,74 +954,47 @@ public class ChunkMeshGenerator implements Runnable{
                                             lightValue = convertLight(lightValue / maxLight);
 
                                             //top
-                                            for (i = 0; i < 12; i++) {
-                                                allFacesLight.put(allFacesLightCounter, lightValue);
-                                                allFacesLightCounter++;
+                                            for (byte i = 0; i < 12; i++) {
+                                                allFacesLight.put(lightValue);
                                             }
 
                                             //top
-                                            allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
-                                            allFacesIndices.put(allFacesIndicesCounter, 1 + allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
-                                            allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
-                                            allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
-                                            allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
-                                            allFacesIndices.put(allFacesIndicesCounter, 3 + allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCount);
+                                            allFacesIndices.put(1 + allFacesIndicesCount);
+                                            allFacesIndices.put(2 + allFacesIndicesCount);
+                                            allFacesIndices.put(allFacesIndicesCount);
+                                            allFacesIndices.put(2 + allFacesIndicesCount);
+                                            allFacesIndices.put(3 + allFacesIndicesCount);
 
                                             allFacesIndicesCount += 4;
 
                                             textureWorker = getTopTexturePoints(thisBlock);
                                             //top
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
-                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(textureWorker[1]);
+                                            allFacesTextureCoord.put(textureWorker[2]);
+                                            allFacesTextureCoord.put(textureWorker[0]);
+                                            allFacesTextureCoord.put(textureWorker[2]);
+                                            allFacesTextureCoord.put(textureWorker[0]);
+                                            allFacesTextureCoord.put(textureWorker[3]);
+                                            allFacesTextureCoord.put(textureWorker[1]);
+                                            allFacesTextureCoord.put(textureWorker[3]);
                                         }
 
 
                                         if (y != 0) {
                                             //bottom
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + x);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + y);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + z);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + x);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + y);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + z);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + x);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + y);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + z);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + x);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 0f + y);
-                                            allFacesPositionsCounter++;
-                                            allFacesPositions.put(allFacesPositionsCounter, 1f + z);
-                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(0f + x);
+                                            allFacesPositions.put(0f + y);
+                                            allFacesPositions.put(1f + z);
+                                            allFacesPositions.put(0f + x);
+                                            allFacesPositions.put(0f + y);
+                                            allFacesPositions.put(0f + z);
+                                            allFacesPositions.put(1f + x);
+                                            allFacesPositions.put(0f + y);
+                                            allFacesPositions.put(0f + z);
+                                            allFacesPositions.put(1f + x);
+                                            allFacesPositions.put(0f + y);
+                                            allFacesPositions.put(1f + z);
 
                                             //bottom
 
@@ -1634,45 +1006,30 @@ public class ChunkMeshGenerator implements Runnable{
 
                                             lightValue = convertLight(lightValue / maxLight);
                                             //bottom
-                                            for (i = 0; i < 12; i++) {
-                                                allFacesLight.put(allFacesLightCounter, lightValue);
-                                                allFacesLightCounter++;
+                                            for (byte i = 0; i < 12; i++) {
+                                                allFacesLight.put(lightValue);
                                             }
 
                                             //bottom
-                                            allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
-                                            allFacesIndices.put(allFacesIndicesCounter, 1 + allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
-                                            allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
-                                            allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
-                                            allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
-                                            allFacesIndices.put(allFacesIndicesCounter, 3 + allFacesIndicesCount);
-                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCount);
+                                            allFacesIndices.put(1 + allFacesIndicesCount);
+                                            allFacesIndices.put(2 + allFacesIndicesCount);
+                                            allFacesIndices.put(allFacesIndicesCount);
+                                            allFacesIndices.put(2 + allFacesIndicesCount);
+                                            allFacesIndices.put(3 + allFacesIndicesCount);
 
                                             allFacesIndicesCount += 4;
 
                                             textureWorker = getBottomTexturePoints(thisBlock);
                                             //bottom
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
-                                            allFacesTextureCoordCounter++;
-                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
-                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(textureWorker[1]);
+                                            allFacesTextureCoord.put(textureWorker[2]);
+                                            allFacesTextureCoord.put(textureWorker[0]);
+                                            allFacesTextureCoord.put(textureWorker[2]);
+                                            allFacesTextureCoord.put(textureWorker[0]);
+                                            allFacesTextureCoord.put(textureWorker[3]);
+                                            allFacesTextureCoord.put(textureWorker[1]);
+                                            allFacesTextureCoord.put(textureWorker[3]);
                                         }
                                     }
                                     break;
@@ -1937,30 +1294,18 @@ public class ChunkMeshGenerator implements Runnable{
                                         {
                                             //z is the constant
                                             //front
-                                            positions.put(positionsCounter, tfr.x + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, tfr.y + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, tfr.z + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, tfl.x + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, tfl.y + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, tfl.z + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, bfl.x + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, bfl.y + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, bfl.z + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, bfr.x + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, bfr.y + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, bfr.z + z);
-                                            positionsCounter++;
+                                            positions.put(tfr.x + x);
+                                            positions.put(tfr.y + y);
+                                            positions.put(tfr.z + z);
+                                            positions.put(tfl.x + x);
+                                            positions.put(tfl.y + y);
+                                            positions.put(tfl.z + z);
+                                            positions.put(bfl.x + x);
+                                            positions.put(bfl.y + y);
+                                            positions.put(bfl.z + z);
+                                            positions.put(bfr.x + x);
+                                            positions.put(bfr.y + y);
+                                            positions.put(bfr.z + z);
 
                                             //front
                                             if (z + 1 > 15) {
@@ -1972,45 +1317,30 @@ public class ChunkMeshGenerator implements Runnable{
                                             lightValue = convertLight(lightValue / maxLight);
 
                                             //front
-                                            for (i = 0; i < 12; i++) {
-                                                light.put(lightCounter, lightValue);
-                                                lightCounter++;
+                                            for (byte i = 0; i < 12; i++) {
+                                                light.put(lightValue);
                                             }
 
                                             //front
-                                            indices.put(indicesCounter, indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 1 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 2 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 2 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 3 + indicesCount);
-                                            indicesCounter++;
+                                            indices.put(indicesCount);
+                                            indices.put(1 + indicesCount);
+                                            indices.put(2 + indicesCount);
+                                            indices.put(indicesCount);
+                                            indices.put(2 + indicesCount);
+                                            indices.put(3 + indicesCount);
 
                                             indicesCount += 4;
 
 
                                             //front
-                                            textureCoord.put(textureCoordCounter, sizeXHigh);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, sizeYLow);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, sizeXLow);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, sizeYLow);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, sizeXLow);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, sizeYHigh);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, sizeXHigh);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, sizeYHigh);
-                                            textureCoordCounter++;
+                                            textureCoord.put(sizeXHigh);
+                                            textureCoord.put(sizeYLow);
+                                            textureCoord.put(sizeXLow);
+                                            textureCoord.put(sizeYLow);
+                                            textureCoord.put(sizeXLow);
+                                            textureCoord.put(sizeYHigh);
+                                            textureCoord.put(sizeXHigh);
+                                            textureCoord.put(sizeYHigh);
                                         }
 
 
@@ -2018,30 +1348,18 @@ public class ChunkMeshGenerator implements Runnable{
                                         {
                                             //z is the constant
                                             //back
-                                            positions.put(positionsCounter, trl.x + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, trl.y + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, trl.z + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, trr.x + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, trr.y + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, trr.z + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, brr.x + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, brr.y + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, brr.z + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, brl.x + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, brl.y + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, brl.z + z);
-                                            positionsCounter++;
+                                            positions.put(trl.x + x);
+                                            positions.put(trl.y + y);
+                                            positions.put(trl.z + z);
+                                            positions.put(trr.x + x);
+                                            positions.put(trr.y + y);
+                                            positions.put(trr.z + z);
+                                            positions.put(brr.x + x);
+                                            positions.put(brr.y + y);
+                                            positions.put(brr.z + z);
+                                            positions.put(brl.x + x);
+                                            positions.put(brl.y + y);
+                                            positions.put(brl.z + z);
 
                                             //back
 
@@ -2053,75 +1371,48 @@ public class ChunkMeshGenerator implements Runnable{
 
                                             lightValue = convertLight(lightValue / maxLight);
                                             //back
-                                            for (i = 0; i < 12; i++) {
-                                                light.put(lightCounter, lightValue);
-                                                lightCounter++;
+                                            for (byte i = 0; i < 12; i++) {
+                                                light.put(lightValue);
                                             }
 
                                             //back
-                                            indices.put(indicesCounter, indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 1 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 2 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 2 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 3 + indicesCount);
-                                            indicesCounter++;
+                                            indices.put(indicesCount);
+                                            indices.put(1 + indicesCount);
+                                            indices.put(2 + indicesCount);
+                                            indices.put(indicesCount);
+                                            indices.put(2 + indicesCount);
+                                            indices.put(3 + indicesCount);
 
                                             indicesCount += 4;
 
 
                                             //back
-                                            textureCoord.put(textureCoordCounter, sizeXHigh);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, sizeYLow);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, sizeXLow);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, sizeYLow);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, sizeXLow);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, sizeYHigh);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, sizeXHigh);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, sizeYHigh);
-                                            textureCoordCounter++;
+                                            textureCoord.put(sizeXHigh);
+                                            textureCoord.put(sizeYLow);
+                                            textureCoord.put(sizeXLow);
+                                            textureCoord.put(sizeYLow);
+                                            textureCoord.put(sizeXLow);
+                                            textureCoord.put(sizeYHigh);
+                                            textureCoord.put(sizeXHigh);
+                                            textureCoord.put(sizeYHigh);
                                         }
 
 
                                         {
                                             //x is the constant
                                             //right
-                                            positions.put(positionsCounter, trr.x + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, trr.y + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, trr.z + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, tfr.x + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, tfr.y + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, tfr.z + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, bfr.x + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, bfr.y + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, bfr.z + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, brr.x + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, brr.y + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, brr.z + z);
-                                            positionsCounter++;
+                                            positions.put(trr.x + x);
+                                            positions.put(trr.y + y);
+                                            positions.put(trr.z + z);
+                                            positions.put(tfr.x + x);
+                                            positions.put(tfr.y + y);
+                                            positions.put(tfr.z + z);
+                                            positions.put(bfr.x + x);
+                                            positions.put(bfr.y + y);
+                                            positions.put(bfr.z + z);
+                                            positions.put(brr.x + x);
+                                            positions.put(brr.y + y);
+                                            positions.put(brr.z + z);
 
                                             //right
 
@@ -2133,74 +1424,47 @@ public class ChunkMeshGenerator implements Runnable{
 
                                             lightValue = convertLight(lightValue / maxLight);
                                             //right
-                                            for (i = 0; i < 12; i++) {
-                                                light.put(lightCounter, lightValue);
-                                                lightCounter++;
+                                            for (byte i = 0; i < 12; i++) {
+                                                light.put(lightValue);
                                             }
 
                                             //right
-                                            indices.put(indicesCounter, indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 1 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 2 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 2 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 3 + indicesCount);
-                                            indicesCounter++;
+                                            indices.put(indicesCount);
+                                            indices.put(1 + indicesCount);
+                                            indices.put(2 + indicesCount);
+                                            indices.put(indicesCount);
+                                            indices.put(2 + indicesCount);
+                                            indices.put(3 + indicesCount);
 
                                             indicesCount += 4;
 
                                             //right
-                                            textureCoord.put(textureCoordCounter, sizeXHigh);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, sizeYLow);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, sizeXLow);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, sizeYLow);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, sizeXLow);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, sizeYHigh);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, sizeXHigh);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, sizeYHigh);
-                                            textureCoordCounter++;
+                                            textureCoord.put(sizeXHigh);
+                                            textureCoord.put(sizeYLow);
+                                            textureCoord.put(sizeXLow);
+                                            textureCoord.put(sizeYLow);
+                                            textureCoord.put(sizeXLow);
+                                            textureCoord.put(sizeYHigh);
+                                            textureCoord.put(sizeXHigh);
+                                            textureCoord.put(sizeYHigh);
                                         }
 
 
                                         {
                                             //x is the constant
                                             //left
-                                            positions.put(positionsCounter, tfl.x + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, tfl.y + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, tfl.z + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, trl.x + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, trl.y + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, trl.z + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, brl.x + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, brl.y + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, brl.z + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, bfl.x + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, bfl.y + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, bfl.z + z);
-                                            positionsCounter++;
+                                            positions.put(tfl.x + x);
+                                            positions.put(tfl.y + y);
+                                            positions.put(tfl.z + z);
+                                            positions.put(trl.x + x);
+                                            positions.put(trl.y + y);
+                                            positions.put(trl.z + z);
+                                            positions.put(brl.x + x);
+                                            positions.put(brl.y + y);
+                                            positions.put(brl.z + z);
+                                            positions.put(bfl.x + x);
+                                            positions.put(bfl.y + y);
+                                            positions.put(bfl.z + z);
 
                                             //left
                                             if (x - 1 < 0) {
@@ -2211,73 +1475,46 @@ public class ChunkMeshGenerator implements Runnable{
 
                                             lightValue = convertLight(lightValue / maxLight);
                                             //left
-                                            for (i = 0; i < 12; i++) {
-                                                light.put(lightCounter, lightValue);
-                                                lightCounter++;
+                                            for (byte i = 0; i < 12; i++) {
+                                                light.put(lightValue);
                                             }
 
                                             //left
-                                            indices.put(indicesCounter, indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 1 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 2 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 2 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 3 + indicesCount);
-                                            indicesCounter++;
+                                            indices.put(indicesCount);
+                                            indices.put(1 + indicesCount);
+                                            indices.put(2 + indicesCount);
+                                            indices.put(indicesCount);
+                                            indices.put(2 + indicesCount);
+                                            indices.put(3 + indicesCount);
 
                                             indicesCount += 4;
 
                                             //left
-                                            textureCoord.put(textureCoordCounter, sizeXHigh);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, sizeYLow);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, sizeXLow);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, sizeYLow);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, sizeXLow);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, sizeYHigh);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, sizeXHigh);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, sizeYHigh);
-                                            textureCoordCounter++;
+                                            textureCoord.put(sizeXHigh);
+                                            textureCoord.put(sizeYLow);
+                                            textureCoord.put(sizeXLow);
+                                            textureCoord.put(sizeYLow);
+                                            textureCoord.put(sizeXLow);
+                                            textureCoord.put(sizeYHigh);
+                                            textureCoord.put(sizeXHigh);
+                                            textureCoord.put(sizeYHigh);
                                         }
 
                                         {
                                             //y is constant
                                             //top
-                                            positions.put(positionsCounter, trl.x + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, trl.y + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, trl.z + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, tfl.x + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, tfl.y + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, tfl.z + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, tfr.x + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, tfr.y + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, tfr.z + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, trr.x + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, trr.y + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, trr.z + z);
-                                            positionsCounter++;
+                                            positions.put(trl.x + x);
+                                            positions.put(trl.y + y);
+                                            positions.put(trl.z + z);
+                                            positions.put(tfl.x + x);
+                                            positions.put(tfl.y + y);
+                                            positions.put(tfl.z + z);
+                                            positions.put(tfr.x + x);
+                                            positions.put(tfr.y + y);
+                                            positions.put(tfr.z + z);
+                                            positions.put(trr.x + x);
+                                            positions.put(trr.y + y);
+                                            positions.put(trr.z + z);
 
                                             //top
                                             if (y + 1 < 128) {
@@ -2289,74 +1526,47 @@ public class ChunkMeshGenerator implements Runnable{
                                             lightValue = convertLight(lightValue / maxLight);
 
                                             //top
-                                            for (i = 0; i < 12; i++) {
-                                                light.put(lightCounter, lightValue);
-                                                lightCounter++;
+                                            for (byte i = 0; i < 12; i++) {
+                                                light.put(lightValue);
                                             }
 
                                             //top
-                                            indices.put(indicesCounter, indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 1 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 2 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 2 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 3 + indicesCount);
-                                            indicesCounter++;
+                                            indices.put(indicesCount);
+                                            indices.put(1 + indicesCount);
+                                            indices.put(2 + indicesCount);
+                                            indices.put(indicesCount);
+                                            indices.put(2 + indicesCount);
+                                            indices.put(3 + indicesCount);
 
                                             indicesCount += 4;
 
                                             //top
-                                            textureCoord.put(textureCoordCounter, topSizeXHigh);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, topSizeYLow);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, topSizeXLow);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, topSizeYLow);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, topSizeXLow);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, topSizeYHigh);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, topSizeXHigh);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, topSizeYHigh);
-                                            textureCoordCounter++;
+                                            textureCoord.put(topSizeXHigh);
+                                            textureCoord.put(topSizeYLow);
+                                            textureCoord.put(topSizeXLow);
+                                            textureCoord.put(topSizeYLow);
+                                            textureCoord.put(topSizeXLow);
+                                            textureCoord.put(topSizeYHigh);
+                                            textureCoord.put(topSizeXHigh);
+                                            textureCoord.put(topSizeYHigh);
                                         }
 
 
                                         {
                                             //y is constant
                                             //bottom
-                                            positions.put(positionsCounter, brl.x + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, brl.y + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, brl.z + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, brr.x + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, brr.y + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, brr.z + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, bfr.x + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, bfr.y + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, bfr.z + z);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, bfl.x + x);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, bfl.y + y);
-                                            positionsCounter++;
-                                            positions.put(positionsCounter, bfl.z + z);
-                                            positionsCounter++;
+                                            positions.put(brl.x + x);
+                                            positions.put(brl.y + y);
+                                            positions.put(brl.z + z);
+                                            positions.put(brr.x + x);
+                                            positions.put(brr.y + y);
+                                            positions.put(brr.z + z);
+                                            positions.put(bfr.x + x);
+                                            positions.put(bfr.y + y);
+                                            positions.put(bfr.z + z);
+                                            positions.put(bfl.x + x);
+                                            positions.put(bfl.y + y);
+                                            positions.put(bfl.z + z);
 
                                             //bottom
                                             if (y - 1 > 0) {
@@ -2367,44 +1577,29 @@ public class ChunkMeshGenerator implements Runnable{
 
                                             lightValue = convertLight(lightValue / maxLight);
                                             //bottom
-                                            for (i = 0; i < 12; i++) {
-                                                light.put(lightCounter, lightValue);
-                                                lightCounter++;
+                                            for (byte i = 0; i < 12; i++) {
+                                                light.put(lightValue);
                                             }
 
                                             //bottom
-                                            indices.put(indicesCounter, indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 1 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 2 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 2 + indicesCount);
-                                            indicesCounter++;
-                                            indices.put(indicesCounter, 3 + indicesCount);
-                                            indicesCounter++;
+                                            indices.put(indicesCount);
+                                            indices.put(1 + indicesCount);
+                                            indices.put(2 + indicesCount);
+                                            indices.put(indicesCount);
+                                            indices.put(2 + indicesCount);
+                                            indices.put(3 + indicesCount);
 
                                             indicesCount += 4;
 
                                             //bottom
-                                            textureCoord.put(textureCoordCounter, bottomSizeXHigh);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, bottomSizeYLow);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, bottomSizeXLow);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, bottomSizeYLow);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, bottomSizeXLow);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, bottomSizeYHigh);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, bottomSizeXHigh);
-                                            textureCoordCounter++;
-                                            textureCoord.put(textureCoordCounter, bottomSizeYHigh);
-                                            textureCoordCounter++;
+                                            textureCoord.put(bottomSizeXHigh);
+                                            textureCoord.put(bottomSizeYLow);
+                                            textureCoord.put(bottomSizeXLow);
+                                            textureCoord.put(bottomSizeYLow);
+                                            textureCoord.put(bottomSizeXLow);
+                                            textureCoord.put(bottomSizeYHigh);
+                                            textureCoord.put(bottomSizeXHigh);
+                                            textureCoord.put(bottomSizeYHigh);
                                         }
 
                                     } //end of case 7
@@ -2749,13 +1944,10 @@ public class ChunkMeshGenerator implements Runnable{
             }
 
 
-
-            /*
             long endTime = System.nanoTime();
             long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
             double seconds = (double) duration / 1_000_000_000.0;
             System.out.println("This took: " + seconds + " seconds to generate chunk mesh");
-             */
 
 
             ChunkMeshDataObject newChunkData = new ChunkMeshDataObject();
@@ -2765,33 +1957,33 @@ public class ChunkMeshGenerator implements Runnable{
             newChunkData.yHeight = yHeight;
 
 
-            if (positionsCounter > 0) {
+            if (positions.size() > 0) {
                 //pass data to container object
-                newChunkData.positionsArray    = positions.values().toFloatArray();
-                newChunkData.lightArray        = light.values().toFloatArray();
-                newChunkData.indicesArray      = indices.values().toIntArray();
-                newChunkData.textureCoordArray = textureCoord.values().toFloatArray();
+                newChunkData.positionsArray    = positions.values();
+                newChunkData.lightArray        = light.values();
+                newChunkData.indicesArray      = indices.values();
+                newChunkData.textureCoordArray = textureCoord.values();
             } else {
                 //inform the container object that this chunk is null for this part of it
                 newChunkData.normalMeshIsNull = true;
             }
 
-            if (liquidPositionsCounter > 0){
-                newChunkData.liquidPositionsArray    = liquidPositions.values().toFloatArray();
-                newChunkData.liquidLightArray        = liquidLight.values().toFloatArray();
-                newChunkData.liquidIndicesArray      = liquidIndices.values().toIntArray();
-                newChunkData.liquidTextureCoordArray = liquidTextureCoord.values().toFloatArray();
+            if (liquidPositions.size() > 0){
+                newChunkData.liquidPositionsArray    = liquidPositions.values();
+                newChunkData.liquidLightArray        = liquidLight.values();
+                newChunkData.liquidIndicesArray      = liquidIndices.values();
+                newChunkData.liquidTextureCoordArray = liquidTextureCoord.values();
             } else {
                 //inform the container object that this chunk is null for this part of it
                 newChunkData.liquidMeshIsNull = true;
             }
 
-            if (allFacesPositionsCounter > 0) {
+            if (allFacesPositions.size() > 0) {
                 //pass data to container object
-                newChunkData.allFacesPositionsArray = allFacesPositions.values().toFloatArray();
-                newChunkData.allFacesLightArray = allFacesLight.values().toFloatArray();
-                newChunkData.allFacesIndicesArray = allFacesIndices.values().toIntArray();
-                newChunkData.allFacesTextureCoordArray = allFacesTextureCoord.values().toFloatArray();
+                newChunkData.allFacesPositionsArray = allFacesPositions.values();
+                newChunkData.allFacesLightArray = allFacesLight.values();
+                newChunkData.allFacesIndicesArray = allFacesIndices.values();
+                newChunkData.allFacesTextureCoordArray = allFacesTextureCoord.values();
             } else {
                 //inform the container object that this chunk is null for this part of it
                 newChunkData.allFacesMeshIsNull = true;
@@ -2945,10 +2137,10 @@ public class ChunkMeshGenerator implements Runnable{
         };
     }
 
-    public static float[] getTopTexturePoints(int ID){
+    private static float[] getTopTexturePoints(int ID){
         return blockIDs[ID].topTexture;
     }
-    public static float[] getBottomTexturePoints(int ID){
+    private static float[] getBottomTexturePoints(int ID){
         return blockIDs[ID].bottomTexture;
     }
 
