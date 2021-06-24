@@ -5,12 +5,14 @@ import org.joml.Vector3f;
 
 import static engine.sound.SoundAPI.playSound;
 import static game.chunk.Chunk.*;
+import static game.chunk.ChunkMeshGenerator.passChunkMeshThreadData;
 import static game.crafting.InventoryLogic.openCraftingInventory;
 import static game.falling.FallingEntity.addFallingEntity;
 import static game.item.ItemDefinition.registerItem;
 import static game.item.ItemEntity.createItem;
 import static game.light.Light.torchFloodFill;
 import static game.tnt.TNTEntity.createTNT;
+
 
 public class BlockDefinition {
 
@@ -1264,6 +1266,8 @@ public class BlockDefinition {
                 true,
                 "torchItem"
         );
+
+        passChunkMeshThreadData(blockIDs, blockShapeMap);
     }
 
     public static BlockDefinition getBlockDefinition(int ID){

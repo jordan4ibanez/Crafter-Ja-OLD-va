@@ -12,6 +12,7 @@ import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import static engine.FancyMath.getDistance;
 import static engine.time.Time.getDelta;

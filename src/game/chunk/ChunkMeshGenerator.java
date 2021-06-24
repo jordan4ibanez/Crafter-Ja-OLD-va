@@ -1,5 +1,7 @@
 package game.chunk;
 
+import game.blocks.BlockDefinition;
+import game.blocks.BlockShape;
 import it.unimi.dsi.fastutil.ints.Int2FloatLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2IntLinkedOpenHashMap;
 import org.joml.Vector3f;
@@ -8,7 +10,6 @@ import org.joml.Vector3i;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 import static engine.Window.windowShouldClose;
-import static game.blocks.BlockDefinition.*;
 import static game.chunk.Chunk.*;
 import static game.chunk.ChunkMeshGenerationHandler.addToChunkMeshQueue;
 import static game.light.Light.getCurrentGlobalLightLevel;
@@ -16,6 +17,20 @@ import static game.light.Light.getCurrentGlobalLightLevel;
 public class ChunkMeshGenerator implements Runnable{
     //DO NOT CHANGE THE DATA CONTAINER
     private static final ConcurrentLinkedDeque<Vector3i> generationQueue = new ConcurrentLinkedDeque<>();
+
+
+    //holds BlockDefinition data - on this thread
+    private static BlockDefinition[] blockIDs;
+
+    //holds the blockshape data - on this thread
+    private static BlockShape[] blockShapeMap;
+
+
+    public static void passChunkMeshThreadData(BlockDefinition[] newBlockIDs, BlockShape[] newBlockShapeMap){
+        //remove pointer data
+        blockIDs = newBlockIDs.clone();
+        blockShapeMap = newBlockShapeMap.clone();
+    }
 
     public void run() {
         while (!windowShouldClose()) {
@@ -37,27 +52,6 @@ public class ChunkMeshGenerator implements Runnable{
 
     //cache data
     //these are held on the heap
-    private final static byte maxLight = 15;
-
-    //require 0.125 width
-    private static final float largeXZ = 0.5625f; //large
-    private static final float smallXZ = 0.4375f; //small
-
-    private static final float largeY = 0.625f;
-    private static final float smallY = 0.0f;
-
-    private static final Vector3f trl = new Vector3f(); //top rear left
-    private static final Vector3f trr = new Vector3f(); //top rear right
-    private static final Vector3f tfl = new Vector3f(); //top front left
-    private static final Vector3f tfr = new Vector3f(); //top front right
-
-    private static final Vector3f brl = new Vector3f(); //bottom rear left
-    private static final Vector3f brr = new Vector3f(); //bottom rear right - also cold
-    private static final Vector3f bfl = new Vector3f(); //bottom front left
-    private static final Vector3f bfr = new Vector3f(); //bottom front right
-
-    private static final float pixel = (1f / 32f / 16f);
-
 
     private static void pollQueue(){
         if (!generationQueue.isEmpty()) {
@@ -84,9 +78,9 @@ public class ChunkMeshGenerator implements Runnable{
             }
 
             //raw data extracted into stack primitives
-            int chunkX  = updateRawData.x;
-            int chunkZ  = updateRawData.z;
-            int yHeight = updateRawData.y;
+            final int chunkX  = updateRawData.x;
+            final int chunkZ  = updateRawData.z;
+            final int yHeight = updateRawData.y;
 
 
 
@@ -98,38 +92,65 @@ public class ChunkMeshGenerator implements Runnable{
 
             //todo: finalize these variables
 
+            final byte maxLight = 15;
+
+            //require 0.125 width
+            final float largeXZ = 0.5625f; //large
+            final float smallXZ = 0.4375f; //small
+
+            final float largeY = 0.625f;
+            final float smallY = 0.0f;
+
+            final Vector3f trl = new Vector3f(); //top rear left
+            final Vector3f trr = new Vector3f(); //top rear right
+            final Vector3f tfl = new Vector3f(); //top front left
+            final Vector3f tfr = new Vector3f(); //top front right
+
+            final Vector3f brl = new Vector3f(); //bottom rear left
+            final Vector3f brr = new Vector3f(); //bottom rear right - also cold
+            final Vector3f bfl = new Vector3f(); //bottom front left
+            final Vector3f bfr = new Vector3f(); //bottom front right
+
+            final float pixel = (1f / 32f / 16f);
+
+
+
             //thank you FastUtil for existing
 
             //normal block mesh data
-            Int2FloatLinkedOpenHashMap positions    = new Int2FloatLinkedOpenHashMap();
-            int positionsCounter                    = 0;
-            Int2FloatLinkedOpenHashMap textureCoord = new Int2FloatLinkedOpenHashMap();
-            int textureCoordCounter                 = 0;
-            Int2IntLinkedOpenHashMap indices        = new Int2IntLinkedOpenHashMap();
-            int indicesCounter                      = 0;
-            Int2FloatLinkedOpenHashMap light        = new Int2FloatLinkedOpenHashMap();
-            int lightCounter                        = 0;
+            final Int2FloatLinkedOpenHashMap positions    = new Int2FloatLinkedOpenHashMap();
+            int positionsCounter                          = 0;
+            final Int2FloatLinkedOpenHashMap textureCoord = new Int2FloatLinkedOpenHashMap();
+            int textureCoordCounter                       = 0;
+            final Int2IntLinkedOpenHashMap indices        = new Int2IntLinkedOpenHashMap();
+            int indicesCounter                            = 0;
+            final Int2FloatLinkedOpenHashMap light        = new Int2FloatLinkedOpenHashMap();
+            int lightCounter                              = 0;
 
             int indicesCount = 0;
 
             //liquid block mesh data
-            /*
-            final LinkedList<Float> liquidPositions = new LinkedList<>();
-            final LinkedList<Float> liquidTextureCoord = new LinkedList<>();
-            final LinkedList<Integer> liquidIndices = new LinkedList<>();
-            final LinkedList<Float> liquidLight = new LinkedList<>();
+
+            final Int2FloatLinkedOpenHashMap liquidPositions    = new Int2FloatLinkedOpenHashMap();
+            int liquidPositionsCounter                          = 0;
+            final Int2FloatLinkedOpenHashMap liquidTextureCoord = new Int2FloatLinkedOpenHashMap();
+            int liquidTextureCoordCounter                       = 0;
+            final Int2IntLinkedOpenHashMap liquidIndices        = new Int2IntLinkedOpenHashMap();
+            int liquidIndicesCounter                            = 0;
+            final Int2FloatLinkedOpenHashMap liquidLight        = new Int2FloatLinkedOpenHashMap();
+            int liquidLightCounter                              = 0;
 
             int liquidIndicesCount = 0;
-             */
+
 
             //allFaces block mesh data
-            Int2FloatLinkedOpenHashMap allFacesPositions    = new Int2FloatLinkedOpenHashMap();
+            final Int2FloatLinkedOpenHashMap allFacesPositions    = new Int2FloatLinkedOpenHashMap();
             int allFacesPositionsCounter                    = 0;
-            Int2FloatLinkedOpenHashMap allFacesTextureCoord = new Int2FloatLinkedOpenHashMap();
+            final Int2FloatLinkedOpenHashMap allFacesTextureCoord = new Int2FloatLinkedOpenHashMap();
             int allFacesTextureCoordCounter                 = 0;
-            Int2IntLinkedOpenHashMap allFacesIndices        = new Int2IntLinkedOpenHashMap();
+            final Int2IntLinkedOpenHashMap allFacesIndices        = new Int2IntLinkedOpenHashMap();
             int allFacesIndicesCounter                      = 0;
-            Int2FloatLinkedOpenHashMap allFacesLight        = new Int2FloatLinkedOpenHashMap();
+            final Int2FloatLinkedOpenHashMap allFacesLight        = new Int2FloatLinkedOpenHashMap();
             int allFacesLightCounter                        = 0;
 
             int allFacesIndicesCount = 0;
@@ -165,7 +186,7 @@ public class ChunkMeshGenerator implements Runnable{
 
                             //todo --------------------------------------- THE LIQUID DRAWTYPE
 
-                            /*
+
                             if (getIfLiquid(thisBlock)) {
 
                                 if (z + 1 > 15) {
@@ -176,18 +197,30 @@ public class ChunkMeshGenerator implements Runnable{
 
                                 if (neighborBlock >= 0 && getBlockDrawType(neighborBlock) != 1) {
                                     //front
-                                    liquidPositions.add(1f + x);
-                                    liquidPositions.add(1f + y);
-                                    liquidPositions.add(1f + z);
-                                    liquidPositions.add(0f + x);
-                                    liquidPositions.add(1f + y);
-                                    liquidPositions.add(1f + z);
-                                    liquidPositions.add(0f + x);
-                                    liquidPositions.add(0f + y);
-                                    liquidPositions.add(1f + z);
-                                    liquidPositions.add(1f + x);
-                                    liquidPositions.add(0f + y);
-                                    liquidPositions.add(1f + z);
+                                    liquidPositions.put(liquidPositionsCounter,1f + x);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,1f + y);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,1f + z);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,0f + x);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,1f + y);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,1f + z);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,0f + x);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,0f + y);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,1f + z);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,1f + x);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,0f + y);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,1f + z);
+                                    liquidPositionsCounter++;
 
 
 
@@ -201,29 +234,45 @@ public class ChunkMeshGenerator implements Runnable{
                                     lightValue = convertLight(lightValue / maxLight);
 
                                     //front
-                                    for (int i = 0; i < 12; i++) {
-                                        liquidLight.add(lightValue);
+                                    for (i = 0; i < 12; i++) {
+                                        liquidLight.put(liquidLightCounter,lightValue);
+                                        liquidLightCounter++;
                                     }
 
                                     //front
-                                    liquidIndices.add(liquidIndicesCount);
-                                    liquidIndices.add(1 + liquidIndicesCount);
-                                    liquidIndices.add(2 + liquidIndicesCount);
-                                    liquidIndices.add(liquidIndicesCount);
-                                    liquidIndices.add(2 + liquidIndicesCount);
-                                    liquidIndices.add(3 + liquidIndicesCount);
+                                    liquidIndices.put(liquidIndicesCounter,liquidIndicesCount);
+                                    liquidIndicesCounter++;
+                                    liquidIndices.put(liquidIndicesCounter,1 + liquidIndicesCount);
+                                    liquidIndicesCounter++;
+                                    liquidIndices.put(liquidIndicesCounter,2 + liquidIndicesCount);
+                                    liquidIndicesCounter++;
+                                    liquidIndices.put(liquidIndicesCounter,liquidIndicesCount);
+                                    liquidIndicesCounter++;
+                                    liquidIndices.put(liquidIndicesCounter,2 + liquidIndicesCount);
+                                    liquidIndicesCounter++;
+                                    liquidIndices.put(liquidIndicesCounter,3 + liquidIndicesCount);
+                                    liquidIndicesCounter++;
+
                                     liquidIndicesCount += 4;
 
                                     textureWorker = getFrontTexturePoints(thisBlock, thisRotation);
                                     //front
-                                    liquidTextureCoord.add(textureWorker[1]);
-                                    liquidTextureCoord.add(textureWorker[2]);
-                                    liquidTextureCoord.add(textureWorker[0]);
-                                    liquidTextureCoord.add(textureWorker[2]);
-                                    liquidTextureCoord.add(textureWorker[0]);
-                                    liquidTextureCoord.add(textureWorker[3]);
-                                    liquidTextureCoord.add(textureWorker[1]);
-                                    liquidTextureCoord.add(textureWorker[3]);
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[1]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[2]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[0]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[2]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[0]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[3]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[1]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[3]);
+                                    liquidTextureCoordCounter++;
                                 }
 
 
@@ -235,18 +284,30 @@ public class ChunkMeshGenerator implements Runnable{
 
                                 if (neighborBlock >= 0 && getBlockDrawType(neighborBlock) != 1) {
                                     //back
-                                    liquidPositions.add(0f + x);
-                                    liquidPositions.add(1f + y);
-                                    liquidPositions.add(0f + z);
-                                    liquidPositions.add(1f + x);
-                                    liquidPositions.add(1f + y);
-                                    liquidPositions.add(0f + z);
-                                    liquidPositions.add(1f + x);
-                                    liquidPositions.add(0f + y);
-                                    liquidPositions.add(0f + z);
-                                    liquidPositions.add(0f + x);
-                                    liquidPositions.add(0f + y);
-                                    liquidPositions.add(0f + z);
+                                    liquidPositions.put(liquidPositionsCounter,0f + x);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,1f + y);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,0f + z);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,1f + x);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,1f + y);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,0f + z);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,1f + x);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,0f + y);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,0f + z);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,0f + x);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,0f + y);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,0f + z);
+                                    liquidPositionsCounter++;
 
                                     //back
                                     if (z - 1 < 0) {
@@ -257,29 +318,45 @@ public class ChunkMeshGenerator implements Runnable{
 
                                     lightValue = convertLight(lightValue / maxLight);
                                     //back
-                                    for (int i = 0; i < 12; i++) {
-                                        liquidLight.add(lightValue);
+                                    for (i = 0; i < 12; i++) {
+                                        liquidLight.put(liquidLightCounter,lightValue);
+                                        liquidLightCounter++;
                                     }
 
                                     //back
-                                    liquidIndices.add(liquidIndicesCount);
-                                    liquidIndices.add(1 + liquidIndicesCount);
-                                    liquidIndices.add(2 + liquidIndicesCount);
-                                    liquidIndices.add(liquidIndicesCount);
-                                    liquidIndices.add(2 + liquidIndicesCount);
-                                    liquidIndices.add(3 + liquidIndicesCount);
+                                    liquidIndices.put(liquidIndicesCounter,liquidIndicesCount);
+                                    liquidIndicesCounter++;
+                                    liquidIndices.put(liquidIndicesCounter,1 + liquidIndicesCount);
+                                    liquidIndicesCounter++;
+                                    liquidIndices.put(liquidIndicesCounter,2 + liquidIndicesCount);
+                                    liquidIndicesCounter++;
+                                    liquidIndices.put(liquidIndicesCounter,liquidIndicesCount);
+                                    liquidIndicesCounter++;
+                                    liquidIndices.put(liquidIndicesCounter,2 + liquidIndicesCount);
+                                    liquidIndicesCounter++;
+                                    liquidIndices.put(liquidIndicesCounter,3 + liquidIndicesCount);
+                                    liquidIndicesCounter++;
+
                                     liquidIndicesCount += 4;
 
                                     textureWorker = getBackTexturePoints(thisBlock, thisRotation);
                                     //back
-                                    liquidTextureCoord.add(textureWorker[1]);
-                                    liquidTextureCoord.add(textureWorker[2]);
-                                    liquidTextureCoord.add(textureWorker[0]);
-                                    liquidTextureCoord.add(textureWorker[2]);
-                                    liquidTextureCoord.add(textureWorker[0]);
-                                    liquidTextureCoord.add(textureWorker[3]);
-                                    liquidTextureCoord.add(textureWorker[1]);
-                                    liquidTextureCoord.add(textureWorker[3]);
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[1]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[2]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[0]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[2]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[0]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[3]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[1]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[3]);
+                                    liquidTextureCoordCounter++;
                                 }
 
                                 if (x + 1 > 15) {
@@ -290,18 +367,30 @@ public class ChunkMeshGenerator implements Runnable{
 
                                 if (neighborBlock >= 0 && getBlockDrawType(neighborBlock) != 1) {
                                     //right
-                                    liquidPositions.add(1f + x);
-                                    liquidPositions.add(1f + y);
-                                    liquidPositions.add(0f + z);
-                                    liquidPositions.add(1f + x);
-                                    liquidPositions.add(1f + y);
-                                    liquidPositions.add(1f + z);
-                                    liquidPositions.add(1f + x);
-                                    liquidPositions.add(0f + y);
-                                    liquidPositions.add(1f + z);
-                                    liquidPositions.add(1f + x);
-                                    liquidPositions.add(0f + y);
-                                    liquidPositions.add(0f + z);
+                                    liquidPositions.put(liquidPositionsCounter,1f + x);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,1f + y);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,0f + z);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,1f + x);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,1f + y);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,1f + z);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,1f + x);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,0f + y);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,1f + z);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,1f + x);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,0f + y);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,0f + z);
+                                    liquidPositionsCounter++;
 
                                     //right
 
@@ -313,30 +402,46 @@ public class ChunkMeshGenerator implements Runnable{
 
                                     lightValue = convertLight(lightValue / maxLight);
                                     //right
-                                    for (int i = 0; i < 12; i++) {
-                                        liquidLight.add(lightValue);
+                                    for (i = 0; i < 12; i++) {
+                                        liquidLight.put(liquidLightCounter,lightValue);
+                                        liquidLightCounter++;
                                     }
 
 
                                     //right
-                                    liquidIndices.add(liquidIndicesCount);
-                                    liquidIndices.add(1 + liquidIndicesCount);
-                                    liquidIndices.add(2 + liquidIndicesCount);
-                                    liquidIndices.add(liquidIndicesCount);
-                                    liquidIndices.add(2 + liquidIndicesCount);
-                                    liquidIndices.add(3 + liquidIndicesCount);
+                                    liquidIndices.put(liquidIndicesCounter,liquidIndicesCount);
+                                    liquidIndicesCounter++;
+                                    liquidIndices.put(liquidIndicesCounter,1 + liquidIndicesCount);
+                                    liquidIndicesCounter++;
+                                    liquidIndices.put(liquidIndicesCounter,2 + liquidIndicesCount);
+                                    liquidIndicesCounter++;
+                                    liquidIndices.put(liquidIndicesCounter,liquidIndicesCount);
+                                    liquidIndicesCounter++;
+                                    liquidIndices.put(liquidIndicesCounter,2 + liquidIndicesCount);
+                                    liquidIndicesCounter++;
+                                    liquidIndices.put(liquidIndicesCounter,3 + liquidIndicesCount);
+                                    liquidIndicesCounter++;
+
                                     liquidIndicesCount += 4;
 
                                     textureWorker = getRightTexturePoints(thisBlock, thisRotation);
                                     //right
-                                    liquidTextureCoord.add(textureWorker[1]);
-                                    liquidTextureCoord.add(textureWorker[2]);
-                                    liquidTextureCoord.add(textureWorker[0]);
-                                    liquidTextureCoord.add(textureWorker[2]);
-                                    liquidTextureCoord.add(textureWorker[0]);
-                                    liquidTextureCoord.add(textureWorker[3]);
-                                    liquidTextureCoord.add(textureWorker[1]);
-                                    liquidTextureCoord.add(textureWorker[3]);
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[1]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[2]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[0]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[2]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[0]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[3]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[1]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[3]);
+                                    liquidTextureCoordCounter++;
                                 }
 
                                 if (x - 1 < 0) {
@@ -347,18 +452,30 @@ public class ChunkMeshGenerator implements Runnable{
 
                                 if (neighborBlock >= 0 && getBlockDrawType(neighborBlock) != 1) {
                                     //left
-                                    liquidPositions.add(0f + x);
-                                    liquidPositions.add(1f + y);
-                                    liquidPositions.add(1f + z);
-                                    liquidPositions.add(0f + x);
-                                    liquidPositions.add(1f + y);
-                                    liquidPositions.add(0f + z);
-                                    liquidPositions.add(0f + x);
-                                    liquidPositions.add(0f + y);
-                                    liquidPositions.add(0f + z);
-                                    liquidPositions.add(0f + x);
-                                    liquidPositions.add(0f + y);
-                                    liquidPositions.add(1f + z);
+                                    liquidPositions.put(liquidPositionsCounter,0f + x);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,1f + y);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,1f + z);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,0f + x);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,1f + y);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,0f + z);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,0f + x);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,0f + y);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,0f + z);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,0f + x);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,0f + y);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,1f + z);
+                                    liquidPositionsCounter++;
 
                                     //left
 
@@ -370,30 +487,46 @@ public class ChunkMeshGenerator implements Runnable{
 
                                     lightValue = convertLight(lightValue / maxLight);
                                     //left
-                                    for (int i = 0; i < 12; i++) {
-                                        liquidLight.add(lightValue);
+                                    for (i = 0; i < 12; i++) {
+                                        liquidLight.put(liquidLightCounter,lightValue);
+                                        liquidLightCounter++;
                                     }
 
 
                                     //left
-                                    liquidIndices.add(liquidIndicesCount);
-                                    liquidIndices.add(1 + liquidIndicesCount);
-                                    liquidIndices.add(2 + liquidIndicesCount);
-                                    liquidIndices.add(liquidIndicesCount);
-                                    liquidIndices.add(2 + liquidIndicesCount);
-                                    liquidIndices.add(3 + liquidIndicesCount);
+                                    liquidIndices.put(liquidIndicesCounter,liquidIndicesCount);
+                                    liquidIndicesCounter++;
+                                    liquidIndices.put(liquidIndicesCounter,1 + liquidIndicesCount);
+                                    liquidIndicesCounter++;
+                                    liquidIndices.put(liquidIndicesCounter,2 + liquidIndicesCount);
+                                    liquidIndicesCounter++;
+                                    liquidIndices.put(liquidIndicesCounter,liquidIndicesCount);
+                                    liquidIndicesCounter++;
+                                    liquidIndices.put(liquidIndicesCounter,2 + liquidIndicesCount);
+                                    liquidIndicesCounter++;
+                                    liquidIndices.put(liquidIndicesCounter,3 + liquidIndicesCount);
+                                    liquidIndicesCounter++;
+
                                     liquidIndicesCount += 4;
 
                                     textureWorker = getLeftTexturePoints(thisBlock, thisRotation);
                                     //left
-                                    liquidTextureCoord.add(textureWorker[1]);
-                                    liquidTextureCoord.add(textureWorker[2]);
-                                    liquidTextureCoord.add(textureWorker[0]);
-                                    liquidTextureCoord.add(textureWorker[2]);
-                                    liquidTextureCoord.add(textureWorker[0]);
-                                    liquidTextureCoord.add(textureWorker[3]);
-                                    liquidTextureCoord.add(textureWorker[1]);
-                                    liquidTextureCoord.add(textureWorker[3]);
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[1]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[2]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[0]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[2]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[0]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[3]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[1]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[3]);
+                                    liquidTextureCoordCounter++;
                                 }
 
                                 //y doesn't need a check since it has no neighbors
@@ -403,18 +536,30 @@ public class ChunkMeshGenerator implements Runnable{
 
                                 if (y == 127 || (neighborBlock >= 0 && getBlockDrawType(neighborBlock) != 1)) {
                                     //top
-                                    liquidPositions.add(0f + x);
-                                    liquidPositions.add(1f + y);
-                                    liquidPositions.add(0f + z);
-                                    liquidPositions.add(0f + x);
-                                    liquidPositions.add(1f + y);
-                                    liquidPositions.add(1f + z);
-                                    liquidPositions.add(1f + x);
-                                    liquidPositions.add(1f + y);
-                                    liquidPositions.add(1f + z);
-                                    liquidPositions.add(1f + x);
-                                    liquidPositions.add(1f + y);
-                                    liquidPositions.add(0f + z);
+                                    liquidPositions.put(liquidPositionsCounter,0f + x);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,1f + y);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,0f + z);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,0f + x);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,1f + y);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,1f + z);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,1f + x);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,1f + y);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,1f + z);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,1f + x);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,1f + y);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,0f + z);
+                                    liquidPositionsCounter++;
 
 
                                     //top
@@ -428,30 +573,46 @@ public class ChunkMeshGenerator implements Runnable{
 
                                     lightValue = convertLight(lightValue / maxLight);
                                     //top
-                                    for (int i = 0; i < 12; i++) {
-                                        liquidLight.add(lightValue);
+                                    for (i = 0; i < 12; i++) {
+                                        liquidLight.put(liquidLightCounter,lightValue);
+                                        liquidLightCounter++;
                                     }
 
 
                                     //top
-                                    liquidIndices.add(liquidIndicesCount);
-                                    liquidIndices.add(1 + liquidIndicesCount);
-                                    liquidIndices.add(2 + liquidIndicesCount);
-                                    liquidIndices.add(liquidIndicesCount);
-                                    liquidIndices.add(2 + liquidIndicesCount);
-                                    liquidIndices.add(3 + liquidIndicesCount);
+                                    liquidIndices.put(liquidIndicesCounter,liquidIndicesCount);
+                                    liquidIndicesCounter++;
+                                    liquidIndices.put(liquidIndicesCounter,1 + liquidIndicesCount);
+                                    liquidIndicesCounter++;
+                                    liquidIndices.put(liquidIndicesCounter,2 + liquidIndicesCount);
+                                    liquidIndicesCounter++;
+                                    liquidIndices.put(liquidIndicesCounter,liquidIndicesCount);
+                                    liquidIndicesCounter++;
+                                    liquidIndices.put(liquidIndicesCounter,2 + liquidIndicesCount);
+                                    liquidIndicesCounter++;
+                                    liquidIndices.put(liquidIndicesCounter,3 + liquidIndicesCount);
+                                    liquidIndicesCounter++;
+
                                     liquidIndicesCount += 4;
 
                                     textureWorker = getTopTexturePoints(thisBlock);
                                     //top
-                                    liquidTextureCoord.add(textureWorker[1]);
-                                    liquidTextureCoord.add(textureWorker[2]);
-                                    liquidTextureCoord.add(textureWorker[0]);
-                                    liquidTextureCoord.add(textureWorker[2]);
-                                    liquidTextureCoord.add(textureWorker[0]);
-                                    liquidTextureCoord.add(textureWorker[3]);
-                                    liquidTextureCoord.add(textureWorker[1]);
-                                    liquidTextureCoord.add(textureWorker[3]);
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[1]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[2]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[0]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[2]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[0]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[3]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[1]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[3]);
+                                    liquidTextureCoordCounter++;
                                 }
 
                                 //doesn't need a neighbor chunk, chunks are 2D
@@ -462,18 +623,30 @@ public class ChunkMeshGenerator implements Runnable{
                                 //don't render bottom of world
                                 if (y != 0 && neighborBlock >= 0 && getBlockDrawType(neighborBlock) != 1) {
                                     //bottom
-                                    liquidPositions.add(0f + x);
-                                    liquidPositions.add(0f + y);
-                                    liquidPositions.add(1f + z);
-                                    liquidPositions.add(0f + x);
-                                    liquidPositions.add(0f + y);
-                                    liquidPositions.add(0f + z);
-                                    liquidPositions.add(1f + x);
-                                    liquidPositions.add(0f + y);
-                                    liquidPositions.add(0f + z);
-                                    liquidPositions.add(1f + x);
-                                    liquidPositions.add(0f + y);
-                                    liquidPositions.add(1f + z);
+                                    liquidPositions.put(liquidPositionsCounter,0f + x);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,0f + y);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,1f + z);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,0f + x);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,0f + y);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,0f + z);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,1f + x);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,0f + y);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,0f + z);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,1f + x);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,0f + y);
+                                    liquidPositionsCounter++;
+                                    liquidPositions.put(liquidPositionsCounter,1f + z);
+                                    liquidPositionsCounter++;
 
                                     //bottom
 
@@ -486,1747 +659,1760 @@ public class ChunkMeshGenerator implements Runnable{
 
                                     lightValue = convertLight(lightValue / maxLight);
                                     //bottom
-                                    for (int i = 0; i < 12; i++) {
-                                        liquidLight.add(lightValue);
+                                    for (i = 0; i < 12; i++) {
+                                        liquidLight.put(liquidLightCounter,lightValue);
+                                        liquidLightCounter++;
                                     }
 
                                     //bottom
-                                    liquidIndices.add(liquidIndicesCount);
-                                    liquidIndices.add(1 + liquidIndicesCount);
-                                    liquidIndices.add(2 + liquidIndicesCount);
-                                    liquidIndices.add(liquidIndicesCount);
-                                    liquidIndices.add(2 + liquidIndicesCount);
-                                    liquidIndices.add(3 + liquidIndicesCount);
+                                    liquidIndices.put(liquidIndicesCounter,liquidIndicesCount);
+                                    liquidIndicesCounter++;
+                                    liquidIndices.put(liquidIndicesCounter,1 + liquidIndicesCount);
+                                    liquidIndicesCounter++;
+                                    liquidIndices.put(liquidIndicesCounter,2 + liquidIndicesCount);
+                                    liquidIndicesCounter++;
+                                    liquidIndices.put(liquidIndicesCounter,liquidIndicesCount);
+                                    liquidIndicesCounter++;
+                                    liquidIndices.put(liquidIndicesCounter,2 + liquidIndicesCount);
+                                    liquidIndicesCounter++;
+                                    liquidIndices.put(liquidIndicesCounter,3 + liquidIndicesCount);
+                                    liquidIndicesCounter++;
+
                                     liquidIndicesCount += 4;
 
                                     textureWorker = getBottomTexturePoints(thisBlock);
                                     //bottom
-                                    liquidTextureCoord.add(textureWorker[1]);
-                                    liquidTextureCoord.add(textureWorker[2]);
-                                    liquidTextureCoord.add(textureWorker[0]);
-                                    liquidTextureCoord.add(textureWorker[2]);
-                                    liquidTextureCoord.add(textureWorker[0]);
-                                    liquidTextureCoord.add(textureWorker[3]);
-                                    liquidTextureCoord.add(textureWorker[1]);
-                                    liquidTextureCoord.add(textureWorker[3]);
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[1]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[2]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[0]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[2]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[0]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[3]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[1]);
+                                    liquidTextureCoordCounter++;
+                                    liquidTextureCoord.put(liquidTextureCoordCounter,textureWorker[3]);
+                                    liquidTextureCoordCounter++;
                                 }
+                            } else {
+
+
+                                //todo --------------------------------------- THE NORMAL DRAWTYPE (standard blocks)
+                                switch (thisBlockDrawType) {
+                                    case 1: {
+                                        if (z + 1 > 15) {
+                                            neighborBlock = getNeighborBlock(chunkNeighborZPlus, x, y, 0);
+                                        } else {
+                                            neighborBlock = blockData[posToIndex(x, y, z + 1)];
+                                        }
+
+                                        if (neighborBlock >= 0 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
+                                            //front
+
+                                            positions.put(positionsCounter, 1f + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 1f + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 1f + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 0f + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 1f + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 1f + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 0f + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 0f + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 1f + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 1f + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 0f + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 1f + z);
+                                            positionsCounter++;
+
+                                            //front
+                                            if (z + 1 > 15) {
+                                                lightValue = getNeighborLight(chunkNeighborZPlus, x, y, 0);
+                                            } else {
+                                                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z + 1)]);
+                                            }
+
+                                            lightValue = convertLight(lightValue / maxLight);
+
+                                            //front
+                                            for (i = 0; i < 12; i++) {
+                                                light.put(lightCounter, lightValue);
+                                                lightCounter++;
+                                            }
+
+                                            //front
+                                            indices.put(indicesCounter, indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 1 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 2 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 2 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 3 + indicesCount);
+                                            indicesCounter++;
+
+                                            indicesCount += 4;
+
+                                            textureWorker = getFrontTexturePoints(thisBlock, thisRotation);
+                                            //front
+                                            textureCoord.put(textureCoordCounter, textureWorker[1]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[2]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[0]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[2]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[0]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[3]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[1]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[3]);
+                                            textureCoordCounter++;
+                                        }
+
+                                        if (z - 1 < 0) {
+                                            neighborBlock = getNeighborBlock(chunkNeighborZMinus, x, y, 15);
+                                        } else {
+                                            neighborBlock = blockData[posToIndex(x, y, z - 1)];
+                                        }
+
+                                        if (neighborBlock >= 0 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
+                                            //back
+                                            positions.put(positionsCounter, 0f + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 1f + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 0f + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 1f + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 1f + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 0f + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 1f + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 0f + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 0f + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 0f + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 0f + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 0f + z);
+                                            positionsCounter++;
+
+                                            //back
+                                            if (z - 1 < 0) {
+                                                lightValue = getNeighborLight(chunkNeighborZMinus, x, y, 15);
+                                            } else {
+                                                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z - 1)]);
+                                            }
+
+                                            lightValue = convertLight(lightValue / maxLight);
+                                            //back
+                                            for (i = 0; i < 12; i++) {
+                                                light.put(lightCounter, lightValue);
+                                                lightCounter++;
+                                            }
+
+                                            //back
+                                            indices.put(indicesCounter, indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 1 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 2 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 2 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 3 + indicesCount);
+                                            indicesCounter++;
+
+                                            indicesCount += 4;
+
+                                            textureWorker = getBackTexturePoints(thisBlock, thisRotation);
+                                            //back
+                                            textureCoord.put(textureCoordCounter, textureWorker[1]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[2]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[0]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[2]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[0]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[3]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[1]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[3]);
+                                            textureCoordCounter++;
+                                        }
+
+                                        if (x + 1 > 15) {
+                                            neighborBlock = getNeighborBlock(chunkNeighborXPlus, 0, y, z);
+                                        } else {
+                                            neighborBlock = blockData[posToIndex(x + 1, y, z)];
+                                        }
+
+                                        if (neighborBlock >= 0 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
+                                            //right
+                                            positions.put(positionsCounter, 1f + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 1f + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 0f + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 1f + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 1f + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 1f + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 1f + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 0f + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 1f + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 1f + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 0f + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 0f + z);
+                                            positionsCounter++;
+
+                                            //right
+                                            if (x + 1 > 15) {
+                                                lightValue = getNeighborLight(chunkNeighborXPlus, 0, y, z);
+                                            } else {
+                                                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x + 1, y, z)]);
+                                            }
+
+                                            lightValue = convertLight(lightValue / maxLight);
+                                            //right
+                                            for (i = 0; i < 12; i++) {
+                                                light.put(lightCounter, lightValue);
+                                                lightCounter++;
+                                            }
+
+                                            //right
+                                            indices.put(indicesCounter, indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 1 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 2 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 2 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 3 + indicesCount);
+                                            indicesCounter++;
+
+                                            indicesCount += 4;
+
+                                            textureWorker = getRightTexturePoints(thisBlock, thisRotation);
+                                            //right
+                                            textureCoord.put(textureCoordCounter, textureWorker[1]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[2]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[0]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[2]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[0]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[3]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[1]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[3]);
+                                            textureCoordCounter++;
+                                        }
+
+                                        if (x - 1 < 0) {
+                                            neighborBlock = getNeighborBlock(chunkNeighborXMinus, 15, y, z);
+                                        } else {
+                                            neighborBlock = blockData[posToIndex(x - 1, y, z)];
+                                        }
+
+                                        if (neighborBlock >= 0 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
+                                            //left
+                                            positions.put(positionsCounter, 0f + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 1f + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 1f + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 0f + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 1f + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 0f + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 0f + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 0f + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 0f + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 0f + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 0f + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 1f + z);
+                                            positionsCounter++;
+
+                                            //left
+                                            if (x - 1 < 0) {
+                                                lightValue = getNeighborLight(chunkNeighborXMinus, 15, y, z);
+                                            } else {
+                                                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x - 1, y, z)]);
+                                            }
+
+                                            lightValue = convertLight(lightValue / maxLight);
+                                            //left
+                                            for (i = 0; i < 12; i++) {
+                                                light.put(lightCounter, lightValue);
+                                                lightCounter++;
+                                            }
+
+                                            //left
+                                            indices.put(indicesCounter, indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 1 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 2 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 2 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 3 + indicesCount);
+                                            indicesCounter++;
+
+                                            indicesCount += 4;
+
+                                            textureWorker = getLeftTexturePoints(thisBlock, thisRotation);
+                                            //left
+                                            textureCoord.put(textureCoordCounter, textureWorker[1]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[2]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[0]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[2]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[0]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[3]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[1]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[3]);
+                                            textureCoordCounter++;
+                                        }
+
+                                        if (y + 1 < 128) {
+                                            neighborBlock = blockData[posToIndex(x, y + 1, z)];
+                                        }
+
+                                        if (y == 127 || neighborBlock > -1 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
+                                            //top
+                                            positions.put(positionsCounter, 0f + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 1f + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 0f + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 0f + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 1f + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 1f + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 1f + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 1f + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 1f + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 1f + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 1f + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 0f + z);
+                                            positionsCounter++;
+
+                                            //top
+                                            if (y + 1 < 128) {
+                                                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y + 1, z)]);
+                                            } else {
+                                                lightValue = maxLight;
+                                            }
+
+                                            lightValue = convertLight(lightValue / maxLight);
+
+                                            //top
+                                            for (i = 0; i < 12; i++) {
+                                                light.put(lightCounter, lightValue);
+                                                lightCounter++;
+                                            }
+
+                                            //top
+                                            indices.put(indicesCounter, indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 1 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 2 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 2 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 3 + indicesCount);
+                                            indicesCounter++;
+
+                                            indicesCount += 4;
+
+                                            textureWorker = getTopTexturePoints(thisBlock);
+                                            //top
+                                            textureCoord.put(textureCoordCounter, textureWorker[1]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[2]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[0]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[2]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[0]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[3]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[1]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[3]);
+                                            textureCoordCounter++;
+                                        }
+
+                                        if (y - 1 > 0) {
+                                            neighborBlock = blockData[posToIndex(x, y - 1, z)];
+                                        }
+
+                                        if (y != 0 && neighborBlock >= 0 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
+                                            //bottom
+                                            positions.put(positionsCounter, 0f + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 0f + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 1f + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 0f + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 0f + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 0f + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 1f + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 0f + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 0f + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 1f + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 0f + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, 1f + z);
+                                            positionsCounter++;
+
+                                            //bottom
+                                            if (y - 1 > 0) {
+                                                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y - 1, z)]);
+                                            } else {
+                                                lightValue = 0;
+                                            }
+
+                                            lightValue = convertLight(lightValue / maxLight);
+                                            //bottom
+                                            for (i = 0; i < 12; i++) {
+                                                light.put(lightCounter, lightValue);
+                                                lightCounter++;
+                                            }
+
+                                            //bottom
+                                            indices.put(indicesCounter, indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 1 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 2 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 2 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 3 + indicesCount);
+                                            indicesCounter++;
+
+                                            indicesCount += 4;
+
+                                            textureWorker = getBottomTexturePoints(thisBlock);
+                                            //bottom
+                                            textureCoord.put(textureCoordCounter, textureWorker[1]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[2]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[0]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[2]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[0]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[3]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[1]);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, textureWorker[3]);
+                                            textureCoordCounter++;
+                                        }
+                                    }
+                                    break;
+                                    //todo --------------------------------------- THE ALLFACES DRAWTYPE
+                                    case 4: {
+
+                                        {
+                                            //front
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + x);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + y);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + z);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + x);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + y);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + z);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + x);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + y);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + z);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + x);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + y);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + z);
+                                            allFacesPositionsCounter++;
+
+                                            //front
+                                            if (z + 1 > 15) {
+                                                lightValue = getNeighborLight(chunkNeighborZPlus, x, y, 0);
+                                            } else {
+                                                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z + 1)]);
+                                            }
+
+                                            lightValue = convertLight(lightValue / maxLight);
+
+                                            //front
+                                            for (i = 0; i < 12; i++) {
+                                                allFacesLight.put(allFacesLightCounter, lightValue);
+                                                allFacesLightCounter++;
+                                            }
+
+
+                                            //front
+                                            allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCounter, 1 + allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCounter, 3 + allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+
+                                            allFacesIndicesCount += 4;
+
+                                            textureWorker = getFrontTexturePoints(thisBlock, thisRotation);
+                                            //front
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
+                                            allFacesTextureCoordCounter++;
+                                        }
+
+                                        {
+                                            //back
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + x);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + y);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + z);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + x);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + y);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + z);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + x);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + y);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + z);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + x);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + y);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + z);
+                                            allFacesPositionsCounter++;
+
+                                            //back
+
+                                            if (z - 1 < 0) {
+                                                lightValue = getNeighborLight(chunkNeighborZMinus, x, y, 15);
+                                            } else {
+                                                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z - 1)]);
+                                            }
+
+                                            lightValue = convertLight(lightValue / maxLight);
+                                            //back
+                                            for (i = 0; i < 12; i++) {
+                                                allFacesLight.put(allFacesLightCounter, lightValue);
+                                                allFacesLightCounter++;
+                                            }
+
+                                            //back
+                                            allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCounter, 1 + allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCounter, 3 + allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+
+                                            allFacesIndicesCount += 4;
+
+                                            textureWorker = getBackTexturePoints(thisBlock, thisRotation);
+                                            //back
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
+                                            allFacesTextureCoordCounter++;
+                                        }
+
+                                        {
+                                            //right
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + x);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + y);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + z);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + x);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + y);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + z);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + x);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + y);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + z);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + x);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + y);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + z);
+                                            allFacesPositionsCounter++;
+
+                                            //right
+
+                                            if (x + 1 > 15) {
+                                                lightValue = getNeighborLight(chunkNeighborXPlus, 0, y, z);
+                                            } else {
+                                                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x + 1, y, z)]);
+                                            }
+
+                                            lightValue = convertLight(lightValue / maxLight);
+                                            //right
+                                            for (i = 0; i < 12; i++) {
+                                                allFacesLight.put(allFacesLightCounter, lightValue);
+                                                allFacesLightCounter++;
+                                            }
+
+                                            //right
+                                            allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCounter, 1 + allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCounter, 3 + allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+
+                                            allFacesIndicesCount += 4;
+
+                                            textureWorker = getRightTexturePoints(thisBlock, thisRotation);
+                                            //right
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
+                                            allFacesTextureCoordCounter++;
+                                        }
+
+                                        {
+                                            //left
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + x);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + y);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + z);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + x);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + y);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + z);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + x);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + y);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + z);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + x);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + y);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + z);
+                                            allFacesPositionsCounter++;
+
+                                            //left
+
+                                            if (x - 1 < 0) {
+                                                lightValue = getNeighborLight(chunkNeighborXMinus, 15, y, z);
+                                            } else {
+                                                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x - 1, y, z)]);
+                                            }
+
+                                            lightValue = convertLight(lightValue / maxLight);
+                                            //left
+                                            for (i = 0; i < 12; i++) {
+                                                allFacesLight.put(allFacesLightCounter, lightValue);
+                                                allFacesLightCounter++;
+                                            }
+
+                                            //left
+                                            allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCounter, 1 + allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCounter, 3 + allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+
+                                            allFacesIndicesCount += 4;
+
+                                            textureWorker = getLeftTexturePoints(thisBlock, thisRotation);
+                                            //left
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
+                                            allFacesTextureCoordCounter++;
+                                        }
+
+                                        {
+                                            //top
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + x);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + y);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + z);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + x);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + y);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + z);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + x);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + y);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + z);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + x);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + y);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + z);
+                                            allFacesPositionsCounter++;
+
+                                            //top
+
+                                            if (y + 1 < 128) {
+                                                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y + 1, z)]);
+                                            } else {
+                                                lightValue = maxLight;
+                                            }
+
+                                            lightValue = convertLight(lightValue / maxLight);
+
+                                            //top
+                                            for (i = 0; i < 12; i++) {
+                                                allFacesLight.put(allFacesLightCounter, lightValue);
+                                                allFacesLightCounter++;
+                                            }
+
+                                            //top
+                                            allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCounter, 1 + allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCounter, 3 + allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+
+                                            allFacesIndicesCount += 4;
+
+                                            textureWorker = getTopTexturePoints(thisBlock);
+                                            //top
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
+                                            allFacesTextureCoordCounter++;
+                                        }
+
+
+                                        if (y != 0) {
+                                            //bottom
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + x);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + y);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + z);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + x);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + y);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + z);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + x);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + y);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + z);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + x);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 0f + y);
+                                            allFacesPositionsCounter++;
+                                            allFacesPositions.put(allFacesPositionsCounter, 1f + z);
+                                            allFacesPositionsCounter++;
+
+                                            //bottom
+
+                                            if (y - 1 > 0) {
+                                                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y - 1, z)]);
+                                            } else {
+                                                lightValue = 0;
+                                            }
+
+                                            lightValue = convertLight(lightValue / maxLight);
+                                            //bottom
+                                            for (i = 0; i < 12; i++) {
+                                                allFacesLight.put(allFacesLightCounter, lightValue);
+                                                allFacesLightCounter++;
+                                            }
+
+                                            //bottom
+                                            allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCounter, 1 + allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+                                            allFacesIndices.put(allFacesIndicesCounter, 3 + allFacesIndicesCount);
+                                            allFacesIndicesCounter++;
+
+                                            allFacesIndicesCount += 4;
+
+                                            textureWorker = getBottomTexturePoints(thisBlock);
+                                            //bottom
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
+                                            allFacesTextureCoordCounter++;
+                                            allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
+                                            allFacesTextureCoordCounter++;
+                                        }
+                                    }
+                                    break;
+                                    //TODO: ------------------------------------- TORCHLIKE DRAWTYPE
+
+                                    case 7: {
+
+
+                                        System.out.println("running!");
+
+                                        //yes, this is a manually constructed model
+
+                                        switch (thisRotation) {
+                                            //+x dir
+                                            case 0 -> {
+
+                                                //top rear left
+                                                trl.x = smallXZ + 0.3f;
+                                                trl.y = largeY - 0.025f;
+                                                trl.z = smallXZ;
+
+                                                //top rear right
+                                                trr.x = largeXZ + 0.3f;
+                                                trr.y = largeY + 0.025f;
+                                                trr.z = smallXZ;
+
+                                                //top front left
+                                                tfl.x = smallXZ + 0.3f;
+                                                tfl.y = largeY - 0.025f;
+                                                tfl.z = largeXZ;
+
+                                                //top front right
+                                                tfr.x = largeXZ + 0.3f;
+                                                tfr.y = largeY + 0.025f;
+                                                tfr.z = largeXZ;
+
+                                                //bottom rear left
+                                                brl.x = smallXZ + 0.5f;
+                                                brl.y = smallY - 0.025f;
+                                                brl.z = smallXZ;
+
+                                                //bottom rear right - also cold
+                                                brr.x = largeXZ + 0.5f;
+                                                brr.y = smallY + 0.025f;
+                                                brr.z = smallXZ;
+
+                                                //bottom front left
+                                                bfl.x = smallXZ + 0.5f;
+                                                bfl.y = smallY - 0.025f;
+                                                bfl.z = largeXZ;
+
+                                                //bottom front right
+                                                bfr.x = largeXZ + 0.5f;
+                                                bfr.y = smallY + 0.025f;
+                                                bfr.z = largeXZ;
+
+                                            }
+
+                                            //-x dir
+                                            case 1 -> {
+
+                                                //top rear left
+                                                trl.x = smallXZ - 0.3f;
+                                                trl.y = largeY + 0.025f;
+                                                trl.z = smallXZ;
+
+                                                //top rear right
+                                                trr.x = largeXZ - 0.3f;
+                                                trr.y = largeY - 0.025f;
+                                                trr.z = smallXZ;
+
+                                                //top front left
+                                                tfl.x = smallXZ - 0.3f;
+                                                tfl.y = largeY + 0.025f;
+                                                tfl.z = largeXZ;
+
+                                                //top front right
+                                                tfr.x = largeXZ - 0.3f;
+                                                tfr.y = largeY - 0.025f;
+                                                tfr.z = largeXZ;
+
+                                                //bottom rear left
+                                                brl.x = smallXZ - 0.5f;
+                                                brl.y = smallY + 0.025f;
+                                                brl.z = smallXZ;
+
+                                                //bottom rear right - also cold
+                                                brr.x = largeXZ - 0.5f;
+                                                brr.y = smallY - 0.025f;
+                                                brr.z = smallXZ;
+
+                                                //bottom front left
+                                                bfl.x = smallXZ - 0.5f;
+                                                bfl.y = smallY + 0.025f;
+                                                bfl.z = largeXZ;
+
+                                                //bottom front right
+                                                bfr.x = largeXZ - 0.5f;
+                                                bfr.y = smallY - 0.025f;
+                                                bfr.z = largeXZ;
+
+                                            }
+
+                                            //+z dir
+                                            case 2 -> {
+
+                                                //top rear left
+                                                trl.x = smallXZ;
+                                                trl.y = largeY - 0.025f;
+                                                trl.z = smallXZ + 0.3f;
+
+                                                //top rear right
+                                                trr.x = largeXZ;
+                                                trr.y = largeY - 0.025f;
+                                                trr.z = smallXZ + 0.3f;
+
+                                                //top front left
+                                                tfl.x = smallXZ;
+                                                tfl.y = largeY + 0.025f;
+                                                tfl.z = largeXZ + 0.3f;
+
+                                                //top front right
+                                                tfr.x = largeXZ;
+                                                tfr.y = largeY + 0.025f;
+                                                tfr.z = largeXZ + 0.3f;
+
+                                                //bottom rear left
+                                                brl.x = smallXZ;
+                                                brl.y = smallY - 0.025f;
+                                                brl.z = smallXZ + 0.5f;
+
+                                                //bottom rear right - also cold
+                                                brr.x = largeXZ;
+                                                brr.y = smallY - 0.025f;
+                                                brr.z = smallXZ + 0.5f;
+
+                                                //bottom front left
+                                                bfl.x = smallXZ;
+                                                bfl.y = smallY + 0.025f;
+                                                bfl.z = largeXZ + 0.5f;
+
+                                                //bottom front right
+                                                bfr.x = largeXZ;
+                                                bfr.y = smallY + 0.025f;
+                                                bfr.z = largeXZ + 0.5f;
+
+                                            }
+
+                                            //-z dir
+                                            case 3 -> {
+
+                                                //top rear left
+                                                trl.x = smallXZ;
+                                                trl.y = largeY + 0.025f;
+                                                trl.z = smallXZ - 0.3f;
+
+                                                //top rear right
+                                                trr.x = largeXZ;
+                                                trr.y = largeY + 0.025f;
+                                                trr.z = smallXZ - 0.3f;
+
+                                                //top front left
+                                                tfl.x = smallXZ;
+                                                tfl.y = largeY - 0.025f;
+                                                tfl.z = largeXZ - 0.3f;
+
+                                                //top front right
+                                                tfr.x = largeXZ;
+                                                tfr.y = largeY - 0.025f;
+                                                tfr.z = largeXZ - 0.3f;
+
+                                                //bottom rear left
+                                                brl.x = smallXZ;
+                                                brl.y = smallY + 0.025f;
+                                                brl.z = smallXZ - 0.5f;
+
+                                                //bottom rear right - also cold
+                                                brr.x = largeXZ;
+                                                brr.y = smallY + 0.025f;
+                                                brr.z = smallXZ - 0.5f;
+
+                                                //bottom front left
+                                                bfl.x = smallXZ;
+                                                bfl.y = smallY - 0.025f;
+                                                bfl.z = largeXZ - 0.5f;
+
+                                                //bottom front right
+                                                bfr.x = largeXZ;
+                                                bfr.y = smallY - 0.025f;
+                                                bfr.z = largeXZ - 0.5f;
+                                            }
+
+                                            //floor
+                                            case 4 -> {
+                                                //top rear left
+                                                trl.x = smallXZ;
+                                                trl.y = largeY;
+                                                trl.z = smallXZ;
+
+                                                //top rear right
+                                                trr.x = largeXZ;
+                                                trr.y = largeY;
+                                                trr.z = smallXZ;
+
+                                                //top front left
+                                                tfl.x = smallXZ;
+                                                tfl.y = largeY;
+                                                tfl.z = largeXZ;
+
+                                                //top front right
+                                                tfr.x = largeXZ;
+                                                tfr.y = largeY;
+                                                tfr.z = largeXZ;
+
+
+                                                //bottom rear left
+                                                brl.x = smallXZ;
+                                                brl.y = smallY;
+                                                brl.z = smallXZ;
+
+                                                //bottom rear right - also cold
+                                                brr.x = largeXZ;
+                                                brr.y = smallY;
+                                                brr.z = smallXZ;
+
+                                                //bottom front left
+                                                bfl.x = smallXZ;
+                                                bfl.y = smallY;
+                                                bfl.z = largeXZ;
+
+                                                //bottom front right
+                                                bfr.x = largeXZ;
+                                                bfr.y = smallY;
+                                                bfr.z = largeXZ;
+                                            }
+                                        }
+
+                                        textureWorker = getFrontTexturePoints(thisBlock, thisRotation);
+
+
+                                        //assume 16 pixels wide
+                                        float sizeXLow = textureWorker[0] + (pixel * 7f);
+                                        float sizeXHigh = textureWorker[0] + (pixel * 9f); //duplicates to work from same coordinate (it's easier for me this way)
+                                        float sizeYLow = textureWorker[2] + (pixel * 6f);
+                                        float sizeYHigh = textureWorker[2] + (pixel * 16f);
+
+                                        float topSizeXLow = textureWorker[0] + (pixel * 7f);
+                                        float topSizeXHigh = textureWorker[0] + (pixel * 9f);
+                                        float topSizeYLow = textureWorker[2] + (pixel * 4f);
+                                        float topSizeYHigh = textureWorker[2] + (pixel * 6f);
+
+                                        float bottomSizeXLow = textureWorker[0] + (pixel * 7f);
+                                        float bottomSizeXHigh = textureWorker[0] + (pixel * 9f);
+                                        float bottomSizeYLow = textureWorker[2] + (pixel * 2f);
+                                        float bottomSizeYHigh = textureWorker[2] + (pixel * 4f);
+
+
+                                        //this is pulled out of normal
+
+                                        //thisRotation
+                                        //front
+                                        {
+                                            //z is the constant
+                                            //front
+                                            positions.put(positionsCounter, tfr.x + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, tfr.y + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, tfr.z + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, tfl.x + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, tfl.y + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, tfl.z + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, bfl.x + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, bfl.y + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, bfl.z + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, bfr.x + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, bfr.y + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, bfr.z + z);
+                                            positionsCounter++;
+
+                                            //front
+                                            if (z + 1 > 15) {
+                                                lightValue = getNeighborLight(chunkNeighborZPlus, x, y, 0);
+                                            } else {
+                                                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z + 1)]);
+                                            }
+
+                                            lightValue = convertLight(lightValue / maxLight);
+
+                                            //front
+                                            for (i = 0; i < 12; i++) {
+                                                light.put(lightCounter, lightValue);
+                                                lightCounter++;
+                                            }
+
+                                            //front
+                                            indices.put(indicesCounter, indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 1 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 2 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 2 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 3 + indicesCount);
+                                            indicesCounter++;
+
+                                            indicesCount += 4;
+
+
+                                            //front
+                                            textureCoord.put(textureCoordCounter, sizeXHigh);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, sizeYLow);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, sizeXLow);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, sizeYLow);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, sizeXLow);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, sizeYHigh);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, sizeXHigh);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, sizeYHigh);
+                                            textureCoordCounter++;
+                                        }
+
+
+                                        //back
+                                        {
+                                            //z is the constant
+                                            //back
+                                            positions.put(positionsCounter, trl.x + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, trl.y + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, trl.z + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, trr.x + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, trr.y + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, trr.z + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, brr.x + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, brr.y + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, brr.z + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, brl.x + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, brl.y + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, brl.z + z);
+                                            positionsCounter++;
+
+                                            //back
+
+                                            if (z - 1 < 0) {
+                                                lightValue = getNeighborLight(chunkNeighborZMinus, x, y, 15);
+                                            } else {
+                                                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z - 1)]);
+                                            }
+
+                                            lightValue = convertLight(lightValue / maxLight);
+                                            //back
+                                            for (i = 0; i < 12; i++) {
+                                                light.put(lightCounter, lightValue);
+                                                lightCounter++;
+                                            }
+
+                                            //back
+                                            indices.put(indicesCounter, indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 1 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 2 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 2 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 3 + indicesCount);
+                                            indicesCounter++;
+
+                                            indicesCount += 4;
+
+
+                                            //back
+                                            textureCoord.put(textureCoordCounter, sizeXHigh);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, sizeYLow);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, sizeXLow);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, sizeYLow);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, sizeXLow);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, sizeYHigh);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, sizeXHigh);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, sizeYHigh);
+                                            textureCoordCounter++;
+                                        }
+
+
+                                        {
+                                            //x is the constant
+                                            //right
+                                            positions.put(positionsCounter, trr.x + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, trr.y + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, trr.z + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, tfr.x + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, tfr.y + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, tfr.z + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, bfr.x + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, bfr.y + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, bfr.z + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, brr.x + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, brr.y + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, brr.z + z);
+                                            positionsCounter++;
+
+                                            //right
+
+                                            if (x + 1 > 15) {
+                                                lightValue = getNeighborLight(chunkNeighborXPlus, 0, y, z);
+                                            } else {
+                                                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x + 1, y, z)]);
+                                            }
+
+                                            lightValue = convertLight(lightValue / maxLight);
+                                            //right
+                                            for (i = 0; i < 12; i++) {
+                                                light.put(lightCounter, lightValue);
+                                                lightCounter++;
+                                            }
+
+                                            //right
+                                            indices.put(indicesCounter, indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 1 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 2 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 2 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 3 + indicesCount);
+                                            indicesCounter++;
+
+                                            indicesCount += 4;
+
+                                            //right
+                                            textureCoord.put(textureCoordCounter, sizeXHigh);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, sizeYLow);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, sizeXLow);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, sizeYLow);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, sizeXLow);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, sizeYHigh);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, sizeXHigh);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, sizeYHigh);
+                                            textureCoordCounter++;
+                                        }
+
+
+                                        {
+                                            //x is the constant
+                                            //left
+                                            positions.put(positionsCounter, tfl.x + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, tfl.y + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, tfl.z + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, trl.x + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, trl.y + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, trl.z + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, brl.x + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, brl.y + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, brl.z + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, bfl.x + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, bfl.y + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, bfl.z + z);
+                                            positionsCounter++;
+
+                                            //left
+                                            if (x - 1 < 0) {
+                                                lightValue = getNeighborLight(chunkNeighborXMinus, 15, y, z);
+                                            } else {
+                                                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x - 1, y, z)]);
+                                            }
+
+                                            lightValue = convertLight(lightValue / maxLight);
+                                            //left
+                                            for (i = 0; i < 12; i++) {
+                                                light.put(lightCounter, lightValue);
+                                                lightCounter++;
+                                            }
+
+                                            //left
+                                            indices.put(indicesCounter, indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 1 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 2 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 2 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 3 + indicesCount);
+                                            indicesCounter++;
+
+                                            indicesCount += 4;
+
+                                            //left
+                                            textureCoord.put(textureCoordCounter, sizeXHigh);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, sizeYLow);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, sizeXLow);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, sizeYLow);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, sizeXLow);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, sizeYHigh);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, sizeXHigh);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, sizeYHigh);
+                                            textureCoordCounter++;
+                                        }
+
+                                        {
+                                            //y is constant
+                                            //top
+                                            positions.put(positionsCounter, trl.x + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, trl.y + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, trl.z + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, tfl.x + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, tfl.y + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, tfl.z + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, tfr.x + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, tfr.y + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, tfr.z + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, trr.x + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, trr.y + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, trr.z + z);
+                                            positionsCounter++;
+
+                                            //top
+                                            if (y + 1 < 128) {
+                                                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y + 1, z)]);
+                                            } else {
+                                                lightValue = maxLight;
+                                            }
+
+                                            lightValue = convertLight(lightValue / maxLight);
+
+                                            //top
+                                            for (i = 0; i < 12; i++) {
+                                                light.put(lightCounter, lightValue);
+                                                lightCounter++;
+                                            }
+
+                                            //top
+                                            indices.put(indicesCounter, indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 1 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 2 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 2 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 3 + indicesCount);
+                                            indicesCounter++;
+
+                                            indicesCount += 4;
+
+                                            //top
+                                            textureCoord.put(textureCoordCounter, topSizeXHigh);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, topSizeYLow);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, topSizeXLow);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, topSizeYLow);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, topSizeXLow);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, topSizeYHigh);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, topSizeXHigh);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, topSizeYHigh);
+                                            textureCoordCounter++;
+                                        }
+
+
+                                        {
+                                            //y is constant
+                                            //bottom
+                                            positions.put(positionsCounter, brl.x + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, brl.y + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, brl.z + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, brr.x + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, brr.y + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, brr.z + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, bfr.x + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, bfr.y + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, bfr.z + z);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, bfl.x + x);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, bfl.y + y);
+                                            positionsCounter++;
+                                            positions.put(positionsCounter, bfl.z + z);
+                                            positionsCounter++;
+
+                                            //bottom
+                                            if (y - 1 > 0) {
+                                                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y - 1, z)]);
+                                            } else {
+                                                lightValue = 0;
+                                            }
+
+                                            lightValue = convertLight(lightValue / maxLight);
+                                            //bottom
+                                            for (i = 0; i < 12; i++) {
+                                                light.put(lightCounter, lightValue);
+                                                lightCounter++;
+                                            }
+
+                                            //bottom
+                                            indices.put(indicesCounter, indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 1 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 2 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 2 + indicesCount);
+                                            indicesCounter++;
+                                            indices.put(indicesCounter, 3 + indicesCount);
+                                            indicesCounter++;
+
+                                            indicesCount += 4;
+
+                                            //bottom
+                                            textureCoord.put(textureCoordCounter, bottomSizeXHigh);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, bottomSizeYLow);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, bottomSizeXLow);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, bottomSizeYLow);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, bottomSizeXLow);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, bottomSizeYHigh);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, bottomSizeXHigh);
+                                            textureCoordCounter++;
+                                            textureCoord.put(textureCoordCounter, bottomSizeYHigh);
+                                            textureCoordCounter++;
+                                        }
+
+                                    } //end of case 7
+                                    break;
+                                } //end of switch
                             }
-
-
-                            else */
-
-
-                            //todo --------------------------------------- THE NORMAL DRAWTYPE (standard blocks)
-                            switch (thisBlockDrawType) {
-                                case 1: {
-                                    if (z + 1 > 15) {
-                                        neighborBlock = getNeighborBlock(chunkNeighborZPlus, x, y, 0);
-                                    } else {
-                                        neighborBlock = blockData[posToIndex(x, y, z + 1)];
-                                    }
-
-                                    if (neighborBlock >= 0 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
-                                        //front
-
-                                        positions.put(positionsCounter, 1f + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 1f + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 1f + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 0f + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 1f + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 1f + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 0f + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 0f + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 1f + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 1f + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 0f + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 1f + z);
-                                        positionsCounter++;
-
-                                        //front
-                                        if (z + 1 > 15) {
-                                            lightValue = getNeighborLight(chunkNeighborZPlus, x, y, 0);
-                                        } else {
-                                            lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z + 1)]);
-                                        }
-
-                                        lightValue = convertLight(lightValue / maxLight);
-
-                                        //front
-                                        for (i = 0; i < 12; i++) {
-                                            light.put(lightCounter, lightValue);
-                                            lightCounter++;
-                                        }
-
-                                        //front
-                                        indices.put(indicesCounter, indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 1 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 2 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 2 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 3 + indicesCount);
-                                        indicesCounter++;
-
-                                        indicesCount += 4;
-
-                                        textureWorker = getFrontTexturePoints(thisBlock, thisRotation);
-                                        //front
-                                        textureCoord.put(textureCoordCounter, textureWorker[1]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[2]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[0]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[2]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[0]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[3]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[1]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[3]);
-                                        textureCoordCounter++;
-                                    }
-
-                                    if (z - 1 < 0) {
-                                        neighborBlock = getNeighborBlock(chunkNeighborZMinus, x, y, 15);
-                                    } else {
-                                        neighborBlock = blockData[posToIndex(x, y, z - 1)];
-                                    }
-
-                                    if (neighborBlock >= 0 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
-                                        //back
-                                        positions.put(positionsCounter, 0f + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 1f + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 0f + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 1f + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 1f + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 0f + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 1f + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 0f + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 0f + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 0f + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 0f + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 0f + z);
-                                        positionsCounter++;
-
-                                        //back
-                                        if (z - 1 < 0) {
-                                            lightValue = getNeighborLight(chunkNeighborZMinus, x, y, 15);
-                                        } else {
-                                            lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z - 1)]);
-                                        }
-
-                                        lightValue = convertLight(lightValue / maxLight);
-                                        //back
-                                        for (i = 0; i < 12; i++) {
-                                            light.put(lightCounter, lightValue);
-                                            lightCounter++;
-                                        }
-
-                                        //back
-                                        indices.put(indicesCounter, indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 1 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 2 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 2 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 3 + indicesCount);
-                                        indicesCounter++;
-
-                                        indicesCount += 4;
-
-                                        textureWorker = getBackTexturePoints(thisBlock, thisRotation);
-                                        //back
-                                        textureCoord.put(textureCoordCounter, textureWorker[1]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[2]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[0]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[2]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[0]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[3]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[1]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[3]);
-                                        textureCoordCounter++;
-                                    }
-
-                                    if (x + 1 > 15) {
-                                        neighborBlock = getNeighborBlock(chunkNeighborXPlus, 0, y, z);
-                                    } else {
-                                        neighborBlock = blockData[posToIndex(x + 1, y, z)];
-                                    }
-
-                                    if (neighborBlock >= 0 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
-                                        //right
-                                        positions.put(positionsCounter, 1f + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 1f + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 0f + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 1f + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 1f + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 1f + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 1f + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 0f + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 1f + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 1f + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 0f + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 0f + z);
-                                        positionsCounter++;
-
-                                        //right
-                                        if (x + 1 > 15) {
-                                            lightValue = getNeighborLight(chunkNeighborXPlus, 0, y, z);
-                                        } else {
-                                            lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x + 1, y, z)]);
-                                        }
-
-                                        lightValue = convertLight(lightValue / maxLight);
-                                        //right
-                                        for (i = 0; i < 12; i++) {
-                                            light.put(lightCounter, lightValue);
-                                            lightCounter++;
-                                        }
-
-                                        //right
-                                        indices.put(indicesCounter, indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 1 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 2 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 2 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 3 + indicesCount);
-                                        indicesCounter++;
-
-                                        indicesCount += 4;
-
-                                        textureWorker = getRightTexturePoints(thisBlock, thisRotation);
-                                        //right
-                                        textureCoord.put(textureCoordCounter, textureWorker[1]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[2]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[0]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[2]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[0]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[3]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[1]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[3]);
-                                        textureCoordCounter++;
-                                    }
-
-                                    if (x - 1 < 0) {
-                                        neighborBlock = getNeighborBlock(chunkNeighborXMinus, 15, y, z);
-                                    } else {
-                                        neighborBlock = blockData[posToIndex(x - 1, y, z)];
-                                    }
-
-                                    if (neighborBlock >= 0 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
-                                        //left
-                                        positions.put(positionsCounter, 0f + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 1f + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 1f + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 0f + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 1f + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 0f + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 0f + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 0f + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 0f + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 0f + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 0f + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 1f + z);
-                                        positionsCounter++;
-
-                                        //left
-                                        if (x - 1 < 0) {
-                                            lightValue = getNeighborLight(chunkNeighborXMinus, 15, y, z);
-                                        } else {
-                                            lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x - 1, y, z)]);
-                                        }
-
-                                        lightValue = convertLight(lightValue / maxLight);
-                                        //left
-                                        for (i = 0; i < 12; i++) {
-                                            light.put(lightCounter, lightValue);
-                                            lightCounter++;
-                                        }
-
-                                        //left
-                                        indices.put(indicesCounter, indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 1 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 2 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 2 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 3 + indicesCount);
-                                        indicesCounter++;
-
-                                        indicesCount += 4;
-
-                                        textureWorker = getLeftTexturePoints(thisBlock, thisRotation);
-                                        //left
-                                        textureCoord.put(textureCoordCounter, textureWorker[1]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[2]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[0]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[2]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[0]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[3]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[1]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[3]);
-                                        textureCoordCounter++;
-                                    }
-
-                                    if (y + 1 < 128) {
-                                        neighborBlock = blockData[posToIndex(x, y + 1, z)];
-                                    }
-
-                                    if (y == 127 || neighborBlock > -1 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
-                                        //top
-                                        positions.put(positionsCounter, 0f + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 1f + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 0f + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 0f + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 1f + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 1f + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 1f + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 1f + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 1f + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 1f + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 1f + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 0f + z);
-                                        positionsCounter++;
-
-                                        //top
-                                        if (y + 1 < 128) {
-                                            lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y + 1, z)]);
-                                        } else {
-                                            lightValue = maxLight;
-                                        }
-
-                                        lightValue = convertLight(lightValue / maxLight);
-
-                                        //top
-                                        for (i = 0; i < 12; i++) {
-                                            light.put(lightCounter, lightValue);
-                                            lightCounter++;
-                                        }
-
-                                        //top
-                                        indices.put(indicesCounter, indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 1 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 2 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 2 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 3 + indicesCount);
-                                        indicesCounter++;
-
-                                        indicesCount += 4;
-
-                                        textureWorker = getTopTexturePoints(thisBlock);
-                                        //top
-                                        textureCoord.put(textureCoordCounter, textureWorker[1]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[2]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[0]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[2]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[0]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[3]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[1]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[3]);
-                                        textureCoordCounter++;
-                                    }
-
-                                    if (y - 1 > 0) {
-                                        neighborBlock = blockData[posToIndex(x, y - 1, z)];
-                                    }
-
-                                    if (y != 0 && neighborBlock >= 0 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
-                                        //bottom
-                                        positions.put(positionsCounter, 0f + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 0f + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 1f + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 0f + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 0f + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 0f + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 1f + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 0f + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 0f + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 1f + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 0f + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, 1f + z);
-                                        positionsCounter++;
-
-                                        //bottom
-                                        if (y - 1 > 0) {
-                                            lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y - 1, z)]);
-                                        } else {
-                                            lightValue = 0;
-                                        }
-
-                                        lightValue = convertLight(lightValue / maxLight);
-                                        //bottom
-                                        for (i = 0; i < 12; i++) {
-                                            light.put(lightCounter, lightValue);
-                                            lightCounter++;
-                                        }
-
-                                        //bottom
-                                        indices.put(indicesCounter, indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 1 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 2 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 2 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 3 + indicesCount);
-                                        indicesCounter++;
-
-                                        indicesCount += 4;
-
-                                        textureWorker = getBottomTexturePoints(thisBlock);
-                                        //bottom
-                                        textureCoord.put(textureCoordCounter, textureWorker[1]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[2]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[0]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[2]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[0]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[3]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[1]);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, textureWorker[3]);
-                                        textureCoordCounter++;
-                                    }
-                                }
-                                break;
-                                //todo --------------------------------------- THE ALLFACES DRAWTYPE
-                                case 4: {
-
-                                    {
-                                        //front
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + x);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + y);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + z);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + x);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + y);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + z);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + x);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + y);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + z);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + x);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + y);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + z);
-                                        allFacesPositionsCounter++;
-
-                                        //front
-                                        if (z + 1 > 15) {
-                                            lightValue = getNeighborLight(chunkNeighborZPlus, x, y, 0);
-                                        } else {
-                                            lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z + 1)]);
-                                        }
-
-                                        lightValue = convertLight(lightValue / maxLight);
-
-                                        //front
-                                        for (i = 0; i < 12; i++) {
-                                            allFacesLight.put(allFacesLightCounter, lightValue);
-                                            allFacesLightCounter++;
-                                        }
-
-
-                                        //front
-                                        allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-                                        allFacesIndices.put(allFacesIndicesCounter, 1 + allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-                                        allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-                                        allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-                                        allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-                                        allFacesIndices.put(allFacesIndicesCounter, 3 + allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-
-                                        allFacesIndicesCount += 4;
-
-                                        textureWorker = getFrontTexturePoints(thisBlock, thisRotation);
-                                        //front
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
-                                        allFacesTextureCoordCounter++;
-                                    }
-
-                                    {
-                                        //back
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + x);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + y);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + z);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + x);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + y);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + z);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + x);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + y);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + z);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + x);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + y);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + z);
-                                        allFacesPositionsCounter++;
-
-                                        //back
-
-                                        if (z - 1 < 0) {
-                                            lightValue = getNeighborLight(chunkNeighborZMinus, x, y, 15);
-                                        } else {
-                                            lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z - 1)]);
-                                        }
-
-                                        lightValue = convertLight(lightValue / maxLight);
-                                        //back
-                                        for (i = 0; i < 12; i++) {
-                                            allFacesLight.put(allFacesLightCounter, lightValue);
-                                            allFacesLightCounter++;
-                                        }
-
-                                        //back
-                                        allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-                                        allFacesIndices.put(allFacesIndicesCounter, 1 + allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-                                        allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-                                        allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-                                        allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-                                        allFacesIndices.put(allFacesIndicesCounter, 3 + allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-
-                                        allFacesIndicesCount += 4;
-
-                                        textureWorker = getBackTexturePoints(thisBlock, thisRotation);
-                                        //back
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
-                                        allFacesTextureCoordCounter++;
-                                    }
-
-                                    {
-                                        //right
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + x);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + y);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + z);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + x);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + y);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + z);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + x);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + y);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + z);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + x);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + y);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + z);
-                                        allFacesPositionsCounter++;
-
-                                        //right
-
-                                        if (x + 1 > 15) {
-                                            lightValue = getNeighborLight(chunkNeighborXPlus, 0, y, z);
-                                        } else {
-                                            lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x + 1, y, z)]);
-                                        }
-
-                                        lightValue = convertLight(lightValue / maxLight);
-                                        //right
-                                        for (i = 0; i < 12; i++) {
-                                            allFacesLight.put(allFacesLightCounter, lightValue);
-                                            allFacesLightCounter++;
-                                        }
-
-                                        //right
-                                        allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-                                        allFacesIndices.put(allFacesIndicesCounter, 1 + allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-                                        allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-                                        allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-                                        allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-                                        allFacesIndices.put(allFacesIndicesCounter, 3 + allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-
-                                        allFacesIndicesCount += 4;
-
-                                        textureWorker = getRightTexturePoints(thisBlock, thisRotation);
-                                        //right
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
-                                        allFacesTextureCoordCounter++;
-                                    }
-
-                                    {
-                                        //left
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + x);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + y);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + z);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + x);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + y);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + z);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + x);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + y);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + z);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + x);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + y);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + z);
-                                        allFacesPositionsCounter++;
-
-                                        //left
-
-                                        if (x - 1 < 0) {
-                                            lightValue = getNeighborLight(chunkNeighborXMinus, 15, y, z);
-                                        } else {
-                                            lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x - 1, y, z)]);
-                                        }
-
-                                        lightValue = convertLight(lightValue / maxLight);
-                                        //left
-                                        for (i = 0; i < 12; i++) {
-                                            allFacesLight.put(allFacesLightCounter, lightValue);
-                                            allFacesLightCounter++;
-                                        }
-
-                                        //left
-                                        allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-                                        allFacesIndices.put(allFacesIndicesCounter, 1 + allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-                                        allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-                                        allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-                                        allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-                                        allFacesIndices.put(allFacesIndicesCounter, 3 + allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-
-                                        allFacesIndicesCount += 4;
-
-                                        textureWorker = getLeftTexturePoints(thisBlock, thisRotation);
-                                        //left
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
-                                        allFacesTextureCoordCounter++;
-                                    }
-
-                                    {
-                                        //top
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + x);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + y);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + z);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + x);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + y);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + z);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + x);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + y);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + z);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + x);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + y);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + z);
-                                        allFacesPositionsCounter++;
-
-                                        //top
-
-                                        if (y + 1 < 128) {
-                                            lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y + 1, z)]);
-                                        } else {
-                                            lightValue = maxLight;
-                                        }
-
-                                        lightValue = convertLight(lightValue / maxLight);
-
-                                        //top
-                                        for (i = 0; i < 12; i++) {
-                                            allFacesLight.put(allFacesLightCounter, lightValue);
-                                            allFacesLightCounter++;
-                                        }
-
-                                        //top
-                                        allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-                                        allFacesIndices.put(allFacesIndicesCounter, 1 + allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-                                        allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-                                        allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-                                        allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-                                        allFacesIndices.put(allFacesIndicesCounter, 3 + allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-
-                                        allFacesIndicesCount += 4;
-
-                                        textureWorker = getTopTexturePoints(thisBlock);
-                                        //top
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
-                                        allFacesTextureCoordCounter++;
-                                    }
-
-
-                                    if (y != 0) {
-                                        //bottom
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + x);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + y);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + z);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + x);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + y);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + z);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + x);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + y);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + z);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + x);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 0f + y);
-                                        allFacesPositionsCounter++;
-                                        allFacesPositions.put(allFacesPositionsCounter, 1f + z);
-                                        allFacesPositionsCounter++;
-
-                                        //bottom
-
-                                        if (y - 1 > 0) {
-                                            lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y - 1, z)]);
-                                        } else {
-                                            lightValue = 0;
-                                        }
-
-                                        lightValue = convertLight(lightValue / maxLight);
-                                        //bottom
-                                        for (i = 0; i < 12; i++) {
-                                            allFacesLight.put(allFacesLightCounter, lightValue);
-                                            allFacesLightCounter++;
-                                        }
-
-                                        //bottom
-                                        allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-                                        allFacesIndices.put(allFacesIndicesCounter, 1 + allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-                                        allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-                                        allFacesIndices.put(allFacesIndicesCounter, allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-                                        allFacesIndices.put(allFacesIndicesCounter, 2 + allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-                                        allFacesIndices.put(allFacesIndicesCounter, 3 + allFacesIndicesCount);
-                                        allFacesIndicesCounter++;
-
-                                        allFacesIndicesCount += 4;
-
-                                        textureWorker = getBottomTexturePoints(thisBlock);
-                                        //bottom
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[2]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[0]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[1]);
-                                        allFacesTextureCoordCounter++;
-                                        allFacesTextureCoord.put(allFacesTextureCoordCounter, textureWorker[3]);
-                                        allFacesTextureCoordCounter++;
-                                    }
-                                }
-                                break;
-                                //TODO: ------------------------------------- TORCHLIKE DRAWTYPE
-
-                                case 7: {
-
-
-                                    System.out.println("running!");
-
-                                    //yes, this is a manually constructed model
-
-                                    switch (thisRotation) {
-                                        //+x dir
-                                        case 0 -> {
-
-                                            //top rear left
-                                            trl.x = smallXZ + 0.3f;
-                                            trl.y = largeY - 0.025f;
-                                            trl.z = smallXZ;
-
-                                            //top rear right
-                                            trr.x = largeXZ + 0.3f;
-                                            trr.y = largeY + 0.025f;
-                                            trr.z = smallXZ;
-
-                                            //top front left
-                                            tfl.x = smallXZ + 0.3f;
-                                            tfl.y = largeY - 0.025f;
-                                            tfl.z = largeXZ;
-
-                                            //top front right
-                                            tfr.x = largeXZ + 0.3f;
-                                            tfr.y = largeY + 0.025f;
-                                            tfr.z = largeXZ;
-
-                                            //bottom rear left
-                                            brl.x = smallXZ + 0.5f;
-                                            brl.y = smallY - 0.025f;
-                                            brl.z = smallXZ;
-
-                                            //bottom rear right - also cold
-                                            brr.x = largeXZ + 0.5f;
-                                            brr.y = smallY + 0.025f;
-                                            brr.z = smallXZ;
-
-                                            //bottom front left
-                                            bfl.x = smallXZ + 0.5f;
-                                            bfl.y = smallY - 0.025f;
-                                            bfl.z = largeXZ;
-
-                                            //bottom front right
-                                            bfr.x = largeXZ + 0.5f;
-                                            bfr.y = smallY + 0.025f;
-                                            bfr.z = largeXZ;
-
-                                        }
-
-                                        //-x dir
-                                        case 1 -> {
-
-                                            //top rear left
-                                            trl.x = smallXZ - 0.3f;
-                                            trl.y = largeY + 0.025f;
-                                            trl.z = smallXZ;
-
-                                            //top rear right
-                                            trr.x = largeXZ - 0.3f;
-                                            trr.y = largeY - 0.025f;
-                                            trr.z = smallXZ;
-
-                                            //top front left
-                                            tfl.x = smallXZ - 0.3f;
-                                            tfl.y = largeY + 0.025f;
-                                            tfl.z = largeXZ;
-
-                                            //top front right
-                                            tfr.x = largeXZ - 0.3f;
-                                            tfr.y = largeY - 0.025f;
-                                            tfr.z = largeXZ;
-
-                                            //bottom rear left
-                                            brl.x = smallXZ - 0.5f;
-                                            brl.y = smallY + 0.025f;
-                                            brl.z = smallXZ;
-
-                                            //bottom rear right - also cold
-                                            brr.x = largeXZ - 0.5f;
-                                            brr.y = smallY - 0.025f;
-                                            brr.z = smallXZ;
-
-                                            //bottom front left
-                                            bfl.x = smallXZ - 0.5f;
-                                            bfl.y = smallY + 0.025f;
-                                            bfl.z = largeXZ;
-
-                                            //bottom front right
-                                            bfr.x = largeXZ - 0.5f;
-                                            bfr.y = smallY - 0.025f;
-                                            bfr.z = largeXZ;
-
-                                        }
-
-                                        //+z dir
-                                        case 2 -> {
-
-                                            //top rear left
-                                            trl.x = smallXZ;
-                                            trl.y = largeY - 0.025f;
-                                            trl.z = smallXZ + 0.3f;
-
-                                            //top rear right
-                                            trr.x = largeXZ;
-                                            trr.y = largeY - 0.025f;
-                                            trr.z = smallXZ + 0.3f;
-
-                                            //top front left
-                                            tfl.x = smallXZ;
-                                            tfl.y = largeY + 0.025f;
-                                            tfl.z = largeXZ + 0.3f;
-
-                                            //top front right
-                                            tfr.x = largeXZ;
-                                            tfr.y = largeY + 0.025f;
-                                            tfr.z = largeXZ + 0.3f;
-
-                                            //bottom rear left
-                                            brl.x = smallXZ;
-                                            brl.y = smallY - 0.025f;
-                                            brl.z = smallXZ + 0.5f;
-
-                                            //bottom rear right - also cold
-                                            brr.x = largeXZ;
-                                            brr.y = smallY - 0.025f;
-                                            brr.z = smallXZ + 0.5f;
-
-                                            //bottom front left
-                                            bfl.x = smallXZ;
-                                            bfl.y = smallY + 0.025f;
-                                            bfl.z = largeXZ + 0.5f;
-
-                                            //bottom front right
-                                            bfr.x = largeXZ;
-                                            bfr.y = smallY + 0.025f;
-                                            bfr.z = largeXZ + 0.5f;
-
-                                        }
-
-                                        //-z dir
-                                        case 3 -> {
-
-                                            //top rear left
-                                            trl.x = smallXZ;
-                                            trl.y = largeY + 0.025f;
-                                            trl.z = smallXZ - 0.3f;
-
-                                            //top rear right
-                                            trr.x = largeXZ;
-                                            trr.y = largeY + 0.025f;
-                                            trr.z = smallXZ - 0.3f;
-
-                                            //top front left
-                                            tfl.x = smallXZ;
-                                            tfl.y = largeY - 0.025f;
-                                            tfl.z = largeXZ - 0.3f;
-
-                                            //top front right
-                                            tfr.x = largeXZ;
-                                            tfr.y = largeY - 0.025f;
-                                            tfr.z = largeXZ - 0.3f;
-
-                                            //bottom rear left
-                                            brl.x = smallXZ;
-                                            brl.y = smallY + 0.025f;
-                                            brl.z = smallXZ - 0.5f;
-
-                                            //bottom rear right - also cold
-                                            brr.x = largeXZ;
-                                            brr.y = smallY + 0.025f;
-                                            brr.z = smallXZ - 0.5f;
-
-                                            //bottom front left
-                                            bfl.x = smallXZ;
-                                            bfl.y = smallY - 0.025f;
-                                            bfl.z = largeXZ - 0.5f;
-
-                                            //bottom front right
-                                            bfr.x = largeXZ;
-                                            bfr.y = smallY - 0.025f;
-                                            bfr.z = largeXZ - 0.5f;
-                                        }
-
-                                        //floor
-                                        case 4 -> {
-                                            //top rear left
-                                            trl.x = smallXZ;
-                                            trl.y = largeY;
-                                            trl.z = smallXZ;
-
-                                            //top rear right
-                                            trr.x = largeXZ;
-                                            trr.y = largeY;
-                                            trr.z = smallXZ;
-
-                                            //top front left
-                                            tfl.x = smallXZ;
-                                            tfl.y = largeY;
-                                            tfl.z = largeXZ;
-
-                                            //top front right
-                                            tfr.x = largeXZ;
-                                            tfr.y = largeY;
-                                            tfr.z = largeXZ;
-
-
-                                            //bottom rear left
-                                            brl.x = smallXZ;
-                                            brl.y = smallY;
-                                            brl.z = smallXZ;
-
-                                            //bottom rear right - also cold
-                                            brr.x = largeXZ;
-                                            brr.y = smallY;
-                                            brr.z = smallXZ;
-
-                                            //bottom front left
-                                            bfl.x = smallXZ;
-                                            bfl.y = smallY;
-                                            bfl.z = largeXZ;
-
-                                            //bottom front right
-                                            bfr.x = largeXZ;
-                                            bfr.y = smallY;
-                                            bfr.z = largeXZ;
-                                        }
-                                    }
-
-                                    textureWorker = getFrontTexturePoints(thisBlock, thisRotation);
-
-
-                                    //assume 16 pixels wide
-                                    float sizeXLow = textureWorker[0] + (pixel * 7f);
-                                    float sizeXHigh = textureWorker[0] + (pixel * 9f); //duplicates to work from same coordinate (it's easier for me this way)
-                                    float sizeYLow = textureWorker[2] + (pixel * 6f);
-                                    float sizeYHigh = textureWorker[2] + (pixel * 16f);
-
-                                    float topSizeXLow = textureWorker[0] + (pixel * 7f);
-                                    float topSizeXHigh = textureWorker[0] + (pixel * 9f);
-                                    float topSizeYLow = textureWorker[2] + (pixel * 4f);
-                                    float topSizeYHigh = textureWorker[2] + (pixel * 6f);
-
-                                    float bottomSizeXLow = textureWorker[0] + (pixel * 7f);
-                                    float bottomSizeXHigh = textureWorker[0] + (pixel * 9f);
-                                    float bottomSizeYLow = textureWorker[2] + (pixel * 2f);
-                                    float bottomSizeYHigh = textureWorker[2] + (pixel * 4f);
-
-
-                                    //this is pulled out of normal
-
-                                    //thisRotation
-                                    //front
-                                    {
-                                        //z is the constant
-                                        //front
-                                        positions.put(positionsCounter, tfr.x + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, tfr.y + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, tfr.z + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, tfl.x + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, tfl.y + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, tfl.z + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, bfl.x + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, bfl.y + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, bfl.z + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, bfr.x + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, bfr.y + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, bfr.z + z);
-                                        positionsCounter++;
-
-                                        //front
-                                        if (z + 1 > 15) {
-                                            lightValue = getNeighborLight(chunkNeighborZPlus, x, y, 0);
-                                        } else {
-                                            lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z + 1)]);
-                                        }
-
-                                        lightValue = convertLight(lightValue / maxLight);
-
-                                        //front
-                                        for (i = 0; i < 12; i++) {
-                                            light.put(lightCounter, lightValue);
-                                            lightCounter++;
-                                        }
-
-                                        //front
-                                        indices.put(indicesCounter, indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 1 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 2 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 2 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 3 + indicesCount);
-                                        indicesCounter++;
-
-                                        indicesCount += 4;
-
-
-                                        //front
-                                        textureCoord.put(textureCoordCounter, sizeXHigh);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, sizeYLow);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, sizeXLow);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, sizeYLow);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, sizeXLow);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, sizeYHigh);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, sizeXHigh);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, sizeYHigh);
-                                        textureCoordCounter++;
-                                    }
-
-
-                                    //back
-                                    {
-                                        //z is the constant
-                                        //back
-                                        positions.put(positionsCounter, trl.x + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, trl.y + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, trl.z + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, trr.x + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, trr.y + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, trr.z + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, brr.x + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, brr.y + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, brr.z + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, brl.x + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, brl.y + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, brl.z + z);
-                                        positionsCounter++;
-
-                                        //back
-
-                                        if (z - 1 < 0) {
-                                            lightValue = getNeighborLight(chunkNeighborZMinus, x, y, 15);
-                                        } else {
-                                            lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z - 1)]);
-                                        }
-
-                                        lightValue = convertLight(lightValue / maxLight);
-                                        //back
-                                        for (i = 0; i < 12; i++) {
-                                            light.put(lightCounter, lightValue);
-                                            lightCounter++;
-                                        }
-
-                                        //back
-                                        indices.put(indicesCounter, indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 1 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 2 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 2 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 3 + indicesCount);
-                                        indicesCounter++;
-
-                                        indicesCount += 4;
-
-
-                                        //back
-                                        textureCoord.put(textureCoordCounter, sizeXHigh);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, sizeYLow);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, sizeXLow);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, sizeYLow);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, sizeXLow);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, sizeYHigh);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, sizeXHigh);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, sizeYHigh);
-                                        textureCoordCounter++;
-                                    }
-
-
-                                    {
-                                        //x is the constant
-                                        //right
-                                        positions.put(positionsCounter, trr.x + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, trr.y + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, trr.z + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, tfr.x + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, tfr.y + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, tfr.z + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, bfr.x + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, bfr.y + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, bfr.z + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, brr.x + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, brr.y + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, brr.z + z);
-                                        positionsCounter++;
-
-                                        //right
-
-                                        if (x + 1 > 15) {
-                                            lightValue = getNeighborLight(chunkNeighborXPlus, 0, y, z);
-                                        } else {
-                                            lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x + 1, y, z)]);
-                                        }
-
-                                        lightValue = convertLight(lightValue / maxLight);
-                                        //right
-                                        for (i = 0; i < 12; i++) {
-                                            light.put(lightCounter, lightValue);
-                                            lightCounter++;
-                                        }
-
-                                        //right
-                                        indices.put(indicesCounter, indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 1 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 2 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 2 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 3 + indicesCount);
-                                        indicesCounter++;
-
-                                        indicesCount += 4;
-
-                                        //right
-                                        textureCoord.put(textureCoordCounter, sizeXHigh);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, sizeYLow);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, sizeXLow);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, sizeYLow);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, sizeXLow);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, sizeYHigh);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, sizeXHigh);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, sizeYHigh);
-                                        textureCoordCounter++;
-                                    }
-
-
-                                    {
-                                        //x is the constant
-                                        //left
-                                        positions.put(positionsCounter, tfl.x + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, tfl.y + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, tfl.z + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, trl.x + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, trl.y + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, trl.z + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, brl.x + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, brl.y + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, brl.z + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, bfl.x + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, bfl.y + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, bfl.z + z);
-                                        positionsCounter++;
-
-                                        //left
-                                        if (x - 1 < 0) {
-                                            lightValue = getNeighborLight(chunkNeighborXMinus, 15, y, z);
-                                        } else {
-                                            lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x - 1, y, z)]);
-                                        }
-
-                                        lightValue = convertLight(lightValue / maxLight);
-                                        //left
-                                        for (i = 0; i < 12; i++) {
-                                            light.put(lightCounter, lightValue);
-                                            lightCounter++;
-                                        }
-
-                                        //left
-                                        indices.put(indicesCounter, indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 1 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 2 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 2 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 3 + indicesCount);
-                                        indicesCounter++;
-
-                                        indicesCount += 4;
-
-                                        //left
-                                        textureCoord.put(textureCoordCounter, sizeXHigh);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, sizeYLow);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, sizeXLow);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, sizeYLow);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, sizeXLow);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, sizeYHigh);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, sizeXHigh);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, sizeYHigh);
-                                        textureCoordCounter++;
-                                    }
-
-                                    {
-                                        //y is constant
-                                        //top
-                                        positions.put(positionsCounter, trl.x + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, trl.y + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, trl.z + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, tfl.x + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, tfl.y + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, tfl.z + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, tfr.x + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, tfr.y + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, tfr.z + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, trr.x + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, trr.y + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, trr.z + z);
-                                        positionsCounter++;
-
-                                        //top
-                                        if (y + 1 < 128) {
-                                            lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y + 1, z)]);
-                                        } else {
-                                            lightValue = maxLight;
-                                        }
-
-                                        lightValue = convertLight(lightValue / maxLight);
-
-                                        //top
-                                        for (i = 0; i < 12; i++) {
-                                            light.put(lightCounter, lightValue);
-                                            lightCounter++;
-                                        }
-
-                                        //top
-                                        indices.put(indicesCounter, indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 1 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 2 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 2 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 3 + indicesCount);
-                                        indicesCounter++;
-
-                                        indicesCount += 4;
-
-                                        //top
-                                        textureCoord.put(textureCoordCounter, topSizeXHigh);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, topSizeYLow);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, topSizeXLow);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, topSizeYLow);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, topSizeXLow);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, topSizeYHigh);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, topSizeXHigh);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, topSizeYHigh);
-                                        textureCoordCounter++;
-                                    }
-
-
-                                    {
-                                        //y is constant
-                                        //bottom
-                                        positions.put(positionsCounter, brl.x + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, brl.y + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, brl.z + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, brr.x + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, brr.y + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, brr.z + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, bfr.x + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, bfr.y + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, bfr.z + z);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, bfl.x + x);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, bfl.y + y);
-                                        positionsCounter++;
-                                        positions.put(positionsCounter, bfl.z + z);
-                                        positionsCounter++;
-
-                                        //bottom
-                                        if (y - 1 > 0) {
-                                            lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y - 1, z)]);
-                                        } else {
-                                            lightValue = 0;
-                                        }
-
-                                        lightValue = convertLight(lightValue / maxLight);
-                                        //bottom
-                                        for (i = 0; i < 12; i++) {
-                                            light.put(lightCounter, lightValue);
-                                            lightCounter++;
-                                        }
-
-                                        //bottom
-                                        indices.put(indicesCounter, indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 1 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 2 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 2 + indicesCount);
-                                        indicesCounter++;
-                                        indices.put(indicesCounter, 3 + indicesCount);
-                                        indicesCounter++;
-
-                                        indicesCount += 4;
-
-                                        //bottom
-                                        textureCoord.put(textureCoordCounter, bottomSizeXHigh);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, bottomSizeYLow);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, bottomSizeXLow);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, bottomSizeYLow);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, bottomSizeXLow);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, bottomSizeYHigh);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, bottomSizeXHigh);
-                                        textureCoordCounter++;
-                                        textureCoord.put(textureCoordCounter, bottomSizeYHigh);
-                                        textureCoordCounter++;
-                                    }
-
-                                } //end of case 7
-                                break;
-                            } //end of switch
-
                         /*
                         }//REMOVE THIS BRACKET BOI
 
@@ -2592,58 +2778,15 @@ public class ChunkMeshGenerator implements Runnable{
                 newChunkData.normalMeshIsNull = true;
             }
 
-            /*
-            workerCounter = 0;
-
-            if (!liquidPositions.isEmpty()) {
-
-                float[] liquidPositionsArray = new float[liquidPositions.size()];
-                for (Float data : liquidPositions) {
-                    //auto casted from Float to float
-                    liquidPositionsArray[workerCounter] = data;
-                    workerCounter++;
-                }
-
-                workerCounter = 0;
-
-                float[] liquidLightArray = new float[liquidLight.size()];
-                for (Float data : liquidLight) {
-                    //auto casted from Float to float
-                    liquidLightArray[workerCounter] = data;
-                    workerCounter++;
-                }
-
-                workerCounter = 0;
-
-                int[] liquidIndicesArray = new int[liquidIndices.size()];
-                for (Integer data : liquidIndices) {
-                    //auto casted from Integer to int
-                    liquidIndicesArray[workerCounter] = data;
-                    workerCounter++;
-                }
-
-                workerCounter = 0;
-
-                float[] liquidTextureCoordArray = new float[liquidTextureCoord.size()];
-                for (Float data : liquidTextureCoord) {
-                    //auto casted from Float to float
-                    liquidTextureCoordArray[workerCounter] = data;
-                    workerCounter++;
-                }
-
-                //pass data to container object
-                newChunkData.liquidPositionsArray = liquidPositionsArray;
-                newChunkData.liquidLightArray = liquidLightArray;
-                newChunkData.liquidIndicesArray = liquidIndicesArray;
-                newChunkData.liquidTextureCoordArray = liquidTextureCoordArray;
+            if (liquidPositionsCounter > 0){
+                newChunkData.liquidPositionsArray    = liquidPositions.values().toFloatArray();
+                newChunkData.liquidLightArray        = liquidLight.values().toFloatArray();
+                newChunkData.liquidIndicesArray      = liquidIndices.values().toIntArray();
+                newChunkData.liquidTextureCoordArray = liquidTextureCoord.values().toFloatArray();
             } else {
                 //inform the container object that this chunk is null for this part of it
                 newChunkData.liquidMeshIsNull = true;
             }
-
-             */
-
-
 
             if (allFacesPositionsCounter > 0) {
                 //pass data to container object
@@ -2658,18 +2801,15 @@ public class ChunkMeshGenerator implements Runnable{
 
 
 
-            //clear linked lists
+            //clear data so GC doesn't have to
             positions.clear();
             textureCoord.clear();
             indices.clear();
             light.clear();
-
-            /*
             liquidPositions.clear();
             liquidTextureCoord.clear();
             liquidIndices.clear();
             liquidLight.clear();
-             */
             allFacesPositions.clear();
             allFacesTextureCoord.clear();
             allFacesIndices.clear();
@@ -2756,12 +2896,66 @@ public class ChunkMeshGenerator implements Runnable{
         return (float) Math.pow(Math.pow(lightByte, 1.5), 1.5);
     }
 
+
+
     //this is an internal duplicate specific to this thread
     //private final static int xMax = 16;
     //private final static int yMax = 128;
     //private final static int length = xMax * yMax; //2048
     private static int posToIndex( int x, int y, int z ) {
         return (z * 2048) + (y * 16) + x;
+    }
+
+
+    //these are cloned methods from the main thread
+
+    private static byte getBlockDrawType(byte ID){
+        return blockIDs[ID].drawType;
+    }
+
+    private static float[] getFrontTexturePoints(int ID, byte rotation){
+        return switch (rotation) {
+            case 1 -> blockIDs[ID].rightTexture;
+            case 2 -> blockIDs[ID].backTexture;
+            case 3 -> blockIDs[ID].leftTexture;
+            default -> blockIDs[ID].frontTexture;
+        };
+    }
+    private static float[] getBackTexturePoints(int ID, byte rotation){
+        return switch (rotation) {
+            case 1 -> blockIDs[ID].leftTexture;
+            case 2 -> blockIDs[ID].frontTexture;
+            case 3 -> blockIDs[ID].rightTexture;
+            default -> blockIDs[ID].backTexture;
+        };
+
+    }
+    private static float[] getRightTexturePoints(int ID, byte rotation){
+        return switch (rotation) {
+            case 1 -> blockIDs[ID].backTexture;
+            case 2 -> blockIDs[ID].leftTexture;
+            case 3 -> blockIDs[ID].frontTexture;
+            default -> blockIDs[ID].rightTexture;
+        };
+    }
+    private static float[] getLeftTexturePoints(int ID, byte rotation){
+        return switch (rotation) {
+            case 1 -> blockIDs[ID].frontTexture;
+            case 2 -> blockIDs[ID].rightTexture;
+            case 3 -> blockIDs[ID].backTexture;
+            default -> blockIDs[ID].leftTexture;
+        };
+    }
+
+    public static float[] getTopTexturePoints(int ID){
+        return blockIDs[ID].topTexture;
+    }
+    public static float[] getBottomTexturePoints(int ID){
+        return blockIDs[ID].bottomTexture;
+    }
+
+    private static boolean getIfLiquid(int ID){
+        return blockIDs[ID].isLiquid;
     }
 
 }
