@@ -2,9 +2,13 @@ package game.chunk;
 
 import it.unimi.dsi.fastutil.ints.Int2FloatLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2IntLinkedOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
+
+import java.util.HashSet;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 import static engine.Window.windowShouldClose;
 import static game.blocks.BlockDefinition.*;
@@ -13,8 +17,8 @@ import static game.chunk.ChunkMeshGenerationHandler.addToChunkMeshQueue;
 import static game.light.Light.getCurrentGlobalLightLevel;
 
 public class ChunkMeshGenerator implements Runnable{
-
-    private static final ObjectArrayList<Vector3i> generationQueue = new ObjectArrayList<>();
+    //DO NOT CHANGE THE DATA CONTAINER
+    private static final ConcurrentLinkedDeque<Vector3i> generationQueue = new ConcurrentLinkedDeque<>();
 
     public void run() {
         while (!windowShouldClose()) {
@@ -23,13 +27,15 @@ public class ChunkMeshGenerator implements Runnable{
     }
 
     public static void generateChunkMesh(int chunkX, int chunkZ, int yHeight) {
-        //generationQueue.remove(new Vector3i(chunkX,yHeight, chunkZ));
-        generationQueue.add(new Vector3i(chunkX,yHeight, chunkZ));
+        if (!generationQueue.contains(new Vector3i(chunkX,yHeight, chunkZ))) {
+            generationQueue.add(new Vector3i(chunkX, yHeight, chunkZ));
+        }
     }
 
     public static void instantGeneration(int chunkX, int chunkZ, int yHeight){
-        //generationQueue.remove(new Vector3i(chunkX,yHeight, chunkZ));
-        generationQueue.add(new Vector3i(chunkX,yHeight, chunkZ));
+        //replace the data basically
+        generationQueue.remove(new Vector3i(chunkX,yHeight, chunkZ));
+        generationQueue.addFirst(new Vector3i(chunkX,yHeight, chunkZ));
     }
 
     //cache data
@@ -64,7 +70,7 @@ public class ChunkMeshGenerator implements Runnable{
             Vector3i updateRawData;
             try {
                 updateRawData = generationQueue.pop();
-            } catch (Exception exp){
+            } catch (Exception ignore){
                 return; //don't crash basically
             }
 
