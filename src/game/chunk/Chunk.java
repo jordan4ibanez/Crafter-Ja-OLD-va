@@ -2,6 +2,7 @@ package game.chunk;
 
 import engine.graphics.Mesh;
 import engine.network.ChunkRequest;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.joml.Vector2i;
 import org.joml.Vector3d;
 import org.joml.Vector3i;
@@ -33,11 +34,11 @@ import static game.player.Player.*;
 public class Chunk {
 
     //todo: this is an experiment, if all of a sudden stuff starts crashing, this is why - this is disabled for now
-    //private static final Object2ObjectOpenHashMap<Vector2i, ChunkObject> map = new Object2ObjectOpenHashMap<>();
-    private static final ConcurrentHashMap<Vector2i, ChunkObject> map = new ConcurrentHashMap<>();
+    private static final Object2ObjectOpenHashMap<Vector2i, ChunkObject> map = new Object2ObjectOpenHashMap<>();
+    //private static final ConcurrentHashMap<Vector2i, ChunkObject> map = new ConcurrentHashMap<>();
 
-    public static Collection<ChunkObject> getMap(){
-        return map.values();
+    public static ChunkObject[] getMap(){
+        return map.values().toArray(new ChunkObject[0]);
     }
 
     public static ChunkObject getChunk(int x, int z){
@@ -395,7 +396,7 @@ public class Chunk {
             return;
         }
 
-        int oldBlock = thisChunk.block[posToIndex(blockX, y, blockZ)];
+        byte oldBlock = thisChunk.block[posToIndex(blockX, y, blockZ)];
 
         thisChunk.block[posToIndex(blockX, y, blockZ)] = 0;
         thisChunk.rotation[posToIndex(blockX, y, blockZ)] = 0;
