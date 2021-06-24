@@ -2,12 +2,9 @@ package game.chunk;
 
 import it.unimi.dsi.fastutil.ints.Int2FloatLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2IntLinkedOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
-import java.util.HashSet;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 import static engine.Window.windowShouldClose;
