@@ -6,16 +6,18 @@ import org.joml.Vector3i;
 
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static engine.time.Time.getDelta;
 import static game.chunk.Chunk.*;
 
 public class ChunkMeshGenerationHandler {
 
-    private static final ConcurrentHashMap<Vector3i, ChunkMeshDataObject> queue = new ConcurrentHashMap<>();
+    private static final ConcurrentLinkedDeque<ChunkMeshDataObject> queue = new ConcurrentLinkedDeque<>();
 
-    public static void addToChunkMeshQueue(Vector3i key, ChunkMeshDataObject chunkMeshDataObject){
-        queue.put(key, chunkMeshDataObject);
+    public static void addToChunkMeshQueue(ChunkMeshDataObject chunkMeshDataObject){
+        queue.add(chunkMeshDataObject);
     }
 
     private static Texture textureAtlas;
@@ -32,8 +34,6 @@ public class ChunkMeshGenerationHandler {
         return textureAtlas;
     }
 
-    private static final Random random = new Random();
-
     private static final float goalTimer = 0.00005f;//goalTimerArray[getSettingsChunkLoad()];
 
     private static float chunkUpdateTimer = 0;
@@ -48,33 +48,39 @@ public class ChunkMeshGenerationHandler {
             chunkUpdateTimer = 0;
         }
 
-        for (int i = 0; i < updateAmount; i++) {
-            if (!queue.isEmpty()) {
-                Object[] queueAsArray = queue.keySet().toArray();
-                Vector3i thisKey = (Vector3i) queueAsArray[random.nextInt(queueAsArray.length)];
+        //for (int i = 0; i < updateAmount; i++) {
 
-                ChunkMeshDataObject newChunkMeshData = queue.get(thisKey);
+            while (!queue.isEmpty()) {
 
-                if (!newChunkMeshData.normalMeshIsNull) {
-                    setChunkNormalMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, new Mesh(newChunkMeshData.positionsArray, newChunkMeshData.lightArray, newChunkMeshData.indicesArray, newChunkMeshData.textureCoordArray, textureAtlas));
+                System.out.println("ChunkMesh Setting QueueSize: " + queue.size());
+
+                ChunkMeshDataObject newChunkMeshData = queue.pop();
+
+                if (newChunkMeshData != null) {
+
+                    if (!newChunkMeshData.normalMeshIsNull) {
+                        setChunkNormalMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, new Mesh(newChunkMeshData.positionsArray, newChunkMeshData.lightArray, newChunkMeshData.indicesArray, newChunkMeshData.textureCoordArray, textureAtlas));
+                    } else {
+                        setChunkNormalMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, null);
+                    }
+
+                    if (!newChunkMeshData.liquidMeshIsNull) {
+                        setChunkLiquidMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, new Mesh(newChunkMeshData.liquidPositionsArray, newChunkMeshData.liquidLightArray, newChunkMeshData.liquidIndicesArray, newChunkMeshData.liquidTextureCoordArray, textureAtlas));
+                    } else {
+                        setChunkLiquidMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, null);
+                    }
+
+                    if (!newChunkMeshData.allFacesMeshIsNull) {
+                        setChunkAllFacesMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, new Mesh(newChunkMeshData.allFacesPositionsArray, newChunkMeshData.allFacesLightArray, newChunkMeshData.allFacesIndicesArray, newChunkMeshData.allFacesTextureCoordArray, textureAtlas));
+                    } else {
+                        setChunkAllFacesMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, null);
+                    }
                 } else {
-                    setChunkNormalMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, null);
+                    //failed, let's try again
+                    System.out.println("trying again");
+                    //i--;
                 }
-
-                if (!newChunkMeshData.liquidMeshIsNull) {
-                    setChunkLiquidMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, new Mesh(newChunkMeshData.liquidPositionsArray, newChunkMeshData.liquidLightArray, newChunkMeshData.liquidIndicesArray, newChunkMeshData.liquidTextureCoordArray, textureAtlas));
-                } else {
-                    setChunkLiquidMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, null);
-                }
-
-                if (!newChunkMeshData.allFacesMeshIsNull) {
-                    setChunkAllFacesMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, new Mesh(newChunkMeshData.allFacesPositionsArray, newChunkMeshData.allFacesLightArray, newChunkMeshData.allFacesIndicesArray, newChunkMeshData.allFacesTextureCoordArray, textureAtlas));
-                } else {
-                    setChunkAllFacesMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, null);
-                }
-
-                queue.remove(thisKey);
             }
-        }
+        //}
     }
 }

@@ -6,6 +6,7 @@ import org.joml.Vector3i;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.LinkedList;
 
 import static engine.Window.windowShouldClose;
 import static game.chunk.Chunk.*;
@@ -55,8 +56,7 @@ public class BiomeGenerator implements Runnable{
 
             thisChunk.modified = true;
             //biome max 128 trees
-            Vector3i[] treePosArray = new Vector3i[128];
-            byte treeIndex = 0;
+            LinkedList<Vector3i> treePosArray = new LinkedList<>();
             //standard generation
             byte generationX;
             byte generationZ;
@@ -105,8 +105,7 @@ public class BiomeGenerator implements Runnable{
 
                             //add tree to queue
                             if (noiseTest2 > 0.98f) {
-                                treePosArray[treeIndex] = new Vector3i(generationX, generationY, generationZ);
-                                treeIndex++;
+                                treePosArray.add(new Vector3i(generationX, generationY, generationZ));
                             }
                             //dirt/sand gen
                         } else if (generationY < height && generationY >= height - dirtHeight - dirtHeightRandom) {
@@ -171,8 +170,7 @@ public class BiomeGenerator implements Runnable{
 
                             //add tree to queue
                             if (noiseTest2 > 0.98f) {
-                                treePosArray[treeIndex] = new Vector3i(generationX, height, generationZ);
-                                treeIndex++;
+                                treePosArray.add(new Vector3i(generationX, height, generationZ));
                             }
 
                         }
@@ -181,20 +179,18 @@ public class BiomeGenerator implements Runnable{
             }
 
             //generate tree cores
-            for (int i = 0; i < treeIndex; i++) {
-                Vector3i basePos = treePosArray[i];
+            for (Vector3i basePos : treePosArray) {
                 //generate stumps
                 for (int y = 0; y < 4; y++) {
                     //stay within borders
-                    if (y + treePosArray[i].y < 127 && basePos.x >= 0 && basePos.x <= 15 && basePos.z >= 0 && basePos.z <= 15) {
+                    if (y + basePos.y < 127 && basePos.x >= 0 && basePos.x <= 15 && basePos.z >= 0 && basePos.z <= 15) {
                         thisChunk.block[posToIndex(basePos.x, basePos.y + y, basePos.z)] = 25;
                     }
                 }
             }
 
             //generate tree leaves
-            for (int i = 0; i < treeIndex; i++) {
-                Vector3i basePos = treePosArray[i];
+            for (Vector3i basePos : treePosArray) {
                 byte treeWidth = 0;
                 for (int y = 5; y > 1; y--) {
                     for (int x = -treeWidth; x <= treeWidth; x++) {

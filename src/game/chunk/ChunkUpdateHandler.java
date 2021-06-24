@@ -3,6 +3,8 @@ package game.chunk;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.joml.Vector3i;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Random;
 
 import static engine.time.Time.getDelta;
@@ -11,17 +13,11 @@ import static game.chunk.ChunkMeshGenerator.generateChunkMesh;
 
 public class ChunkUpdateHandler {
 
-    //the data type allows the program to thread crash or have concurrency problems
-    //and just keep running, this is pretty awesome
-    private static final ObjectArrayList<Vector3i> queue = new ObjectArrayList<>();
+    private static final Deque<Vector3i> queue = new ArrayDeque<>();
 
     public static void chunkUpdate( int x, int z , int y){
-
-        Vector3i key = new Vector3i(x, y, z);
-
-        if (!queue.contains(key)) {
-            queue.add(new Vector3i(key));
-        }
+        queue.remove(new Vector3i(x, y, z));
+        queue.add(new Vector3i(x, y, z));
     }
 
     private static final Random random = new Random();

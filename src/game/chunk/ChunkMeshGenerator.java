@@ -24,10 +24,12 @@ public class ChunkMeshGenerator implements Runnable{
     }
 
     public static void generateChunkMesh(int chunkX, int chunkZ, int yHeight) {
+        generationQueue.remove(new Vector3i(chunkX,yHeight, chunkZ));
         generationQueue.add(new Vector3i(chunkX,yHeight, chunkZ));
     }
 
     public static void instantGeneration(int chunkX, int chunkZ, int yHeight){
+        generationQueue.remove(new Vector3i(chunkX,yHeight, chunkZ));
         generationQueue.addFirst(new Vector3i(chunkX,yHeight, chunkZ));
     }
 
@@ -38,16 +40,22 @@ public class ChunkMeshGenerator implements Runnable{
     private static void pollQueue(){
 
         boolean solved = false;
+        boolean continued = false;
 
         while (!generationQueue.isEmpty() && !solved) {
 
-            //long startTime = System.nanoTime();
+            long startTime = System.nanoTime();
 
             Vector3i updateRawData;
             try {
                 updateRawData = generationQueue.pop();
             } catch (Exception exp){
-                return; //don't crash, basically
+                if (!continued) {
+                    continued = true;
+                    continue; //don't crash, basically
+                } else {
+                    return; //don't freeze basically
+                }
             }
 
 
@@ -1893,13 +1901,12 @@ public class ChunkMeshGenerator implements Runnable{
             }
 
 
-            /*
+
             long endTime = System.nanoTime();
             long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
             double seconds = (double) duration / 1_000_000_000.0;
             System.out.println("This took: " + seconds + " seconds to generate chunk mesh");
 
-             */
 
             ChunkMeshDataObject newChunkData = new ChunkMeshDataObject();
 
@@ -2072,7 +2079,7 @@ public class ChunkMeshGenerator implements Runnable{
 
 
             //finally add it into the queue to be popped
-            addToChunkMeshQueue(new Vector3i(chunkX,chunkZ,yHeight), newChunkData);
+            addToChunkMeshQueue(newChunkData);
 
 
             //solved - stop looping
@@ -2132,6 +2139,24 @@ public class ChunkMeshGenerator implements Runnable{
             return torchLight;
         }
     }
+
+
+    private static boolean chunkStackContainsBlock(ChunkObject thisChunk, int yHeight){
+        if (thisChunk == null || thisChunk.block == null){
+            return false;
+        }
+        for (int x = 0; x < 16; x++){
+            for (int z = 0; z < 16; z++){
+                for (int y = yHeight * 16; y < (yHeight + 1) * 16; y++){
+                    if (thisChunk.block[posToIndex(x,y,z)] != 0){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
 
     private static float convertLight(float lightByte){
         return (float) Math.pow(Math.pow(lightByte, 1.5), 1.5);
