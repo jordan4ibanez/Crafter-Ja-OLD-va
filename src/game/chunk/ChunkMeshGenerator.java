@@ -82,8 +82,6 @@ public class ChunkMeshGenerator implements Runnable{
             final int chunkZ  = updateRawData.z;
             final int yHeight = updateRawData.y;
 
-
-
             //neighbor chunks
             ChunkObject chunkNeighborXPlus  = getChunk(chunkX + 1, chunkZ);
             ChunkObject chunkNeighborXMinus = getChunk(chunkX - 1, chunkZ);
