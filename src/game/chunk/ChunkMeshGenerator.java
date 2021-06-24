@@ -393,43 +393,6 @@ public class ChunkMeshGenerator implements Runnable{
         return indicesCount;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     private static int calculateLiquids(int x, int y, int z, byte thisBlock, byte thisRotation, int liquidIndicesCount, byte[] blockData, ChunkObject chunkNeighborZPlus, ChunkObject chunkNeighborZMinus, ChunkObject chunkNeighborXMinus, ChunkObject chunkNeighborXPlus, HyperFloatArray liquidPositions, HyperFloatArray liquidLight, HyperIntArray liquidIndices, HyperFloatArray liquidTextureCoord, byte chunkLightLevel, byte[] lightData){
         byte neighborBlock;
 
@@ -644,43 +607,6 @@ public class ChunkMeshGenerator implements Runnable{
         return liquidIndicesCount;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     private static int calculateNormal(int x, int y, int z, byte thisBlock, byte thisRotation, int indicesCount, byte[] blockData, HyperFloatArray positions, HyperFloatArray light, HyperIntArray indices, HyperFloatArray textureCoord, ChunkObject chunkNeighborZPlus, ChunkObject chunkNeighborZMinus, ChunkObject chunkNeighborXMinus, ChunkObject chunkNeighborXPlus, byte chunkLightLevel, byte[] lightData){
 
         byte neighborBlock;
@@ -874,36 +800,6 @@ public class ChunkMeshGenerator implements Runnable{
 
         return indicesCount;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     //require 0.125 width
     private static final float largeXZ = 0.5625f; //large
@@ -1340,49 +1236,6 @@ public class ChunkMeshGenerator implements Runnable{
         return indicesCount;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     private static int calculateAllFaces(int x, int y, int z, byte thisBlock, byte thisRotation, int allFacesIndicesCount, HyperFloatArray allFacesPositions, HyperFloatArray allFacesLight, HyperIntArray allFacesIndices, HyperFloatArray allFacesTextureCoord, ChunkObject chunkNeighborZPlus, ChunkObject chunkNeighborZMinus, ChunkObject chunkNeighborXMinus, ChunkObject chunkNeighborXPlus, byte chunkLightLevel, byte[] lightData){
 
         float[] textureWorker;
@@ -1548,48 +1401,6 @@ public class ChunkMeshGenerator implements Runnable{
 
         return allFacesIndicesCount;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     private static byte calculateBlockLight(byte chunkLightLevel, byte lightData){
         byte naturalLightOfBlock = getByteNaturalLight(lightData);
