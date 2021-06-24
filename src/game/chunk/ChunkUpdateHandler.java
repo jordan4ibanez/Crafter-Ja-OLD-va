@@ -18,7 +18,11 @@ public class ChunkUpdateHandler {
 
     public static void chunkUpdate( int x, int z , int y){
         //queue.remove(new Vector3i(x, y, z));
-        queue.add(new Vector3i(x, y, z));
+        try {
+            queue.add(new Vector3i(x, y, z));
+        } catch (Exception ignored){
+            //whoopsies
+        }
     }
 
     private static final Random random = new Random();
@@ -41,8 +45,13 @@ public class ChunkUpdateHandler {
         for (int i = 0; i < updateAmount; i++) {
             if (!queue.isEmpty()) {
 
-                Object[] queueAsArray = queue.toArray();
-                Vector3i key = (Vector3i) queueAsArray[random.nextInt(queueAsArray.length)];
+                Vector3i key;
+                try {
+                    Object[] queueAsArray = queue.toArray();
+                    key = (Vector3i) queueAsArray[random.nextInt(queueAsArray.length)];
+                } catch (Exception ignored){
+                    continue; //let's just keep going
+                }
 
                 //sometimes it is null
                 if (key != null && chunkStackContainsBlock(key.x, key.z, key.y)) {
