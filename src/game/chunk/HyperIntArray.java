@@ -10,7 +10,7 @@ public class HyperIntArray {
     int currentPos = 0;
     int maxSize = growthRate;
 
-    public void put(int data){
+    private void put(int data){
         if (currentPos == maxSize - 1){
             grow();
         }

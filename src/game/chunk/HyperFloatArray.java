@@ -12,7 +12,7 @@ public class HyperFloatArray {
 
 
     //this is old delete it
-    public void put(float data){
+    private void put(float data){
         if (currentPos == maxSize - 1){
             grow();
         }
