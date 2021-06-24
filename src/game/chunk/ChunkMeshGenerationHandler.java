@@ -4,6 +4,8 @@ import engine.graphics.Mesh;
 import engine.graphics.Texture;
 import org.joml.Vector3i;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -14,7 +16,7 @@ import static game.chunk.Chunk.*;
 
 public class ChunkMeshGenerationHandler {
 
-    private static final ConcurrentLinkedDeque<ChunkMeshDataObject> queue = new ConcurrentLinkedDeque<>();
+    private static final Deque<ChunkMeshDataObject> queue = new ConcurrentLinkedDeque<>();
 
     public static void addToChunkMeshQueue(ChunkMeshDataObject chunkMeshDataObject){
         queue.add(chunkMeshDataObject);
@@ -34,7 +36,7 @@ public class ChunkMeshGenerationHandler {
         return textureAtlas;
     }
 
-    private static final float goalTimer = 0.00005f;//goalTimerArray[getSettingsChunkLoad()];
+    private static final float goalTimer = 0.0001f;
 
     private static float chunkUpdateTimer = 0;
 
@@ -48,11 +50,10 @@ public class ChunkMeshGenerationHandler {
             chunkUpdateTimer = 0;
         }
 
-        //for (int i = 0; i < updateAmount; i++) {
+        for (int i = 0; i < updateAmount; i++) {
+            if (!queue.isEmpty()) {
 
-            while (!queue.isEmpty()) {
-
-                System.out.println("ChunkMesh Setting QueueSize: " + queue.size());
+                //System.out.println("ChunkMesh Setting QueueSize: " + queue.size());
 
                 ChunkMeshDataObject newChunkMeshData = queue.pop();
 
@@ -64,6 +65,7 @@ public class ChunkMeshGenerationHandler {
                         setChunkNormalMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, null);
                     }
 
+                    /*
                     if (!newChunkMeshData.liquidMeshIsNull) {
                         setChunkLiquidMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, new Mesh(newChunkMeshData.liquidPositionsArray, newChunkMeshData.liquidLightArray, newChunkMeshData.liquidIndicesArray, newChunkMeshData.liquidTextureCoordArray, textureAtlas));
                     } else {
@@ -75,12 +77,12 @@ public class ChunkMeshGenerationHandler {
                     } else {
                         setChunkAllFacesMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, null);
                     }
-                } else {
-                    //failed, let's try again
-                    System.out.println("trying again");
-                    //i--;
+
+                     */
                 }
+            } else {
+                return;
             }
-        //}
+        }
     }
 }
