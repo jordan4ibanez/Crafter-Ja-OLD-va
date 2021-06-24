@@ -45,8 +45,8 @@ public class HyperIntArray {
 
 
     public int[] values(){
-        int[] returningContainer = new int[currentPos + 1];
-        System.arraycopy(dataContainer, 0, returningContainer, 0, currentPos + 1);
+        int[] returningContainer = new int[currentPos];
+        System.arraycopy(dataContainer, 0, returningContainer, 0, currentPos);
 
         //System.out.println(returningContainer.length);
         return returningContainer;

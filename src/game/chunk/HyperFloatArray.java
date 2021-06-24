@@ -73,8 +73,8 @@ public class HyperFloatArray {
     }
 
     public float[] values(){
-        float[] returningContainer = new float[currentPos + 1];
-        System.arraycopy(dataContainer, 0, returningContainer, 0, currentPos + 1);
+        float[] returningContainer = new float[currentPos];
+        System.arraycopy(dataContainer, 0, returningContainer, 0, currentPos);
         return returningContainer;
     }
 
