@@ -1,7 +1,5 @@
 package game.chunk;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.joml.Vector3i;
 
 import java.util.ArrayDeque;
@@ -14,15 +12,11 @@ import static game.chunk.ChunkMeshGenerator.generateChunkMesh;
 
 public class ChunkUpdateHandler {
 
-    private static final ObjectOpenHashSet<Vector3i> queue = new ObjectOpenHashSet<>();
+    private static final Deque<Vector3i> queue = new ArrayDeque<>();
 
     public static void chunkUpdate( int x, int z , int y){
         //queue.remove(new Vector3i(x, y, z));
-        try {
-            queue.add(new Vector3i(x, y, z));
-        } catch (Exception ignored){
-            //whoopsies
-        }
+        queue.add(new Vector3i(x, y, z));
     }
 
     private static final Random random = new Random();
