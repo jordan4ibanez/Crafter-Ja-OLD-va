@@ -18,7 +18,7 @@ public class BlockDefinition {
     private final static BlockDefinition[] blockIDs = new BlockDefinition[(byte)30];
 
     //holds the blockshape data
-    private final static BlockShape[] blockShapeMap = new BlockShape[(byte)8];
+    private final static BlockShape[] blockShapeMap = new BlockShape[(byte)9];
 
     //fixed fields for the class
     private static final byte atlasSizeX = 32;
@@ -45,7 +45,7 @@ public class BlockDefinition {
     public boolean walkable;
     public boolean steppable;
     public boolean isLiquid;
-    public int drawType;
+    public byte drawType;
     public String placeSound;
     public String digSound;
     public BlockModifier blockModifier;
@@ -67,13 +67,13 @@ public class BlockDefinition {
             float leafHardness,
             String name,
             boolean dropsItem,
-            int[] front,
-            int[] back,
-            int[] right,
-            int[] left,
-            int[] top,
-            int[] bottom,
-            int drawType,
+            byte[] front,
+            byte[] back,
+            byte[] right,
+            byte[] left,
+            byte[] top,
+            byte[] bottom,
+            byte drawType,
             boolean walkable,
             boolean steppable,
             boolean isLiquid,
@@ -160,7 +160,7 @@ public class BlockDefinition {
         }
     }
 
-    private static float[] calculateTexture(int x, int y){
+    private static float[] calculateTexture(byte x, byte y){
         float[] texturePoints = new float[4];
         texturePoints[0] = (float)x/(float)atlasSizeX;     //min x (-)
         texturePoints[1] = (float)(x+1)/(float)atlasSizeX; //max x (+)
@@ -170,19 +170,19 @@ public class BlockDefinition {
         return texturePoints;
     }
 
-    public static String getBlockName(int ID){
+    public static String getBlockName(byte ID){
         return blockIDs[ID].name;
     }
 
-    public static boolean getRightClickable(int ID){
+    public static boolean getRightClickable(byte ID){
         return(blockIDs[ID].isRightClickable);
     }
 
-    public static boolean getIsOnPlaced(int ID){
+    public static boolean getIsOnPlaced(byte ID){
         return(blockIDs[ID].isOnPlaced);
     }
 
-    public static int getBlockDrawType(int ID){
+    public static byte getBlockDrawType(byte ID){
         if (ID < 0){
             return 0;
         }
@@ -321,6 +321,8 @@ public class BlockDefinition {
         //torch
         blockShapeMap[7] = new BlockShape(new double[][]{{0f,0f,0f,1f,1f,1f}});
 
+        //liquid source
+        blockShapeMap[8] = new BlockShape(new double[][]{{0f,0f,0f,1f,1f,1f}});
 
         new BlockDefinition(
                 (byte) 0,
@@ -330,13 +332,13 @@ public class BlockDefinition {
                 -1f,
                 "air",
                 false,
-                new int[]{-1,-1}, //front
-                new int[]{-1,-1}, //back
-                new int[]{-1,-1}, //right
-                new int[]{-1,-1}, //left
-                new int[]{-1,-1}, //top
-                new int[]{-1,-1},  //bottom
-                0,
+                new byte[]{-1,-1}, //front
+                new byte[]{-1,-1}, //back
+                new byte[]{-1,-1}, //right
+                new byte[]{-1,-1}, //left
+                new byte[]{-1,-1}, //top
+                new byte[]{-1,-1},  //bottom
+                (byte) 0,
                 false,
                 false,
                 false,
@@ -358,13 +360,13 @@ public class BlockDefinition {
                 0f,
                 "dirt",
                 true,
-                new int[]{0,0}, //front
-                new int[]{0,0}, //back
-                new int[]{0,0}, //right
-                new int[]{0,0}, //left
-                new int[]{0,0}, //top
-                new int[]{0,0},  //bottom
-                1,
+                new byte[]{0,0}, //front
+                new byte[]{0,0}, //back
+                new byte[]{0,0}, //right
+                new byte[]{0,0}, //left
+                new byte[]{0,0}, //top
+                new byte[]{0,0},  //bottom
+                (byte) 1,
                 true,
                 false,
                 false,
@@ -386,13 +388,13 @@ public class BlockDefinition {
                 0,
                 "grass",
                 true,
-                new int[]{5,0}, //front
-                new int[]{5,0}, //back
-                new int[]{5,0}, //right
-                new int[]{5,0}, //left
-                new int[]{4,0}, //top
-                new int[]{0,0},  //bottom
-                1,
+                new byte[]{5,0}, //front
+                new byte[]{5,0}, //back
+                new byte[]{5,0}, //right
+                new byte[]{5,0}, //left
+                new byte[]{4,0}, //top
+                new byte[]{0,0},  //bottom
+                (byte) 1,
                 true,
                 false,
                 false,
@@ -414,13 +416,13 @@ public class BlockDefinition {
                 0,
                 "stone",
                 true,
-                new int[]{1,0}, //front
-                new int[]{1,0}, //back
-                new int[]{1,0}, //right
-                new int[]{1,0}, //left
-                new int[]{1,0}, //top
-                new int[]{1,0},  //bottom
-                1,
+                new byte[]{1,0}, //front
+                new byte[]{1,0}, //back
+                new byte[]{1,0}, //right
+                new byte[]{1,0}, //left
+                new byte[]{1,0}, //top
+                new byte[]{1,0},  //bottom
+                (byte) 1,
                 true,
                 false,
                 false,
@@ -442,13 +444,13 @@ public class BlockDefinition {
                 0,
                 "cobblestone",
                 true,
-                new int[]{2,0}, //front
-                new int[]{2,0}, //back
-                new int[]{2,0}, //right
-                new int[]{2,0}, //left
-                new int[]{2,0}, //top
-                new int[]{2,0},  //bottom
-                1,
+                new byte[]{2,0}, //front
+                new byte[]{2,0}, //back
+                new byte[]{2,0}, //right
+                new byte[]{2,0}, //left
+                new byte[]{2,0}, //top
+                new byte[]{2,0},  //bottom
+                (byte) 1,
                 true,
                 false,
                 false,
@@ -470,13 +472,13 @@ public class BlockDefinition {
                 -1,
                 "bedrock",
                 false,
-                new int[]{6,0}, //front
-                new int[]{6,0}, //back
-                new int[]{6,0}, //right
-                new int[]{6,0}, //left
-                new int[]{6,0}, //top
-                new int[]{6,0},  //bottom
-                1,
+                new byte[]{6,0}, //front
+                new byte[]{6,0}, //back
+                new byte[]{6,0}, //right
+                new byte[]{6,0}, //left
+                new byte[]{6,0}, //top
+                new byte[]{6,0},  //bottom
+                (byte) 1,
                 true,
                 false,
                 false,
@@ -507,13 +509,13 @@ public class BlockDefinition {
                 0,
                 "tnt",
                 false,
-                new int[]{7,0}, //front
-                new int[]{7,0}, //back
-                new int[]{7,0}, //right
-                new int[]{7,0}, //left
-                new int[]{8,0}, //top
-                new int[]{9,0},  //bottom
-                1,
+                new byte[]{7,0}, //front
+                new byte[]{7,0}, //back
+                new byte[]{7,0}, //right
+                new byte[]{7,0}, //left
+                new byte[]{8,0}, //top
+                new byte[]{9,0},  //bottom
+                (byte) 1,
                 true,
                 false,
                 false,
@@ -535,13 +537,13 @@ public class BlockDefinition {
                 -1,
                 "water",
                 false,
-                new int[]{10,0}, //front
-                new int[]{10,0}, //back
-                new int[]{10,0}, //right
-                new int[]{10,0}, //left
-                new int[]{10,0}, //top
-                new int[]{10,0},  //bottom
-                1,
+                new byte[]{10,0}, //front
+                new byte[]{10,0}, //back
+                new byte[]{10,0}, //right
+                new byte[]{10,0}, //left
+                new byte[]{10,0}, //top
+                new byte[]{10,0},  //bottom
+                (byte) 8, //liquid source
                 false,
                 false,
                 true,
@@ -563,13 +565,13 @@ public class BlockDefinition {
                 0,
                 "coal ore",
                 true,
-                new int[]{11,0}, //front
-                new int[]{11,0}, //back
-                new int[]{11,0}, //right
-                new int[]{11,0}, //left
-                new int[]{11,0}, //top
-                new int[]{11,0},  //bottom
-                1,
+                new byte[]{11,0}, //front
+                new byte[]{11,0}, //back
+                new byte[]{11,0}, //right
+                new byte[]{11,0}, //left
+                new byte[]{11,0}, //top
+                new byte[]{11,0},  //bottom
+                (byte) 1,
                 true,
                 false,
                 false,
@@ -591,13 +593,13 @@ public class BlockDefinition {
                 0,
                 "iron ore",
                 true,
-                new int[]{12,0}, //front
-                new int[]{12,0}, //back
-                new int[]{12,0}, //right
-                new int[]{12,0}, //left
-                new int[]{12,0}, //top
-                new int[]{12,0},  //bottom
-                1,
+                new byte[]{12,0}, //front
+                new byte[]{12,0}, //back
+                new byte[]{12,0}, //right
+                new byte[]{12,0}, //left
+                new byte[]{12,0}, //top
+                new byte[]{12,0},  //bottom
+                (byte) 1,
                 true,
                 false,
                 false,
@@ -619,13 +621,13 @@ public class BlockDefinition {
                 0,
                 "gold ore",
                 true,
-                new int[]{13,0}, //front
-                new int[]{13,0}, //back
-                new int[]{13,0}, //right
-                new int[]{13,0}, //left
-                new int[]{13,0}, //top
-                new int[]{13,0},  //bottom
-                1,
+                new byte[]{13,0}, //front
+                new byte[]{13,0}, //back
+                new byte[]{13,0}, //right
+                new byte[]{13,0}, //left
+                new byte[]{13,0}, //top
+                new byte[]{13,0},  //bottom
+                (byte) 1,
                 true,
                 false,
                 false,
@@ -647,13 +649,13 @@ public class BlockDefinition {
                 0,
                 "diamond ore",
                 true,
-                new int[]{14,0}, //front
-                new int[]{14,0}, //back
-                new int[]{14,0}, //right
-                new int[]{14,0}, //left
-                new int[]{14,0}, //top
-                new int[]{14,0},  //bottom
-                1,
+                new byte[]{14,0}, //front
+                new byte[]{14,0}, //back
+                new byte[]{14,0}, //right
+                new byte[]{14,0}, //left
+                new byte[]{14,0}, //top
+                new byte[]{14,0},  //bottom
+                (byte)1,
                 true,
                 false,
                 false,
@@ -675,13 +677,13 @@ public class BlockDefinition {
                 0,
                 "emerald ore",
                 true,
-                new int[]{15,0}, //front
-                new int[]{15,0}, //back
-                new int[]{15,0}, //right
-                new int[]{15,0}, //left
-                new int[]{15,0}, //top
-                new int[]{15,0},  //bottom
-                1,
+                new byte[]{15,0}, //front
+                new byte[]{15,0}, //back
+                new byte[]{15,0}, //right
+                new byte[]{15,0}, //left
+                new byte[]{15,0}, //top
+                new byte[]{15,0},  //bottom
+                (byte) 1,
                 true,
                 false,
                 false,
@@ -703,13 +705,13 @@ public class BlockDefinition {
                 0,
                 "lapis ore",
                 true,
-                new int[]{16,0}, //front
-                new int[]{16,0}, //back
-                new int[]{16,0}, //right
-                new int[]{16,0}, //left
-                new int[]{16,0}, //top
-                new int[]{16,0},  //bottom
-                1,
+                new byte[]{16,0}, //front
+                new byte[]{16,0}, //back
+                new byte[]{16,0}, //right
+                new byte[]{16,0}, //left
+                new byte[]{16,0}, //top
+                new byte[]{16,0},  //bottom
+                (byte) 1,
                 true,
                 false,
                 false,
@@ -731,13 +733,13 @@ public class BlockDefinition {
                 0,
                 "sapphire ore",
                 true,
-                new int[]{17,0}, //front
-                new int[]{17,0}, //back
-                new int[]{17,0}, //right
-                new int[]{17,0}, //left
-                new int[]{17,0}, //top
-                new int[]{17,0},  //bottom
-                1,
+                new byte[]{17,0}, //front
+                new byte[]{17,0}, //back
+                new byte[]{17,0}, //right
+                new byte[]{17,0}, //left
+                new byte[]{17,0}, //top
+                new byte[]{17,0},  //bottom
+                (byte) 1,
                 true,
                 false,
                 false,
@@ -759,13 +761,13 @@ public class BlockDefinition {
                 0,
                 "ruby ore",
                 true,
-                new int[]{18,0}, //front
-                new int[]{18,0}, //back
-                new int[]{18,0}, //right
-                new int[]{18,0}, //left
-                new int[]{18,0}, //top
-                new int[]{18,0},  //bottom
-                1,
+                new byte[]{18,0}, //front
+                new byte[]{18,0}, //back
+                new byte[]{18,0}, //right
+                new byte[]{18,0}, //left
+                new byte[]{18,0}, //top
+                new byte[]{18,0},  //bottom
+                (byte) 1,
                 true,
                 false,
                 false,
@@ -787,13 +789,13 @@ public class BlockDefinition {
                 0,
                 "cobblestone stair",
                 true,
-                new int[]{2,0}, //front
-                new int[]{2,0}, //back
-                new int[]{2,0}, //right
-                new int[]{2,0}, //left
-                new int[]{2,0}, //top
-                new int[]{2,0},  //bottom
-                2,
+                new byte[]{2,0}, //front
+                new byte[]{2,0}, //back
+                new byte[]{2,0}, //right
+                new byte[]{2,0}, //left
+                new byte[]{2,0}, //top
+                new byte[]{2,0},  //bottom
+                (byte) 2,
                 true,
                 true,
                 false,
@@ -816,13 +818,13 @@ public class BlockDefinition {
                 0,
                 "pumpkin",
                 true,
-                new int[]{19,0}, //front
-                new int[]{19,0}, //back
-                new int[]{19,0}, //right
-                new int[]{19,0}, //left
-                new int[]{20,0}, //top
-                new int[]{20,0},  //bottom
-                1,
+                new byte[]{19,0}, //front
+                new byte[]{19,0}, //back
+                new byte[]{19,0}, //right
+                new byte[]{19,0}, //left
+                new byte[]{20,0}, //top
+                new byte[]{20,0},  //bottom
+                (byte) 1,
                 true,
                 false,
                 false,
@@ -843,13 +845,13 @@ public class BlockDefinition {
                 0,
                 "jack 'o lantern unlit",
                 true,
-                new int[]{21,0}, //front
-                new int[]{19,0}, //back
-                new int[]{19,0}, //right
-                new int[]{19,0}, //left
-                new int[]{20,0}, //top
-                new int[]{20,0},  //bottom
-                1,
+                new byte[]{21,0}, //front
+                new byte[]{19,0}, //back
+                new byte[]{19,0}, //right
+                new byte[]{19,0}, //left
+                new byte[]{20,0}, //top
+                new byte[]{20,0},  //bottom
+                (byte) 1,
                 true,
                 false,
                 false,
@@ -870,13 +872,13 @@ public class BlockDefinition {
                 0,
                 "jack 'o lantern lit",
                 true,
-                new int[]{22,0}, //front
-                new int[]{19,0}, //back
-                new int[]{19,0}, //right
-                new int[]{19,0}, //left
-                new int[]{20,0}, //top
-                new int[]{20,0},  //bottom
-                1,
+                new byte[]{22,0}, //front
+                new byte[]{19,0}, //back
+                new byte[]{19,0}, //right
+                new byte[]{19,0}, //left
+                new byte[]{20,0}, //top
+                new byte[]{20,0},  //bottom
+                (byte) 1,
                 true,
                 false,
                 false,
@@ -908,13 +910,13 @@ public class BlockDefinition {
                 0,
                 "sand",
                 true,
-                new int[]{23,0}, //front
-                new int[]{23,0}, //back
-                new int[]{23,0}, //right
-                new int[]{23,0}, //left
-                new int[]{23,0}, //top
-                new int[]{23,0},  //bottom
-                1,
+                new byte[]{23,0}, //front
+                new byte[]{23,0}, //back
+                new byte[]{23,0}, //right
+                new byte[]{23,0}, //left
+                new byte[]{23,0}, //top
+                new byte[]{23,0},  //bottom
+                (byte) 1,
                 true,
                 false,
                 false,
@@ -936,13 +938,13 @@ public class BlockDefinition {
                 0,
                 "doorOpenTop",
                 false,
-                new int[]{24,0}, //front
-                new int[]{24,0}, //back
-                new int[]{24,0}, //right
-                new int[]{24,0}, //left
-                new int[]{24,0}, //top
-                new int[]{24,0},  //bottom
-                5,
+                new byte[]{24,0}, //front
+                new byte[]{24,0}, //back
+                new byte[]{24,0}, //right
+                new byte[]{24,0}, //left
+                new byte[]{24,0}, //top
+                new byte[]{24,0},  //bottom
+                (byte) 5,
                 true,
                 false,
                 false,
@@ -982,13 +984,13 @@ public class BlockDefinition {
                 0,
                 "doorOpenBottom",
                 false,
-                new int[]{25,0}, //front
-                new int[]{25,0}, //back
-                new int[]{25,0}, //right
-                new int[]{25,0}, //left
-                new int[]{25,0}, //top
-                new int[]{25,0},  //bottom
-                5,
+                new byte[]{25,0}, //front
+                new byte[]{25,0}, //back
+                new byte[]{25,0}, //right
+                new byte[]{25,0}, //left
+                new byte[]{25,0}, //top
+                new byte[]{25,0},  //bottom
+                (byte) 5,
                 true,
                 false,
                 false,
@@ -1029,13 +1031,13 @@ public class BlockDefinition {
                 0,
                 "doorClosedTop",
                 false,
-                new int[]{24,0}, //front
-                new int[]{24,0}, //back
-                new int[]{24,0}, //right
-                new int[]{24,0}, //left
-                new int[]{24,0}, //top
-                new int[]{24,0},  //bottom
-                6,
+                new byte[]{24,0}, //front
+                new byte[]{24,0}, //back
+                new byte[]{24,0}, //right
+                new byte[]{24,0}, //left
+                new byte[]{24,0}, //top
+                new byte[]{24,0},  //bottom
+                (byte)6,
                 true,
                 false,
                 false,
@@ -1076,13 +1078,13 @@ public class BlockDefinition {
                 0,
                 "doorClosedBottom",
                 false,
-                new int[]{25,0}, //front
-                new int[]{25,0}, //back
-                new int[]{25,0}, //right
-                new int[]{25,0}, //left
-                new int[]{25,0}, //top
-                new int[]{25,0},  //bottom
-                6,
+                new byte[]{25,0}, //front
+                new byte[]{25,0}, //back
+                new byte[]{25,0}, //right
+                new byte[]{25,0}, //left
+                new byte[]{25,0}, //top
+                new byte[]{25,0},  //bottom
+                (byte) 6,
                 true,
                 false,
                 false,
@@ -1123,13 +1125,13 @@ public class BlockDefinition {
                 0,
                 "tree",
                 true,
-                new int[]{26,0}, //front
-                new int[]{26,0}, //back
-                new int[]{26,0}, //right
-                new int[]{26,0}, //left
-                new int[]{27,0}, //top
-                new int[]{27,0},  //bottom
-                1,
+                new byte[]{26,0}, //front
+                new byte[]{26,0}, //back
+                new byte[]{26,0}, //right
+                new byte[]{26,0}, //left
+                new byte[]{27,0}, //top
+                new byte[]{27,0},  //bottom
+                (byte) 1,
                 true,
                 false,
                 false,
@@ -1151,13 +1153,13 @@ public class BlockDefinition {
                 0.1f,
                 "leaves",
                 false,
-                new int[]{28,0}, //front
-                new int[]{28,0}, //back
-                new int[]{28,0}, //right
-                new int[]{28,0}, //left
-                new int[]{28,0}, //top
-                new int[]{28,0},  //bottom
-                4, //allfaces
+                new byte[]{28,0}, //front
+                new byte[]{28,0}, //back
+                new byte[]{28,0}, //right
+                new byte[]{28,0}, //left
+                new byte[]{28,0}, //top
+                new byte[]{28,0},  //bottom
+                (byte) 4, //allfaces
                 true,
                 false,
                 false,
@@ -1179,13 +1181,13 @@ public class BlockDefinition {
                 0,
                 "wood",
                 true,
-                new int[]{29,0}, //front
-                new int[]{29,0}, //back
-                new int[]{29,0}, //right
-                new int[]{29,0}, //left
-                new int[]{29,0}, //top
-                new int[]{29,0},  //bottom
-                1, //regular
+                new byte[]{29,0}, //front
+                new byte[]{29,0}, //back
+                new byte[]{29,0}, //right
+                new byte[]{29,0}, //left
+                new byte[]{29,0}, //top
+                new byte[]{29,0},  //bottom
+                (byte) 1, //regular
                 true,
                 false,
                 false,
@@ -1215,13 +1217,13 @@ public class BlockDefinition {
                 0,
                 "workbench",
                 true,
-                new int[]{31,0}, //front
-                new int[]{31,0}, //back
-                new int[]{31,0}, //right
-                new int[]{31,0}, //left
-                new int[]{30,0}, //top
-                new int[]{31,0},  //bottom
-                1, //regular
+                new byte[]{31,0}, //front
+                new byte[]{31,0}, //back
+                new byte[]{31,0}, //right
+                new byte[]{31,0}, //left
+                new byte[]{30,0}, //top
+                new byte[]{31,0},  //bottom
+                (byte) 1, //regular
                 true,
                 false,
                 false,
@@ -1256,13 +1258,13 @@ public class BlockDefinition {
                 0.25f,
                 "torch",
                 true,
-                new int[]{0,1}, //front
-                new int[]{0,1}, //back
-                new int[]{0,1}, //right
-                new int[]{0,1}, //left
-                new int[]{0,1}, //top
-                new int[]{0,1},  //bottom
-                7, //torch like
+                new byte[]{0,1}, //front
+                new byte[]{0,1}, //back
+                new byte[]{0,1}, //right
+                new byte[]{0,1}, //left
+                new byte[]{0,1}, //top
+                new byte[]{0,1},  //bottom
+                (byte) 7, //torch like
                 false,
                 false,
                 false,
