@@ -201,68 +201,64 @@ public class BlockDefinition {
         int index = 0;
 
         //automated as base, since it's the same
-        if (rot == 0) {
-            for (double[] thisShape : blockShapeMap[blockIDs[ID].drawType].getBoxes()) {
-                System.arraycopy(thisShape, 0, newBoxes[index], 0, 6);
-                index++;
+        switch (rot) {
+            case 0 -> {
+                for (double[] thisShape : blockShapeMap[blockIDs[ID].drawType].getBoxes()) {
+                    System.arraycopy(thisShape, 0, newBoxes[index], 0, 6);
+                    index++;
+                }
+            }
+            case 1 -> {
+                for (double[] thisShape : blockShapeMap[blockIDs[ID].drawType].getBoxes()) {
+
+                    double blockDiffZ = 1d - thisShape[5];
+                    double widthZ = thisShape[5] - thisShape[2];
+
+                    newBoxes[index][0] = blockDiffZ;
+                    newBoxes[index][1] = thisShape[1];//-y
+                    newBoxes[index][2] = thisShape[0]; // -z
+
+                    newBoxes[index][3] = blockDiffZ + widthZ;
+                    newBoxes[index][4] = thisShape[4];//+y
+                    newBoxes[index][5] = thisShape[3]; //+z
+                    index++;
+                }
+            }
+            case 2 -> {
+                for (double[] thisShape : blockShapeMap[blockIDs[ID].drawType].getBoxes()) {
+
+                    double blockDiffZ = 1d - thisShape[5];
+                    double widthZ = thisShape[5] - thisShape[2];
+
+                    double blockDiffX = 1d - thisShape[3];
+                    double widthX = thisShape[3] - thisShape[0];
+
+                    newBoxes[index][0] = blockDiffX;
+                    newBoxes[index][1] = thisShape[1];//-y
+                    newBoxes[index][2] = blockDiffZ; // -z
+
+                    newBoxes[index][3] = blockDiffX + widthX;
+                    newBoxes[index][4] = thisShape[4];//+y
+                    newBoxes[index][5] = blockDiffZ + widthZ; //+z
+                    index++;
+                }
+            }
+            case 3 -> {
+                for (double[] thisShape : blockShapeMap[blockIDs[ID].drawType].getBoxes()) {
+                    double blockDiffX = 1d - thisShape[3];
+                    double widthX = thisShape[3] - thisShape[0];
+
+                    newBoxes[index][0] = thisShape[2];
+                    newBoxes[index][1] = thisShape[1];//-y
+                    newBoxes[index][2] = blockDiffX; // -z
+
+                    newBoxes[index][3] = thisShape[5];
+                    newBoxes[index][4] = thisShape[4];//+y
+                    newBoxes[index][5] = blockDiffX + widthX; //+z
+                    index++;
+                }
             }
         }
-
-        if (rot == 2){
-            for (double[] thisShape : blockShapeMap[blockIDs[ID].drawType].getBoxes()) {
-
-                double blockDiffZ =  1d - thisShape[5];
-                double widthZ = thisShape[5] - thisShape[2];
-
-                double blockDiffX =  1d - thisShape[3];
-                double widthX = thisShape[3] - thisShape[0];
-
-                newBoxes[index][0] = blockDiffX;
-                newBoxes[index][1] = thisShape[1];//-y
-                newBoxes[index][2] = blockDiffZ; // -z
-
-                newBoxes[index][3] = blockDiffX + widthX;
-                newBoxes[index][4] = thisShape[4];//+y
-                newBoxes[index][5] = blockDiffZ + widthZ; //+z
-                index++;
-            }
-        }
-
-
-        if (rot == 1){
-            for (double[] thisShape : blockShapeMap[blockIDs[ID].drawType].getBoxes()) {
-
-                double blockDiffZ =  1d - thisShape[5];
-                double widthZ = thisShape[5] - thisShape[2];
-
-                newBoxes[index][0] = blockDiffZ;
-                newBoxes[index][1] = thisShape[1];//-y
-                newBoxes[index][2] = thisShape[0]; // -z
-
-                newBoxes[index][3] = blockDiffZ + widthZ;
-                newBoxes[index][4] = thisShape[4];//+y
-                newBoxes[index][5] = thisShape[3]; //+z
-                index++;
-            }
-        }
-
-
-        if (rot == 3){
-            for (double[] thisShape : blockShapeMap[blockIDs[ID].drawType].getBoxes()) {
-                double blockDiffX =  1d - thisShape[3];
-                double widthX = thisShape[3] - thisShape[0];
-
-                newBoxes[index][0] = thisShape[2];
-                newBoxes[index][1] = thisShape[1];//-y
-                newBoxes[index][2] = blockDiffX; // -z
-
-                newBoxes[index][3] = thisShape[5];
-                newBoxes[index][4] = thisShape[4];//+y
-                newBoxes[index][5] = blockDiffX + widthX; //+z
-                index++;
-            }
-        }
-
         return newBoxes;
     }
 
@@ -278,7 +274,6 @@ public class BlockDefinition {
 
         //air
         blockShapeMap[0] = new BlockShape(new double[][]{{0f,0f,0f,1f,1f,1f}});
-
 
         //normal
         blockShapeMap[1] = new BlockShape(new double[][]{{0f,0f,0f,1f,1f,1f}});
