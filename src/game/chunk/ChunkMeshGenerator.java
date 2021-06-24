@@ -36,6 +36,26 @@ public class ChunkMeshGenerator implements Runnable{
     //these are held on the heap
     private final static byte maxLight = 15;
 
+    //require 0.125 width
+    private static final float largeXZ = 0.5625f; //large
+    private static final float smallXZ = 0.4375f; //small
+
+    private static final float largeY = 0.625f;
+    private static final float smallY = 0.0f;
+
+    private static final Vector3f trl = new Vector3f(); //top rear left
+    private static final Vector3f trr = new Vector3f(); //top rear right
+    private static final Vector3f tfl = new Vector3f(); //top front left
+    private static final Vector3f tfr = new Vector3f(); //top front right
+
+    private static final Vector3f brl = new Vector3f(); //bottom rear left
+    private static final Vector3f brr = new Vector3f(); //bottom rear right - also cold
+    private static final Vector3f bfl = new Vector3f(); //bottom front left
+    private static final Vector3f bfr = new Vector3f(); //bottom front right
+
+    private static final float pixel = (1f / 32f / 16f);
+
+
     private static void pollQueue(){
         if (!generationQueue.isEmpty()) {
 
@@ -64,6 +84,8 @@ public class ChunkMeshGenerator implements Runnable{
             int chunkX  = updateRawData.x;
             int chunkZ  = updateRawData.z;
             int yHeight = updateRawData.y;
+
+
 
             //neighbor chunks
             ChunkObject chunkNeighborXPlus  = getChunk(chunkX + 1, chunkZ);
@@ -990,7 +1012,6 @@ public class ChunkMeshGenerator implements Runnable{
                                         textureCoord.put(textureCoordCounter, textureWorker[3]);
                                         textureCoordCounter++;
                                     }
-
                                 }
                                 break;
                                 //todo --------------------------------------- THE ALLFACES DRAWTYPE
@@ -1477,109 +1498,249 @@ public class ChunkMeshGenerator implements Runnable{
 
                                     //yes, this is a manually constructed model
 
-                                    //require 0.125 width
-                                    float largeXZ = 0.5625f; //large
-                                    float smallXZ = 0.4375f; //small
+                                    switch (thisRotation) {
+                                        //+x dir
+                                        case 0 -> {
 
-                                    float largeY = 0.625f;
-                                    float smallY = 0.0f;
+                                            //top rear left
+                                            trl.x = smallXZ + 0.3f;
+                                            trl.y = largeY - 0.025f;
+                                            trl.z = smallXZ;
 
-                                    Vector3f trl = new Vector3f(smallXZ, largeY, smallXZ); //top rear left
-                                    Vector3f trr = new Vector3f(largeXZ, largeY, smallXZ); //top rear right
-                                    Vector3f tfl = new Vector3f(smallXZ, largeY, largeXZ); //top front left
-                                    Vector3f tfr = new Vector3f(largeXZ, largeY, largeXZ); //top front right
+                                            //top rear right
+                                            trr.x = largeXZ + 0.3f;
+                                            trr.y = largeY + 0.025f;
+                                            trr.z = smallXZ;
 
-                                    Vector3f brl = new Vector3f(smallXZ, smallY, smallXZ); //bottom rear left
-                                    Vector3f brr = new Vector3f(largeXZ, smallY, smallXZ); //bottom rear right - also cold
-                                    Vector3f bfl = new Vector3f(smallXZ, smallY, largeXZ); //bottom front left
-                                    Vector3f bfr = new Vector3f(largeXZ, smallY, largeXZ); //bottom front right
+                                            //top front left
+                                            tfl.x = smallXZ + 0.3f;
+                                            tfl.y = largeY - 0.025f;
+                                            tfl.z = largeXZ;
+
+                                            //top front right
+                                            tfr.x = largeXZ + 0.3f;
+                                            tfr.y = largeY + 0.025f;
+                                            tfr.z = largeXZ;
+
+                                            //bottom rear left
+                                            brl.x = smallXZ + 0.5f;
+                                            brl.y = smallY - 0.025f;
+                                            brl.z = smallXZ;
+
+                                            //bottom rear right - also cold
+                                            brr.x = largeXZ + 0.5f;
+                                            brr.y = smallY + 0.025f;
+                                            brr.z = smallXZ;
+
+                                            //bottom front left
+                                            bfl.x = smallXZ + 0.5f;
+                                            bfl.y = smallY - 0.025f;
+                                            bfl.z = largeXZ;
+
+                                            //bottom front right
+                                            bfr.x = largeXZ + 0.5f;
+                                            bfr.y = smallY + 0.025f;
+                                            bfr.z = largeXZ;
+
+                                        }
+
+                                        //-x dir
+                                        case 1 -> {
+
+                                            //top rear left
+                                            trl.x = smallXZ - 0.3f;
+                                            trl.y = largeY + 0.025f;
+                                            trl.z = smallXZ;
+
+                                            //top rear right
+                                            trr.x = largeXZ - 0.3f;
+                                            trr.y = largeY - 0.025f;
+                                            trr.z = smallXZ;
+
+                                            //top front left
+                                            tfl.x = smallXZ - 0.3f;
+                                            tfl.y = largeY + 0.025f;
+                                            tfl.z = largeXZ;
+
+                                            //top front right
+                                            tfr.x = largeXZ - 0.3f;
+                                            tfr.y = largeY - 0.025f;
+                                            tfr.z = largeXZ;
+
+                                            //bottom rear left
+                                            brl.x = smallXZ - 0.5f;
+                                            brl.y = smallY + 0.025f;
+                                            brl.z = smallXZ;
+
+                                            //bottom rear right - also cold
+                                            brr.x = largeXZ - 0.5f;
+                                            brr.y = smallY - 0.025f;
+                                            brr.z = smallXZ;
+
+                                            //bottom front left
+                                            bfl.x = smallXZ - 0.5f;
+                                            bfl.y = smallY + 0.025f;
+                                            bfl.z = largeXZ;
+
+                                            //bottom front right
+                                            bfr.x = largeXZ - 0.5f;
+                                            bfr.y = smallY - 0.025f;
+                                            bfr.z = largeXZ;
+
+                                        }
+
+                                        //+z dir
+                                        case 2 -> {
+
+                                            //top rear left
+                                            trl.x = smallXZ;
+                                            trl.y = largeY - 0.025f;
+                                            trl.z = smallXZ + 0.3f;
+
+                                            //top rear right
+                                            trr.x = largeXZ;
+                                            trr.y = largeY - 0.025f;
+                                            trr.z = smallXZ + 0.3f;
+
+                                            //top front left
+                                            tfl.x = smallXZ;
+                                            tfl.y = largeY + 0.025f;
+                                            tfl.z = largeXZ + 0.3f;
+
+                                            //top front right
+                                            tfr.x = largeXZ;
+                                            tfr.y = largeY + 0.025f;
+                                            tfr.z = largeXZ + 0.3f;
+
+                                            //bottom rear left
+                                            brl.x = smallXZ;
+                                            brl.y = smallY - 0.025f;
+                                            brl.z = smallXZ + 0.5f;
+
+                                            //bottom rear right - also cold
+                                            brr.x = largeXZ;
+                                            brr.y = smallY - 0.025f;
+                                            brr.z = smallXZ + 0.5f;
+
+                                            //bottom front left
+                                            bfl.x = smallXZ;
+                                            bfl.y = smallY + 0.025f;
+                                            bfl.z = largeXZ + 0.5f;
+
+                                            //bottom front right
+                                            bfr.x = largeXZ;
+                                            bfr.y = smallY + 0.025f;
+                                            bfr.z = largeXZ + 0.5f;
+
+                                        }
+
+                                        //-z dir
+                                        case 3 -> {
+
+                                            //top rear left
+                                            trl.x = smallXZ;
+                                            trl.y = largeY + 0.025f;
+                                            trl.z = smallXZ - 0.3f;
+
+                                            //top rear right
+                                            trr.x = largeXZ;
+                                            trr.y = largeY + 0.025f;
+                                            trr.z = smallXZ - 0.3f;
+
+                                            //top front left
+                                            tfl.x = smallXZ;
+                                            tfl.y = largeY - 0.025f;
+                                            tfl.z = largeXZ - 0.3f;
+
+                                            //top front right
+                                            tfr.x = largeXZ;
+                                            tfr.y = largeY - 0.025f;
+                                            tfr.z = largeXZ - 0.3f;
+
+                                            //bottom rear left
+                                            brl.x = smallXZ;
+                                            brl.y = smallY + 0.025f;
+                                            brl.z = smallXZ - 0.5f;
+
+                                            //bottom rear right - also cold
+                                            brr.x = largeXZ;
+                                            brr.y = smallY + 0.025f;
+                                            brr.z = smallXZ - 0.5f;
+
+                                            //bottom front left
+                                            bfl.x = smallXZ;
+                                            bfl.y = smallY - 0.025f;
+                                            bfl.z = largeXZ - 0.5f;
+
+                                            //bottom front right
+                                            bfr.x = largeXZ;
+                                            bfr.y = smallY - 0.025f;
+                                            bfr.z = largeXZ - 0.5f;
+                                        }
+
+                                        //floor
+                                        case 4 -> {
+                                            //top rear left
+                                            trl.x = smallXZ;
+                                            trl.y = largeY;
+                                            trl.z = smallXZ;
+
+                                            //top rear right
+                                            trr.x = largeXZ;
+                                            trr.y = largeY;
+                                            trr.z = smallXZ;
+
+                                            //top front left
+                                            tfl.x = smallXZ;
+                                            tfl.y = largeY;
+                                            tfl.z = largeXZ;
+
+                                            //top front right
+                                            tfr.x = largeXZ;
+                                            tfr.y = largeY;
+                                            tfr.z = largeXZ;
 
 
-                                    //floor
-                                    if (thisRotation == 4) {
-                                        trl = new Vector3f(smallXZ, largeY, smallXZ); //top rear left
-                                        trr = new Vector3f(largeXZ, largeY, smallXZ); //top rear right
-                                        tfl = new Vector3f(smallXZ, largeY, largeXZ); //top front left
-                                        tfr = new Vector3f(largeXZ, largeY, largeXZ); //top front right
+                                            //bottom rear left
+                                            brl.x = smallXZ;
+                                            brl.y = smallY;
+                                            brl.z = smallXZ;
 
-                                        brl = new Vector3f(smallXZ, smallY, smallXZ); //bottom rear left
-                                        brr = new Vector3f(largeXZ, smallY, smallXZ); //bottom rear right - also cold
-                                        bfl = new Vector3f(smallXZ, smallY, largeXZ); //bottom front left
-                                        bfr = new Vector3f(largeXZ, smallY, largeXZ); //bottom front right
-                                    }
-                                    //+x dir
-                                    else if (thisRotation == 0) {
+                                            //bottom rear right - also cold
+                                            brr.x = largeXZ;
+                                            brr.y = smallY;
+                                            brr.z = smallXZ;
 
-                                        trl = new Vector3f(smallXZ + 0.3f, largeY - 0.025f, smallXZ); //top rear left
-                                        trr = new Vector3f(largeXZ + 0.3f, largeY + 0.025f, smallXZ); //top rear right
-                                        tfl = new Vector3f(smallXZ + 0.3f, largeY - 0.025f, largeXZ); //top front left
-                                        tfr = new Vector3f(largeXZ + 0.3f, largeY + 0.025f, largeXZ); //top front right
+                                            //bottom front left
+                                            bfl.x = smallXZ;
+                                            bfl.y = smallY;
+                                            bfl.z = largeXZ;
 
-                                        brl = new Vector3f(smallXZ + 0.5f, smallY - 0.025f, smallXZ); //bottom rear left
-                                        brr = new Vector3f(largeXZ + 0.5f, smallY + 0.025f, smallXZ); //bottom rear right - also cold
-                                        bfl = new Vector3f(smallXZ + 0.5f, smallY - 0.025f, largeXZ); //bottom front left
-                                        bfr = new Vector3f(largeXZ + 0.5f, smallY + 0.025f, largeXZ); //bottom front right
-                                    }
-                                    //-x dir
-                                    else if (thisRotation == 1) {
-
-                                        trl = new Vector3f(smallXZ - 0.3f, largeY + 0.025f, smallXZ); //top rear left
-                                        trr = new Vector3f(largeXZ - 0.3f, largeY - 0.025f, smallXZ); //top rear right
-                                        tfl = new Vector3f(smallXZ - 0.3f, largeY + 0.025f, largeXZ); //top front left
-                                        tfr = new Vector3f(largeXZ - 0.3f, largeY - 0.025f, largeXZ); //top front right
-
-                                        brl = new Vector3f(smallXZ - 0.5f, smallY + 0.025f, smallXZ); //bottom rear left
-                                        brr = new Vector3f(largeXZ - 0.5f, smallY - 0.025f, smallXZ); //bottom rear right - also cold
-                                        bfl = new Vector3f(smallXZ - 0.5f, smallY + 0.025f, largeXZ); //bottom front left
-                                        bfr = new Vector3f(largeXZ - 0.5f, smallY - 0.025f, largeXZ); //bottom front right
-                                    }
-
-                                    //+z dir
-                                    else if (thisRotation == 2) {
-
-                                        trl = new Vector3f(smallXZ, largeY - 0.025f, smallXZ + 0.3f); //top rear left
-                                        trr = new Vector3f(largeXZ, largeY - 0.025f, smallXZ + 0.3f); //top rear right
-                                        tfl = new Vector3f(smallXZ, largeY + 0.025f, largeXZ + 0.3f); //top front left
-                                        tfr = new Vector3f(largeXZ, largeY + 0.025f, largeXZ + 0.3f); //top front right
-
-                                        brl = new Vector3f(smallXZ, smallY - 0.025f, smallXZ + 0.5f); //bottom rear left
-                                        brr = new Vector3f(largeXZ, smallY - 0.025f, smallXZ + 0.5f); //bottom rear right - also cold
-                                        bfl = new Vector3f(smallXZ, smallY + 0.025f, largeXZ + 0.5f); //bottom front left
-                                        bfr = new Vector3f(largeXZ, smallY + 0.025f, largeXZ + 0.5f); //bottom front right
-                                    }
-
-                                    //-z dir
-                                    else if (thisRotation == 3) {
-
-                                        trl = new Vector3f(smallXZ, largeY + 0.025f, smallXZ - 0.3f); //top rear left
-                                        trr = new Vector3f(largeXZ, largeY + 0.025f, smallXZ - 0.3f); //top rear right
-                                        tfl = new Vector3f(smallXZ, largeY - 0.025f, largeXZ - 0.3f); //top front left
-                                        tfr = new Vector3f(largeXZ, largeY - 0.025f, largeXZ - 0.3f); //top front right
-
-                                        brl = new Vector3f(smallXZ, smallY + 0.025f, smallXZ - 0.5f); //bottom rear left
-                                        brr = new Vector3f(largeXZ, smallY + 0.025f, smallXZ - 0.5f); //bottom rear right - also cold
-                                        bfl = new Vector3f(smallXZ, smallY - 0.025f, largeXZ - 0.5f); //bottom front left
-                                        bfr = new Vector3f(largeXZ, smallY - 0.025f, largeXZ - 0.5f); //bottom front right
+                                            //bottom front right
+                                            bfr.x = largeXZ;
+                                            bfr.y = smallY;
+                                            bfr.z = largeXZ;
+                                        }
                                     }
 
                                     textureWorker = getFrontTexturePoints(thisBlock, thisRotation);
 
 
                                     //assume 16 pixels wide
-                                    float sizeXLow = textureWorker[0] + ((1f / 32f / 16f) * 7f);
-                                    float sizeXHigh = textureWorker[0] + ((1f / 32f / 16f) * 9f); //duplicates to work from same coordinate (it's easier for me this way)
-                                    float sizeYLow = textureWorker[2] + ((1f / 32f / 16f) * 6f);
-                                    float sizeYHigh = textureWorker[2] + ((1f / 32f / 16f) * 16f);
+                                    float sizeXLow = textureWorker[0] + (pixel * 7f);
+                                    float sizeXHigh = textureWorker[0] + (pixel * 9f); //duplicates to work from same coordinate (it's easier for me this way)
+                                    float sizeYLow = textureWorker[2] + (pixel * 6f);
+                                    float sizeYHigh = textureWorker[2] + (pixel * 16f);
 
-                                    float topSizeXLow = textureWorker[0] + ((1f / 32f / 16f) * 7f);
-                                    float topSizeXHigh = textureWorker[0] + ((1f / 32f / 16f) * 9f);
-                                    float topSizeYLow = textureWorker[2] + ((1f / 32f / 16f) * 4f);
-                                    float topSizeYHigh = textureWorker[2] + ((1f / 32f / 16f) * 6f);
+                                    float topSizeXLow = textureWorker[0] + (pixel * 7f);
+                                    float topSizeXHigh = textureWorker[0] + (pixel * 9f);
+                                    float topSizeYLow = textureWorker[2] + (pixel * 4f);
+                                    float topSizeYHigh = textureWorker[2] + (pixel * 6f);
 
-                                    float bottomSizeXLow = textureWorker[0] + ((1f / 32f / 16f) * 7f);
-                                    float bottomSizeXHigh = textureWorker[0] + ((1f / 32f / 16f) * 9f);
-                                    float bottomSizeYLow = textureWorker[2] + ((1f / 32f / 16f) * 2f);
-                                    float bottomSizeYHigh = textureWorker[2] + ((1f / 32f / 16f) * 4f);
+                                    float bottomSizeXLow = textureWorker[0] + (pixel * 7f);
+                                    float bottomSizeXHigh = textureWorker[0] + (pixel * 9f);
+                                    float bottomSizeYLow = textureWorker[2] + (pixel * 2f);
+                                    float bottomSizeYHigh = textureWorker[2] + (pixel * 4f);
 
 
                                     //this is pulled out of normal
