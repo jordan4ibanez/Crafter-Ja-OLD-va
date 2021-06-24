@@ -261,7 +261,7 @@ public class Chunk {
         return thisChunk.heightMap[blockX][blockZ] < y + 1;
     }
 
-    public static int getBlock(int x,int y,int z){
+    public static byte getBlock(int x,int y,int z){
         if (y > 127 || y < 0){
             return -1;
         }

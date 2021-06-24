@@ -95,13 +95,13 @@ public class ParticleCollision {
         int up = inertiaToDir(inertia.y);
         byte rot;
 
-        int cachedBlock;
+        byte cachedBlock;
         switch (up) {
             case -1 -> {
                 cachedBlock = detectBlock(fPos);
                 rot = detectRot();
                 if (cachedBlock > 0 && isWalkable(cachedBlock)) {
-                    onGround = collideYNegative((int) fPos.x, (int) fPos.y, (int) fPos.z, rot, pos, inertia, false, cachedBlock);
+                    onGround = collideYNegative((int) fPos.x, (int) fPos.y, (int) fPos.z, rot, pos, inertia, cachedBlock);
                 }
             }
             case 1 -> {
@@ -167,20 +167,19 @@ public class ParticleCollision {
         return onGround;
     }
 
-    private static boolean collideYNegative(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, boolean onGround, int blockID){
-        for (double[] thisBlockBox : getBlockShape(blockID, rot)) {
+    private static boolean collideYNegative(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
+        for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
             setBlockBox(blockPosX,blockPosY,blockPosz,thisBlockBox);
             if (isWithin(pos)) {
                 pos.y = BlockBoxGetTop() + 0.0001d;
                 inertia.y = 0;
-                onGround = true;
             }
         }
-        return onGround;
+        return false;
     }
 
-    private static void collideYPositive(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, int blockID){
-        for (double[] thisBlockBox : getBlockShape(blockID, rot)) {
+    private static void collideYPositive(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
+        for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
             setBlockBox(blockPosX, blockPosY, blockPosz,thisBlockBox);
             //head detection
             if (isWithin(pos)) {
@@ -190,8 +189,8 @@ public class ParticleCollision {
         }
     }
 
-    private static void collideXPositive(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, int blockID){
-        for (double[] thisBlockBox : getBlockShape(blockID, rot)) {
+    private static void collideXPositive(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
+        for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
             setBlockBox(blockPosX, blockPosY, blockPosz, thisBlockBox);
             if (isWithin(pos)) {
                 pos.x = BlockBoxGetLeft() - 0.001d;
@@ -200,8 +199,8 @@ public class ParticleCollision {
         }
     }
 
-    private static void collideXNegative(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, int blockID){
-        for (double[] thisBlockBox : getBlockShape(blockID, rot)) {
+    private static void collideXNegative(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
+        for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
             setBlockBox(blockPosX, blockPosY, blockPosz, thisBlockBox);
             if (isWithin(pos)) {
                 pos.x = BlockBoxGetRight() + 0.001d;
@@ -211,8 +210,8 @@ public class ParticleCollision {
     }
 
 
-    private static void collideZPositive(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, int blockID){
-        for (double[] thisBlockBox : getBlockShape(blockID, rot)) {
+    private static void collideZPositive(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
+        for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
             setBlockBox(blockPosX, blockPosY, blockPosz, thisBlockBox);
             if (isWithin(pos)) {
                 pos.z = BlockBoxGetFront() - 0.001d;
@@ -221,8 +220,8 @@ public class ParticleCollision {
         }
     }
 
-    private static void collideZNegative(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, int blockID){
-        for (double[] thisBlockBox : getBlockShape(blockID, rot)) {
+    private static void collideZNegative(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
+        for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
             setBlockBox(blockPosX, blockPosY, blockPosz, thisBlockBox);
             if (isWithin(pos)) {
                 pos.z = BlockBoxGetBack() + 0.001d;
@@ -241,7 +240,7 @@ public class ParticleCollision {
                 pos.z < BlockBoxGetFront());
     }
 
-    private static int detectBlock(Vector3d flooredPos){
+    private static byte detectBlock(Vector3d flooredPos){
         return getBlock((int)flooredPos.x, (int)flooredPos.y, (int)flooredPos.z);
     }
 

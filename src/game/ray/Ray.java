@@ -100,7 +100,7 @@ public class Ray {
 
                     } else {
                         setAABB(getPlayerPos().x, getPlayerPos().y, getPlayerPos().z, getPlayerWidth(), getPlayerHeight());
-                        setBlockBox((int) lastPos.x, (int) lastPos.y, (int) lastPos.z, getBlockShape(1, (byte) 0)[0]); //TODO: make this check the actual block shapes
+                        setBlockBox((int) lastPos.x, (int) lastPos.y, (int) lastPos.z, getBlockShape((byte)1, (byte) 0)[0]); //TODO: make this check the actual block shapes
 
                         if (!wouldCollidePlacing() && getItemInInventorySlot(getPlayerInventorySelection(), 0) != null && !getItemInInventorySlot(getPlayerInventorySelection(), 0).definition.isItem) {
                             rayPlaceBlock(lastPos, getItemInInventorySlot(getPlayerInventorySelection(), 0).definition.blockID);
@@ -109,7 +109,7 @@ public class Ray {
                                 getItemModifier(getItemInInventorySlot(getPlayerInventorySelection(), 0).name).onPlace(new Vector3i((int) finalPos.x, (int) finalPos.y, (int) finalPos.z), pointedThingAbove);
                             }
                         } else {
-                            System.out.println("test3");
+                            System.out.println("test3: This is a test of last branch of on place call");
                         }
                     }
                 } else {
