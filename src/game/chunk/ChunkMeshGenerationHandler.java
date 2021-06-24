@@ -36,7 +36,7 @@ public class ChunkMeshGenerationHandler {
         return textureAtlas;
     }
 
-    private static final float goalTimer = 0.00025f;
+    private static final float goalTimer = 0.0001f;
 
     private static float chunkUpdateTimer = 0;
 

@@ -1507,7 +1507,7 @@ public class ChunkMeshGenerator implements Runnable{
             long endTime = System.nanoTime();
             long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
             double seconds = (double) duration / 1_000_000_000.0;
-            System.out.println("This took: " + seconds + " seconds to generate chunk mesh");
+            //System.out.println("This took: " + seconds + " seconds to generate chunk mesh");
 
 
             ChunkMeshDataObject newChunkData = new ChunkMeshDataObject();
@@ -1518,6 +1518,7 @@ public class ChunkMeshGenerator implements Runnable{
 
 
             if (positions.size() > 0) {
+                System.out.println(positions.size());
                 //pass data to container object
                 newChunkData.positionsArray    = positions.values();
                 newChunkData.lightArray        = light.values();
@@ -1550,7 +1551,6 @@ public class ChunkMeshGenerator implements Runnable{
             }
 
 
-
             //clear data so GC doesn't have to
             positions.clear();
             textureCoord.clear();
@@ -1564,7 +1564,6 @@ public class ChunkMeshGenerator implements Runnable{
             allFacesTextureCoord.clear();
             allFacesIndices.clear();
             allFacesLight.clear();
-
 
             //finally add it into the queue to be popped
             addToChunkMeshQueue(newChunkData);

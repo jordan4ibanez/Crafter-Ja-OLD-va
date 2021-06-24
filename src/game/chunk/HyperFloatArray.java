@@ -13,7 +13,7 @@ public class HyperFloatArray {
 
     //this is old delete it
     private void put(float data){
-        if (currentPos == maxSize - 1){
+        if (currentPos == maxSize){
             grow();
         }
         dataContainer[currentPos] = data;
@@ -58,7 +58,7 @@ public class HyperFloatArray {
 
 
     public int size(){
-        return currentPos + 1;
+        return currentPos;
     }
 
     private void grow(){

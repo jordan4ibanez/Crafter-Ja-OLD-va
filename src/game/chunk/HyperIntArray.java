@@ -11,7 +11,7 @@ public class HyperIntArray {
     int maxSize = growthRate;
 
     private void put(int data){
-        if (currentPos == maxSize - 1){
+        if (currentPos == maxSize){
             grow();
         }
         dataContainer[currentPos] = data;
@@ -29,7 +29,7 @@ public class HyperIntArray {
     }
 
     public int size(){
-        return currentPos + 1;
+        return currentPos;
     }
 
     private void grow(){
@@ -43,9 +43,12 @@ public class HyperIntArray {
         maxSize += growthRate;
     }
 
+
     public int[] values(){
         int[] returningContainer = new int[currentPos + 1];
         System.arraycopy(dataContainer, 0, returningContainer, 0, currentPos + 1);
+
+        //System.out.println(returningContainer.length);
         return returningContainer;
     }
 

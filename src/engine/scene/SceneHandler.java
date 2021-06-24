@@ -164,7 +164,9 @@ public class SceneHandler {
         pollTimeOfDay(); //this needs to be in the main thread
         makeCloudsMove();
         countFPS();
+
         updateWorldChunkLoader();
+
         popChunkMeshQueue(); //this actually transmits the data from the other threads into main thread
 
         updateListenerPosition();
