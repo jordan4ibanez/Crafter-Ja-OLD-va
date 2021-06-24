@@ -1,10 +1,11 @@
 package game.chunk;
 
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import org.joml.Vector3i;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 import static engine.time.Time.getDelta;
 import static game.chunk.Chunk.chunkStackContainsBlock;
@@ -12,11 +13,13 @@ import static game.chunk.ChunkMeshGenerator.generateChunkMesh;
 
 public class ChunkUpdateHandler {
 
-    private static final Deque<Vector3i> queue = new ArrayDeque<>();
+    //!!!WARNING!!! This needs to ALWAYS check if value exists, or freeze can occur !!!WARNING!!!
+    private static final ConcurrentLinkedDeque<Vector3i> queue = new ConcurrentLinkedDeque<>();
 
     public static void chunkUpdate( int x, int z , int y){
-        //queue.remove(new Vector3i(x, y, z));
-        queue.add(new Vector3i(x, y, z));
+        if (!queue.contains(new Vector3i(x, y, z))) {
+            queue.add(new Vector3i(x, y, z));
+        }
     }
 
     private static final Random random = new Random();
@@ -43,12 +46,16 @@ public class ChunkUpdateHandler {
                 try {
                     Object[] queueAsArray = queue.toArray();
                     key = (Vector3i) queueAsArray[random.nextInt(queueAsArray.length)];
+
+                    if (key == null){
+                        return;
+                    }
                 } catch (Exception ignored){
                     continue; //let's just keep going
                 }
 
                 //sometimes it is null
-                if (key != null && chunkStackContainsBlock(key.x, key.z, key.y)) {
+                if (chunkStackContainsBlock(key.x, key.z, key.y)) {
                     generateChunkMesh(key.x, key.z, key.y);
                 }
 
