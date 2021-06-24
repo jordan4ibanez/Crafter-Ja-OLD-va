@@ -1,6 +1,6 @@
 package game.chunk;
 
-//this container is specifically optimized to the most I can get them to for ChunkMeshGenerator
+//this container is specifically optimized for ChunkMeshGenerator
 //cache happy
 public class HyperIntArray {
     private static final int growthRate = 1000;
@@ -47,8 +47,6 @@ public class HyperIntArray {
     public int[] values(){
         int[] returningContainer = new int[currentPos];
         System.arraycopy(dataContainer, 0, returningContainer, 0, currentPos);
-
-        //System.out.println(returningContainer.length);
         return returningContainer;
     }
 

@@ -1,6 +1,6 @@
 package game.chunk;
 
-//this container is specifically optimized to the most I can get them to for ChunkMeshGenerator
+//this container is specifically optimized for ChunkMeshGenerator
 //cache happy
 public class HyperFloatArray {
     private static final int growthRate = 1000;
