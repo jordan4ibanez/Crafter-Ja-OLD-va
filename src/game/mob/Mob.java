@@ -4,12 +4,14 @@ import engine.graphics.Mesh;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
+import org.joml.Vector3i;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
 
 import static engine.time.Time.getDelta;
 import static engine.sound.SoundAPI.playSound;
+import static game.chunk.Chunk.getLight;
 import static game.mob.Human.registerHumanMob;
 import static game.mob.Pig.registerPigMob;
 
@@ -84,17 +86,30 @@ public class Mob {
                 }
             }
 
+            Vector3i currentFlooredPos = new Vector3i((int)Math.floor(thisMob.pos.x), (int)Math.floor(thisMob.pos.y), (int)Math.floor(thisMob.pos.z));
+
+            //poll local light every quarter second
+            if (thisMob.lightTimer >= 0.25f || !currentFlooredPos.equals(thisMob.oldFlooredPos)){
+                thisMob.light = getLight(currentFlooredPos.x, currentFlooredPos.y, currentFlooredPos.z);
+                thisMob.lightTimer = 0f;
+            }
+
             if (thisMob.health <= 0 && thisMob.timer >= 0.5f && thisMob.deathRotation == 90){
                 deletionQueue.add(thisMob.globalID);
             }
 
             //count down hurt timer
-            if(thisMob.hurtTimer > 0f){
+            if(thisMob.hurtTimer > 0f && thisMob.health > 0){ //don't reset when dead
                 thisMob.hurtTimer -= delta;
                 if (thisMob.hurtTimer <= 0){
                     thisMob.hurtTimer = 0;
+                    thisMob.hurtAdder = 0; //reset red coloring
                 }
             }
+
+            thisMob.oldFlooredPos.x = currentFlooredPos.x;
+            thisMob.oldFlooredPos.y = currentFlooredPos.y;
+            thisMob.oldFlooredPos.z = currentFlooredPos.z;
         }
 
         while (!deletionQueue.isEmpty()){
@@ -112,6 +127,7 @@ public class Mob {
             if (thisMob.onGround) {
                 thisMob.inertia.y = 7;
             }
+            thisMob.hurtAdder = 15;
             thisMob.hurtTimer = 0.5f;
         }
     }

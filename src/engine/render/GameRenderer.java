@@ -423,6 +423,7 @@ public class GameRenderer {
             if (!tntExists(i)){
                 continue;
             }
+            entityShaderProgram.setLightUniform("light", 15); //todo make this work
             modelViewMatrix = getTNTModelViewMatrix(i, viewMatrix);
             entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
             tntMesh.render();
@@ -430,6 +431,7 @@ public class GameRenderer {
 
         //render falling entities
         for (FallingEntityObject thisObject : getFallingEntities()){
+            entityShaderProgram.setLightUniform("light", 15); //todo make this work
             modelViewMatrix = getGenericMatrixWithPosRotationScale(thisObject.pos, new Vector3f(0,0,0), new Vector3d(2.5d,2.5d,2.5d), viewMatrix);
             entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
             thisObject.mesh.render();
@@ -443,7 +445,7 @@ public class GameRenderer {
             }
             int offsetIndex = 0;
 
-            entityShaderProgram.setLightUniform("light", thisMob.light + 15);
+            entityShaderProgram.setLightUniform("light", thisMob.light + thisMob.hurtAdder); //hurt adder adds 15 to the value so it turns red
 
             for (Mesh thisMesh : getMobMesh(thisMob.ID)) {
                 modelViewMatrix = getMobMatrix(new Vector3d(thisMob.pos), thisMob.bodyOffsets[offsetIndex], new Vector3f(0, thisMob.smoothRotation, thisMob.deathRotation), new Vector3f(thisMob.bodyRotations[offsetIndex]), new Vector3d(1f, 1f, 1f), viewMatrix);
@@ -455,6 +457,8 @@ public class GameRenderer {
 
         //render other players
         for (Object thisObject : getOtherPlayers()){
+
+            entityShaderProgram.setLightUniform("light", 15); //todo make this work
 
             PlayerObject thisPlayer = (PlayerObject) thisObject;
 
@@ -498,6 +502,9 @@ public class GameRenderer {
             Vector3f[] playerBodyOffsets = getHumanBodyOffsets();
             Vector3f[] playerBodyRotation = getPlayerBodyRotations();
             Vector3d pos = getPlayerPos();
+
+            entityShaderProgram.setLightUniform("light", 15); //todo make this work
+
             int offsetIndex = 0;
             for (Mesh thisMesh : playerMeshes) {
                 float headRot = 0; //pitch
@@ -533,6 +540,7 @@ public class GameRenderer {
 
             ParticleObject thisParticle = (ParticleObject) loadedObject;
 
+            entityShaderProgram.setLightUniform("light", thisParticle.light); //todo make this work
 
             Mesh thisMesh = thisParticle.mesh;
 
@@ -552,6 +560,8 @@ public class GameRenderer {
             Mesh selectionMesh = getWorldSelectionMesh();
 
             Vector3d actualPos = new Vector3d(tempPos.x, tempPos.y, tempPos.z);
+
+            entityShaderProgram.setLightUniform("light", 15); //todo make this work
 
             modelViewMatrix = updateModelViewMatrix(actualPos, new Vector3f(0, 0, 0), viewMatrix);
             entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);

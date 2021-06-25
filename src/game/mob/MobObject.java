@@ -3,6 +3,7 @@ package game.mob;
 import engine.graphics.Mesh;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
+import org.joml.Vector3i;
 
 import static engine.FancyMath.randomDirFloat;
 import static game.mob.Mob.getMobDefinition;
@@ -15,6 +16,7 @@ public class MobObject {
     public final int globalID;
 
     public final Vector3d pos;
+    public final Vector3i oldFlooredPos = new Vector3i(0,-1,0);
     public final  Vector3d lastPos;
     public final Vector3f inertia;
     public final float width;
@@ -23,6 +25,8 @@ public class MobObject {
     public float smoothRotation;
     public final Vector3f[] bodyOffsets;
     public final Vector3f[] bodyRotations;
+    public byte light = 0;
+    public float lightTimer = 1; //causes an instant update
 
     public float animationTimer;
     public float timer;
