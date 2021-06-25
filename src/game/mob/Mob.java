@@ -10,6 +10,8 @@ import static game.mob.Pig.registerPigMob;
 
 public class Mob {
 
+    //todo: ADD MOBS TO MEMORY SWEEPER
+
     private static final MobDefinition[] mobDefinitions = new MobDefinition[16];
 
     private static final MobObject[] mobs = new MobObject[128]; //limited to 128 mobs
