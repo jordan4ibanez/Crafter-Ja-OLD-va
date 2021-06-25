@@ -47,9 +47,6 @@ public class ChunkMeshGenerator implements Runnable{
         generationQueue.addFirst(new Vector3i(chunkX,yHeight, chunkZ));
     }
 
-    //cache data
-    //these are held on the heap
-
     private static void pollQueue() {
         if (!generationQueue.isEmpty()) {
 
@@ -85,25 +82,18 @@ public class ChunkMeshGenerator implements Runnable{
             ChunkObject chunkNeighborZPlus = getChunk(chunkX, chunkZ + 1);
             ChunkObject chunkNeighborZMinus = getChunk(chunkX, chunkZ - 1);
 
-            //todo: finalize these variables
-
-
             //normal block mesh data
-
             final HyperFloatArray positions = new HyperFloatArray();
             final HyperFloatArray textureCoord = new HyperFloatArray();
             final HyperIntArray indices = new HyperIntArray();
             final HyperFloatArray light = new HyperFloatArray();
-
             int indicesCount = 0;
 
             //liquid block mesh data
-
             final HyperFloatArray liquidPositions = new HyperFloatArray();
             final HyperFloatArray liquidTextureCoord = new HyperFloatArray();
             final HyperIntArray liquidIndices = new HyperIntArray();
             final HyperFloatArray liquidLight = new HyperFloatArray();
-
             int liquidIndicesCount = 0;
 
 
@@ -112,10 +102,9 @@ public class ChunkMeshGenerator implements Runnable{
             final HyperFloatArray allFacesTextureCoord = new HyperFloatArray();
             final HyperIntArray allFacesIndices = new HyperIntArray();
             final HyperFloatArray allFacesLight = new HyperFloatArray();
-
             int allFacesIndicesCount = 0;
 
-
+            //current global light level
             byte chunkLightLevel = getCurrentGlobalLightLevel();
 
             //reduces lookup time
@@ -127,36 +116,35 @@ public class ChunkMeshGenerator implements Runnable{
             byte thisBlockDrawType;
             byte thisRotation;
 
+            //loop through ystack
             for (int x = 0; x < 16; x++) {
                 for (int z = 0; z < 16; z++) {
                     for (int y = yHeight * 16; y < (yHeight + 1) * 16; y++) {
 
                         thisBlock = blockData[posToIndex(x, y, z)];
 
+                        //only if not air
                         if (thisBlock > 0) {
 
                             //only need to look this data up if it's not air
                             thisBlockDrawType = getBlockDrawType(thisBlock);
                             thisRotation = rotationData[posToIndex(x, y, z)];
 
-                            //todo ---------------------------------------- THE NORMAL DRAWTYPE (standard blocks)
                             switch (thisBlockDrawType) {
+
+                                //normal
                                 case 1 -> indicesCount = calculateNormal(x, y, z, thisBlock, thisRotation, indicesCount, blockData, positions, light, indices, textureCoord, chunkNeighborZPlus, chunkNeighborZMinus, chunkNeighborXMinus, chunkNeighborXPlus, chunkLightLevel, lightData);
 
-
-                                //todo ---------------------------------------- THE ALLFACES DRAWTYPE
+                                //allfaces
                                 case 4 -> allFacesIndicesCount = calculateAllFaces(x, y, z, thisBlock, thisRotation, allFacesIndicesCount, allFacesPositions, allFacesLight, allFacesIndices, allFacesTextureCoord, chunkNeighborZPlus, chunkNeighborZMinus, chunkNeighborXMinus, chunkNeighborXPlus, chunkLightLevel, lightData);
 
-
-                                //TODO: ---------------------------------------- TORCHLIKE DRAWTYPE
+                                //torch
                                 case 7 -> indicesCount = calculateTorchLike(x, y, z, thisBlock, thisRotation, indicesCount, positions, light, indices, textureCoord, chunkNeighborZPlus, chunkNeighborZMinus, chunkNeighborXMinus, chunkNeighborXPlus, chunkLightLevel, lightData);
 
-
-                                //todo ---------------------------------------- THE LIQUID DRAWTYPE
+                                //liquid
                                 case 8 -> liquidIndicesCount = calculateLiquids(x, y, z, thisBlock, thisRotation, liquidIndicesCount, blockData, chunkNeighborZPlus, chunkNeighborZMinus, chunkNeighborXMinus, chunkNeighborXPlus, liquidPositions, liquidLight, liquidIndices, liquidTextureCoord, chunkLightLevel, lightData);
 
-
-                                //todo: ---------------------------------------- the block box draw type
+                                //blockbox
                                 default -> indicesCount = calculateBlockBox(x, y, z, thisBlock, thisRotation, indicesCount, positions, light, indices, textureCoord, chunkNeighborZPlus, chunkNeighborZMinus, chunkNeighborXMinus, chunkNeighborXPlus, chunkLightLevel, lightData);
                             }
                         }
