@@ -27,6 +27,7 @@ import static game.chunk.Chunk.globalFinalChunkSaveToDisk;
 import static game.crafting.CraftRecipes.registerCraftRecipes;
 import static game.item.ItemRegistration.registerItems;
 import static game.mainMenu.MainMenu.initMainMenu;
+import static game.mob.Mob.registerMobs;
 import static game.player.Player.getPlayerPos;
 import static game.tnt.TNTEntity.createTNTEntityMesh;
 
@@ -91,6 +92,8 @@ public class Crafter {
         initializeBlocks();
         //this creates a TNT mesh (here for now)
         createTNTEntityMesh();
+
+        registerMobs();
 
         setAttenuationModel(AL11.AL_LINEAR_DISTANCE);
         setListener(new SoundListener(new Vector3d()));
