@@ -34,7 +34,6 @@ public class Item {
     public Vector3f inertia;
     public int ID;
 
-    public Mesh mesh;
     public byte light = 15;
     public float lightUpdateTimer = 1f;
     public Vector3i oldFlooredPos = new Vector3i(0,0,0);
@@ -59,7 +58,6 @@ public class Item {
         this.definition = getItemDefinition(name);
         this.stack = stack;
         this.ID = currentID;
-        rebuildLightMesh(this);
         tickUpCurrentID();
     }
 
@@ -78,7 +76,6 @@ public class Item {
         this.scale = 1f;
         this.timer = 0f;
         this.ID = currentID;
-        rebuildLightMesh(this);
         tickUpCurrentID();
     }
 
@@ -98,7 +95,6 @@ public class Item {
         this.scale = 1f;
         this.timer = 0f;
         this.ID = currentID;
-        rebuildLightMesh(this);
         tickUpCurrentID();
     }
 
@@ -117,7 +113,6 @@ public class Item {
         this.scale = 1f;
         this.timer = life;
         this.ID = currentID;
-        rebuildLightMesh(this);
         tickUpCurrentID();
     }
 
@@ -136,7 +131,6 @@ public class Item {
         this.scale = 1f;
         this.timer = 0f;
         this.ID = currentID;
-        rebuildLightMesh(this);
         tickUpCurrentID();
     }
 
@@ -155,7 +149,6 @@ public class Item {
         this.scale = 1f;
         this.timer = life;
         this.ID = currentID;
-        rebuildLightMesh(this);
         tickUpCurrentID();
     }
 
@@ -182,28 +175,6 @@ public class Item {
         this.scale = 1f;
         this.timer = 0f;
         this.ID = currentID;
-        rebuildLightMesh(this);
         tickUpCurrentID();
-    }
-
-
-    //rebuild the items mesh
-    public void rebuildLightMesh(Item self) {
-
-        ItemDefinition temp = getItemDefinition(self.name);
-
-        //clone the light array
-        float[] newLightArray = new float[temp.lightArray.length];
-
-        //convert the 0-15 light value to 0.0-1.0
-        float floatedLightValue = convertLight((float)self.light/15f);
-
-        Arrays.fill(newLightArray, floatedLightValue);
-
-        if (self.mesh != null){
-            self.mesh.cleanUp(false);
-        }
-
-        self.mesh = new Mesh(temp.positionsArray, newLightArray, temp.indicesArray, temp.textureCoordArray, temp.texture);
     }
 }

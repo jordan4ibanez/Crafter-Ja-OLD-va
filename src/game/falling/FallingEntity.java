@@ -9,14 +9,14 @@ import java.util.Map;
 
 import static game.chunk.Chunk.placeBlock;
 import static game.collision.Collision.applyInertia;
-import static game.item.ItemDefinition.createItemBlockMeshReturnsMesh;
+//import static game.item.ItemDefinition.createItemBlockMeshReturnsMesh;
 
 public class FallingEntity {
     private final static Map<Integer, FallingEntityObject> objects = new HashMap<>();
     private static int currentID = 0;
 
     public static void addFallingEntity(Vector3d pos, Vector3f inertia, byte blockID){
-        objects.put(currentID, new FallingEntityObject(pos, inertia, createItemBlockMeshReturnsMesh(blockID), currentID, blockID));
+        //objects.put(currentID, new FallingEntityObject(pos, inertia, createItemBlockMeshReturnsMesh(blockID), currentID, blockID));
         currentID++;
     }
 

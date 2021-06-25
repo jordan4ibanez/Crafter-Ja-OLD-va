@@ -38,6 +38,7 @@ import static game.crafting.Inventory.*;
 import static game.crafting.InventoryLogic.getPlayerHudRotation;
 import static game.falling.FallingEntity.getFallingEntities;
 import static game.item.ItemDefinition.getItemDefinition;
+import static game.item.ItemDefinition.getItemMesh;
 import static game.item.ItemEntity.getAllItems;
 import static game.mob.Human.getHumanBodyOffsets;
 import static game.mob.Human.getHumanMeshes;
@@ -392,9 +393,9 @@ public class GameRenderer {
         for (Object thisObject : getAllItems()){
             Item thisItem = (Item) thisObject;
             modelViewMatrix = updateModelViewMatrix(new Vector3d(thisItem.pos).add(0,thisItem.hover,0), thisItem.rotation, viewMatrix);
-            entityShaderProgram.setLightUniform("light", 15f);
+            entityShaderProgram.setLightUniform("light", thisItem.light);
             entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            thisItem.mesh.render();
+            getItemMesh(thisItem.name).render();
         }
 
         entityShaderProgram.unbind();
@@ -662,7 +663,7 @@ public class GameRenderer {
             } else if (getWieldInventory() != null){
                 modelViewMatrix = getGenericMatrixWithPosRotationScale(getWieldHandAnimationPos(), getWieldHandAnimationRot(), new Vector3d(20d, 20d, 20d), new Matrix4d());
                 hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                getWieldInventory().mesh.render();
+                getItemMesh(getWieldInventory().name).render();
             }
         }
 
@@ -764,7 +765,7 @@ public class GameRenderer {
 
                     hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
 
-                    getMouseInventory().mesh.render();
+                    getItemMesh(getMouseInventory().name).render();
 
                     glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -916,7 +917,7 @@ public class GameRenderer {
                             modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((x - 5d) * (windowScale / 9.1d)), (-windowSize.y / 2d) + (windowScale / 24d), 0), new Vector3f(45, 45, 0), new Vector3d(windowScale / 8.01d, windowScale / 8.01d, windowScale / 8.01d));
                         }
                         hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                        getItemInInventorySlot(x - 1, 0).mesh.render();
+                        getItemMesh(getItemInInventorySlot(x - 1, 0).name).render();
 
 
                         glClear(GL_DEPTH_BUFFER_BIT);
@@ -1047,7 +1048,7 @@ public class GameRenderer {
                             modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((double) x + 0.5d - offset.x + startingPoint.x) * (scale + spacing), ((y * -1d) - 0.5d + startingPoint.y + offset.y + yProgram) * (scale + spacing) - (blockScale / 7d), 0), new Vector3f(45, 45, 0), new Vector3d(blockScale, blockScale, blockScale));
                         }
                         hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                        thisItem.mesh.render();
+                        getItemMesh(thisItem.name).render();
 
                         //render item stack number
                         if (thisItem.stack > 1) {
@@ -1092,7 +1093,7 @@ public class GameRenderer {
                             modelViewMatrix = buildOrthoProjModelMatrix(new Vector3d(((double) x + 0.5d - offset.x + startingPoint.x) * (scale + spacing), ((y * -1d) - 0.5d + startingPoint.y + offset.y) * (scale + spacing) - (blockScale / 7d), 0), new Vector3f(45, 45, 0), new Vector3d(blockScale, blockScale, blockScale));
                         }
                         hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                        thisItem.mesh.render();
+                        getItemMesh(thisItem.name).render();
 
                         //render item stack number
                         if (thisItem.stack > 1) {

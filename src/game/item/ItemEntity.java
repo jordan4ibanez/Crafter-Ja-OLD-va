@@ -96,17 +96,10 @@ public class ItemEntity {
 
             Vector3i currentFlooredPos = new Vector3i((int)Math.floor(thisItem.pos.x), (int)Math.floor(thisItem.pos.y), (int)Math.floor(thisItem.pos.z));
 
-            //poll local light every half second
+            //poll local light every quarter second
             if (thisItem.lightUpdateTimer >= 0.25f || !currentFlooredPos.equals(thisItem.oldFlooredPos)){
 
-                byte newLight = getLight(currentFlooredPos.x, currentFlooredPos.y, currentFlooredPos.z);
-
-                //don't do extra work if nothing changed
-                if (newLight != thisItem.light){
-                    thisItem.light = newLight;
-                    //System.out.println("rebuild light mesh");
-                    thisItem.rebuildLightMesh(thisItem);
-                }
+                thisItem.light = getLight(currentFlooredPos.x, currentFlooredPos.y, currentFlooredPos.z);
 
                 thisItem.lightUpdateTimer = 0f;
             }
@@ -171,7 +164,6 @@ public class ItemEntity {
                 }
             }
 
-
             if (thisItem.pos.y < 0){
                 deletionQueue.add(thisItem.ID);
             }
@@ -179,10 +171,6 @@ public class ItemEntity {
 
         while (!deletionQueue.isEmpty()){
             int thisItemKey = deletionQueue.pop();
-            Item thisItem = items.get(thisItemKey);
-            if (thisItem != null && thisItem.mesh != null){
-                thisItem.mesh.cleanUp(false);
-            }
             items.remove(thisItemKey);
         }
     }
@@ -211,18 +199,9 @@ public class ItemEntity {
 
             Vector3i currentFlooredPos = new Vector3i((int)Math.floor(thisItem.pos.x), (int)Math.floor(thisItem.pos.y), (int)Math.floor(thisItem.pos.z));
 
-            //poll local light every half second
+            //poll local light every quarter second
             if (thisItem.lightUpdateTimer >= 0.25f || !currentFlooredPos.equals(thisItem.oldFlooredPos)){
-
-                byte newLight = getLight(currentFlooredPos.x, currentFlooredPos.y, currentFlooredPos.z);
-
-                //don't do extra work if nothing changed
-                if (newLight != thisItem.light){
-                    thisItem.light = newLight;
-                    //System.out.println("rebuild light mesh");
-                    thisItem.rebuildLightMesh(thisItem);
-                }
-
+                thisItem.light = getLight(currentFlooredPos.x, currentFlooredPos.y, currentFlooredPos.z);
                 thisItem.lightUpdateTimer = 0f;
             }
 
@@ -247,10 +226,6 @@ public class ItemEntity {
 
         while (!deletionQueue.isEmpty()){
             int thisItemKey = deletionQueue.pop();
-            Item thisItem = items.get(thisItemKey);
-            if (thisItem != null && thisItem.mesh != null){
-                thisItem.mesh.cleanUp(false);
-            }
             items.remove(thisItemKey);
         }
     }
