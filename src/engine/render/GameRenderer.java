@@ -4,12 +4,10 @@ import engine.Utils;
 import engine.graphics.Mesh;
 import engine.graphics.ShaderProgram;
 import engine.gui.GUIObject;
-import engine.network.PlayerPosObject;
 import game.chunk.ChunkObject;
 import game.crafting.InventoryObject;
 import game.falling.FallingEntityObject;
 import game.item.Item;
-import game.item.ItemEntity;
 import game.mob.MobObject;
 import game.particle.ParticleObject;
 import game.player.PlayerObject;
@@ -82,10 +80,6 @@ public class GameRenderer {
 
     public static float getzNear(){
         return Z_NEAR;
-    }
-
-    public static float getFOV(){
-        return FOV;
     }
 
     public static ShaderProgram getShaderProgram(){
@@ -429,22 +423,14 @@ public class GameRenderer {
                 continue;
             }
             modelViewMatrix = getTNTModelViewMatrix(i, viewMatrix);
-            if (graphicsMode) {
-                entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            } else {
-                entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            }
+            entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
             tntMesh.render();
         }
 
         //render falling entities
         for (FallingEntityObject thisObject : getFallingEntities()){
             modelViewMatrix = getGenericMatrixWithPosRotationScale(thisObject.pos, new Vector3f(0,0,0), new Vector3d(2.5d,2.5d,2.5d), viewMatrix);
-            if (graphicsMode) {
-                entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            } else {
-                entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            }
+            entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
             thisObject.mesh.render();
         }
 
@@ -458,11 +444,7 @@ public class GameRenderer {
 
             for (Mesh thisMesh : thisMob.meshes) {
                 modelViewMatrix = getMobMatrix(new Vector3d(thisMob.pos), thisMob.bodyOffsets[offsetIndex], new Vector3f(0, thisMob.smoothRotation, thisMob.deathRotation), new Vector3f(thisMob.bodyRotations[offsetIndex]), new Vector3d(1f, 1f, 1f), viewMatrix);
-                if (graphicsMode) {
-                    entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                } else {
-                    entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                }
+                entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 thisMesh.render();
                 offsetIndex++;
             }
@@ -487,11 +469,7 @@ public class GameRenderer {
                 } else {
                     modelViewMatrix = getMobMatrix(new Vector3d(thisPlayer.pos), playerBodyOffsets[offsetIndex], new Vector3f(0, thisPlayer.camRot.y, 0), new Vector3f(playerBodyRotation[offsetIndex]), new Vector3d(1f, 1f, 1f), viewMatrix);
                 }
-                if (graphicsMode) {
-                    entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                } else {
-                    entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                }
+                entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 thisMesh.render();
                 offsetIndex++;
             }
@@ -528,11 +506,7 @@ public class GameRenderer {
                     }
                     modelViewMatrix = getMobMatrix(new Vector3d(pos), playerBodyOffsets[offsetIndex], new Vector3f(0, getCameraRotation().y + 180f, 0), new Vector3f(headRot + playerBodyRotation[offsetIndex].x,playerBodyRotation[offsetIndex].y,playerBodyRotation[offsetIndex].z), new Vector3d(1f, 1f, 1f), viewMatrix);
                 }
-                if (graphicsMode) {
-                    entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                } else {
-                    entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                }
+                entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 thisMesh.render();
                 offsetIndex++;
             }
@@ -557,27 +531,11 @@ public class GameRenderer {
             Mesh thisMesh = thisParticle.mesh;
 
             modelViewMatrix = updateParticleViewMatrix(thisParticle.pos, new Vector3f(getCameraRotation()), viewMatrix);
-            if (graphicsMode) {
-                entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            } else {
-                entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            }
+            entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
             thisMesh.render();
         }
 
         //render rain drops
-        /*
-        Mesh rainDrop = getRainDropMesh();
-        for (RainDropEntity thisRainDrop : getRainDrops()){
-            modelViewMatrix = updateParticleViewMatrix(thisRainDrop.pos, new Vector3f(0,getCameraRotation().y,0), viewMatrix);
-            if (graphicsMode) {
-                glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            } else {
-                hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            }
-            rainDrop.render();
-        }
-         */
 
 
         entityShaderProgram.unbind();
