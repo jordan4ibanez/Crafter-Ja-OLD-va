@@ -10,7 +10,6 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 import static engine.Window.windowShouldClose;
 import static game.chunk.Chunk.*;
 import static game.chunk.ChunkMeshGenerationHandler.addToChunkMeshQueue;
-import static game.light.Light.getCurrentGlobalLightLevel;
 
 public class ChunkMeshGenerator implements Runnable{
     //DO NOT CHANGE THE DATA CONTAINER
@@ -38,6 +37,7 @@ public class ChunkMeshGenerator implements Runnable{
     }
 
     public static void generateChunkMesh(int chunkX, int chunkZ, int yHeight) {
+        //do not add duplicates
         if (!generationQueue.contains(new Vector3i(chunkX,yHeight, chunkZ))) {
             generationQueue.add(new Vector3i(chunkX, yHeight, chunkZ));
         }
@@ -49,6 +49,7 @@ public class ChunkMeshGenerator implements Runnable{
         generationQueue.addFirst(new Vector3i(chunkX,yHeight, chunkZ));
     }
 
+    //allows main thread to set the local byte of light to this runnable thread
     public static void setChunkThreadCurrentGlobalLightLevel(byte newLight){
         currentGlobalLightLevel = newLight;
     }
