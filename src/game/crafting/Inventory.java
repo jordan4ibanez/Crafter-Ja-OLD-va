@@ -274,4 +274,47 @@ public class Inventory {
     public static boolean isPlayerInventoryOpen(){
         return inventoryOpen;
     }
+
+    public static void cleanInventoryMemory(){
+        for (int x = 0; x < armorInventory.inventory.length; x++){
+            for (int y = 0; y < armorInventory.inventory[x].length; y++){
+                if (armorInventory.inventory[x][y] != null){
+                    armorInventory.inventory[x][y].mesh.cleanUp(false);
+                }
+                armorInventory.inventory[x][y] = null;
+            }
+        }
+        for (int x = 0; x < outputInventory.inventory.length; x++){
+            for (int y = 0; y < outputInventory.inventory[x].length; y++){
+                if (outputInventory.inventory[x][y] != null){
+                    outputInventory.inventory[x][y].mesh.cleanUp(false);
+                }
+                outputInventory.inventory[x][y] = null;
+            }
+        }
+        for (int x = 0; x < smallCraftInventory.inventory.length; x++){
+            for (int y = 0; y < smallCraftInventory.inventory[x].length; y++){
+                if (smallCraftInventory.inventory[x][y] != null){
+                    smallCraftInventory.inventory[x][y].mesh.cleanUp(false);
+                }
+                smallCraftInventory.inventory[x][y] = null;
+            }
+        }
+        for (int x = 0; x < bigCraftInventory.inventory.length; x++){
+            for (int y = 0; y < bigCraftInventory.inventory[x].length; y++){
+                if (bigCraftInventory.inventory[x][y] != null){
+                    bigCraftInventory.inventory[x][y].mesh.cleanUp(false);
+                }
+                bigCraftInventory.inventory[x][y] = null;
+            }
+        }
+        for (int x = 0; x < mainInventory.inventory.length; x++){
+            for (int y = 0; y < mainInventory.inventory[x].length; y++){
+                if (mainInventory.inventory[x][y] != null){
+                    mainInventory.inventory[x][y].mesh.cleanUp(false);
+                }
+                mainInventory.inventory[x][y] = null;
+            }
+        }
+    }
 }
