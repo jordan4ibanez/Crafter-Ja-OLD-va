@@ -60,7 +60,7 @@ public class ChunkMeshGenerator implements Runnable{
     private static void pollQueue() {
         if (!generationQueue.isEmpty()) {
 
-            Vector3i updateRawData;
+            final Vector3i updateRawData;
 
             try {
                 updateRawData = generationQueue.pop();
