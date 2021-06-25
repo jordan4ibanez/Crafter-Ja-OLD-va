@@ -42,15 +42,14 @@ import static game.player.Player.*;
 public class SceneHandler {
     //0 main menu
     //1 gameplay
-    //2 debug
+    //2 was debug - now reserved for something else in the future if needed
     //3 multiplayer
 
     private static byte currentScene = 0;
 
     public static void setScene(byte newScene){
 
-        //generic handler
-        sweepMemory();
+
 
         //move the camera into position for the main menu
         if (newScene == 0){
@@ -60,12 +59,21 @@ public class SceneHandler {
             if (isMouseLocked()){
                 toggleMouseLock();
             }
-            globalFinalChunkSaveToDisk();
+
+            //don't save the server chunks
+            if(currentScene == 1) {
+                globalFinalChunkSaveToDisk();
+            }
         }
+
+
+        //generic handler - this goes after scene 0 check for global final save chunks to disk
+        sweepMemory();
+
 
         if (newScene == 1){
             setWindowClearColor(0.53f,0.81f,0.92f,0.f);
-            calculateHealthBarElements();
+            calculateHealthBarElements(); //todo move this into a loader for player file things
             initialChunkPayload();
             generateRandomInventory();
             generateCloudData();
@@ -73,7 +81,7 @@ public class SceneHandler {
 
         if (newScene == 3){
             setWindowClearColor(0.53f,0.81f,0.92f,0.f);
-            calculateHealthBarElements();
+            calculateHealthBarElements(); //todo move this into a network thing or something
             if (!isMouseLocked()){
                 toggleMouseLock();
             }
