@@ -60,9 +60,8 @@ public class ChunkMeshGenerator implements Runnable{
     private static void pollQueue() {
         if (!generationQueue.isEmpty()) {
 
-            //long startTime = System.nanoTime();
-
             Vector3i updateRawData;
+
             try {
                 updateRawData = generationQueue.pop();
             } catch (Exception ignore) {
@@ -161,14 +160,6 @@ public class ChunkMeshGenerator implements Runnable{
                     }
                 }
             }
-
-
-            /*
-            long endTime = System.nanoTime();
-            long duration = (endTime - startTime);  //divide by 1000000 to get milliseconds.
-            double ms = (double) duration / 1_000_000;
-            System.out.println("This took: " + ms + "ms to generate chunk mesh");
-             */
 
 
             ChunkMeshDataObject newChunkData = new ChunkMeshDataObject();
