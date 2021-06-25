@@ -10,18 +10,18 @@ import static org.lwjgl.stb.STBImage.*;
 public class Texture {
 
     private final int id;
-
     private final int width;
-
     private final int height;
 
     public Texture(String fileName) throws Exception {
-        ByteBuffer buf;
+
+        final ByteBuffer buf;
+
         // Load Texture file
         try (MemoryStack stack = MemoryStack.stackPush()) {
-            IntBuffer w = stack.mallocInt(1);
-            IntBuffer h = stack.mallocInt(1);
-            IntBuffer channels = stack.mallocInt(1);
+            final IntBuffer w = stack.mallocInt(1);
+            final IntBuffer h = stack.mallocInt(1);
+            final IntBuffer channels = stack.mallocInt(1);
 
             buf = stbi_load(fileName, w, h, channels, 4);
             if (buf == null) {
@@ -36,12 +36,13 @@ public class Texture {
     }
 
     public Texture(ByteBuffer imageBuffer) throws Exception {
-        ByteBuffer buf;
+        final ByteBuffer buf;
+
         // Load Texture file
         try (MemoryStack stack = MemoryStack.stackPush()) {
-            IntBuffer w = stack.mallocInt(1);
-            IntBuffer h = stack.mallocInt(1);
-            IntBuffer channels = stack.mallocInt(1);
+            final IntBuffer w = stack.mallocInt(1);
+            final IntBuffer h = stack.mallocInt(1);
+            final IntBuffer channels = stack.mallocInt(1);
 
             buf = stbi_load_from_memory(imageBuffer, w, h, channels, 4);
             if (buf == null) {
@@ -84,10 +85,6 @@ public class Texture {
 
     public int getHeight() {
         return this.height;
-    }
-
-    public void bind() {
-        glBindTexture(GL_TEXTURE_2D, id);
     }
 
     public int getId() {

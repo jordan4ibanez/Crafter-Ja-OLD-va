@@ -1,13 +1,12 @@
 package engine.graphics;
 
-import org.lwjgl.system.MemoryUtil;
-
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import static org.lwjgl.opengl.ARBVertexArrayObject.glBindVertexArray;
 import static org.lwjgl.opengl.ARBVertexArrayObject.glGenVertexArrays;
 import static org.lwjgl.opengl.GL44.*;
+import static org.lwjgl.system.MemoryUtil.*;
 
 public class Mesh {
     private final int vaoId;
@@ -21,85 +20,62 @@ public class Mesh {
     private Texture texture;
 
     public Mesh(float[] positions, float[] colors, int[] indices, float[] textCoords, Texture texture) {
+        this.texture = texture;
+        this.vertexCount = indices.length;
+        this.vaoId = glGenVertexArrays();
+        glBindVertexArray(this.vaoId);
 
-        FloatBuffer posBuffer = null;
-        FloatBuffer colorBuffer = null;
-        IntBuffer indicesBuffer = null;
-        FloatBuffer textCoordsBuffer = null;
+        //position VBO
+        this.posVboId = glGenBuffers();
 
-        try{
+        final FloatBuffer posBuffer = memAllocFloat(positions.length);
+        posBuffer.put(positions).flip();
 
-            //System.out.println("mesh created"+Math.random());
+        glBindBuffer(GL_ARRAY_BUFFER, this.posVboId);
+        glBufferData(GL_ARRAY_BUFFER, posBuffer, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
 
-            this.texture = texture;
-            this.vertexCount = indices.length;
-            this.vaoId = glGenVertexArrays();
-            glBindVertexArray(this.vaoId);
+        // color VBO
+        this.colorVboId = glGenBuffers();
 
-            //position VBO
-            this.posVboId = glGenBuffers();
+        final FloatBuffer colorBuffer = memAllocFloat(colors.length);
+        colorBuffer.put(colors).flip();
 
-            posBuffer = MemoryUtil.memAllocFloat(positions.length);
-            posBuffer.put(positions).flip();
+        glBindBuffer(GL_ARRAY_BUFFER, colorVboId);
+        glBufferData(GL_ARRAY_BUFFER, colorBuffer, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0);
 
-            glBindBuffer(GL_ARRAY_BUFFER, this.posVboId);
-            glBufferData(GL_ARRAY_BUFFER, posBuffer, GL_STATIC_DRAW);
-            glEnableVertexAttribArray(0);
-            glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
+        //texture coordinates vbo
+        this.textureVboId = glGenBuffers();
 
-            // color VBO
-            this.colorVboId = glGenBuffers();
+        FloatBuffer textCoordsBuffer = memAllocFloat(textCoords.length);
+        textCoordsBuffer.put(textCoords).flip();
 
-            colorBuffer = MemoryUtil.memAllocFloat(colors.length);
-            colorBuffer.put(colors).flip();
-
-            glBindBuffer(GL_ARRAY_BUFFER, colorVboId);
-            glBufferData(GL_ARRAY_BUFFER, colorBuffer, GL_STATIC_DRAW);
-            glEnableVertexAttribArray(1);
-            glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0);
-
-            //texture coordinates vbo
-            this.textureVboId = glGenBuffers();
-
-            textCoordsBuffer = MemoryUtil.memAllocFloat(textCoords.length);
-            textCoordsBuffer.put(textCoords).flip();
-
-            glBindBuffer(GL_ARRAY_BUFFER, textureVboId);
-            glBufferData(GL_ARRAY_BUFFER, textCoordsBuffer, GL_STATIC_DRAW);
-            glEnableVertexAttribArray(2);
-            glVertexAttribPointer(2, 2, GL_FLOAT, false, 0, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, textureVboId);
+        glBufferData(GL_ARRAY_BUFFER, textCoordsBuffer, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, false, 0, 0);
 
 
-            //index vbo
-            this.idxVboId = glGenBuffers();
+        //index vbo
+        this.idxVboId = glGenBuffers();
 
-            indicesBuffer = MemoryUtil.memAllocInt(indices.length);
-            indicesBuffer.put(indices).flip();
+        IntBuffer indicesBuffer = memAllocInt(indices.length);
+        indicesBuffer.put(indices).flip();
 
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idxVboId);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idxVboId);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
 
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-            glBindVertexArray(0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
 
-        } finally {
-            
-            if (posBuffer != null){
-                MemoryUtil.memFree(posBuffer);
-            }
-
-            if (colorBuffer != null){
-                MemoryUtil.memFree(colorBuffer);
-            }
-
-            if (textCoordsBuffer != null){
-                MemoryUtil.memFree(textCoordsBuffer);
-            }
-
-            if (indicesBuffer != null){
-                MemoryUtil.memFree(indicesBuffer);
-            }
-        }
+        //clean memory
+        memFree(posBuffer);
+        memFree(colorBuffer);
+        memFree(textCoordsBuffer);
+        memFree(indicesBuffer);
     }
 
     public void render(){
@@ -124,8 +100,6 @@ public class Mesh {
 
     public void cleanUp(boolean deleteTexture){
 
-        //https://openglbook.com/chapter-2-vertices-and-shapes.html
-
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         glDisableVertexAttribArray(2);
@@ -140,18 +114,18 @@ public class Mesh {
         glBindVertexArray(0);
         glDeleteVertexArrays(this.vaoId);
 
-        int ErrorCheckValue = glGetError();
+        int errorCheckValue = glGetError();
 
-        if(ErrorCheckValue != GL_NO_ERROR){
-            System.out.println("Error could not destroy the mesh!! Error: " + ErrorCheckValue);
+        if (errorCheckValue != GL_NO_ERROR) {
+            System.out.println("Error could not destroy the mesh! Error value: " + errorCheckValue);
         }
-
 
         //delete the texture
         if (deleteTexture) {
             this.texture.cleanup();
         }
 
+        //remove pointer
         this.texture = null;
     }
 }
