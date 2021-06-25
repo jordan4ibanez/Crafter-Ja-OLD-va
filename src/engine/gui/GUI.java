@@ -2,6 +2,8 @@ package engine.gui;
 
 import engine.graphics.Mesh;
 import engine.graphics.Texture;
+import engine.highPerformanceContainers.HyperFloatArray;
+import engine.highPerformanceContainers.HyperIntArray;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -20,6 +22,8 @@ public class GUI {
     private static Texture miningCrack;
 
     //meshes
+    private static final Mesh[] miningCrackMesh = new Mesh[9];
+
     private static Mesh hotBarMesh;
     private static Mesh hotBarSelectionMesh;
 
@@ -38,7 +42,6 @@ public class GUI {
     private static Mesh textInputMesh;
     private static Mesh textInputSelectedMesh;
     private static Mesh menuBgMesh;
-    private static Mesh miningCrackMesh;
     private static Mesh globalWaterEffectMesh;
     private static Mesh heartHudMesh;
     private static Mesh halfHeartHudMesh;
@@ -80,7 +83,7 @@ public class GUI {
 
         //3D mesh creations
         createWieldHandMesh((byte)15);
-        rebuildMiningMesh(0);
+        buildMiningMesh();
         createWorldSelectionMesh();
         createPlayerMesh(); //todo REBUILD THIS JUNK, THIS IS HORRIBLE
     }
@@ -179,8 +182,8 @@ public class GUI {
         return inventorySlotSelectedMesh;
     }
 
-    public static Mesh getMiningCrackMesh(){
-        return miningCrackMesh;
+    public static Mesh getMiningCrackMesh(byte diggingFrame){
+        return miningCrackMesh[diggingFrame];
     }
 
     public static Mesh getGlobalWaterEffectMesh(){
@@ -198,326 +201,61 @@ public class GUI {
         return fpsMesh;
     }
 
-    public static void rebuildMiningMesh(int level) {
+    public static void buildMiningMesh() {
+        for (byte level = 0; level < 9; level++) {
+            final float min = -0.0001f;
+            final float max = 1.0001f;
 
-        if (miningCrackMesh != null){
-            miningCrackMesh.cleanUp(false);
+            int indicesCount = 0;
+
+            HyperFloatArray positions = new HyperFloatArray();
+            HyperFloatArray textureCoord = new HyperFloatArray();
+            HyperIntArray indices = new HyperIntArray();
+            HyperFloatArray light = new HyperFloatArray();
+
+            final float maxLevels = 9;
+
+            float textureMin = (float) level / maxLevels;
+            float textureMax = (float) (level + 1) / maxLevels;
+
+            positions.pack(max, max, max, min, max, max, min, min, max, max, min, max);
+            light.pack(1);
+            indices.pack(0, 1 + indicesCount, 2 + indicesCount, 0, 2 + indicesCount, 3 + indicesCount);
+            indicesCount += 4;
+            textureCoord.pack(1f, textureMin, 0f, textureMin, 0f, textureMax, 1f, textureMax);
+
+            positions.pack(min, max, min, max, max, min, max, min, min, min, min, min);
+            light.pack(1);
+            indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
+            indicesCount += 4;
+            textureCoord.pack(1f, textureMin, 0f, textureMin, 0f, textureMax, 1f, textureMax);
+
+            positions.pack(max, max, min, max, max, max, max, min, max, max, min, min);
+            light.pack(1);
+            indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
+            indicesCount += 4;
+            textureCoord.pack(1f, textureMin, 0f, textureMin, 0f, textureMax, 1f, textureMax);
+
+            positions.pack(min, max, max, min, max, min, min, min, min, min, min, max);
+            light.pack(1);
+            indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
+            indicesCount += 4;
+            textureCoord.pack(1f, textureMin, 0f, textureMin, 0f, textureMax, 1f, textureMax);
+
+            positions.pack(min, max, min, min, max, max, max, max, max, max, max, min);
+            light.pack(1);
+            indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
+            indicesCount += 4;
+            textureCoord.pack(1f, textureMin, 0f, textureMin, 0f, textureMax, 1f, textureMax);
+
+
+            positions.pack(min, min, max, min, min, min, max, min, min, max, min, max);
+            light.pack(1);
+            indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
+            textureCoord.pack(1f, textureMin, 0f, textureMin, 0f, textureMax, 1f, textureMax);
+
+            miningCrackMesh[level] = new Mesh(positions.values(), light.values(), indices.values(), textureCoord.values(), miningCrack);
         }
-
-        float min = -0.0001f;
-        float max = 1.0001f;
-        int indicesCount = 0;
-
-        List<Float> positions = new ArrayList<>();
-        List<Float> textureCoord = new ArrayList<>();
-        List<Integer> indices = new ArrayList<>();
-        List<Float> light = new ArrayList<>();
-
-        float maxLevels = 9;
-
-        float textureMin = (float)level/maxLevels;
-        float textureMax = (float)(level+1)/maxLevels;
-
-        //todo: access light here (use digging position + getLocalLight)
-
-        //front
-        positions.add(max);
-        positions.add(max);
-        positions.add(max);
-
-        positions.add(min);
-        positions.add(max);
-        positions.add(max);
-
-        positions.add(min);
-        positions.add(min);
-        positions.add(max);
-
-        positions.add(max);
-        positions.add(min);
-        positions.add(max);
-
-        //front
-        float frontLight = 1f;
-
-        //front
-        for (int i = 0; i < 12; i++) {
-            light.add(frontLight);
-        }
-        //front
-        indices.add(0);
-        indices.add(1 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(0);
-        indices.add(2 + indicesCount);
-        indices.add(3 + indicesCount);
-        indicesCount += 4;
-
-
-
-        //-x +x  -y +y
-        // 0  1   2  3
-        //front
-        textureCoord.add(1f);//1
-        textureCoord.add(textureMin);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(textureMin);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(textureMax);//3
-        textureCoord.add(1f);//1
-        textureCoord.add(textureMax);//3
-
-
-        //back
-        positions.add(min);
-        positions.add(max);
-        positions.add(min);
-
-        positions.add(max);
-        positions.add(max);
-        positions.add(min);
-
-        positions.add(max);
-        positions.add(min);
-        positions.add(min);
-
-        positions.add(min);
-        positions.add(min);
-        positions.add(min);
-        //back
-        float backLight = 1f;
-        //back
-        for (int i = 0; i < 12; i++) {
-            light.add(backLight);
-        }
-        //back
-        indices.add(indicesCount);
-        indices.add(1 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(3 + indicesCount);
-        indicesCount += 4;
-
-
-        //-x +x  -y +y
-        // 0  1   2  3
-        //back
-        textureCoord.add(1f);//1
-        textureCoord.add(textureMin);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(textureMin);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(textureMax);//3
-        textureCoord.add(1f);//1
-        textureCoord.add(textureMax);//3
-
-
-        //right
-        positions.add(max);
-        positions.add(max);
-        positions.add(min);
-
-        positions.add(max);
-        positions.add(max);
-        positions.add(max);
-
-        positions.add(max);
-        positions.add(min);
-        positions.add(max);
-
-        positions.add(max);
-        positions.add(min);
-        positions.add(min);
-        //right
-        float rightLight = 1f;
-
-        //right
-        for (int i = 0; i < 12; i++) {
-            light.add(rightLight);
-        }
-        //right
-        indices.add(indicesCount);
-        indices.add(1 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(3 + indicesCount);
-        indicesCount += 4;
-
-
-        // 0  1   0  1
-        // 0  1   2  3
-        //right
-        textureCoord.add(1f);//1
-        textureCoord.add(textureMin);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(textureMin);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(textureMax);//3
-        textureCoord.add(1f);//1
-        textureCoord.add(textureMax);//3
-
-
-        //left
-        positions.add(min);
-        positions.add(max);
-        positions.add(max);
-
-        positions.add(min);
-        positions.add(max);
-        positions.add(min);
-
-        positions.add(min);
-        positions.add(min);
-        positions.add(min);
-
-        positions.add(min);
-        positions.add(min);
-        positions.add(max);
-        //left
-        float leftLight = 1f;
-        //left
-        for (int i = 0; i < 12; i++) {
-            light.add(leftLight);
-        }
-        //left
-        indices.add(indicesCount);
-        indices.add(1 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(3 + indicesCount);
-        indicesCount += 4;
-
-
-        //-x +x  -y +y
-        // 0  1   2  3
-        //left
-        textureCoord.add(1f);//1
-        textureCoord.add(textureMin);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(textureMin);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(textureMax);//3
-        textureCoord.add(1f);//1
-        textureCoord.add(textureMax);//3
-
-
-        //top
-        positions.add(min);
-        positions.add(max);
-        positions.add(min);
-
-        positions.add(min);
-        positions.add(max);
-        positions.add(max);
-
-        positions.add(max);
-        positions.add(max);
-        positions.add(max);
-
-        positions.add(max);
-        positions.add(max);
-        positions.add(min);
-        //top
-        float topLight = 1f;
-        //top
-        for (int i = 0; i < 12; i++) {
-            light.add(topLight);
-        }
-        //top
-        indices.add(indicesCount);
-        indices.add(1 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(3 + indicesCount);
-        indicesCount += 4;
-
-
-        //-x +x  -y +y
-        // 0  1   2  3
-        //top
-        textureCoord.add(1f);//1
-        textureCoord.add(textureMin);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(textureMin);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(textureMax);//3
-        textureCoord.add(1f);//1
-        textureCoord.add(textureMax);//3
-
-
-        //bottom
-        positions.add(min);
-        positions.add(min);
-        positions.add(max);
-
-        positions.add(min);
-        positions.add(min);
-        positions.add(min);
-
-        positions.add(max);
-        positions.add(min);
-        positions.add(min);
-
-        positions.add(max);
-        positions.add(min);
-        positions.add(max);
-        //bottom
-        float bottomLight = 1f;
-
-        //bottom
-        for (int i = 0; i < 12; i++) {
-            light.add(bottomLight);
-        }
-        //bottom
-        indices.add(indicesCount);
-        indices.add(1 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(3 + indicesCount);
-
-
-        //-x +x  -y +y
-        // 0  1   2  3
-        //bottom
-        textureCoord.add(1f);//1
-        textureCoord.add(textureMin);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(textureMin);//2
-        textureCoord.add(0f);//0
-        textureCoord.add(textureMax);//3
-        textureCoord.add(1f);//1
-        textureCoord.add(textureMax);//3
-
-        //convert the position objects into usable array
-        float[] positionsArray = new float[positions.size()];
-        for (int i = 0; i < positions.size(); i++) {
-            positionsArray[i] = positions.get(i);
-        }
-
-        //convert the light objects into usable array
-        float[] lightArray = new float[light.size()];
-        for (int i = 0; i < light.size(); i++) {
-            lightArray[i] = light.get(i);
-        }
-
-        //convert the indices objects into usable array
-        int[] indicesArray = new int[indices.size()];
-        for (int i = 0; i < indices.size(); i++) {
-            indicesArray[i] = indices.get(i);
-        }
-
-        //convert the textureCoord objects into usable array
-        float[] textureCoordArray = new float[textureCoord.size()];
-        for (int i = 0; i < textureCoord.size(); i++) {
-            textureCoordArray[i] = textureCoord.get(i);
-        }
-
-        miningCrackMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, miningCrack);
     }
 
     private static void createWorldSelectionMesh() {
