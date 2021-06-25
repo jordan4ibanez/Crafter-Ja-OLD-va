@@ -21,7 +21,7 @@ To update default JRE: `sudo update-alternatives --config java`
 You can try these flags for a performance boost, if you want.
 
 `
--Xmx1G -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:-UseAdaptiveSizePolicy -Xmn128M
+-Xmx1G -XX:-UseAdaptiveSizePolicy -Xmn128M
 `
 
 # Building with ANT:
