@@ -538,14 +538,6 @@ public class GameRenderer {
         //render rain drops
 
 
-        entityShaderProgram.unbind();
-
-
-        //shader program needs to be bound
-        glassLikeShaderProgram.bind();
-        glassLikeShaderProgram.setUniform("projectionMatrix", projectionMatrix);
-        glassLikeShaderProgram.setUniform("texture_sampler", 0);
-
         //render world selection mesh
         if (getPlayerWorldSelectionPos() != null){
 
@@ -556,19 +548,19 @@ public class GameRenderer {
             Vector3d actualPos = new Vector3d(tempPos.x, tempPos.y, tempPos.z);
 
             modelViewMatrix = updateModelViewMatrix(actualPos, new Vector3f(0, 0, 0), viewMatrix);
-            glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
             selectionMesh.render();
 
             if (getDiggingFrame() >= 0) {
-                Mesh crackMesh = getMiningCrackMesh();
+                Mesh crackMesh = getMiningCrackMesh(getDiggingFrame());
                 modelViewMatrix = updateModelViewMatrix(actualPos, new Vector3f(0, 0, 0), viewMatrix);
-                glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 crackMesh.render();
             }
         }
 
-        //glassLikeShaderProgram is always reached
-        glassLikeShaderProgram.unbind();
+        entityShaderProgram.unbind();
+
 
         if (graphicsMode) {
             glEnable(GL_BLEND);
