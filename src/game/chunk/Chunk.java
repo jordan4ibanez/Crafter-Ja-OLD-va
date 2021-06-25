@@ -9,19 +9,17 @@ import org.joml.Vector3i;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
-import java.util.Collection;
 import java.util.Deque;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import static engine.FancyMath.getDistance;
-import static engine.time.Time.getDelta;
 import static engine.disk.Disk.*;
 import static engine.disk.SaveQueue.instantSave;
 import static engine.disk.SaveQueue.saveChunk;
 import static engine.network.Networking.getIfMultiplayer;
 import static engine.network.Networking.sendOutChunkRequest;
 import static engine.settings.Settings.getRenderDistance;
+import static engine.time.Time.getDelta;
 import static game.blocks.BlockDefinition.onDigCall;
 import static game.blocks.BlockDefinition.onPlaceCall;
 import static game.chunk.BiomeGenerator.addChunkToBiomeGeneration;
@@ -35,8 +33,8 @@ import static game.player.Player.*;
 public class Chunk {
 
     //DO NOT CHANGE THE DATA CONTAINER - but this is left here for people to experiment with
-    private static final Object2ObjectOpenHashMap<Vector2i, ChunkObject> map = new Object2ObjectOpenHashMap<>();
-    //private static final ConcurrentHashMap<Vector2i, ChunkObject> map = new ConcurrentHashMap<>();
+    //private static final Object2ObjectOpenHashMap<Vector2i, ChunkObject> map = new Object2ObjectOpenHashMap<>();
+    private static final ConcurrentHashMap<Vector2i, ChunkObject> map = new ConcurrentHashMap<>();
 
     public static ChunkObject[] getMap(){
         return map.values().toArray(new ChunkObject[0]);
