@@ -5,9 +5,12 @@ import game.blocks.BlockShape;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 import static engine.Window.windowShouldClose;
+import static game.blocks.BlockDefinition.getBlockIDsSize;
+import static game.blocks.BlockDefinition.getBlockShapeMapSize;
 import static game.chunk.Chunk.*;
 import static game.chunk.ChunkMeshGenerationHandler.addToChunkMeshQueue;
 
@@ -16,18 +19,26 @@ public class ChunkMeshGenerator implements Runnable{
     private static final ConcurrentLinkedDeque<Vector3i> generationQueue = new ConcurrentLinkedDeque<>();
 
     //holds BlockDefinition data - on this thread
-    private static BlockDefinition[] blockIDs;
+    private static final BlockDefinition[] blockIDs = new BlockDefinition[getBlockIDsSize()];
 
     //holds the blockshape data - on this thread
-    private static BlockShape[] blockShapeMap;
+    private static final BlockShape[] blockShapeMap = new BlockShape[getBlockShapeMapSize()];
 
     private static byte currentGlobalLightLevel = 15;
 
 
     public static void passChunkMeshThreadData(BlockDefinition[] newBlockIDs, BlockShape[] newBlockShapeMap){
         //remove pointer data
-        blockIDs = newBlockIDs.clone();
-        blockShapeMap = newBlockShapeMap.clone();
+        BlockDefinition[] clonedBlockIDs = newBlockIDs.clone();
+        BlockShape[] clonedBlockShapeMap = newBlockShapeMap.clone();
+
+        //copy data
+        System.arraycopy(clonedBlockIDs, 0, blockIDs, 0, clonedBlockIDs.length);
+        System.arraycopy(clonedBlockShapeMap, 0, blockShapeMap, 0, clonedBlockShapeMap.length);
+
+        //send to GC
+        Arrays.fill(clonedBlockIDs, null);
+        Arrays.fill(clonedBlockShapeMap, null);
     }
 
     public void run() {

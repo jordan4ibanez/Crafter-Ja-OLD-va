@@ -1338,4 +1338,12 @@ public class BlockDefinition {
     public static boolean isBlockPointable(int ID){
         return blockIDs[ID].pointable;
     }
+
+    //these two methods are specifically designed for the ChunkMeshGenerator
+    public static byte getBlockIDsSize(){
+        return (byte)blockIDs.length;
+    }
+    public static byte getBlockShapeMapSize(){
+        return (byte)blockShapeMap.length;
+    }
 }
