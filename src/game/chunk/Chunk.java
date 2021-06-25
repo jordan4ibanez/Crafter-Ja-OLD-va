@@ -23,6 +23,7 @@ import static engine.time.Time.getDelta;
 import static game.blocks.BlockDefinition.onDigCall;
 import static game.blocks.BlockDefinition.onPlaceCall;
 import static game.chunk.BiomeGenerator.addChunkToBiomeGeneration;
+import static game.chunk.ChunkMath.indexToPos;
 import static game.chunk.ChunkMath.posToIndex;
 import static game.chunk.ChunkMeshGenerator.generateChunkMesh;
 import static game.chunk.ChunkMeshGenerator.instantGeneration;
@@ -733,6 +734,37 @@ public class Chunk {
                 map.remove(key);
             }
         }
+    }
+
+    //returns -1 if fails
+    public static int getMobSpawnYPos(int x, int z){
+        int chunkX = (int)Math.floor(x/16d);
+        int chunkZ = (int)Math.floor(z/16d);
+        int blockX = (int)(x - (16d*chunkX));
+        int blockZ = (int)(z - (16d*chunkZ));
+
+        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
+
+        if (thisChunk == null){
+            return 0;
+        }
+        if (thisChunk.block == null){
+            return 0;
+        }
+
+        //reduce object lookups
+        byte[] block = thisChunk.block;
+
+        //simple algorithm for now
+        for (int y = 127; y >= 0; y--){
+            if (block[posToIndex(blockX,y, blockZ)] == 0){
+                if (block[posToIndex(blockX,y-1, blockZ)] != 0 && block[posToIndex(blockX,y+1, blockZ)] == 0){
+                    return y;
+                }
+            }
+        }
+
+        return -1;
     }
 
     public static void genBiome(int chunkX, int chunkZ) {

@@ -4,6 +4,9 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 import static engine.time.Time.getDelta;
 import static engine.sound.SoundAPI.playSound;
 import static game.mob.Human.registerHumanMob;
@@ -34,7 +37,7 @@ public class Mob {
         registerPigMob();
     }
 
-    public static void spawnMob(int ID, Vector3d pos, Vector3f inertia){
+    public static void spawnMob(byte ID, Vector3d pos, Vector3f inertia){
         System.out.println("spawning mob! ID: " + currentID);
         System.out.println("pos y:" + pos.y);
 
@@ -46,23 +49,26 @@ public class Mob {
         return mobs.values().toArray(new MobObject[0]);
     }
 
-    public static void mobsOnTick(){
+    private static String getHurtSound(byte ID){
+        return mobDefinitions[ID].hurtSound;
+    }
 
-        int count = 0;
+    private static final Deque<Integer> deletionQueue = new ArrayDeque<>();
+
+    public static void mobsOnTick(){
 
         double delta = getDelta();
 
         for (MobObject thisMob : mobs.values()){
             if (thisMob == null){
-                count++;
                 continue;
             }
 
+            //interface consumes object - no need for re-assignment to vars
             mobDefinitions[thisMob.ID].mobInterface.onTick(thisMob);
 
             if (thisMob.pos.y < 0){
-                mobs.remove(count);
-                System.out.println("mob " + count + " was deleted!");
+                deletionQueue.add(thisMob.globalID);
             }
 
             //mob dying animation
@@ -75,8 +81,7 @@ public class Mob {
             }
 
             if (thisMob.health <= 0 && thisMob.timer >= 0.5f && thisMob.deathRotation == 90){
-                mobs.remove(count);
-                System.out.println("mob " + count + " was deleted!");
+                deletionQueue.add(thisMob.globalID);
             }
 
             //count down hurt timer
@@ -86,8 +91,12 @@ public class Mob {
                     thisMob.hurtTimer = 0;
                 }
             }
+        }
 
-            count++;
+        while (!deletionQueue.isEmpty()){
+            int thisMobGlobalID = deletionQueue.pop();
+            System.out.println("mob " + thisMobGlobalID + " was deleted!");
+            mobs.remove(thisMobGlobalID);
         }
     }
 
@@ -95,7 +104,7 @@ public class Mob {
         if (thisMob.hurtTimer <= 0 && thisMob.health > 0) {
             thisMob.health -= 1;
             System.out.println("the mobs health is: " + thisMob.health);
-            playSound(thisMob.hurtSound, new Vector3f((float)thisMob.pos.x, (float)thisMob.pos.y, (float)thisMob.pos.z), true);
+            playSound(getHurtSound(thisMob.ID), new Vector3f((float)thisMob.pos.x, (float)thisMob.pos.y, (float)thisMob.pos.z), true);
             if (thisMob.onGround) {
                 thisMob.inertia.y = 7;
             }

@@ -1042,5 +1042,8 @@ public class MainMenu {
             "Has been under the ocean!",
             "Made with electrons!",
             "Knows where to go!",
+            "True + true = 2!",
+            "Now for PC!",
+            "Faster than ever!"
     };
 }

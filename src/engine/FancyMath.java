@@ -7,6 +7,16 @@ public class FancyMath {
     private static final Random random = new Random();
     private static final int[] dirArray = new int[]{-1,1};
 
+
+    //this variable does an int from min to max, but, it can also give you -max to -min
+    //example: 5 to 10 can return -10 through -5
+    //this is specifically designed for the mob spawning algorithm
+    //this also has a horrible name
+    public static int randomIntFromMinToMaxNegativePositive(int min, int max){
+        int x = min + random.nextInt(max - min + 1);
+        return x * dirArray[random.nextInt(2)];
+    }
+
     public static float randomDirFloat(){
         return dirArray[random.nextInt(2)];
     }

@@ -105,7 +105,7 @@ public class Human {
             mobSmoothRotation(thisObject);
             doHeadCode(thisObject);
 
-            thisObject.lastPos = new Vector3d(thisObject.pos);
+            thisObject.lastPos.set(new Vector3d(thisObject.pos));
 
         }
     };

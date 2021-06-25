@@ -8,17 +8,22 @@ import static engine.FancyMath.randomDirFloat;
 import static game.mob.Mob.getMobDefinition;
 
 public class MobObject {
-    public Vector3d pos;
-    public Vector3d lastPos;
-    public Vector3f inertia;
+    //the mobDefinition ID
+    public final byte ID;
+
+    //the global reference to the object in the list
+    public final int globalID;
+
+    public final Vector3d pos;
+    public final  Vector3d lastPos;
+    public final Vector3f inertia;
     public final float width;
     public final float height;
     public float rotation;
     public float smoothRotation;
     public final Vector3f[] bodyOffsets;
-    public Vector3f[] bodyRotations;
+    public final Vector3f[] bodyRotations;
     public final Mesh[] meshes;
-    public final int ID;
 
     public float animationTimer;
     public float timer;
@@ -26,16 +31,11 @@ public class MobObject {
     public boolean stand;
 
     public float hurtTimer = 0f;
-
-    public int globalID;
-    public String hurtSound;
-
     public int health;
-
     public float deathRotation = 0;
 
 
-    public MobObject(Vector3d pos, Vector3f inertia, int ID, int globalID){
+    public MobObject(Vector3d pos, Vector3f inertia, byte ID, int globalID){
         this.pos = pos;
         this.lastPos = new Vector3d(pos);
         this.inertia = inertia;
@@ -57,8 +57,6 @@ public class MobObject {
         this.ID = ID;
 
         this.globalID = globalID;
-
-        this.hurtSound = getMobDefinition(ID).hurtSound;
 
         this.health = getMobDefinition(ID).baseHealth;
     }
