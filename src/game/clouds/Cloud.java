@@ -19,6 +19,13 @@ public class Cloud {
     private static int cloudOffset = 0;
     private static float cloudScroll = 0f;
 
+    public static void cleanCloudMemory(){
+        cloudScroll = 0;
+        cloudOffset = 0;
+        cloudPos.x = 0;
+        cloudPos.y = 0;
+    }
+
     public static void makeCloudsMove(){
         cloudScroll += getDelta();
 
