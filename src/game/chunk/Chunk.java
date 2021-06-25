@@ -35,8 +35,8 @@ import static game.player.Player.*;
 public class Chunk {
 
     //DO NOT CHANGE THE DATA CONTAINER - but this is left here for people to experiment with
-    //private static final Object2ObjectOpenHashMap<Vector2i, ChunkObject> map = new Object2ObjectOpenHashMap<>();
-    private static final ConcurrentHashMap<Vector2i, ChunkObject> map = new ConcurrentHashMap<>();
+    private static final Object2ObjectOpenHashMap<Vector2i, ChunkObject> map = new Object2ObjectOpenHashMap<>();
+    //private static final ConcurrentHashMap<Vector2i, ChunkObject> map = new ConcurrentHashMap<>();
 
     public static ChunkObject[] getMap(){
         return map.values().toArray(new ChunkObject[0]);

@@ -21,9 +21,7 @@ public class ChunkUpdateHandler {
     }
 
     private static final Random random = new Random();
-
     private static final float goalTimer = 0.0003f;
-
     private static float chunkUpdateTimer = 0f;
 
     public static void chunkUpdater() {
