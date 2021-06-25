@@ -409,7 +409,9 @@ public class GameRenderer {
         }
 
 
+        //begin game entity rendering
         entityShaderProgram.bind();
+
         //        render each item entity
         for (Object thisObject : getAllItems()){
             Item thisItem = (Item) thisObject;
@@ -419,17 +421,6 @@ public class GameRenderer {
             getItemMesh(thisItem.name).render();
         }
 
-        entityShaderProgram.unbind();
-
-        if (graphicsMode) {
-            glassLikeShaderProgram.bind();
-            glassLikeShaderProgram.setUniform("projectionMatrix", projectionMatrix);
-            glassLikeShaderProgram.setUniform("texture_sampler", 0);
-        } else {
-            shaderProgram.bind();
-            shaderProgram.setUniform("projectionMatrix", projectionMatrix);
-            shaderProgram.setUniform("texture_sampler", 0);
-        }
 
         //render each TNT entity
         Mesh tntMesh = getTNTMesh();
@@ -439,9 +430,9 @@ public class GameRenderer {
             }
             modelViewMatrix = getTNTModelViewMatrix(i, viewMatrix);
             if (graphicsMode) {
-                glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
             } else {
-                shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
             }
             tntMesh.render();
         }
@@ -450,9 +441,9 @@ public class GameRenderer {
         for (FallingEntityObject thisObject : getFallingEntities()){
             modelViewMatrix = getGenericMatrixWithPosRotationScale(thisObject.pos, new Vector3f(0,0,0), new Vector3d(2.5d,2.5d,2.5d), viewMatrix);
             if (graphicsMode) {
-                glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
             } else {
-                hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
             }
             thisObject.mesh.render();
         }
@@ -468,9 +459,9 @@ public class GameRenderer {
             for (Mesh thisMesh : thisMob.meshes) {
                 modelViewMatrix = getMobMatrix(new Vector3d(thisMob.pos), thisMob.bodyOffsets[offsetIndex], new Vector3f(0, thisMob.smoothRotation, thisMob.deathRotation), new Vector3f(thisMob.bodyRotations[offsetIndex]), new Vector3d(1f, 1f, 1f), viewMatrix);
                 if (graphicsMode) {
-                    glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                    entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 } else {
-                    hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                    entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 }
                 thisMesh.render();
                 offsetIndex++;
@@ -497,9 +488,9 @@ public class GameRenderer {
                     modelViewMatrix = getMobMatrix(new Vector3d(thisPlayer.pos), playerBodyOffsets[offsetIndex], new Vector3f(0, thisPlayer.camRot.y, 0), new Vector3f(playerBodyRotation[offsetIndex]), new Vector3d(1f, 1f, 1f), viewMatrix);
                 }
                 if (graphicsMode) {
-                    glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                    entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 } else {
-                    hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                    entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 }
                 thisMesh.render();
                 offsetIndex++;
@@ -509,7 +500,7 @@ public class GameRenderer {
             //this is a temporary hack to see what other people are playing
             modelViewMatrix = updateTextIn3DSpaceViewMatrix(new Vector3d(thisPlayer.pos).add(0,2.05d,0), new Vector3f(getCameraRotation()), new Vector3d(0.25d,0.25d,0.25d), viewMatrix);
 
-            hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
             workerMesh = createTextCentered(thisPlayer.name, 1f, 1f, 1f);
             workerMesh.render();
             workerMesh.cleanUp(false);
@@ -538,9 +529,9 @@ public class GameRenderer {
                     modelViewMatrix = getMobMatrix(new Vector3d(pos), playerBodyOffsets[offsetIndex], new Vector3f(0, getCameraRotation().y + 180f, 0), new Vector3f(headRot + playerBodyRotation[offsetIndex].x,playerBodyRotation[offsetIndex].y,playerBodyRotation[offsetIndex].z), new Vector3d(1f, 1f, 1f), viewMatrix);
                 }
                 if (graphicsMode) {
-                    glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                    entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 } else {
-                    hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                    entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 }
                 thisMesh.render();
                 offsetIndex++;
@@ -550,7 +541,7 @@ public class GameRenderer {
             //this is a temporary hack to see what other people are playing
             modelViewMatrix = updateTextIn3DSpaceViewMatrix(new Vector3d(pos).add(0,2.05d,0), new Vector3f(getCameraRotation()), new Vector3d(0.25d,0.25d,0.25d), viewMatrix);
 
-            hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
             workerMesh = createTextCentered(getPlayerName(), 1f, 1f, 1f);
             workerMesh.render();
             workerMesh.cleanUp(false);
@@ -567,9 +558,9 @@ public class GameRenderer {
 
             modelViewMatrix = updateParticleViewMatrix(thisParticle.pos, new Vector3f(getCameraRotation()), viewMatrix);
             if (graphicsMode) {
-                glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
             } else {
-                hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
             }
             thisMesh.render();
         }
@@ -588,14 +579,14 @@ public class GameRenderer {
         }
          */
 
-        //we must unbind then rebind
-        if (!graphicsMode){
-            shaderProgram.unbind();
 
-            glassLikeShaderProgram.bind();
-            glassLikeShaderProgram.setUniform("projectionMatrix", projectionMatrix);
-            glassLikeShaderProgram.setUniform("texture_sampler", 0);
-        }
+        entityShaderProgram.unbind();
+
+
+        //shader program needs to be bound
+        glassLikeShaderProgram.bind();
+        glassLikeShaderProgram.setUniform("projectionMatrix", projectionMatrix);
+        glassLikeShaderProgram.setUniform("texture_sampler", 0);
 
         //render world selection mesh
         if (getPlayerWorldSelectionPos() != null){

@@ -48,16 +48,14 @@ public class Particle {
 
         while (!deletionQueue.isEmpty()) {
 
-            Integer key = deletionQueue.pop();
+            int key = deletionQueue.pop();
 
-            if (key != null) {
-                ParticleObject thisParticle = particles.get((int)key);
+            ParticleObject thisParticle = particles.get(key);
 
-                if (thisParticle != null && thisParticle.mesh != null) {
-                    thisParticle.mesh.cleanUp(false);
-                }
-                particles.remove((int)key);
+            if (thisParticle != null && thisParticle.mesh != null) {
+                thisParticle.mesh.cleanUp(false);
             }
+            particles.remove(key);
         }
 
     }
@@ -68,64 +66,51 @@ public class Particle {
 
     private static Mesh createParticleMesh(int blockID) {
 
-        float textureScale = (float)Math.ceil(Math.random() * 3f);
-        float pixelScale = (float)(int)textureScale / 25f;
+        final float textureScale = (float)Math.ceil(Math.random() * 3f);
+        final float pixelScale = (float)(int)textureScale / 25f;
 
-        float pixelX = (float)Math.floor(Math.random()*(16f-(textureScale+1f)));
-        float pixelY = (float)Math.floor(Math.random()*(16f-(textureScale+1f)));
+        final float pixelX = (float)Math.floor(Math.random()*(16f-(textureScale+1f)));
+        final float pixelY = (float)Math.floor(Math.random()*(16f-(textureScale+1f)));
 
-        float pixelXMin = pixelX/16f/32f;
-        float pixelXMax = (pixelX+textureScale)/16f/32f;
+        final float pixelXMin = pixelX/16f/32f;
+        final float pixelXMax = (pixelX+textureScale)/16f/32f;
 
-        float pixelYMin = pixelY/16f/32f;
-        float pixelYMax = (pixelY+textureScale)/16f/32f;
-
-
-        ArrayList<Float> positions = new ArrayList<>();
-        ArrayList<Float> textureCoord = new ArrayList<>();
-        ArrayList<Integer> indices = new ArrayList<>();
-        ArrayList<Float> light = new ArrayList<>();
+        final float pixelYMin = pixelY/16f/32f;
+        final float pixelYMax = (pixelY+textureScale)/16f/32f;
 
 
-        int indicesCount = 0;
-
+        final float[] positions    = new float[12];
+        final float[] textureCoord = new float[8];
+        final int[] indices        = new int[6];
+        final float[] light        = new float[12];
 
         //front
-        positions.add(pixelScale);
-        positions.add(pixelScale*2);
-        positions.add(0f);
-
-        positions.add(-pixelScale);
-        positions.add(pixelScale*2);
-        positions.add(0f);
-
-        positions.add(-pixelScale);
-        positions.add(0f);
-        positions.add(0f);
-
-        positions.add(pixelScale);
-        positions.add(0f);
-        positions.add(0f);
-
-        //front
-        float frontLight = 1f;//getLight(x, y, z + 1, chunkX, chunkZ) / maxLight;
-
+        positions[0]  = (pixelScale);
+        positions[1]  = (pixelScale*2);
+        positions[2]  = (0f);
+        positions[3]  = (-pixelScale);
+        positions[4]  = (pixelScale*2);
+        positions[5]  = (0f);
+        positions[6]  = (-pixelScale);
+        positions[7]  = (0f);
+        positions[8]  = (0f);
+        positions[9]  = (pixelScale);
+        positions[10] = (0f);
+        positions[11] = (0f);
+        
         //front
         for (int i = 0; i < 12; i++) {
-            light.add(frontLight);
+            light[i] = 1;
         }
         //front
-        indices.add(0);
-        indices.add(1 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(0);
-        indices.add(2 + indicesCount);
-        indices.add(3 + indicesCount);
+        indices[0] = (0);
+        indices[1] = (1);
+        indices[2] = (2);
+        indices[3] = (0);
+        indices[4] = (2);
+        indices[5] = (3);
 
-        //-x +x   -y +y
-        // 0  1    2  3
-
-        int selection = (int)Math.floor(Math.random()*6f);
+        final int selection = (int)Math.floor(Math.random()*6f);
 
         float[] texturePoints = switch (selection) {
             case 1 -> getBackTexturePoints(blockID, (byte) 0);
@@ -136,44 +121,17 @@ public class Particle {
             default -> getFrontTexturePoints(blockID, (byte) 0);
         };
 
-        // 0, 1,  2, 3
-        //-x,+x, -y,+y
 
         //front
-        textureCoord.add(texturePoints[0] + pixelXMax);//1
-        textureCoord.add(texturePoints[2] + pixelYMin);//2
-        textureCoord.add(texturePoints[0] + pixelXMin);//0
-        textureCoord.add(texturePoints[2] + pixelYMin);//2
-        textureCoord.add(texturePoints[0] + pixelXMin);//0
-        textureCoord.add(texturePoints[2] + pixelYMax);//3
-        textureCoord.add(texturePoints[0] + pixelXMax);//1
-        textureCoord.add(texturePoints[2] + pixelYMax);//3
+        textureCoord[0] = (texturePoints[0] + pixelXMax);//1
+        textureCoord[1] = (texturePoints[2] + pixelYMin);//2
+        textureCoord[2] = (texturePoints[0] + pixelXMin);//0
+        textureCoord[3] = (texturePoints[2] + pixelYMin);//2
+        textureCoord[4] = (texturePoints[0] + pixelXMin);//0
+        textureCoord[5] = (texturePoints[2] + pixelYMax);//3
+        textureCoord[6] = (texturePoints[0] + pixelXMax);//1
+        textureCoord[7] = (texturePoints[2] + pixelYMax);//3
 
-
-        //convert the position objects into usable array
-        float[] positionsArray = new float[positions.size()];
-        for (int i = 0; i < positions.size(); i++) {
-            positionsArray[i] = positions.get(i);
-        }
-
-        //convert the light objects into usable array
-        float[] lightArray = new float[light.size()];
-        for (int i = 0; i < light.size(); i++) {
-            lightArray[i] = light.get(i);
-        }
-
-        //convert the indices objects into usable array
-        int[] indicesArray = new int[indices.size()];
-        for (int i = 0; i < indices.size(); i++) {
-            indicesArray[i] = indices.get(i);
-        }
-
-        //convert the textureCoord objects into usable array
-        float[] textureCoordArray = new float[textureCoord.size()];
-        for (int i = 0; i < textureCoord.size(); i++) {
-            textureCoordArray[i] = textureCoord.get(i);
-        }
-
-        return new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray,getTextureAtlas());
+        return new Mesh(positions, light, indices, textureCoord, getTextureAtlas());
     }
 }
