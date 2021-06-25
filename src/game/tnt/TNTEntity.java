@@ -15,6 +15,10 @@ import static game.collision.Collision.applyInertia;
 import static game.tnt.Explosion.boom;
 
 public class TNTEntity {
+
+    //todo: this is crap and confusing - rewrite this
+
+
     private final static float tntSize = 0.5f;
     private final static int MAX_ID_AMOUNT = 126_000;
     private static int totalTNT = 0;
@@ -62,7 +66,7 @@ public class TNTEntity {
         totalTNT++;
     }
 
-    public static void onTNTStep() throws Exception {
+    public static void onTNTStep() {
         double delta = getDelta();
         for (int i = 0; i < totalTNT; i++){
             tntTimer[i] += delta;

@@ -11,7 +11,7 @@ import static game.player.OtherPlayers.cleanOtherPLayerMemory;
 
 public class MemorySweeper {
     public static void sweepMemory(){
-        System.out.println("sweeping memory!");
+        //System.out.println("sweeping memory!");
         cleanItemMemory();
         cleanChunkDataMemory();
         cleanChatMemory();
