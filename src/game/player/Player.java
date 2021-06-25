@@ -646,14 +646,14 @@ public class Player {
     }
 
     private static float diggingProgress = 0f;
-    private static int diggingFrame = -1;
+    private static byte diggingFrame = -1;
     private static boolean hasDug = false;
 
     public static boolean playerHasDug(){
         return hasDug;
     }
 
-    public static int getDiggingFrame(){
+    public static byte getDiggingFrame(){
         return diggingFrame;
     }
 
@@ -747,7 +747,6 @@ public class Player {
         if ((mining && worldSelectionPos != null && !worldSelectionPos.equals(oldWorldSelectionPos)) || (currentInventorySelection != oldInventorySelection)){
             diggingFrame = -1;
             diggingProgress = 0f;
-            rebuildMiningMesh(diggingFrame);
         }
         if (mining && worldSelectionPos != null) {
             float progress = 0;
@@ -778,11 +777,9 @@ public class Player {
                     hasDug = true;
                 }
                 diggingProgress = 0;
-                rebuildMiningMesh(diggingFrame);
             }
         } else if (diggingFrame != -1){
             diggingFrame = -1;
-            rebuildMiningMesh(0);
         }
 
         //place timers
