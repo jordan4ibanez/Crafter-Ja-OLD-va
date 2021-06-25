@@ -1,10 +1,8 @@
 package game.chunk;
 
-import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import org.joml.Vector3i;
 
 import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 import static engine.time.Time.getDelta;
@@ -24,7 +22,7 @@ public class ChunkUpdateHandler {
 
     private static final Random random = new Random();
 
-    private static final float goalTimer = 0.00001f;
+    private static final float goalTimer = 0.0003f;
 
     private static float chunkUpdateTimer = 0f;
 
