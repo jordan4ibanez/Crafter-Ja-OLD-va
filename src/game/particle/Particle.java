@@ -22,6 +22,13 @@ public class Particle {
         currentID++;
     }
 
+    public static void cleanParticleMemory(){
+        for (ParticleObject particleObject : particles.values()){
+            particleObject.mesh.cleanUp(false);
+        }
+
+        particles.clear();
+    }
 
     private static final Deque<Integer> deletionQueue = new ArrayDeque<>();
 

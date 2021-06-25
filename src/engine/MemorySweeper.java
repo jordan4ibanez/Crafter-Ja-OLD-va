@@ -6,6 +6,7 @@ import static game.clouds.Cloud.cleanCloudMemory;
 import static game.crafting.Inventory.cleanInventoryMemory;
 import static game.falling.FallingEntity.cleanFallingEntities;
 import static game.item.ItemEntity.cleanItemMemory;
+import static game.particle.Particle.cleanParticleMemory;
 
 public class MemorySweeper {
     public static void sweepMemory(){
@@ -16,5 +17,6 @@ public class MemorySweeper {
         cleanCloudMemory();
         cleanInventoryMemory();
         cleanFallingEntities();
+        cleanParticleMemory();
     }
 }
