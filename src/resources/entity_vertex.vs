@@ -14,6 +14,6 @@ uniform float light;
 void main()
 {
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    exColor = inColor * (light / 15.0);
+    exColor = inColor * pow(pow((light / 15.0),1.5),1.5) ;
     outTexCoord = texCoord;
 }
