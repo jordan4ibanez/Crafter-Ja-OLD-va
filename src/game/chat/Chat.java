@@ -28,6 +28,16 @@ public class Chat {
     private static final int chatHeightLimit = 9;
     private static final float chatTimerLimit = 5f;
 
+    public static void cleanChatMemory(){
+        for (Mesh thisMesh : chatMesh.values()){
+            thisMesh.cleanUp(false);
+        }
+
+        chatMesh.clear();
+        chatTimer.clear();
+        ID = 0;
+    }
+
     public static void tickUpChatTimers(){
         double delta = getDelta();
         int index = ID - chatHeightLimit;
