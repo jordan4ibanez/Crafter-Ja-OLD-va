@@ -656,6 +656,7 @@ public class MainMenu {
             if (serverConnected){
                 //serverConnected = false;
                 System.out.println("CONNECT TO SERVER");
+                titleMusic.stop();
                 setScene((byte)3);
                 return;
             }
