@@ -30,8 +30,9 @@ public class MobObject {
     public boolean stand;
 
     public float hurtTimer = 0f;
-    public int health;
+    public byte health;
     public float deathRotation = 0;
+    public byte hurtAdder = 0;
 
 
     public MobObject(Vector3d pos, Vector3f inertia, byte ID, int globalID){

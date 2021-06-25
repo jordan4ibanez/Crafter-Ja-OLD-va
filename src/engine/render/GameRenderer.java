@@ -443,6 +443,8 @@ public class GameRenderer {
             }
             int offsetIndex = 0;
 
+            entityShaderProgram.setLightUniform("light", thisMob.light + 15);
+
             for (Mesh thisMesh : getMobMesh(thisMob.ID)) {
                 modelViewMatrix = getMobMatrix(new Vector3d(thisMob.pos), thisMob.bodyOffsets[offsetIndex], new Vector3f(0, thisMob.smoothRotation, thisMob.deathRotation), new Vector3f(thisMob.bodyRotations[offsetIndex]), new Vector3d(1f, 1f, 1f), viewMatrix);
                 entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
@@ -464,6 +466,9 @@ public class GameRenderer {
             Mesh[] playerMeshes = getHumanMeshes();
             Vector3f[] playerBodyOffsets = getHumanBodyOffsets();
             Vector3f[] playerBodyRotation = getPlayerBodyRotations();
+
+
+
             for (Mesh thisMesh : playerMeshes) {
                 if (offsetIndex == 0) {
                     modelViewMatrix = getMobMatrix(new Vector3d(thisPlayer.pos), playerBodyOffsets[offsetIndex], new Vector3f(0, thisPlayer.camRot.y, 0), new Vector3f(thisPlayer.camRot.x + playerBodyRotation[offsetIndex].x, playerBodyRotation[offsetIndex].y, playerBodyRotation[offsetIndex].z), new Vector3d(1f, 1f, 1f), viewMatrix);

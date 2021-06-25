@@ -133,7 +133,7 @@ public class Pig {
     };
 
     public static void registerPigMob(){
-        registerMob(new MobDefinition("pig", "oink", 6, bodyMeshes, bodyOffsets, bodyRotations,0.9f, 0.45f, mobInterface));
+        registerMob(new MobDefinition("pig", "oink", (byte) 6, bodyMeshes, bodyOffsets, bodyRotations,0.9f, 0.45f, mobInterface));
     }
 
 

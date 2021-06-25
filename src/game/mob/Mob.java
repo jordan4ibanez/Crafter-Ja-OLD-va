@@ -18,7 +18,7 @@ public class Mob {
     //todo: ADD MOBS TO MEMORY SWEEPER
     private static final MobDefinition[] mobDefinitions = new MobDefinition[3];
     private static final Int2ObjectArrayMap<MobObject> mobs = new Int2ObjectArrayMap<>();
-    
+
     private static int currentID = 0;
     private static int currentMobDefinitionKey = 0;
 

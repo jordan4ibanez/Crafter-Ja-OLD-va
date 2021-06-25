@@ -12,9 +12,9 @@ public class MobDefinition {
     public final float height;
     public final float width;
     public final String hurtSound;
-    public final int baseHealth;
+    public final byte baseHealth;
 
-    public MobDefinition(String name, String hurtSound, int baseHealth, Mesh[] bodyMeshes,Vector3f[] bodyOffsets,Vector3f[] bodyRotations, float height, float width, MobInterface mobInterface){
+    public MobDefinition(String name, String hurtSound, byte baseHealth, Mesh[] bodyMeshes,Vector3f[] bodyOffsets,Vector3f[] bodyRotations, float height, float width, MobInterface mobInterface){
         this.bodyMeshes = bodyMeshes;
         this.mobInterface = mobInterface;
         this.mobName = name;
