@@ -1150,6 +1150,11 @@ public class GameRenderer {
         if (glassLikeShaderProgram != null){
             glassLikeShaderProgram.cleanup();
         }
+
+
+        if (entityShaderProgram != null){
+            entityShaderProgram.cleanup();
+        }
     }
 
     private static double getChunkDistanceFromPlayer(int x, int z){
