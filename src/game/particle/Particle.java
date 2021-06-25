@@ -4,11 +4,13 @@ import engine.graphics.Mesh;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
+import org.joml.Vector3i;
 
 import java.util.*;
 
 import static engine.time.Time.getDelta;
 import static game.blocks.BlockDefinition.*;
+import static game.chunk.Chunk.getLight;
 import static game.chunk.ChunkMeshGenerationHandler.getTextureAtlas;
 import static game.collision.ParticleCollision.applyParticleInertia;
 
@@ -40,6 +42,17 @@ public class Particle {
             applyParticleInertia(thisParticle.pos, thisParticle.inertia, true,true,true);
 
             thisParticle.timer += delta;
+            thisParticle.lightUpdateTimer += delta;
+
+            Vector3i currentFlooredPos = new Vector3i((int)Math.floor(thisParticle.pos.x), (int)Math.floor(thisParticle.pos.y), (int)Math.floor(thisParticle.pos.z));
+
+            //poll local light every quarter second
+            if (thisParticle.lightUpdateTimer >= 0.25f || !currentFlooredPos.equals(thisParticle.oldFlooredPos)){
+
+                thisParticle.light = getLight(currentFlooredPos.x, currentFlooredPos.y, currentFlooredPos.z);
+
+                thisParticle.lightUpdateTimer = 0f;
+            }
 
             if (thisParticle.timer > 1f){
                 deletionQueue.add(thisParticle.key);
