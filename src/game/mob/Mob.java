@@ -29,7 +29,7 @@ public class Mob {
     }
 
     //entry point
-    public static void initializeMobRegister(){
+    public static void registerMobs(){
         registerHumanMob();
         registerPigMob();
     }
