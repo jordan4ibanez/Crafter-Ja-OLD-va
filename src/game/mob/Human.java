@@ -152,9 +152,9 @@ public class Human {
 
     private static Mesh[] createPlayerMesh(){
 
-        float size = 0.25f; //lazy way to fix
+        final float size = 0.25f; //lazy way to fix
 
-        float[][] oneBlockyBoi = new float[][]{
+        final float[][] oneBlockyBoi = new float[][]{
 //                head
                 {-0.75f * size,0.0f * size,-0.75f * size,0.75f * size,1.5f * size,0.75f * size},
 //                body
@@ -632,8 +632,6 @@ public class Human {
             bodyMeshesIndex++;
 
         }
-
-
 
         return bodyMeshes;
     }

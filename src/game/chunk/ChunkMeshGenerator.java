@@ -1,5 +1,7 @@
 package game.chunk;
 
+import engine.highPerformanceContainers.HyperFloatArray;
+import engine.highPerformanceContainers.HyperIntArray;
 import game.blocks.BlockDefinition;
 import game.blocks.BlockShape;
 import org.joml.Vector3f;

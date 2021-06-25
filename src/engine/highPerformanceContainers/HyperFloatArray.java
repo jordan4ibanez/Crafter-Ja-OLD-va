@@ -1,4 +1,4 @@
-package game.chunk;
+package engine.highPerformanceContainers;
 
 //this container is specifically optimized for ChunkMeshGenerator
 //cache happy
