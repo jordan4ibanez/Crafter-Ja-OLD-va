@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import static engine.Controls.gameInput;
 import static engine.Controls.mainMenuInput;
+import static engine.MemorySweeper.sweepMemory;
 import static engine.MouseInput.*;
 import static engine.Window.*;
 import static engine.debug.CheckRuntimeInfo.doRuntimeInfoUpdate;
@@ -48,9 +49,12 @@ public class SceneHandler {
 
     public static void setScene(byte newScene){
 
+        //generic handler
+        sweepMemory();
+
         //move the camera into position for the main menu
         if (newScene == 0){
-            cleanItemMemory();
+
             setWindowClearColor(0,0,0,1);
             selectTitleScreenGag();
             if (isMouseLocked()){

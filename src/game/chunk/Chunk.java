@@ -754,7 +754,7 @@ public class Chunk {
         }
     }
 
-    public static void cleanUp(){
+    public static void cleanChunkDataMemory(){
         for (ChunkObject thisChunk : map.values()){
             if (thisChunk == null){
                 continue;
@@ -762,7 +762,7 @@ public class Chunk {
             if (thisChunk.normalMesh != null){
                 for (Mesh thisMesh : thisChunk.normalMesh){
                     if (thisMesh != null){
-                        thisMesh.cleanUp(true);
+                        thisMesh.cleanUp(false);
                     }
                 }
             }
@@ -770,10 +770,20 @@ public class Chunk {
             if (thisChunk.liquidMesh != null){
                 for (Mesh thisMesh : thisChunk.liquidMesh){
                     if (thisMesh != null){
-                        thisMesh.cleanUp(true);
+                        thisMesh.cleanUp(false);
+                    }
+                }
+            }
+
+            if (thisChunk.allFacesMesh != null){
+                for (Mesh thisMesh : thisChunk.allFacesMesh){
+                    if (thisMesh != null){
+                        thisMesh.cleanUp(false);
                     }
                 }
             }
         }
+
+        map.clear();
     }
 }

@@ -101,7 +101,7 @@ public class Crafter {
 
 
     private static void cleanup(){
-        Chunk.cleanUp();
+        Chunk.cleanChunkDataMemory();
         cleanupSoundManager();
         cleanupRenderer();
     }
