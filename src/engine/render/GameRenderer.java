@@ -379,18 +379,8 @@ public class GameRenderer {
         }
 
         if (graphicsMode) {
-            /*
-            glassLikeShaderProgram.bind();
-            glassLikeShaderProgram.setUniform("projectionMatrix", projectionMatrix);
-            glassLikeShaderProgram.setUniform("texture_sampler", 0);
-             */
             glassLikeShaderProgram.unbind();
         } else {
-            /*
-            shaderProgram.bind();
-            shaderProgram.setUniform("projectionMatrix", projectionMatrix);
-            shaderProgram.setUniform("texture_sampler", 0);
-             */
             shaderProgram.unbind();
         }
 
@@ -403,11 +393,7 @@ public class GameRenderer {
             Item thisItem = (Item) thisObject;
             modelViewMatrix = updateModelViewMatrix(new Vector3d(thisItem.pos).add(0,thisItem.hover,0), thisItem.rotation, viewMatrix);
             entityShaderProgram.setLightUniform("light", 15f);
-            if (graphicsMode) {
-                entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            } else {
-                entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            }
+            entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
             thisItem.mesh.render();
         }
 
