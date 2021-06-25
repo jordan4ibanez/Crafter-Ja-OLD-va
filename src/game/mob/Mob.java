@@ -1,5 +1,6 @@
 package game.mob;
 
+import engine.graphics.Mesh;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
@@ -16,11 +17,14 @@ public class Mob {
 
     //todo: ADD MOBS TO MEMORY SWEEPER
     private static final MobDefinition[] mobDefinitions = new MobDefinition[3];
-
     private static final Int2ObjectArrayMap<MobObject> mobs = new Int2ObjectArrayMap<>();
-
+    
     private static int currentID = 0;
     private static int currentMobDefinitionKey = 0;
+
+    public static Mesh[] getMobMesh(byte ID){
+        return mobDefinitions[ID].bodyMeshes;
+    }
 
     public static MobDefinition getMobDefinition(int key){
         return mobDefinitions[key];

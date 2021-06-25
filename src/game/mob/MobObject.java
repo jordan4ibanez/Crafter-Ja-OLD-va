@@ -23,7 +23,6 @@ public class MobObject {
     public float smoothRotation;
     public final Vector3f[] bodyOffsets;
     public final Vector3f[] bodyRotations;
-    public final Mesh[] meshes;
 
     public float animationTimer;
     public float timer;
@@ -52,7 +51,6 @@ public class MobObject {
 
         this.bodyOffsets = getMobDefinition(ID).bodyOffsets.clone();
         this.bodyRotations = getMobDefinition(ID).bodyRotations.clone();
-        this.meshes = getMobDefinition(ID).bodyMeshes.clone();
 
         this.ID = ID;
 

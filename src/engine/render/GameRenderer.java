@@ -42,6 +42,7 @@ import static game.light.Light.getCurrentGlobalLightLevel;
 import static game.mob.Human.getHumanBodyOffsets;
 import static game.mob.Human.getHumanMeshes;
 import static game.mob.Mob.getAllMobs;
+import static game.mob.Mob.getMobMesh;
 import static game.particle.Particle.getAllParticles;
 import static game.player.OtherPlayers.getOtherPlayers;
 import static game.player.Player.*;
@@ -442,7 +443,7 @@ public class GameRenderer {
             }
             int offsetIndex = 0;
 
-            for (Mesh thisMesh : thisMob.meshes) {
+            for (Mesh thisMesh : getMobMesh(thisMob.ID)) {
                 modelViewMatrix = getMobMatrix(new Vector3d(thisMob.pos), thisMob.bodyOffsets[offsetIndex], new Vector3f(0, thisMob.smoothRotation, thisMob.deathRotation), new Vector3f(thisMob.bodyRotations[offsetIndex]), new Vector3d(1f, 1f, 1f), viewMatrix);
                 entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 thisMesh.render();
