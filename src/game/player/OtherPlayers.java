@@ -18,6 +18,11 @@ public class OtherPlayers {
     }
 
 
+    public static void cleanOtherPLayerMemory(){
+        playerUpdates.clear();
+        otherPlayers.clear();
+    }
+
     public static void addNewPlayerUpdateData(PlayerPosObject playerPosObject){
         playerUpdates.add(playerPosObject);
     }
