@@ -3,10 +3,12 @@ package engine.graphics;
 import org.joml.Matrix4d;
 import org.lwjgl.system.MemoryStack;
 
+import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.lwjgl.opengl.GL44.*;
+import static org.lwjgl.system.MemoryUtil.memAllocFloat;
 
 public class ShaderProgram {
     private final int programId;
@@ -37,9 +39,14 @@ public class ShaderProgram {
     public void setUniform(String uniformName, Matrix4d value){
         // dump the matrix into a float buffer
         try(MemoryStack stack = MemoryStack.stackPush()){
-            glUniformMatrix4fv(uniforms.get(uniformName), false,
-                    value.get(stack.mallocFloat(16)));
+            glUniformMatrix4fv(uniforms.get(uniformName), false, value.get(stack.mallocFloat(16)));
         }
+    }
+
+    public void setLightUniform(String uniformName, float value){
+        // dump the byte into the new float buffer
+        glUniform1f( uniforms.get(uniformName), value);
+
     }
 
     public void setUniform(String uniformName, int value) {

@@ -261,7 +261,6 @@ public class Human {
 
         Mesh[] bodyMeshes = new Mesh[6];
         int bodyMeshesIndex = 0;
-
         int textureCounter = 0;
 
         for (float[] thisBlockBox : oneBlockyBoi) {

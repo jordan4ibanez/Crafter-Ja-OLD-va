@@ -63,6 +63,7 @@ public class GameRenderer {
     private static ShaderProgram shaderProgram;
     private static ShaderProgram hudShaderProgram;
     private static ShaderProgram glassLikeShaderProgram;
+    private static ShaderProgram entityShaderProgram;
 
     public static Vector2d getWindowSize(){
         return windowSize;
@@ -135,6 +136,21 @@ public class GameRenderer {
         glassLikeShaderProgram.createUniform("modelViewMatrix");
         //create uniforms for texture sampler
         glassLikeShaderProgram.createUniform("texture_sampler");
+
+        //glassLike shader program
+        entityShaderProgram = new ShaderProgram();
+        entityShaderProgram.createVertexShader(Utils.loadResource("/resources/entity_vertex.vs"));
+        entityShaderProgram.createFragmentShader(Utils.loadResource("/resources/entity_fragment.fs"));
+        entityShaderProgram.link();
+
+        //create uniforms for world and projection matrices
+        entityShaderProgram.createUniform("projectionMatrix");
+        //create uniforms for model view matrix
+        entityShaderProgram.createUniform("modelViewMatrix");
+        //create uniforms for texture sampler
+        entityShaderProgram.createUniform("texture_sampler");
+        //create uniform for light value
+        entityShaderProgram.createUniform("light");
 
 
         //setWindowClearColor(0.f,0.f,0.f,0.f);
@@ -253,6 +269,8 @@ public class GameRenderer {
             shaderProgram.setUniform("texture_sampler", 0);
         }
 
+
+
         //render the sun and moon
         //glDisable(GL_CULL_FACE);
         {
@@ -360,16 +378,49 @@ public class GameRenderer {
             }
         }
 
+        if (graphicsMode) {
+            /*
+            glassLikeShaderProgram.bind();
+            glassLikeShaderProgram.setUniform("projectionMatrix", projectionMatrix);
+            glassLikeShaderProgram.setUniform("texture_sampler", 0);
+             */
+            glassLikeShaderProgram.unbind();
+        } else {
+            /*
+            shaderProgram.bind();
+            shaderProgram.setUniform("projectionMatrix", projectionMatrix);
+            shaderProgram.setUniform("texture_sampler", 0);
+             */
+            shaderProgram.unbind();
+        }
+
+
+        entityShaderProgram.bind();
+        entityShaderProgram.setUniform("projectionMatrix", projectionMatrix);
+        entityShaderProgram.setUniform("texture_sampler", 0);
         //        render each item entity
         for (Object thisObject : getAllItems()){
             Item thisItem = (Item) thisObject;
             modelViewMatrix = updateModelViewMatrix(new Vector3d(thisItem.pos).add(0,thisItem.hover,0), thisItem.rotation, viewMatrix);
+            entityShaderProgram.setLightUniform("light", 15f);
             if (graphicsMode) {
-                glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
             } else {
-                shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
             }
             thisItem.mesh.render();
+        }
+
+        entityShaderProgram.unbind();
+
+        if (graphicsMode) {
+            glassLikeShaderProgram.bind();
+            glassLikeShaderProgram.setUniform("projectionMatrix", projectionMatrix);
+            glassLikeShaderProgram.setUniform("texture_sampler", 0);
+        } else {
+            shaderProgram.bind();
+            shaderProgram.setUniform("projectionMatrix", projectionMatrix);
+            shaderProgram.setUniform("texture_sampler", 0);
         }
 
         //render each TNT entity
