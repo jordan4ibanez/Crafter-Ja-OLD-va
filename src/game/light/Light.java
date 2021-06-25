@@ -6,6 +6,7 @@ import java.util.Deque;
 import static engine.time.Time.getDelta;
 import static engine.Window.setWindowClearColor;
 import static game.chunk.Chunk.*;
+import static game.chunk.ChunkMeshGenerator.setChunkThreadCurrentGlobalLightLevel;
 
 public class Light {
 
@@ -23,6 +24,7 @@ public class Light {
 
     public static void setCurrentLightLevel(byte newLightLevel) {
         currentLightLevel = newLightLevel;
+        setChunkThreadCurrentGlobalLightLevel(currentLightLevel);
         updateChunksWithNewLightLevel();
     }
 
