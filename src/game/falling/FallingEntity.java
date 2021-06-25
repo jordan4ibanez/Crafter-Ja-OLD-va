@@ -34,6 +34,13 @@ public class FallingEntity {
         }
     }
 
+    public static void cleanFallingEntities() {
+        for (FallingEntityObject object : objects.values()) {
+            object.mesh.cleanUp(false);
+        }
+        objects.clear();
+    }
+
     public static Collection<FallingEntityObject> getFallingEntities(){
         return objects.values();
     }

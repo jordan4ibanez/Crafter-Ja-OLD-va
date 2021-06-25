@@ -4,6 +4,7 @@ import static game.chat.Chat.cleanChatMemory;
 import static game.chunk.Chunk.cleanChunkDataMemory;
 import static game.clouds.Cloud.cleanCloudMemory;
 import static game.crafting.Inventory.cleanInventoryMemory;
+import static game.falling.FallingEntity.cleanFallingEntities;
 import static game.item.ItemEntity.cleanItemMemory;
 
 public class MemorySweeper {
@@ -14,5 +15,6 @@ public class MemorySweeper {
         cleanChatMemory();
         cleanCloudMemory();
         cleanInventoryMemory();
+        cleanFallingEntities();
     }
 }
