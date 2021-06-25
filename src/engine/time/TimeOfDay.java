@@ -1,12 +1,9 @@
 package engine.time;
 
 import org.joml.Vector3f;
-import org.joml.Vector3i;
 
-import static engine.Window.setWindowClearColor;
 import static engine.Window.setWindowClearColorGoal;
 import static engine.time.Time.getDelta;
-import static game.clouds.Cloud.rebuildCloudMeshes;
 import static game.light.Light.setCurrentLightLevel;
 
 public class TimeOfDay {
@@ -184,7 +181,6 @@ public class TimeOfDay {
             if (dayStageLight[currentDayStage] != oldStageLight){
                 setCurrentLightLevel(dayStageLight[currentDayStage]);
                 setWindowClearColorGoal(skyColors[currentDayStage].x/255f,skyColors[currentDayStage].y/255f, skyColors[currentDayStage].z/255f, 1f);
-                rebuildCloudMeshes();
             }
             oldStageLight = dayStageLight[currentDayStage];
 
@@ -200,7 +196,6 @@ public class TimeOfDay {
                 setCurrentLightLevel(dayStageLight[currentDayStage]);
             }
             setWindowClearColorGoal(skyColors[currentDayStage].x/255f,skyColors[currentDayStage].y/255f, skyColors[currentDayStage].z/255f, 1f);
-            rebuildCloudMeshes();
 
             oldStageLight = dayStageLight[currentDayStage];
         }

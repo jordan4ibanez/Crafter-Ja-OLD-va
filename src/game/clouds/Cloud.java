@@ -63,19 +63,8 @@ public class Cloud {
 
     }
 
-    private static Mesh cloud2DMesh = buildCloud2DMesh(getCurrentGlobalLightLevel());
-    private static Mesh cloud3DMesh = buildCloud3DMesh(getCurrentGlobalLightLevel());
-
-    public static void rebuildCloudMeshes(){
-        if (cloud2DMesh != null){
-            cloud2DMesh.cleanUp(false);
-        }
-        if (cloud3DMesh != null){
-            cloud3DMesh.cleanUp(false);
-        }
-        cloud2DMesh = buildCloud2DMesh(getCurrentGlobalLightLevel());
-        cloud3DMesh = buildCloud3DMesh(getCurrentGlobalLightLevel());
-    }
+    private static final Mesh cloud2DMesh = buildCloud2DMesh();
+    private static final Mesh cloud3DMesh = buildCloud3DMesh();
 
     public static Mesh getCloud2DMesh(){
         return cloud2DMesh;

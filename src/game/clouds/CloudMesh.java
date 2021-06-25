@@ -2,6 +2,8 @@ package game.clouds;
 
 import engine.graphics.Mesh;
 import engine.graphics.Texture;
+import engine.highPerformanceContainers.HyperFloatArray;
+import engine.highPerformanceContainers.HyperIntArray;
 
 import java.util.LinkedList;
 
@@ -26,16 +28,11 @@ public class CloudMesh {
     private static final byte atlasSizeY = 1;
 
 
-
-    public static Mesh buildCloud3DMesh(float lightValue){
-        final LinkedList<Float> positions = new LinkedList<>();
-        final LinkedList<Float> textureCoord = new LinkedList<>();
-        final LinkedList<Integer> indices = new LinkedList<>();
-        final LinkedList<Float> light = new LinkedList<>();
-
-        final byte maxLight = 15;
-
-        float digestedLight;
+    public static Mesh buildCloud3DMesh(){
+        final HyperFloatArray positions    = new HyperFloatArray();
+        final HyperFloatArray textureCoord = new HyperFloatArray();
+        final HyperIntArray indices        = new HyperIntArray();
+        final HyperFloatArray light        = new HyperFloatArray();
 
         float[] textureWorker;
 
@@ -46,315 +43,111 @@ public class CloudMesh {
         int indicesCount = 0;
 
         //front
-        positions.add(width);
-        positions.add(height);
-        positions.add(width);
+        positions.pack(width, height, width, 0f, height, width, 0f, 0f, width, width, 0f, width);
+        
+        //front
+        light.pack(1);
 
-        positions.add(0f);
-        positions.add(height);
-        positions.add(width);
-
-        positions.add(0f);
-        positions.add(0f);
-        positions.add(width);
-
-        positions.add(width);
-        positions.add(0f);
-        positions.add(width);
 
         //front
-        digestedLight =  convertLight(lightValue / maxLight);
-
-        //front
-        for (int i = 0; i < 12; i++) {
-            light.add(digestedLight);
-        }
-
-        //front
-        indices.add(indicesCount);
-        indices.add(1 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(3 + indicesCount);
+        indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
+                
         indicesCount += 4;
 
         textureWorker = calculateTexture(2, 0);
 
         //front
-        textureCoord.add(textureWorker[1]);
-        textureCoord.add(textureWorker[2]);
-        textureCoord.add(textureWorker[0]);
-        textureCoord.add(textureWorker[2]);
-        textureCoord.add(textureWorker[0]);
-        textureCoord.add(textureWorker[3]);
-        textureCoord.add(textureWorker[1]);
-        textureCoord.add(textureWorker[3]);
+        textureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
 
 
 
         //back
-        positions.add(0f);
-        positions.add(height);
-        positions.add(0f);
-        positions.add(width);
-        positions.add(height);
-        positions.add(0f);
-        positions.add(width);
-        positions.add(0f);
-        positions.add(0f);
-        positions.add(0f);
-        positions.add(0f);
-        positions.add(0f);
+        positions.pack(0f, height, 0f, width, height, 0f, width, 0f, 0f, 0f, 0f, 0f);
 
-        digestedLight = convertLight(lightValue / maxLight);
+        light.pack(1);
+
 
         //back
-        for (int i = 0; i < 12; i++) {
-            light.add(digestedLight);
-        }
-
-        //back
-        indices.add(indicesCount);
-        indices.add(1 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(3 + indicesCount);
+        indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
         indicesCount += 4;
 
         textureWorker = calculateTexture(2, 0);
         //back
-        textureCoord.add(textureWorker[1]);
-        textureCoord.add(textureWorker[2]);
-        textureCoord.add(textureWorker[0]);
-        textureCoord.add(textureWorker[2]);
-        textureCoord.add(textureWorker[0]);
-        textureCoord.add(textureWorker[3]);
-        textureCoord.add(textureWorker[1]);
-        textureCoord.add(textureWorker[3]);
+        textureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
 
 
         //right
-        positions.add(width);
-        positions.add(height);
-        positions.add(0f);
-        positions.add(width);
-        positions.add(height);
-        positions.add(width);
-        positions.add(width);
-        positions.add(0f);
-        positions.add(width);
-        positions.add(width);
-        positions.add(0f);
-        positions.add(0f);
+        positions.pack(width, height, 0f, width, height, width, width, 0f, width, width, 0f, 0f);
 
-
-        digestedLight = convertLight(lightValue / maxLight);
-        //right
-        for (int i = 0; i < 12; i++) {
-            light.add(digestedLight);
-        }
+        light.pack(1);
 
         //right
-        indices.add(indicesCount);
-        indices.add(1 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(3 + indicesCount);
+        indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
+
         indicesCount += 4;
 
         textureWorker = calculateTexture(2, 0);
         //right
-        textureCoord.add(textureWorker[1]);
-        textureCoord.add(textureWorker[2]);
-        textureCoord.add(textureWorker[0]);
-        textureCoord.add(textureWorker[2]);
-        textureCoord.add(textureWorker[0]);
-        textureCoord.add(textureWorker[3]);
-        textureCoord.add(textureWorker[1]);
-        textureCoord.add(textureWorker[3]);
+        textureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
 
 
 
 
         //left
-        positions.add(0f);
-        positions.add(height);
-        positions.add(width);
-        positions.add(0f);
-        positions.add(height);
-        positions.add(0f);
-        positions.add(0f);
-        positions.add(0f);
-        positions.add(0f);
-        positions.add(0f);
-        positions.add(0f);
-        positions.add(width);
-
-
-
-        digestedLight = convertLight(lightValue / maxLight);
-        //left
-        for (int i = 0; i < 12; i++) {
-            light.add(digestedLight);
-        }
+        positions.pack(0f, height, width, 0f, height, 0f, 0f, 0f, 0f, 0f, 0f, width);
 
         //left
-        indices.add(indicesCount);
-        indices.add(1 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(3 + indicesCount);
+        light.pack(1);
+
+        //left
+        indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
         indicesCount += 4;
 
         textureWorker = calculateTexture(2, 0);
         //left
-        textureCoord.add(textureWorker[1]);
-        textureCoord.add(textureWorker[2]);
-        textureCoord.add(textureWorker[0]);
-        textureCoord.add(textureWorker[2]);
-        textureCoord.add(textureWorker[0]);
-        textureCoord.add(textureWorker[3]);
-        textureCoord.add(textureWorker[1]);
-        textureCoord.add(textureWorker[3]);
+        textureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
 
 
         //top
-        positions.add(0f);
-        positions.add(height);
-        positions.add(0f);
-        positions.add(0f);
-        positions.add(height);
-        positions.add(width);
-        positions.add(width);
-        positions.add(height);
-        positions.add(width);
-        positions.add(width);
-        positions.add(height);
-        positions.add(0f);
+        positions.pack(0f, height, 0f, 0f, height, width, width, height, width, width, height, 0f);
 
 
-        digestedLight = convertLight(lightValue / maxLight);
+
+        light.pack(1);
+
 
         //top
-        for (int i = 0; i < 12; i++) {
-            light.add(digestedLight);
-        }
-
-        //top
-        indices.add(indicesCount);
-        indices.add(1 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(3 + indicesCount);
+        indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
         indicesCount += 4;
 
         textureWorker = calculateTexture(1, 0);
         //top
-        textureCoord.add(textureWorker[1]);
-        textureCoord.add(textureWorker[2]);
-        textureCoord.add(textureWorker[0]);
-        textureCoord.add(textureWorker[2]);
-        textureCoord.add(textureWorker[0]);
-        textureCoord.add(textureWorker[3]);
-        textureCoord.add(textureWorker[1]);
-        textureCoord.add(textureWorker[3]);
+        textureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
 
 
 
         //bottom
-        positions.add(0f);
-        positions.add(0f);
-        positions.add(width);
-        positions.add(0f);
-        positions.add(0f);
-        positions.add(0f);
-        positions.add(width);
-        positions.add(0f);
-        positions.add(0f);
-        positions.add(width);
-        positions.add(0f);
-        positions.add(width);
+        positions.pack(0f, 0f, width, 0f, 0f, 0f, width, 0f, 0f, width, 0f, width);
 
+        light.pack(1);
 
-        digestedLight = convertLight(lightValue / maxLight);
-        //bottom
-        for (int i = 0; i < 12; i++) {
-            light.add(digestedLight);
-        }
 
         //bottom
-        indices.add(indicesCount);
-        indices.add(1 + indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(indicesCount);
-        indices.add(2 + indicesCount);
-        indices.add(3 + indicesCount);
+        indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
 
         textureWorker = calculateTexture(0, 0);
         //bottom
-        textureCoord.add(textureWorker[1]);
-        textureCoord.add(textureWorker[2]);
-        textureCoord.add(textureWorker[0]);
-        textureCoord.add(textureWorker[2]);
-        textureCoord.add(textureWorker[0]);
-        textureCoord.add(textureWorker[3]);
-        textureCoord.add(textureWorker[1]);
-        textureCoord.add(textureWorker[3]);
+        textureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
 
-
-        //this is very wasteful
-        int workerCounter = 0;
-
-        //convert all ArrayLists<>() into primitive[]
-        float[] positionsArray = new float[positions.size()];
-        for (Float data : positions) {
-            //auto casted from Float to float
-            positionsArray[workerCounter] = data;
-            workerCounter++;
-        }
-
-        workerCounter = 0;
-
-        float[] lightArray = new float[light.size()];
-        for (Float data : light) {
-            //auto casted from Float to float
-            lightArray[workerCounter] = data;
-            workerCounter++;
-        }
-
-        workerCounter = 0;
-
-        int[] indicesArray = new int[indices.size()];
-        for (Integer data : indices) {
-            //auto casted from Integer to int
-            indicesArray[workerCounter] = data;
-            workerCounter++;
-        }
-
-        workerCounter = 0;
-
-        float[] textureCoordArray = new float[textureCoord.size()];
-        for (Float data : textureCoord) {
-            //auto casted from Float to float
-            textureCoordArray[workerCounter] = data;
-            workerCounter++;
-        }
-
-        return new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, cloudTexture);
+        return new Mesh(positions.values(), light.values(), indices.values(), textureCoord.values(), cloudTexture);
     }
 
-    public static Mesh buildCloud2DMesh(float lightValue) {
+    public static Mesh buildCloud2DMesh() {
         float[] positions = new float[12];
         float[] textureCoord = new float[8];
         int[] indices = new int[6];
         float[] light = new float[12];
 
-        final byte maxLight = 15;
 
         float width = getCloudScale();
 
@@ -374,9 +167,8 @@ public class CloudMesh {
         positions[10] = (0);
         positions[11] = (0);
 
-        float digestedLight = convertLight(lightValue / maxLight);
         for (int i = 0; i < 12; i++) {
-            light[i] = digestedLight;
+            light[i] = 1;
         }
 
         indices[0] = (0);
@@ -407,9 +199,5 @@ public class CloudMesh {
         texturePoints[2] = (float)y/(float)atlasSizeY;     //min y (-)
         texturePoints[3] = (float)(y+1)/(float)atlasSizeY; //max y (+)
         return texturePoints;
-    }
-
-    private static float convertLight(float lightByte){
-        return (float) Math.pow(Math.pow(lightByte, 1.5), 1.5);
     }
 }
