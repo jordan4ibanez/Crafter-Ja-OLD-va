@@ -14,6 +14,13 @@ uniform float light;
 void main()
 {
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    exColor = inColor * pow(pow((light / 15.0),1.5),1.5) ;
+
+    //turn the entity red if over 15
+    if ( light > 15.0 ){
+        float newLight = light - 15;
+        exColor = inColor * vec3(2,0.5,0.5) * pow(pow((newLight / 15.0),1.5),1.5);
+    } else {
+        exColor = inColor * pow(pow((light / 15.0),1.5),1.5);
+    }
     outTexCoord = texCoord;
 }
