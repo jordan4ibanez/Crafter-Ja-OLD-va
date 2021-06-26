@@ -8,6 +8,11 @@ public class FancyMath {
     private static final int[] dirArray = new int[]{-1,1};
 
 
+
+    public static byte randomByte(byte value){
+        return (byte)random.nextInt(value);
+    }
+
     //this variable does an int from min to max, but, it can also give you -max to -min
     //example: 5 to 10 can return -10 through -5
     //this is specifically designed for the mob spawning algorithm

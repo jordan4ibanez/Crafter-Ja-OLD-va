@@ -3,6 +3,7 @@ package game.mob;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
+import static engine.FancyMath.randomByte;
 import static engine.FancyMath.randomIntFromMinToMaxNegativePositive;
 import static engine.time.Time.getDelta;
 import static game.chunk.Chunk.getMobSpawnYPos;
@@ -13,7 +14,7 @@ public class MobSpawning {
 
     private static double spawnTimer = 0;
 
-    private static final byte spawnGoal = 1; //every 10 seconds
+    private static final byte spawnGoal = 100; //every 10 seconds
 
     public static void runSpawningAlgorithm(){
         spawnTimer += getDelta();
@@ -34,7 +35,7 @@ public class MobSpawning {
         int yPos = getMobSpawnYPos(x,z);
 
         if (yPos >= 0){
-            spawnMob((byte) 1, new Vector3d(x,yPos,z), new Vector3f(0));
+            spawnMob(randomByte((byte) 2), new Vector3d(x,yPos,z), new Vector3f(0));
         }
     }
 
