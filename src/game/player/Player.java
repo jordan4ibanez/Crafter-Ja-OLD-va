@@ -6,15 +6,14 @@ import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
-import static engine.time.Time.getDelta;
 import static engine.disk.Disk.loadPlayerPos;
 import static engine.graphics.Camera.*;
-import static engine.gui.GUI.*;
 import static engine.gui.GUILogic.calculateHealthBarElements;
 import static engine.gui.GUILogic.makeHeartsJiggle;
 import static engine.network.Networking.getIfMultiplayer;
 import static engine.network.Networking.sendInventorySlot;
 import static engine.sound.SoundAPI.playSound;
+import static engine.time.Time.getDelta;
 import static game.blocks.BlockDefinition.getBlockDefinition;
 import static game.blocks.BlockDefinition.isBlockLiquid;
 import static game.chunk.Chunk.*;
@@ -162,6 +161,11 @@ public class Player {
             }
         }
         worldSelectionPos = thePos;
+    }
+
+
+    public static byte getPlayerLightLevel(){
+        return lightLevel;
     }
 
     public static void setPlayerWorldSelectionPos(){
@@ -1026,16 +1030,9 @@ public class Player {
         Vector3i newFlooredPos = new Vector3i((int)Math.floor(camPos.x), (int)Math.floor(camPos.y), (int)Math.floor(camPos.z));
 
         //System.out.println(lightCheckTimer);
-        if (lightCheckTimer >= 0.5f || !newFlooredPos.equals(oldPos)){
+        if (lightCheckTimer >= 0.25f || !newFlooredPos.equals(oldPos)){
             lightCheckTimer = 0f;
-
-            byte newLightLevel = getLight(newFlooredPos.x, newFlooredPos.y, newFlooredPos.z);
-
-            if (newLightLevel != lightLevel){
-                lightLevel = newLightLevel;
-                rebuildWieldHandMesh(lightLevel);
-
-            }
+            lightLevel = getLight(newFlooredPos.x, newFlooredPos.y, newFlooredPos.z);
         }
 
         //do the same for the literal wield inventory

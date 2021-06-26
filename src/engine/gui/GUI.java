@@ -9,9 +9,8 @@ import org.joml.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
 
-import static engine.FancyMath.convertLight;
-import static engine.time.Timer.getFpsCounted;
 import static engine.gui.TextHandling.createTextWithShadow;
+import static engine.time.Timer.getFpsCounted;
 import static game.Crafter.getVersionName;
 
 public class GUI {
@@ -82,7 +81,7 @@ public class GUI {
         versionInfoText = createTextWithShadow(getVersionName(), 1,1,1);
 
         //3D mesh creations
-        createWieldHandMesh((byte)15);
+        buildHandMesh();
         buildMiningMesh();
         createWorldSelectionMesh();
         createPlayerMesh(); //todo REBUILD THIS JUNK, THIS IS HORRIBLE
@@ -621,22 +620,11 @@ public class GUI {
         return texturePoints;
     }
 
-    //public to interface with rest of it
-    public static void rebuildWieldHandMesh(byte lightLevel){
-        createWieldHandMesh(lightLevel);
-    }
+    private static void buildHandMesh(){
 
-    private static void createWieldHandMesh(byte lightLevel){
-
-        if (wieldHandMesh != null){
-            wieldHandMesh.cleanUp(false);
-        }
-
-        //float floatedLight = convertLight((float)lightLevel/15f);
-        System.out.println("FIX THE HAND MESH");
         float floatedLight = 1f;
 
-        float[][] oneBlockyBoi = new float[][]{
+        float[][] handArrayArray = new float[][]{
                 //right arm
                 {   -0.45f,
                         -2.25f,
@@ -672,7 +660,7 @@ public class GUI {
 
         int indicesCount = 0;
         int textureCounter = 0;
-        for (float[] thisBlockBox : oneBlockyBoi) {
+        for (float[] thisBlockBox : handArrayArray) {
             // 0, 1, 2, 3, 4, 5
             //-x,-y,-z, x, y, z
             // 0, 0, 0, 1, 1, 1

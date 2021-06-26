@@ -617,36 +617,38 @@ public class GameRenderer {
         //finished with standard shader
         shaderProgram.unbind();
 
-        glassLikeShaderProgram.bind();
-
-        if (graphicsMode) {
-            glDisable(GL_BLEND);
-        }
+        entityShaderProgram.bind();
 
         //BEGIN HUD (3d parts)
 
         glClear(GL_DEPTH_BUFFER_BIT);
 
         projectionMatrix = getProjectionMatrix(FOV, getWindowWidth(), getWindowHeight(), Z_NEAR, 100);
-        shaderProgram.setUniform("projectionMatrix", projectionMatrix);
+
 
         //draw wield hand or item
         if (getCameraPerspective() == 0) {
+
+            entityShaderProgram.setUniform("projectionMatrix", projectionMatrix);
+            entityShaderProgram.setLightUniform("light", getPlayerLightLevel());
+
             //wield hand
             if (getItemInInventorySlot(getPlayerInventorySelection(),0) == null){
                 modelViewMatrix = getGenericMatrixWithPosRotationScale(getWieldHandAnimationPos(), getWieldHandAnimationRot(), new Vector3d(5d, 5d, 5d), new Matrix4d());
-                hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 getWieldHandMesh().render();
             //block/item
             } else if (getWieldInventory() != null){
                 modelViewMatrix = getGenericMatrixWithPosRotationScale(getWieldHandAnimationPos(), getWieldHandAnimationRot(), new Vector3d(20d, 20d, 20d), new Matrix4d());
-                hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 getItemMesh(getWieldInventory().name).render();
             }
+            
+            entityShaderProgram.unbind();
         }
 
         //finished with 3d
-        glassLikeShaderProgram.unbind();
+
 
         glEnable(GL_BLEND);
 
