@@ -43,7 +43,7 @@ public class FancyMath {
     }
 
 
-    public static float convertLight(float lightByte){
-        return (float) Math.pow(Math.pow(lightByte, 1.5), 1.5);
+    public static float convertLight(byte lightValue){
+        return (float) Math.pow(1.25, lightValue)/28.42171f;
     }
 }

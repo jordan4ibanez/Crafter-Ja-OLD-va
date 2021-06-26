@@ -44,6 +44,11 @@ public class ChunkMeshGenerator implements Runnable{
     }
 
     public void run() {
+
+        for (byte i = 0; i < 16; i++) {
+            System.out.println(convertLight(i));
+        }
+
         //run until game is closed - should only be run in game
         while (!windowShouldClose()) {
             pollQueue();
@@ -242,13 +247,14 @@ public class ChunkMeshGenerator implements Runnable{
 
             //front
             float lightValue;
+            byte realLight;
             if (z + 1 > 15) {
-                lightValue = getNeighborLight(chunkLightLevel, chunkNeighborZPlus, x, y, 0);
+                realLight = getNeighborLight(chunkLightLevel, chunkNeighborZPlus, x, y, 0);
             } else {
-                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z + 1)]);
+                realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z + 1)]);
             }
 
-            lightValue = convertLight(lightValue / (float) 15);
+            lightValue = convertLight(realLight);
 
             //front
             light.pack(lightValue);
@@ -270,13 +276,13 @@ public class ChunkMeshGenerator implements Runnable{
 
             //back
             if (z - 1 < 0) {
-                lightValue = getNeighborLight(chunkLightLevel, chunkNeighborZMinus, x, y, 15);
+                realLight = getNeighborLight(chunkLightLevel, chunkNeighborZMinus, x, y, 15);
             } else {
-                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z - 1)]);
+                realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z - 1)]);
             }
 
 
-            lightValue = convertLight(lightValue / (float) 15);
+            lightValue = convertLight(realLight);
             //back
             light.pack(lightValue);
 
@@ -296,11 +302,11 @@ public class ChunkMeshGenerator implements Runnable{
 
             //right
             if (x + 1 > 15) {
-                lightValue = getNeighborLight(chunkLightLevel, chunkNeighborXPlus, 0, y, z);
+                realLight = getNeighborLight(chunkLightLevel, chunkNeighborXPlus, 0, y, z);
             } else {
-                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x + 1, y, z)]);
+                realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x + 1, y, z)]);
             }
-            lightValue = convertLight(lightValue / (float) 15);
+            lightValue = convertLight(realLight);
 
             //right
             light.pack(lightValue);
@@ -322,11 +328,11 @@ public class ChunkMeshGenerator implements Runnable{
 
             //left
             if (x - 1 < 0) {
-                lightValue = getNeighborLight(chunkLightLevel, chunkNeighborXMinus, 15, y, z);
+                realLight = getNeighborLight(chunkLightLevel, chunkNeighborXMinus, 15, y, z);
             } else {
-                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x - 1, y, z)]);
+                realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x - 1, y, z)]);
             }
-            lightValue = convertLight(lightValue / (float) 15);
+            lightValue = convertLight(realLight);
 
             //left
             light.pack(lightValue);
@@ -346,11 +352,11 @@ public class ChunkMeshGenerator implements Runnable{
 
             //top
             if (y + 1 < 128) {
-                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y + 1, z)]);
+                realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y + 1, z)]);
             } else {
-                lightValue = (float) 15;
+                realLight = chunkLightLevel;
             }
-            lightValue = convertLight(lightValue / (float) 15);
+            lightValue = convertLight(realLight);
 
             //top
             light.pack(lightValue);
@@ -371,11 +377,11 @@ public class ChunkMeshGenerator implements Runnable{
 
             //bottom
             if (y - 1 > 0) {
-                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y - 1, z)]);
+                realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y - 1, z)]);
             } else {
-                lightValue = 0;
+                realLight = 0;
             }
-            lightValue = convertLight(lightValue / (float) 15);
+            lightValue = convertLight(realLight);
 
             //bottom
             light.pack(lightValue);
@@ -405,6 +411,7 @@ public class ChunkMeshGenerator implements Runnable{
         byte neighborDrawtype = getBlockDrawType(neighborBlock);
 
         float lightValue;
+        byte realLight;
         float[] textureWorker;
         if ((neighborDrawtype == 0 || neighborDrawtype > 1) && neighborDrawtype != 8) {
             //front
@@ -412,12 +419,12 @@ public class ChunkMeshGenerator implements Runnable{
 
             //front
             if (z + 1 > 15) {
-                lightValue = getNeighborLight(chunkLightLevel, chunkNeighborZPlus, x, y, 0);
+                realLight = getNeighborLight(chunkLightLevel, chunkNeighborZPlus, x, y, 0);
             } else {
-                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z + 1)]);
+                realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z + 1)]);
             }
 
-            lightValue = convertLight(lightValue / (float) 15);
+            lightValue = convertLight(realLight);
 
             //front
             liquidLight.pack(lightValue);
@@ -448,12 +455,12 @@ public class ChunkMeshGenerator implements Runnable{
 
             //back
             if (z - 1 < 0) {
-                lightValue = getNeighborLight(chunkLightLevel, chunkNeighborZMinus, x, y, 15);
+                realLight = getNeighborLight(chunkLightLevel, chunkNeighborZMinus, x, y, 15);
             } else {
-                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z - 1)]);
+                realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z - 1)]);
             }
 
-            lightValue = convertLight(lightValue / (float) 15);
+            lightValue = convertLight(realLight);
 
             //back
             liquidLight.pack(lightValue);
@@ -482,12 +489,12 @@ public class ChunkMeshGenerator implements Runnable{
             //right
 
             if (x + 1 > 15) {
-                lightValue = getNeighborLight(chunkLightLevel, chunkNeighborXPlus, 0, y, z);
+                realLight = getNeighborLight(chunkLightLevel, chunkNeighborXPlus, 0, y, z);
             } else {
-                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x + 1, y, z)]);
+                realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x + 1, y, z)]);
             }
 
-            lightValue = convertLight(lightValue / (float) 15);
+            lightValue = convertLight(realLight);
 
             //right
             liquidLight.pack(lightValue);
@@ -516,12 +523,12 @@ public class ChunkMeshGenerator implements Runnable{
             //left
 
             if (x - 1 < 0) {
-                lightValue = getNeighborLight(chunkLightLevel, chunkNeighborXMinus, 15, y, z);
+                realLight = getNeighborLight(chunkLightLevel, chunkNeighborXMinus, 15, y, z);
             } else {
-                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x - 1, y, z)]);
+                realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x - 1, y, z)]);
             }
 
-            lightValue = convertLight(lightValue / (float) 15);
+            lightValue = convertLight(realLight);
             //left
 
             liquidLight.pack(lightValue);
@@ -550,12 +557,12 @@ public class ChunkMeshGenerator implements Runnable{
 
             //y doesn't need a check since it has no neighbors
             if (y + 1 < 128) {
-                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y + 1, z)]);
+                realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y + 1, z)]);
             } else {
-                lightValue = (float) 15;
+                realLight = chunkLightLevel;
             }
 
-            lightValue = convertLight(lightValue / (float) 15);
+            lightValue = convertLight(realLight);
 
             //top
             liquidLight.pack(lightValue);
@@ -584,12 +591,12 @@ public class ChunkMeshGenerator implements Runnable{
             //bottom
             //doesn't need a neighbor chunk, chunks are 2D
             if (y - 1 > 0) {
-                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y - 1, z)]);
+                realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y - 1, z)]);
             } else {
-                lightValue = 0;
+                realLight = 0;
             }
 
-            lightValue = convertLight(lightValue / (float) 15);
+            lightValue = convertLight(realLight);
             //bottom
 
             liquidLight.pack(lightValue);
@@ -618,6 +625,7 @@ public class ChunkMeshGenerator implements Runnable{
         }
 
         float lightValue;
+        byte realLight;
         float[] textureWorker;
         if (neighborBlock >= 0 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
             //front
@@ -626,12 +634,12 @@ public class ChunkMeshGenerator implements Runnable{
 
             //front
             if (z + 1 > 15) {
-                lightValue = getNeighborLight(chunkLightLevel, chunkNeighborZPlus, x, y, 0);
+                realLight = getNeighborLight(chunkLightLevel, chunkNeighborZPlus, x, y, 0);
             } else {
-                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z + 1)]);
+                realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z + 1)]);
             }
 
-            lightValue = convertLight(lightValue / (float) 15);
+            lightValue = convertLight(realLight);
 
             //front
             light.pack(lightValue);
@@ -659,12 +667,12 @@ public class ChunkMeshGenerator implements Runnable{
 
             //back
             if (z - 1 < 0) {
-                lightValue = getNeighborLight(chunkLightLevel, chunkNeighborZMinus, x, y, 15);
+                realLight = getNeighborLight(chunkLightLevel, chunkNeighborZMinus, x, y, 15);
             } else {
-                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z - 1)]);
+                realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z - 1)]);
             }
 
-            lightValue = convertLight(lightValue / (float) 15);
+            lightValue = convertLight(realLight);
             //back
             light.pack(lightValue);
 
@@ -690,12 +698,12 @@ public class ChunkMeshGenerator implements Runnable{
 
             //right
             if (x + 1 > 15) {
-                lightValue = getNeighborLight(chunkLightLevel, chunkNeighborXPlus, 0, y, z);
+                realLight = getNeighborLight(chunkLightLevel, chunkNeighborXPlus, 0, y, z);
             } else {
-                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x + 1, y, z)]);
+                realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x + 1, y, z)]);
             }
 
-            lightValue = convertLight(lightValue / (float) 15);
+            lightValue = convertLight(realLight);
             //right
             light.pack(lightValue);
 
@@ -721,12 +729,12 @@ public class ChunkMeshGenerator implements Runnable{
 
             //left
             if (x - 1 < 0) {
-                lightValue = getNeighborLight(chunkLightLevel, chunkNeighborXMinus, 15, y, z);
+                realLight = getNeighborLight(chunkLightLevel, chunkNeighborXMinus, 15, y, z);
             } else {
-                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x - 1, y, z)]);
+                realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x - 1, y, z)]);
             }
 
-            lightValue = convertLight(lightValue / (float) 15);
+            lightValue = convertLight(realLight);
             //left
             light.pack(lightValue);
 
@@ -750,12 +758,12 @@ public class ChunkMeshGenerator implements Runnable{
 
             //top
             if (y + 1 < 128) {
-                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y + 1, z)]);
+                realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y + 1, z)]);
             } else {
-                lightValue = (float) 15;
+                realLight = chunkLightLevel;
             }
 
-            lightValue = convertLight(lightValue / (float) 15);
+            lightValue = convertLight(realLight);
 
             //top
             light.pack(lightValue);
@@ -780,12 +788,12 @@ public class ChunkMeshGenerator implements Runnable{
 
             //bottom
             if (y - 1 > 0) {
-                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y - 1, z)]);
+                realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y - 1, z)]);
             } else {
-                lightValue = 0;
+                realLight = 0;
             }
 
-            lightValue = convertLight(lightValue / (float) 15);
+            lightValue = convertLight(realLight);
             //bottom
             light.pack(lightValue);
 
@@ -1079,13 +1087,14 @@ public class ChunkMeshGenerator implements Runnable{
 
         //front
         float lightValue;
+        byte realLight;
         if (z + 1 > 15) {
-            lightValue = getNeighborLight(chunkLightLevel, chunkNeighborZPlus, x, y, 0);
+            realLight = getNeighborLight(chunkLightLevel, chunkNeighborZPlus, x, y, 0);
         } else {
-            lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z + 1)]);
+            realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z + 1)]);
         }
 
-        lightValue = convertLight(lightValue / (float) 15);
+        lightValue = convertLight(realLight);
 
         //front
         light.pack(lightValue);
@@ -1110,12 +1119,12 @@ public class ChunkMeshGenerator implements Runnable{
         //back
 
         if (z - 1 < 0) {
-            lightValue = getNeighborLight(chunkLightLevel, chunkNeighborZMinus, x, y, 15);
+            realLight = getNeighborLight(chunkLightLevel, chunkNeighborZMinus, x, y, 15);
         } else {
-            lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z - 1)]);
+            realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z - 1)]);
         }
 
-        lightValue = convertLight(lightValue / (float) 15);
+        lightValue = convertLight(realLight);
 
         //back
         light.pack(lightValue);
@@ -1138,12 +1147,12 @@ public class ChunkMeshGenerator implements Runnable{
         //right
 
         if (x + 1 > 15) {
-            lightValue = getNeighborLight(chunkLightLevel, chunkNeighborXPlus, 0, y, z);
+            realLight = getNeighborLight(chunkLightLevel, chunkNeighborXPlus, 0, y, z);
         } else {
-            lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x + 1, y, z)]);
+            realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x + 1, y, z)]);
         }
 
-        lightValue = convertLight(lightValue / (float) 15);
+        lightValue = convertLight(realLight);
 
         //right
         light.pack(lightValue);
@@ -1165,12 +1174,12 @@ public class ChunkMeshGenerator implements Runnable{
 
         //left
         if (x - 1 < 0) {
-            lightValue = getNeighborLight(chunkLightLevel, chunkNeighborXMinus, 15, y, z);
+            realLight = getNeighborLight(chunkLightLevel, chunkNeighborXMinus, 15, y, z);
         } else {
-            lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x - 1, y, z)]);
+            realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x - 1, y, z)]);
         }
 
-        lightValue = convertLight(lightValue / (float) 15);
+        lightValue = convertLight(realLight);
 
         //left
         light.pack(lightValue);
@@ -1190,12 +1199,12 @@ public class ChunkMeshGenerator implements Runnable{
 
         //top
         if (y + 1 < 128) {
-            lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y + 1, z)]);
+            realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y + 1, z)]);
         } else {
-            lightValue = (float) 15;
+            realLight = chunkLightLevel;
         }
 
-        lightValue = convertLight(lightValue / (float) 15);
+        lightValue = convertLight(realLight);
 
         //top
         light.pack(lightValue);
@@ -1215,12 +1224,12 @@ public class ChunkMeshGenerator implements Runnable{
 
         //bottom
         if (y - 1 > 0) {
-            lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y - 1, z)]);
+            realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y - 1, z)]);
         } else {
-            lightValue = 0;
+            realLight = 0;
         }
 
-        lightValue = convertLight(lightValue / (float) 15);
+        lightValue = convertLight(realLight);
 
         //bottom
         light.pack(lightValue);
@@ -1246,13 +1255,16 @@ public class ChunkMeshGenerator implements Runnable{
 
         //front
         float lightValue;
+
+        byte realLight;
+
         if (z + 1 > 15) {
-            lightValue = getNeighborLight(chunkLightLevel, chunkNeighborZPlus, x, y, 0);
+            realLight = getNeighborLight(chunkLightLevel, chunkNeighborZPlus, x, y, 0);
         } else {
-            lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z + 1)]);
+            realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z + 1)]);
         }
 
-        lightValue = convertLight(lightValue / (float) 15);
+        lightValue = convertLight(realLight);
 
         //front
         allFacesLight.pack(lightValue);
@@ -1274,12 +1286,12 @@ public class ChunkMeshGenerator implements Runnable{
         //back
 
         if (z - 1 < 0) {
-            lightValue = getNeighborLight(chunkLightLevel, chunkNeighborZMinus, x, y, 15);
+            realLight = getNeighborLight(chunkLightLevel, chunkNeighborZMinus, x, y, 15);
         } else {
-            lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z - 1)]);
+            realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z - 1)]);
         }
 
-        lightValue = convertLight(lightValue / (float) 15);
+        lightValue = convertLight(realLight);
         //back
 
         allFacesLight.pack(lightValue);
@@ -1299,12 +1311,12 @@ public class ChunkMeshGenerator implements Runnable{
         //right
 
         if (x + 1 > 15) {
-            lightValue = getNeighborLight(chunkLightLevel, chunkNeighborXPlus, 0, y, z);
+            realLight = getNeighborLight(chunkLightLevel, chunkNeighborXPlus, 0, y, z);
         } else {
-            lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x + 1, y, z)]);
+            realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x + 1, y, z)]);
         }
 
-        lightValue = convertLight(lightValue / (float) 15);
+        lightValue = convertLight(realLight);
 
         //right
         allFacesLight.pack(lightValue);
@@ -1326,12 +1338,12 @@ public class ChunkMeshGenerator implements Runnable{
         //left
 
         if (x - 1 < 0) {
-            lightValue = getNeighborLight(chunkLightLevel, chunkNeighborXMinus, 15, y, z);
+            realLight = getNeighborLight(chunkLightLevel, chunkNeighborXMinus, 15, y, z);
         } else {
-            lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x - 1, y, z)]);
+            realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x - 1, y, z)]);
         }
 
-        lightValue = convertLight(lightValue / (float) 15);
+        lightValue = convertLight(realLight);
 
         //left
         allFacesLight.pack(lightValue);
@@ -1352,12 +1364,12 @@ public class ChunkMeshGenerator implements Runnable{
         //top
 
         if (y + 1 < 128) {
-            lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y + 1, z)]);
+            realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y + 1, z)]);
         } else {
-            lightValue = (float) 15;
+            realLight = chunkLightLevel;
         }
 
-        lightValue = convertLight(lightValue / (float) 15);
+        lightValue = convertLight(realLight);
 
         //top
         allFacesLight.pack(lightValue);
@@ -1380,12 +1392,12 @@ public class ChunkMeshGenerator implements Runnable{
             //bottom
 
             if (y - 1 > 0) {
-                lightValue = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y - 1, z)]);
+                realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y - 1, z)]);
             } else {
-                lightValue = 0;
+                realLight = 0;
             }
 
-            lightValue = convertLight(lightValue / (float) 15);
+            lightValue = convertLight(realLight);
 
             //bottom
             allFacesLight.pack(lightValue);
@@ -1456,9 +1468,8 @@ public class ChunkMeshGenerator implements Runnable{
 
 
     //this is an internal duplicate specific to this thread
-
-    private static float convertLight(float lightByte){
-        return (float) Math.pow(Math.pow(lightByte, 1.5), 1.5);
+    private static float convertLight(byte lightValue){
+        return (float) Math.pow(1.25, lightValue)/28.42171f;
     }
 
     private static int posToIndex( int x, int y, int z ) {

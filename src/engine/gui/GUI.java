@@ -632,7 +632,9 @@ public class GUI {
             wieldHandMesh.cleanUp(false);
         }
 
-        float floatedLight = convertLight((float)lightLevel/15f);
+        //float floatedLight = convertLight((float)lightLevel/15f);
+        System.out.println("FIX THE HAND MESH");
+        float floatedLight = 1f;
 
         float[][] oneBlockyBoi = new float[][]{
                 //right arm
