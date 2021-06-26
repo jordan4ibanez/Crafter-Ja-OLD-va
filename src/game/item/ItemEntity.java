@@ -113,7 +113,7 @@ public class ItemEntity {
 
             //collect items after 3 seconds
             if (thisItem.timer > 3f){
-                if (getDistance(thisItem.pos, getPlayerPosWithCollectionHeight()) < 3f){
+                if (thisItem.pos.distance(getPlayerPosWithCollectionHeight()) < 3f){
                     if (!thisItem.collecting){
                         if (addItemToInventory(thisItem.name)) {
                             playSound("pickup");
@@ -135,7 +135,7 @@ public class ItemEntity {
                     }
                 }
 
-                if (getDistance(thisItem.pos, getPlayerPosWithCollectionHeight()) < 0.2f || thisItem.deletionOkay){
+                if (thisItem.pos.distance(getPlayerPosWithCollectionHeight()) < 0.2f || thisItem.deletionOkay){
                     deletionQueue.add(thisItem.ID);
                 }
             }
@@ -191,7 +191,7 @@ public class ItemEntity {
             }
 
             //client side deletion if too far
-            if (getDistance(getPlayerPos(), thisItem.pos) > 15f){
+            if (thisItem.pos.distance(getPlayerPos()) > 15f){
                 deletionQueue.add(thisItem.ID);
             }
 
