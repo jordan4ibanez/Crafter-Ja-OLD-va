@@ -34,10 +34,6 @@ public class FancyMath {
         return randomNumber(x) * randomDirFloat();
     }
 
-    public static double getDistance(Vector3d pos1, Vector3d pos2){
-        return Math.hypot((pos1.x - pos2.x), Math.hypot((pos1.y - pos2.y), (pos1.z - pos2.z)));
-    }
-
     public static double getDistance(double x1, double y1, double z1, double x2, double y2, double z2){
         return Math.hypot((x1 - x2), Math.hypot((y1 - y2),(z1 - z2)));
     }
