@@ -643,7 +643,7 @@ public class GameRenderer {
                 entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 getItemMesh(getWieldInventory().name).render();
             }
-            
+
             entityShaderProgram.unbind();
         }
 
