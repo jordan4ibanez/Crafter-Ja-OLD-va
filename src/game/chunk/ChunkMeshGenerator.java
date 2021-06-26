@@ -44,11 +44,6 @@ public class ChunkMeshGenerator implements Runnable{
     }
 
     public void run() {
-
-        for (byte i = 0; i < 16; i++) {
-            System.out.println(convertLight(i));
-        }
-
         //run until game is closed - should only be run in game
         while (!windowShouldClose()) {
             pollQueue();
