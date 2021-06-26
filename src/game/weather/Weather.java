@@ -17,7 +17,7 @@ public class Weather {
 
     public static void rainDropsOnTick(){
         for (RainDropEntity thisParticle : rainDrops.values()){
-            boolean onGround = applyParticleInertia(thisParticle.pos, thisParticle.inertia, true,true,true);
+            boolean onGround = applyParticleInertia(thisParticle.pos, thisParticle.inertia, true,true);
             thisParticle.timer += 0.01f;
             if (thisParticle.timer > 10f || onGround){
                 deletionQueue.add(thisParticle.key);
