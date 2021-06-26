@@ -20,9 +20,9 @@ public class Collision {
         double delta = getDelta();
 
         double adjustedDelta;
-        
-        //the precision goal for delta is 0.001f, this adjusts it to be so
-        //the side effect, is the lower your FPS, the more it has to loop
+
+        //the precision goal for delta is 0.01f, this adjusts it to be so
+        //the side effect, is the lower your FPS, the more it has to loop - but this has been adjusted to not be so extreme
         int loops = 1;
 
         if (delta >  0.01f){
