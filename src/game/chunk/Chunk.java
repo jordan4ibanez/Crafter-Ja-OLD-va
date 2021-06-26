@@ -262,6 +262,7 @@ public class Chunk {
         return thisChunk.heightMap[blockX][blockZ] < y + 1;
     }
 
+    //overloaded block getter
     public static byte getBlock(int x,int y,int z){
         if (y > 127 || y < 0){
             return -1;
@@ -279,7 +280,26 @@ public class Chunk {
         }
         return thisChunk.block[posToIndex(blockX, y, blockZ)];
     }
+    //overloaded block getter
+    public static byte getBlock(Vector3i pos){
+        if (pos.y > 127 || pos.y < 0){
+            return -1;
+        }
+        int chunkX = (int)Math.floor(pos.x/16d);
+        int chunkZ = (int)Math.floor(pos.z/16d);
+        int blockX = (int)(pos.x - (16d*chunkX));
+        int blockZ = (int)(pos.z - (16d*chunkZ));
+        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
+        if (thisChunk == null){
+            return -1;
+        }
+        if (thisChunk.block == null){
+            return -1;
+        }
+        return thisChunk.block[posToIndex(blockX, pos.y, blockZ)];
+    }
 
+    //overloaded getter for rotation
     public static byte getBlockRotation(int x, int y, int z){
         if (y > 127 || y < 0){
             return -1;
@@ -296,6 +316,24 @@ public class Chunk {
             return 0;
         }
         return thisChunk.rotation[posToIndex(blockX, y, blockZ)];
+    }
+    //overloaded getter for rotation
+    public static byte getBlockRotation(Vector3i pos){
+        if (pos.y > 127 || pos.y < 0){
+            return -1;
+        }
+        int chunkX = (int)Math.floor(pos.x/16d);
+        int chunkZ = (int)Math.floor(pos.z/16d);
+        int blockX = (int)(pos.x - (16d*chunkX));
+        int blockZ = (int)(pos.z - (16d*chunkZ));
+        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
+        if (thisChunk == null){
+            return 0;
+        }
+        if (thisChunk.block == null){
+            return 0;
+        }
+        return thisChunk.rotation[posToIndex(blockX, pos.y, blockZ)];
     }
 
     public static void setBlock(int x,int y,int z, byte newBlock, byte rot){
