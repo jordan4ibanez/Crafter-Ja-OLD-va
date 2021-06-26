@@ -13,6 +13,7 @@ import static engine.sound.SoundAPI.playSound;
 import static engine.time.Time.getDelta;
 import static game.chunk.Chunk.getLight;
 import static game.collision.MobCollision.mobSoftCollisionDetect;
+import static game.collision.MobCollision.mobSoftPlayerCollisionDetect;
 import static game.mob.Human.registerHumanMob;
 import static game.mob.Pig.registerPigMob;
 
@@ -77,6 +78,7 @@ public class Mob {
 
             //only collision detect if alive
             if (thisMob.health > 0) {
+                mobSoftPlayerCollisionDetect(thisMob);
                 mobSoftCollisionDetect(thisMob);
             }
 

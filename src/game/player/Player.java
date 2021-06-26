@@ -106,6 +106,10 @@ public class Player {
         leafMiningLevel = newLeafMiningLevel;
     }
 
+    public static void addPlayerInertia(float x, float y, float z){
+        inertia.add(x,y,z);
+    }
+
     public static Vector3f[] getPlayerBodyRotations(){
         return bodyRotations;
     }
