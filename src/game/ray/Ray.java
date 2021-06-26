@@ -54,7 +54,7 @@ public class Ray {
                     if (thisMob == null){
                         continue;
                     }
-                    if (thisMob.pos.distance(realNewPos) <= 4.5){
+                    if (thisMob.pos.distance(realNewPos) <= 4.5 && thisMob.health > 0){
                         setPointAABB(thisMob.pos.x, thisMob.pos.y, thisMob.pos.z, thisMob.width,thisMob.height);
                         if(pointIsWithin(realNewPos.x, realNewPos.y, realNewPos.z)){
                             foundMob = thisMob;
