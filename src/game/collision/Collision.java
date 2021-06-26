@@ -568,7 +568,17 @@ public class Collision {
         return 0;
     }
 
-    public static boolean wouldCollidePlacing(){
+    //precise collision prediction when placing
+    public static boolean wouldCollidePlacing(Vector3d pos, float width, float height, Vector3i blockPos, byte blockID, byte rotation){
+        AABBd block;
+        AABBd entity = new AABBd(pos.x - width, pos.y, pos.z - width, pos.x + width, pos.y + height, pos.z + width);
+        for (float[] blockBox : getBlockShape(blockID, rotation)) {
+            block = new AABBd(blockBox[0] + blockPos.x, blockBox[1] + blockPos.y, blockBox[2] + blockPos.z, blockBox[3] + blockPos.x, blockBox[4] + blockPos.y, blockBox[5] + blockPos.z);
+            if (entity.intersectsAABB(block)){
+                return true;
+            }
+        }
+
         return false;
     }
 
