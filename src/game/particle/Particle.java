@@ -39,7 +39,7 @@ public class Particle {
         double delta = getDelta();
 
         for (ParticleObject thisParticle : particles.values()){
-            applyParticleInertia(thisParticle.pos, thisParticle.inertia, true,true,true);
+            applyParticleInertia(thisParticle.pos, thisParticle.inertia, true,true);
 
             thisParticle.timer += delta;
             thisParticle.lightUpdateTimer += delta;
