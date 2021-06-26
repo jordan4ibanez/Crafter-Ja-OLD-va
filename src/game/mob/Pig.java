@@ -27,6 +27,7 @@ public class Pig {
     private final static MobInterface mobInterface = new MobInterface() {
         @Override
         public void onTick(MobObject thisObject) {
+            /*
             double delta = getDelta();
 
             thisObject.timer += delta;
@@ -100,7 +101,7 @@ public class Pig {
             doHeadCode(thisObject);
 
             thisObject.lastPos.set(new Vector3d(thisObject.pos));
-
+             */
         }
     };
 

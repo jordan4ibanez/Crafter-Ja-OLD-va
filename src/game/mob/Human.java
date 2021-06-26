@@ -35,6 +35,7 @@ public class Human {
         @Override
         public void onTick(MobObject thisObject) {
 
+            /*
             double delta = getDelta();
 
             thisObject.timer += delta;
@@ -84,11 +85,13 @@ public class Human {
             if (thisObject.animationTimer >= 1f) {
                 thisObject.animationTimer = 0f;
             }
+            */
 
             boolean onGround = applyInertia(thisObject.pos, thisObject.inertia, false, thisObject.width, thisObject.height, true, false, true, false, false);
 
-            thisObject.onGround = onGround;
+            //thisObject.onGround = onGround;
 
+            /*
 
             if (thisObject.health > 0) {
                 //check for block in front
@@ -106,7 +109,7 @@ public class Human {
             doHeadCode(thisObject);
 
             thisObject.lastPos.set(new Vector3d(thisObject.pos));
-
+             */
         }
     };
 
