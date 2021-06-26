@@ -9,9 +9,10 @@ import org.joml.Vector3i;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-import static engine.time.Time.getDelta;
 import static engine.sound.SoundAPI.playSound;
+import static engine.time.Time.getDelta;
 import static game.chunk.Chunk.getLight;
+import static game.collision.MobCollision.mobSoftCollisionDetect;
 import static game.mob.Human.registerHumanMob;
 import static game.mob.Pig.registerPigMob;
 
@@ -30,6 +31,10 @@ public class Mob {
 
     public static MobDefinition getMobDefinition(int key){
         return mobDefinitions[key];
+    }
+
+    public static MobObject[] getMobs(){
+        return mobs.values().toArray(new MobObject[0]);
     }
 
     public static void registerMob(MobDefinition newMobDefinition){
@@ -68,6 +73,11 @@ public class Mob {
         for (MobObject thisMob : mobs.values()){
             if (thisMob == null){
                 continue;
+            }
+
+            //only collision detect if alive
+            if (thisMob.health > 0) {
+                mobSoftCollisionDetect(thisMob);
             }
 
             //interface consumes object - no need for re-assignment to vars
