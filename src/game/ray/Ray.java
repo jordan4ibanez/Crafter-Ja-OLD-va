@@ -96,9 +96,6 @@ public class Ray {
                         getBlockDefinition(foundBlock).blockModifier.onRightClick(finalPos);
 
                     } else {
-                        //setAABB(getPlayerPos().x, getPlayerPos().y, getPlayerPos().z, getPlayerWidth(), getPlayerHeight());
-                        //setBlockBox((int) lastPos.x, (int) lastPos.y, (int) lastPos.z, getBlockShape((byte)1, (byte) 0)[0]); //TODO: make this check the actual block shapes
-
                         if (!wouldCollidePlacing(getPlayerPos(),getPlayerWidth(), getPlayerHeight(), new Vector3i(pointedThingAbove.x, pointedThingAbove.y, pointedThingAbove.z), getItemInInventorySlot(getPlayerInventorySelection(), 0).definition.blockID, getPlayerDir()) && getItemInInventorySlot(getPlayerInventorySelection(), 0) != null && !getItemInInventorySlot(getPlayerInventorySelection(), 0).definition.isItem) {
                             rayPlaceBlock(lastPos, getItemInInventorySlot(getPlayerInventorySelection(), 0).definition.blockID);
                         } else if (getItemInInventorySlot(getPlayerInventorySelection(), 0) != null && getItemInInventorySlot(getPlayerInventorySelection(), 0).definition.isItem) {
