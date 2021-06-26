@@ -13,7 +13,7 @@ public class Time {
 
     public static void calculateDelta() {
         double time = getTime();
-        delta =  (float)(time - lastLoopTime);
+        delta =  (time - lastLoopTime);
         lastLoopTime = time;
     }
 
