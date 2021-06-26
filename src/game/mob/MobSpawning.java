@@ -3,21 +3,20 @@ package game.mob;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import static engine.FancyMath.randomByte;
-import static engine.FancyMath.randomIntFromMinToMaxNegativePositive;
 import static engine.time.Time.getDelta;
-import static game.chunk.Chunk.getMobSpawnYPos;
 import static game.mob.Mob.spawnMob;
 import static game.player.Player.getPlayerPos;
 
 public class MobSpawning {
+
+    private static int spawned = 0;
 
     private static double spawnTimer = 0;
 
     private static final float spawnGoal = 1.f; //every 10 seconds
 
     public static void runSpawningAlgorithm(){
-        if (true){
+        if (spawned > 100){
             return;
         }
         spawnTimer += getDelta();
@@ -26,6 +25,7 @@ public class MobSpawning {
             //CHANGE THIS TO CHECK FOR PLAYERS POSITION WHEN TRANSLATING TO MULTIPLAYER
             trySpawn(new Vector3d(getPlayerPos()));
             spawnTimer = 0;
+            spawned++;
         }
     }
 

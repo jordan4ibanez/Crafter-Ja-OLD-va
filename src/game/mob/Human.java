@@ -2,17 +2,15 @@ package game.mob;
 
 import engine.graphics.Mesh;
 import engine.graphics.Texture;
-import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
 
 import static engine.FancyMath.randomDirFloat;
 import static engine.time.Time.getDelta;
-import static game.chunk.Chunk.getBlock;
 import static game.collision.Collision.applyInertia;
-import static game.mob.MobUtilityCode.doHeadCode;
 import static game.mob.Mob.registerMob;
+import static game.mob.MobUtilityCode.doHeadCode;
 import static game.mob.MobUtilityCode.mobSmoothRotation;
 
 public class Human {
@@ -35,7 +33,7 @@ public class Human {
         @Override
         public void onTick(MobObject thisObject) {
 
-            /*
+
             double delta = getDelta();
 
             thisObject.timer += delta;
@@ -59,6 +57,7 @@ public class Human {
 
             float bodyYaw = (float) Math.toRadians(thisObject.rotation) + (float) Math.PI;
 
+            /*
             thisObject.inertia.x += (float) (Math.sin(-bodyYaw) * accelerationMultiplier) * movementAcceleration * delta;
             thisObject.inertia.z += (float) (Math.cos(bodyYaw) * accelerationMultiplier) * movementAcceleration * delta;
 
@@ -87,7 +86,7 @@ public class Human {
             }
             */
 
-            boolean onGround = applyInertia(thisObject.pos, thisObject.inertia, false, thisObject.width, thisObject.height, true, false, true, false, false);
+            boolean onGround = applyInertia(thisObject.pos, thisObject.inertia, false, thisObject.width, 3/*thisObject.height*/, true, false, true, false, false);
 
             //thisObject.onGround = onGround;
 
@@ -104,12 +103,12 @@ public class Human {
                     }
                 }
             }
-
+             */
             mobSmoothRotation(thisObject);
             doHeadCode(thisObject);
 
-            thisObject.lastPos.set(new Vector3d(thisObject.pos));
-             */
+            //thisObject.lastPos.set(new Vector3d(thisObject.pos));
+
         }
     };
 
