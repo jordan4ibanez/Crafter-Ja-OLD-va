@@ -555,23 +555,17 @@ public class GameRenderer {
         //render world selection mesh
         if (getPlayerWorldSelectionPos() != null){
 
-            Vector3i tempPos = getPlayerWorldSelectionPos();
-
-            Mesh selectionMesh = getWorldSelectionMesh();
-
-            Vector3d actualPos = new Vector3d(tempPos.x, tempPos.y, tempPos.z);
-
             entityShaderProgram.setLightUniform("light", 15); //todo make this work
 
-            modelViewMatrix = updateModelViewMatrix(actualPos, new Vector3f(0, 0, 0), viewMatrix);
+            Vector3d pos = new Vector3d(getPlayerWorldSelectionPos());
+            modelViewMatrix = updateModelViewMatrix(pos, new Vector3f(0, 0, 0), viewMatrix);
             entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            selectionMesh.render();
+            getWorldSelectionMesh().render();
 
             if (getDiggingFrame() >= 0) {
-                Mesh crackMesh = getMiningCrackMesh(getDiggingFrame());
-                modelViewMatrix = updateModelViewMatrix(actualPos, new Vector3f(0, 0, 0), viewMatrix);
+                modelViewMatrix = updateModelViewMatrix(pos, new Vector3f(0, 0, 0), viewMatrix);
                 entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                crackMesh.render();
+                getMiningCrackMesh(getDiggingFrame()).render();
             }
         }
 
