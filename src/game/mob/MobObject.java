@@ -1,6 +1,5 @@
 package game.mob;
 
-import engine.graphics.Mesh;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;

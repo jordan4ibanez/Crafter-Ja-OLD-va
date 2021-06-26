@@ -2,6 +2,7 @@ package game.item;
 
 import engine.network.ItemSendingObject;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
+import org.joml.AABBd;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
@@ -194,6 +195,9 @@ public class ItemEntity {
             if (thisItem.pos.distance(getPlayerPos()) > 15f){
                 deletionQueue.add(thisItem.ID);
             }
+
+
+
 
             thisItem.lightUpdateTimer += delta;
 

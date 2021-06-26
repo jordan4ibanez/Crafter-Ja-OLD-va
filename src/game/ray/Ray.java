@@ -5,13 +5,10 @@ import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
-import static engine.FancyMath.getDistance;
 import static engine.network.Networking.*;
 import static game.chunk.Chunk.*;
 import static game.blocks.BlockDefinition.*;
 import static game.collision.Collision.wouldCollidePlacing;
-import static game.collision.CustomAABB.setAABB;
-import static game.collision.CustomBlockBox.setBlockBox;
 import static game.collision.PointCollision.pointIsWithin;
 import static game.collision.PointCollision.setPointAABB;
 import static game.item.ItemDefinition.getItemModifier;
@@ -99,8 +96,8 @@ public class Ray {
                         getBlockDefinition(foundBlock).blockModifier.onRightClick(finalPos);
 
                     } else {
-                        setAABB(getPlayerPos().x, getPlayerPos().y, getPlayerPos().z, getPlayerWidth(), getPlayerHeight());
-                        setBlockBox((int) lastPos.x, (int) lastPos.y, (int) lastPos.z, getBlockShape((byte)1, (byte) 0)[0]); //TODO: make this check the actual block shapes
+                        //setAABB(getPlayerPos().x, getPlayerPos().y, getPlayerPos().z, getPlayerWidth(), getPlayerHeight());
+                        //setBlockBox((int) lastPos.x, (int) lastPos.y, (int) lastPos.z, getBlockShape((byte)1, (byte) 0)[0]); //TODO: make this check the actual block shapes
 
                         if (!wouldCollidePlacing() && getItemInInventorySlot(getPlayerInventorySelection(), 0) != null && !getItemInInventorySlot(getPlayerInventorySelection(), 0).definition.isItem) {
                             rayPlaceBlock(lastPos, getItemInInventorySlot(getPlayerInventorySelection(), 0).definition.blockID);

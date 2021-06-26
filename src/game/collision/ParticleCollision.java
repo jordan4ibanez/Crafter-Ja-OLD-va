@@ -1,5 +1,6 @@
 package game.collision;
 
+import org.joml.AABBd;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
@@ -8,7 +9,6 @@ import static engine.time.Time.getDelta;
 import static game.chunk.Chunk.getBlock;
 import static game.blocks.BlockDefinition.*;
 import static game.chunk.Chunk.getBlockRotation;
-import static game.collision.CustomBlockBox.*;
 
 public class ParticleCollision {
 
@@ -154,80 +154,71 @@ public class ParticleCollision {
         return onGround;
     }
 
-    private static boolean collideYNegative(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
+    private static boolean collideYNegative(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
         boolean onGround = false;
-        for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
-            setBlockBox(blockPosX,blockPosY,blockPosz,thisBlockBox);
-            if (isWithin(pos)) {
+        for (float[] blockBox : getBlockShape(blockID, rot)) {
+            final AABBd block  = new AABBd(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ,blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
+            if (block.containsPoint(pos)) {
                 onGround = true;
-                pos.y = BlockBoxGetTop() + 0.0001d;
+                pos.y = block.maxY;
                 inertia.y = 0;
             }
         }
         return onGround;
     }
 
-    private static void collideYPositive(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
-        for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
-            setBlockBox(blockPosX, blockPosY, blockPosz,thisBlockBox);
+    private static void collideYPositive(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
+        for (float[] blockBox : getBlockShape(blockID, rot)) {
+            final AABBd block  = new AABBd(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ,blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
             //head detection
-            if (isWithin(pos)) {
-                pos.y = BlockBoxGetBottom() - 0.001d;
+            if (block.containsPoint(pos)) {
+                pos.y = block.minY;
                 inertia.y = 0;
             }
         }
     }
 
-    private static void collideXPositive(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
-        for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
-            setBlockBox(blockPosX, blockPosY, blockPosz, thisBlockBox);
-            if (isWithin(pos)) {
-                pos.x = BlockBoxGetLeft() - 0.001d;
+    private static void collideXPositive(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
+        for (float[] blockBox : getBlockShape(blockID, rot)) {
+            final AABBd block  = new AABBd(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ,blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
+            if (block.containsPoint(pos)) {
+                pos.x = block.minX;
                 inertia.x = 0;
             }
         }
     }
 
-    private static void collideXNegative(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
-        for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
-            setBlockBox(blockPosX, blockPosY, blockPosz, thisBlockBox);
-            if (isWithin(pos)) {
-                pos.x = BlockBoxGetRight() + 0.001d;
+    private static void collideXNegative(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
+        for (float[] blockBox : getBlockShape(blockID, rot)) {
+            final AABBd block  = new AABBd(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ,blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
+            if (block.containsPoint(pos)) {
+                pos.x = block.maxX;
                 inertia.x = 0;
             }
         }
     }
 
 
-    private static void collideZPositive(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
-        for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
-            setBlockBox(blockPosX, blockPosY, blockPosz, thisBlockBox);
-            if (isWithin(pos)) {
-                pos.z = BlockBoxGetFront() - 0.001d;
+    private static void collideZPositive(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
+        for (float[] blockBox : getBlockShape(blockID, rot)) {
+            final AABBd block  = new AABBd(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ,blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
+            if (block.containsPoint(pos)) {
+                pos.z = block.minZ;
                 inertia.z = 0;
             }
         }
     }
 
-    private static void collideZNegative(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
-        for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
-            setBlockBox(blockPosX, blockPosY, blockPosz, thisBlockBox);
-            if (isWithin(pos)) {
-                pos.z = BlockBoxGetBack() + 0.001d;
+    private static void collideZNegative(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
+        for (float[] blockBox : getBlockShape(blockID, rot)) {
+            final AABBd block  = new AABBd(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ,blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
+            if (block.containsPoint(pos)) {
+                pos.z = block.maxZ;
                 inertia.z = 0;
             }
         }
     }
 
-
-    private static boolean isWithin(Vector3d pos){
-        return !(pos.x > BlockBoxGetRight() ||
-                pos.x < BlockBoxGetLeft() ||
-                pos.y > BlockBoxGetTop() ||
-                pos.y < BlockBoxGetBottom() ||
-                pos.z > BlockBoxGetBack() ||
-                pos.z < BlockBoxGetFront());
-    }
 
     private static int inertiaToDir(float thisInertia){
         if (thisInertia > 0.0001f){

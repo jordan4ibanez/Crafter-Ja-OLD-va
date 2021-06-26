@@ -1,5 +1,6 @@
 package game.collision;
 
+import org.joml.AABBd;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
@@ -8,8 +9,6 @@ import static engine.time.Time.getDelta;
 import static game.chunk.Chunk.getBlock;
 import static game.blocks.BlockDefinition.*;
 import static game.chunk.Chunk.getBlockRotation;
-import static game.collision.CustomAABB.*;
-import static game.collision.CustomBlockBox.*;
 import static game.player.Player.getIfPlayerIsJumping;
 import static game.player.Player.setPlayerInWater;
 
@@ -24,10 +23,7 @@ public class Collision {
 
         //specific debug
         if (height == 3){
-            for (int i = 0; i < 138; i++){
-                setAABB(1,2,3,1,2);
-            }
-            return false;
+            //return false;
         }
 
         //the precision goal for delta is 0.001f, this adjusts it to be so
@@ -221,15 +217,15 @@ public class Collision {
     }
 
     private static boolean sneakCollideYNegative(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, float width, float height, boolean onGround, byte blockID){
-        for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
-            setAABB(pos.x, pos.y, pos.z, width, height);
-            setBlockBox(blockPosX,blockPosY,blockPosz,thisBlockBox);
+        for (float[] blockBox : getBlockShape(blockID, rot)) {
+            final AABBd entity = new AABBd(pos.x - width, pos.y, pos.z - width, pos.x + width, pos.y + height, pos.z + width);
+            final AABBd block  = new AABBd(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosz,blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosz);
 
-            if (isWithin()) {
+            if (entity.intersectsAABB(block)) {
                 return true;
             }
         }
-        return onGround;
+        return false;
     }
 
     //normal collision
@@ -379,14 +375,12 @@ public class Collision {
 
     //a simple way to check if an object is in the water, only done on x and z passes so you can't stand
     //next to water and get slowed down
-    private static void detectIfInWater(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, float width, float height, byte blockID){
-        for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
-            setAABB(pos.x, pos.y, pos.z, width, height);
-            setBlockBox(blockPosX,blockPosY,blockPosz,thisBlockBox);
-
-            if (isWithin()) {
+    private static void detectIfInWater(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, float width, float height, byte blockID){
+        for (float[] blockBox : getBlockShape(blockID, rot)) {
+            final AABBd entity = new AABBd(pos.x - width, pos.y, pos.z - width, pos.x + width, pos.y + height, pos.z + width);
+            final AABBd block  = new AABBd(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ,blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
+            if (entity.intersectsAABB(block)) {
                 float localViscosity = getBlockViscosity(blockID);
-
                 if (localViscosity > inWater){
                     inWater = localViscosity;
                 }
@@ -394,15 +388,12 @@ public class Collision {
         }
     }
 
-    private static boolean collideYNegative(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, float width, float height, boolean onGround, byte blockID){
-        for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
-            setAABB(pos.x, pos.y, pos.z, width, height);
-            setBlockBox(blockPosX,blockPosY,blockPosz,thisBlockBox);
-            //this coordinate is not within enough distance to get affected by floating point precision
-            if (isWithin() && BlockBoxGetTop() >= AABBGetBottom() && AABBGetBottom() - BlockBoxGetTop() > -0.1d) {
-                //players position needs to constantly change or else this breaks stairs/slabs
-                //this needs extreme precision for 1000+fps
-                pos.y = BlockBoxGetTop() + 0.000000001d;
+    private static boolean collideYNegative(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, float width, float height, boolean onGround, byte blockID){
+        for (float[] blockBox : getBlockShape(blockID, rot)) {
+            final AABBd entity = new AABBd(pos.x - width, pos.y, pos.z - width, pos.x + width, pos.y + height, pos.z + width);
+            final AABBd block  = new AABBd(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ,blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
+            if (entity.intersectsAABB(block)) {
+                pos.y = block.maxY + 0.0000000001d;
                 inertia.y = 0;
                 onGround = true;
             }
@@ -411,14 +402,12 @@ public class Collision {
         return onGround;
     }
 
-    private static void collideYPositive(int blockPosX, int blockPosY, int blockPosz, byte rot, Vector3d pos, Vector3f inertia, float width, float height, byte blockID){
-        for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
-            setAABB(pos.x, pos.y, pos.z, width, height);
-            setBlockBox(blockPosX, blockPosY, blockPosz,thisBlockBox);
-            //this coordinate is not within enough distance to get affected by floating point precision
-            //head detection
-            if (isWithin() && BlockBoxGetBottom() < AABBGetTop() && AABBGetTop() - BlockBoxGetBottom() < 0.1d) {
-                pos.y = BlockBoxGetBottom() - height - 0.001d;
+    private static void collideYPositive(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, float width, float height, byte blockID){
+        for (float[] blockBox : getBlockShape(blockID, rot)) {
+            final AABBd entity = new AABBd(pos.x - width, pos.y, pos.z - width, pos.x + width, pos.y + height, pos.z + width);
+            final AABBd block  = new AABBd(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ,blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
+            if (entity.intersectsAABB(block)) {
+                pos.y = block.minY - height - 0.0000000001d;
                 inertia.y = 0;
             }
         }
@@ -428,33 +417,28 @@ public class Collision {
 
     private static void collideX(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, Vector3d oldPos, float width, float height, byte blockID){
         //run through X collisions
-        for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
-            setAABB(pos.x, pos.y, pos.z, width, height);
-            setBlockBox(blockPosX, blockPosY, blockPosZ, thisBlockBox);
-
+        for (float[] blockBox : getBlockShape(blockID, rot)) {
+            final AABBd entity = new AABBd(pos.x - width, pos.y, pos.z - width, pos.x + width, pos.y + height, pos.z + width);
+            final AABBd block  = new AABBd(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ,blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
             //collide X negative
             if (blockPosX + 0.5d <= pos.x) {
-                if (isWithin() && BlockBoxGetRight() > AABBGetLeft() && BlockBoxGetRight() - AABBGetLeft() < 0.01d) {
-                    if (isSteppable(blockID) && AABBGetBottom() - BlockBoxGetTop() < -0.48d) {
-                        //steppable
-                        pos.y = BlockBoxGetTop() + 0.0001d;
+                if (entity.intersectsAABB(block)) {
+                    if (isSteppable(blockID)) {
+                        pos.y = block.maxY;
                     } else {
-                        //not steppable
-                        pos.x = BlockBoxGetRight() + width + 0.001d;
-                        inertia.x /= 2f;
+                        pos.x = block.maxX + width + 0.0000000001d;
+                        inertia.x= 0f;;
                     }
                 }
             }
             //collide X positive
             if (blockPosX + 0.5d >= pos.x) {
-                if (isWithin() && BlockBoxGetLeft() < AABBGetRight() && BlockBoxGetLeft() - AABBGetRight() > -0.01d) {
-                    if (isSteppable(blockID) && AABBGetBottom() - BlockBoxGetTop() < -0.48d) {
-                        //steppable
-                        pos.y = BlockBoxGetTop() + 0.0001d;
+                if (entity.intersectsAABB(block)) {
+                    if (isSteppable(blockID)) {
+                        pos.y = block.maxY;
                     } else {
-                        //not steppable
-                        pos.x = BlockBoxGetLeft() - width - 0.001d;
-                        inertia.x /= 2f;
+                        pos.x = block.minX - width - 0.0000000001d;
+                        inertia.x= 0f;;
                     }
                 }
             }
@@ -467,24 +451,24 @@ public class Collision {
 
             //collide X negative
             if (blockPosX + 0.5d <= pos.x) {
-                for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
-                    setAABB(pos.x, pos.y, pos.z, width, height);
-                    setBlockBox(blockPosX, blockPosY, blockPosZ, thisBlockBox);
-                    if (isWithin() && BlockBoxGetRight() > AABBGetLeft() && BlockBoxGetRight() - AABBGetLeft() < 0.01d) {
-                        pos.x = BlockBoxGetRight() + width + 0.001d;
-                        inertia.x /= 2f;
+                for (float[] blockBox : getBlockShape(blockID, rot)) {
+                    final AABBd entity = new AABBd(pos.x - width, pos.y, pos.z - width, pos.x + width, pos.y + height, pos.z + width);
+                    final AABBd block  = new AABBd(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ,blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
+                    if (entity.intersectsAABB(block)) {
+                        pos.x = block.maxX + width + 0.0000000001d;
+                        inertia.x= 0f;;
                     }
                 }
             }
 
             //collide X positive
             if (blockPosX + 0.5d >= pos.x) {
-                for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
-                    setAABB(pos.x, pos.y, pos.z, width, height);
-                    setBlockBox(blockPosX, blockPosY, blockPosZ, thisBlockBox);
-                    if (isWithin() && BlockBoxGetLeft() < AABBGetRight() && BlockBoxGetLeft() - AABBGetRight() > -0.01d) {
-                        pos.x = BlockBoxGetLeft() - width - 0.001d;
-                        inertia.x /= 2f;
+                for (float[] blockBox : getBlockShape(blockID, rot)) {
+                    final AABBd entity = new AABBd(pos.x - width, pos.y, pos.z - width, pos.x + width, pos.y + height, pos.z + width);
+                    final AABBd block  = new AABBd(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ,blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
+                    if (entity.intersectsAABB(block)) {
+                        pos.x = block.minX - width - 0.0000000001d;
+                        inertia.x= 0f;;
                     }
                 }
             }
@@ -496,33 +480,30 @@ public class Collision {
 
     private static void collideZ(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, Vector3d oldPos, float width, float height, byte blockID){
         //run through Z collisions
-        for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
-            setAABB(pos.x, pos.y, pos.z, width, height);
-            setBlockBox(blockPosX, blockPosY, blockPosZ, thisBlockBox);
+        for (float[] blockBox : getBlockShape(blockID, rot)) {
+            final AABBd entity = new AABBd(pos.x - width, pos.y, pos.z - width, pos.x + width, pos.y + height, pos.z + width);
+            final AABBd block  = new AABBd(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ,blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
 
             //collide Z negative
             if (blockPosZ + 0.5d <= pos.z) {
-                if (isWithin() && BlockBoxGetBack() > AABBGetFront() && BlockBoxGetBack() - AABBGetFront() < 0.01d) {
-                    if (isSteppable(blockID) && AABBGetBottom() - BlockBoxGetTop() < -0.48d) {
-                        //steppable
-                        pos.y = BlockBoxGetTop() + 0.0001d;
+                if (entity.intersectsAABB(block)) {
+                    if (isSteppable(blockID)) {
+                        pos.y = block.maxY;
                     }else {
-                        //not steppable
-                        pos.z = BlockBoxGetBack() + width + 0.001d;
-                        inertia.z /= 2f;
+                        pos.z = block.maxZ + width + 0.0000000001d;
+                        inertia.z= 0f;;
                     }
                 }
             }
+
             //collide Z positive
             if (blockPosZ + 0.5d >= pos.z) {
-                if (isWithin() && BlockBoxGetFront() < AABBGetBack() && BlockBoxGetFront() - AABBGetBack() > -0.01d) {
-                    if (isSteppable(blockID) && AABBGetBottom() - BlockBoxGetTop() < -0.48d) {
-                        //steppable
-                        pos.y = BlockBoxGetTop() + 0.0001d;
+                if (entity.intersectsAABB(block)) {
+                    if (isSteppable(blockID)) {
+                        pos.y = block.maxY;
                     } else {
-                        //not steppable
-                        pos.z = BlockBoxGetFront() - width - 0.001d;
-                        inertia.z /= 2f;
+                        pos.z = block.minZ - width - 0.0000000001d;
+                        inertia.z= 0f;;
                     }
                 }
             }
@@ -533,26 +514,27 @@ public class Collision {
 
             pos.y = oldPos.y;
 
+
             //collide Z negative
             if (blockPosZ + 0.5d <= pos.z) {
-                for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
-                    setAABB(pos.x, pos.y, pos.z, width, height);
-                    setBlockBox(blockPosX, blockPosY, blockPosZ, thisBlockBox);
-                    if (isWithin() && BlockBoxGetBack() > AABBGetFront() && BlockBoxGetBack() - AABBGetFront() < 0.01d) {
-                        pos.z = BlockBoxGetBack() + width + 0.001d;
-                        inertia.z /= 2f;
+                for (float[] blockBox : getBlockShape(blockID, rot)) {
+                    final AABBd entity = new AABBd(pos.x - width, pos.y, pos.z - width, pos.x + width, pos.y + height, pos.z + width);
+                    final AABBd block  = new AABBd(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ,blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
+                    if (entity.intersectsAABB(block)) {
+                        pos.z = block.maxZ + width + 0.0000000001d;
+                        inertia.z= 0f;;
                     }
                 }
             }
 
             //collide Z positive
             if (blockPosZ + 0.5d >= pos.z) {
-                for (float[] thisBlockBox : getBlockShape(blockID, rot)) {
-                    setAABB(pos.x, pos.y, pos.z, width, height);
-                    setBlockBox(blockPosX, blockPosY, blockPosZ, thisBlockBox);
-                    if (isWithin() && BlockBoxGetFront() < AABBGetBack() && BlockBoxGetFront() - AABBGetBack() > -0.01d) {
-                        pos.z = BlockBoxGetFront() - width - 0.001d;
-                        inertia.z /= 2f;
+                for (float[] blockBox : getBlockShape(blockID, rot)) {
+                    final AABBd entity = new AABBd(pos.x - width, pos.y, pos.z - width, pos.x + width, pos.y + height, pos.z + width);
+                    final AABBd block  = new AABBd(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ,blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
+                    if (entity.intersectsAABB(block)) {
+                        pos.z = block.minZ - width - 0.0000000001d;
+                        inertia.z = 0f;
                     }
                 }
             }
@@ -560,14 +542,6 @@ public class Collision {
     }
 
 
-    private static boolean isWithin(){
-        return !(AABBGetLeft() > BlockBoxGetRight() ||
-                 AABBGetRight() < BlockBoxGetLeft() ||
-                 AABBGetBottom() > BlockBoxGetTop() ||
-                 AABBGetTop() < BlockBoxGetBottom() ||
-                 AABBGetFront() > BlockBoxGetBack() ||
-                 AABBGetBack() < BlockBoxGetFront());
-    }
 
     private static int inertiaToDir(float thisInertia){
         if (thisInertia > 0.0001f){
@@ -580,12 +554,7 @@ public class Collision {
     }
 
     public static boolean wouldCollidePlacing(){
-        return !(AABBGetLeft() > BlockBoxGetRight() ||
-                AABBGetRight() < BlockBoxGetLeft() ||
-                AABBGetBottom() > BlockBoxGetTop() ||
-                AABBGetTop() < BlockBoxGetBottom() ||
-                AABBGetFront() > BlockBoxGetBack() ||
-                AABBGetBack() < BlockBoxGetFront());
+        return false;
     }
 
     //simple type cast bolt on to JOML
