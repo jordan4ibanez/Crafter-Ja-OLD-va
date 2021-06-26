@@ -2,12 +2,12 @@ package game.collision;
 
 import org.joml.Vector3d;
 import org.joml.Vector3f;
+import org.joml.Vector3i;
 
 import static engine.time.Time.getDelta;
 import static game.chunk.Chunk.getBlock;
 import static game.blocks.BlockDefinition.*;
 import static game.chunk.Chunk.getBlockRotation;
-import static game.collision.CollisionMath.floorPos;
 import static game.collision.CustomAABB.*;
 import static game.collision.CustomBlockBox.*;
 import static game.player.Player.getIfPlayerIsJumping;
@@ -22,9 +22,19 @@ public class Collision {
     public static boolean applyInertia(Vector3d pos, Vector3f inertia, boolean onGround, float width, float height, boolean gravity, boolean sneaking, boolean applyCollision, boolean airFriction, boolean isPlayer){
         double delta = getDelta();
 
+        //specific debug
+        if (height == 3){
+            for (int i = 0; i < 138; i++){
+                setAABB(1,2,3,1,2);
+            }
+            return false;
+        }
+
         //the precision goal for delta is 0.001f, this adjusts it to be so
         //the side effect, is the lower your FPS, the more it has to loop
         int loops = 1;
+
+        boolean onGroundLock = false;
 
         if (delta >  0.001f){
             loops = (int)Math.floor(delta / 0.001f);
@@ -33,7 +43,7 @@ public class Collision {
             adjustedDelta = delta;
         }
 
-        boolean onGroundLock = false;
+
 
         for (int i = 0; i < loops; i++) {
             inWater = 0;//reset water detection
@@ -136,42 +146,36 @@ public class Collision {
         return onGroundLock;
     }
 
-    //these are class/method caches!! NOT FIELDS!
-    private static Vector3d fPos;
-    private static double x;
-    private static double z;
-    private static byte cachedBlock;
-    private static final Vector3d cachedPos = new Vector3d(0d,0d,0d);
-
     //sneaking stuff
-    private static int sneakCollisionDetect(Vector3d pos, Vector3f inertia, float width, float height){
+    private static byte sneakCollisionDetect(Vector3d pos, Vector3f inertia, float width, float height){
 
-        int binaryReturn = 0;
+        byte binaryReturn = 0;
 
         boolean onGround = false;
 
         Vector3f clonedInertia = new Vector3f(inertia);
         Vector3d clonedPos = new Vector3d(pos);
+
         //todo: begin X collision detection
         clonedPos.y -= 0.05f;
         clonedPos.x += 0.1f * inertiaToDir(clonedInertia.x);
 
-        fPos = floorPos(new Vector3d(clonedPos));
 
-        for (x = -1; x <= 1; x++) {
-            for (z = -1; z <= 1; z++) {
+        final Vector3i fPos = floorPos(clonedPos);
+        final Vector3i cachedPos = new Vector3i();
 
-                Vector3d cachedPos = new Vector3d();
+        for (byte x = -1; x <= 1; x++) {
+            for (byte z = -1; z <= 1; z++) {
+
                 cachedPos.x = fPos.x + x;
                 cachedPos.y = fPos.y;
                 cachedPos.z = fPos.z + z;
 
-                cachedBlock = detectBlock(cachedPos);
-
-                byte rot =  detectRot(cachedPos);
+                byte cachedBlock = getBlock(cachedPos);
+                byte rot = getBlockRotation(cachedPos);
 
                 if (cachedBlock > 0 && isWalkable(cachedBlock)) {
-                    onGround = sneakCollideYNegative((int)(fPos.x + x), (int)fPos.y, (int)(fPos.z + z), rot, clonedPos, width, height, onGround, cachedBlock);
+                    onGround = sneakCollideYNegative(cachedPos.x, fPos.y, cachedPos.z, rot, clonedPos, width, height, onGround, cachedBlock);
                 }
             }
         }
@@ -190,22 +194,21 @@ public class Collision {
         clonedPos.y -= 0.05f;
         clonedPos.z += 0.1f * inertiaToDir(clonedInertia.z);
 
-        fPos = floorPos(new Vector3d(clonedPos));
 
-        for (x = -1; x <= 1; x++) {
-            for (z = -1; z <= 1; z++) {
+        fPos.set(floorPos(clonedPos));
 
-                Vector3d cachedPos = new Vector3d();
+        for (byte x = -1; x <= 1; x++) {
+            for (byte z = -1; z <= 1; z++) {
+
                 cachedPos.x = fPos.x + x;
                 cachedPos.y = fPos.y;
                 cachedPos.z = fPos.z + z;
 
-                cachedBlock = detectBlock(cachedPos);
-
-                byte rot =  detectRot(cachedPos);
+                byte cachedBlock = getBlock(cachedPos);
+                byte rot = getBlockRotation(cachedPos);
 
                 if (cachedBlock > 0 && isWalkable(cachedBlock)) {
-                    onGround = sneakCollideYNegative((int)(fPos.x + x), (int)fPos.y, (int)(fPos.z + z), rot, clonedPos, width, height, onGround, cachedBlock);
+                    onGround = sneakCollideYNegative(cachedPos.x, cachedPos.y, cachedPos.z, rot, clonedPos, width, height, onGround, cachedBlock);
                 }
             }
         }
@@ -234,68 +237,56 @@ public class Collision {
 
         boolean onGround = false;
 
-        Vector3d oldPos = new Vector3d();
-
-        oldPos.x = pos.x;
-        oldPos.y = pos.y;
-        oldPos.z = pos.z;
+        final Vector3d oldPos = new Vector3d(pos);
 
         pos.y += inertia.y * adjustedDelta;
 
-        fPos = floorPos(new Vector3d(pos));
+        final Vector3i fPos = floorPos(pos);
 
-        int up = 0;
 
         //todo: begin Y collision detection -- YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
-        double y;
+
+        final Vector3i cachedPos = new Vector3i();
+
         switch (inertiaToDir(inertia.y)) {
-            case -1 -> y = (int) fPos.y;
-            case 1 -> {
-                y = (int) Math.floor(pos.y + height);
-                up = 1;
-            }
-            default -> y = 777;
-        }
-        if (y != 777) {
-            switch (up) {
-                case 0:
-                    //y negative (falling)
-                    for (x = -1; x <= 1; x++) {
-                        for (z = -1; z <= 1; z++) {
-                            cachedPos.x = fPos.x + x;
-                            cachedPos.y = fPos.y;
-                            cachedPos.z = fPos.z + z;
+            case -1:
+                //y negative (falling)
+                for (byte x = -1; x <= 1; x++) {
+                    for (byte z = -1; z <= 1; z++) {
+                        cachedPos.x = fPos.x + x;
+                        cachedPos.y = fPos.y;
+                        cachedPos.z = fPos.z + z;
 
-                            cachedBlock = detectBlock(cachedPos);
+                        byte cachedBlock = getBlock(cachedPos);
 
-                            byte rot = detectRot(cachedPos);
+                        byte rot = getBlockRotation(cachedPos);
 
-                            if (cachedBlock > 0 && isWalkable(cachedBlock)) {
-                                onGround = collideYNegative((int) (fPos.x + x), (int) cachedPos.y, (int) (fPos.z + z), rot, pos, inertia, width, height, onGround, cachedBlock);
-                            }
+                        if (cachedBlock > 0 && isWalkable(cachedBlock)) {
+                            onGround = collideYNegative(cachedPos.x, cachedPos.y, cachedPos.z, rot, pos, inertia, width, height, onGround, cachedBlock);
                         }
                     }
-                    break;
-                case 1:
-                    //y positive (falling up)
-                    for (x = -1; x <= 1; x++) {
-                        for (z = -1; z <= 1; z++) {
-                            cachedPos.x = fPos.x + x;
-                            cachedPos.y = Math.floor(pos.y + height);
-                            cachedPos.z = fPos.z + z;
+                }
+                break;
+            case 1:
+                //y positive (falling up)
+                for (byte x = -1; x <= 1; x++) {
+                    for (byte z = -1; z <= 1; z++) {
+                        cachedPos.x = fPos.x + x;
+                        cachedPos.y = (int)Math.floor(pos.y + height);
+                        cachedPos.z = fPos.z + z;
 
-                            cachedBlock = detectBlock(cachedPos);
+                        byte cachedBlock = getBlock(cachedPos);
 
-                            byte rot = detectRot(cachedPos);
+                        byte rot = getBlockRotation(cachedPos);
 
-                            if (cachedBlock > 0 && isWalkable(cachedBlock)) {
-                                collideYPositive((int) (fPos.x + x), (int) cachedPos.y, (int) (fPos.z + z), rot, pos, inertia, width, height, cachedBlock);
-                            }
+                        if (cachedBlock > 0 && isWalkable(cachedBlock)) {
+                            collideYPositive(cachedPos.x, cachedPos.y, cachedPos.z, rot, pos, inertia, width, height, cachedBlock);
                         }
                     }
-                    break;
-            }
+                }
+                break;
         }
+
 
 
 
@@ -305,28 +296,27 @@ public class Collision {
         pos.x += inertia.x * adjustedDelta;
 
         //must clone the vector object
-        fPos = floorPos(new Vector3d(pos));
+        fPos.set(floorPos(pos));
 
         //this must start at -1f (loops through every position
-        for (float yy =-1; yy <= height + 1; yy++) {
-            for (x = -1; x <= 1; x++) {
-                for (z = -1; z <= 1; z++) {
+        for (byte y =-1; y <= height + 1; y++) {
+            for (byte x = -1; x <= 1; x++) {
+                for (byte z = -1; z <= 1; z++) {
 
                     //update to polling position
-                    cachedPos.x = Math.floor(fPos.x + x);
-                    cachedPos.y = Math.floor(pos.y + yy);
-                    cachedPos.z = Math.floor(fPos.z + z);
+                    cachedPos.x = fPos.x + x;
+                    cachedPos.y = fPos.y + y;
+                    cachedPos.z = fPos.z + z;
 
                     //get block ID
-                    cachedBlock = detectBlock(floorPos(cachedPos));
+                    byte cachedBlock = getBlock(cachedPos);
 
                     //get rotation
-                    byte rot = detectRot(cachedPos);
+                    byte rot = getBlockRotation(cachedPos);
 
                     //never collide with air (block ID 0)
                     if (cachedBlock > 0 && isWalkable(cachedBlock)) {
-
-                        collideX((int)cachedPos.x, (int) (yy + pos.y), (int) cachedPos.z, rot, pos, inertia, oldPos, width, height, cachedBlock);
+                        collideX(cachedPos.x, cachedPos.y, cachedPos.z, rot, pos, inertia, oldPos, width, height, cachedBlock);
                     }
                 }
             }
@@ -337,44 +327,48 @@ public class Collision {
 
         pos.z += inertia.z * adjustedDelta;
 
-        fPos = floorPos(new Vector3d(pos));
+        fPos.set(floorPos(pos));
 
         //this must start at -1f (loops through every position
-        for (float yy =-1; yy <= height + 1; yy++) {
-            for (x = -1; x <= 1; x++) {
-                for (z = -1; z <= 1; z++) {
+        for (byte y =-1; y <= height + 1; y++) {
+            for (byte x = -1; x <= 1; x++) {
+                for (byte z = -1; z <= 1; z++) {
                     //update to polling position
-                    cachedPos.x = Math.floor(fPos.x + x);
-                    cachedPos.y = Math.floor(pos.y + yy);
-                    cachedPos.z = Math.floor(fPos.z + z);
+                    cachedPos.x = fPos.x + x;
+                    cachedPos.y = fPos.y + y;
+                    cachedPos.z = fPos.z + z;
 
                     //get block ID
-                    cachedBlock = detectBlock(floorPos(cachedPos));
+                    byte cachedBlock = getBlock(cachedPos);
 
                     //get rotation
-                    byte rot = detectRot(cachedPos);
+                    byte rot = getBlockRotation(cachedPos);
 
                     //never collide with air (block ID 0)
                     if (cachedBlock > 0 && isWalkable(cachedBlock)) {
-                        collideZ((int)cachedPos.x, (int) (yy + pos.y), (int) cachedPos.z, rot, pos, inertia, oldPos, width, height, cachedBlock);
+                        collideZ(cachedPos.x, cachedPos.y, cachedPos.z, rot, pos, inertia, oldPos, width, height, cachedBlock);
                     }
                 }
             }
         }
 
         //water check
-        for (float yy = 0; yy <= height; yy = yy + 0.5f) {
-            for (x = -1; x <= 1; x++) {
-                for (z = -1; z <= 1; z++) {
+        for (byte y = 0; y <= height; y++) {
+            for (byte x = -1; x <= 1; x++) {
+                for (byte z = -1; z <= 1; z++) {
                     cachedPos.x = fPos.x + x;
-                    cachedPos.y = yy + pos.y;
+                    cachedPos.y = fPos.y + y;
                     cachedPos.z = fPos.z + z;
-                    cachedBlock = detectBlock(floorPos(cachedPos));
 
-                    byte rot =  detectRot(cachedPos);
+                    //get block ID
+                    byte cachedBlock = getBlock(cachedPos);
 
+                    //get rotation
+                    byte rot = getBlockRotation(cachedPos);
+
+                    //never collide with air (block ID 0)
                     if (cachedBlock > 0 && isBlockLiquid(cachedBlock)){
-                        detectIfInWater((int)(fPos.x + x), (int)(yy + pos.y), (int)(fPos.z + z), rot, pos, width, height, cachedBlock);
+                        detectIfInWater(cachedPos.x, cachedPos.y, cachedPos.z, rot, pos, width, height, cachedBlock);
                     }
                 }
             }
@@ -575,15 +569,6 @@ public class Collision {
                  AABBGetBack() < BlockBoxGetFront());
     }
 
-    private static byte detectBlock(Vector3d flooredPos){
-        return getBlock((int)flooredPos.x, (int)flooredPos.y, (int)flooredPos.z);
-    }
-
-    private static byte detectRot(Vector3d flooredPos){
-        return getBlockRotation((int)flooredPos.x, (int)flooredPos.y, (int)flooredPos.z);
-    }
-
-
     private static int inertiaToDir(float thisInertia){
         if (thisInertia > 0.0001f){
             return 1;
@@ -601,5 +586,11 @@ public class Collision {
                 AABBGetTop() < BlockBoxGetBottom() ||
                 AABBGetFront() > BlockBoxGetBack() ||
                 AABBGetBack() < BlockBoxGetFront());
+    }
+
+    //simple type cast bolt on to JOML
+    //converts floored Vector3d to Vector3i
+    private static Vector3i floorPos(Vector3d input){
+        return new Vector3i((int)Math.floor(input.x), (int)Math.floor(input.y),(int)Math.floor(input.z));
     }
 }
