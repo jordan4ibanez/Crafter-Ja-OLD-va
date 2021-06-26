@@ -14,7 +14,7 @@ public class MobSpawning {
 
     private static double spawnTimer = 0;
 
-    private static final byte spawnGoal = 100; //every 10 seconds
+    private static final float spawnGoal = 0.01f; //every 10 seconds
 
     public static void runSpawningAlgorithm(){
         spawnTimer += getDelta();
@@ -30,12 +30,12 @@ public class MobSpawning {
     //this is a square distance, acceptable is 24-56 blocks away from the player
     private static void trySpawn(Vector3d pos){
         //a 2d calculation
-        int x = (int)pos.x + randomIntFromMinToMaxNegativePositive(24,56);
-        int z = (int)pos.z + randomIntFromMinToMaxNegativePositive(24,56);
-        int yPos = getMobSpawnYPos(x,z);
+        int x = (int)pos.x;//(int)pos.x + randomIntFromMinToMaxNegativePositive(24,56);
+        int z = (int)pos.z;//(int)pos.z + randomIntFromMinToMaxNegativePositive(24,56);
+        int yPos = (int)pos.y;//getMobSpawnYPos(x,z);
 
         if (yPos >= 0){
-            spawnMob(randomByte((byte) 2), new Vector3d(x,yPos,z), new Vector3f(0));
+            spawnMob((byte) 0/*randomByte((byte) 2)*/, new Vector3d(x,yPos,z), new Vector3f(0));
         }
     }
 
