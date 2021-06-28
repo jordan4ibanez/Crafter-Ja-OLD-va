@@ -1,6 +1,7 @@
 package game.chunk;
 
 import engine.FastNoise;
+import org.joml.Math;
 import org.joml.Vector2i;
 import org.joml.Vector3i;
 
@@ -9,8 +10,8 @@ import java.util.Deque;
 import java.util.LinkedList;
 
 import static engine.Window.windowShouldClose;
-import static game.chunk.Chunk.*;
-import static game.chunk.ChunkMath.posToIndex;
+import static game.chunk.Chunk.getChunkKey;
+import static game.chunk.Chunk.setChunk;
 import static game.chunk.ChunkUpdateHandler.chunkUpdate;
 
 public class BiomeGenerator implements Runnable{
@@ -184,11 +185,14 @@ public class BiomeGenerator implements Runnable{
             //generate tree cores
             for (Vector3i basePos : treePosArray) {
                 //generate stumps
-                for (int y = 0; y < 4; y++) {
+                for (byte y = 0; y < 4; y++) {
                     //stay within borders
                     if (y + basePos.y < 127 && basePos.x >= 0 && basePos.x <= 15 && basePos.z >= 0 && basePos.z <= 15) {
                         blockData[posToIndex(basePos.x, basePos.y + y, basePos.z)] = 25;
-                        //todo: UPDATE HEIGHT MAP!
+                        //updates heightmap
+                        if (heightMapData[basePos.x][basePos.z] < y + basePos.y){
+                            heightMapData[basePos.x][basePos.z] = (byte)(y + basePos.y);
+                        }
                     }
                 }
             }
@@ -196,28 +200,65 @@ public class BiomeGenerator implements Runnable{
             //generate tree leaves
             for (Vector3i basePos : treePosArray) {
                 byte treeWidth = 0;
-                for (int y = 5; y > 1; y--) {
-                    for (int x = -treeWidth; x <= treeWidth; x++) {
-                        for (int z = -treeWidth; z <= treeWidth; z++) {
+                for (byte y = 5; y > 1; y--) {
+                    for (byte x = (byte) -treeWidth; x <= treeWidth; x++) {
+                        for (byte z = (byte) -treeWidth; z <= treeWidth; z++) {
 
-                            if (basePos.x + x >= 0 && basePos.x + x <= 15 &&
-                                    basePos.y + y >= 0 && basePos.y + y <= 127 &&
-                                    basePos.z + z >= 0 && basePos.z + z <= 15) {
+
+                            if (basePos.x + x >= 0 && basePos.x + x <= 15 && basePos.y + y >= 0 && basePos.y + y <= 127 && basePos.z + z >= 0 && basePos.z + z <= 15) {
 
                                 int index = posToIndex(basePos.x + x, basePos.y + y, basePos.z + z);
-
-                                //todo: UPDATE HEIGHT MAP!
                                 if (blockData[index] == 0) {
                                     blockData[index] = 26;
+                                }
+
+                                //updates heightmap
+                                if (heightMapData[basePos.x + x][basePos.z + z] < y + basePos.y) {
+                                    heightMapData[basePos.x + x][basePos.z + z] = (byte) (y + basePos.y);
                                 }
                             }
                         }
                     }
-                    if (treeWidth < 2) {
+                    if (treeWidth < 2){
                         treeWidth++;
                     }
                 }
 
+                for (byte x = (byte) -treeWidth; x <= treeWidth; x++) {
+                    for (byte z = (byte) -treeWidth; z <= treeWidth; z++) {
+
+                        //generates shadows under the trees
+                        boolean solved = false;
+                        byte y = (byte) (basePos.y + 1);
+                        if (Math.abs(x) == 2 || Math.abs(z) == 2) {
+                            while (!solved) {
+                                if (basePos.x + x >= 0 && basePos.x + x <= 15 && y >= 0 && basePos.z + z >= 0 && basePos.z + z <= 15) {
+                                    if (blockData[posToIndex(basePos.x + x, y, basePos.z + z)] == 0) {
+                                        lightData[posToIndex(basePos.x + x, y, basePos.z + z)] = setByteNaturalLight((byte) 0, (byte) 14);
+                                    } else {
+                                        solved = true;
+                                    }
+                                    y--;
+                                } else {
+                                    solved = true;
+                                }
+                            }
+                        } else if (Math.abs(x) == 1 || Math.abs(z) == 1){
+                            while (!solved) {
+                                if (basePos.x + x >= 0 && basePos.x + x <= 15 && y >= 0 && basePos.z + z >= 0 && basePos.z + z <= 15) {
+                                    if (blockData[posToIndex(basePos.x + x, y, basePos.z + z)] == 0) {
+                                        lightData[posToIndex(basePos.x + x, y, basePos.z + z)] = setByteNaturalLight((byte) 0, (byte) 13);
+                                    } else {
+                                        solved = true;
+                                    }
+                                    y--;
+                                } else {
+                                    solved = true;
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             setChunk(chunkX,chunkZ,blockData,rotationData,lightData,heightMapData);
@@ -229,5 +270,28 @@ public class BiomeGenerator implements Runnable{
 
             //instantSave(thisChunk);
         }
+    }
+
+    //only use the current thread's core/thread to calculate
+    public static int posToIndex( int x, int y, int z ) {
+        return (z * 2048) + (y * 16) + x;
+    }
+
+    //Thanks a lot Lars!!
+    public static byte getByteTorchLight(byte input){
+        return (byte) (input & ((1 << 4) - 1));
+    }
+    public static byte getByteNaturalLight(byte input){
+        return (byte) (((1 << 4) - 1) & input >> 4);
+    }
+
+    public static byte setByteTorchLight(byte input, byte newValue){
+        byte naturalLight = getByteNaturalLight(input);
+        return (byte) (naturalLight << 4 | newValue);
+    }
+
+    public static byte setByteNaturalLight(byte input, byte newValue){
+        byte torchLight = getByteTorchLight(input);
+        return (byte) (newValue << 4 | torchLight);
     }
 }
