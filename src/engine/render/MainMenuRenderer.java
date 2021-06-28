@@ -150,6 +150,7 @@ public class MainMenuRenderer {
                 hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 workerMesh = createTextCentered(getTitleScreenGag(), 0.2f, 0.2f, 0f);
                 workerMesh.render();
+                workerMesh.cleanUp(false);
 
                 glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -158,6 +159,7 @@ public class MainMenuRenderer {
                 hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 workerMesh = createTextCentered(getTitleScreenGag(), 1f, 1f, 0f);
                 workerMesh.render();
+                workerMesh.cleanUp(false);
             }
 
         }
