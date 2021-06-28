@@ -43,7 +43,7 @@ public class Chunk {
     private static final ConcurrentHashMap<Vector2i, byte[]> rotations      = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<Vector2i, byte[]> lights         = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<Vector2i, byte[][]> heightmaps   = new ConcurrentHashMap<>();
-    private static final ConcurrentHashMap<Vector2i, Boolean> modified      = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Vector2i, Boolean> reRender = new ConcurrentHashMap<>();
 
     //mesh data can only be held on the main thread, so it can use faster containers
     private static final HashMap<Vector2i, Mesh[]> normalMeshes   = new HashMap<>();
@@ -148,14 +148,14 @@ public class Chunk {
             rotations.replace(key, rotationData.clone());
             lights.replace(key, lightData.clone());
             heightmaps.replace(key,heightMapData.clone());
-            modified.replace(key, true);
+            reRender.replace(key, true);
         } else {
             chunkKeys.put(key,key);
             blocks.put(key, blockData.clone());
             rotations.put(key, rotationData.clone());
             lights.put(key, lightData.clone());
             heightmaps.put(key,heightMapData.clone());
-            modified.put(key, true);
+            reRender.put(key, true);
 
             normalMeshes.put(key, new Mesh[8]);
             liquidMeshes.put(key, new Mesh[8]);
@@ -252,10 +252,11 @@ public class Chunk {
         saveTimer += getDelta();
         //save interval is 3 seconds
         if (saveTimer >= 3f){
+            System.out.println("saving");
             updateWorldsPathToAvoidCrash();
             savePlayerPos(getPlayerPos());
             for (Vector2i key : chunkKeys.values()){
-                Boolean isModified = modified.get(key);
+                Boolean isModified = reRender.get(key);
                 if (isModified != null && isModified) { //null is also no or false
                     saveChunk(key);
                     //todo: replace with SAVE - CREATE SAVE BOOLEAN HASHMAP! - this is causing issues
@@ -267,7 +268,7 @@ public class Chunk {
                     //todo: replace with SAVE - CREATE SAVE BOOLEAN HASHMAP! - this is causing issues
                     //todo: replace with SAVE - CREATE SAVE BOOLEAN HASHMAP! - this is causing issues
                     //todo: replace with SAVE - CREATE SAVE BOOLEAN HASHMAP! - this is causing issues
-                    modified.replace(key,false);
+                    reRender.replace(key,false);
                 }
             }
             saveTimer = 0f;
@@ -287,14 +288,14 @@ public class Chunk {
         updateWorldsPathToAvoidCrash();
         for (Vector2i thisKey : chunkKeys.values()){
             instantSave(thisKey);
-            modified.replace(thisKey, false);
+            reRender.replace(thisKey, false);
         }
 
         chunkKeys.clear();
         blocks.clear();
         lights.clear();
         heightmaps.clear();
-        modified.clear();
+        reRender.clear();
     }
 
     public static boolean chunkStackContainsBlock(int chunkX, int chunkZ, int yHeight){
@@ -445,7 +446,7 @@ public class Chunk {
                 heightMapData[blockX][blockZ] = (byte) y;
             }
         }
-        modified.replace(key, true);
+        reRender.replace(key, true);
         chunkUpdate(chunkX,chunkZ,yPillar);
         updateNeighbor(chunkX, chunkZ,blockX,y,blockZ);
     }
@@ -524,7 +525,7 @@ public class Chunk {
         lightFloodFill(x, y, z);
         torchFloodFill(x,y,z);
 
-        modified.replace(key, true);
+        reRender.replace(key, true);
 
         lightData[posToIndex(blockX, y, blockZ)] = setByteNaturalLight(lightData[posToIndex(blockX, y, blockZ)], getImmediateLight(x,y,z));
 
@@ -566,7 +567,7 @@ public class Chunk {
         lightFloodFill(x, y, z);
         torchFloodFill(x,y,z);
 
-        modified.replace(key, true);
+        reRender.replace(key, true);
 
         if (!getIfMultiplayer()) {
             onPlaceCall(ID, new Vector3i(x, y, z));
@@ -945,7 +946,7 @@ public class Chunk {
         rotations.clear();
         lights.clear();
         heightmaps.clear();
-        modified.clear();
+        reRender.clear();
 
         normalMeshes.clear();
         liquidMeshes.clear();
