@@ -43,7 +43,8 @@ public class Chunk {
     private static final ConcurrentHashMap<Vector2i, byte[]> rotations      = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<Vector2i, byte[]> lights         = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<Vector2i, byte[][]> heightmaps   = new ConcurrentHashMap<>();
-    private static final ConcurrentHashMap<Vector2i, Boolean> reRender = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Vector2i, Boolean> reRender      = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Vector2i, Boolean> saveToDisk    = new ConcurrentHashMap<>();
 
     //mesh data can only be held on the main thread, so it can use faster containers
     private static final HashMap<Vector2i, Mesh[]> normalMeshes   = new HashMap<>();
