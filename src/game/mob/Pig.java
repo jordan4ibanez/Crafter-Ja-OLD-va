@@ -70,6 +70,7 @@ public class Pig {
                 thisMob.inertia.z = inertia2D.z;
             }
 
+            boolean onGround = applyInertia(thisMob.pos, thisMob.inertia, false, thisMob.width, thisMob.height, true, false, true, false, false);
 
             thisMob.animationTimer += delta * (inertia2D.length() / maxSpeed);
 
@@ -77,7 +78,6 @@ public class Pig {
                 thisMob.animationTimer = 0f;
             }
 
-            boolean onGround = applyInertia(thisMob.pos, thisMob.inertia, false, thisMob.width, thisMob.height, true, false, true, false, false);
 
             thisMob.onGround = onGround;
 
