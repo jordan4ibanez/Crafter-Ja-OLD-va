@@ -16,7 +16,7 @@ public class MobObject {
 
     public final Vector3d pos;
     public final Vector3i oldFlooredPos = new Vector3i(0,-1,0);
-    public final  Vector3d lastPos;
+    public final  Vector3d oldPos;
     public final Vector3f inertia;
     public final float width;
     public final float height;
@@ -40,7 +40,7 @@ public class MobObject {
 
     public MobObject(Vector3d pos, Vector3f inertia, byte ID, int globalID){
         this.pos = pos;
-        this.lastPos = new Vector3d(pos);
+        this.oldPos = new Vector3d(pos);
         this.inertia = inertia;
 
         this.timer = 0f;
@@ -53,8 +53,23 @@ public class MobObject {
         this.rotation = (float)(Math.toDegrees(Math.PI * Math.random() * randomDirFloat()));
         this.smoothRotation = 0f;
 
-        this.bodyOffsets = getMobDefinition(ID).bodyOffsets.clone();
-        this.bodyRotations = getMobDefinition(ID).bodyRotations.clone();
+        //stop memory leak with thorough clone
+        Vector3f[] offSets = getMobDefinition(ID).bodyOffsets;
+        this.bodyOffsets = new Vector3f[offSets.length];
+        byte count = 0;
+        for (Vector3f thisOffset : offSets.clone()){
+            this.bodyOffsets[count] = new Vector3f(thisOffset);
+            count++;
+        }
+        
+        //stop memory leak with thorough clone
+        Vector3f[] bodyRotations = getMobDefinition(ID).bodyRotations;
+        this.bodyRotations = new Vector3f[bodyRotations.length];
+        byte count2 = 0;
+        for (Vector3f thisRotation : bodyRotations.clone()){
+            this.bodyRotations[count2] = new Vector3f(thisRotation);
+            count2++;
+        }
 
         this.ID = ID;
 
