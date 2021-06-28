@@ -224,8 +224,8 @@ public class BiomeGenerator implements Runnable{
                     }
                 }
 
-                for (byte x = (byte) -treeWidth; x <= treeWidth; x++) {
-                    for (byte z = (byte) -treeWidth; z <= treeWidth; z++) {
+                for (byte x = (byte) -2; x <= 2; x++) {
+                    for (byte z = (byte) -2; z <= 2; z++) {
 
                         //generates shadows under the trees
                         boolean solved = false;
