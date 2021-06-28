@@ -2,12 +2,12 @@ package game.chunk;
 
 import engine.graphics.Mesh;
 import engine.network.ChunkRequest;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.joml.Vector2i;
 import org.joml.Vector3d;
 import org.joml.Vector3i;
 
 import java.io.IOException;
+import java.util.AbstractMap;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,7 +23,6 @@ import static engine.time.Time.getDelta;
 import static game.blocks.BlockDefinition.onDigCall;
 import static game.blocks.BlockDefinition.onPlaceCall;
 import static game.chunk.BiomeGenerator.addChunkToBiomeGeneration;
-import static game.chunk.ChunkMath.indexToPos;
 import static game.chunk.ChunkMath.posToIndex;
 import static game.chunk.ChunkMeshGenerator.generateChunkMesh;
 import static game.chunk.ChunkMeshGenerator.instantGeneration;
@@ -36,9 +35,29 @@ public class Chunk {
     //DO NOT CHANGE THE DATA CONTAINER - but this is left here for people to experiment with
     ////private static final Object2ObjectOpenHashMap<Vector2i, ChunkObject> map = new Object2ObjectOpenHashMap<>();
     private static final ConcurrentHashMap<Vector2i, ChunkObject> map = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Vector2i, ChunkMeshObject> mapMeshes = new ConcurrentHashMap<>();
+
+    //data oriented testing
+    /*
+    private static final Object2ObjectArrayMap<Vector2i, byte[]> blocks         = new Object2ObjectArrayMap<>();
+    private static final Object2ObjectArrayMap<Vector2i, byte[]> rotations      = new Object2ObjectArrayMap<>();
+    private static final Object2ObjectArrayMap<Vector2i, byte[]> lights         = new Object2ObjectArrayMap<>();
+    private static final Object2ObjectArrayMap<Vector2i, byte[]> heightmaps     = new Object2ObjectArrayMap<>();
+    private static final Object2ObjectArrayMap<Vector2i, Mesh[]> normalMeshes   = new Object2ObjectArrayMap<>();
+    private static final Object2ObjectArrayMap<Vector2i, Mesh[]> liquidMeshes   = new Object2ObjectArrayMap<>();
+    private static final Object2ObjectArrayMap<Vector2i, Mesh[]> allFacesMeshes = new Object2ObjectArrayMap<>();
+    private static final Object2ObjectArrayMap<Vector2i, Boolean> modified      = new Object2ObjectArrayMap<>();
+     */
+
+
+
 
     public static ChunkObject[] getMap(){
         return map.values().toArray(new ChunkObject[0]);
+    }
+
+    public static AbstractMap<Vector2i, ChunkMeshObject> getMapMeshes(){
+        return mapMeshes;
     }
 
     public static ChunkObject getChunk(int x, int z){
@@ -57,6 +76,7 @@ public class Chunk {
 
         //don't allow old vertex data to leak - instead clone primitives
         ChunkObject gottenChunk = map.get(new Vector2i(x, z));
+
         if (gottenChunk != null) {
             gottenChunk.block = newChunk.block.clone();
             gottenChunk.light = newChunk.light.clone();
@@ -64,6 +84,8 @@ public class Chunk {
             gottenChunk.rotation = newChunk.rotation.clone();
         } else {
             map.put(new Vector2i(x, z), newChunk);
+            mapMeshes.put(new Vector2i(x,z), new ChunkMeshObject(x,z));
+            //System.out.println("you should put a thing here if this breaks completely");
         }
 
         for (int y = 0; y < 8; y++) {
@@ -109,7 +131,8 @@ public class Chunk {
     }
 
     public static void setChunkNormalMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
-        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
+        ChunkMeshObject thisChunk = mapMeshes.get(new Vector2i(chunkX, chunkZ));
+
         if (thisChunk == null){
             if (newMesh != null) {
                 newMesh.cleanUp(false);
@@ -131,7 +154,7 @@ public class Chunk {
     }
 
     public static void setChunkLiquidMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
-        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
+        ChunkMeshObject thisChunk = mapMeshes.get(new Vector2i(chunkX, chunkZ));
         if (thisChunk == null){
             if (newMesh != null) {
                 newMesh.cleanUp(false);
@@ -153,7 +176,7 @@ public class Chunk {
     }
 
     public static void setChunkAllFacesMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
-        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
+        ChunkMeshObject thisChunk = mapMeshes.get(new Vector2i(chunkX, chunkZ));
         if (thisChunk == null){
             if (newMesh != null) {
                 newMesh.cleanUp(false);
@@ -746,30 +769,35 @@ public class Chunk {
         for (int i = 0; i < updateAmount; i++) {
             if (!deletionQueue.isEmpty()) {
                 Vector2i key = deletionQueue.pop();
+
+
+                //clean up mesh data
+                ChunkMeshObject thisChunkMesh = mapMeshes.get(key);
+
+                if (thisChunkMesh != null) {
+                    if (thisChunkMesh.normalMesh != null) {
+                        for (int y = 0; y < 8; y++) {
+                            if (thisChunkMesh.normalMesh[y] != null) {
+                                thisChunkMesh.normalMesh[y].cleanUp(false);
+                                thisChunkMesh.normalMesh[y] = null;
+                            }
+                        }
+                    }
+                    if (thisChunkMesh.liquidMesh != null) {
+                        for (int y = 0; y < 8; y++) {
+                            if (thisChunkMesh.liquidMesh[y] != null) {
+                                thisChunkMesh.liquidMesh[y].cleanUp(false);
+                                thisChunkMesh.liquidMesh[y] = null;
+                            }
+                        }
+                    }
+                }
+
+
                 ChunkObject thisChunk = map.get(key);
-                if (thisChunk == null) {
-                    return;
-                }
-                if (thisChunk.normalMesh != null) {
-                    for (int y = 0; y < 8; y++) {
-                        if (thisChunk.normalMesh[y] != null) {
-                            thisChunk.normalMesh[y].cleanUp(false);
-                            thisChunk.normalMesh[y] = null;
-                        }
-                    }
-                }
-                if (thisChunk.liquidMesh != null) {
-                    for (int y = 0; y < 8; y++) {
-                        if (thisChunk.liquidMesh[y] != null) {
-                            thisChunk.liquidMesh[y].cleanUp(false);
-                            thisChunk.liquidMesh[y] = null;
-                        }
-                    }
-                }
-                if (thisChunk.modified) {
-                    saveChunk(thisChunk);
-                }
+                saveChunk(thisChunk);
                 map.remove(key);
+                mapMeshes.remove(key);
             }
         }
     }
@@ -814,7 +842,7 @@ public class Chunk {
         }
         if (loadedChunk != null) {
             map.put(new Vector2i(chunkX, chunkZ), loadedChunk);
-
+            mapMeshes.put(new Vector2i(chunkX,chunkZ), new ChunkMeshObject(chunkX,chunkZ));
             //dump everything into the chunk updater
             for (int i = 0; i < 8; i++) {
                 chunkUpdate(loadedChunk.x, loadedChunk.z, i); //delayed
@@ -825,10 +853,11 @@ public class Chunk {
     }
 
     public static void cleanChunkDataMemory(){
-        for (ChunkObject thisChunk : map.values()){
+        for (ChunkMeshObject thisChunk : mapMeshes.values()){
             if (thisChunk == null){
                 continue;
             }
+
             if (thisChunk.normalMesh != null){
                 for (Mesh thisMesh : thisChunk.normalMesh){
                     if (thisMesh != null){
@@ -855,5 +884,6 @@ public class Chunk {
         }
 
         map.clear();
+        mapMeshes.clear();
     }
 }

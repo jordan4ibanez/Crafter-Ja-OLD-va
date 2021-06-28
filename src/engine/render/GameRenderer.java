@@ -4,6 +4,7 @@ import engine.Utils;
 import engine.graphics.Mesh;
 import engine.graphics.ShaderProgram;
 import engine.gui.GUIObject;
+import game.chunk.ChunkMeshObject;
 import game.chunk.ChunkObject;
 import game.crafting.InventoryObject;
 import game.falling.FallingEntityObject;
@@ -14,6 +15,7 @@ import game.player.PlayerObject;
 import org.joml.*;
 
 import java.lang.Math;
+import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -31,6 +33,7 @@ import static engine.time.TimeOfDay.getTimeOfDayLinear;
 import static game.chat.Chat.getCurrentMessageMesh;
 import static game.chat.Chat.getViewableChatMessages;
 import static game.chunk.Chunk.getMap;
+import static game.chunk.Chunk.getMapMeshes;
 import static game.clouds.Cloud.*;
 import static game.crafting.Inventory.*;
 import static game.crafting.InventoryLogic.getPlayerHudRotation;
@@ -203,9 +206,8 @@ public class GameRenderer {
         //todo chunk sorting ---------------------------------------------------------------------------------------------
 
         Vector3d camPos = getCameraPosition();
-
-        HashMap<Double, ChunkObject> chunkHash = new HashMap<>();
-
+        HashMap<Double, ChunkMeshObject> chunkHash = new HashMap<>();
+        AbstractMap<Vector2i,ChunkMeshObject> chunkMeshes = getMapMeshes();
 
         //get all distances
         for (ChunkObject thisChunk : getMap()){
@@ -218,11 +220,11 @@ public class GameRenderer {
 
 
             if (getChunkDistanceFromPlayer(thisChunk.x, thisChunk.z) <= renderDistance) {
-                chunkHash.put(currentDistance, thisChunk);
+                chunkHash.put(currentDistance, chunkMeshes.get(new Vector2i(thisChunk.x, thisChunk.z)));
             }
         }
 
-        ChunkObject[] chunkArraySorted = new ChunkObject[chunkHash.size()];
+        ChunkMeshObject[] chunkArraySorted = new ChunkMeshObject[chunkHash.size()];
 
         int arrayIndex = 0;
 
@@ -350,7 +352,7 @@ public class GameRenderer {
         //render normal chunk meshes
         for (int i = 0; i < arrayIndex; i++) {
 
-            ChunkObject thisChunk = chunkArraySorted[i];
+            ChunkMeshObject thisChunk = chunkArraySorted[i];
 
             if (thisChunk == null) {
                 continue;
@@ -375,7 +377,7 @@ public class GameRenderer {
         //render allFaces chunk meshes
         for (int i = 0; i < arrayIndex; i++) {
 
-            ChunkObject thisChunk = chunkArraySorted[i];
+            ChunkMeshObject thisChunk = chunkArraySorted[i];
 
             if (thisChunk == null) {
                 continue;
@@ -588,7 +590,7 @@ public class GameRenderer {
         }
         for (int i = 0; i < arrayIndex; i++) {
 
-            ChunkObject thisChunk = chunkArraySorted[i];
+            ChunkMeshObject thisChunk = chunkArraySorted[i];
 
             if (thisChunk == null) {
                 continue;
