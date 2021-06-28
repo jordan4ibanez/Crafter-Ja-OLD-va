@@ -2,6 +2,7 @@ package game.blocks;
 
 import org.joml.Vector3d;
 import org.joml.Vector3f;
+import org.joml.Vector3i;
 
 import static engine.sound.SoundAPI.playSound;
 import static game.chunk.Chunk.*;
@@ -138,7 +139,7 @@ public class BlockDefinition {
         }
     }
 
-    public static void onPlaceCall(int ID, Vector3d pos) {
+    public static void onPlaceCall(int ID, Vector3i pos) {
         BlockDefinition blockDefinition = blockIDs[ID];
         if (blockDefinition != null) {
             if (blockDefinition.blockModifier != null){
@@ -884,9 +885,9 @@ public class BlockDefinition {
         //falling sand
         BlockModifier fallSand = new BlockModifier() {
             @Override
-            public void onPlace(Vector3d pos) {
-                if (getBlock((int)pos.x, (int)pos.y - 1, (int)pos.z) == 0) {
-                    digBlock((int) pos.x, (int) pos.y, (int) pos.z);
+            public void onPlace(Vector3i pos) {
+                if (getBlock(pos.x, pos.y - 1, pos.z) == 0) {
+                    digBlock(pos.x, pos.y, pos.z);
                     addFallingEntity(new Vector3d(pos.x + 0.5d, pos.y, pos.z + 0.5d), new Vector3f(0, 0, 0), (byte)20);
                 }
             }
@@ -947,11 +948,11 @@ public class BlockDefinition {
                     }
 
                     @Override
-                    public void onRightClick(Vector3d pos) {
-                        if (getBlock((int)pos.x, (int)pos.y - 1, (int)pos.z) == 22) {
-                            byte rot = getBlockRotation((int)pos.x, (int)pos.y, (int)pos.z);
-                            setBlock((int)pos.x, (int)pos.y, (int)pos.z, (byte) 23,rot);
-                            setBlock((int)pos.x, (int)pos.y - 1, (int)pos.z, (byte) 24,rot);
+                    public void onRightClick(Vector3i pos) {
+                        if (getBlock(pos.x, pos.y - 1, pos.z) == 22) {
+                            byte rot = getBlockRotation(pos.x, pos.y, pos.z);
+                            setBlock(pos.x, pos.y, pos.z, (byte) 23,rot);
+                            setBlock(pos.x, pos.y - 1, pos.z, (byte) 24,rot);
                             playSound("door_close", new Vector3d(pos.x + 0.5d, pos.y + 0.5d, pos.z + 0.5d));
                         }
                     }
@@ -994,11 +995,11 @@ public class BlockDefinition {
                     }
 
                     @Override
-                    public void onRightClick(Vector3d pos) {
-                        if (getBlock((int)pos.x, (int)pos.y + 1, (int)pos.z) == 21) {
-                            byte rot = getBlockRotation((int)pos.x, (int)pos.y, (int)pos.z);
-                            setBlock((int)pos.x, (int)pos.y + 1, (int)pos.z, (byte) 23,rot);
-                            setBlock((int)pos.x, (int)pos.y, (int)pos.z, (byte) 24,rot);
+                    public void onRightClick(Vector3i pos) {
+                        if (getBlock(pos.x, pos.y + 1, pos.z) == 21) {
+                            byte rot = getBlockRotation(pos.x, pos.y, pos.z);
+                            setBlock(pos.x, pos.y + 1, pos.z, (byte) 23,rot);
+                            setBlock(pos.x, pos.y, pos.z, (byte) 24,rot);
                             playSound("door_close", new Vector3d(pos.x + 0.5d, pos.y + 0.5d, pos.z + 0.5d));
                         }
                     }
@@ -1041,11 +1042,11 @@ public class BlockDefinition {
                     }
 
                     @Override
-                    public void onRightClick(Vector3d pos) {
-                        if (getBlock((int)pos.x, (int)pos.y - 1, (int)pos.z) == 24) {
-                            byte rot = getBlockRotation((int)pos.x, (int)pos.y, (int)pos.z);
-                            setBlock((int)pos.x, (int)pos.y, (int)pos.z, (byte) 21,rot);
-                            setBlock((int)pos.x, (int)pos.y - 1, (int)pos.z, (byte) 22,rot);
+                    public void onRightClick(Vector3i pos) {
+                        if (getBlock(pos.x, pos.y - 1, pos.z) == 24) {
+                            byte rot = getBlockRotation(pos.x, pos.y, pos.z);
+                            setBlock(pos.x, pos.y, pos.z, (byte) 21,rot);
+                            setBlock(pos.x, pos.y - 1, pos.z, (byte) 22,rot);
                             playSound("door_open", new Vector3d(pos.x + 0.5d, pos.y + 0.5d, pos.z + 0.5d));
                         }
                     }
@@ -1088,11 +1089,11 @@ public class BlockDefinition {
                     }
 
                     @Override
-                    public void onRightClick(Vector3d pos) {
-                        if (getBlock((int)pos.x, (int)pos.y + 1, (int)pos.z) == 23) {
-                            byte rot = getBlockRotation((int)pos.x, (int)pos.y, (int)pos.z);
-                            setBlock((int)pos.x, (int)pos.y + 1, (int)pos.z, (byte) 21,rot);
-                            setBlock((int)pos.x, (int)pos.y, (int)pos.z, (byte) 22,rot);
+                    public void onRightClick(Vector3i pos) {
+                        if (getBlock(pos.x, pos.y + 1, pos.z) == 23) {
+                            byte rot = getBlockRotation(pos.x, pos.y, pos.z);
+                            setBlock(pos.x, pos.y + 1, pos.z, (byte) 21,rot);
+                            setBlock(pos.x, pos.y, pos.z, (byte) 22,rot);
                             playSound("door_open", new Vector3d(pos.x + 0.5d, pos.y + 0.5d, pos.z + 0.5d));
                         }
                     }
@@ -1192,7 +1193,7 @@ public class BlockDefinition {
 
         BlockModifier workBench = new BlockModifier() {
             @Override
-            public void onRightClick(Vector3d pos) {
+            public void onRightClick(Vector3i pos) {
                 //BlockModifier.super.onRightClick(pos);
                 openCraftingInventory(true);
             }
@@ -1229,8 +1230,8 @@ public class BlockDefinition {
 
         BlockModifier torchPlace = new BlockModifier() {
             @Override
-            public void onPlace(Vector3d pos) {
-                torchFloodFill((int)pos.x, (int)pos.y, (int)pos.z);
+            public void onPlace(Vector3i pos) {
+                torchFloodFill(pos.x, pos.y, pos.z);
             }
 
             @Override

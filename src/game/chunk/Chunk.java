@@ -32,13 +32,9 @@ import static game.player.Player.*;
 
 public class Chunk {
 
-    //DO NOT CHANGE THE DATA CONTAINER - but this is left here for people to experiment with
-    ////private static final Object2ObjectOpenHashMap<Vector2i, ChunkObject> map = new Object2ObjectOpenHashMap<>();
-    //private static final ConcurrentHashMap<Vector2i, ChunkObject> map = new ConcurrentHashMap<>();
+    //DO NOT CHANGE THE DATA CONTAINER
     private static final ConcurrentHashMap<Vector2i, ChunkMeshObject> mapMeshes = new ConcurrentHashMap<>();
-
-    //data oriented testing
-
+    
     //this one holds keys for look ups
     private static final ConcurrentHashMap<Vector2i, Vector2i> chunkKeys    = new ConcurrentHashMap<>();
 
@@ -586,8 +582,7 @@ public class Chunk {
         modified.replace(key, true);
 
         if (!getIfMultiplayer()) {
-            System.out.println("ON PLACE CALL SHOULD BE VECTOR3I NOT 3D WTF");
-            onPlaceCall(ID, new Vector3d(x, y, z));
+            onPlaceCall(ID, new Vector3i(x, y, z));
         }
 
         instantGeneration(chunkX,chunkZ,yPillar);

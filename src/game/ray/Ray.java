@@ -22,7 +22,7 @@ import static game.player.Player.*;
 
 public class Ray {
     public static void playerRayCast(Vector3d pos, Vector3f dir, float length, boolean mining, boolean placing, boolean hasMined) {
-        Vector3d finalPos = new Vector3d();
+        Vector3i finalPos = new Vector3i();
         Vector3d newPos   = new Vector3d();
         Vector3d realNewPos = new Vector3d();
         Vector3d lastPos  = new Vector3d();
@@ -74,7 +74,7 @@ public class Ray {
                 foundBlock = getBlock((int) newPos.x, (int) newPos.y, (int) newPos.z);
 
                 if (foundBlock > 0 && isBlockPointable(foundBlock)) {
-                    finalPos = newPos;
+                    finalPos = new Vector3i((int)Math.floor(newPos.x), (int)Math.floor(newPos.y), (int)Math.floor(newPos.z));
                     pointedThingAbove = new Vector3i((int)Math.floor(lastPos.x), (int)Math.floor(lastPos.y), (int)Math.floor(lastPos.z));
                     break;
                 }
@@ -103,14 +103,14 @@ public class Ray {
                             rayPlaceBlock(lastPos, getItemInInventorySlot(getPlayerInventorySelection(), 0).definition.blockID);
                         } else if (wielding != null && wielding.definition.isItem) {
                             if (getItemModifier(getItemInInventorySlot(getPlayerInventorySelection(), 0).name) != null) {
-                                getItemModifier(getItemInInventorySlot(getPlayerInventorySelection(), 0).name).onPlace(new Vector3i((int) finalPos.x, (int) finalPos.y, (int) finalPos.z), pointedThingAbove);
+                                getItemModifier(getItemInInventorySlot(getPlayerInventorySelection(), 0).name).onPlace(new Vector3i(finalPos.x, finalPos.y, finalPos.z), pointedThingAbove);
                             }
                         } else {
                             System.out.println("test3: This is a test of last branch of on place call");
                         }
                     }
                 } else {
-                    setPlayerWorldSelectionPos(new Vector3i((int) finalPos.x, (int) finalPos.y, (int) finalPos.z));
+                    setPlayerWorldSelectionPos(new Vector3i(finalPos.x, finalPos.y, finalPos.z));
                 }
             } else {
                 setPlayerWorldSelectionPos(null);
@@ -118,18 +118,18 @@ public class Ray {
         }
     }
 
-    private static void destroyBlock(Vector3d flooredPos) {
+    private static void destroyBlock(Vector3i flooredPos) {
 
-        int thisBlock = getBlock((int) flooredPos.x, (int) flooredPos.y, (int) flooredPos.z);
+        int thisBlock = getBlock(flooredPos.x, flooredPos.y, flooredPos.z);
 
         if (thisBlock < 0) {
             return;
         }
 
         if (getIfMultiplayer()){
-            sendOutNetworkBlockBreak((int) flooredPos.x, (int) flooredPos.y, (int) flooredPos.z);
+            sendOutNetworkBlockBreak(flooredPos.x, flooredPos.y, flooredPos.z);
         } else {
-            digBlock((int) flooredPos.x, (int) flooredPos.y, (int) flooredPos.z);
+            digBlock(flooredPos.x, flooredPos.y, flooredPos.z);
         }
         for (int i = 0; i < 40 + (int)(Math.random() * 15); i++) {
             createParticle(new Vector3d(flooredPos.x + (Math.random()-0.5d), flooredPos.y + (Math.random()-0.5d), flooredPos.z + (Math.random()-0.5d)), new Vector3f((float)(Math.random()-0.5f) * 2f, 0f, (float)(Math.random()-0.5f) * 2f), thisBlock);
