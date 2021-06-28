@@ -2,6 +2,7 @@ package game.mob;
 
 import engine.graphics.Mesh;
 import engine.graphics.Texture;
+import org.joml.Math;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
@@ -12,8 +13,8 @@ import static engine.time.Time.getDelta;
 import static game.blocks.BlockDefinition.getIfLiquid;
 import static game.chunk.Chunk.getBlock;
 import static game.collision.Collision.applyInertia;
-import static game.mob.MobUtilityCode.doHeadCode;
 import static game.mob.Mob.registerMob;
+import static game.mob.MobUtilityCode.doHeadCode;
 import static game.mob.MobUtilityCode.mobSmoothRotation;
 
 public class Pig {
@@ -27,7 +28,7 @@ public class Pig {
     private final static MobInterface mobInterface = new MobInterface() {
         @Override
         public void onTick(MobObject thisObject) {
-            /*
+
             double delta = getDelta();
 
             thisObject.timer += delta;
@@ -41,16 +42,16 @@ public class Pig {
 
             //head test
             //thisObject.bodyRotations[0] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),(float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),0);
-            thisObject.bodyRotations[2] = new Vector3f((float) Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f)), 0, 0);
-            thisObject.bodyRotations[3] = new Vector3f((float) Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * -2f)), 0, 0);
+            thisObject.bodyRotations[2].x = (float) Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f));
+            thisObject.bodyRotations[3].x = (float) Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * -2f));
 
-            thisObject.bodyRotations[4] = new Vector3f((float) Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * -2f)), 0, 0);
-            thisObject.bodyRotations[5] = new Vector3f((float) Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f)), 0, 0);
+            thisObject.bodyRotations[4].x = (float) Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * -2f));
+            thisObject.bodyRotations[5].x = (float) Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f));
 
-            float yaw = (float) Math.toRadians(thisObject.rotation) + (float) Math.PI;
+            float yaw = Math.toRadians(thisObject.rotation) + (float) Math.PI;
 
-            thisObject.inertia.x += (float) (Math.sin(-yaw) * accelerationMultiplier) * movementAcceleration * delta;
-            thisObject.inertia.z += (float) (Math.cos(yaw) * accelerationMultiplier) * movementAcceleration * delta;
+            thisObject.inertia.x += (Math.sin(-yaw) * accelerationMultiplier) * movementAcceleration * delta;
+            thisObject.inertia.z += (Math.cos(yaw) * accelerationMultiplier) * movementAcceleration * delta;
 
             Vector3f inertia2D = new Vector3f(thisObject.inertia.x, 0, thisObject.inertia.z);
 
@@ -101,7 +102,7 @@ public class Pig {
             doHeadCode(thisObject);
 
             thisObject.lastPos.set(new Vector3d(thisObject.pos));
-             */
+
         }
     };
 

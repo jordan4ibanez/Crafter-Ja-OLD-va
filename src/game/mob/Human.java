@@ -2,6 +2,7 @@ package game.mob;
 
 import engine.graphics.Mesh;
 import engine.graphics.Texture;
+import org.joml.Math;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -48,11 +49,11 @@ public class Human {
 
             //head test
             //thisObject.bodyRotations[0] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),(float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),0);
-            thisObject.bodyRotations[2] = new Vector3f((float) Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f)), 0, 0);
-            thisObject.bodyRotations[3] = new Vector3f((float) Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * -2f)), 0, 0);
+            thisObject.bodyRotations[2].x = (float) Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f));
+            thisObject.bodyRotations[3].x = (float) Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * -2f));
 
-            thisObject.bodyRotations[4] = new Vector3f((float) Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * -2f)), 0, 0);
-            thisObject.bodyRotations[5] = new Vector3f((float) Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f)), 0, 0);
+            thisObject.bodyRotations[4].x = (float) Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * -2f));
+            thisObject.bodyRotations[5].x = (float) Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f));
 
 
             float bodyYaw = (float) Math.toRadians(thisObject.rotation) + (float) Math.PI;
