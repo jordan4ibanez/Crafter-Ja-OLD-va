@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.AbstractMap;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static engine.FancyMath.getDistance;
@@ -33,8 +34,8 @@ import static game.player.Player.*;
 public class Chunk {
 
     //DO NOT CHANGE THE DATA CONTAINER
-    private static final ConcurrentHashMap<Vector2i, ChunkMeshObject> mapMeshes = new ConcurrentHashMap<>();
-    
+    //private static final ConcurrentHashMap<Vector2i, ChunkMeshObject> mapMeshes = new ConcurrentHashMap<>();
+
     //this one holds keys for look ups
     private static final ConcurrentHashMap<Vector2i, Vector2i> chunkKeys    = new ConcurrentHashMap<>();
 
@@ -44,9 +45,10 @@ public class Chunk {
     private static final ConcurrentHashMap<Vector2i, byte[][]> heightmaps   = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<Vector2i, Boolean> modified      = new ConcurrentHashMap<>();
 
-    private static final ConcurrentHashMap<Vector2i, Mesh[]> normalMeshes   = new ConcurrentHashMap<>();
-    private static final ConcurrentHashMap<Vector2i, Mesh[]> liquidMeshes   = new ConcurrentHashMap<>();
-    private static final ConcurrentHashMap<Vector2i, Mesh[]> allFacesMeshes = new ConcurrentHashMap<>();
+    //mesh data can only be held on the main thread, so it can use faster containers
+    private static final HashMap<Vector2i, Mesh[]> normalMeshes   = new HashMap<>();
+    private static final HashMap<Vector2i, Mesh[]> liquidMeshes   = new HashMap<>();
+    private static final HashMap<Vector2i, Mesh[]> allFaceMeshes  = new HashMap<>();
 
 
     public static Vector2i[] getChunkKeys(){
@@ -117,9 +119,18 @@ public class Chunk {
     }
 
 
-    public static AbstractMap<Vector2i, ChunkMeshObject> getMapMeshes(){
-        return mapMeshes;
+    public static AbstractMap<Vector2i, Mesh[]> getNormalMeshes(){
+        return normalMeshes;
     }
+
+    public static AbstractMap<Vector2i, Mesh[]> getLiquidMeshes(){
+        return liquidMeshes;
+    }
+
+    public static AbstractMap<Vector2i, Mesh[]> getAllFaceMeshes(){
+        return allFaceMeshes;
+    }
+
 
 
     //multiplayer chunk update
@@ -146,8 +157,9 @@ public class Chunk {
             heightmaps.put(key,heightMapData.clone());
             modified.put(key, true);
 
-            //todo: data orient this
-            mapMeshes.put(new Vector2i(x,z), new ChunkMeshObject(x,z));
+            normalMeshes.put(key, new Mesh[8]);
+            liquidMeshes.put(key, new Mesh[8]);
+            allFaceMeshes.put(key, new Mesh[8]);
         }
 
         for (int y = 0; y < 8; y++) {
@@ -192,70 +204,47 @@ public class Chunk {
     }
 
     public static void setChunkNormalMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
-        ChunkMeshObject thisChunk = mapMeshes.get(new Vector2i(chunkX, chunkZ));
+        Mesh[] meshArray = normalMeshes.get(new Vector2i(chunkX, chunkZ));
 
-        if (thisChunk == null){
+        if (meshArray == null){
             if (newMesh != null) {
                 newMesh.cleanUp(false);
             }
             return;
         }
-        if (thisChunk.normalMesh == null){
-            if (newMesh != null) {
-                newMesh.cleanUp(false);
-            }
-            return;
+        if (meshArray[yHeight] != null){
+            meshArray[yHeight].cleanUp(false);
         }
-
-        if (thisChunk.normalMesh[yHeight] != null){
-            thisChunk.normalMesh[yHeight].cleanUp(false);
-            thisChunk.normalMesh[yHeight] = null;
-        }
-        thisChunk.normalMesh[yHeight] = newMesh;
+        meshArray[yHeight] = newMesh;
     }
 
     public static void setChunkLiquidMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
-        ChunkMeshObject thisChunk = mapMeshes.get(new Vector2i(chunkX, chunkZ));
-        if (thisChunk == null){
+        Mesh[] meshArray = liquidMeshes.get(new Vector2i(chunkX, chunkZ));
+        if (meshArray == null){
             if (newMesh != null) {
                 newMesh.cleanUp(false);
             }
             return;
         }
-        if (thisChunk.liquidMesh == null){
-            if (newMesh != null) {
-                newMesh.cleanUp(false);
-            }
-            return;
+        if (meshArray[yHeight] != null){
+            meshArray[yHeight].cleanUp(false);
         }
-
-        if (thisChunk.liquidMesh[yHeight] != null){
-            thisChunk.liquidMesh[yHeight].cleanUp(false);
-            thisChunk.liquidMesh[yHeight] = null;
-        }
-        thisChunk.liquidMesh[yHeight] = newMesh;
+        meshArray[yHeight] = newMesh;
     }
 
     public static void setChunkAllFacesMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
-        ChunkMeshObject thisChunk = mapMeshes.get(new Vector2i(chunkX, chunkZ));
-        if (thisChunk == null){
+        Mesh[] meshArray = allFaceMeshes.get(new Vector2i(chunkX, chunkZ));
+        if (meshArray == null){
             if (newMesh != null) {
                 newMesh.cleanUp(false);
             }
             return;
         }
-        if (thisChunk.allFacesMesh == null){
-            if (newMesh != null) {
-                newMesh.cleanUp(false);
-            }
-            return;
+        if (meshArray[yHeight] != null){
+            meshArray[yHeight].cleanUp(false);
+            meshArray[yHeight] = null;
         }
-
-        if (thisChunk.allFacesMesh[yHeight] != null){
-            thisChunk.allFacesMesh[yHeight].cleanUp(false);
-            thisChunk.allFacesMesh[yHeight] = null;
-        }
-        thisChunk.allFacesMesh[yHeight] = newMesh;
+        meshArray[yHeight] = newMesh;
     }
 
     private static float saveTimer = 0f;
@@ -306,8 +295,6 @@ public class Chunk {
         lights.clear();
         heightmaps.clear();
         modified.clear();
-
-        System.out.println("REMEMBER TO CLEAR OUT MESH DATA!!!");
     }
 
     public static boolean chunkStackContainsBlock(int chunkX, int chunkZ, int yHeight){
@@ -823,24 +810,27 @@ public class Chunk {
 
 
                 //clean up mesh data
-                ChunkMeshObject thisChunkMesh = mapMeshes.get(key);
+                Mesh[] normalMeshData = normalMeshes.get(key);
 
-                if (thisChunkMesh != null) {
-                    if (thisChunkMesh.normalMesh != null) {
-                        for (int y = 0; y < 8; y++) {
-                            if (thisChunkMesh.normalMesh[y] != null) {
-                                thisChunkMesh.normalMesh[y].cleanUp(false);
-                                thisChunkMesh.normalMesh[y] = null;
-                            }
-                        }
+                for (Mesh meshData : normalMeshData){
+                    if (meshData != null){
+                        meshData.cleanUp(false);
                     }
-                    if (thisChunkMesh.liquidMesh != null) {
-                        for (int y = 0; y < 8; y++) {
-                            if (thisChunkMesh.liquidMesh[y] != null) {
-                                thisChunkMesh.liquidMesh[y].cleanUp(false);
-                                thisChunkMesh.liquidMesh[y] = null;
-                            }
-                        }
+                }
+
+                Mesh[] liquidMeshData = liquidMeshes.get(key);
+
+                for (Mesh meshData : liquidMeshData){
+                    if (meshData != null){
+                        meshData.cleanUp(false);
+                    }
+                }
+
+                Mesh[] allFacesMeshData = allFaceMeshes.get(key);
+
+                for (Mesh meshData : allFacesMeshData){
+                    if (meshData != null){
+                        meshData.cleanUp(false);
                     }
                 }
 
@@ -852,7 +842,9 @@ public class Chunk {
                 heightmaps.remove(key);
                 lights.remove(key);
 
-                mapMeshes.remove(key);
+                normalMeshes.remove(key);
+                liquidMeshes.remove(key);
+                allFaceMeshes.remove(key);
             }
         }
     }
@@ -910,7 +902,11 @@ public class Chunk {
             heightmaps.put(key, chunkData.heightMap);
 
             //todo: data orient this
-            mapMeshes.put(new Vector2i(chunkX,chunkZ), new ChunkMeshObject(chunkX,chunkZ));
+            normalMeshes.put(key, new Mesh[8]);
+            liquidMeshes.put(key, new Mesh[8]);
+            allFaceMeshes.put(key, new Mesh[8]);
+
+
             //dump everything into the chunk updater
             for (int i = 0; i < 8; i++) {
                 chunkUpdate(chunkX, chunkZ, i); //delayed
@@ -921,32 +917,25 @@ public class Chunk {
     }
 
     public static void cleanChunkDataMemory(){
-        for (ChunkMeshObject thisChunk : mapMeshes.values()){
-            if (thisChunk == null){
-                continue;
-            }
 
-            if (thisChunk.normalMesh != null){
-                for (Mesh thisMesh : thisChunk.normalMesh){
-                    if (thisMesh != null){
-                        thisMesh.cleanUp(false);
-                    }
+        for (Mesh[] meshArray : normalMeshes.values()){
+            for (Mesh meshData : meshArray){
+                if (meshData != null){
+                    meshData.cleanUp(false);
                 }
             }
-
-            if (thisChunk.liquidMesh != null){
-                for (Mesh thisMesh : thisChunk.liquidMesh){
-                    if (thisMesh != null){
-                        thisMesh.cleanUp(false);
-                    }
+        }
+        for (Mesh[] meshArray : liquidMeshes.values()){
+            for (Mesh meshData : meshArray){
+                if (meshData != null){
+                    meshData.cleanUp(false);
                 }
             }
-
-            if (thisChunk.allFacesMesh != null){
-                for (Mesh thisMesh : thisChunk.allFacesMesh){
-                    if (thisMesh != null){
-                        thisMesh.cleanUp(false);
-                    }
+        }
+        for (Mesh[] meshArray : allFaceMeshes.values()){
+            for (Mesh meshData : meshArray){
+                if (meshData != null){
+                    meshData.cleanUp(false);
                 }
             }
         }
@@ -958,7 +947,8 @@ public class Chunk {
         heightmaps.clear();
         modified.clear();
 
-
-        mapMeshes.clear();
+        normalMeshes.clear();
+        liquidMeshes.clear();
+        allFaceMeshes.clear();
     }
 }

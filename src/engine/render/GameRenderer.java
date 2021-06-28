@@ -4,7 +4,6 @@ import engine.Utils;
 import engine.graphics.Mesh;
 import engine.graphics.ShaderProgram;
 import engine.gui.GUIObject;
-import game.chunk.ChunkMeshObject;
 import game.crafting.InventoryObject;
 import game.falling.FallingEntityObject;
 import game.item.Item;
@@ -32,8 +31,7 @@ import static engine.settings.Settings.*;
 import static engine.time.TimeOfDay.getTimeOfDayLinear;
 import static game.chat.Chat.getCurrentMessageMesh;
 import static game.chat.Chat.getViewableChatMessages;
-import static game.chunk.Chunk.getChunkKeys;
-import static game.chunk.Chunk.getMapMeshes;
+import static game.chunk.Chunk.*;
 import static game.clouds.Cloud.*;
 import static game.crafting.Inventory.*;
 import static game.crafting.InventoryLogic.getPlayerHudRotation;
@@ -207,38 +205,55 @@ public class GameRenderer {
         //todo chunk sorting ---------------------------------------------------------------------------------------------
 
 
-        HashMap<Double, ChunkMeshObject> chunkHash = new HashMap<>();
-        AbstractMap<Vector2i,ChunkMeshObject> chunkMeshes = getMapMeshes();
+        HashMap<Double, Mesh[]> normalDrawTypeHash = new HashMap<>();
+        HashMap<Double, Mesh[]> liquidDrawTypeHash = new HashMap<>();
+        HashMap<Double, Mesh[]> allFaceDrawTypeHash = new HashMap<>();
 
 
+        HashMap<Double, Vector2i> chunkHashKeys = new HashMap<>();
+
+        AbstractMap<Vector2i,Mesh[]> normalChunkMeshes = getNormalMeshes();
+        AbstractMap<Vector2i,Mesh[]> liquidChunkMeshes = getLiquidMeshes();
+        AbstractMap<Vector2i,Mesh[]> allFaceChunkMeshes = getAllFaceMeshes();
+
+        int meshCount = 0;
         double flickerFixer = 0d;
 
         //get all distances
         for (Vector2i thisChunk : getChunkKeys()){
             double currentDistance = camPos.distance((thisChunk.x * 16d) + 8d, 0,(thisChunk.y * 16d) + 8d);
 
-            if (chunkHash.get(currentDistance) != null){
+            if (normalDrawTypeHash.get(currentDistance) != null){
                 currentDistance += flickerFixer;
                 flickerFixer += 0.00000000001d;
             }
 
             if (getChunkDistanceFromPlayer(thisChunk.x, thisChunk.y) <= renderDistance) {
-                chunkHash.put(currentDistance, chunkMeshes.get(new Vector2i(thisChunk.x, thisChunk.y)));
+                Vector2i key = new Vector2i(thisChunk.x, thisChunk.y);
+                normalDrawTypeHash.put(currentDistance, normalChunkMeshes.get(key));
+                liquidDrawTypeHash.put(currentDistance, liquidChunkMeshes.get(key));
+                allFaceDrawTypeHash.put(currentDistance, allFaceChunkMeshes.get(key));
+                chunkHashKeys.put(currentDistance, thisChunk);
+                meshCount++;
             }
         }
 
-        ChunkMeshObject[] chunkArraySorted = new ChunkMeshObject[chunkHash.size()];
+
+        Mesh[][] normalDrawTypeArray = new Mesh[meshCount][8];
+        Mesh[][] liquidDrawTypeArray = new Mesh[meshCount][8];
+        Mesh[][] allFaceDrawTypeArray = new Mesh[meshCount][8];
+        Vector2i[] chunkArrayKeys = new Vector2i[meshCount];
 
         int arrayIndex = 0;
 
         //sort all distances
-        while (!chunkHash.isEmpty()){
+        while (!normalDrawTypeHash.isEmpty()){
 
             //System.out.println(chunkHash.size());
 
             AtomicReference<Double> maxDistance = new AtomicReference<>(0d);
 
-            chunkHash.forEach((distancer,y) ->{
+            normalDrawTypeHash.forEach((distancer,y) ->{
                 if(maxDistance.get() <= distancer) {
                     maxDistance.set(distancer);
                 }
@@ -247,12 +262,17 @@ public class GameRenderer {
             double maxDistancePrimitive = maxDistance.get();
 
             //link
-            chunkArraySorted[arrayIndex] = chunkHash.get(maxDistancePrimitive);
+            normalDrawTypeArray[arrayIndex] = normalDrawTypeHash.get(maxDistancePrimitive);
+            liquidDrawTypeArray[arrayIndex] = liquidDrawTypeHash.get(maxDistancePrimitive);
+            allFaceDrawTypeArray[arrayIndex] = allFaceDrawTypeHash.get(maxDistancePrimitive);
+            chunkArrayKeys[arrayIndex] = chunkHashKeys.get(maxDistancePrimitive);
 
             arrayIndex++;
 
             //remove
-            chunkHash.remove(maxDistancePrimitive);
+            normalDrawTypeHash.remove(maxDistancePrimitive);
+            liquidDrawTypeHash.remove(maxDistancePrimitive);
+            allFaceDrawTypeHash.remove(maxDistancePrimitive);
         }
 
         //todo end chunk sorting ---------------------------------------------------------------------------------------------
@@ -355,49 +375,50 @@ public class GameRenderer {
         //render normal chunk meshes
         for (int i = 0; i < arrayIndex; i++) {
 
-            ChunkMeshObject thisChunk = chunkArraySorted[i];
+            Mesh[] thisChunk = normalDrawTypeArray[i];
 
             if (thisChunk == null) {
                 continue;
             }
 
+            Vector2i thisPos = chunkArrayKeys[i];
+
             //normal
-            if (thisChunk.normalMesh != null) {
-                for (Mesh thisMesh : thisChunk.normalMesh) {
-                    if (thisMesh != null) {
-                        modelViewMatrix = updateModelViewMatrix(new Vector3d(thisChunk.x * 16d, 0, thisChunk.z * 16d), new Vector3f(0, 0, 0), viewMatrix);
-                        if (graphicsMode) {
-                            glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                        } else {
-                            shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                        }
-                        thisMesh.render();
+            for (Mesh thisMesh : thisChunk) {
+                if (thisMesh != null) {
+                    modelViewMatrix = updateModelViewMatrix(new Vector3d(thisPos.x * 16d, 0, thisPos.y * 16d), new Vector3f(0, 0, 0), viewMatrix);
+                    if (graphicsMode) {
+                        glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                    } else {
+                        shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                     }
+                    thisMesh.render();
                 }
             }
         }
 
+
         //render allFaces chunk meshes
         for (int i = 0; i < arrayIndex; i++) {
 
-            ChunkMeshObject thisChunk = chunkArraySorted[i];
+            Mesh[] thisChunk = allFaceDrawTypeArray[i];
 
             if (thisChunk == null) {
                 continue;
             }
 
+            Vector2i thisPos = chunkArrayKeys[i];
+
             //allFaces
-            if (thisChunk.allFacesMesh != null) {
-                for (Mesh thisMesh : thisChunk.allFacesMesh) {
-                    if (thisMesh != null) {
-                        modelViewMatrix = updateModelViewMatrix(new Vector3d(thisChunk.x * 16d, 0, thisChunk.z * 16d), new Vector3f(0, 0, 0), viewMatrix);
-                        if (graphicsMode) {
-                            glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                        } else {
-                            shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                        }
-                        thisMesh.render();
+            for (Mesh thisMesh : thisChunk) {
+                if (thisMesh != null) {
+                    modelViewMatrix = updateModelViewMatrix(new Vector3d(thisPos.x * 16d, 0, thisPos.y * 16d), new Vector3f(0, 0, 0), viewMatrix);
+                    if (graphicsMode) {
+                        glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                    } else {
+                        shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                     }
+                    thisMesh.render();
                 }
             }
         }
@@ -591,26 +612,29 @@ public class GameRenderer {
         if (graphicsMode) {
             glDisable(GL_CULL_FACE);
         }
+
         for (int i = 0; i < arrayIndex; i++) {
 
-            ChunkMeshObject thisChunk = chunkArraySorted[i];
+            Mesh[] thisChunk = liquidDrawTypeArray[i];
 
             if (thisChunk == null) {
                 continue;
             }
+
+            Vector2i thisPos = chunkArrayKeys[i];
+
             //liquid
-            if (thisChunk.liquidMesh != null) {
-                for (Mesh thisMesh : thisChunk.liquidMesh) {
-                    if (thisMesh != null) {
-                        modelViewMatrix = updateModelViewMatrix(new Vector3d(thisChunk.x * 16d, 0, thisChunk.z * 16d), new Vector3f(0, 0, 0), viewMatrix);
-                        shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                        thisMesh.render();
-                    }
+
+            for (Mesh thisMesh : thisChunk) {
+                if (thisMesh != null) {
+                    modelViewMatrix = updateModelViewMatrix(new Vector3d(thisPos.x * 16d, 0, thisPos.y * 16d), new Vector3f(0, 0, 0), viewMatrix);
+                    shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                    thisMesh.render();
                 }
             }
         }
 
-        Arrays.fill(chunkArraySorted, null);
+        Arrays.fill(normalDrawTypeArray, null);
 
         if (graphicsMode) {
             glEnable(GL_CULL_FACE);
