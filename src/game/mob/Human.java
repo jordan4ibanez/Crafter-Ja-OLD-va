@@ -75,6 +75,8 @@ public class Human {
                 maxSpeed = 0.01f;
             }
 
+            boolean onGround = applyInertia(thisMob.pos, thisMob.inertia, false, thisMob.width, thisMob.height, true, false, true, false, false);
+
             if (thisMob.animationTimer >= 1f) {
                 thisMob.animationTimer = 0f;
             }
@@ -85,17 +87,12 @@ public class Human {
                 thisMob.inertia.z = inertia2D.z;
             }
 
-
-            System.out.println(thisMob.pos.distance(thisMob.oldPos));
-
-            thisMob.animationTimer += thisMob.pos.distance(thisMob.oldPos) * 100f;
+            thisMob.animationTimer += thisMob.pos.distance(thisMob.oldPos) / 2f;
 
             if (thisMob.animationTimer >= 1f) {
                 thisMob.animationTimer -= 1f;
             }
 
-
-            boolean onGround = applyInertia(thisMob.pos, thisMob.inertia, false, thisMob.width, 3/*thisObject.height*/, true, false, true, false, false);
 
             thisMob.onGround = onGround;
 

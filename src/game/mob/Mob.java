@@ -123,13 +123,9 @@ public class Mob {
             thisMob.oldFlooredPos.y = currentFlooredPos.y;
             thisMob.oldFlooredPos.z = currentFlooredPos.z;
 
-            System.out.println(thisMob.pos.x + " " + thisMob.oldPos.x);
-
             thisMob.oldPos.x = thisMob.pos.x;
             thisMob.oldPos.y = thisMob.pos.y;
             thisMob.oldPos.z = thisMob.pos.z;
-
-            System.out.println("is reaching here");
         }
 
         while (!deletionQueue.isEmpty()){

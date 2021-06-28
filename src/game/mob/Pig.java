@@ -107,7 +107,6 @@ public class Pig {
             thisMob.oldPos.x = thisMob.pos.x;
             thisMob.oldPos.y = thisMob.pos.y;
             thisMob.oldPos.z = thisMob.pos.z;
-
         }
     };
 
