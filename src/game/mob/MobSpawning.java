@@ -13,10 +13,10 @@ public class MobSpawning {
 
     private static double spawnTimer = 0;
 
-    private static final float spawnGoal = 1.f; //every 10 seconds
+    private static final float spawnGoal = 0.25f; //every 10 seconds
 
     public static void runSpawningAlgorithm(){
-        if (true){
+        if (false){
             return;
         }
         if (spawned > 100){
