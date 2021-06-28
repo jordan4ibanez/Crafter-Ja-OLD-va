@@ -141,7 +141,6 @@ public class Chunk {
         //don't allow old vertex data to leak - instead clone primitives
         Vector2i gottenChunk = chunkKeys.get(key);
 
-
         if (gottenChunk != null) {
             //todo: see if not doing .clone() causes memory leak - would reduce memory lookups
             blocks.replace(key, blockData.clone());
@@ -248,9 +247,8 @@ public class Chunk {
     private static float saveTimer = 0f;
     public static void globalChunkSaveToDisk(){
         saveTimer += getDelta();
-        //save interval is 3 seconds
-        if (saveTimer >= 3f){
-            System.out.println("saving");
+        //save interval is 16 seconds
+        if (saveTimer >= 16f){
             updateWorldsPathToAvoidCrash();
             savePlayerPos(getPlayerPos());
             for (Vector2i key : chunkKeys.values()){
