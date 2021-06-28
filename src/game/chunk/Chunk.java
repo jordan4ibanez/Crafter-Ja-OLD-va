@@ -34,58 +34,124 @@ public class Chunk {
 
     //DO NOT CHANGE THE DATA CONTAINER - but this is left here for people to experiment with
     ////private static final Object2ObjectOpenHashMap<Vector2i, ChunkObject> map = new Object2ObjectOpenHashMap<>();
-    private static final ConcurrentHashMap<Vector2i, ChunkObject> map = new ConcurrentHashMap<>();
+    //private static final ConcurrentHashMap<Vector2i, ChunkObject> map = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<Vector2i, ChunkMeshObject> mapMeshes = new ConcurrentHashMap<>();
 
     //data oriented testing
-    /*
-    private static final Object2ObjectArrayMap<Vector2i, byte[]> blocks         = new Object2ObjectArrayMap<>();
-    private static final Object2ObjectArrayMap<Vector2i, byte[]> rotations      = new Object2ObjectArrayMap<>();
-    private static final Object2ObjectArrayMap<Vector2i, byte[]> lights         = new Object2ObjectArrayMap<>();
-    private static final Object2ObjectArrayMap<Vector2i, byte[]> heightmaps     = new Object2ObjectArrayMap<>();
-    private static final Object2ObjectArrayMap<Vector2i, Mesh[]> normalMeshes   = new Object2ObjectArrayMap<>();
-    private static final Object2ObjectArrayMap<Vector2i, Mesh[]> liquidMeshes   = new Object2ObjectArrayMap<>();
-    private static final Object2ObjectArrayMap<Vector2i, Mesh[]> allFacesMeshes = new Object2ObjectArrayMap<>();
-    private static final Object2ObjectArrayMap<Vector2i, Boolean> modified      = new Object2ObjectArrayMap<>();
-     */
+
+    //this one holds keys for look ups
+    private static final ConcurrentHashMap<Vector2i, Vector2i> chunkKeys    = new ConcurrentHashMap<>();
+
+    private static final ConcurrentHashMap<Vector2i, byte[]> blocks         = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Vector2i, byte[]> rotations      = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Vector2i, byte[]> lights         = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Vector2i, byte[][]> heightmaps   = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Vector2i, Boolean> modified      = new ConcurrentHashMap<>();
+
+    private static final ConcurrentHashMap<Vector2i, Mesh[]> normalMeshes   = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Vector2i, Mesh[]> liquidMeshes   = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Vector2i, Mesh[]> allFacesMeshes = new ConcurrentHashMap<>();
 
 
-
-
-    public static ChunkObject[] getMap(){
-        return map.values().toArray(new ChunkObject[0]);
+    public static Vector2i[] getChunkKeys(){
+        return chunkKeys.values().toArray(new Vector2i[0]);
     }
+
+    public static Vector2i getChunkKey(Vector2i key){
+        return chunkKeys.get(key);
+    }
+    public static Vector2i getChunkKey(int x, int z){
+        return chunkKeys.get(new Vector2i(x,z));
+    }
+
+    //overload part 1
+    public static byte[] getBlockData(int x, int z){
+        return blocks.get(new Vector2i(x,z));
+    }
+    public static byte[] getRotationData(int x, int z){
+        return rotations.get(new Vector2i(x,z));
+    }
+    public static byte[] getLightData(int x, int z){
+        return lights.get(new Vector2i(x,z));
+    }
+    public static byte[][] getHeightMapData(int x, int z){
+        return heightmaps.get(new Vector2i(x,z));
+    }
+    //overload part 2
+    public static byte[] getBlockData(Vector2i key){
+        return blocks.get(key);
+    }
+    public static byte[] getRotationData(Vector2i key){
+        return rotations.get(key);
+    }
+    public static byte[] getLightData(Vector2i key){
+        return lights.get(key);
+    }
+    public static byte[][] getHeightMapData(Vector2i key){
+        return heightmaps.get(key);
+    }
+    //overload part 3 - immutable clones
+    public static byte[] getBlockDataClone(int x, int z){
+        byte[] blockData = blocks.get(new Vector2i(x,z));
+        if (blockData == null){
+            return null;
+        }
+        return blockData.clone();
+    }
+    public static byte[] getRotationDataClone(int x, int z){
+        byte[] rotationData = rotations.get(new Vector2i(x,z));
+        if (rotationData == null){
+            return null;
+        }
+        return rotationData.clone();
+    }
+    public static byte[] getLightDataClone(int x, int z){
+        byte[] lightData =  lights.get(new Vector2i(x,z));
+        if (lightData == null){
+            return null;
+        }
+        return lightData.clone();
+    }
+    public static byte[][] getHeightMapDataClone(int x, int z){
+        byte[][] heightMapData = heightmaps.get(new Vector2i(x,z));
+        if (heightMapData == null){
+            return null;
+        }
+        return heightMapData.clone();
+    }
+
 
     public static AbstractMap<Vector2i, ChunkMeshObject> getMapMeshes(){
         return mapMeshes;
     }
 
-    public static ChunkObject getChunk(int x, int z){
-        return map.get(new Vector2i(x,z));
-    }
 
     //multiplayer chunk update
-    public static void setChunk(ChunkObject newChunk) {
+    public static void setChunk(int x, int z, byte[] blockData, byte[] rotationData, byte[] lightData, byte[][] heightMapData) {
 
-        if (newChunk == null){
-            return;
-        }
-
-        int x = newChunk.x;
-        int z = newChunk.z;
+        Vector2i key = new Vector2i(x, z);
 
         //don't allow old vertex data to leak - instead clone primitives
-        ChunkObject gottenChunk = map.get(new Vector2i(x, z));
+        Vector2i gottenChunk = chunkKeys.get(key);
+
 
         if (gottenChunk != null) {
-            gottenChunk.block = newChunk.block.clone();
-            gottenChunk.light = newChunk.light.clone();
-            gottenChunk.heightMap = newChunk.heightMap.clone();
-            gottenChunk.rotation = newChunk.rotation.clone();
+            //todo: see if not doing .clone() causes memory leak - would reduce memory lookups
+            blocks.replace(key, blockData.clone());
+            rotations.replace(key, rotationData.clone());
+            lights.replace(key, lightData.clone());
+            heightmaps.replace(key,heightMapData.clone());
+            modified.replace(key, true);
         } else {
-            map.put(new Vector2i(x, z), newChunk);
+            chunkKeys.put(key,key);
+            blocks.put(key, blockData.clone());
+            rotations.put(key, rotationData.clone());
+            lights.put(key, lightData.clone());
+            heightmaps.put(key,heightMapData.clone());
+            modified.put(key, true);
+
+            //todo: data orient this
             mapMeshes.put(new Vector2i(x,z), new ChunkMeshObject(x,z));
-            //System.out.println("you should put a thing here if this breaks completely");
         }
 
         for (int y = 0; y < 8; y++) {
@@ -105,7 +171,6 @@ public class Chunk {
                     genBiome(x,z);
                     for (int y = 0; y < 8; y++){
                         chunkUpdate(x,z,y);
-                        //generateChunkMesh(x,z,y); <- this one causes serious startup lag for slow pcs
                     }
                 }
             }
@@ -204,10 +269,20 @@ public class Chunk {
         if (saveTimer >= 3f){
             updateWorldsPathToAvoidCrash();
             savePlayerPos(getPlayerPos());
-            for (ChunkObject thisChunk : map.values()){
-                if (thisChunk.modified) {
-                    saveChunk(thisChunk);
-                    thisChunk.modified = false;
+            for (Vector2i key : chunkKeys.values()){
+                Boolean isModified = modified.get(key);
+                if (isModified != null && isModified) { //null is also no or false
+                    saveChunk(key);
+                    //todo: replace with SAVE - CREATE SAVE BOOLEAN HASHMAP! - this is causing issues
+                    //todo: replace with SAVE - CREATE SAVE BOOLEAN HASHMAP! - this is causing issues
+                    //todo: replace with SAVE - CREATE SAVE BOOLEAN HASHMAP! - this is causing issues
+                    //todo: replace with SAVE - CREATE SAVE BOOLEAN HASHMAP! - this is causing issues
+                    //todo: replace with SAVE - CREATE SAVE BOOLEAN HASHMAP! - this is causing issues
+                    //todo: replace with SAVE - CREATE SAVE BOOLEAN HASHMAP! - this is causing issues
+                    //todo: replace with SAVE - CREATE SAVE BOOLEAN HASHMAP! - this is causing issues
+                    //todo: replace with SAVE - CREATE SAVE BOOLEAN HASHMAP! - this is causing issues
+                    //todo: replace with SAVE - CREATE SAVE BOOLEAN HASHMAP! - this is causing issues
+                    modified.replace(key,false);
                 }
             }
             saveTimer = 0f;
@@ -216,31 +291,40 @@ public class Chunk {
 
     //this re-generates chunk meshes with the light level
     public static void floodChunksWithNewLight(){
-        for (ChunkObject thisChunk : map.values()){
+        for (Vector2i key : chunkKeys.values()){
             for (int y = 0; y < 8; y++) {
-                chunkUpdate(thisChunk.x, thisChunk.z, y);
+                chunkUpdate(key.x, key.y, y);
             }
         }
     }
 
     public static void globalFinalChunkSaveToDisk(){
         updateWorldsPathToAvoidCrash();
-        for (ChunkObject thisChunk : map.values()){
-            instantSave(thisChunk);
-            thisChunk.modified = false;
+        for (Vector2i thisKey : chunkKeys.values()){
+            instantSave(thisKey);
+            modified.replace(thisKey, false);
         }
-        map.clear();
+
+        chunkKeys.clear();
+        blocks.clear();
+        lights.clear();
+        heightmaps.clear();
+        modified.clear();
+
+        System.out.println("REMEMBER TO CLEAR OUT MESH DATA!!!");
     }
 
     public static boolean chunkStackContainsBlock(int chunkX, int chunkZ, int yHeight){
-        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
-        if (thisChunk == null || thisChunk.block == null){
+        byte[] blockData = blocks.get(new Vector2i(chunkX, chunkZ));
+
+        if (blockData == null){
             return false;
         }
+
         for (int x = 0; x < 16; x++){
             for (int z = 0; z < 16; z++){
                 for (int y = yHeight * 16; y < (yHeight + 1) * 16; y++){
-                    if (thisChunk.block[posToIndex(x,y,z)] != 0){
+                    if (blockData[posToIndex(x,y,z)] != 0){
                         return true;
                     }
                 }
@@ -256,15 +340,14 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
-        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
-        if (thisChunk == null){
-            return 555;
-        }
-        if (thisChunk.block == null){
-            return 555;
+
+        byte[][] heightMapData = heightmaps.get(new Vector2i(chunkX, chunkZ));
+
+        if (heightMapData == null){
+            return 555; //todo, handle this better
         }
 
-        return thisChunk.heightMap[blockX][blockZ];
+        return heightMapData[blockX][blockZ];
     }
 
     public static boolean underSunLight(int x, int y, int z){
@@ -275,14 +358,11 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
-        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
-        if (thisChunk == null){
+        byte[][] heightMapData = heightmaps.get(new Vector2i(chunkX, chunkZ));
+        if (heightMapData == null){
             return false;
         }
-        if (thisChunk.block == null){
-            return false;
-        }
-        return thisChunk.heightMap[blockX][blockZ] < y + 1;
+        return heightMapData[blockX][blockZ] < y + 1;
     }
 
     //overloaded block getter
@@ -294,14 +374,11 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
-        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
-        if (thisChunk == null){
+        byte[] blockData = blocks.get(new Vector2i(chunkX, chunkZ));
+        if (blockData == null){
             return -1;
         }
-        if (thisChunk.block == null){
-            return -1;
-        }
-        return thisChunk.block[posToIndex(blockX, y, blockZ)];
+        return blockData[posToIndex(blockX, y, blockZ)];
     }
     //overloaded block getter
     public static byte getBlock(Vector3i pos){
@@ -312,14 +389,11 @@ public class Chunk {
         int chunkZ = (int)Math.floor(pos.z/16d);
         int blockX = (int)(pos.x - (16d*chunkX));
         int blockZ = (int)(pos.z - (16d*chunkZ));
-        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
-        if (thisChunk == null){
+        byte[] blockData = blocks.get(new Vector2i(chunkX, chunkZ));
+        if (blockData == null){
             return -1;
         }
-        if (thisChunk.block == null){
-            return -1;
-        }
-        return thisChunk.block[posToIndex(blockX, pos.y, blockZ)];
+        return blockData[posToIndex(blockX, pos.y, blockZ)];
     }
 
     //overloaded getter for rotation
@@ -331,14 +405,11 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
-        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
-        if (thisChunk == null){
+        byte[] rotationData = rotations.get(new Vector2i(chunkX, chunkZ));
+        if (rotationData == null){
             return 0;
         }
-        if (thisChunk.block == null){
-            return 0;
-        }
-        return thisChunk.rotation[posToIndex(blockX, y, blockZ)];
+        return rotationData[posToIndex(blockX, y, blockZ)];
     }
     //overloaded getter for rotation
     public static byte getBlockRotation(Vector3i pos){
@@ -349,14 +420,11 @@ public class Chunk {
         int chunkZ = (int)Math.floor(pos.z/16d);
         int blockX = (int)(pos.x - (16d*chunkX));
         int blockZ = (int)(pos.z - (16d*chunkZ));
-        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
-        if (thisChunk == null){
+        byte[] rotationData = rotations.get(new Vector2i(chunkX, chunkZ));
+        if (rotationData == null){
             return 0;
         }
-        if (thisChunk.block == null){
-            return 0;
-        }
-        return thisChunk.rotation[posToIndex(blockX, pos.y, blockZ)];
+        return rotationData[posToIndex(blockX, pos.y, blockZ)];
     }
 
     public static void setBlock(int x,int y,int z, byte newBlock, byte rot){
@@ -368,30 +436,33 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
-        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
-        if (thisChunk == null){
+        Vector2i key = new Vector2i(chunkX, chunkZ);
+        byte[] blockData = blocks.get(key);
+        byte[] rotationData = rotations.get(key);
+        byte[][] heightMapData = heightmaps.get(key);
+
+        if (blockData == null || rotationData == null){
             return;
         }
-        if (thisChunk.block == null){
-            return;
-        }
-        thisChunk.block[posToIndex(blockX, y, blockZ)] = newBlock;
-        thisChunk.rotation[posToIndex(blockX, y, blockZ)] = rot;
+
+        blockData[posToIndex(blockX,y, blockZ)] = newBlock;
+        rotationData[posToIndex(blockX,y, blockZ)] = rot;
+
         if (newBlock == 0){
-            if (thisChunk.heightMap[blockX][blockZ] == y){
-                for (int yCheck = thisChunk.heightMap[blockX][blockZ]; yCheck > 0; yCheck--){
-                    if (thisChunk.block[posToIndex(blockX, yCheck, blockZ)] != 0){
-                        thisChunk.heightMap[blockX][blockZ] = (byte) yCheck;
+            if (heightMapData[blockX][blockZ] == y){
+                for (int yCheck = heightMapData[blockX][blockZ]; yCheck > 0; yCheck--){
+                    if (blockData[posToIndex(blockX, yCheck, blockZ)] != 0){
+                        heightMapData[blockX][blockZ] = (byte) yCheck;
                         break;
                     }
                 }
             }
         } else {
-            if (thisChunk.heightMap[blockX][blockZ] < y){
-                thisChunk.heightMap[blockX][blockZ] = (byte) y;
+            if (heightMapData[blockX][blockZ] < y){
+                heightMapData[blockX][blockZ] = (byte) y;
             }
         }
-        thisChunk.modified = true;
+        modified.replace(key, true);
         chunkUpdate(chunkX,chunkZ,yPillar);
         updateNeighbor(chunkX, chunkZ,blockX,y,blockZ);
     }
@@ -405,14 +476,11 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
-        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
-        if (thisChunk == null){
+        byte[] lightData = lights.get(new Vector2i(chunkX, chunkZ));
+        if (lightData == null){
             return;
         }
-        if (thisChunk.block == null){
-            return;
-        }
-        thisChunk.light[posToIndex(blockX, y, blockZ)] = setByteNaturalLight(thisChunk.light[posToIndex(blockX, y, blockZ)],newLight);
+        lightData[posToIndex(blockX, y, blockZ)] = setByteNaturalLight(lightData[posToIndex(blockX, y, blockZ)],newLight);
         chunkUpdate(chunkX,chunkZ,yPillar);
         updateNeighbor(chunkX, chunkZ,blockX,y,blockZ);
     }
@@ -426,15 +494,11 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
-        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
-        if (thisChunk == null){
+        byte[] lightData = lights.get(new Vector2i(chunkX, chunkZ));
+        if (lightData == null){
             return;
         }
-        if (thisChunk.block == null){
-            return;
-        }
-
-        thisChunk.light[posToIndex(blockX, y, blockZ)] = setByteTorchLight(thisChunk.light[posToIndex(blockX, y, blockZ)], newLight);
+        lightData[posToIndex(blockX, y, blockZ)] = setByteTorchLight(lightData[posToIndex(blockX, y, blockZ)], newLight);
         chunkUpdate(chunkX,chunkZ,yPillar);
         updateNeighbor(chunkX, chunkZ,blockX,y,blockZ);
     }
@@ -449,22 +513,26 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
-        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
-        if (thisChunk == null){
-            return;
-        }
-        if (thisChunk.block == null){
+
+        Vector2i key = new Vector2i(chunkX, chunkZ);
+
+        byte[] blockData = blocks.get(key);
+        byte[] rotationData = rotations.get(key);
+        byte[][] heightMapData = heightmaps.get(key);
+        byte[] lightData = lights.get(key);
+
+        if (blockData == null || rotationData == null || heightMapData == null){
             return;
         }
 
-        byte oldBlock = thisChunk.block[posToIndex(blockX, y, blockZ)];
+        byte oldBlock = blockData[posToIndex(blockX, y, blockZ)];
 
-        thisChunk.block[posToIndex(blockX, y, blockZ)] = 0;
-        thisChunk.rotation[posToIndex(blockX, y, blockZ)] = 0;
-        if (thisChunk.heightMap[blockX][blockZ] == y){
-            for (int yCheck = thisChunk.heightMap[blockX][blockZ]; yCheck > 0; yCheck--){
-                if (thisChunk.block[posToIndex(blockX, yCheck, blockZ)] != 0){
-                    thisChunk.heightMap[blockX][blockZ] = (byte) yCheck;
+        blockData[posToIndex(blockX, y, blockZ)] = 0;
+        rotationData[posToIndex(blockX, y, blockZ)] = 0;
+        if (heightMapData[blockX][blockZ] == y){
+            for (int yCheck = heightMapData[blockX][blockZ]; yCheck > 0; yCheck--){
+                if (blockData[posToIndex(blockX, yCheck, blockZ)] != 0){
+                    heightMapData[blockX][blockZ] = (byte) yCheck;
                     break;
                 }
             }
@@ -473,9 +541,9 @@ public class Chunk {
         lightFloodFill(x, y, z);
         torchFloodFill(x,y,z);
 
-        thisChunk.modified = true;
+        modified.replace(key, true);
 
-        thisChunk.light[posToIndex(blockX, y, blockZ)] = setByteNaturalLight(thisChunk.light[posToIndex(blockX, y, blockZ)], getImmediateLight(x,y,z));
+        lightData[posToIndex(blockX, y, blockZ)] = setByteNaturalLight(lightData[posToIndex(blockX, y, blockZ)], getImmediateLight(x,y,z));
 
         if (!getIfMultiplayer()) {
             onDigCall(oldBlock, new Vector3d(x, y, z));
@@ -494,25 +562,31 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (x - (16*chunkX));
         int blockZ = (z - (16*chunkZ));
-        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
-        if (thisChunk == null){
+
+        Vector2i key = new Vector2i(chunkX, chunkZ);
+
+        byte[] blockData = blocks.get(key);
+        byte[] rotationData = rotations.get(key);
+        byte[][] heightMapData = heightmaps.get(key);
+
+        if (blockData == null || rotationData == null || heightMapData == null){
             return;
         }
-        if (thisChunk.block == null){
-            return;
-        }
-        thisChunk.block[posToIndex(blockX, y, blockZ)] = ID;
-        thisChunk.rotation[posToIndex(blockX, y, blockZ)] =  rot;
-        if (thisChunk.heightMap[blockX][blockZ] < y){
-            thisChunk.heightMap[blockX][blockZ] = (byte) y;
+
+        blockData[posToIndex(blockX, y, blockZ)] = ID;
+        rotationData[posToIndex(blockX, y, blockZ)] =  rot;
+
+        if (heightMapData[blockX][blockZ] < y){
+            heightMapData[blockX][blockZ] = (byte) y;
         }
 
         lightFloodFill(x, y, z);
         torchFloodFill(x,y,z);
 
-        thisChunk.modified = true;
+        modified.replace(key, true);
 
         if (!getIfMultiplayer()) {
+            System.out.println("ON PLACE CALL SHOULD BE VECTOR3I NOT 3D WTF");
             onPlaceCall(ID, new Vector3d(x, y, z));
         }
 
@@ -529,19 +603,15 @@ public class Chunk {
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
 
-        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
+        byte[] lightData = lights.get(new Vector2i(chunkX, chunkZ));
 
-        if (thisChunk == null){
+        if (lightData == null){
             return 0;
         }
-        if (thisChunk.light == null){
-            return 0;
-        }
-
 
         int index = posToIndex(blockX, y, blockZ);
 
-        byte naturalLightOfBlock = getByteNaturalLight(thisChunk.light[index]);
+        byte naturalLightOfBlock = getByteNaturalLight(lightData[index]);
 
         byte currentGlobalLightLevel = getCurrentGlobalLightLevel();
 
@@ -549,7 +619,7 @@ public class Chunk {
             naturalLightOfBlock = currentGlobalLightLevel;
         }
 
-        byte torchLight = getByteTorchLight(thisChunk.light[index]);
+        byte torchLight = getByteTorchLight(lightData[index]);
 
         if (naturalLightOfBlock > torchLight){
             return naturalLightOfBlock;
@@ -567,16 +637,13 @@ public class Chunk {
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
 
-        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
+        byte[] lightData = lights.get(new Vector2i(chunkX,chunkZ));
 
-        if (thisChunk == null){
-            return 0;
-        }
-        if (thisChunk.light == null){
+        if (lightData == null){
             return 0;
         }
 
-        return getByteNaturalLight(thisChunk.light[posToIndex(blockX, y, blockZ)]);
+        return getByteNaturalLight(lightData[posToIndex(blockX, y, blockZ)]);
     }
 
     public static byte getTorchLight(int x,int y,int z){
@@ -588,18 +655,13 @@ public class Chunk {
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
 
-        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
+        byte[] lightData = lights.get(new Vector2i(chunkX,chunkZ));
 
-        if (thisChunk == null){
-            return 0;
-        }
-        if (thisChunk.light == null){
+        if (lightData == null){
             return 0;
         }
 
-        int index = posToIndex(blockX, y, blockZ);
-
-        return getByteTorchLight(thisChunk.light[index]);
+        return getByteTorchLight(lightData[posToIndex(blockX, y, blockZ)]);
     }
 
 
@@ -620,9 +682,6 @@ public class Chunk {
         byte torchLight = getByteTorchLight(input);
         return (byte) (newValue << 4 | torchLight);
     }
-
-
-
 
 
     private static void instantUpdateNeighbor(int chunkX, int chunkZ, int x, int y, int z){
@@ -673,28 +732,25 @@ public class Chunk {
 
     private static void fullNeighborUpdate(int chunkX, int chunkZ){
 
-        if (map.get(new Vector2i(chunkX + 1, chunkZ)) != null){
+        if (chunkKeys.get(new Vector2i(chunkX + 1, chunkZ)) != null){
             for (int y = 0; y < 8; y++){
                 chunkUpdate(chunkX+1, chunkZ, y);
             }
         }
 
-
-        if (map.get(new Vector2i(chunkX-1, chunkZ)) != null){
+        if (chunkKeys.get(new Vector2i(chunkX-1, chunkZ)) != null){
             for (int y = 0; y < 8; y++){
                 chunkUpdate(chunkX-1, chunkZ, y);
             }
         }
 
-
-        if (map.get(new Vector2i(chunkX, chunkZ+1)) != null){
+        if (chunkKeys.get(new Vector2i(chunkX, chunkZ+1)) != null){
             for (int y = 0; y < 8; y++){
                 chunkUpdate(chunkX, chunkZ+1, y);
             }
         }
 
-
-        if (map.get(new Vector2i(chunkX, chunkZ-1)) != null){
+        if (chunkKeys.get(new Vector2i(chunkX, chunkZ-1)) != null){
             for (int y = 0; y < 8; y++){
                 chunkUpdate(chunkX, chunkZ-1, y);
             }
@@ -709,7 +765,7 @@ public class Chunk {
         for (int x = -chunkRenderDistance + currentChunk.x; x < chunkRenderDistance + currentChunk.x; x++){
             for (int z = -chunkRenderDistance + currentChunk.z; z< chunkRenderDistance + currentChunk.z; z++){
                 if (getChunkDistanceFromPlayer(x,z) <= chunkRenderDistance){
-                    if (map.get(new Vector2i(x,z)) == null){
+                    if (chunkKeys.get(new Vector2i(x,z)) == null){
                         genBiome(x,z);
                         for (int y = 0; y < 8; y++) {
                             chunkUpdate(x, z, y);
@@ -721,9 +777,9 @@ public class Chunk {
         }
 
         //scan map for out of range chunks
-        for (ChunkObject thisChunk : map.values()){
-            if (getChunkDistanceFromPlayer(thisChunk.x,thisChunk.z) > chunkRenderDistance){
-                addChunkToDeletionQueue(thisChunk.x,thisChunk.z);
+        for (Vector2i key : chunkKeys.values()){
+            if (getChunkDistanceFromPlayer(key.x,key.y) > chunkRenderDistance){
+                addChunkToDeletionQueue(key.x,key.y);
             }
         }
     }
@@ -736,7 +792,7 @@ public class Chunk {
         for (int x = -chunkRenderDistance + currentChunk.x; x < chunkRenderDistance + currentChunk.x; x++){
             for (int z = -chunkRenderDistance + currentChunk.z; z< chunkRenderDistance + currentChunk.z; z++){
                 if (getChunkDistanceFromPlayer(x,z) <= chunkRenderDistance){
-                    if (map.get(new Vector2i(x,z)) == null){
+                    if (chunkKeys.get(new Vector2i(x,z)) == null){
                         sendOutChunkRequest(new ChunkRequest(x,z, getPlayerName()));
                     }
                 }
@@ -793,10 +849,14 @@ public class Chunk {
                     }
                 }
 
+                saveChunk(key);
 
-                ChunkObject thisChunk = map.get(key);
-                saveChunk(thisChunk);
-                map.remove(key);
+                chunkKeys.remove(key);
+                blocks.remove(key);
+                rotations.remove(key);
+                heightmaps.remove(key);
+                lights.remove(key);
+
                 mapMeshes.remove(key);
             }
         }
@@ -809,22 +869,16 @@ public class Chunk {
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
 
-        ChunkObject thisChunk = map.get(new Vector2i(chunkX, chunkZ));
+        byte[] blockData = blocks.get(new Vector2i(chunkX, chunkZ));
 
-        if (thisChunk == null){
+        if (blockData == null){
             return 0;
         }
-        if (thisChunk.block == null){
-            return 0;
-        }
-
-        //reduce object lookups
-        byte[] block = thisChunk.block;
 
         //simple algorithm for now
         for (int y = 127; y >= 0; y--){
-            if (block[posToIndex(blockX,y, blockZ)] == 0){
-                if (block[posToIndex(blockX,y-1, blockZ)] != 0 && block[posToIndex(blockX,y+1, blockZ)] == 0){
+            if (blockData[posToIndex(blockX,y, blockZ)] == 0){
+                if (blockData[posToIndex(blockX,y-1, blockZ)] != 0 && blockData[posToIndex(blockX,y+1, blockZ)] == 0){
                     return y;
                 }
             }
@@ -834,18 +888,37 @@ public class Chunk {
     }
 
     public static void genBiome(int chunkX, int chunkZ) {
-        ChunkObject loadedChunk = null;
+
+        ChunkData chunkData = null;
+
+        /*
+        0 - blocks
+        1 - rotations
+        2 - lights
+        3 - heightmaps
+         */
+
         try {
-            loadedChunk = loadChunkFromDisk(chunkX, chunkZ);
+            //todo: make this non-blocking
+            chunkData = loadChunkFromDisk(chunkX, chunkZ);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (loadedChunk != null) {
-            map.put(new Vector2i(chunkX, chunkZ), loadedChunk);
+
+        if (chunkData != null) {
+            Vector2i key = new Vector2i(chunkX, chunkZ);
+            chunkKeys.put(key, key);
+
+            blocks.put(key, chunkData.block);
+            rotations.put(key, chunkData.rotation);
+            lights.put(key, chunkData.light);
+            heightmaps.put(key, chunkData.heightMap);
+
+            //todo: data orient this
             mapMeshes.put(new Vector2i(chunkX,chunkZ), new ChunkMeshObject(chunkX,chunkZ));
             //dump everything into the chunk updater
             for (int i = 0; i < 8; i++) {
-                chunkUpdate(loadedChunk.x, loadedChunk.z, i); //delayed
+                chunkUpdate(chunkX, chunkZ, i); //delayed
             }
         } else {
             addChunkToBiomeGeneration(chunkX,chunkZ);
@@ -883,7 +956,14 @@ public class Chunk {
             }
         }
 
-        map.clear();
+
+        blocks.clear();
+        rotations.clear();
+        lights.clear();
+        heightmaps.clear();
+        modified.clear();
+
+
         mapMeshes.clear();
     }
 }

@@ -5,7 +5,6 @@ import engine.graphics.Mesh;
 import engine.graphics.ShaderProgram;
 import engine.gui.GUIObject;
 import game.chunk.ChunkMeshObject;
-import game.chunk.ChunkObject;
 import game.crafting.InventoryObject;
 import game.falling.FallingEntityObject;
 import game.item.Item;
@@ -33,7 +32,7 @@ import static engine.settings.Settings.*;
 import static engine.time.TimeOfDay.getTimeOfDayLinear;
 import static game.chat.Chat.getCurrentMessageMesh;
 import static game.chat.Chat.getViewableChatMessages;
-import static game.chunk.Chunk.getMap;
+import static game.chunk.Chunk.getChunkKeys;
 import static game.chunk.Chunk.getMapMeshes;
 import static game.clouds.Cloud.*;
 import static game.crafting.Inventory.*;
@@ -215,18 +214,16 @@ public class GameRenderer {
         double flickerFixer = 0d;
 
         //get all distances
-        for (ChunkObject thisChunk : getMap()){
-            double currentDistance = camPos.distance((thisChunk.x * 16d) + 8d, 0,(thisChunk.z * 16d) + 8d);
+        for (Vector2i thisChunk : getChunkKeys()){
+            double currentDistance = camPos.distance((thisChunk.x * 16d) + 8d, 0,(thisChunk.y * 16d) + 8d);
 
-            //this doesn't fix anything, todo: fix flickering chunks
             if (chunkHash.get(currentDistance) != null){
                 currentDistance += flickerFixer;
                 flickerFixer += 0.00000000001d;
             }
 
-
-            if (getChunkDistanceFromPlayer(thisChunk.x, thisChunk.z) <= renderDistance) {
-                chunkHash.put(currentDistance, chunkMeshes.get(new Vector2i(thisChunk.x, thisChunk.z)));
+            if (getChunkDistanceFromPlayer(thisChunk.x, thisChunk.y) <= renderDistance) {
+                chunkHash.put(currentDistance, chunkMeshes.get(new Vector2i(thisChunk.x, thisChunk.y)));
             }
         }
 

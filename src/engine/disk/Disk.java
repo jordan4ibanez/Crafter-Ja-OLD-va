@@ -2,10 +2,13 @@ package engine.disk;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import engine.settings.SettingsObject;
-import game.chunk.ChunkObject;
+import game.chunk.ChunkData;
 import org.joml.Vector3d;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -108,7 +111,7 @@ public class Disk {
         }
     }
 
-    public static ChunkObject loadChunkFromDisk(int x, int z) throws IOException {
+    public static ChunkData loadChunkFromDisk(int x, int z) throws IOException {
 
         //System.out.println("loading!!");
         String key = x + " " + z;
@@ -158,7 +161,7 @@ public class Disk {
             return null;
         }
 
-        ChunkObject abstractedChunk = new ChunkObject();
+        ChunkData abstractedChunk = new ChunkData();
 
         abstractedChunk.x = thisChunkLoaded.x;
         abstractedChunk.z = thisChunkLoaded.z;

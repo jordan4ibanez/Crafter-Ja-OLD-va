@@ -73,36 +73,44 @@ public class ChunkMeshGenerator implements Runnable{
     private static void pollQueue() {
         if (!generationQueue.isEmpty()) {
 
-            final Vector3i updateRawData;
+            final Vector3i key;
 
             try {
-                updateRawData = generationQueue.pop();
+                key = generationQueue.pop();
             } catch (Exception ignore) {
                 return; //don't crash basically
             }
 
             //don't crash
-            if (updateRawData == null) {
+            if (key == null) {
                 return;
             }
 
-            ChunkObject thisChunk = getChunk(updateRawData.x, updateRawData.z);
+
+            byte[] blockData = getBlockDataClone(key.x, key.z);
+            byte[] rotationData = getRotationDataClone(key.x, key.z);
+            byte[] lightData = getLightDataClone(key.x, key.z);
 
             //don't bother if the chunk doesn't exist
-            if (thisChunk == null) {
+            if (blockData == null || rotationData == null || lightData == null) {
                 return;
             }
 
             //raw data extracted into stack primitives
-            final int chunkX = updateRawData.x;
-            final int chunkZ = updateRawData.z;
-            final int yHeight = updateRawData.y;
+            final int chunkX = key.x;
+            final int chunkZ = key.z;
+            final int yHeight = key.y;
 
             //neighbor chunks
-            ChunkObject chunkNeighborXPlus = getChunk(chunkX + 1, chunkZ);
-            ChunkObject chunkNeighborXMinus = getChunk(chunkX - 1, chunkZ);
-            ChunkObject chunkNeighborZPlus = getChunk(chunkX, chunkZ + 1);
-            ChunkObject chunkNeighborZMinus = getChunk(chunkX, chunkZ - 1);
+            byte[] chunkNeighborXPlusBlockData  = getBlockDataClone(key.x + 1, key.z);
+            byte[] chunkNeighborXMinusBlockData = getBlockDataClone(key.x - 1, key.z);
+            byte[] chunkNeighborZPlusBlockData  = getBlockDataClone(key.x, key.z + 1);
+            byte[] chunkNeighborZMinusBlockData = getBlockDataClone(key.x, key.z - 1);
+
+            byte[] chunkNeighborXPlusLightData  = getLightDataClone(key.x + 1, key.z);
+            byte[] chunkNeighborXMinusLightData = getLightDataClone(key.x - 1, key.z);
+            byte[] chunkNeighborZPlusLightData  = getLightDataClone(key.x, key.z + 1);
+            byte[] chunkNeighborZMinusLightData = getLightDataClone(key.x, key.z - 1);
 
             //normal block mesh data
             final HyperFloatArray positions = new HyperFloatArray();
@@ -129,11 +137,6 @@ public class ChunkMeshGenerator implements Runnable{
             //current global light level - dumped into the stack
             byte chunkLightLevel = currentGlobalLightLevel;
 
-            //reduces lookup time
-            byte[] blockData = thisChunk.block;
-            byte[] rotationData = thisChunk.rotation;
-            byte[] lightData = thisChunk.light;
-
             byte thisBlock;
             byte thisBlockDrawType;
             byte thisRotation;
@@ -155,19 +158,19 @@ public class ChunkMeshGenerator implements Runnable{
                             switch (thisBlockDrawType) {
 
                                 //normal
-                                case 1 -> indicesCount = calculateNormal(x, y, z, thisBlock, thisRotation, indicesCount, blockData, positions, light, indices, textureCoord, chunkNeighborZPlus, chunkNeighborZMinus, chunkNeighborXMinus, chunkNeighborXPlus, chunkLightLevel, lightData);
+                                case 1 -> indicesCount = calculateNormal(x, y, z, thisBlock, thisRotation, indicesCount, blockData, positions, light, indices, textureCoord, chunkNeighborZPlusBlockData,chunkNeighborZPlusLightData, chunkNeighborZMinusBlockData,chunkNeighborZMinusLightData, chunkNeighborXPlusBlockData,chunkNeighborXPlusLightData, chunkNeighborXMinusBlockData,chunkNeighborXMinusLightData, chunkLightLevel, lightData);
 
                                 //allfaces
-                                case 4 -> allFacesIndicesCount = calculateAllFaces(x, y, z, thisBlock, thisRotation, allFacesIndicesCount, allFacesPositions, allFacesLight, allFacesIndices, allFacesTextureCoord, chunkNeighborZPlus, chunkNeighborZMinus, chunkNeighborXMinus, chunkNeighborXPlus, chunkLightLevel, lightData);
+                                case 4 -> allFacesIndicesCount = calculateAllFaces(x, y, z, thisBlock, thisRotation, allFacesIndicesCount, allFacesPositions, allFacesLight, allFacesIndices, allFacesTextureCoord, chunkNeighborZPlusLightData, chunkNeighborZMinusLightData, chunkNeighborXPlusLightData, chunkNeighborXMinusLightData, chunkLightLevel, lightData);
 
                                 //torch
-                                case 7 -> indicesCount = calculateTorchLike(x, y, z, thisBlock, thisRotation, indicesCount, positions, light, indices, textureCoord, chunkNeighborZPlus, chunkNeighborZMinus, chunkNeighborXMinus, chunkNeighborXPlus, chunkLightLevel, lightData);
+                                case 7 -> indicesCount = calculateTorchLike(x, y, z, thisBlock, thisRotation, indicesCount, positions, light, indices, textureCoord, chunkNeighborZPlusBlockData,chunkNeighborZPlusLightData, chunkNeighborZMinusBlockData,chunkNeighborZMinusLightData, chunkNeighborXPlusBlockData,chunkNeighborXPlusLightData, chunkNeighborXMinusBlockData,chunkNeighborXMinusLightData, chunkLightLevel, lightData);
 
                                 //liquid
-                                case 8 -> liquidIndicesCount = calculateLiquids(x, y, z, thisBlock, thisRotation, liquidIndicesCount, blockData, chunkNeighborZPlus, chunkNeighborZMinus, chunkNeighborXMinus, chunkNeighborXPlus, liquidPositions, liquidLight, liquidIndices, liquidTextureCoord, chunkLightLevel, lightData);
+                                case 8 -> liquidIndicesCount = calculateLiquids(x, y, z, thisBlock, thisRotation, liquidIndicesCount, blockData, chunkNeighborZPlusBlockData,chunkNeighborZPlusLightData, chunkNeighborZMinusBlockData,chunkNeighborZMinusLightData, chunkNeighborXPlusBlockData,chunkNeighborXPlusLightData, chunkNeighborXMinusBlockData,chunkNeighborXMinusLightData, liquidPositions, liquidLight, liquidIndices, liquidTextureCoord, chunkLightLevel, lightData);
 
                                 //blockbox
-                                default -> indicesCount = calculateBlockBox(x, y, z, thisBlock, thisRotation, indicesCount, positions, light, indices, textureCoord, chunkNeighborZPlus, chunkNeighborZMinus, chunkNeighborXMinus, chunkNeighborXPlus, chunkLightLevel, lightData);
+                                default -> indicesCount = calculateBlockBox(x, y, z, thisBlock, thisRotation, indicesCount, positions, light, indices, textureCoord, chunkNeighborZPlusBlockData,chunkNeighborZPlusLightData, chunkNeighborZMinusBlockData,chunkNeighborZMinusLightData, chunkNeighborXPlusBlockData,chunkNeighborXPlusLightData, chunkNeighborXMinusBlockData,chunkNeighborXMinusLightData, chunkLightLevel, lightData);
                             }
                         }
                     }
@@ -235,7 +238,7 @@ public class ChunkMeshGenerator implements Runnable{
     }
 
 
-    private static int calculateBlockBox(int x, int y, int z, byte thisBlock, byte thisRotation, int indicesCount, HyperFloatArray positions, HyperFloatArray light, HyperIntArray indices, HyperFloatArray textureCoord, ChunkObject chunkNeighborZPlus, ChunkObject chunkNeighborZMinus, ChunkObject chunkNeighborXMinus, ChunkObject chunkNeighborXPlus, byte chunkLightLevel, byte[] lightData){
+    private static int calculateBlockBox(int x, int y, int z, byte thisBlock, byte thisRotation, int indicesCount, HyperFloatArray positions, HyperFloatArray light, HyperIntArray indices, HyperFloatArray textureCoord, byte[] chunkNeighborZPlusBlockData, byte[] chunkNeighborZPlusLightData, byte[] chunkNeighborZMinusBlockData, byte[] chunkNeighborZMinusLightData,byte[] chunkNeighborXPlusBlockData,byte[] chunkNeighborXPlusLightData, byte[] chunkNeighborXMinusBlockData, byte[] chunkNeighborXMinusLightData, byte chunkLightLevel, byte[] lightData){
         for (float[] thisBlockBox : getBlockShape(thisBlock, thisRotation)) {
             //front
             positions.pack(thisBlockBox[3] + x, thisBlockBox[4] + y, thisBlockBox[5] + z, thisBlockBox[0] + x, thisBlockBox[4] + y, thisBlockBox[5] + z, thisBlockBox[0] + x, thisBlockBox[1] + y, thisBlockBox[5] + z, thisBlockBox[3] + x, thisBlockBox[1] + y, thisBlockBox[5] + z);
@@ -244,7 +247,7 @@ public class ChunkMeshGenerator implements Runnable{
             float lightValue;
             byte realLight;
             if (z + 1 > 15) {
-                realLight = getNeighborLight(chunkLightLevel, chunkNeighborZPlus, x, y, 0);
+                realLight = getNeighborLight(chunkLightLevel, chunkNeighborZPlusLightData, x, y, 0);
             } else {
                 realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z + 1)]);
             }
@@ -271,7 +274,7 @@ public class ChunkMeshGenerator implements Runnable{
 
             //back
             if (z - 1 < 0) {
-                realLight = getNeighborLight(chunkLightLevel, chunkNeighborZMinus, x, y, 15);
+                realLight = getNeighborLight(chunkLightLevel, chunkNeighborZMinusLightData, x, y, 15);
             } else {
                 realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z - 1)]);
             }
@@ -297,7 +300,7 @@ public class ChunkMeshGenerator implements Runnable{
 
             //right
             if (x + 1 > 15) {
-                realLight = getNeighborLight(chunkLightLevel, chunkNeighborXPlus, 0, y, z);
+                realLight = getNeighborLight(chunkLightLevel, chunkNeighborXPlusLightData, 0, y, z);
             } else {
                 realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x + 1, y, z)]);
             }
@@ -323,7 +326,7 @@ public class ChunkMeshGenerator implements Runnable{
 
             //left
             if (x - 1 < 0) {
-                realLight = getNeighborLight(chunkLightLevel, chunkNeighborXMinus, 15, y, z);
+                realLight = getNeighborLight(chunkLightLevel, chunkNeighborXMinusLightData, 15, y, z);
             } else {
                 realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x - 1, y, z)]);
             }
@@ -395,11 +398,11 @@ public class ChunkMeshGenerator implements Runnable{
         return indicesCount;
     }
 
-    private static int calculateLiquids(int x, int y, int z, byte thisBlock, byte thisRotation, int liquidIndicesCount, byte[] blockData, ChunkObject chunkNeighborZPlus, ChunkObject chunkNeighborZMinus, ChunkObject chunkNeighborXMinus, ChunkObject chunkNeighborXPlus, HyperFloatArray liquidPositions, HyperFloatArray liquidLight, HyperIntArray liquidIndices, HyperFloatArray liquidTextureCoord, byte chunkLightLevel, byte[] lightData){
+    private static int calculateLiquids(int x, int y, int z, byte thisBlock, byte thisRotation, int liquidIndicesCount, byte[] blockData, byte[] chunkNeighborZPlusBlockData, byte[] chunkNeighborZPlusLightData, byte[] chunkNeighborZMinusBlockData, byte[] chunkNeighborZMinusLightData,byte[] chunkNeighborXPlusBlockData,byte[] chunkNeighborXPlusLightData, byte[] chunkNeighborXMinusBlockData, byte[] chunkNeighborXMinusLightData, HyperFloatArray liquidPositions, HyperFloatArray liquidLight, HyperIntArray liquidIndices, HyperFloatArray liquidTextureCoord, byte chunkLightLevel, byte[] lightData){
         byte neighborBlock;
 
         if (z + 1 > 15) {
-            neighborBlock = getNeighborBlock(chunkNeighborZPlus, x, y, 0);
+            neighborBlock = getNeighborBlock(chunkNeighborZPlusBlockData, x, y, 0);
         } else {
             neighborBlock = blockData[posToIndex(x, y, z + 1)];
         }
@@ -414,7 +417,7 @@ public class ChunkMeshGenerator implements Runnable{
 
             //front
             if (z + 1 > 15) {
-                realLight = getNeighborLight(chunkLightLevel, chunkNeighborZPlus, x, y, 0);
+                realLight = getNeighborLight(chunkLightLevel, chunkNeighborZPlusLightData, x, y, 0);
             } else {
                 realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z + 1)]);
             }
@@ -438,7 +441,7 @@ public class ChunkMeshGenerator implements Runnable{
 
 
         if (z - 1 < 0) {
-            neighborBlock = getNeighborBlock(chunkNeighborZMinus, x, y, 15);
+            neighborBlock = getNeighborBlock(chunkNeighborZMinusBlockData, x, y, 15);
         } else {
             neighborBlock = blockData[posToIndex(x, y, z - 1)];
         }
@@ -450,7 +453,7 @@ public class ChunkMeshGenerator implements Runnable{
 
             //back
             if (z - 1 < 0) {
-                realLight = getNeighborLight(chunkLightLevel, chunkNeighborZMinus, x, y, 15);
+                realLight = getNeighborLight(chunkLightLevel, chunkNeighborZMinusLightData, x, y, 15);
             } else {
                 realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z - 1)]);
             }
@@ -471,7 +474,7 @@ public class ChunkMeshGenerator implements Runnable{
         }
 
         if (x + 1 > 15) {
-            neighborBlock = getNeighborBlock(chunkNeighborXPlus, 0, y, z);
+            neighborBlock = getNeighborBlock(chunkNeighborXPlusBlockData, 0, y, z);
         } else {
             neighborBlock = blockData[posToIndex(x + 1, y, z)];
         }
@@ -484,7 +487,7 @@ public class ChunkMeshGenerator implements Runnable{
             //right
 
             if (x + 1 > 15) {
-                realLight = getNeighborLight(chunkLightLevel, chunkNeighborXPlus, 0, y, z);
+                realLight = getNeighborLight(chunkLightLevel, chunkNeighborXPlusLightData, 0, y, z);
             } else {
                 realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x + 1, y, z)]);
             }
@@ -505,7 +508,7 @@ public class ChunkMeshGenerator implements Runnable{
         }
 
         if (x - 1 < 0) {
-            neighborBlock = getNeighborBlock(chunkNeighborXMinus, 15, y, z);
+            neighborBlock = getNeighborBlock(chunkNeighborXMinusBlockData, 15, y, z);
         } else {
             neighborBlock = blockData[posToIndex(x - 1, y, z)];
         }
@@ -518,7 +521,7 @@ public class ChunkMeshGenerator implements Runnable{
             //left
 
             if (x - 1 < 0) {
-                realLight = getNeighborLight(chunkLightLevel, chunkNeighborXMinus, 15, y, z);
+                realLight = getNeighborLight(chunkLightLevel, chunkNeighborXMinusLightData, 15, y, z);
             } else {
                 realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x - 1, y, z)]);
             }
@@ -610,11 +613,11 @@ public class ChunkMeshGenerator implements Runnable{
         return liquidIndicesCount;
     }
 
-    private static int calculateNormal(int x, int y, int z, byte thisBlock, byte thisRotation, int indicesCount, byte[] blockData, HyperFloatArray positions, HyperFloatArray light, HyperIntArray indices, HyperFloatArray textureCoord, ChunkObject chunkNeighborZPlus, ChunkObject chunkNeighborZMinus, ChunkObject chunkNeighborXMinus, ChunkObject chunkNeighborXPlus, byte chunkLightLevel, byte[] lightData){
+    private static int calculateNormal(int x, int y, int z, byte thisBlock, byte thisRotation, int indicesCount, byte[] blockData, HyperFloatArray positions, HyperFloatArray light, HyperIntArray indices, HyperFloatArray textureCoord, byte[] chunkNeighborZPlusBlockData, byte[] chunkNeighborZPlusLightData, byte[] chunkNeighborZMinusBlockData, byte[] chunkNeighborZMinusLightData,byte[] chunkNeighborXPlusBlockData,byte[] chunkNeighborXPlusLightData, byte[] chunkNeighborXMinusBlockData, byte[] chunkNeighborXMinusLightData, byte chunkLightLevel, byte[] lightData){
 
         byte neighborBlock;
         if (z + 1 > 15) {
-            neighborBlock = getNeighborBlock(chunkNeighborZPlus, x, y, 0);
+            neighborBlock = getNeighborBlock(chunkNeighborZPlusBlockData, x, y, 0);
         } else {
             neighborBlock = blockData[posToIndex(x, y, z + 1)];
         }
@@ -629,7 +632,7 @@ public class ChunkMeshGenerator implements Runnable{
 
             //front
             if (z + 1 > 15) {
-                realLight = getNeighborLight(chunkLightLevel, chunkNeighborZPlus, x, y, 0);
+                realLight = getNeighborLight(chunkLightLevel, chunkNeighborZPlusLightData, x, y, 0);
             } else {
                 realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z + 1)]);
             }
@@ -651,7 +654,7 @@ public class ChunkMeshGenerator implements Runnable{
         }
 
         if (z - 1 < 0) {
-            neighborBlock = getNeighborBlock(chunkNeighborZMinus, x, y, 15);
+            neighborBlock = getNeighborBlock(chunkNeighborZMinusBlockData, x, y, 15);
         } else {
             neighborBlock = blockData[posToIndex(x, y, z - 1)];
         }
@@ -662,7 +665,7 @@ public class ChunkMeshGenerator implements Runnable{
 
             //back
             if (z - 1 < 0) {
-                realLight = getNeighborLight(chunkLightLevel, chunkNeighborZMinus, x, y, 15);
+                realLight = getNeighborLight(chunkLightLevel, chunkNeighborZMinusLightData, x, y, 15);
             } else {
                 realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z - 1)]);
             }
@@ -682,7 +685,7 @@ public class ChunkMeshGenerator implements Runnable{
         }
 
         if (x + 1 > 15) {
-            neighborBlock = getNeighborBlock(chunkNeighborXPlus, 0, y, z);
+            neighborBlock = getNeighborBlock(chunkNeighborXPlusBlockData, 0, y, z);
         } else {
             neighborBlock = blockData[posToIndex(x + 1, y, z)];
         }
@@ -693,7 +696,7 @@ public class ChunkMeshGenerator implements Runnable{
 
             //right
             if (x + 1 > 15) {
-                realLight = getNeighborLight(chunkLightLevel, chunkNeighborXPlus, 0, y, z);
+                realLight = getNeighborLight(chunkLightLevel, chunkNeighborXPlusLightData, 0, y, z);
             } else {
                 realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x + 1, y, z)]);
             }
@@ -713,7 +716,7 @@ public class ChunkMeshGenerator implements Runnable{
         }
 
         if (x - 1 < 0) {
-            neighborBlock = getNeighborBlock(chunkNeighborXMinus, 15, y, z);
+            neighborBlock = getNeighborBlock(chunkNeighborXMinusBlockData, 15, y, z);
         } else {
             neighborBlock = blockData[posToIndex(x - 1, y, z)];
         }
@@ -724,7 +727,7 @@ public class ChunkMeshGenerator implements Runnable{
 
             //left
             if (x - 1 < 0) {
-                realLight = getNeighborLight(chunkLightLevel, chunkNeighborXMinus, 15, y, z);
+                realLight = getNeighborLight(chunkLightLevel, chunkNeighborXMinusLightData, 15, y, z);
             } else {
                 realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x - 1, y, z)]);
             }
@@ -825,7 +828,7 @@ public class ChunkMeshGenerator implements Runnable{
     private static final float pixel = (1f / 32f / 16f);
 
 
-    private static int calculateTorchLike(int x, int y, int z, byte thisBlock, byte thisRotation, int indicesCount, HyperFloatArray positions, HyperFloatArray light, HyperIntArray indices, HyperFloatArray textureCoord, ChunkObject chunkNeighborZPlus, ChunkObject chunkNeighborZMinus, ChunkObject chunkNeighborXMinus, ChunkObject chunkNeighborXPlus, byte chunkLightLevel, byte[] lightData){
+    private static int calculateTorchLike(int x, int y, int z, byte thisBlock, byte thisRotation, int indicesCount, HyperFloatArray positions, HyperFloatArray light, HyperIntArray indices, HyperFloatArray textureCoord, byte[] chunkNeighborZPlusBlockData, byte[] chunkNeighborZPlusLightData, byte[] chunkNeighborZMinusBlockData, byte[] chunkNeighborZMinusLightData,byte[] chunkNeighborXPlusBlockData,byte[] chunkNeighborXPlusLightData, byte[] chunkNeighborXMinusBlockData, byte[] chunkNeighborXMinusLightData, byte chunkLightLevel, byte[] lightData){
         switch (thisRotation) {
             //+x dir
             case 0 -> {
@@ -1084,7 +1087,7 @@ public class ChunkMeshGenerator implements Runnable{
         float lightValue;
         byte realLight;
         if (z + 1 > 15) {
-            realLight = getNeighborLight(chunkLightLevel, chunkNeighborZPlus, x, y, 0);
+            realLight = getNeighborLight(chunkLightLevel, chunkNeighborZPlusLightData, x, y, 0);
         } else {
             realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z + 1)]);
         }
@@ -1114,7 +1117,7 @@ public class ChunkMeshGenerator implements Runnable{
         //back
 
         if (z - 1 < 0) {
-            realLight = getNeighborLight(chunkLightLevel, chunkNeighborZMinus, x, y, 15);
+            realLight = getNeighborLight(chunkLightLevel, chunkNeighborZMinusLightData, x, y, 15);
         } else {
             realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z - 1)]);
         }
@@ -1142,7 +1145,7 @@ public class ChunkMeshGenerator implements Runnable{
         //right
 
         if (x + 1 > 15) {
-            realLight = getNeighborLight(chunkLightLevel, chunkNeighborXPlus, 0, y, z);
+            realLight = getNeighborLight(chunkLightLevel, chunkNeighborXPlusLightData, 0, y, z);
         } else {
             realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x + 1, y, z)]);
         }
@@ -1169,7 +1172,7 @@ public class ChunkMeshGenerator implements Runnable{
 
         //left
         if (x - 1 < 0) {
-            realLight = getNeighborLight(chunkLightLevel, chunkNeighborXMinus, 15, y, z);
+            realLight = getNeighborLight(chunkLightLevel, chunkNeighborXMinusLightData, 15, y, z);
         } else {
             realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x - 1, y, z)]);
         }
@@ -1241,7 +1244,7 @@ public class ChunkMeshGenerator implements Runnable{
         return indicesCount;
     }
 
-    private static int calculateAllFaces(int x, int y, int z, byte thisBlock, byte thisRotation, int allFacesIndicesCount, HyperFloatArray allFacesPositions, HyperFloatArray allFacesLight, HyperIntArray allFacesIndices, HyperFloatArray allFacesTextureCoord, ChunkObject chunkNeighborZPlus, ChunkObject chunkNeighborZMinus, ChunkObject chunkNeighborXMinus, ChunkObject chunkNeighborXPlus, byte chunkLightLevel, byte[] lightData){
+    private static int calculateAllFaces(int x, int y, int z, byte thisBlock, byte thisRotation, int allFacesIndicesCount, HyperFloatArray allFacesPositions, HyperFloatArray allFacesLight, HyperIntArray allFacesIndices, HyperFloatArray allFacesTextureCoord, byte[] chunkNeighborZPlusLightData, byte[] chunkNeighborZMinusLightData, byte[] chunkNeighborXPlusLightData, byte[] chunkNeighborXMinusLightData, byte chunkLightLevel, byte[] lightData){
 
         float[] textureWorker;
 
@@ -1254,7 +1257,7 @@ public class ChunkMeshGenerator implements Runnable{
         byte realLight;
 
         if (z + 1 > 15) {
-            realLight = getNeighborLight(chunkLightLevel, chunkNeighborZPlus, x, y, 0);
+            realLight = getNeighborLight(chunkLightLevel, chunkNeighborZPlusLightData, x, y, 0);
         } else {
             realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z + 1)]);
         }
@@ -1281,7 +1284,7 @@ public class ChunkMeshGenerator implements Runnable{
         //back
 
         if (z - 1 < 0) {
-            realLight = getNeighborLight(chunkLightLevel, chunkNeighborZMinus, x, y, 15);
+            realLight = getNeighborLight(chunkLightLevel, chunkNeighborZMinusLightData, x, y, 15);
         } else {
             realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x, y, z - 1)]);
         }
@@ -1306,7 +1309,7 @@ public class ChunkMeshGenerator implements Runnable{
         //right
 
         if (x + 1 > 15) {
-            realLight = getNeighborLight(chunkLightLevel, chunkNeighborXPlus, 0, y, z);
+            realLight = getNeighborLight(chunkLightLevel, chunkNeighborXPlusLightData, 0, y, z);
         } else {
             realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x + 1, y, z)]);
         }
@@ -1333,7 +1336,7 @@ public class ChunkMeshGenerator implements Runnable{
         //left
 
         if (x - 1 < 0) {
-            realLight = getNeighborLight(chunkLightLevel, chunkNeighborXMinus, 15, y, z);
+            realLight = getNeighborLight(chunkLightLevel, chunkNeighborXMinusLightData, 15, y, z);
         } else {
             realLight = calculateBlockLight(chunkLightLevel, lightData[posToIndex(x - 1, y, z)]);
         }
@@ -1426,33 +1429,27 @@ public class ChunkMeshGenerator implements Runnable{
         }
     }
 
-    private static byte getNeighborBlock(ChunkObject neighborChunk, int x, int y, int z){
-        if (neighborChunk == null){
+    private static byte getNeighborBlock(byte[] neighborChunkBlockData, int x, int y, int z){
+        if (neighborChunkBlockData == null){
             return 0;
         }
-        if (neighborChunk.block == null){
-            return 0;
-        }
-        return neighborChunk.block[posToIndex(x,y,z)];
+        return neighborChunkBlockData[posToIndex(x,y,z)];
     }
 
-    private static byte getNeighborLight(byte currentGlobalLightLevel, ChunkObject neighborChunk, int x, int y, int z){
-        if (neighborChunk == null){
-            return 0;
-        }
-        if (neighborChunk.block == null){
+    private static byte getNeighborLight(byte currentGlobalLightLevel, byte[] neighborChunkLightData, int x, int y, int z){
+        if (neighborChunkLightData == null){
             return 0;
         }
 
         int index = posToIndex(x, y, z);
 
-        byte naturalLightOfBlock = getByteNaturalLight(neighborChunk.light[index]);
+        byte naturalLightOfBlock = getByteNaturalLight(neighborChunkLightData[index]);
 
         if (naturalLightOfBlock > currentGlobalLightLevel){
             naturalLightOfBlock = currentGlobalLightLevel;
         }
 
-        byte torchLight = getByteTorchLight(neighborChunk.light[index]);
+        byte torchLight = getByteTorchLight(neighborChunkLightData[index]);
 
         if (naturalLightOfBlock > torchLight){
             return naturalLightOfBlock;

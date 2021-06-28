@@ -4,8 +4,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
-import engine.time.Time;
-import game.chunk.ChunkObject;
+import game.chunk.ChunkData;
 import game.crafting.InventoryObject;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
@@ -153,10 +152,10 @@ public class Networking {
 
     private static void decodeNetChunk(NetChunk netChunk){
         //decode compressed network packet
-        ChunkObject decomp = null;
+        ChunkData chunkData;
 
         try {
-            decomp = decompressByteArrayToChunkObject(netChunk.b);
+            chunkData = decompressByteArrayToChunkObject(netChunk.b);
         } catch (IOException e){
             //System.out.println(e);
             //silent return
@@ -164,11 +163,11 @@ public class Networking {
         }
 
         //silent return
-        if (decomp == null){
+        if (chunkData == null){
             return;
         }
 
-        setChunk(decomp);
+        setChunk(chunkData.x,chunkData.z,chunkData.block,chunkData.rotation,chunkData.light,chunkData.heightMap);
     }
 
     public static void sendOutNetworkBlockBreak(int x, int y, int z){

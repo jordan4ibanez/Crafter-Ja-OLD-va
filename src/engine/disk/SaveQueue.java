@@ -1,7 +1,7 @@
 package engine.disk;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import game.chunk.ChunkObject;
+import org.joml.Vector2i;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
@@ -11,6 +11,7 @@ import java.util.Deque;
 import java.util.zip.GZIPOutputStream;
 
 import static engine.Window.windowShouldClose;
+import static game.chunk.Chunk.*;
 
 public class SaveQueue {
 
@@ -20,38 +21,25 @@ public class SaveQueue {
         currentActiveWorld = newWorld;
     }
 
-    public static Deque<ChunkObject> saveQueue;
+    public static Deque<ChunkSavingObject> saveQueue;
 
     public static void startSaveThread(){
         new Thread(() -> {
             final ObjectMapper mapper = new ObjectMapper();
-
-            ChunkSavingObject savingObject;
-
-            ChunkObject thisChunk;
 
             saveQueue = new ArrayDeque<>();
 
             while(!windowShouldClose()) {
                 if (!saveQueue.isEmpty()) {
                     try {
-                        thisChunk = saveQueue.pop();
+                        ChunkSavingObject thisChunk = saveQueue.pop();
 
-                        savingObject = new ChunkSavingObject();
-
-                        savingObject.x = thisChunk.x;
-                        savingObject.z = thisChunk.z;
-                        savingObject.b = thisChunk.block;
-                        savingObject.r = thisChunk.rotation;
-                        savingObject.l = thisChunk.light;
-                        savingObject.h = thisChunk.heightMap;
-
-                        String stringedChunk = mapper.writeValueAsString(savingObject);
+                        String stringedChunk = mapper.writeValueAsString(thisChunk);
 
                         //learned from https://www.journaldev.com/966/java-gzip-example-compress-decompress-file
                         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(stringedChunk.getBytes());
 
-                        FileOutputStream fileOutputStream = new FileOutputStream("Worlds/world" + currentActiveWorld + "/" + savingObject.x + " " + savingObject.z + ".chunk");
+                        FileOutputStream fileOutputStream = new FileOutputStream("Worlds/world" + currentActiveWorld + "/" + thisChunk.x + " " + thisChunk.z + ".chunk");
                         GZIPOutputStream gzipOutputStream = new GZIPOutputStream(fileOutputStream);
 
                         byte[] buffer = new byte[4096];
@@ -73,27 +61,35 @@ public class SaveQueue {
         }).start();
     }
 
-    public static void saveChunk(ChunkObject thisChunk){
-        saveQueue.add(thisChunk);
+    public static void saveChunk(Vector2i key){
+        ChunkSavingObject saveData = new ChunkSavingObject();
+        saveData.x = key.x;
+        saveData.z = key.y;
+        //todo: test if .clone() is not needed
+        saveData.b = getBlockData(key).clone();
+        saveData.h = getHeightMapData(key).clone();
+        saveData.l = getLightData(key).clone();
+        saveData.r = getRotationData(key).clone();
+        saveQueue.add(saveData);
     }
 
-    public static void instantSave(ChunkObject thisChunk){
+    public static void instantSave(Vector2i key){
         ObjectMapper mapper = new ObjectMapper();
         try {
-            ChunkSavingObject savingObject = new ChunkSavingObject();
+            ChunkSavingObject saveData = new ChunkSavingObject();
+            saveData.x = key.x;
+            saveData.z = key.y;
+            //todo: test if .clone() is not needed
+            saveData.b = getBlockData(key).clone();
+            saveData.h = getHeightMapData(key).clone();
+            saveData.l = getLightData(key).clone();
+            saveData.r = getRotationData(key).clone();
 
-            savingObject.x = thisChunk.x;
-            savingObject.z = thisChunk.z;
-            savingObject.b = thisChunk.block;
-            savingObject.r = thisChunk.rotation;
-            savingObject.l = thisChunk.light;
-            savingObject.h = thisChunk.heightMap;
-
-            String stringedChunk = mapper.writeValueAsString(savingObject);
+            String stringedChunk = mapper.writeValueAsString(saveData);
 
             //learned from https://www.journaldev.com/966/java-gzip-example-compress-decompress-file
             ByteArrayInputStream bais = new ByteArrayInputStream(stringedChunk.getBytes());
-            FileOutputStream fos = new FileOutputStream("Worlds/world" + currentActiveWorld + "/" + savingObject.x + " " + savingObject.z + ".chunk");
+            FileOutputStream fos = new FileOutputStream("Worlds/world" + currentActiveWorld + "/" + key.x + " " + key.y + ".chunk");
             GZIPOutputStream gzipOS = new GZIPOutputStream(fos);
             byte[] buffer = new byte[4096];
             int len;

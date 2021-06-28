@@ -46,15 +46,18 @@ public class BiomeGenerator implements Runnable{
             int chunkX = newData.x;
             int chunkZ = newData.y;
 
-            ChunkObject thisChunk = getChunk(chunkX, chunkZ);
+            Vector2i key = getChunkKey(new Vector2i(chunkX, chunkZ));
 
-            if (thisChunk == null) {
-                thisChunk = new ChunkObject(chunkX, chunkZ);
-            } else {
+            //don't regen existing chunks
+            if (key != null) {
                 return;
             }
 
-            thisChunk.modified = true;
+            byte[] blockData = new byte[32768];
+            byte[] rotationData = new byte[32768];
+            byte[] lightData = new byte[32768];
+            byte[][] heightMapData = new byte[16][16];
+
             //biome max 128 trees
             LinkedList<Vector3i> treePosArray = new LinkedList<>();
             //standard generation
@@ -83,7 +86,7 @@ public class BiomeGenerator implements Runnable{
                     for (generationY = 127; generationY >= 0; generationY--) {
 
                         //don't overwrite
-                        byte currBlock = thisChunk.block[posToIndex(generationX, generationY, generationZ)];
+                        byte currBlock = blockData[posToIndex(generationX, generationY, generationZ)];
 
                         //bedrock
                         if (generationY <= 0 + dirtHeightRandom) {
@@ -135,18 +138,18 @@ public class BiomeGenerator implements Runnable{
                             }
                         }
 
-                        thisChunk.block[posToIndex(generationX, generationY, generationZ)] = currBlock;
+                        blockData[posToIndex(generationX, generationY, generationZ)] = currBlock;
 
                         if (height >= waterHeight) {
-                            thisChunk.heightMap[generationX][generationZ] = height;
+                            heightMapData[generationX][generationZ] = height;
                         } else {
-                            thisChunk.heightMap[generationX][generationZ] = waterHeight;
+                            heightMapData[generationX][generationZ] = waterHeight;
                         }
 
                         if (gennedSand || gennedGrass) {
-                            thisChunk.light[posToIndex(generationX, generationY, generationZ)] = 0;
+                            lightData[posToIndex(generationX, generationY, generationZ)] = 0;
                         } else {
-                            thisChunk.light[posToIndex(generationX, generationY, generationZ)] = setByteNaturalLight((byte)0,(byte)15);
+                            lightData[posToIndex(generationX, generationY, generationZ)] = setByteNaturalLight((byte)0,(byte)15);
                         }
                     }
                 }
@@ -184,7 +187,8 @@ public class BiomeGenerator implements Runnable{
                 for (int y = 0; y < 4; y++) {
                     //stay within borders
                     if (y + basePos.y < 127 && basePos.x >= 0 && basePos.x <= 15 && basePos.z >= 0 && basePos.z <= 15) {
-                        thisChunk.block[posToIndex(basePos.x, basePos.y + y, basePos.z)] = 25;
+                        blockData[posToIndex(basePos.x, basePos.y + y, basePos.z)] = 25;
+                        //todo: UPDATE HEIGHT MAP!
                     }
                 }
             }
@@ -202,8 +206,9 @@ public class BiomeGenerator implements Runnable{
 
                                 int index = posToIndex(basePos.x + x, basePos.y + y, basePos.z + z);
 
-                                if (thisChunk.block[index] == 0) {
-                                    thisChunk.block[index] = 26;
+                                //todo: UPDATE HEIGHT MAP!
+                                if (blockData[index] == 0) {
+                                    blockData[index] = 26;
                                 }
                             }
                         }
@@ -215,12 +220,11 @@ public class BiomeGenerator implements Runnable{
 
             }
 
-            setChunk(thisChunk);
+            setChunk(chunkX,chunkZ,blockData,rotationData,lightData,heightMapData);
 
             //dump everything into the chunk updater
             for (int i = 0; i < 8; i++) {
-                //generateChunkMesh(thisChunk.x, thisChunk.z, i); //instant
-                chunkUpdate(thisChunk.x, thisChunk.z, i); //delayed
+                chunkUpdate(chunkX, chunkZ, i);
             }
 
             //instantSave(thisChunk);

@@ -2,7 +2,7 @@ package engine.compression;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import engine.disk.ChunkSavingObject;
-import game.chunk.ChunkObject;
+import game.chunk.ChunkData;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -14,7 +14,7 @@ public class Compression {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    public static byte[] convertChunkToCompressedByteArray(ChunkObject thisChunk) throws IOException {
+    public static byte[] convertChunkToCompressedByteArray(ChunkData thisChunk) throws IOException {
         ChunkSavingObject savingObject = new ChunkSavingObject();
 
         savingObject.x = thisChunk.x;
@@ -52,7 +52,7 @@ public class Compression {
         return byteArrayOutputStream.toByteArray();
     }
 
-    public static ChunkObject decompressByteArrayToChunkObject(byte[] bytes) throws IOException {
+    public static ChunkData decompressByteArrayToChunkObject(byte[] bytes) throws IOException {
 
         //decoded output stream
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -99,7 +99,7 @@ public class Compression {
         }
 
         //assign compressed variables to full variable names
-        ChunkObject abstractedChunk = new ChunkObject();
+        ChunkData abstractedChunk = new ChunkData();
 
         abstractedChunk.x = thisChunkLoaded.x;
         abstractedChunk.z = thisChunkLoaded.z;

@@ -802,7 +802,7 @@ public class Player {
         applyPlayerInertiaBuffer();
 
         //stop players from falling forever
-        if (getChunk(currentChunk.x, currentChunk.z) != null) {
+        if (getChunkKey(currentChunk.x, currentChunk.z) != null) {
             onGround = applyInertia(pos, inertia, true, width, height, true, sneaking, true, true, true);
         }
 

@@ -1,22 +1,23 @@
 package game.ray;
 
+import game.item.Item;
 import game.mob.MobObject;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 import static engine.network.Networking.*;
-import static game.chunk.Chunk.*;
 import static game.blocks.BlockDefinition.*;
+import static game.chunk.Chunk.*;
 import static game.collision.Collision.wouldCollidePlacing;
 import static game.collision.PointCollision.pointIsWithin;
 import static game.collision.PointCollision.setPointAABB;
+import static game.crafting.Inventory.getItemInInventorySlot;
+import static game.crafting.Inventory.removeItemFromInventory;
 import static game.item.ItemDefinition.getItemModifier;
 import static game.mob.Mob.getAllMobs;
 import static game.mob.Mob.punchMob;
 import static game.particle.Particle.createParticle;
-import static game.crafting.Inventory.getItemInInventorySlot;
-import static game.crafting.Inventory.removeItemFromInventory;
 import static game.player.Player.*;
 
 public class Ray {
@@ -96,9 +97,11 @@ public class Ray {
                         getBlockDefinition(foundBlock).blockModifier.onRightClick(finalPos);
 
                     } else {
-                        if (!wouldCollidePlacing(getPlayerPos(),getPlayerWidth(), getPlayerHeight(), new Vector3i(pointedThingAbove.x, pointedThingAbove.y, pointedThingAbove.z), getItemInInventorySlot(getPlayerInventorySelection(), 0).definition.blockID, getPlayerDir()) && getItemInInventorySlot(getPlayerInventorySelection(), 0) != null && !getItemInInventorySlot(getPlayerInventorySelection(), 0).definition.isItem) {
+                        Item wielding = getItemInInventorySlot(getPlayerInventorySelection(), 0);
+
+                        if (wielding != null && !wouldCollidePlacing(getPlayerPos(),getPlayerWidth(), getPlayerHeight(), new Vector3i(pointedThingAbove.x, pointedThingAbove.y, pointedThingAbove.z), wielding.definition.blockID, getPlayerDir()) && getItemInInventorySlot(getPlayerInventorySelection(), 0) != null && !getItemInInventorySlot(getPlayerInventorySelection(), 0).definition.isItem) {
                             rayPlaceBlock(lastPos, getItemInInventorySlot(getPlayerInventorySelection(), 0).definition.blockID);
-                        } else if (getItemInInventorySlot(getPlayerInventorySelection(), 0) != null && getItemInInventorySlot(getPlayerInventorySelection(), 0).definition.isItem) {
+                        } else if (wielding != null && wielding.definition.isItem) {
                             if (getItemModifier(getItemInInventorySlot(getPlayerInventorySelection(), 0).name) != null) {
                                 getItemModifier(getItemInInventorySlot(getPlayerInventorySelection(), 0).name).onPlace(new Vector3i((int) finalPos.x, (int) finalPos.y, (int) finalPos.z), pointedThingAbove);
                             }
