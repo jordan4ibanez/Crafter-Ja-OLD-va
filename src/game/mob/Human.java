@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import static engine.FancyMath.randomDirFloat;
 import static engine.time.Time.getDelta;
+import static game.chunk.Chunk.getBlock;
 import static game.collision.Collision.applyInertia;
 import static game.mob.Mob.registerMob;
 import static game.mob.MobUtilityCode.doHeadCode;
@@ -16,6 +17,7 @@ import static game.mob.MobUtilityCode.mobSmoothRotation;
 
 public class Human {
 
+    //todo: unhook this from anything
     private final static Mesh[] bodyMeshes = createPlayerMesh();
 
     public static Mesh[] getHumanMeshes(){
@@ -32,84 +34,87 @@ public class Human {
 
     private final static MobInterface mobInterface = new MobInterface() {
         @Override
-        public void onTick(MobObject thisObject) {
+        public void onTick(MobObject thisMob) {
 
 
             double delta = getDelta();
 
-            thisObject.timer += delta;
+            thisMob.timer += delta;
 
-            if (thisObject.timer > 1.5f) {
-                thisObject.stand = !thisObject.stand;
-                thisObject.timer = (float)Math.random() * -2f;
-                thisObject.rotation = (float) (Math.toDegrees(Math.PI * Math.random() * randomDirFloat()));
+            if (thisMob.globalID == 1){
+                System.out.println(thisMob.animationTimer);
+            }
+
+            if (thisMob.timer > 1.5f) {
+                thisMob.stand = !thisMob.stand;
+                thisMob.timer = (float)Math.random() * -2f;
+                thisMob.rotation = (float) (Math.toDegrees(Math.PI * Math.random() * randomDirFloat()));
             }
 
 
 
             //head test
             //thisObject.bodyRotations[0] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),(float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),0);
-            thisObject.bodyRotations[2].x = (float) Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f));
-            thisObject.bodyRotations[3].x = (float) Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * -2f));
+            thisMob.bodyRotations[2].x = (float) Math.toDegrees(Math.sin(thisMob.animationTimer * Math.PI * 2f));
+            thisMob.bodyRotations[3].x = (float) Math.toDegrees(Math.sin(thisMob.animationTimer * Math.PI * -2f));
 
-            thisObject.bodyRotations[4].x = (float) Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * -2f));
-            thisObject.bodyRotations[5].x = (float) Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f));
+            thisMob.bodyRotations[4].x = (float) Math.toDegrees(Math.sin(thisMob.animationTimer * Math.PI * -2f));
+            thisMob.bodyRotations[5].x = (float) Math.toDegrees(Math.sin(thisMob.animationTimer * Math.PI * 2f));
 
 
-            float bodyYaw = (float) Math.toRadians(thisObject.rotation) + (float) Math.PI;
+            float bodyYaw = (float)Math.toRadians(thisMob.rotation) + (float) Math.PI;
 
-            /*
-            thisObject.inertia.x += (float) (Math.sin(-bodyYaw) * accelerationMultiplier) * movementAcceleration * delta;
-            thisObject.inertia.z += (float) (Math.cos(bodyYaw) * accelerationMultiplier) * movementAcceleration * delta;
+            thisMob.inertia.x +=  (Math.sin(-bodyYaw) * accelerationMultiplier) * movementAcceleration * delta;
+            thisMob.inertia.z +=  (Math.cos(bodyYaw) * accelerationMultiplier) * movementAcceleration * delta;
 
-            Vector3f inertia2D = new Vector3f(thisObject.inertia.x, 0, thisObject.inertia.z);
+            Vector3f inertia2D = new Vector3f(thisMob.inertia.x, 0, thisMob.inertia.z);
 
             float maxSpeed = maxWalkSpeed;
 
-            if (thisObject.health <= 0){
+            if (thisMob.health <= 0){
                 maxSpeed = 0.01f;
             }
 
-            if (thisObject.animationTimer >= 1f) {
-                thisObject.animationTimer = 0f;
+            if (thisMob.animationTimer >= 1f) {
+                thisMob.animationTimer = 0f;
             }
 
             if (inertia2D.length() > maxSpeed) {
                 inertia2D = inertia2D.normalize().mul(maxSpeed);
-                thisObject.inertia.x = inertia2D.x;
-                thisObject.inertia.z = inertia2D.z;
+                thisMob.inertia.x = inertia2D.x;
+                thisMob.inertia.z = inertia2D.z;
             }
 
-            thisObject.animationTimer += delta * (inertia2D.length() / maxSpeed);
 
-            if (thisObject.animationTimer >= 1f) {
-                thisObject.animationTimer = 0f;
+            System.out.println(thisMob.pos.distance(thisMob.oldPos));
+
+            thisMob.animationTimer += thisMob.pos.distance(thisMob.oldPos) * 100f;
+
+            if (thisMob.animationTimer >= 1f) {
+                thisMob.animationTimer -= 1f;
             }
-            */
 
-            boolean onGround = applyInertia(thisObject.pos, thisObject.inertia, false, thisObject.width, 3/*thisObject.height*/, true, false, true, false, false);
 
-            //thisObject.onGround = onGround;
+            boolean onGround = applyInertia(thisMob.pos, thisMob.inertia, false, thisMob.width, 3/*thisObject.height*/, true, false, true, false, false);
 
-            /*
+            thisMob.onGround = onGround;
 
-            if (thisObject.health > 0) {
+
+
+            if (thisMob.health > 0) {
                 //check for block in front
                 if (onGround) {
                     double x = Math.sin(-bodyYaw);
                     double z = Math.cos(bodyYaw);
 
-                    if (getBlock((int) Math.floor(x + thisObject.pos.x), (int) Math.floor(thisObject.pos.y), (int) Math.floor(z + thisObject.pos.z)) > 0) {
-                        thisObject.inertia.y += 8.75f;
+                    if (getBlock((int) Math.floor(x + thisMob.pos.x), (int) Math.floor(thisMob.pos.y), (int) Math.floor(z + thisMob.pos.z)) > 0) {
+                        thisMob.inertia.y += 8.75f;
                     }
                 }
             }
-             */
-            mobSmoothRotation(thisObject);
-            doHeadCode(thisObject);
 
-            //thisObject.lastPos.set(new Vector3d(thisObject.pos));
-
+            mobSmoothRotation(thisMob);
+            doHeadCode(thisMob);
         }
     };
 

@@ -3,7 +3,6 @@ package game.mob;
 import engine.graphics.Mesh;
 import engine.graphics.Texture;
 import org.joml.Math;
-import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -27,63 +26,67 @@ public class Pig {
 
     private final static MobInterface mobInterface = new MobInterface() {
         @Override
-        public void onTick(MobObject thisObject) {
+        public void onTick(MobObject thisMob) {
 
             double delta = getDelta();
 
-            thisObject.timer += delta;
+            thisMob.timer += delta;
+
+            if (thisMob.globalID == 1){
+                System.out.println(thisMob.animationTimer);
+            }
 
 
-            if (thisObject.timer > 1.5f) {
-                thisObject.stand = !thisObject.stand;
-                thisObject.timer = (float) Math.random() * -2f;
-                thisObject.rotation = (float) (Math.toDegrees(Math.PI * Math.random() * randomDirFloat()));
+            if (thisMob.timer > 1.5f) {
+                thisMob.stand = !thisMob.stand;
+                thisMob.timer = (float) Math.random() * -2f;
+                thisMob.rotation = (float) (Math.toDegrees(Math.PI * Math.random() * randomDirFloat()));
             }
 
             //head test
             //thisObject.bodyRotations[0] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),(float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),0);
-            thisObject.bodyRotations[2].x = (float) Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f));
-            thisObject.bodyRotations[3].x = (float) Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * -2f));
+            thisMob.bodyRotations[2].x = (float) Math.toDegrees(Math.sin(thisMob.animationTimer * Math.PI * 2f));
+            thisMob.bodyRotations[3].x = (float) Math.toDegrees(Math.sin(thisMob.animationTimer * Math.PI * -2f));
 
-            thisObject.bodyRotations[4].x = (float) Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * -2f));
-            thisObject.bodyRotations[5].x = (float) Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f));
+            thisMob.bodyRotations[4].x = (float) Math.toDegrees(Math.sin(thisMob.animationTimer * Math.PI * -2f));
+            thisMob.bodyRotations[5].x = (float) Math.toDegrees(Math.sin(thisMob.animationTimer * Math.PI * 2f));
 
-            float yaw = Math.toRadians(thisObject.rotation) + (float) Math.PI;
+            float yaw = Math.toRadians(thisMob.rotation) + (float) Math.PI;
 
-            thisObject.inertia.x += (Math.sin(-yaw) * accelerationMultiplier) * movementAcceleration * delta;
-            thisObject.inertia.z += (Math.cos(yaw) * accelerationMultiplier) * movementAcceleration * delta;
+            thisMob.inertia.x += (Math.sin(-yaw) * accelerationMultiplier) * movementAcceleration * delta;
+            thisMob.inertia.z += (Math.cos(yaw) * accelerationMultiplier) * movementAcceleration * delta;
 
-            Vector3f inertia2D = new Vector3f(thisObject.inertia.x, 0, thisObject.inertia.z);
+            Vector3f inertia2D = new Vector3f(thisMob.inertia.x, 0, thisMob.inertia.z);
 
             float maxSpeed = maxWalkSpeed;
 
-            if (thisObject.health <= 0) {
+            if (thisMob.health <= 0) {
                 maxSpeed = 0.01f;
             }
 
             if (inertia2D.length() > maxSpeed) {
                 inertia2D = inertia2D.normalize().mul(maxSpeed);
-                thisObject.inertia.x = inertia2D.x;
-                thisObject.inertia.z = inertia2D.z;
+                thisMob.inertia.x = inertia2D.x;
+                thisMob.inertia.z = inertia2D.z;
             }
 
 
-            thisObject.animationTimer += delta * (inertia2D.length() / maxSpeed);
+            thisMob.animationTimer += delta * (inertia2D.length() / maxSpeed);
 
-            if (thisObject.animationTimer >= 1f) {
-                thisObject.animationTimer = 0f;
+            if (thisMob.animationTimer >= 1f) {
+                thisMob.animationTimer = 0f;
             }
 
-            boolean onGround = applyInertia(thisObject.pos, thisObject.inertia, false, thisObject.width, thisObject.height, true, false, true, false, false);
+            boolean onGround = applyInertia(thisMob.pos, thisMob.inertia, false, thisMob.width, thisMob.height, true, false, true, false, false);
 
-            thisObject.onGround = onGround;
+            thisMob.onGround = onGround;
 
 
-            if (thisObject.health > 0) {
+            if (thisMob.health > 0) {
                 //check if swimming
-                int block = getBlock((int) Math.floor(thisObject.pos.x), (int) Math.floor(thisObject.pos.y), (int) Math.floor(thisObject.pos.z));
+                int block = getBlock((int) Math.floor(thisMob.pos.x), (int) Math.floor(thisMob.pos.y), (int) Math.floor(thisMob.pos.z));
                 if (block > -1 && getIfLiquid(block)) {
-                    thisObject.inertia.y += 100f * delta;
+                    thisMob.inertia.y += 100f * delta;
                 }
 
                 //check for block in front
@@ -91,17 +94,19 @@ public class Pig {
                     double x = Math.sin(-yaw);
                     double z = Math.cos(yaw);
 
-                    if (getBlock((int) Math.floor(x + thisObject.pos.x), (int) Math.floor(thisObject.pos.y), (int) Math.floor(z + thisObject.pos.z)) > 0) {
-                        thisObject.inertia.y += 8.75f;
+                    if (getBlock((int) Math.floor(x + thisMob.pos.x), (int) Math.floor(thisMob.pos.y), (int) Math.floor(z + thisMob.pos.z)) > 0) {
+                        thisMob.inertia.y += 8.75f;
                     }
                 }
             }
 
 
-            mobSmoothRotation(thisObject);
-            doHeadCode(thisObject);
+            mobSmoothRotation(thisMob);
+            doHeadCode(thisMob);
 
-            thisObject.lastPos.set(new Vector3d(thisObject.pos));
+            thisMob.oldPos.x = thisMob.pos.x;
+            thisMob.oldPos.y = thisMob.pos.y;
+            thisMob.oldPos.z = thisMob.pos.z;
 
         }
     };

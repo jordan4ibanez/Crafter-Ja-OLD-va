@@ -61,7 +61,7 @@ public class MobObject {
             this.bodyOffsets[count] = new Vector3f(thisOffset);
             count++;
         }
-        
+
         //stop memory leak with thorough clone
         Vector3f[] bodyRotations = getMobDefinition(ID).bodyRotations;
         this.bodyRotations = new Vector3f[bodyRotations.length];

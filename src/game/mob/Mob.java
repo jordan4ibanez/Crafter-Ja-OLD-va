@@ -20,7 +20,7 @@ import static game.mob.Pig.registerPigMob;
 public class Mob {
 
     //todo: ADD MOBS TO MEMORY SWEEPER
-    private static final MobDefinition[] mobDefinitions = new MobDefinition[3];
+    private static final MobDefinition[] mobDefinitions = new MobDefinition[2];
     private static final Int2ObjectArrayMap<MobObject> mobs = new Int2ObjectArrayMap<>();
 
     private static int currentID = 0;
@@ -50,8 +50,8 @@ public class Mob {
     }
 
     public static void spawnMob(byte ID, Vector3d pos, Vector3f inertia){
-        System.out.println("spawning mob! ID: " + currentID);
-        System.out.println("pos y:" + pos.y);
+        //System.out.println("spawning mob! ID: " + currentID);
+        //System.out.println("pos y:" + pos.y);
 
         mobs.put(currentID,new MobObject(new Vector3d(pos),new Vector3f(inertia),ID,currentID));
         currentID++;
@@ -122,6 +122,14 @@ public class Mob {
             thisMob.oldFlooredPos.x = currentFlooredPos.x;
             thisMob.oldFlooredPos.y = currentFlooredPos.y;
             thisMob.oldFlooredPos.z = currentFlooredPos.z;
+
+            System.out.println(thisMob.pos.x + " " + thisMob.oldPos.x);
+
+            thisMob.oldPos.x = thisMob.pos.x;
+            thisMob.oldPos.y = thisMob.pos.y;
+            thisMob.oldPos.z = thisMob.pos.z;
+
+            System.out.println("is reaching here");
         }
 
         while (!deletionQueue.isEmpty()){
