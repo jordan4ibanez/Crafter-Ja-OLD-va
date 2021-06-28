@@ -16,6 +16,7 @@ import org.joml.*;
 
 import java.lang.Math;
 import java.util.AbstractMap;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -201,21 +202,26 @@ public class GameRenderer {
         Matrix4d modelViewMatrix;
 
 
+        Vector3d camPos = getCameraPosition();
 
 
         //todo chunk sorting ---------------------------------------------------------------------------------------------
 
-        Vector3d camPos = getCameraPosition();
+
         HashMap<Double, ChunkMeshObject> chunkHash = new HashMap<>();
         AbstractMap<Vector2i,ChunkMeshObject> chunkMeshes = getMapMeshes();
 
+
+        double flickerFixer = 0d;
+
         //get all distances
         for (ChunkObject thisChunk : getMap()){
-            double currentDistance = getDistance((thisChunk.x * 16d) + 8d, 0,(thisChunk.z * 16d) + 8d, camPos.x, 0, camPos.z);
+            double currentDistance = camPos.distance((thisChunk.x * 16d) + 8d, 0,(thisChunk.z * 16d) + 8d);
 
             //this doesn't fix anything, todo: fix flickering chunks
             if (chunkHash.get(currentDistance) != null){
-                currentDistance += 0.000000001;
+                currentDistance += flickerFixer;
+                flickerFixer += 0.00000000001d;
             }
 
 
@@ -606,6 +612,9 @@ public class GameRenderer {
                 }
             }
         }
+
+        Arrays.fill(chunkArraySorted, null);
+
         if (graphicsMode) {
             glEnable(GL_CULL_FACE);
         }
