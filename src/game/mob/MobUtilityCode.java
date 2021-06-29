@@ -1,5 +1,6 @@
 package game.mob;
 
+import org.joml.Math;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
@@ -26,7 +27,7 @@ public class MobUtilityCode {
         headTurn.set(getPlayerPosWithEyeHeight()).sub(headPos);
         //headTurn.normalize();
 
-        float headYaw = (float)Math.toDegrees(Math.atan2(headTurn.z, headTurn.x)) + 90 - thisObject.smoothRotation;
+        float headYaw = (float) Math.toDegrees(Math.atan2(headTurn.z, headTurn.x)) + 90 - thisObject.smoothRotation;
         float pitch = (float)Math.toDegrees(Math.atan2(Math.sqrt(headTurn.z * headTurn.z + headTurn.x * headTurn.x), headTurn.y) + (Math.PI * 1.5));
 
 
