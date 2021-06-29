@@ -21,8 +21,7 @@ import static engine.network.Networking.getIfMultiplayer;
 import static engine.network.Networking.sendOutChunkRequest;
 import static engine.settings.Settings.getRenderDistance;
 import static engine.time.Time.getDelta;
-import static game.blocks.BlockDefinition.onDigCall;
-import static game.blocks.BlockDefinition.onPlaceCall;
+import static game.blocks.BlockDefinition.*;
 import static game.chunk.BiomeGenerator.addChunkToBiomeGeneration;
 import static game.chunk.ChunkMath.posToIndex;
 import static game.chunk.ChunkMeshGenerator.generateChunkMesh;
@@ -547,7 +546,9 @@ public class Chunk {
         blockData[posToIndex(blockX, y, blockZ)] = ID;
         rotationData[posToIndex(blockX, y, blockZ)] =  rot;
 
-        if (heightMapData[blockX][blockZ] < y){
+        System.out.println("ADD A LIGHT PROPAGATES OR TRANSLUCENT THING TO PLACE BLOCK!");
+        //todo: replace isBlockWalkable with isBlockTranslucent or something!
+        if (isBlockWalkable(ID) && heightMapData[blockX][blockZ] < y){
             heightMapData[blockX][blockZ] = (byte) y;
         }
 
