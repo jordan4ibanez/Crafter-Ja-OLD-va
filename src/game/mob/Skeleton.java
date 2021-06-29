@@ -16,20 +16,6 @@ import static game.mob.MobUtilityCode.mobSmoothRotation;
 
 public class Skeleton {
 
-    /*
-    //todo: unhook this from anything
-    private final static Mesh[] bodyMeshes = createPlayerMesh();
-
-    public static Mesh[] getHumanMeshes(){
-        return bodyMeshes;
-    }
-
-    public static Vector3f[]getHumanBodyOffsets(){
-        return bodyOffsets;
-    }
-
-     */
-
     private static final float accelerationMultiplier  = 0.03f;
     final private static float maxWalkSpeed = 2.f;
     final private static float movementAcceleration = 900.f;
