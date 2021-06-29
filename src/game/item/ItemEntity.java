@@ -78,6 +78,9 @@ public class ItemEntity {
         deletionQueue.add(ID);
     }
 
+    final private static Vector3i currentFlooredPos = new Vector3i();
+    final private static Vector3d normalizedPos = new Vector3d();
+
     public static void itemsOnTick(){
         double delta = getDelta();
 
@@ -94,7 +97,7 @@ public class ItemEntity {
             thisItem.timer += delta;
             thisItem.lightUpdateTimer += delta;
 
-            Vector3i currentFlooredPos = new Vector3i((int) Math.floor(thisItem.pos.x), (int)Math.floor(thisItem.pos.y), (int)Math.floor(thisItem.pos.z));
+            currentFlooredPos.set((int) Math.floor(thisItem.pos.x), (int)Math.floor(thisItem.pos.y), (int)Math.floor(thisItem.pos.z));
 
             //poll local light every quarter second
             if (thisItem.lightUpdateTimer >= 0.25f || !currentFlooredPos.equals(thisItem.oldFlooredPos)){
@@ -104,7 +107,7 @@ public class ItemEntity {
                 thisItem.lightUpdateTimer = 0f;
             }
 
-            thisItem.oldFlooredPos = currentFlooredPos;
+            thisItem.oldFlooredPos.set(currentFlooredPos);
 
             //delete items that are too old
             if (thisItem.timer > 50f){
@@ -123,15 +126,8 @@ public class ItemEntity {
                     }
                     //do not do else-if here, can go straight to this logic
                     if (thisItem.collecting) {
-                        Vector3d normalizedPos = new Vector3d(getPlayerPosWithCollectionHeight());
-                        normalizedPos.sub(thisItem.pos).normalize().mul(15f);
-
-                        Vector3f normalizedDirection = new Vector3f();
-                        normalizedDirection.x = (float)normalizedPos.x;
-                        normalizedDirection.y = (float)normalizedPos.y;
-                        normalizedDirection.z = (float)normalizedPos.z;
-
-                        thisItem.inertia = normalizedDirection;
+                        normalizedPos.set(getPlayerPosWithCollectionHeight().sub(thisItem.pos).normalize().mul(15f));
+                        thisItem.inertia.set((float)normalizedPos.x,(float)normalizedPos.y,(float)normalizedPos.z);
                     }
                 }
 
