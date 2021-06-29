@@ -2,6 +2,7 @@ package game.ray;
 
 import game.item.Item;
 import game.mob.MobObject;
+import org.joml.Math;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
@@ -21,12 +22,15 @@ import static game.particle.Particle.createParticle;
 import static game.player.Player.*;
 
 public class Ray {
+
+    private final static Vector3i finalPos = new Vector3i();
+    private final static Vector3d newPos   = new Vector3d();
+    private final static Vector3d realNewPos = new Vector3d();
+    private final static Vector3d lastPos  = new Vector3d();
+    private final static Vector3d cachePos = new Vector3d();
+
     public static void playerRayCast(Vector3d pos, Vector3f dir, float length, boolean mining, boolean placing, boolean hasMined) {
-        Vector3i finalPos = new Vector3i();
-        Vector3d newPos   = new Vector3d();
-        Vector3d realNewPos = new Vector3d();
-        Vector3d lastPos  = new Vector3d();
-        Vector3d cachePos = new Vector3d();
+
         Vector3i pointedThingAbove = new Vector3i();
         int foundBlock = -1;
         MobObject[] mobs = null;
@@ -74,13 +78,15 @@ public class Ray {
                 foundBlock = getBlock((int) newPos.x, (int) newPos.y, (int) newPos.z);
 
                 if (foundBlock > 0 && isBlockPointable(foundBlock)) {
-                    finalPos = new Vector3i((int)Math.floor(newPos.x), (int)Math.floor(newPos.y), (int)Math.floor(newPos.z));
+
+                    finalPos.set((int)Math.floor(newPos.x), (int)Math.floor(newPos.y), (int)Math.floor(newPos.z));
+
                     pointedThingAbove = new Vector3i((int)Math.floor(lastPos.x), (int)Math.floor(lastPos.y), (int)Math.floor(lastPos.z));
                     break;
                 }
             }
 
-            lastPos = new Vector3d(newPos);
+            lastPos.set(newPos);
         }
 
         if (foundMob != null){

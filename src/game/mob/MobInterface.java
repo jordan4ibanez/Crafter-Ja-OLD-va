@@ -7,7 +7,7 @@ public interface MobInterface {
     }
     //what happens when a mob is spawned
     default void onSpawn(){
-        
+
     }
 
     //what the mob does when right clicked
