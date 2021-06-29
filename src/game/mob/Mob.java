@@ -23,6 +23,7 @@ import static game.mob.Zombie.registerZombieMob;
 public class Mob {
 
     //todo: ADD MOBS TO MEMORY SWEEPER
+    //todo: Data orient! - maybe
     private static final MobDefinition[] mobDefinitions = new MobDefinition[5];
     private static final Int2ObjectArrayMap<MobObject> mobs = new Int2ObjectArrayMap<>();
 

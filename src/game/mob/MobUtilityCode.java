@@ -5,10 +5,16 @@ import org.joml.Vector3f;
 
 import static engine.time.Time.getDelta;
 import static game.player.Player.getPlayerPosWithEyeHeight;
+import static game.ray.LineOfSight.getLineOfSight;
 
 public class MobUtilityCode {
 
     public static void doHeadCode(MobObject thisObject){
+
+        if (getLineOfSight(thisObject.pos, getPlayerPosWithEyeHeight())){
+            System.out.println("I SEE YOU BOI");
+        }
+
         //silly head turning
         Vector3d headPos = new Vector3d(thisObject.pos);
         headPos.add(thisObject.bodyOffsets[0]);
