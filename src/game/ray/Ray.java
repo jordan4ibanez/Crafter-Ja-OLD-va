@@ -95,7 +95,7 @@ public class Ray {
         } else {
             if (foundBlock > 0 && getBlockDefinition(foundBlock).pointable) {
                 if (mining && hasMined) {
-                    destroyBlock(finalPos);
+                    destroyBlock();
                 } else if (placing) {
 
                     //todo: make this call on punched
@@ -107,7 +107,7 @@ public class Ray {
                         Item wielding = getItemInInventorySlot(getPlayerInventorySelection(), 0);
 
                         if (wielding != null && !wouldCollidePlacing(getPlayerPos(),getPlayerWidth(), getPlayerHeight(), new Vector3i(pointedThingAbove.x, pointedThingAbove.y, pointedThingAbove.z), wielding.definition.blockID, getPlayerDir()) && getItemInInventorySlot(getPlayerInventorySelection(), 0) != null && !getItemInInventorySlot(getPlayerInventorySelection(), 0).definition.isItem) {
-                            rayPlaceBlock(lastPos, getItemInInventorySlot(getPlayerInventorySelection(), 0).definition.blockID);
+                            rayPlaceBlock(getItemInInventorySlot(getPlayerInventorySelection(), 0).definition.blockID);
                         } else if (wielding != null && wielding.definition.isItem) {
                             if (getItemModifier(getItemInInventorySlot(getPlayerInventorySelection(), 0).name) != null) {
                                 getItemModifier(getItemInInventorySlot(getPlayerInventorySelection(), 0).name).onPlace(new Vector3i(finalPos.x, finalPos.y, finalPos.z), pointedThingAbove);
@@ -125,59 +125,56 @@ public class Ray {
         }
     }
 
-    private static void destroyBlock(Vector3i flooredPos) {
+    private static void destroyBlock() {
 
-        int thisBlock = getBlock(flooredPos.x, flooredPos.y, flooredPos.z);
+        int thisBlock = getBlock(Ray.finalPos.x, Ray.finalPos.y, Ray.finalPos.z);
 
         if (thisBlock < 0) {
             return;
         }
 
         if (getIfMultiplayer()){
-            sendOutNetworkBlockBreak(flooredPos.x, flooredPos.y, flooredPos.z);
+            sendOutNetworkBlockBreak(Ray.finalPos.x, Ray.finalPos.y, Ray.finalPos.z);
         } else {
-            digBlock(flooredPos.x, flooredPos.y, flooredPos.z);
+            digBlock(Ray.finalPos.x, Ray.finalPos.y, Ray.finalPos.z);
         }
         for (int i = 0; i < 40 + (int)(Math.random() * 15); i++) {
-            createParticle(new Vector3d(flooredPos.x + (Math.random()-0.5d), flooredPos.y + (Math.random()-0.5d), flooredPos.z + (Math.random()-0.5d)), new Vector3f((float)(Math.random()-0.5f) * 2f, 0f, (float)(Math.random()-0.5f) * 2f), thisBlock);
+            createParticle(new Vector3d(Ray.finalPos.x + (Math.random()-0.5d), Ray.finalPos.y + (Math.random()-0.5d), Ray.finalPos.z + (Math.random()-0.5d)), new Vector3f((float)(Math.random()-0.5f) * 2f, 0f, (float)(Math.random()-0.5f) * 2f), thisBlock);
         }
     }
-    private static void rayPlaceBlock(Vector3d flooredPos, byte ID) {
+    private static void rayPlaceBlock(byte ID) {
         if (getIfMultiplayer()){
-            sendOutNetworkBlockPlace((int) flooredPos.x, (int) flooredPos.y, (int) flooredPos.z, ID, getPlayerDir());
+            sendOutNetworkBlockPlace((int) Ray.lastPos.x, (int) Ray.lastPos.y, (int) Ray.lastPos.z, ID, getPlayerDir());
         } else {
-            placeBlock((int) flooredPos.x, (int) flooredPos.y, (int) flooredPos.z, ID, getPlayerDir());
+            placeBlock((int) Ray.lastPos.x, (int) Ray.lastPos.y, (int) Ray.lastPos.z, ID, getPlayerDir());
         }
 
         removeItemFromInventory(getCurrentInventorySelection(), 0);
     }
 
-
     public static Vector3d genericWorldRaycast(Vector3d pos, Vector3f dir, float length){
-        Vector3d newPos   = new Vector3d();
-        Vector3d realNewPos = new Vector3d();
-        Vector3d lastPos  = new Vector3d();
-        Vector3d cachePos = new Vector3d();
-        int foundBlock;
-
         for(float step = 0f; step <= length ; step += 0.001d) {
+
             cachePos.x = dir.x * step;
             cachePos.y = dir.y * step;
             cachePos.z = dir.z * step;
+
             newPos.x = Math.floor(pos.x + cachePos.x);
             newPos.y = Math.floor(pos.y + cachePos.y);
             newPos.z = Math.floor(pos.z + cachePos.z);
+
             realNewPos.x = pos.x + cachePos.x;
             realNewPos.y = pos.y + cachePos.y;
             realNewPos.z = pos.z + cachePos.z;
+
             //stop wasting cpu resources
             if (newPos.x != lastPos.x || newPos.y != lastPos.y || newPos.z != lastPos.z) {
-                foundBlock = getBlock((int) newPos.x, (int) newPos.y, (int) newPos.z);
+                int foundBlock = getBlock((int) newPos.x, (int) newPos.y, (int) newPos.z);
                 if (foundBlock > 0 && isBlockPointable(foundBlock)) {
                     break;
                 }
             }
-            lastPos = new Vector3d(newPos);
+            lastPos.set(newPos);
         }
 
         return realNewPos;
