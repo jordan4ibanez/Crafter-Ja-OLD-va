@@ -9,17 +9,21 @@ import static game.ray.LineOfSight.getLineOfSight;
 
 public class MobUtilityCode {
 
+
+    private final static Vector3d headPos = new Vector3d();
+    private final static Vector3d headTurn = new Vector3d();
+
     public static void doHeadCode(MobObject thisObject){
 
-        if (getLineOfSight(thisObject.pos, getPlayerPosWithEyeHeight())){
-            System.out.println("I SEE YOU BOI");
+        if (!getLineOfSight(thisObject.pos, getPlayerPosWithEyeHeight())){
+            return;
         }
 
         //silly head turning
-        Vector3d headPos = new Vector3d(thisObject.pos);
-        headPos.add(thisObject.bodyOffsets[0]);
 
-        Vector3d headTurn = getPlayerPosWithEyeHeight().sub(headPos);
+        headPos.set(thisObject.pos).add(thisObject.bodyOffsets[0]);
+
+        headTurn.set(getPlayerPosWithEyeHeight()).sub(headPos);
         //headTurn.normalize();
 
         float headYaw = (float)Math.toDegrees(Math.atan2(headTurn.z, headTurn.x)) + 90 - thisObject.smoothRotation;
