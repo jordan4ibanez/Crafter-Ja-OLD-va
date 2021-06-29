@@ -155,13 +155,13 @@ public class Zombie {
 
         float[][] modelTextureArray = new float[][]{
                 //head
-                //right
-                calculateMobTexture(24,8,32,16, textureWidth, textureHeight),
-                //left
-                calculateMobTexture(8,8,16,16, textureWidth, textureHeight),
                 //front
-                calculateMobTexture(0,8,8,16, textureWidth, textureHeight),
+                calculateMobTexture(24,8,32,16, textureWidth, textureHeight),
                 //back
+                calculateMobTexture(8,8,16,16, textureWidth, textureHeight),
+                //right
+                calculateMobTexture(0,8,8,16, textureWidth, textureHeight),
+                //left
                 calculateMobTexture(16,8,24,16, textureWidth, textureHeight),
                 //top
                 calculateMobTexture(8,0,16,8, textureWidth, textureHeight),

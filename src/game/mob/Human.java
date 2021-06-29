@@ -165,91 +165,91 @@ public class Human {
         final float textureHeight = 32f;
 
         float[][] modelTextureArray = new float[][]{
-            //head
-            //right
-            calculateMobTexture(24,8,32,16, textureWidth, textureHeight),
-            //left
-            calculateMobTexture(8,8,16,16, textureWidth, textureHeight),
-            //front
-            calculateMobTexture(0,8,8,16, textureWidth, textureHeight),
-            //back
-            calculateMobTexture(16,8,24,16, textureWidth, textureHeight),
-            //top
-            calculateMobTexture(8,0,16,8, textureWidth, textureHeight),
-            //bottom
-            calculateMobTexture(16,0,24,8, textureWidth, textureHeight),
+                //head
+                //front
+                calculateMobTexture(24, 8, 32, 16, textureWidth, textureHeight),
+                //back
+                calculateMobTexture(8, 8, 16, 16, textureWidth, textureHeight),
+                //right
+                calculateMobTexture(0, 8, 8, 16, textureWidth, textureHeight),
+                //left
+                calculateMobTexture(16, 8, 24, 16, textureWidth, textureHeight),
+                //top
+                calculateMobTexture(8, 0, 16, 8, textureWidth, textureHeight),
+                //bottom
+                calculateMobTexture(16, 0, 24, 8, textureWidth, textureHeight),
 
-            //body
-            //front
-            calculateMobTexture(32,20,40,30, textureWidth, textureHeight),
-            //back
-            calculateMobTexture(20,20,28,30, textureWidth, textureHeight),
-            //right
-            calculateMobTexture(28,20,32,30, textureWidth, textureHeight),
-            //left
-            calculateMobTexture(16,20,20,30, textureWidth, textureHeight),
-            //top
-            calculateMobTexture(20,16,28,20, textureWidth, textureHeight),
-            //bottom
-            calculateMobTexture(28,16,36,20, textureWidth, textureHeight),
-
-
-            //right arm
-            //front
-            calculateMobTexture(48,20,52,32, textureWidth, textureHeight), //dark
-            //back
-            calculateMobTexture(44,20,48,32, textureWidth, textureHeight), //light
-            //right
-            calculateMobTexture(48,20,52,32, textureWidth, textureHeight), //dark
-            //left
-            calculateMobTexture(44,20,48,32, textureWidth, textureHeight), //light
-            //top
-            calculateMobTexture(44,16,48,20, textureWidth, textureHeight), //shoulder
-            //bottom
-            calculateMobTexture(48,16,52,20, textureWidth, textureHeight), //palm
-
-            //left arm
-            //front
-            calculateMobTexture(48,20,52,32, textureWidth, textureHeight), //dark
-            //back
-            calculateMobTexture(44,20,48,32, textureWidth, textureHeight), //light
-            //right
-            calculateMobTexture(44,20,48,32, textureWidth, textureHeight), //light
-            //left
-            calculateMobTexture(48,20,52,32, textureWidth, textureHeight), //dark
-            //top
-            calculateMobTexture(44,16,48,20, textureWidth, textureHeight), //shoulder
-            //bottom
-            calculateMobTexture(48,16,52,20, textureWidth, textureHeight), //palm
+                //body
+                //front
+                calculateMobTexture(32, 20, 40, 30, textureWidth, textureHeight),
+                //back
+                calculateMobTexture(20, 20, 28, 30, textureWidth, textureHeight),
+                //right
+                calculateMobTexture(28, 20, 32, 30, textureWidth, textureHeight),
+                //left
+                calculateMobTexture(16, 20, 20, 30, textureWidth, textureHeight),
+                //top
+                calculateMobTexture(20, 16, 28, 20, textureWidth, textureHeight),
+                //bottom
+                calculateMobTexture(28, 16, 36, 20, textureWidth, textureHeight),
 
 
-            //right leg
-            //front
-            calculateMobTexture(0,20,4,32, textureWidth, textureHeight), //dark
-            //back
-            calculateMobTexture(4,20,8,32, textureWidth, textureHeight), //light
-            //right
-            calculateMobTexture(8,20,12,32, textureWidth, textureHeight), //dark
-            //left
-            calculateMobTexture(12,20,16,32, textureWidth, textureHeight), //light
-            //top
-            calculateMobTexture(4,16,8,20, textureWidth, textureHeight), //top
-            //bottom
-            calculateMobTexture(8,16,12,20, textureWidth, textureHeight), //bottom
+                //right arm
+                //front
+                calculateMobTexture(48, 20, 52, 32, textureWidth, textureHeight), //dark
+                //back
+                calculateMobTexture(44, 20, 48, 32, textureWidth, textureHeight), //light
+                //right
+                calculateMobTexture(48, 20, 52, 32, textureWidth, textureHeight), //dark
+                //left
+                calculateMobTexture(44, 20, 48, 32, textureWidth, textureHeight), //light
+                //top
+                calculateMobTexture(44, 16, 48, 20, textureWidth, textureHeight), //shoulder
+                //bottom
+                calculateMobTexture(48, 16, 52, 20, textureWidth, textureHeight), //palm
 
-            //left leg
-            //front
-            calculateMobTexture(0,20,4,32, textureWidth, textureHeight), //dark
-            //back
-            calculateMobTexture(4,20,8,32, textureWidth, textureHeight), //light
-            //right
-            calculateMobTexture(12,20,16,32, textureWidth, textureHeight), //light
-            //left
-            calculateMobTexture(8,20,12,32, textureWidth, textureHeight), //dark
-            //top
-            calculateMobTexture(4,16,8,20, textureWidth, textureHeight), //top
-            //bottom
-            calculateMobTexture(8,16,12,20, textureWidth, textureHeight), //bottom
+                //left arm
+                //front
+                calculateMobTexture(48, 20, 52, 32, textureWidth, textureHeight), //dark
+                //back
+                calculateMobTexture(44, 20, 48, 32, textureWidth, textureHeight), //light
+                //right
+                calculateMobTexture(44, 20, 48, 32, textureWidth, textureHeight), //light
+                //left
+                calculateMobTexture(48, 20, 52, 32, textureWidth, textureHeight), //dark
+                //top
+                calculateMobTexture(44, 16, 48, 20, textureWidth, textureHeight), //shoulder
+                //bottom
+                calculateMobTexture(48, 16, 52, 20, textureWidth, textureHeight), //palm
+
+
+                //right leg
+                //front
+                calculateMobTexture(0, 20, 4, 32, textureWidth, textureHeight), //dark
+                //back
+                calculateMobTexture(4, 20, 8, 32, textureWidth, textureHeight), //light
+                //right
+                calculateMobTexture(8, 20, 12, 32, textureWidth, textureHeight), //dark
+                //left
+                calculateMobTexture(12, 20, 16, 32, textureWidth, textureHeight), //light
+                //top
+                calculateMobTexture(4, 16, 8, 20, textureWidth, textureHeight), //top
+                //bottom
+                calculateMobTexture(8, 16, 12, 20, textureWidth, textureHeight), //bottom
+
+                //left leg
+                //front
+                calculateMobTexture(0, 20, 4, 32, textureWidth, textureHeight), //dark
+                //back
+                calculateMobTexture(4, 20, 8, 32, textureWidth, textureHeight), //light
+                //right
+                calculateMobTexture(12, 20, 16, 32, textureWidth, textureHeight), //light
+                //left
+                calculateMobTexture(8, 20, 12, 32, textureWidth, textureHeight), //dark
+                //top
+                calculateMobTexture(4, 16, 8, 20, textureWidth, textureHeight), //top
+                //bottom
+                calculateMobTexture(8, 16, 12, 20, textureWidth, textureHeight), //bottom
         };
 
         return createMobMesh(modelPieceArray,modelTextureArray, "textures/player.png");
