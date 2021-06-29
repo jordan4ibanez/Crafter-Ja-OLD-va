@@ -32,7 +32,7 @@ public class Ray {
     public static void playerRayCast(Vector3d pos, Vector3f dir, float length, boolean mining, boolean placing, boolean hasMined) {
 
         Vector3i pointedThingAbove = new Vector3i();
-        int foundBlock = -1;
+        byte foundBlock = -1;
 
         MobObject[] mobs = getAllMobs();
 
@@ -167,7 +167,7 @@ public class Ray {
 
             //stop wasting cpu resources
             if (!newPos.equals(lastPos)) {
-                int foundBlock = getBlock((int) newPos.x, (int) newPos.y, (int) newPos.z);
+                byte foundBlock = getBlock((int) newPos.x, (int) newPos.y, (int) newPos.z);
                 if (foundBlock > 0 && isBlockPointable(foundBlock)) {
                     break;
                 }
