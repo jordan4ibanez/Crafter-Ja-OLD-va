@@ -33,11 +33,10 @@ public class Ray {
 
         Vector3i pointedThingAbove = new Vector3i();
         int foundBlock = -1;
-        MobObject[] mobs = null;
 
-        if (mining){
-            mobs = getAllMobs();
-        }
+        MobObject[] mobs = getAllMobs();
+
+
         MobObject foundMob = null;
 
         for(float step = 0f; step <= length ; step += 0.001d) {
@@ -54,17 +53,16 @@ public class Ray {
             realNewPos.y = pos.y + cachePos.y;
             realNewPos.z = pos.z + cachePos.z;
 
-            if (mining){
-                for (MobObject thisMob : mobs){
-                    if (thisMob == null){
-                        continue;
-                    }
-                    if (thisMob.pos.distance(realNewPos) <= 4.5 && thisMob.health > 0){
-                        setPointAABB(thisMob.pos.x, thisMob.pos.y, thisMob.pos.z, thisMob.width,thisMob.height);
-                        if(pointIsWithin(realNewPos.x, realNewPos.y, realNewPos.z)){
-                            foundMob = thisMob;
-                            break;
-                        }
+
+            for (MobObject thisMob : mobs){
+                if (thisMob == null){
+                    continue;
+                }
+                if (thisMob.pos.distance(realNewPos) <= 4.5 && thisMob.health > 0){
+                    setPointAABB(thisMob.pos.x, thisMob.pos.y, thisMob.pos.z, thisMob.width,thisMob.height);
+                    if(pointIsWithin(realNewPos.x, realNewPos.y, realNewPos.z)){
+                        foundMob = thisMob;
+                        break;
                     }
                 }
             }
@@ -90,7 +88,10 @@ public class Ray {
         }
 
         if (foundMob != null){
-            punchMob(foundMob);
+            if (mining) {
+                punchMob(foundMob);
+            }
+            setPlayerWorldSelectionPos(null);
         } else {
             if (foundBlock > 0 && getBlockDefinition(foundBlock).pointable) {
                 if (mining && hasMined) {
