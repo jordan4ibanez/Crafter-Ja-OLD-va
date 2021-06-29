@@ -87,8 +87,6 @@ public class Exploder {
 
             thisMob.onGround = onGround;
 
-
-
             if (thisMob.health > 0) {
                 //check for block in front
                 if (onGround) {
