@@ -13,13 +13,12 @@ import static game.blocks.BlockDefinition.getIfLiquid;
 import static game.chunk.Chunk.getBlock;
 import static game.collision.Collision.applyInertia;
 import static game.mob.Mob.registerMob;
+import static game.mob.MobMeshBuilder.calculateMobTexture;
+import static game.mob.MobMeshBuilder.createMobMesh;
 import static game.mob.MobUtilityCode.doHeadCode;
 import static game.mob.MobUtilityCode.mobSmoothRotation;
 
 public class Pig {
-
-    private final static Mesh[] bodyMeshes = createPigMesh();
-
     private static final float accelerationMultiplier  = 0.04f;
     final private static float maxWalkSpeed = 2.f;
     final private static float movementAcceleration = 900.f;
@@ -139,30 +138,15 @@ public class Pig {
     };
 
     public static void registerPigMob(){
-        registerMob(new MobDefinition("pig", "oink", (byte) 6, bodyMeshes, bodyOffsets, bodyRotations,0.9f, 0.45f, mobInterface));
+        registerMob(new MobDefinition("pig", "oink", (byte) 6, createMesh(), bodyOffsets, bodyRotations,0.9f, 0.45f, mobInterface));
     }
 
 
-
-    private static final float PIG_WIDTH = 64f;
-    private static final float PIG_HEIGHT = 32f;
-
-    private static float[] calculateTexture(int xMin, int yMin, int xMax, int yMax){
-        float[] texturePoints = new float[4];
-
-        texturePoints[0] = (float)xMin/ PIG_WIDTH; //min x (-)
-        texturePoints[1] = (float)xMax/ PIG_WIDTH; //max x (+)
-
-        texturePoints[2] = (float)yMin/ PIG_HEIGHT; //min y (-)
-        texturePoints[3] = (float)yMax/ PIG_HEIGHT; //max y (+)
-        return texturePoints;
-    }
-
-    private static Mesh[] createPigMesh(){
+    private static Mesh[] createMesh(){
 
         float size = 0.25f; //lazy way to fix
 
-        float[][] oneBlockyBoi = new float[][]{
+        float[][] modelPieceArray = new float[][]{
 //                head
                 {-0.8f * size,-0.8f * size,-0.8f * size,0.8f * size,0.8f * size,0.8f * size},
 //                body
@@ -177,488 +161,112 @@ public class Pig {
                 //rear left leg
                 {-0.375f * size,-1.2f * size,-0.375f * size,  0.375f * size,0.3f * size,0.375f * size},
         };
+        final float textureWidth = 64f;
+        final float textureHeight = 32f;
 
-
-        float[][] textureArrayArray = new float[][]{
+        float[][] modelTextureArray = new float[][]{
                 //head
 
                 //right
-                calculateTexture(24,8,32,16),
+                calculateMobTexture(24,8,32,16,textureWidth,textureHeight),
                 //left
-                calculateTexture(8,8,16,16),
+                calculateMobTexture(8,8,16,16,textureWidth,textureHeight),
                 //front
-                calculateTexture(0,8,8,16),
+                calculateMobTexture(0,8,8,16,textureWidth,textureHeight),
                 //back
-                calculateTexture(16,8,24,16),
+                calculateMobTexture(16,8,24,16,textureWidth,textureHeight),
                 //top
-                calculateTexture(8,0,16,8),
+                calculateMobTexture(8,0,16,8,textureWidth,textureHeight),
                 //bottom
-                calculateTexture(16,0,24,8),
+                calculateMobTexture(16,0,24,8,textureWidth,textureHeight),
 
                 //body
 
                 //front
-                calculateTexture(54,6,64,14),
+                calculateMobTexture(54,6,64,14,textureWidth,textureHeight),
                 //back
-                calculateTexture(44,6,54,14),
+                calculateMobTexture(44,6,54,14,textureWidth,textureHeight),
                 //right
-                calculateTexture(48,23,64,32),
+                calculateMobTexture(48,23,64,32,textureWidth,textureHeight),
                 //left
-                calculateTexture(48,23,64,32),
+                calculateMobTexture(48,23,64,32,textureWidth,textureHeight),
                 //top
-                calculateTexture(32,23,48,32),
+                calculateMobTexture(32,23,48,32,textureWidth,textureHeight),
                 //bottom
-                calculateTexture(48,14,64,23),
+                calculateMobTexture(48,14,64,23,textureWidth,textureHeight),
 
 
                 //right arm
 
                 //front
-                calculateTexture(0,20,4,26), //dark
+                calculateMobTexture(0,20,4,26,textureWidth,textureHeight), //dark
                 //back
-                calculateTexture(4,20,8,26), //light
+                calculateMobTexture(4,20,8,26,textureWidth,textureHeight), //light
 
                 //right
-                calculateTexture(8,20,12,26), //dark
+                calculateMobTexture(8,20,12,26,textureWidth,textureHeight), //dark
                 //left
-                calculateTexture(12,20,16,26), //light
+                calculateMobTexture(12,20,16,26,textureWidth,textureHeight), //light
 
                 //top
-                calculateTexture(4,16,8,20), //shoulder
+                calculateMobTexture(4,16,8,20,textureWidth,textureHeight), //shoulder
                 //bottom
-                calculateTexture(8,16,12,20), //palm
+                calculateMobTexture(8,16,12,20,textureWidth,textureHeight), //palm
 
                 //left arm
 
                 //front
-                calculateTexture(0,20,4,26), //dark
+                calculateMobTexture(0,20,4,26,textureWidth,textureHeight), //dark
                 //back
-                calculateTexture(4,20,8,26), //light
+                calculateMobTexture(4,20,8,26,textureWidth,textureHeight), //light
 
                 //right
-                calculateTexture(8,20,12,26), //dark
+                calculateMobTexture(8,20,12,26,textureWidth,textureHeight), //dark
                 //left
-                calculateTexture(12,20,16,26), //light
+                calculateMobTexture(12,20,16,26,textureWidth,textureHeight), //light
 
                 //top
-                calculateTexture(4,16,8,20), //shoulder
+                calculateMobTexture(4,16,8,20,textureWidth,textureHeight), //shoulder
                 //bottom
-                calculateTexture(8,16,12,20), //palm
+                calculateMobTexture(8,16,12,20,textureWidth,textureHeight), //palm
 
 
                 //right leg
 
                 //front
-                calculateTexture(0,20,4,26), //dark
+                calculateMobTexture(0,20,4,26,textureWidth,textureHeight), //dark
                 //back
-                calculateTexture(4,20,8,26), //light
+                calculateMobTexture(4,20,8,26,textureWidth,textureHeight), //light
 
                 //right
-                calculateTexture(8,20,12,26), //dark
+                calculateMobTexture(8,20,12,26,textureWidth,textureHeight), //dark
                 //left
-                calculateTexture(12,20,16,26), //light
+                calculateMobTexture(12,20,16,26,textureWidth,textureHeight), //light
 
                 //top
-                calculateTexture(4,16,8,20), //shoulder
+                calculateMobTexture(4,16,8,20,textureWidth,textureHeight), //shoulder
                 //bottom
-                calculateTexture(8,16,12,20), //palm
+                calculateMobTexture(8,16,12,20,textureWidth,textureHeight), //palm
 
                 //left leg
 
                 //front
-                calculateTexture(0,20,4,26), //dark
+                calculateMobTexture(0,20,4,26,textureWidth,textureHeight), //dark
                 //back
-                calculateTexture(4,20,8,26), //light
+                calculateMobTexture(4,20,8,26,textureWidth,textureHeight), //light
 
                 //right
-                calculateTexture(8,20,12,26), //dark
+                calculateMobTexture(8,20,12,26,textureWidth,textureHeight), //dark
                 //left
-                calculateTexture(12,20,16,26), //light
+                calculateMobTexture(12,20,16,26,textureWidth,textureHeight), //light
 
                 //top
-                calculateTexture(4,16,8,20), //shoulder
+                calculateMobTexture(4,16,8,20,textureWidth,textureHeight), //shoulder
                 //bottom
-                calculateTexture(8,16,12,20), //palm
-
+                calculateMobTexture(8,16,12,20,textureWidth,textureHeight), //palm
         };
 
-        Mesh[] bodyMeshes = new Mesh[6];
-        int bodyMeshesIndex = 0;
-
-        int textureCounter = 0;
-
-        for (float[] thisBlockBox : oneBlockyBoi) {
-            ArrayList<Float> positions = new ArrayList<>();
-            ArrayList<Float> textureCoord = new ArrayList<>();
-            ArrayList<Integer> indices = new ArrayList<>();
-            ArrayList<Float> light = new ArrayList<>();
-
-            int indicesCount = 0;
-            // 0, 1, 2, 3, 4, 5
-            //-x,-y,-z, x, y, z
-            // 0, 0, 0, 1, 1, 1
-
-            //front
-            positions.add(thisBlockBox[3]);
-            positions.add(thisBlockBox[4]);
-            positions.add(thisBlockBox[5]);
-            positions.add(thisBlockBox[0]);
-            positions.add(thisBlockBox[4]);
-            positions.add(thisBlockBox[5]);
-            positions.add(thisBlockBox[0]);
-            positions.add(thisBlockBox[1]);
-            positions.add(thisBlockBox[5]);
-            positions.add(thisBlockBox[3]);
-            positions.add(thisBlockBox[1]);
-            positions.add(thisBlockBox[5]);
-            //front
-            float frontLight = 1f;
-
-            //front
-            for (int i = 0; i < 12; i++) {
-                light.add(frontLight);
-            }
-            //front
-            indices.add(0);
-            indices.add(1 + indicesCount);
-            indices.add(2 + indicesCount);
-            indices.add(0);
-            indices.add(2 + indicesCount);
-            indices.add(3 + indicesCount);
-
-            indicesCount += 4;
-
-            // 0, 1,  2, 3
-            //-x,+x, -y,+y
-
-            float[] textureFront = textureArrayArray[textureCounter];
-
-            //front
-            textureCoord.add(textureFront[1]); //x positive
-            textureCoord.add(textureFront[2]); //y positive
-            textureCoord.add(textureFront[0]); //x negative
-            textureCoord.add(textureFront[2]); //y positive
-
-            textureCoord.add(textureFront[0]); //x negative
-            textureCoord.add(textureFront[3]);   //y negative
-            textureCoord.add(textureFront[1]); //x positive
-            textureCoord.add(textureFront[3]);   //y negative
-
-
-            textureCounter++;
-
-
-
-            //back
-            positions.add(thisBlockBox[0]);
-            positions.add(thisBlockBox[4]);
-            positions.add(thisBlockBox[2]);
-
-            positions.add(thisBlockBox[3]);
-            positions.add(thisBlockBox[4]);
-            positions.add(thisBlockBox[2]);
-
-            positions.add(thisBlockBox[3]);
-            positions.add(thisBlockBox[1]);
-            positions.add(thisBlockBox[2]);
-
-            positions.add(thisBlockBox[0]);
-            positions.add(thisBlockBox[1]);
-            positions.add(thisBlockBox[2]);
-
-            //back
-            float backLight = 1f;
-
-            //back
-            for (int i = 0; i < 12; i++) {
-                light.add(backLight);
-            }
-            //back
-            indices.add(indicesCount);
-            indices.add(1 + indicesCount);
-            indices.add(2 + indicesCount);
-            indices.add(indicesCount);
-            indices.add(2 + indicesCount);
-            indices.add(3 + indicesCount);
-            indicesCount += 4;
-
-            float[] textureBack = textureArrayArray[textureCounter];
-
-            // 0, 1, 2, 3, 4, 5
-            //-x,-y,-z, x, y, z
-            // 0, 0, 0, 1, 1, 1
-
-            // 0, 1,  2, 3
-            //-x,+x, -y,+y
-
-
-            //back
-            textureCoord.add(textureBack[1]);
-            textureCoord.add(textureBack[2]);
-            textureCoord.add(textureBack[0]);
-            textureCoord.add(textureBack[2]);
-
-            textureCoord.add(textureBack[0]);
-            textureCoord.add(textureBack[3]);
-            textureCoord.add(textureBack[1]);
-            textureCoord.add(textureBack[3]);
-
-            textureCounter++;
-
-
-
-            //right
-            positions.add(thisBlockBox[3]);
-            positions.add(thisBlockBox[4]);
-            positions.add(thisBlockBox[2]);
-
-            positions.add(thisBlockBox[3]);
-            positions.add(thisBlockBox[4]);
-            positions.add(thisBlockBox[5]);
-
-            positions.add(thisBlockBox[3]);
-            positions.add(thisBlockBox[1]);
-            positions.add(thisBlockBox[5]);
-
-            positions.add(thisBlockBox[3]);
-            positions.add(thisBlockBox[1]);
-            positions.add(thisBlockBox[2]);
-            //right
-            float rightLight = 1f;
-
-            //right
-            for (int i = 0; i < 12; i++) {
-                light.add(rightLight);
-            }
-            //right
-            indices.add(indicesCount);
-            indices.add(1 + indicesCount);
-            indices.add(2 + indicesCount);
-            indices.add(indicesCount);
-            indices.add(2 + indicesCount);
-            indices.add(3 + indicesCount);
-            indicesCount += 4;
-
-
-            // 0, 1, 2, 3, 4, 5
-            //-x,-y,-z, x, y, z
-            // 0, 0, 0, 1, 1, 1
-
-            // 0, 1,  2, 3
-            //-x,+x, -y,+y
-
-
-            float[] textureRight = textureArrayArray[textureCounter];
-            //right
-            textureCoord.add(textureRight[1]);
-            textureCoord.add(textureRight[2]);
-            textureCoord.add(textureRight[0]);
-            textureCoord.add(textureRight[2]);
-
-            textureCoord.add(textureRight[0]);
-            textureCoord.add(textureRight[3]);
-            textureCoord.add(textureRight[1]);
-            textureCoord.add(textureRight[3]);
-
-            textureCounter++;
-
-
-            //left
-            positions.add(thisBlockBox[0]);
-            positions.add(thisBlockBox[4]);
-            positions.add(thisBlockBox[5]);
-
-            positions.add(thisBlockBox[0]);
-            positions.add(thisBlockBox[4]);
-            positions.add(thisBlockBox[2]);
-
-            positions.add(thisBlockBox[0]);
-            positions.add(thisBlockBox[1]);
-            positions.add(thisBlockBox[2]);
-
-            positions.add(thisBlockBox[0]);
-            positions.add(thisBlockBox[1]);
-            positions.add(thisBlockBox[5]);
-
-            //left
-            float leftLight = 1f;
-
-            //left
-            for (int i = 0; i < 12; i++) {
-                light.add(leftLight);
-            }
-            //left
-            indices.add(indicesCount);
-            indices.add(1 + indicesCount);
-            indices.add(2 + indicesCount);
-            indices.add(indicesCount);
-            indices.add(2 + indicesCount);
-            indices.add(3 + indicesCount);
-            indicesCount += 4;
-
-            float[] textureLeft = textureArrayArray[textureCounter];
-            //left
-            textureCoord.add(textureLeft[1]);
-            textureCoord.add(textureLeft[2]);
-            textureCoord.add(textureLeft[0]);
-            textureCoord.add(textureLeft[2]);
-
-            textureCoord.add(textureLeft[0]);
-            textureCoord.add(textureLeft[3]);
-            textureCoord.add(textureLeft[1]);
-            textureCoord.add(textureLeft[3]);
-
-            textureCounter++;
-
-
-            //top
-            positions.add(thisBlockBox[0]);
-            positions.add(thisBlockBox[4]);
-            positions.add(thisBlockBox[2]);
-
-            positions.add(thisBlockBox[0]);
-            positions.add(thisBlockBox[4]);
-            positions.add(thisBlockBox[5]);
-
-            positions.add(thisBlockBox[3]);
-            positions.add(thisBlockBox[4]);
-            positions.add(thisBlockBox[5]);
-
-            positions.add(thisBlockBox[3]);
-            positions.add(thisBlockBox[4]);
-            positions.add(thisBlockBox[2]);
-            //top
-            float topLight = 1f;
-
-            //top
-            for (int i = 0; i < 12; i++) {
-                light.add(topLight);
-            }
-            //top
-            indices.add(indicesCount);
-            indices.add(1 + indicesCount);
-            indices.add(2 + indicesCount);
-            indices.add(indicesCount);
-            indices.add(2 + indicesCount);
-            indices.add(3 + indicesCount);
-            indicesCount += 4;
-
-            // 0, 1, 2, 3, 4, 5
-            //-x,-y,-z, x, y, z
-            // 0, 0, 0, 1, 1, 1
-
-            // 0, 1,  2, 3
-            //-x,+x, -y,+y
-
-            float[] textureTop = textureArrayArray[textureCounter];
-            //top
-            textureCoord.add(textureTop[1]);
-            textureCoord.add(textureTop[2]);
-            textureCoord.add(textureTop[0]);
-            textureCoord.add(textureTop[2]);
-
-            textureCoord.add(textureTop[0]);
-            textureCoord.add(textureTop[3]);
-            textureCoord.add(textureTop[1]);
-            textureCoord.add(textureTop[3]);
-
-            textureCounter++;
-
-
-            //bottom
-            positions.add(thisBlockBox[0]);
-            positions.add(thisBlockBox[1]);
-            positions.add(thisBlockBox[5]);
-
-            positions.add(thisBlockBox[0]);
-            positions.add(thisBlockBox[1]);
-            positions.add(thisBlockBox[2]);
-
-            positions.add(thisBlockBox[3]);
-            positions.add(thisBlockBox[1]);
-            positions.add(thisBlockBox[2]);
-
-            positions.add(thisBlockBox[3]);
-            positions.add(thisBlockBox[1]);
-            positions.add(thisBlockBox[5]);
-            //bottom
-            float bottomLight = 1f;
-
-            //bottom
-            for (int i = 0; i < 12; i++) {
-                light.add(bottomLight);
-            }
-            //bottom
-            indices.add(indicesCount);
-            indices.add(1 + indicesCount);
-            indices.add(2 + indicesCount);
-            indices.add(indicesCount);
-            indices.add(2 + indicesCount);
-            indices.add(3 + indicesCount);
-
-
-            // 0, 1, 2, 3, 4, 5
-            //-x,-y,-z, x, y, z
-            // 0, 0, 0, 1, 1, 1
-
-            // 0, 1,  2, 3
-            //-x,+x, -y,+y
-
-            float[] textureBottom = textureArrayArray[textureCounter];
-            //bottom
-            textureCoord.add(textureBottom[1]);
-            textureCoord.add(textureBottom[2]);
-            textureCoord.add(textureBottom[0]);
-            textureCoord.add(textureBottom[2]);
-
-            textureCoord.add(textureBottom[0]);
-            textureCoord.add(textureBottom[3]);
-            textureCoord.add(textureBottom[1]);
-            textureCoord.add(textureBottom[3]);
-
-            textureCounter++;
-
-
-            //convert the position objects into usable array
-            float[] positionsArray = new float[positions.size()];
-            for (int i = 0; i < positions.size(); i++) {
-                positionsArray[i] = positions.get(i);
-            }
-
-            //convert the light objects into usable array
-            float[] lightArray = new float[light.size()];
-            for (int i = 0; i < light.size(); i++) {
-                lightArray[i] = light.get(i);
-            }
-
-            //convert the indices objects into usable array
-            int[] indicesArray = new int[indices.size()];
-            for (int i = 0; i < indices.size(); i++) {
-                indicesArray[i] = indices.get(i);
-            }
-
-            //convert the textureCoord objects into usable array
-            float[] textureCoordArray = new float[textureCoord.size()];
-            for (int i = 0; i < textureCoord.size(); i++) {
-                textureCoordArray[i] = textureCoord.get(i);
-            }
-
-            Texture pigTexture = null;
-            try {
-                pigTexture = new Texture("textures/pig.png");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-
-            bodyMeshes[bodyMeshesIndex] = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, pigTexture);
-            bodyMeshesIndex++;
-
-        }
-
-
-
-        return bodyMeshes;
+        return createMobMesh(modelPieceArray,modelTextureArray);
     }
 }
 

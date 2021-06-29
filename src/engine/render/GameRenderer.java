@@ -40,8 +40,8 @@ import static game.item.ItemDefinition.getItemDefinition;
 import static game.item.ItemDefinition.getItemMesh;
 import static game.item.ItemEntity.getAllItems;
 import static game.light.Light.getCurrentGlobalLightLevel;
-import static game.mob.Human.getHumanBodyOffsets;
-import static game.mob.Human.getHumanMeshes;
+//import static game.mob.Human.getHumanBodyOffsets;
+//import static game.mob.Human.getHumanMeshes;
 import static game.mob.Mob.getAllMobs;
 import static game.mob.Mob.getMobMesh;
 import static game.particle.Particle.getAllParticles;
@@ -482,6 +482,7 @@ public class GameRenderer {
         }
 
         //render other players
+        /*
         for (Object thisObject : getOtherPlayers()){
 
             entityShaderProgram.setLightUniform("light", 15); //todo make this work
@@ -519,6 +520,8 @@ public class GameRenderer {
             workerMesh.render();
             workerMesh.cleanUp(false);
         }
+
+
 
 
         //todo: remove dependency of Human mob
@@ -559,7 +562,7 @@ public class GameRenderer {
             workerMesh.render();
             workerMesh.cleanUp(false);
         }
-
+        */
 
         //render particles
         for (Object loadedObject : getAllParticles()){
