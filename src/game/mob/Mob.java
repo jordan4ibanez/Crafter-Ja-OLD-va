@@ -14,6 +14,7 @@ import static engine.time.Time.getDelta;
 import static game.chunk.Chunk.getLight;
 import static game.collision.MobCollision.mobSoftCollisionDetect;
 import static game.collision.MobCollision.mobSoftPlayerCollisionDetect;
+import static game.mob.Exploder.registerExploderMob;
 import static game.mob.Human.registerHumanMob;
 import static game.mob.Pig.registerPigMob;
 import static game.mob.Zombie.registerZombieMob;
@@ -21,7 +22,7 @@ import static game.mob.Zombie.registerZombieMob;
 public class Mob {
 
     //todo: ADD MOBS TO MEMORY SWEEPER
-    private static final MobDefinition[] mobDefinitions = new MobDefinition[3];
+    private static final MobDefinition[] mobDefinitions = new MobDefinition[4];
     private static final Int2ObjectArrayMap<MobObject> mobs = new Int2ObjectArrayMap<>();
 
     private static int currentID = 0;
@@ -50,6 +51,7 @@ public class Mob {
         registerHumanMob();
         registerPigMob();
         registerZombieMob();
+        registerExploderMob();
     }
 
     public static void spawnMob(byte ID, Vector3d pos, Vector3f inertia){
