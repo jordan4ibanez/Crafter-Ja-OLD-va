@@ -92,14 +92,14 @@ public class ParticleCollision {
             case -1 -> {
                 byte cachedBlock = getBlock(fPos);
                 byte rot = getBlockRotation(fPos);
-                if (cachedBlock > 0 && isWalkable(cachedBlock)) {
+                if (cachedBlock > 0 && isBlockWalkable(cachedBlock)) {
                     onGround = collideYNegative(fPos.x, fPos.y, fPos.z, rot, pos, inertia, cachedBlock);
                 }
             }
             case 1 -> {
                 byte cachedBlock = getBlock(fPos);
                 byte rot = getBlockRotation(fPos);
-                if (cachedBlock > 0 && isWalkable(cachedBlock)) {
+                if (cachedBlock > 0 && isBlockWalkable(cachedBlock)) {
                     collideYPositive(fPos.x, fPos.y, fPos.z, rot, pos, inertia, cachedBlock);
                 }
             }
@@ -115,14 +115,14 @@ public class ParticleCollision {
             case 1 -> {
                 byte cachedBlock = getBlock(fPos);
                 byte rot = getBlockRotation(fPos);
-                if (cachedBlock > 0 && isWalkable(cachedBlock)) {
+                if (cachedBlock > 0 && isBlockWalkable(cachedBlock)) {
                     collideXPositive(fPos.x, fPos.y, fPos.z, rot, pos, inertia, cachedBlock);
                 }
             }
             case -1 -> {
                 byte cachedBlock = getBlock(fPos);
                 byte rot = getBlockRotation(fPos);
-                if (cachedBlock > 0 && isWalkable(cachedBlock)) {
+                if (cachedBlock > 0 && isBlockWalkable(cachedBlock)) {
                     collideXNegative(fPos.x, fPos.y, fPos.z, rot, pos, inertia, cachedBlock);
                 }
             }
@@ -138,14 +138,14 @@ public class ParticleCollision {
             case 1 -> {
                 byte cachedBlock = getBlock(fPos);
                 byte rot = getBlockRotation(fPos);
-                if (cachedBlock > 0 && isWalkable(cachedBlock)) {
+                if (cachedBlock > 0 && isBlockWalkable(cachedBlock)) {
                     collideZPositive(fPos.x, fPos.y, fPos.z, rot, pos, inertia, cachedBlock);
                 }
             }
             case -1 -> {
                 byte cachedBlock = getBlock(fPos);
                 byte rot = getBlockRotation(fPos);
-                if (cachedBlock > 0 && isWalkable(cachedBlock)) {
+                if (cachedBlock > 0 && isBlockWalkable(cachedBlock)) {
                     collideZNegative(fPos.x, fPos.y, fPos.z, rot, pos, inertia, cachedBlock);
                 }
             }

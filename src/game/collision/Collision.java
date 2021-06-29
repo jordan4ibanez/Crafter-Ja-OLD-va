@@ -160,7 +160,7 @@ public class Collision {
                 byte cachedBlock = getBlock(cachedPos);
                 byte rot = getBlockRotation(cachedPos);
 
-                if (!onGround && cachedBlock > 0 && isWalkable(cachedBlock)) {
+                if (!onGround && cachedBlock > 0 && isBlockWalkable(cachedBlock)) {
                     onGround = sneakCollideYNegative(cachedPos.x, fPos.y, cachedPos.z, rot, clonedPos, width, height, cachedBlock);
                 }
             }
@@ -193,7 +193,7 @@ public class Collision {
                 byte cachedBlock = getBlock(cachedPos);
                 byte rot = getBlockRotation(cachedPos);
 
-                if (!onGround && cachedBlock > 0 && isWalkable(cachedBlock)) {
+                if (!onGround && cachedBlock > 0 && isBlockWalkable(cachedBlock)) {
                     onGround = sneakCollideYNegative(cachedPos.x, cachedPos.y, cachedPos.z, rot, clonedPos, width, height, cachedBlock);
                 }
             }
@@ -249,7 +249,7 @@ public class Collision {
 
                         byte rot = getBlockRotation(cachedPos);
 
-                        if (cachedBlock > 0 && isWalkable(cachedBlock)) {
+                        if (cachedBlock > 0 && isBlockWalkable(cachedBlock)) {
                             onGround = collideYNegative(cachedPos.x, cachedPos.y, cachedPos.z, rot, pos, inertia, width, height, onGround, cachedBlock);
                         }
                     }
@@ -267,7 +267,7 @@ public class Collision {
 
                         byte rot = getBlockRotation(cachedPos);
 
-                        if (cachedBlock > 0 && isWalkable(cachedBlock)) {
+                        if (cachedBlock > 0 && isBlockWalkable(cachedBlock)) {
                             collideYPositive(cachedPos.x, cachedPos.y, cachedPos.z, rot, pos, inertia, width, height, cachedBlock);
                         }
                     }
@@ -303,7 +303,7 @@ public class Collision {
                     byte rot = getBlockRotation(cachedPos);
 
                     //never collide with air (block ID 0)
-                    if (cachedBlock > 0 && isWalkable(cachedBlock)) {
+                    if (cachedBlock > 0 && isBlockWalkable(cachedBlock)) {
                         collideX(cachedPos.x, cachedPos.y, cachedPos.z, rot, pos, inertia, oldPos, width, height, cachedBlock);
                     }
                 }
@@ -333,7 +333,7 @@ public class Collision {
                     byte rot = getBlockRotation(cachedPos);
 
                     //never collide with air (block ID 0)
-                    if (cachedBlock > 0 && isWalkable(cachedBlock)) {
+                    if (cachedBlock > 0 && isBlockWalkable(cachedBlock)) {
                         collideZ(cachedPos.x, cachedPos.y, cachedPos.z, rot, pos, inertia, oldPos, width, height, cachedBlock);
                     }
                 }

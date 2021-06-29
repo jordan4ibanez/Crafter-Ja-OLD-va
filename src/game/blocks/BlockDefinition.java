@@ -257,7 +257,7 @@ public class BlockDefinition {
         return newBoxes;
     }
 
-    public static boolean isWalkable(int ID){
+    public static boolean isBlockWalkable(int ID){
         return blockIDs[ID].walkable;
     }
 

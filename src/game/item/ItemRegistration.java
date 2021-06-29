@@ -1,10 +1,9 @@
 package game.item;
 
-import org.joml.Vector3d;
 import org.joml.Vector3i;
 
 import static engine.sound.SoundAPI.playSound;
-import static game.blocks.BlockDefinition.isWalkable;
+import static game.blocks.BlockDefinition.isBlockWalkable;
 import static game.chunk.Chunk.*;
 import static game.item.ItemDefinition.registerItem;
 import static game.crafting.Inventory.removeItemFromInventory;
@@ -45,7 +44,7 @@ public class ItemRegistration {
         ItemModifier test = new ItemModifier() {
             @Override
             public void onPlace(Vector3i pos, Vector3i ignore) {
-                if (isWalkable(getBlock(pos.x, pos.y - 1, pos.z))) {
+                if (isBlockWalkable(getBlock(pos.x, pos.y - 1, pos.z))) {
                     byte rot = getPlayerDir();
                     setBlock(pos.x, pos.y + 1, pos.z, (byte) 23, rot);
                     setBlock(pos.x, pos.y, pos.z, (byte) 24, rot);
