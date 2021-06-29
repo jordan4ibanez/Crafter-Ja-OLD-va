@@ -1,6 +1,5 @@
 package engine;
 
-import org.joml.Vector3d;
 import java.util.Random;
 
 public class FancyMath {
@@ -37,7 +36,6 @@ public class FancyMath {
     public static double getDistance(double x1, double y1, double z1, double x2, double y2, double z2){
         return Math.hypot((x1 - x2), Math.hypot((y1 - y2),(z1 - z2)));
     }
-
 
     public static float convertLight(byte lightValue){
         return (float) Math.pow(1.25, lightValue)/28.42171f;
