@@ -64,7 +64,7 @@ public class Human {
             thisMob.bodyRotations[5].x = (float) Math.toDegrees(Math.sin(thisMob.animationTimer * Math.PI * 2f));
 
 
-            float bodyYaw = (float)Math.toRadians(thisMob.rotation) + (float) Math.PI;
+            float bodyYaw = Math.toRadians(thisMob.rotation) + (float) Math.PI;
 
             thisMob.inertia.x +=  (Math.sin(-bodyYaw) * accelerationMultiplier) * movementAcceleration * delta;
             thisMob.inertia.z +=  (Math.cos(bodyYaw) * accelerationMultiplier) * movementAcceleration * delta;
@@ -252,6 +252,6 @@ public class Human {
             calculateMobTexture(8,16,12,20, textureWidth, textureHeight), //bottom
         };
 
-        return createMobMesh(modelPieceArray,modelTextureArray);
+        return createMobMesh(modelPieceArray,modelTextureArray, "textures/player.png");
     }
 }

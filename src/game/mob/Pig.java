@@ -266,7 +266,7 @@ public class Pig {
                 calculateMobTexture(8,16,12,20,textureWidth,textureHeight), //palm
         };
 
-        return createMobMesh(modelPieceArray,modelTextureArray);
+        return createMobMesh(modelPieceArray,modelTextureArray, "textures/pig.png");
     }
 }
 

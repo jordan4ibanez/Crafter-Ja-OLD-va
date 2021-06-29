@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class MobMeshBuilder {
 
-    public static Mesh[] createMobMesh(float[][] modelPieceArray, float[][] textureArrayArray){
+    public static Mesh[] createMobMesh(float[][] modelPieceArray, float[][] textureArrayArray, String texturePath){
 
 
         Mesh[] bodyMeshes = new Mesh[modelPieceArray.length];
@@ -372,7 +372,7 @@ public class MobMeshBuilder {
 
             Texture playerTexture = null;
             try {
-                playerTexture = new Texture("textures/player.png");
+                playerTexture = new Texture(texturePath);
             } catch (Exception e) {
                 e.printStackTrace();
             }
