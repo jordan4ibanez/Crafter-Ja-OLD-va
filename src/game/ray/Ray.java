@@ -39,7 +39,7 @@ public class Ray {
 
         MobObject foundMob = null;
 
-        for(float step = 0f; step <= length ; step += 0.001d) {
+        for(double step = 0d; step <= length ; step += 0.001d) {
 
             cachePos.x = dir.x * step;
             cachePos.y = dir.y * step;
@@ -151,7 +151,7 @@ public class Ray {
     }
 
     public static Vector3d genericWorldRaycast(Vector3d pos, Vector3f dir, float length){
-        for(float step = 0f; step <= length ; step += 0.001d) {
+        for(double step = 0d; step <= length ; step += 0.001d) {
 
             cachePos.x = dir.x * step;
             cachePos.y = dir.y * step;
