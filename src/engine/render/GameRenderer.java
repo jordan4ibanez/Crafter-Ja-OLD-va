@@ -42,8 +42,7 @@ import static game.item.ItemEntity.getAllItems;
 import static game.light.Light.getCurrentGlobalLightLevel;
 //import static game.mob.Human.getHumanBodyOffsets;
 //import static game.mob.Human.getHumanMeshes;
-import static game.mob.Mob.getAllMobs;
-import static game.mob.Mob.getMobMesh;
+import static game.mob.Mob.*;
 import static game.particle.Particle.getAllParticles;
 import static game.player.OtherPlayers.getOtherPlayers;
 import static game.player.Player.*;
@@ -471,6 +470,12 @@ public class GameRenderer {
             }
             int offsetIndex = 0;
 
+            boolean backFaceCulling = getMobBackFaceCulling(thisMob.ID);
+
+            if (!backFaceCulling){
+                glDisable(GL_CULL_FACE);
+            }
+
             entityShaderProgram.setLightUniform("light", thisMob.light + thisMob.hurtAdder); //hurt adder adds 15 to the value so it turns red
 
             for (Mesh thisMesh : getMobMesh(thisMob.ID)) {
@@ -478,6 +483,10 @@ public class GameRenderer {
                 entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 thisMesh.render();
                 offsetIndex++;
+            }
+
+            if (!backFaceCulling){
+                glEnable(GL_CULL_FACE);
             }
         }
 

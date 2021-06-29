@@ -138,7 +138,7 @@ public class Human {
     };
 
     public static void registerHumanMob(){
-        registerMob(new MobDefinition("human", "hurt", (byte) 7, createMesh(), bodyOffsets, bodyRotations,1.9f, 0.25f, mobInterface));
+        registerMob(new MobDefinition("human", "hurt",true, (byte) 7, createMesh(), bodyOffsets, bodyRotations,1.9f, 0.25f, mobInterface));
     }
 
 

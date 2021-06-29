@@ -54,8 +54,6 @@ public class Skeleton {
             }
 
 
-
-            thisMob.animationTimer += delta *2f;
             //head test
             //thisObject.bodyRotations[0] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),(float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),0);
 
@@ -64,7 +62,7 @@ public class Skeleton {
 
             thisMob.bodyRotations[4].x = (float) Math.toDegrees(Math.sin(thisMob.animationTimer * Math.PI * -2f));
             thisMob.bodyRotations[5].x = (float) Math.toDegrees(Math.sin(thisMob.animationTimer * Math.PI * 2f));
-            
+
 
 
             float bodyYaw = Math.toRadians(thisMob.rotation) + (float) Math.PI;
@@ -80,9 +78,8 @@ public class Skeleton {
                 maxSpeed = 0.01f;
             }
 
-            //boolean onGround = applyInertia(thisMob.pos, thisMob.inertia, false, thisMob.width, thisMob.height, true, false, true, false, false);
+            boolean onGround = applyInertia(thisMob.pos, thisMob.inertia, false, thisMob.width, thisMob.height, true, false, true, false, false);
 
-            boolean onGround = false;
 
             if (thisMob.animationTimer >= 1f) {
                 thisMob.animationTimer = 0f;
@@ -117,8 +114,8 @@ public class Skeleton {
                 }
             }
 
-            //mobSmoothRotation(thisMob);
-            //doHeadCode(thisMob);
+            mobSmoothRotation(thisMob);
+            doHeadCode(thisMob);
         }
     };
 
@@ -148,7 +145,7 @@ public class Skeleton {
     };
 
     public static void registerSkeletonMob(){
-        registerMob(new MobDefinition("skeleton", "hurt", (byte) 7, createMesh(), bodyOffsets, bodyRotations,1.9f, 0.25f, mobInterface));
+        registerMob(new MobDefinition("skeleton", "hurt",false, (byte) 7, createMesh(), bodyOffsets, bodyRotations,1.9f, 0.25f, mobInterface));
     }
 
 

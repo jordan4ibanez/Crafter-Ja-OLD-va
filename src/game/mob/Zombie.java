@@ -127,7 +127,7 @@ public class Zombie {
     };
 
     public static void registerZombieMob(){
-        registerMob(new MobDefinition("zombie", "hurt", (byte) 7, createMesh(), bodyOffsets, bodyRotations,1.9f, 0.25f, mobInterface));
+        registerMob(new MobDefinition("zombie", "hurt",true, (byte) 7, createMesh(), bodyOffsets, bodyRotations,1.9f, 0.25f, mobInterface));
     }
 
 

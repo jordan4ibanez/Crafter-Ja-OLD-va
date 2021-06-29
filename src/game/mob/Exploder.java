@@ -132,7 +132,7 @@ public class Exploder {
     };
 
     public static void registerExploderMob(){
-        registerMob(new MobDefinition("exploder", "hurt", (byte) 7, createMesh(), bodyOffsets, bodyRotations,1.9f, 0.25f, mobInterface));
+        registerMob(new MobDefinition("exploder", "hurt",true, (byte) 7, createMesh(), bodyOffsets, bodyRotations,1.9f, 0.25f, mobInterface));
     }
 
 

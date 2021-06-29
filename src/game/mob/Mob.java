@@ -41,6 +41,10 @@ public class Mob {
         return mobs.values().toArray(new MobObject[0]);
     }
 
+    public static boolean getMobBackFaceCulling(byte ID){
+        return mobDefinitions[ID].backFaceCulling;
+    }
+
     public static void registerMob(MobDefinition newMobDefinition){
         mobDefinitions[currentMobDefinitionKey] = newMobDefinition;
         currentMobDefinitionKey++;
