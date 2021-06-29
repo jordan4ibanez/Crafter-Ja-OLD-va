@@ -78,7 +78,7 @@ public class Exploder {
                 thisMob.inertia.z = inertia2D.z;
             }
 
-            thisMob.animationTimer += thisMob.pos.distance(thisMob.oldPos) / 2f;
+            thisMob.animationTimer += thisMob.pos.distance(thisMob.oldPos) / 1.5f;
 
             if (thisMob.animationTimer >= 1f) {
                 thisMob.animationTimer -= 1f;
