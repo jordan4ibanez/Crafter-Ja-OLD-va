@@ -72,7 +72,7 @@ public class Ray {
             }
 
             //stop wasting cpu resources
-            if (newPos.x != lastPos.x || newPos.y != lastPos.y || newPos.z != lastPos.z) {
+            if (!newPos.equals(lastPos)) {
                 foundBlock = getBlock((int) newPos.x, (int) newPos.y, (int) newPos.z);
 
                 if (foundBlock > 0 && isBlockPointable(foundBlock)) {
@@ -100,9 +100,7 @@ public class Ray {
 
                     //todo: make this call on punched
                     if (!isPlayerSneaking() && blockHasOnRightClickCall(foundBlock)) {
-
                         getBlockDefinition(foundBlock).blockModifier.onRightClick(finalPos);
-
                     } else {
                         Item wielding = getItemInInventorySlot(getPlayerInventorySelection(), 0);
 
@@ -127,26 +125,26 @@ public class Ray {
 
     private static void destroyBlock() {
 
-        int thisBlock = getBlock(Ray.finalPos.x, Ray.finalPos.y, Ray.finalPos.z);
+        int thisBlock = getBlock(finalPos.x, finalPos.y, finalPos.z);
 
         if (thisBlock < 0) {
             return;
         }
 
         if (getIfMultiplayer()){
-            sendOutNetworkBlockBreak(Ray.finalPos.x, Ray.finalPos.y, Ray.finalPos.z);
+            sendOutNetworkBlockBreak(finalPos.x, finalPos.y, finalPos.z);
         } else {
-            digBlock(Ray.finalPos.x, Ray.finalPos.y, Ray.finalPos.z);
+            digBlock(finalPos.x, finalPos.y, finalPos.z);
         }
         for (int i = 0; i < 40 + (int)(Math.random() * 15); i++) {
-            createParticle(new Vector3d(Ray.finalPos.x + (Math.random()-0.5d), Ray.finalPos.y + (Math.random()-0.5d), Ray.finalPos.z + (Math.random()-0.5d)), new Vector3f((float)(Math.random()-0.5f) * 2f, 0f, (float)(Math.random()-0.5f) * 2f), thisBlock);
+            createParticle(new Vector3d(finalPos.x + (Math.random()-0.5d), finalPos.y + (Math.random()-0.5d), finalPos.z + (Math.random()-0.5d)), new Vector3f((float)(Math.random()-0.5f) * 2f, 0f, (float)(Math.random()-0.5f) * 2f), thisBlock);
         }
     }
     private static void rayPlaceBlock(byte ID) {
         if (getIfMultiplayer()){
-            sendOutNetworkBlockPlace((int) Ray.lastPos.x, (int) Ray.lastPos.y, (int) Ray.lastPos.z, ID, getPlayerDir());
+            sendOutNetworkBlockPlace((int) lastPos.x, (int) lastPos.y, (int) lastPos.z, ID, getPlayerDir());
         } else {
-            placeBlock((int) Ray.lastPos.x, (int) Ray.lastPos.y, (int) Ray.lastPos.z, ID, getPlayerDir());
+            placeBlock((int) lastPos.x, (int) lastPos.y, (int) lastPos.z, ID, getPlayerDir());
         }
 
         removeItemFromInventory(getCurrentInventorySelection(), 0);
@@ -168,7 +166,7 @@ public class Ray {
             realNewPos.z = pos.z + cachePos.z;
 
             //stop wasting cpu resources
-            if (newPos.x != lastPos.x || newPos.y != lastPos.y || newPos.z != lastPos.z) {
+            if (!newPos.equals(lastPos)) {
                 int foundBlock = getBlock((int) newPos.x, (int) newPos.y, (int) newPos.z);
                 if (foundBlock > 0 && isBlockPointable(foundBlock)) {
                     break;
