@@ -425,7 +425,7 @@ public class Collision {
             if (blockPosX + blockXCenter <= pos.x) {
                 entity = new AABBd(pos.x - width, pos.y, pos.z - width, pos.x + width, pos.y + height, pos.z + width);
                 if (entity.intersectsAABB(block)) {
-                    if (isSteppable(blockID)) {
+                    if (isSteppable(blockID) && inertia.y == 0) {
                         pos.y = block.maxY;
                     } else {
                         pos.x = block.maxX + width + 0.0000000001d;
@@ -437,7 +437,7 @@ public class Collision {
             if (blockPosX + blockXCenter >= pos.x) {
                 entity = new AABBd(pos.x - width, pos.y, pos.z - width, pos.x + width, pos.y + height, pos.z + width);
                 if (entity.intersectsAABB(block)) {
-                    if (isSteppable(blockID)) {
+                    if (isSteppable(blockID) && inertia.y == 0) {
                         pos.y = block.maxY;
                     } else {
                         pos.x = block.minX - width - 0.0000000001d;
@@ -497,7 +497,7 @@ public class Collision {
             if (blockPosZ + blockZCenter <= pos.z) {
                 entity = new AABBd(pos.x - width, pos.y, pos.z - width, pos.x + width, pos.y + height, pos.z + width);
                 if (entity.intersectsAABB(block)) {
-                    if (isSteppable(blockID)) {
+                    if (isSteppable(blockID) && inertia.y == 0) {
                         pos.y = block.maxY;
                     }else {
                         pos.z = block.maxZ + width + 0.0000000001d;
@@ -510,7 +510,7 @@ public class Collision {
             if (blockPosZ + blockZCenter >= pos.z) {
                 entity = new AABBd(pos.x - width, pos.y, pos.z - width, pos.x + width, pos.y + height, pos.z + width);
                 if (entity.intersectsAABB(block)) {
-                    if (isSteppable(blockID)) {
+                    if (isSteppable(blockID) && inertia.y == 0) {
                         pos.y = block.maxY;
                     } else {
                         pos.z = block.minZ - width - 0.0000000001d;
