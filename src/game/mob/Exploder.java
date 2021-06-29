@@ -53,7 +53,7 @@ public class Exploder {
 
             float bodyYaw = Math.toRadians(thisMob.rotation) + (float) Math.PI;
 
-            
+
             thisMob.inertia.x +=  (Math.sin(-bodyYaw) * accelerationMultiplier) * movementAcceleration * delta;
             thisMob.inertia.z +=  (Math.cos(bodyYaw) * accelerationMultiplier) * movementAcceleration * delta;
 
