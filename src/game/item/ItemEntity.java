@@ -2,14 +2,13 @@ package game.item;
 
 import engine.network.ItemSendingObject;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
-import org.joml.AABBd;
+import org.joml.Math;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 import java.util.*;
 
-import static engine.FancyMath.getDistance;
 import static engine.time.Time.getDelta;
 import static engine.sound.SoundAPI.playSound;
 import static game.chunk.Chunk.getLight;
@@ -95,7 +94,7 @@ public class ItemEntity {
             thisItem.timer += delta;
             thisItem.lightUpdateTimer += delta;
 
-            Vector3i currentFlooredPos = new Vector3i((int)Math.floor(thisItem.pos.x), (int)Math.floor(thisItem.pos.y), (int)Math.floor(thisItem.pos.z));
+            Vector3i currentFlooredPos = new Vector3i((int) Math.floor(thisItem.pos.x), (int)Math.floor(thisItem.pos.y), (int)Math.floor(thisItem.pos.z));
 
             //poll local light every quarter second
             if (thisItem.lightUpdateTimer >= 0.25f || !currentFlooredPos.equals(thisItem.oldFlooredPos)){
