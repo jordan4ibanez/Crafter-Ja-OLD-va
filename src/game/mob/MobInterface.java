@@ -3,10 +3,11 @@ package game.mob;
 public interface MobInterface {
     //what a mob does each tick
     default void onTick(MobObject thisMob){
+
     }
     //what happens when a mob is spawned
-    default boolean onSpawn(){
-        return false;
+    default void onSpawn(){
+        
     }
 
     //what the mob does when right clicked
