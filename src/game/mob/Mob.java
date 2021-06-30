@@ -137,13 +137,8 @@ public class Mob {
                 }
             }
 
-            thisMob.oldFlooredPos.x = currentFlooredPos.x;
-            thisMob.oldFlooredPos.y = currentFlooredPos.y;
-            thisMob.oldFlooredPos.z = currentFlooredPos.z;
-
-            thisMob.oldPos.x = thisMob.pos.x;
-            thisMob.oldPos.y = thisMob.pos.y;
-            thisMob.oldPos.z = thisMob.pos.z;
+            thisMob.oldFlooredPos.set(currentFlooredPos);
+            thisMob.oldPos.set(thisMob.pos);
         }
 
         while (!deletionQueue.isEmpty()){

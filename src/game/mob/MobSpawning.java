@@ -19,7 +19,7 @@ public class MobSpawning {
         if (false){
             return;
         }
-        if (spawned > 0){
+        if (spawned > 5){
             return;
         }
         spawnTimer += getDelta();
