@@ -47,8 +47,9 @@ public class Zombie {
             //thisMob.bodyRotations[2].x = (float) Math.toDegrees(Math.sin(thisMob.animationTimer * Math.PI * 2f));
             //thisMob.bodyRotations[3].x = (float) Math.toDegrees(Math.sin(thisMob.animationTimer * Math.PI * -2f));
             //these are the legs
-            thisMob.bodyRotations[4].x = (float) Math.toDegrees(Math.sin(thisMob.animationTimer * Math.PI * -2f));
-            thisMob.bodyRotations[5].x = (float) Math.toDegrees(Math.sin(thisMob.animationTimer * Math.PI * 2f));
+            float animation = (float) Math.toDegrees(Math.sin(thisMob.animationTimer * Math.PI * 2f));
+            thisMob.bodyRotations[4].x = -animation;
+            thisMob.bodyRotations[5].x = animation;
 
 
             float bodyYaw = Math.toRadians(thisMob.rotation) + (float) Math.PI;
