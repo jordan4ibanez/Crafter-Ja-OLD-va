@@ -371,7 +371,7 @@ public class Player {
     }
 
     public static Vector3d getPlayerPos() {
-        return new Vector3d(pos);
+        return new Vector3d(pos.x, pos.y, pos.z);
     }
 
     public static Vector3d getPlayerPosWithEyeHeight(){
@@ -418,7 +418,7 @@ public class Player {
         inertia.z = z;
     }
 
-    private static Vector3f inertiaBuffer = new Vector3f();
+    private static Vector3f inertiaBuffer = new Vector3f(0,0,0);
 
     private static boolean forward = false;
     private static boolean backward = false;
@@ -494,7 +494,7 @@ public class Player {
     private static float wasInWaterTimer = 0f;
     private static boolean waterLockout = false;
 
-    private static Vector3d handInertia = new Vector3d(0,0,0);
+    private static final Vector3d handInertia = new Vector3d(0,0,0);
 
     private static float oldYaw = 0;
 
@@ -573,6 +573,7 @@ public class Player {
     }
 
     public static void setPlayerInertiaBuffer(){
+
         double delta = getDelta();
 
         if (forward){
@@ -625,7 +626,6 @@ public class Player {
         //max speed todo: make this call from a player object's maxSpeed!
         Vector3f inertia2D = new Vector3f(inertia.x, 0, inertia.z);
 
-
         float maxSpeed; //this should probably be cached
 
         if(sneaking){
@@ -636,12 +636,12 @@ public class Player {
             maxSpeed = maxWalkSpeed;
         }
 
-        if(inertia2D.length() > maxSpeed){
+        if(inertia2D.isFinite() && inertia2D.length() > maxSpeed){
             inertia2D = inertia2D.normalize().mul(maxSpeed);
             inertia.x = inertia2D.x;
             inertia.z = inertia2D.z;
         }
-
+        
         inertiaBuffer.x = 0f;
         inertiaBuffer.y = 0f;
         inertiaBuffer.z = 0f;
@@ -805,7 +805,6 @@ public class Player {
         if (getChunkKey(currentChunk.x, currentChunk.z) != null) {
             onGround = applyInertia(pos, inertia, true, width, height, true, sneaking, true, true, true);
         }
-
 
 
         //play sound when player lands on the ground
@@ -1042,8 +1041,8 @@ public class Player {
         //do the same for the literal wield inventory
         updateWieldInventory(lightLevel);
 
-        oldPos = newFlooredPos;
-        oldRealPos = new Vector3d(pos);
+        oldPos.set(newFlooredPos);
+        oldRealPos.set(pos);
         wasOnGround = onGround;
         oldInventorySelection = currentInventorySelection;
     }
