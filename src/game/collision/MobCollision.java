@@ -47,11 +47,12 @@ public class MobCollision {
                     //success!
 
                     //normalize values and make it not shoot mobs out
-                    Vector2d normalizedPos = new Vector2d(this2dPos);
-                    normalizedPos.sub(other2DPos).normalize().mul(0.05f);
+                    Vector2d normalizedPos = new Vector2d(this2dPos).sub(other2DPos).normalize().mul(0.05f);
 
-                    thisMob.inertia.x += normalizedPos.x;
-                    thisMob.inertia.z += normalizedPos.y;
+                    if (normalizedPos.isFinite()) {
+                        thisMob.inertia.x += normalizedPos.x;
+                        thisMob.inertia.z += normalizedPos.y;
+                    }
                 }
             }
         }
@@ -85,13 +86,13 @@ public class MobCollision {
                 //success!
 
                 //normalize values and make it not shoot mobs out
-                Vector2d normalizedPos = new Vector2d(this2dPos);
-                normalizedPos.sub(other2DPos).normalize().mul(0.05f);
+                Vector2d normalizedPos = new Vector2d(this2dPos).sub(other2DPos).normalize().mul(0.05f);
 
-                thisMob.inertia.x += normalizedPos.x;
-                thisMob.inertia.z += normalizedPos.y;
-
-                addPlayerInertia((float)-normalizedPos.x,0,(float)-normalizedPos.y);
+                if (normalizedPos.isFinite()) {
+                    thisMob.inertia.x += normalizedPos.x;
+                    thisMob.inertia.z += normalizedPos.y;
+                    addPlayerInertia((float) -normalizedPos.x, 0, (float) -normalizedPos.y);
+                }
             }
         }
     }
