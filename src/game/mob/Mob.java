@@ -150,13 +150,15 @@ public class Mob {
 
     public static void punchMob(MobObject thisMob){
         if (thisMob.hurtTimer <= 0 && thisMob.health > 0) {
+            thisMob.health -= 1;
+            System.out.println("the mobs health is: " + thisMob.health);
+            playSound(getHurtSound(thisMob.ID), new Vector3f((float)thisMob.pos.x, (float)thisMob.pos.y, (float)thisMob.pos.z), true);
+            //play this after in case ID changes
             MobInterface thisInterface = getMobInterface(thisMob.ID);
             if (thisInterface != null){
                 thisInterface.onPunch(thisMob);
             }
-            thisMob.health -= 1;
-            System.out.println("the mobs health is: " + thisMob.health);
-            playSound(getHurtSound(thisMob.ID), new Vector3f((float)thisMob.pos.x, (float)thisMob.pos.y, (float)thisMob.pos.z), true);
+
             if (thisMob.onGround) {
                 thisMob.inertia.y = 7;
             }

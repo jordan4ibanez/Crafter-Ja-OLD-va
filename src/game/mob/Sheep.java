@@ -40,11 +40,6 @@ public class Sheep {
 
             thisMob.timer += delta;
 
-            if (thisMob.globalID == 1){
-                System.out.println(thisMob.animationTimer);
-            }
-
-
             if (thisMob.timer > 1.5f) {
                 thisMob.stand = !thisMob.stand;
                 thisMob.timer = (float) Math.random() * -2f;
