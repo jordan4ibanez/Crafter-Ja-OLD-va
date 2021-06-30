@@ -9,7 +9,7 @@ import static game.mob.Mob.getMobDefinition;
 
 public class MobObject {
     //the mobDefinition ID
-    public final byte ID;
+    public byte ID;
 
     //the global reference to the object in the list
     public final int globalID;

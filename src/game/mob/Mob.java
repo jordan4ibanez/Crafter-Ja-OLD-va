@@ -17,6 +17,7 @@ import static game.collision.MobCollision.mobSoftPlayerCollisionDetect;
 import static game.mob.Exploder.registerExploderMob;
 import static game.mob.Human.registerHumanMob;
 import static game.mob.Pig.registerPigMob;
+import static game.mob.Sheep.registerSheepMob;
 import static game.mob.Skeleton.registerSkeletonMob;
 import static game.mob.Zombie.registerZombieMob;
 
@@ -24,7 +25,7 @@ public class Mob {
 
     //todo: ADD MOBS TO MEMORY SWEEPER
     //todo: Data orient! - maybe
-    private static final MobDefinition[] mobDefinitions = new MobDefinition[5];
+    private static final MobDefinition[] mobDefinitions = new MobDefinition[7];
     private static final Int2ObjectArrayMap<MobObject> mobs = new Int2ObjectArrayMap<>();
 
     private static int currentID = 0;
@@ -51,6 +52,10 @@ public class Mob {
         currentMobDefinitionKey++;
     }
 
+    public static MobInterface getMobInterface(byte ID){
+        return mobDefinitions[ID].mobInterface;
+    }
+
     //entry point
     //todo: make this not a confusing linkage
     public static void registerMobs(){
@@ -59,6 +64,7 @@ public class Mob {
         registerZombieMob();
         registerExploderMob();
         registerSkeletonMob();
+        registerSheepMob();
     }
 
     public static void spawnMob(byte ID, Vector3d pos, Vector3f inertia){
@@ -149,6 +155,10 @@ public class Mob {
 
     public static void punchMob(MobObject thisMob){
         if (thisMob.hurtTimer <= 0 && thisMob.health > 0) {
+            MobInterface thisInterface = getMobInterface(thisMob.ID);
+            if (thisInterface != null){
+                thisInterface.onPunch(thisMob);
+            }
             thisMob.health -= 1;
             System.out.println("the mobs health is: " + thisMob.health);
             playSound(getHurtSound(thisMob.ID), new Vector3f((float)thisMob.pos.x, (float)thisMob.pos.y, (float)thisMob.pos.z), true);

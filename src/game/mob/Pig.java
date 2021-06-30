@@ -102,10 +102,6 @@ public class Pig {
 
             mobSmoothRotation(thisMob);
             doHeadCode(thisMob);
-
-            thisMob.oldPos.x = thisMob.pos.x;
-            thisMob.oldPos.y = thisMob.pos.y;
-            thisMob.oldPos.z = thisMob.pos.z;
         }
     };
 
