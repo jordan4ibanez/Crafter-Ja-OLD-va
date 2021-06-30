@@ -47,6 +47,7 @@ import static game.particle.Particle.getAllParticles;
 import static game.player.OtherPlayers.getOtherPlayers;
 import static game.player.Player.*;
 import static game.tnt.TNTEntity.*;
+import static java.lang.Double.NaN;
 import static org.lwjgl.opengl.GL44.*;
 import static org.lwjgl.opengl.GL44C.GL_BLEND;
 import static org.lwjgl.opengl.GL44C.glDisable;
@@ -198,11 +199,10 @@ public class GameRenderer {
         Matrix4d modelViewMatrix;
 
 
-        Vector3d camPos = getCameraPosition();
+        final Vector3d camPos = getCameraPosition();
 
 
-        //todo chunk sorting ---------------------------------------------------------------------------------------------
-
+        //todo BEGIN chunk sorting ---------------------------------------------------------------------------------------------
 
         HashMap<Double, Mesh[]> normalDrawTypeHash = new HashMap<>();
         HashMap<Double, Mesh[]> liquidDrawTypeHash = new HashMap<>();
@@ -272,9 +272,10 @@ public class GameRenderer {
             normalDrawTypeHash.remove(maxDistancePrimitive);
             liquidDrawTypeHash.remove(maxDistancePrimitive);
             allFaceDrawTypeHash.remove(maxDistancePrimitive);
+            chunkHashKeys.remove(maxDistancePrimitive);
         }
 
-        //todo end chunk sorting ---------------------------------------------------------------------------------------------
+        //todo END chunk sorting ---------------------------------------------------------------------------------------------
 
 
         //get fast or fancy
