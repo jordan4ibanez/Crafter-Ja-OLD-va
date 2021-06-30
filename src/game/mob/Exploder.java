@@ -44,11 +44,12 @@ public class Exploder {
             //head test
             //thisObject.bodyRotations[0] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),(float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),0);
             //these are the legs
-            thisMob.bodyRotations[2].x = (float) Math.toDegrees(Math.sin(thisMob.animationTimer * Math.PI * -2f) / 1.6f);
-            thisMob.bodyRotations[3].x = (float) Math.toDegrees(Math.sin(thisMob.animationTimer * Math.PI * 2f) / 1.6f);
+            float animation = (float) Math.toDegrees(Math.sin(thisMob.animationTimer * Math.PI * 2f) / 1.6f);
+            thisMob.bodyRotations[2].x = -animation;
+            thisMob.bodyRotations[3].x = animation;
             //the legs are diagonally synced, so the multiplier is flipped
-            thisMob.bodyRotations[4].x = (float) Math.toDegrees(Math.sin(thisMob.animationTimer * Math.PI * 2f) / 1.6f);
-            thisMob.bodyRotations[5].x = (float) Math.toDegrees(Math.sin(thisMob.animationTimer * Math.PI * -2f) / 1.6f);
+            thisMob.bodyRotations[4].x = animation;
+            thisMob.bodyRotations[5].x = -animation;
 
 
             float bodyYaw = Math.toRadians(thisMob.rotation) + (float) Math.PI;
