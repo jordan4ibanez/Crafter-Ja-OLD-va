@@ -26,7 +26,7 @@ public class MobSpawning {
 
         if (spawnTimer >= spawnGoal){
             //CHANGE THIS TO CHECK FOR PLAYERS POSITION WHEN TRANSLATING TO MULTIPLAYER
-            trySpawn(new Vector3d(getPlayerPos()));
+            trySpawn(getPlayerPos());
             spawnTimer = 0;
             spawned++;
         }
