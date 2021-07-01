@@ -63,6 +63,9 @@ public class Human {
             thisMob.bodyRotations[4].x = -animation;
             thisMob.bodyRotations[5].x = animation;
 
+
+            //thisMob.animationTimer += delta * 2f;
+
             float bodyYaw = Math.toRadians(thisMob.rotation) + (float) Math.PI;
 
             thisMob.inertia.x +=  (Math.sin(-bodyYaw) * accelerationMultiplier) * movementAcceleration * delta;
@@ -112,7 +115,7 @@ public class Human {
             }
 
             //mobSmoothRotation(thisMob);
-            //doHeadCode(thisMob);
+            doHeadCode(thisMob);
         }
     };
 
@@ -144,17 +147,14 @@ public class Human {
     private static Mesh[] createMesh(){
         final float modelScale = 0.25f; //lazy way to fix
 
-        {} {} {} {}
-        {{}{}} {{}{}} {{}{}} {{}{}}
-
         final float[][][] modelPieceArray = new float[][][]{
-//                head
+                //head
                 {{-0.75f * modelScale, 0.0f * modelScale, -0.75f * modelScale, 0.75f * modelScale, 1.5f * modelScale, 0.75f * modelScale}},
-//                body
+                //body
                 {{-0.75f * modelScale, -2.5f * modelScale, -0.45f * modelScale, 0.75f * modelScale, 0.0f * modelScale, 0.45f * modelScale}},
-//                //right arm
+                //right arm
                 {{-0.375f * modelScale, -2.2f * modelScale, -0.375f * modelScale, 0.375f * modelScale, 0.3f * modelScale, 0.375f * modelScale}},
-//                //left arm
+                //left arm
                 {{-0.375f * modelScale, -2.2f * modelScale, -0.375f * modelScale, 0.375f * modelScale, 0.3f * modelScale, 0.375f * modelScale}},
                 //right leg
                 {{-0.375f * modelScale, -2.5f * modelScale, -0.375f * modelScale, 0.375f * modelScale, 0.0f * modelScale, 0.375f * modelScale}},
