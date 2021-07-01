@@ -30,12 +30,11 @@ public class MobMeshBuilder {
                 //back
                 positions.pack(thisBlockBox[3], thisBlockBox[4], thisBlockBox[5], thisBlockBox[0], thisBlockBox[4], thisBlockBox[5], thisBlockBox[0], thisBlockBox[1], thisBlockBox[5], thisBlockBox[3], thisBlockBox[1], thisBlockBox[5]);
                 light.pack(1f);
-                indices.pack(0, 1 + indicesCount, 2 + indicesCount, 0, 2 + indicesCount, 3 + indicesCount);
+                indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
                 indicesCount += 4;
                 float[] textureFront = textureArrayArray[bodyMeshesIndex][textureCounter];
                 textureCoord.pack(textureFront[1], textureFront[2], textureFront[0], textureFront[2], textureFront[0], textureFront[3], textureFront[1], textureFront[3]);
                 textureCounter++;
-
 
                 //front
                 positions.pack(thisBlockBox[0], thisBlockBox[4], thisBlockBox[2], thisBlockBox[3], thisBlockBox[4], thisBlockBox[2], thisBlockBox[3], thisBlockBox[1], thisBlockBox[2], thisBlockBox[0], thisBlockBox[1], thisBlockBox[2]);
@@ -46,7 +45,6 @@ public class MobMeshBuilder {
                 textureCoord.pack(textureBack[1], textureBack[2], textureBack[0], textureBack[2], textureBack[0], textureBack[3], textureBack[1], textureBack[3]);
                 textureCounter++;
 
-
                 //right
                 positions.pack(thisBlockBox[3], thisBlockBox[4], thisBlockBox[2], thisBlockBox[3], thisBlockBox[4], thisBlockBox[5], thisBlockBox[3], thisBlockBox[1], thisBlockBox[5], thisBlockBox[3], thisBlockBox[1], thisBlockBox[2]);
                 light.pack(1f);
@@ -55,7 +53,6 @@ public class MobMeshBuilder {
                 float[] textureRight = textureArrayArray[bodyMeshesIndex][textureCounter];
                 textureCoord.pack(textureRight[1], textureRight[2], textureRight[0], textureRight[2], textureRight[0], textureRight[3], textureRight[1], textureRight[3]);
                 textureCounter++;
-
 
                 //left
                 positions.pack(thisBlockBox[0], thisBlockBox[4], thisBlockBox[5], thisBlockBox[0], thisBlockBox[4], thisBlockBox[2], thisBlockBox[0], thisBlockBox[1], thisBlockBox[2], thisBlockBox[0], thisBlockBox[1], thisBlockBox[5]);
@@ -66,7 +63,6 @@ public class MobMeshBuilder {
                 textureCoord.pack(textureLeft[1], textureLeft[2], textureLeft[0], textureLeft[2], textureLeft[0], textureLeft[3], textureLeft[1], textureLeft[3]);
                 textureCounter++;
 
-
                 //top
                 positions.pack(thisBlockBox[0], thisBlockBox[4], thisBlockBox[2], thisBlockBox[0], thisBlockBox[4], thisBlockBox[5], thisBlockBox[3], thisBlockBox[4], thisBlockBox[5], thisBlockBox[3], thisBlockBox[4], thisBlockBox[2]);
                 light.pack(1f);
@@ -76,11 +72,11 @@ public class MobMeshBuilder {
                 textureCoord.pack(textureTop[1], textureTop[2], textureTop[0], textureTop[2], textureTop[0], textureTop[3], textureTop[1], textureTop[3]);
                 textureCounter++;
 
-
                 //bottom
                 positions.pack(thisBlockBox[0], thisBlockBox[1], thisBlockBox[5], thisBlockBox[0], thisBlockBox[1], thisBlockBox[2], thisBlockBox[3], thisBlockBox[1], thisBlockBox[2], thisBlockBox[3], thisBlockBox[1], thisBlockBox[5]);
                 light.pack(1f);
                 indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
+                indicesCount += 4;
                 float[] textureBottom = textureArrayArray[bodyMeshesIndex][textureCounter];
                 textureCoord.pack(textureBottom[1], textureBottom[2], textureBottom[0], textureBottom[2], textureBottom[0], textureBottom[3], textureBottom[1], textureBottom[3]);
                 textureCounter++;
