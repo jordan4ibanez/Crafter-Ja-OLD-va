@@ -5,6 +5,7 @@ import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import static engine.time.Time.getDelta;
+import static game.particle.Particle.createParticle;
 import static game.player.Player.getPlayerPosWithEyeHeight;
 import static game.ray.LineOfSight.getLineOfSight;
 
@@ -13,6 +14,7 @@ public class MobUtilityCode {
 
     private final static Vector3d headPos = new Vector3d();
     private final static Vector3d headTurn = new Vector3d();
+    private final static Vector3d adjustedHeadPos = new Vector3d();
 
     public static void doHeadCode(MobObject thisObject){
 
@@ -21,8 +23,13 @@ public class MobUtilityCode {
         }
 
         //silly head turning
+        headPos.set(thisObject.pos);
 
-        headPos.set(thisObject.pos).add(thisObject.bodyOffsets[0]);
+        float smoothToRad = Math.toRadians(thisObject.smoothRotation + 90f);
+
+        headPos.add(adjustedHeadPos.set(Math.cos(-smoothToRad), 0,Math.sin(smoothToRad)).mul(thisObject.bodyOffsets[0].z).add(0,thisObject.bodyOffsets[0].y,0));
+
+        createParticle(new Vector3d(headPos), new Vector3f(0,0,0), 23);
 
         headTurn.set(getPlayerPosWithEyeHeight()).sub(headPos);
         //headTurn.normalize();
