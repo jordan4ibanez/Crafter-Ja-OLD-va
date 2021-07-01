@@ -14,6 +14,7 @@ import static engine.time.Time.getDelta;
 import static game.chunk.Chunk.getLight;
 import static game.collision.MobCollision.mobSoftCollisionDetect;
 import static game.collision.MobCollision.mobSoftPlayerCollisionDetect;
+import static game.mob.Chicken.registerChickenMob;
 import static game.mob.Exploder.registerExploderMob;
 import static game.mob.Human.registerHumanMob;
 import static game.mob.Pig.registerPigMob;
@@ -25,7 +26,7 @@ public class Mob {
 
     //todo: ADD MOBS TO MEMORY SWEEPER
     //todo: Data orient! - maybe
-    private static final MobDefinition[] mobDefinitions = new MobDefinition[7];
+    private static final MobDefinition[] mobDefinitions = new MobDefinition[8];
     private static final Int2ObjectArrayMap<MobObject> mobs = new Int2ObjectArrayMap<>();
 
     private static int currentID = 0;
@@ -65,6 +66,8 @@ public class Mob {
         registerExploderMob();
         registerSkeletonMob();
         registerSheepMob();
+        registerChickenMob();
+
     }
 
     public static void spawnMob(byte ID, Vector3d pos, Vector3f inertia){
