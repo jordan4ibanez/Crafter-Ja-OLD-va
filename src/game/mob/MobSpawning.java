@@ -39,7 +39,7 @@ public class MobSpawning {
         int yPos = getMobSpawnYPos(x,z);
 
         if (yPos >= 0){
-            spawnMob(randomByte((byte) 8), new Vector3d(x,yPos,z), new Vector3f(0));
+            spawnMob(randomByte((byte) 9), new Vector3d(x,yPos,z), new Vector3f(0));
         }
     }
 
