@@ -135,30 +135,30 @@ public class Zombie {
     private static Mesh[] createMesh(){
         final float modelScale = 0.25f; //lazy way to fix
 
-        final float[][] modelPieceArray = new float[][]{
-//                head
-                {-0.75f * modelScale,0.0f * modelScale,-0.75f * modelScale,0.75f * modelScale,1.5f * modelScale,0.75f * modelScale},
-//                body
-                {-0.75f * modelScale,-2.5f * modelScale,-0.45f * modelScale,0.75f * modelScale,0.0f * modelScale,0.45f * modelScale},
-//                //right arm
-                {-0.375f * modelScale,-2.2f * modelScale,-0.375f * modelScale,  0.375f * modelScale,0.3f * modelScale,0.375f * modelScale},
-//                //left arm
-                {-0.375f * modelScale,-2.2f * modelScale,-0.375f * modelScale,  0.375f * modelScale,0.3f * modelScale,0.375f * modelScale},
+        final float[][][] modelPieceArray = new float[][][]{
+                //head
+                {{-0.75f * modelScale,0.0f * modelScale,-0.75f * modelScale,0.75f * modelScale,1.5f * modelScale,0.75f * modelScale}},
+                //body
+                {{-0.75f * modelScale,-2.5f * modelScale,-0.45f * modelScale,0.75f * modelScale,0.0f * modelScale,0.45f * modelScale}},
+                //right arm
+                {{-0.375f * modelScale,-2.2f * modelScale,-0.375f * modelScale,  0.375f * modelScale,0.3f * modelScale,0.375f * modelScale}},
+                //left arm
+                {{-0.375f * modelScale,-2.2f * modelScale,-0.375f * modelScale,  0.375f * modelScale,0.3f * modelScale,0.375f * modelScale}},
                 //right leg
-                {-0.375f * modelScale,-2.5f * modelScale,-0.375f * modelScale,  0.375f * modelScale,0.0f * modelScale,0.375f * modelScale},
+                {{-0.375f * modelScale,-2.5f * modelScale,-0.375f * modelScale,  0.375f * modelScale,0.0f * modelScale,0.375f * modelScale}},
                 //left leg
-                {-0.375f * modelScale,-2.5f * modelScale,-0.375f * modelScale,  0.375f * modelScale,0.0f * modelScale,0.375f * modelScale},
+                {{-0.375f * modelScale,-2.5f * modelScale,-0.375f * modelScale,  0.375f * modelScale,0.0f * modelScale,0.375f * modelScale}},
         };
 
 
         float textureWidth = 64f;
         final float textureHeight = 32f;
 
-        float[][] modelTextureArray = new float[][]{
+        float[][][] modelTextureArray = new float[][][]{
                 //head
-                //front
-                calculateMobTexture(24,8,32,16, textureWidth, textureHeight),
                 //back
+                {calculateMobTexture(24,8,32,16, textureWidth, textureHeight),
+                //front
                 calculateMobTexture(8,8,16,16, textureWidth, textureHeight),
                 //right
                 calculateMobTexture(0,8,8,16, textureWidth, textureHeight),
@@ -167,12 +167,12 @@ public class Zombie {
                 //top
                 calculateMobTexture(8,0,16,8, textureWidth, textureHeight),
                 //bottom
-                calculateMobTexture(16,0,24,8, textureWidth, textureHeight),
+                calculateMobTexture(16,0,24,8, textureWidth, textureHeight)},
 
                 //body
-                //front
-                calculateMobTexture(32,20,40,30, textureWidth, textureHeight),
                 //back
+                {calculateMobTexture(32,20,40,30, textureWidth, textureHeight),
+                //front
                 calculateMobTexture(20,20,28,30, textureWidth, textureHeight),
                 //right
                 calculateMobTexture(28,20,32,30, textureWidth, textureHeight),
@@ -181,13 +181,13 @@ public class Zombie {
                 //top
                 calculateMobTexture(20,16,28,20, textureWidth, textureHeight),
                 //bottom
-                calculateMobTexture(28,16,36,20, textureWidth, textureHeight),
+                calculateMobTexture(28,16,36,20, textureWidth, textureHeight)},
 
 
                 //right arm
-                //front
-                calculateMobTexture(48,20,52,32, textureWidth, textureHeight), //dark
                 //back
+                {calculateMobTexture(48,20,52,32, textureWidth, textureHeight), //dark
+                //front
                 calculateMobTexture(44,20,48,32, textureWidth, textureHeight), //light
                 //right
                 calculateMobTexture(48,20,52,32, textureWidth, textureHeight), //dark
@@ -196,12 +196,12 @@ public class Zombie {
                 //top
                 calculateMobTexture(44,16,48,20, textureWidth, textureHeight), //shoulder
                 //bottom
-                calculateMobTexture(48,16,52,20, textureWidth, textureHeight), //palm
+                calculateMobTexture(48,16,52,20, textureWidth, textureHeight)}, //palm
 
                 //left arm
-                //front
-                calculateMobTexture(48,20,52,32, textureWidth, textureHeight), //dark
                 //back
+                {calculateMobTexture(48,20,52,32, textureWidth, textureHeight), //dark
+                //front
                 calculateMobTexture(44,20,48,32, textureWidth, textureHeight), //light
                 //right
                 calculateMobTexture(44,20,48,32, textureWidth, textureHeight), //light
@@ -210,13 +210,13 @@ public class Zombie {
                 //top
                 calculateMobTexture(44,16,48,20, textureWidth, textureHeight), //shoulder
                 //bottom
-                calculateMobTexture(48,16,52,20, textureWidth, textureHeight), //palm
+                calculateMobTexture(48,16,52,20, textureWidth, textureHeight)}, //palm
 
 
                 //right leg
-                //front
-                calculateMobTexture(0,20,4,32, textureWidth, textureHeight), //dark
                 //back
+                {calculateMobTexture(0,20,4,32, textureWidth, textureHeight), //dark
+                //front
                 calculateMobTexture(4,20,8,32, textureWidth, textureHeight), //light
                 //right
                 calculateMobTexture(8,20,12,32, textureWidth, textureHeight), //dark
@@ -225,12 +225,12 @@ public class Zombie {
                 //top
                 calculateMobTexture(4,16,8,20, textureWidth, textureHeight), //top
                 //bottom
-                calculateMobTexture(8,16,12,20, textureWidth, textureHeight), //bottom
+                calculateMobTexture(8,16,12,20, textureWidth, textureHeight)}, //bottom
 
                 //left leg
-                //front
-                calculateMobTexture(0,20,4,32, textureWidth, textureHeight), //dark
                 //back
+                {calculateMobTexture(0,20,4,32, textureWidth, textureHeight), //dark
+                //front
                 calculateMobTexture(4,20,8,32, textureWidth, textureHeight), //light
                 //right
                 calculateMobTexture(12,20,16,32, textureWidth, textureHeight), //light
@@ -239,7 +239,7 @@ public class Zombie {
                 //top
                 calculateMobTexture(4,16,8,20, textureWidth, textureHeight), //top
                 //bottom
-                calculateMobTexture(8,16,12,20, textureWidth, textureHeight), //bottom
+                calculateMobTexture(8,16,12,20, textureWidth, textureHeight)}, //bottom
         };
 
         return createMobMesh(modelPieceArray,modelTextureArray, "textures/zombie.png");
