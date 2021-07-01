@@ -93,8 +93,8 @@ public class Cow {
             }
 
 
-            mobSmoothRotation(thisMob);
-            doHeadCode(thisMob);
+            //mobSmoothRotation(thisMob);
+            //doHeadCode(thisMob);
         }
     };
 
@@ -168,7 +168,7 @@ public class Cow {
                 //top
                 calculateMobTexture(38,0,46,6,textureWidth,textureHeight),
                 //bottom
-                calculateMobTexture(48,7,46,13,textureWidth,textureHeight)},
+                calculateMobTexture(38,7,46,13,textureWidth,textureHeight)},
 
                 //body
                 //back
