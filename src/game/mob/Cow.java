@@ -62,7 +62,7 @@ public class Cow {
                 thisMob.inertia.z = inertia2D.z;
             }
 
-            boolean onGround = false;//applyInertia(thisMob.pos, thisMob.inertia, false, thisMob.width, thisMob.height, true, false, true, false, false);
+            boolean onGround = applyInertia(thisMob.pos, thisMob.inertia, false, thisMob.width, thisMob.height, true, false, true, false, false);
 
             thisMob.animationTimer += thisMob.pos.distance(thisMob.oldPos) / 2f;
 
@@ -93,8 +93,8 @@ public class Cow {
             }
 
 
-            //mobSmoothRotation(thisMob);
-            //doHeadCode(thisMob);
+            mobSmoothRotation(thisMob);
+            doHeadCode(thisMob);
         }
     };
 
