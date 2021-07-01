@@ -64,7 +64,7 @@ public class Pig {
 
             boolean onGround = applyInertia(thisMob.pos, thisMob.inertia, false, thisMob.width, thisMob.height, true, false, true, false, false);
 
-            thisMob.animationTimer += delta * (inertia2D.length() / maxSpeed);
+            thisMob.animationTimer += thisMob.pos.distance(thisMob.oldPos) / 2f;
 
             if (thisMob.animationTimer >= 1f) {
                 thisMob.animationTimer = 0f;
