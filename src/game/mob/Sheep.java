@@ -30,7 +30,8 @@ public class Sheep {
             for (byte i = 0; i < 3; i++) {
                 createItem("dirt", new Vector3d(thisMob.pos).add(0, 1f, 0), 1, 0);
             }
-            thisMob.ID = 6;
+            //shaved sheep always comes after wool sheep
+            thisMob.ID++;
         }
 
         @Override
@@ -162,28 +163,27 @@ public class Sheep {
         float size = 0.25f; //lazy way to fix
         float woolSize = 1.25f; //ultra lazy way to fix
 
-        float[][] modelPieceArray = new float[][]{
+        float[][][] modelPieceArray = new float[][][]{
 //                head
-                {-0.7f * size,-0.6f * size,-0.8f * size,0.7f * size,0.6f * size,0.8f * size},
+                {{-0.7f * size,-0.6f * size,-0.8f * size,0.7f * size,0.6f * size,0.8f * size}},
 //                body
-                {-1 * size * woolSize, -0.7f * size * woolSize ,-1.75f * size * woolSize, 1f * size  * woolSize,0.7f * size * woolSize,1.75f * size * woolSize},
+                {{-1 * size * woolSize, -0.7f * size * woolSize ,-1.75f * size * woolSize, 1f * size  * woolSize,0.7f * size * woolSize,1.75f * size * woolSize}},
 //                //front right leg
-                {-0.375f * size,-2.5f * size,-0.375f * size,  0.375f * size,0,0.375f * size},
+                {{-0.375f * size,-2.5f * size,-0.375f * size,  0.375f * size,0,0.375f * size}},
 //                //front left leg
-                {-0.375f * size,-2.5f * size,-0.375f * size,  0.375f * size,0,0.375f * size},
+                {{-0.375f * size,-2.5f * size,-0.375f * size,  0.375f * size,0,0.375f * size}},
                 //rear right leg
-                {-0.375f * size,-2.5f * size,-0.375f * size,  0.375f * size,0,0.375f * size},
+                {{-0.375f * size,-2.5f * size,-0.375f * size,  0.375f * size,0,0.375f * size}},
                 //rear left leg
-                {-0.375f * size,-2.5f * size,-0.375f * size,  0.375f * size,0,0.375f * size},
+                {{-0.375f * size,-2.5f * size,-0.375f * size,  0.375f * size,0,0.375f * size}},
         };
         final float textureWidth = 64f;
         final float textureHeight = 32f;
 
-        float[][] modelTextureArray = new float[][]{
+        float[][][] modelTextureArray = new float[][][]{
                 //head
-
                 //back
-                calculateMobTexture(8,0,16,6,textureWidth,textureHeight),
+                {calculateMobTexture(8,0,16,6,textureWidth,textureHeight),
                 //front
                 calculateMobTexture(8,6,16,12,textureWidth,textureHeight),
                 //right
@@ -193,12 +193,11 @@ public class Sheep {
                 //top
                 calculateMobTexture(8,0,16,6,textureWidth,textureHeight),
                 //bottom
-                calculateMobTexture(8,0,16,6,textureWidth,textureHeight),
+                calculateMobTexture(8,0,16,6,textureWidth,textureHeight)},
 
                 //body
-
                 //back
-                calculateMobTexture(40,20,48,26,textureWidth,textureHeight),
+                {calculateMobTexture(40,20,48,26,textureWidth,textureHeight),
                 //front
                 calculateMobTexture(40,26,48,32,textureWidth,textureHeight),
                 //right
@@ -208,14 +207,13 @@ public class Sheep {
                 //top
                 calculateMobTexture(48,16,64,24,textureWidth,textureHeight),
                 //bottom
-                calculateMobTexture(48,24,64,32,textureWidth,textureHeight),
+                calculateMobTexture(48,24,64,32,textureWidth,textureHeight)},
 
 
                 //right arm
-
-                //front
-                calculateMobTexture(0,20,4,32,textureWidth,textureHeight), //dark
                 //back
+                {calculateMobTexture(0,20,4,32,textureWidth,textureHeight), //dark
+                //front
                 calculateMobTexture(4,20,8,32,textureWidth,textureHeight), //light
                 //right
                 calculateMobTexture(8,20,12,32,textureWidth,textureHeight), //dark
@@ -224,13 +222,12 @@ public class Sheep {
                 //top
                 calculateMobTexture(4,16,8,20,textureWidth,textureHeight), //shoulder
                 //bottom
-                calculateMobTexture(8,16,12,20,textureWidth,textureHeight), //palm
+                calculateMobTexture(8,16,12,20,textureWidth,textureHeight)}, //palm
 
                 //left arm
-
-                //front
-                calculateMobTexture(0,20,4,32,textureWidth,textureHeight), //dark
                 //back
+                {calculateMobTexture(0,20,4,32,textureWidth,textureHeight), //dark
+                //front
                 calculateMobTexture(4,20,8,32,textureWidth,textureHeight), //light
                 //right
                 calculateMobTexture(8,20,12,32,textureWidth,textureHeight), //dark
@@ -239,14 +236,13 @@ public class Sheep {
                 //top
                 calculateMobTexture(4,16,8,20,textureWidth,textureHeight), //shoulder
                 //bottom
-                calculateMobTexture(8,16,12,20,textureWidth,textureHeight), //palm
+                calculateMobTexture(8,16,12,20,textureWidth,textureHeight)}, //palm
 
 
                 //right leg
-
-                //front
-                calculateMobTexture(0,20,4,32,textureWidth,textureHeight), //dark
                 //back
+                {calculateMobTexture(0,20,4,32,textureWidth,textureHeight), //dark
+                //front
                 calculateMobTexture(4,20,8,32,textureWidth,textureHeight), //light
                 //right
                 calculateMobTexture(8,20,12,32,textureWidth,textureHeight), //dark
@@ -255,13 +251,12 @@ public class Sheep {
                 //top
                 calculateMobTexture(4,16,8,20,textureWidth,textureHeight), //shoulder
                 //bottom
-                calculateMobTexture(8,16,12,20,textureWidth,textureHeight), //palm
+                calculateMobTexture(8,16,12,20,textureWidth,textureHeight)}, //palm
 
                 //left leg
-
-                //front
-                calculateMobTexture(0,20,4,32,textureWidth,textureHeight), //dark
                 //back
+                {calculateMobTexture(0,20,4,32,textureWidth,textureHeight), //dark
+                //front
                 calculateMobTexture(4,20,8,32,textureWidth,textureHeight), //light
                 //right
                 calculateMobTexture(8,20,12,32,textureWidth,textureHeight), //dark
@@ -270,7 +265,7 @@ public class Sheep {
                 //top
                 calculateMobTexture(4,16,8,20,textureWidth,textureHeight), //shoulder
                 //bottom
-                calculateMobTexture(8,16,12,20,textureWidth,textureHeight), //palm
+                calculateMobTexture(8,16,12,20,textureWidth,textureHeight)}, //palm
         };
 
 
@@ -282,28 +277,27 @@ public class Sheep {
         float size = 0.25f; //lazy way to fix
         float bodySize = 0.9f;
 
-        float[][] modelPieceArray = new float[][]{
-//                head
-                {-0.7f * size,-0.6f * size,-0.8f * size,0.7f * size,0.6f * size,0.8f * size},
-//                body
-                {-1.f * size * bodySize, -0.7f * size * bodySize,-1.75f * size * bodySize, 1f * size * bodySize,0.7f * size * bodySize,1.75f * size * bodySize},
-//                //front right leg
-                {-0.375f * size,-2.5f * size,-0.375f * size,  0.375f * size,0,0.375f * size},
-//                //front left leg
-                {-0.375f * size,-2.5f * size,-0.375f * size,  0.375f * size,0,0.375f * size},
+        float[][][] modelPieceArray = new float[][][]{
+                //head
+                {{-0.7f * size,-0.6f * size,-0.8f * size,0.7f * size,0.6f * size,0.8f * size}},
+                //body
+                {{-1.f * size * bodySize, -0.7f * size * bodySize,-1.75f * size * bodySize, 1f * size * bodySize,0.7f * size * bodySize,1.75f * size * bodySize}},
+                //front right leg
+                {{-0.375f * size,-2.5f * size,-0.375f * size,  0.375f * size,0,0.375f * size}},
+                //front left leg
+                {{-0.375f * size,-2.5f * size,-0.375f * size,  0.375f * size,0,0.375f * size}},
                 //rear right leg
-                {-0.375f * size,-2.5f * size,-0.375f * size,  0.375f * size,0,0.375f * size},
+                {{-0.375f * size,-2.5f * size,-0.375f * size,  0.375f * size,0,0.375f * size}},
                 //rear left leg
-                {-0.375f * size,-2.5f * size,-0.375f * size,  0.375f * size,0,0.375f * size},
+                {{-0.375f * size,-2.5f * size,-0.375f * size,  0.375f * size,0,0.375f * size}},
         };
         final float textureWidth = 64f;
         final float textureHeight = 32f;
 
-        float[][] modelTextureArray = new float[][]{
+        float[][][] modelTextureArray = new float[][][]{
                 //head
-
                 //back
-                calculateMobTexture(8,0,16,6,textureWidth,textureHeight),
+                {calculateMobTexture(8,0,16,6,textureWidth,textureHeight),
                 //front
                 calculateMobTexture(8,6,16,12,textureWidth,textureHeight),
                 //right
@@ -313,12 +307,11 @@ public class Sheep {
                 //top
                 calculateMobTexture(8,0,16,6,textureWidth,textureHeight),
                 //bottom
-                calculateMobTexture(8,0,16,6,textureWidth,textureHeight),
+                calculateMobTexture(8,0,16,6,textureWidth,textureHeight)},
 
                 //body
-
                 //back
-                calculateMobTexture(40,20,48,26,textureWidth,textureHeight),
+                {calculateMobTexture(40,20,48,26,textureWidth,textureHeight),
                 //front
                 calculateMobTexture(40,26,48,32,textureWidth,textureHeight),
                 //right
@@ -328,14 +321,13 @@ public class Sheep {
                 //top
                 calculateMobTexture(48,16,64,24,textureWidth,textureHeight),
                 //bottom
-                calculateMobTexture(48,24,64,32,textureWidth,textureHeight),
+                calculateMobTexture(48,24,64,32,textureWidth,textureHeight)},
 
 
                 //right arm
-
-                //front
-                calculateMobTexture(0,20,4,32,textureWidth,textureHeight), //dark
                 //back
+                {calculateMobTexture(0,20,4,32,textureWidth,textureHeight), //dark
+                //front
                 calculateMobTexture(4,20,8,32,textureWidth,textureHeight), //light
                 //right
                 calculateMobTexture(8,20,12,32,textureWidth,textureHeight), //dark
@@ -344,13 +336,12 @@ public class Sheep {
                 //top
                 calculateMobTexture(4,16,8,20,textureWidth,textureHeight), //shoulder
                 //bottom
-                calculateMobTexture(8,16,12,20,textureWidth,textureHeight), //palm
+                calculateMobTexture(8,16,12,20,textureWidth,textureHeight)}, //palm
 
                 //left arm
-
-                //front
-                calculateMobTexture(0,20,4,32,textureWidth,textureHeight), //dark
                 //back
+                {calculateMobTexture(0,20,4,32,textureWidth,textureHeight), //dark
+                //front
                 calculateMobTexture(4,20,8,32,textureWidth,textureHeight), //light
                 //right
                 calculateMobTexture(8,20,12,32,textureWidth,textureHeight), //dark
@@ -359,14 +350,13 @@ public class Sheep {
                 //top
                 calculateMobTexture(4,16,8,20,textureWidth,textureHeight), //shoulder
                 //bottom
-                calculateMobTexture(8,16,12,20,textureWidth,textureHeight), //palm
+                calculateMobTexture(8,16,12,20,textureWidth,textureHeight)}, //palm
 
 
                 //right leg
-
-                //front
-                calculateMobTexture(0,20,4,32,textureWidth,textureHeight), //dark
                 //back
+                {calculateMobTexture(0,20,4,32,textureWidth,textureHeight), //dark
+                //front
                 calculateMobTexture(4,20,8,32,textureWidth,textureHeight), //light
                 //right
                 calculateMobTexture(8,20,12,32,textureWidth,textureHeight), //dark
@@ -375,13 +365,12 @@ public class Sheep {
                 //top
                 calculateMobTexture(4,16,8,20,textureWidth,textureHeight), //shoulder
                 //bottom
-                calculateMobTexture(8,16,12,20,textureWidth,textureHeight), //palm
+                calculateMobTexture(8,16,12,20,textureWidth,textureHeight)}, //palm
 
                 //left leg
-
-                //front
-                calculateMobTexture(0,20,4,32,textureWidth,textureHeight), //dark
                 //back
+                {calculateMobTexture(0,20,4,32,textureWidth,textureHeight), //dark
+                //front
                 calculateMobTexture(4,20,8,32,textureWidth,textureHeight), //light
                 //right
                 calculateMobTexture(8,20,12,32,textureWidth,textureHeight), //dark
@@ -390,11 +379,9 @@ public class Sheep {
                 //top
                 calculateMobTexture(4,16,8,20,textureWidth,textureHeight), //shoulder
                 //bottom
-                calculateMobTexture(8,16,12,20,textureWidth,textureHeight), //palm
+                calculateMobTexture(8,16,12,20,textureWidth,textureHeight)}, //palm
         };
 
         return createMobMesh(modelPieceArray,modelTextureArray, "textures/sheep_shaved.png");
     }
-
-
 }
