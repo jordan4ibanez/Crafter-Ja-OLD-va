@@ -280,12 +280,13 @@ public class Sheep {
     private static Mesh[] createShavedMesh(){
 
         float size = 0.25f; //lazy way to fix
+        float bodySize = 0.9f;
 
         float[][] modelPieceArray = new float[][]{
 //                head
                 {-0.7f * size,-0.6f * size,-0.8f * size,0.7f * size,0.6f * size,0.8f * size},
 //                body
-                {-1.f * size, -0.7f * size ,-1.75f * size, 1f * size,0.7f * size,1.75f * size},
+                {-1.f * size * bodySize, -0.7f * size * bodySize,-1.75f * size * bodySize, 1f * size * bodySize,0.7f * size * bodySize,1.75f * size * bodySize},
 //                //front right leg
                 {-0.375f * size,-2.5f * size,-0.375f * size,  0.375f * size,0,0.375f * size},
 //                //front left leg
