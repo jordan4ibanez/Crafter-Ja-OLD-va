@@ -1,11 +1,8 @@
 package game.mob;
 
 import engine.graphics.Mesh;
-import engine.graphics.Texture;
 import org.joml.Math;
 import org.joml.Vector3f;
-
-import java.util.ArrayList;
 
 import static engine.FancyMath.randomDirFloat;
 import static engine.time.Time.getDelta;
@@ -138,30 +135,28 @@ public class Pig {
 
         float size = 0.25f; //lazy way to fix
 
-        float[][] modelPieceArray = new float[][]{
-//                head
-                {-0.8f * size,-0.8f * size,-0.8f * size,0.8f * size,0.8f * size,0.8f * size},
-//                body
-                {-1.f * size,-1.f * size,-1.75f * size, size,0.75f * size,1.75f * size},
-//                //front right leg
-
-                {-0.375f * size,-1.2f * size,-0.375f * size,  0.375f * size,0.3f * size,0.375f * size},
-//                //front left leg
-                {-0.375f * size,-1.2f * size,-0.375f * size,  0.375f * size,0.3f * size,0.375f * size},
+        float[][][] modelPieceArray = new float[][][]{
+                //head
+                {{-0.8f * size,-0.8f * size,-0.8f * size,0.8f * size,0.8f * size,0.8f * size}},
+                //body
+                {{-1.f * size,-1.f * size,-1.75f * size, size,0.75f * size,1.75f * size}},
+                //front right leg
+                {{-0.375f * size,-1.2f * size,-0.375f * size,  0.375f * size,0.3f * size,0.375f * size}},
+                //front left leg
+                {{-0.375f * size,-1.2f * size,-0.375f * size,  0.375f * size,0.3f * size,0.375f * size}},
                 //rear right leg
-                {-0.375f * size,-1.2f * size,-0.375f * size,  0.375f * size,0.3f * size,0.375f * size},
+                {{-0.375f * size,-1.2f * size,-0.375f * size,  0.375f * size,0.3f * size,0.375f * size}},
                 //rear left leg
-                {-0.375f * size,-1.2f * size,-0.375f * size,  0.375f * size,0.3f * size,0.375f * size},
+                {{-0.375f * size,-1.2f * size,-0.375f * size,  0.375f * size,0.3f * size,0.375f * size}},
         };
         final float textureWidth = 64f;
         final float textureHeight = 32f;
 
-        float[][] modelTextureArray = new float[][]{
+        float[][][] modelTextureArray = new float[][][]{
                 //head
-
-                //front
-                calculateMobTexture(24,8,32,16,textureWidth,textureHeight),
                 //back
+                {calculateMobTexture(24,8,32,16,textureWidth,textureHeight),
+                //front
                 calculateMobTexture(8,8,16,16,textureWidth,textureHeight),
                 //right
                 calculateMobTexture(0,8,8,16,textureWidth,textureHeight),
@@ -170,13 +165,12 @@ public class Pig {
                 //top
                 calculateMobTexture(8,0,16,8,textureWidth,textureHeight),
                 //bottom
-                calculateMobTexture(16,0,24,8,textureWidth,textureHeight),
+                calculateMobTexture(16,0,24,8,textureWidth,textureHeight)},
 
                 //body
-
-                //front
-                calculateMobTexture(54,6,64,14,textureWidth,textureHeight),
                 //back
+                {calculateMobTexture(54,6,64,14,textureWidth,textureHeight),
+                //front
                 calculateMobTexture(44,6,54,14,textureWidth,textureHeight),
                 //right
                 calculateMobTexture(48,23,64,32,textureWidth,textureHeight),
@@ -185,77 +179,66 @@ public class Pig {
                 //top
                 calculateMobTexture(32,23,48,32,textureWidth,textureHeight),
                 //bottom
-                calculateMobTexture(48,14,64,23,textureWidth,textureHeight),
+                calculateMobTexture(48,14,64,23,textureWidth,textureHeight)},
 
 
                 //right arm
-
-                //front
-                calculateMobTexture(0,20,4,26,textureWidth,textureHeight), //dark
                 //back
+                {calculateMobTexture(0,20,4,26,textureWidth,textureHeight), //dark
+                //front
                 calculateMobTexture(4,20,8,26,textureWidth,textureHeight), //light
-
                 //right
                 calculateMobTexture(8,20,12,26,textureWidth,textureHeight), //dark
                 //left
                 calculateMobTexture(12,20,16,26,textureWidth,textureHeight), //light
-
                 //top
                 calculateMobTexture(4,16,8,20,textureWidth,textureHeight), //shoulder
                 //bottom
-                calculateMobTexture(8,16,12,20,textureWidth,textureHeight), //palm
+                calculateMobTexture(8,16,12,20,textureWidth,textureHeight)}, //palm
+
 
                 //left arm
-
-                //front
-                calculateMobTexture(0,20,4,26,textureWidth,textureHeight), //dark
                 //back
+                {calculateMobTexture(0,20,4,26,textureWidth,textureHeight), //dark
+                //front
                 calculateMobTexture(4,20,8,26,textureWidth,textureHeight), //light
-
                 //right
                 calculateMobTexture(8,20,12,26,textureWidth,textureHeight), //dark
                 //left
                 calculateMobTexture(12,20,16,26,textureWidth,textureHeight), //light
-
                 //top
                 calculateMobTexture(4,16,8,20,textureWidth,textureHeight), //shoulder
                 //bottom
-                calculateMobTexture(8,16,12,20,textureWidth,textureHeight), //palm
+                calculateMobTexture(8,16,12,20,textureWidth,textureHeight)}, //palm
 
 
                 //right leg
-
-                //front
-                calculateMobTexture(0,20,4,26,textureWidth,textureHeight), //dark
                 //back
+                {calculateMobTexture(0,20,4,26,textureWidth,textureHeight), //dark
+                //front
                 calculateMobTexture(4,20,8,26,textureWidth,textureHeight), //light
-
                 //right
                 calculateMobTexture(8,20,12,26,textureWidth,textureHeight), //dark
                 //left
                 calculateMobTexture(12,20,16,26,textureWidth,textureHeight), //light
-
                 //top
                 calculateMobTexture(4,16,8,20,textureWidth,textureHeight), //shoulder
                 //bottom
-                calculateMobTexture(8,16,12,20,textureWidth,textureHeight), //palm
+                calculateMobTexture(8,16,12,20,textureWidth,textureHeight)}, //palm
 
                 //left leg
-
-                //front
-                calculateMobTexture(0,20,4,26,textureWidth,textureHeight), //dark
                 //back
+                {calculateMobTexture(0,20,4,26,textureWidth,textureHeight), //dark
+                //front
                 calculateMobTexture(4,20,8,26,textureWidth,textureHeight), //light
-
                 //right
                 calculateMobTexture(8,20,12,26,textureWidth,textureHeight), //dark
                 //left
                 calculateMobTexture(12,20,16,26,textureWidth,textureHeight), //light
-
                 //top
                 calculateMobTexture(4,16,8,20,textureWidth,textureHeight), //shoulder
                 //bottom
-                calculateMobTexture(8,16,12,20,textureWidth,textureHeight), //palm
+                calculateMobTexture(8,16,12,20,textureWidth,textureHeight)}, //palm
         };
 
         return createMobMesh(modelPieceArray,modelTextureArray, "textures/pig.png");
