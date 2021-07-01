@@ -20,17 +20,17 @@ public class MobMeshBuilder {
         //allow multiple meshes to be welded together
         for (float[][] thisModelSegment : modelPieceArray) {
 
-            MicroFloatArray positions = new MicroFloatArray(12);
+            MicroFloatArray positions    = new MicroFloatArray(12);
             MicroFloatArray textureCoord = new MicroFloatArray(8);
-            MicroIntArray indices = new MicroIntArray(6);
-            MicroFloatArray light = new MicroFloatArray(12);
+            MicroIntArray   indices      = new MicroIntArray(6);
+            MicroFloatArray light        = new MicroFloatArray(12);
 
             int indicesCount = 0;
             int textureCounter = 0;
 
             for (float[] thisBlockBox : thisModelSegment) {
 
-                //front
+                //back
                 positions.pack(thisBlockBox[3], thisBlockBox[4], thisBlockBox[5], thisBlockBox[0], thisBlockBox[4], thisBlockBox[5], thisBlockBox[0], thisBlockBox[1], thisBlockBox[5], thisBlockBox[3], thisBlockBox[1], thisBlockBox[5]);
                 light.pack(1f);
                 indices.pack(0, 1 + indicesCount, 2 + indicesCount, 0, 2 + indicesCount, 3 + indicesCount);
@@ -40,7 +40,7 @@ public class MobMeshBuilder {
                 textureCounter++;
 
 
-                //back
+                //front
                 positions.pack(thisBlockBox[0], thisBlockBox[4], thisBlockBox[2], thisBlockBox[3], thisBlockBox[4], thisBlockBox[2], thisBlockBox[3], thisBlockBox[1], thisBlockBox[2], thisBlockBox[0], thisBlockBox[1], thisBlockBox[2]);
                 light.pack(1f);
                 indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
