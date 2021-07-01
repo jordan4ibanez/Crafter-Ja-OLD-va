@@ -173,7 +173,7 @@ public class Human {
                 //front
                 calculateMobTexture(8, 8, 16, 16, textureWidth, textureHeight),
                 //right
-                calculateMobTexture(0, 8, 8, 24, textureWidth, textureHeight),
+                calculateMobTexture(0, 8, 8, 16, textureWidth, textureHeight),
                 //left
                 calculateMobTexture(16, 8, 24, 16, textureWidth, textureHeight),
                 //top
