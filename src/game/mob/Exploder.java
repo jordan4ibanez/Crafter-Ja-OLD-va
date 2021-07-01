@@ -140,30 +140,30 @@ public class Exploder {
     private static Mesh[] createMesh(){
         final float modelScale = 0.325f; //lazy way to fix
 
-        final float[][] modelPieceArray = new float[][]{
-//                head
-                {-0.75f * modelScale,0.0f * modelScale,-0.75f * modelScale,0.75f * modelScale,1.5f * modelScale,0.75f * modelScale},
-//                body
-                {-0.75f * modelScale,-2.5f * modelScale,-0.45f * modelScale,0.75f * modelScale,0.0f * modelScale,0.45f * modelScale},
+        final float[][][] modelPieceArray = new float[][][]{
+                //head
+                {{-0.75f * modelScale, 0.0f * modelScale, -0.75f * modelScale, 0.75f * modelScale, 1.5f * modelScale, 0.75f * modelScale}},
+                //body
+                {{-0.75f * modelScale, -2.5f * modelScale, -0.45f * modelScale, 0.75f * modelScale, 0.0f * modelScale, 0.45f * modelScale}},
                 //rear right leg
-                {-0.375f * modelScale,-1.f * modelScale,-0.375f * modelScale,  0.375f * modelScale,0.0f * modelScale,0.375f * modelScale},
+                {{-0.375f * modelScale,-1.f * modelScale,-0.375f * modelScale,  0.375f * modelScale,0.0f * modelScale,0.375f * modelScale}},
                 //rear left leg
-                {-0.375f * modelScale,-1f * modelScale,-0.375f * modelScale,  0.375f * modelScale,0.0f * modelScale,0.375f * modelScale},
+                {{-0.375f * modelScale,-1f * modelScale,-0.375f * modelScale,  0.375f * modelScale,0.0f * modelScale,0.375f * modelScale}},
                 //front right leg
-                {-0.375f * modelScale,-1.f * modelScale,-0.375f * modelScale,  0.375f * modelScale,0.0f * modelScale,0.375f * modelScale},
+                {{-0.375f * modelScale,-1.f * modelScale,-0.375f * modelScale,  0.375f * modelScale,0.0f * modelScale,0.375f * modelScale}},
                 //front left leg
-                {-0.375f * modelScale,-1f * modelScale,-0.375f * modelScale,  0.375f * modelScale,0.0f * modelScale,0.375f * modelScale},
+                {{-0.375f * modelScale,-1f * modelScale,-0.375f * modelScale,  0.375f * modelScale,0.0f * modelScale,0.375f * modelScale}},
         };
 
 
         float textureWidth = 64f;
         final float textureHeight = 32f;
 
-        float[][] modelTextureArray = new float[][]{
+        float[][][] modelTextureArray = new float[][][]{
                 //head
-                //front
-                calculateMobTexture(24,8,32,16, textureWidth, textureHeight),
                 //back
+                {calculateMobTexture(24,8,32,16, textureWidth, textureHeight),
+                //front
                 calculateMobTexture(8,8,16,16, textureWidth, textureHeight),
                 //right
                 calculateMobTexture(0,8,8,16, textureWidth, textureHeight),
@@ -172,12 +172,12 @@ public class Exploder {
                 //top
                 calculateMobTexture(8,0,16,8, textureWidth, textureHeight),
                 //bottom
-                calculateMobTexture(16,0,24,8, textureWidth, textureHeight),
+                calculateMobTexture(16,0,24,8, textureWidth, textureHeight)},
 
                 //body
-                //front
-                calculateMobTexture(20,20,28,32, textureWidth, textureHeight),
                 //back
+                {calculateMobTexture(20,20,28,32, textureWidth, textureHeight),
+                //front
                 calculateMobTexture(28,20,36,32, textureWidth, textureHeight),
                 //right
                 calculateMobTexture(16,20,20,32, textureWidth, textureHeight),
@@ -186,13 +186,13 @@ public class Exploder {
                 //top
                 calculateMobTexture(20,16,28,20, textureWidth, textureHeight),
                 //bottom
-                calculateMobTexture(28,16,36,20, textureWidth, textureHeight),
+                calculateMobTexture(28,16,36,20, textureWidth, textureHeight)},
 
 
                 //rear right leg
-                //front
-                calculateMobTexture(4,20,8,26, textureWidth, textureHeight),
                 //back
+                {calculateMobTexture(4,20,8,26, textureWidth, textureHeight),
+                //front
                 calculateMobTexture(8,20,12,26, textureWidth, textureHeight),
                 //right
                 calculateMobTexture(0,20,4,26, textureWidth, textureHeight),
@@ -201,12 +201,12 @@ public class Exploder {
                 //top
                 calculateMobTexture(4,16,8,20, textureWidth, textureHeight),
                 //bottom
-                calculateMobTexture(8,16,12,20, textureWidth, textureHeight),
+                calculateMobTexture(8,16,12,20, textureWidth, textureHeight)},
 
                 //rear left leg
-                //front
-                calculateMobTexture(4,20,8,26, textureWidth, textureHeight),
                 //back
+                {calculateMobTexture(4,20,8,26, textureWidth, textureHeight),
+                //front
                 calculateMobTexture(8,20,12,26, textureWidth, textureHeight),
                 //right
                 calculateMobTexture(0,20,4,26, textureWidth, textureHeight),
@@ -215,13 +215,13 @@ public class Exploder {
                 //top
                 calculateMobTexture(4,16,8,20, textureWidth, textureHeight),
                 //bottom
-                calculateMobTexture(8,16,12,20, textureWidth, textureHeight),
+                calculateMobTexture(8,16,12,20, textureWidth, textureHeight)},
 
 
                 //front right leg
-                //front
-                calculateMobTexture(4,20,8,26, textureWidth, textureHeight),
                 //back
+                {calculateMobTexture(4,20,8,26, textureWidth, textureHeight),
+                //front
                 calculateMobTexture(8,20,12,26, textureWidth, textureHeight),
                 //right
                 calculateMobTexture(0,20,4,26, textureWidth, textureHeight),
@@ -230,12 +230,12 @@ public class Exploder {
                 //top
                 calculateMobTexture(4,16,8,20, textureWidth, textureHeight),
                 //bottom
-                calculateMobTexture(8,16,12,20, textureWidth, textureHeight),
+                calculateMobTexture(8,16,12,20, textureWidth, textureHeight)},
 
                 //front left leg
-                //front
-                calculateMobTexture(4,20,8,26, textureWidth, textureHeight),
                 //back
+                {calculateMobTexture(4,20,8,26, textureWidth, textureHeight),
+                //front
                 calculateMobTexture(8,20,12,26, textureWidth, textureHeight),
                 //right
                 calculateMobTexture(0,20,4,26, textureWidth, textureHeight),
@@ -244,7 +244,7 @@ public class Exploder {
                 //top
                 calculateMobTexture(4,16,8,20, textureWidth, textureHeight),
                 //bottom
-                calculateMobTexture(8,16,12,20, textureWidth, textureHeight),
+                calculateMobTexture(8,16,12,20, textureWidth, textureHeight)},
         };
 
         return createMobMesh(modelPieceArray,modelTextureArray, "textures/exploder.png");
