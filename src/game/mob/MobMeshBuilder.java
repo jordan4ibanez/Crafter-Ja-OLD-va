@@ -2,6 +2,8 @@ package game.mob;
 
 import engine.graphics.Mesh;
 import engine.graphics.Texture;
+import engine.highPerformanceContainers.MicroFloatArray;
+import engine.highPerformanceContainers.MicroIntArray;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,376 +15,78 @@ public class MobMeshBuilder {
 
         Mesh[] bodyMeshes = new Mesh[modelPieceArray.length];
 
+        int bodyMeshesIndex = 0; //this is the float[THISPART] which holds the float[THISPART]{x,y,z,x,y,z}
+
         //allow multiple meshes to be welded together
-
-
-
-
-
-
-        int bodyMeshesIndex = 0; //this is the float[THISPART] which holds the float[this]{x,y,z,x,y,z}
-
-
         for (float[][] thisModelSegment : modelPieceArray) {
 
-            ArrayList<Float> positions = new ArrayList<>();
-            ArrayList<Float> textureCoord = new ArrayList<>();
-            ArrayList<Integer> indices = new ArrayList<>();
-            ArrayList<Float> light = new ArrayList<>();
+            MicroFloatArray positions = new MicroFloatArray(12);
+            MicroFloatArray textureCoord = new MicroFloatArray(8);
+            MicroIntArray indices = new MicroIntArray(6);
+            MicroFloatArray light = new MicroFloatArray(12);
 
-            System.out.println("BEGIN:");
-
-            System.out.println(Arrays.deepToString(thisModelSegment));
             int indicesCount = 0;
             int textureCounter = 0;
+
             for (float[] thisBlockBox : thisModelSegment) {
 
-                System.out.println(Arrays.toString(thisBlockBox));
-
-                // 0, 1, 2, 3, 4, 5
-                //-x,-y,-z, x, y, z
-                // 0, 0, 0, 1, 1, 1
-
                 //front
-                positions.add(thisBlockBox[3]);
-                positions.add(thisBlockBox[4]);
-                positions.add(thisBlockBox[5]);
-                positions.add(thisBlockBox[0]);
-                positions.add(thisBlockBox[4]);
-                positions.add(thisBlockBox[5]);
-                positions.add(thisBlockBox[0]);
-                positions.add(thisBlockBox[1]);
-                positions.add(thisBlockBox[5]);
-                positions.add(thisBlockBox[3]);
-                positions.add(thisBlockBox[1]);
-                positions.add(thisBlockBox[5]);
-                //front
-                float frontLight = 1f;
-
-                //front
-                for (int i = 0; i < 12; i++) {
-                    light.add(frontLight);
-                }
-                //front
-                indices.add(0);
-                indices.add(1 + indicesCount);
-                indices.add(2 + indicesCount);
-                indices.add(0);
-                indices.add(2 + indicesCount);
-                indices.add(3 + indicesCount);
-
+                positions.pack(thisBlockBox[3], thisBlockBox[4], thisBlockBox[5], thisBlockBox[0], thisBlockBox[4], thisBlockBox[5], thisBlockBox[0], thisBlockBox[1], thisBlockBox[5], thisBlockBox[3], thisBlockBox[1], thisBlockBox[5]);
+                light.pack(1f);
+                indices.pack(0, 1 + indicesCount, 2 + indicesCount, 0, 2 + indicesCount, 3 + indicesCount);
                 indicesCount += 4;
-
-                // 0, 1,  2, 3
-                //-x,+x, -y,+y
-
                 float[] textureFront = textureArrayArray[bodyMeshesIndex][textureCounter];
-
-                //front
-                textureCoord.add(textureFront[1]); //x positive
-                textureCoord.add(textureFront[2]); //y positive
-                textureCoord.add(textureFront[0]); //x negative
-                textureCoord.add(textureFront[2]); //y positive
-
-                textureCoord.add(textureFront[0]); //x negative
-                textureCoord.add(textureFront[3]);   //y negative
-                textureCoord.add(textureFront[1]); //x positive
-                textureCoord.add(textureFront[3]);   //y negative
-
-
+                textureCoord.pack(textureFront[1], textureFront[2], textureFront[0], textureFront[2], textureFront[0], textureFront[3], textureFront[1], textureFront[3]);
                 textureCounter++;
 
 
                 //back
-                positions.add(thisBlockBox[0]);
-                positions.add(thisBlockBox[4]);
-                positions.add(thisBlockBox[2]);
-
-                positions.add(thisBlockBox[3]);
-                positions.add(thisBlockBox[4]);
-                positions.add(thisBlockBox[2]);
-
-                positions.add(thisBlockBox[3]);
-                positions.add(thisBlockBox[1]);
-                positions.add(thisBlockBox[2]);
-
-                positions.add(thisBlockBox[0]);
-                positions.add(thisBlockBox[1]);
-                positions.add(thisBlockBox[2]);
-
-                //back
-                float backLight = 1f;
-
-                //back
-                for (int i = 0; i < 12; i++) {
-                    light.add(backLight);
-                }
-                //back
-                indices.add(indicesCount);
-                indices.add(1 + indicesCount);
-                indices.add(2 + indicesCount);
-                indices.add(indicesCount);
-                indices.add(2 + indicesCount);
-                indices.add(3 + indicesCount);
+                positions.pack(thisBlockBox[0], thisBlockBox[4], thisBlockBox[2], thisBlockBox[3], thisBlockBox[4], thisBlockBox[2], thisBlockBox[3], thisBlockBox[1], thisBlockBox[2], thisBlockBox[0], thisBlockBox[1], thisBlockBox[2]);
+                light.pack(1f);
+                indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
                 indicesCount += 4;
-
                 float[] textureBack = textureArrayArray[bodyMeshesIndex][textureCounter];
-
-                // 0, 1, 2, 3, 4, 5
-                //-x,-y,-z, x, y, z
-                // 0, 0, 0, 1, 1, 1
-
-                // 0, 1,  2, 3
-                //-x,+x, -y,+y
-
-
-                //back
-                textureCoord.add(textureBack[1]);
-                textureCoord.add(textureBack[2]);
-                textureCoord.add(textureBack[0]);
-                textureCoord.add(textureBack[2]);
-
-                textureCoord.add(textureBack[0]);
-                textureCoord.add(textureBack[3]);
-                textureCoord.add(textureBack[1]);
-                textureCoord.add(textureBack[3]);
-
+                textureCoord.pack(textureBack[1], textureBack[2], textureBack[0], textureBack[2], textureBack[0], textureBack[3], textureBack[1], textureBack[3]);
                 textureCounter++;
 
 
                 //right
-                positions.add(thisBlockBox[3]);
-                positions.add(thisBlockBox[4]);
-                positions.add(thisBlockBox[2]);
-
-                positions.add(thisBlockBox[3]);
-                positions.add(thisBlockBox[4]);
-                positions.add(thisBlockBox[5]);
-
-                positions.add(thisBlockBox[3]);
-                positions.add(thisBlockBox[1]);
-                positions.add(thisBlockBox[5]);
-
-                positions.add(thisBlockBox[3]);
-                positions.add(thisBlockBox[1]);
-                positions.add(thisBlockBox[2]);
-                //right
-                float rightLight = 1f;
-
-                //right
-                for (int i = 0; i < 12; i++) {
-                    light.add(rightLight);
-                }
-                //right
-                indices.add(indicesCount);
-                indices.add(1 + indicesCount);
-                indices.add(2 + indicesCount);
-                indices.add(indicesCount);
-                indices.add(2 + indicesCount);
-                indices.add(3 + indicesCount);
+                positions.pack(thisBlockBox[3], thisBlockBox[4], thisBlockBox[2], thisBlockBox[3], thisBlockBox[4], thisBlockBox[5], thisBlockBox[3], thisBlockBox[1], thisBlockBox[5], thisBlockBox[3], thisBlockBox[1], thisBlockBox[2]);
+                light.pack(1f);
+                indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
                 indicesCount += 4;
-
-
-                // 0, 1, 2, 3, 4, 5
-                //-x,-y,-z, x, y, z
-                // 0, 0, 0, 1, 1, 1
-
-                // 0, 1,  2, 3
-                //-x,+x, -y,+y
-
-
                 float[] textureRight = textureArrayArray[bodyMeshesIndex][textureCounter];
-                //right
-                textureCoord.add(textureRight[1]);
-                textureCoord.add(textureRight[2]);
-                textureCoord.add(textureRight[0]);
-                textureCoord.add(textureRight[2]);
-
-                textureCoord.add(textureRight[0]);
-                textureCoord.add(textureRight[3]);
-                textureCoord.add(textureRight[1]);
-                textureCoord.add(textureRight[3]);
-
+                textureCoord.pack(textureRight[1], textureRight[2], textureRight[0], textureRight[2], textureRight[0], textureRight[3], textureRight[1], textureRight[3]);
                 textureCounter++;
 
 
                 //left
-                positions.add(thisBlockBox[0]);
-                positions.add(thisBlockBox[4]);
-                positions.add(thisBlockBox[5]);
-
-                positions.add(thisBlockBox[0]);
-                positions.add(thisBlockBox[4]);
-                positions.add(thisBlockBox[2]);
-
-                positions.add(thisBlockBox[0]);
-                positions.add(thisBlockBox[1]);
-                positions.add(thisBlockBox[2]);
-
-                positions.add(thisBlockBox[0]);
-                positions.add(thisBlockBox[1]);
-                positions.add(thisBlockBox[5]);
-
-                //left
-                float leftLight = 1f;
-
-                //left
-                for (int i = 0; i < 12; i++) {
-                    light.add(leftLight);
-                }
-                //left
-                indices.add(indicesCount);
-                indices.add(1 + indicesCount);
-                indices.add(2 + indicesCount);
-                indices.add(indicesCount);
-                indices.add(2 + indicesCount);
-                indices.add(3 + indicesCount);
+                positions.pack(thisBlockBox[0], thisBlockBox[4], thisBlockBox[5], thisBlockBox[0], thisBlockBox[4], thisBlockBox[2], thisBlockBox[0], thisBlockBox[1], thisBlockBox[2], thisBlockBox[0], thisBlockBox[1], thisBlockBox[5]);
+                light.pack(1f);
+                indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
                 indicesCount += 4;
-
                 float[] textureLeft = textureArrayArray[bodyMeshesIndex][textureCounter];
-                //left
-                textureCoord.add(textureLeft[1]);
-                textureCoord.add(textureLeft[2]);
-                textureCoord.add(textureLeft[0]);
-                textureCoord.add(textureLeft[2]);
-
-                textureCoord.add(textureLeft[0]);
-                textureCoord.add(textureLeft[3]);
-                textureCoord.add(textureLeft[1]);
-                textureCoord.add(textureLeft[3]);
-
+                textureCoord.pack(textureLeft[1], textureLeft[2], textureLeft[0], textureLeft[2], textureLeft[0], textureLeft[3], textureLeft[1], textureLeft[3]);
                 textureCounter++;
 
 
                 //top
-                positions.add(thisBlockBox[0]);
-                positions.add(thisBlockBox[4]);
-                positions.add(thisBlockBox[2]);
-
-                positions.add(thisBlockBox[0]);
-                positions.add(thisBlockBox[4]);
-                positions.add(thisBlockBox[5]);
-
-                positions.add(thisBlockBox[3]);
-                positions.add(thisBlockBox[4]);
-                positions.add(thisBlockBox[5]);
-
-                positions.add(thisBlockBox[3]);
-                positions.add(thisBlockBox[4]);
-                positions.add(thisBlockBox[2]);
-                //top
-                float topLight = 1f;
-
-                //top
-                for (int i = 0; i < 12; i++) {
-                    light.add(topLight);
-                }
-                //top
-                indices.add(indicesCount);
-                indices.add(1 + indicesCount);
-                indices.add(2 + indicesCount);
-                indices.add(indicesCount);
-                indices.add(2 + indicesCount);
-                indices.add(3 + indicesCount);
+                positions.pack(thisBlockBox[0], thisBlockBox[4], thisBlockBox[2], thisBlockBox[0], thisBlockBox[4], thisBlockBox[5], thisBlockBox[3], thisBlockBox[4], thisBlockBox[5], thisBlockBox[3], thisBlockBox[4], thisBlockBox[2]);
+                light.pack(1f);
+                indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
                 indicesCount += 4;
-
-                // 0, 1, 2, 3, 4, 5
-                //-x,-y,-z, x, y, z
-                // 0, 0, 0, 1, 1, 1
-
-                // 0, 1,  2, 3
-                //-x,+x, -y,+y
-
                 float[] textureTop = textureArrayArray[bodyMeshesIndex][textureCounter];
-                //top
-                textureCoord.add(textureTop[1]);
-                textureCoord.add(textureTop[2]);
-                textureCoord.add(textureTop[0]);
-                textureCoord.add(textureTop[2]);
-
-                textureCoord.add(textureTop[0]);
-                textureCoord.add(textureTop[3]);
-                textureCoord.add(textureTop[1]);
-                textureCoord.add(textureTop[3]);
-
+                textureCoord.pack(textureTop[1], textureTop[2], textureTop[0], textureTop[2], textureTop[0], textureTop[3], textureTop[1], textureTop[3]);
                 textureCounter++;
 
 
                 //bottom
-                positions.add(thisBlockBox[0]);
-                positions.add(thisBlockBox[1]);
-                positions.add(thisBlockBox[5]);
-
-                positions.add(thisBlockBox[0]);
-                positions.add(thisBlockBox[1]);
-                positions.add(thisBlockBox[2]);
-
-                positions.add(thisBlockBox[3]);
-                positions.add(thisBlockBox[1]);
-                positions.add(thisBlockBox[2]);
-
-                positions.add(thisBlockBox[3]);
-                positions.add(thisBlockBox[1]);
-                positions.add(thisBlockBox[5]);
-                //bottom
-                float bottomLight = 1f;
-
-                //bottom
-                for (int i = 0; i < 12; i++) {
-                    light.add(bottomLight);
-                }
-                //bottom
-                indices.add(indicesCount);
-                indices.add(1 + indicesCount);
-                indices.add(2 + indicesCount);
-                indices.add(indicesCount);
-                indices.add(2 + indicesCount);
-                indices.add(3 + indicesCount);
-
-
-                // 0, 1, 2, 3, 4, 5
-                //-x,-y,-z, x, y, z
-                // 0, 0, 0, 1, 1, 1
-
-                // 0, 1,  2, 3
-                //-x,+x, -y,+y
-
+                positions.pack(thisBlockBox[0], thisBlockBox[1], thisBlockBox[5], thisBlockBox[0], thisBlockBox[1], thisBlockBox[2], thisBlockBox[3], thisBlockBox[1], thisBlockBox[2], thisBlockBox[3], thisBlockBox[1], thisBlockBox[5]);
+                light.pack(1f);
+                indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
                 float[] textureBottom = textureArrayArray[bodyMeshesIndex][textureCounter];
-                //bottom
-                textureCoord.add(textureBottom[1]);
-                textureCoord.add(textureBottom[2]);
-                textureCoord.add(textureBottom[0]);
-                textureCoord.add(textureBottom[2]);
-
-                textureCoord.add(textureBottom[0]);
-                textureCoord.add(textureBottom[3]);
-                textureCoord.add(textureBottom[1]);
-                textureCoord.add(textureBottom[3]);
-
+                textureCoord.pack(textureBottom[1], textureBottom[2], textureBottom[0], textureBottom[2], textureBottom[0], textureBottom[3], textureBottom[1], textureBottom[3]);
                 textureCounter++;
-            }
-            //convert the position objects into usable array
-            float[] positionsArray = new float[positions.size()];
-            for (int i = 0; i < positions.size(); i++) {
-                positionsArray[i] = positions.get(i);
-            }
-
-            //convert the light objects into usable array
-            float[] lightArray = new float[light.size()];
-            for (int i = 0; i < light.size(); i++) {
-                lightArray[i] = light.get(i);
-            }
-
-            //convert the indices objects into usable array
-            int[] indicesArray = new int[indices.size()];
-            for (int i = 0; i < indices.size(); i++) {
-                indicesArray[i] = indices.get(i);
-            }
-
-            //convert the textureCoord objects into usable array
-            float[] textureCoordArray = new float[textureCoord.size()];
-            for (int i = 0; i < textureCoord.size(); i++) {
-                textureCoordArray[i] = textureCoord.get(i);
             }
 
             Texture playerTexture = null;
@@ -390,9 +94,12 @@ public class MobMeshBuilder {
                 playerTexture = new Texture(texturePath);
             } catch (Exception e) {
                 e.printStackTrace();
+                System.out.println("AKA: YOUR TEXTURE WAS NOT FOUND!");
             }
 
-            bodyMeshes[bodyMeshesIndex] = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, playerTexture);
+            bodyMeshes[bodyMeshesIndex] = new Mesh(positions.values(), light.values(), indices.values(), textureCoord.values(), playerTexture);
+
+            positions.clear();
 
             bodyMeshesIndex++;
         }
