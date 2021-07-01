@@ -79,7 +79,7 @@ public class Human {
                 maxSpeed = 0.01f;
             }
 
-            boolean onGround = false;//applyInertia(thisMob.pos, thisMob.inertia, false, thisMob.width, thisMob.height, true, false, true, false, false);
+            boolean onGround = applyInertia(thisMob.pos, thisMob.inertia, false, thisMob.width, thisMob.height, true, false, true, false, false);
 
             if (thisMob.animationTimer >= 1f) {
                 thisMob.animationTimer = 0f;
@@ -114,8 +114,8 @@ public class Human {
                 }
             }
 
-            //mobSmoothRotation(thisMob);
-            //doHeadCode(thisMob);
+            mobSmoothRotation(thisMob);
+            doHeadCode(thisMob);
         }
     };
 
