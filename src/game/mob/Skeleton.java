@@ -15,7 +15,7 @@ import static game.mob.MobUtilityCode.doHeadCode;
 import static game.mob.MobUtilityCode.mobSmoothRotation;
 
 public class Skeleton {
-
+    //aka mr bones
     private static final float accelerationMultiplier  = 0.03f;
     final private static float maxWalkSpeed = 2.f;
     final private static float movementAcceleration = 900.f;
@@ -112,7 +112,6 @@ public class Skeleton {
             new Vector3f(0,0.8f + yOffsetCorrection,0),
             new Vector3f(0,0.8f + yOffsetCorrection,0),
             new Vector3f(-0.24f,0.725f + yOffsetCorrection,0),
-
             new Vector3f(0.24f,0.725f + yOffsetCorrection,0),
             new Vector3f(-0.09f,0.17f + yOffsetCorrection,0),
             new Vector3f(0.09f,0.17f + yOffsetCorrection,0),
@@ -122,9 +121,7 @@ public class Skeleton {
     private static final Vector3f[] bodyRotations = new Vector3f[]{
             new Vector3f(0,0,0),
             new Vector3f(0,0,0),
-
             new Vector3f(0,0,10f),
-
             new Vector3f(0,0,-10f),
             new Vector3f(0,0,0),
             new Vector3f(0,0,0),
@@ -135,37 +132,32 @@ public class Skeleton {
         registerMob(new MobDefinition("skeleton", "hurt",false, (byte) 7, createMesh(), bodyOffsets, bodyRotations,1.9f, 0.25f, mobInterface));
     }
 
-
     private static Mesh[] createMesh(){
         final float modelScale = 0.25f; //lazy way to fix
 
-        final float[][] modelPieceArray = new float[][]{
-//                head
-                {-0.75f * modelScale,0.0f * modelScale,-0.75f * modelScale,0.75f * modelScale,1.5f * modelScale,0.75f * modelScale},
-//                body
-                {-0.75f * modelScale,-2.5f * modelScale,-0.45f * modelScale,0.75f * modelScale,0.0f * modelScale,0.45f * modelScale},
-//                //right arm
-
-                {-0.15f * modelScale,-2.2f * modelScale,-0.15f * modelScale,  0.15f * modelScale,0.3f * modelScale,0.15f * modelScale},
-//                //left arm
-
-                {-0.15f * modelScale,-2.2f * modelScale,-0.15f * modelScale,  0.15f * modelScale,0.3f * modelScale,0.15f * modelScale},
-
+        final float[][][] modelPieceArray = new float[][][]{
+                //head
+                {{-0.75f * modelScale,0.0f * modelScale,-0.75f * modelScale,0.75f * modelScale,1.5f * modelScale,0.75f * modelScale}},
+                //body
+                {{-0.75f * modelScale,-2.5f * modelScale,-0.45f * modelScale,0.75f * modelScale,0.0f * modelScale,0.45f * modelScale}},
+                //right arm
+                {{-0.15f * modelScale,-2.2f * modelScale,-0.15f * modelScale,  0.15f * modelScale,0.3f * modelScale,0.15f * modelScale}},
+                //left arm
+                {{-0.15f * modelScale,-2.2f * modelScale,-0.15f * modelScale,  0.15f * modelScale,0.3f * modelScale,0.15f * modelScale}},
                 //right leg
-                {-0.15f * modelScale,-2.5f * modelScale,-0.15f * modelScale,  0.15f * modelScale,0.0f * modelScale,0.15f * modelScale},
-
+                {{-0.15f * modelScale,-2.5f * modelScale,-0.15f * modelScale,  0.15f * modelScale,0.0f * modelScale,0.15f * modelScale}},
                 //left leg
-                {-0.15f * modelScale,-2.5f * modelScale,-0.15f * modelScale,  0.15f * modelScale,0.0f * modelScale,0.15f * modelScale},
+                {{-0.15f * modelScale,-2.5f * modelScale,-0.15f * modelScale,  0.15f * modelScale,0.0f * modelScale,0.15f * modelScale}},
         };
 
 
         float textureWidth = 64f;
         final float textureHeight = 32f;
 
-        float[][] modelTextureArray = new float[][]{
+        float[][][] modelTextureArray = new float[][][]{
                 //head
                 //back
-                calculateMobTexture(24, 8, 32, 16, textureWidth, textureHeight),
+                {calculateMobTexture(24, 8, 32, 16, textureWidth, textureHeight),
                 //front
                 calculateMobTexture(8, 8, 16, 16, textureWidth, textureHeight),
                 //right
@@ -175,11 +167,11 @@ public class Skeleton {
                 //top
                 calculateMobTexture(8, 0, 16, 8, textureWidth, textureHeight),
                 //bottom
-                calculateMobTexture(16, 0, 24, 8, textureWidth, textureHeight),
+                calculateMobTexture(16, 0, 24, 8, textureWidth, textureHeight)},
 
                 //body
                 //back
-                calculateMobTexture(34, 20, 42, 32, textureWidth, textureHeight),
+                {calculateMobTexture(34, 20, 42, 32, textureWidth, textureHeight),
                 //front
                 calculateMobTexture(21, 20, 29, 32, textureWidth, textureHeight),
                 //right
@@ -189,14 +181,14 @@ public class Skeleton {
                 //top
                 calculateMobTexture(20, 16, 28, 20, textureWidth, textureHeight),
                 //bottom
-                calculateMobTexture(28, 16, 36, 20, textureWidth, textureHeight),
+                calculateMobTexture(28, 16, 36, 20, textureWidth, textureHeight)},
 
 
 
                 //right arm
-                //front
-                calculateMobTexture(0, 18, 2, 32, textureWidth, textureHeight), //dark
                 //back
+                {calculateMobTexture(0, 18, 2, 32, textureWidth, textureHeight), //dark
+                //front
                 calculateMobTexture(0, 18, 2, 32, textureWidth, textureHeight), //dark
                 //right
                 calculateMobTexture(2, 18, 4, 32, textureWidth, textureHeight), //dark
@@ -205,14 +197,14 @@ public class Skeleton {
                 //top
                 calculateMobTexture(4, 16, 6, 18, textureWidth, textureHeight), //shoulder
                 //bottom
-                calculateMobTexture(6, 16, 8, 18, textureWidth, textureHeight), //palm
+                calculateMobTexture(6, 16, 8, 18, textureWidth, textureHeight)}, //palm
 
 
 
                 //left arm
-                //front
-                calculateMobTexture(0, 18, 2, 32, textureWidth, textureHeight), //dark
                 //back
+                {calculateMobTexture(0, 18, 2, 32, textureWidth, textureHeight), //dark
+                //front
                 calculateMobTexture(0, 18, 2, 32, textureWidth, textureHeight), //dark
                 //right
                 calculateMobTexture(2, 18, 4, 32, textureWidth, textureHeight), //dark
@@ -221,14 +213,14 @@ public class Skeleton {
                 //top
                 calculateMobTexture(4, 16, 6, 18, textureWidth, textureHeight), //shoulder
                 //bottom
-                calculateMobTexture(6, 16, 8, 18, textureWidth, textureHeight), //palm
+                calculateMobTexture(6, 16, 8, 18, textureWidth, textureHeight)}, //palm
 
 
 
                 //right leg
-                //front
-                calculateMobTexture(43, 18, 45, 32, textureWidth, textureHeight), //dark
                 //back
+                {calculateMobTexture(43, 18, 45, 32, textureWidth, textureHeight), //dark
+                //front
                 calculateMobTexture(43, 18, 45, 32, textureWidth, textureHeight), //dark
                 //right
                 calculateMobTexture(45, 18, 47, 32, textureWidth, textureHeight), //dark
@@ -237,13 +229,13 @@ public class Skeleton {
                 //top
                 calculateMobTexture(47, 16, 49, 18, textureWidth, textureHeight), //top
                 //bottom
-                calculateMobTexture(49, 16, 51, 18, textureWidth, textureHeight), //bottom
+                calculateMobTexture(49, 16, 51, 18, textureWidth, textureHeight)}, //bottom
 
 
                 //left leg
-                //front
-                calculateMobTexture(43, 18, 45, 32, textureWidth, textureHeight), //dark
                 //back
+                {calculateMobTexture(43, 18, 45, 32, textureWidth, textureHeight), //dark
+                //front
                 calculateMobTexture(43, 18, 45, 32, textureWidth, textureHeight), //dark
                 //right
                 calculateMobTexture(45, 18, 47, 32, textureWidth, textureHeight), //dark
@@ -252,7 +244,7 @@ public class Skeleton {
                 //top
                 calculateMobTexture(47, 16, 49, 18, textureWidth, textureHeight), //top
                 //bottom
-                calculateMobTexture(49, 16, 51, 18, textureWidth, textureHeight), //bottom
+                calculateMobTexture(49, 16, 51, 18, textureWidth, textureHeight)}, //bottom
 
         };
 
