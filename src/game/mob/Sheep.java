@@ -105,7 +105,6 @@ public class Sheep {
                 }
             }
 
-
             mobSmoothRotation(thisMob);
             doHeadCode(thisMob);
         }
@@ -155,9 +154,7 @@ public class Sheep {
         registerMob(new MobDefinition("sheep_shaved", "sheep_2",true, (byte) 6, createShavedMesh(), bodyOffsets, bodyRotations,0.9f, 0.45f, shavedInterface));
     }
 
-
-
-
+    
     private static Mesh[] createWoolMesh(){
 
         float size = 0.25f; //lazy way to fix
