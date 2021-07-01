@@ -3,32 +3,30 @@ package game.mob;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
+import static engine.FancyMath.randomByte;
+import static engine.FancyMath.randomIntFromMinToMaxNegativePositive;
 import static engine.time.Time.getDelta;
+import static game.chunk.Chunk.getMobSpawnYPos;
+import static game.mob.Mob.getNumberOfMobs;
 import static game.mob.Mob.spawnMob;
 import static game.player.Player.getPlayerPos;
 
 public class MobSpawning {
-
-    private static int spawned = 0;
-
+    private static final int spawnLimit = 40;
     private static double spawnTimer = 1f;
-
-    private static final float spawnGoal = 0.74f; //every 10 seconds
+    private static final float spawnGoal = 3f; //every 3 seconds
 
     public static void runSpawningAlgorithm(){
-        if (false){
+        if (getNumberOfMobs() >= spawnLimit){
             return;
         }
-        if (spawned > 0){
-            return;
-        }
+        //having this not count up allows a minor cool down
         spawnTimer += getDelta();
 
         if (spawnTimer >= spawnGoal){
             //CHANGE THIS TO CHECK FOR PLAYERS POSITION WHEN TRANSLATING TO MULTIPLAYER
             trySpawn(getPlayerPos());
             spawnTimer = 0;
-            spawned++;
         }
     }
 
@@ -36,12 +34,12 @@ public class MobSpawning {
     //this is a square distance, acceptable is 24-56 blocks away from the player
     private static void trySpawn(Vector3d pos){
         //a 2d calculation
-        int x = (int)pos.x;//(int)pos.x + randomIntFromMinToMaxNegativePositive(24,56);
-        int z = (int)pos.z;//(int)pos.z + randomIntFromMinToMaxNegativePositive(24,56);
-        int yPos = (int)pos.y;//getMobSpawnYPos(x,z);
+        int x = (int)pos.x + randomIntFromMinToMaxNegativePositive(24,56);
+        int z = (int)pos.z + randomIntFromMinToMaxNegativePositive(24,56);
+        int yPos = getMobSpawnYPos(x,z);
 
         if (yPos >= 0){
-            spawnMob((byte) 8/*randomByte((byte) 8)*/, new Vector3d(x,yPos,z), new Vector3f(0));
+            spawnMob(randomByte((byte) 8), new Vector3d(x,yPos,z), new Vector3f(0));
         }
     }
 

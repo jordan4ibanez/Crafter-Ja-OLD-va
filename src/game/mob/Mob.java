@@ -30,6 +30,8 @@ public class Mob {
     private static final MobDefinition[] mobDefinitions = new MobDefinition[9];
     private static final Int2ObjectArrayMap<MobObject> mobs = new Int2ObjectArrayMap<>();
 
+    private static int globalMobs = 0;
+
     private static int currentID = 0;
     private static int currentMobDefinitionKey = 0;
 
@@ -78,6 +80,7 @@ public class Mob {
 
         mobs.put(currentID,new MobObject(new Vector3d(pos),new Vector3f(inertia),ID,currentID));
         currentID++;
+        globalMobs++;
     }
 
     public static MobObject[] getAllMobs(){
@@ -148,15 +151,20 @@ public class Mob {
 
         while (!deletionQueue.isEmpty()){
             int thisMobGlobalID = deletionQueue.pop();
-            System.out.println("mob " + thisMobGlobalID + " was deleted!");
+            //System.out.println("mob " + thisMobGlobalID + " was deleted!");
             mobs.remove(thisMobGlobalID);
+            globalMobs--;
         }
+    }
+
+    public static int getNumberOfMobs(){
+        return globalMobs;
     }
 
     public static void punchMob(MobObject thisMob){
         if (thisMob.hurtTimer <= 0 && thisMob.health > 0) {
             thisMob.health -= 1;
-            System.out.println("the mobs health is: " + thisMob.health);
+            //System.out.println("the mobs health is: " + thisMob.health);
             playSound(getHurtSound(thisMob.ID), new Vector3f((float)thisMob.pos.x, (float)thisMob.pos.y, (float)thisMob.pos.z), true);
             //play this after in case ID changes
             MobInterface thisInterface = getMobInterface(thisMob.ID);
