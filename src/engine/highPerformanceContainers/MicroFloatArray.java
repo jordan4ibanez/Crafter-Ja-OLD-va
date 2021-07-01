@@ -1,6 +1,9 @@
 package engine.highPerformanceContainers;
 
 public class MicroFloatArray {
+    //growth rate defines how big the cache trim is
+    //defines the initial size, limit of currentPos before it expands
+    //and when it does expand, the array will grow to CURRENTSIZE + growthRate
     private final int growthRate;
 
     float[] dataContainer;
