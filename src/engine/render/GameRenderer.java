@@ -177,10 +177,10 @@ public class GameRenderer {
 
 
     private static Mesh workerMesh;
+    private static final Matrix4d projectionMatrix = new Matrix4d();
+    private static final Matrix4d viewMatrix = new Matrix4d();
 
     public static void renderGame(){
-
-
         processClearColorInterpolation();
 
         clearScreen();
@@ -190,9 +190,9 @@ public class GameRenderer {
         int renderDistance = getRenderDistance();
 
         //update projection matrix
-        Matrix4d projectionMatrix = getProjectionMatrix(FOV + getRunningFOVAdder(), getWindowWidth(), getWindowHeight(), Z_NEAR, (renderDistance * 2) * 16f);
+        projectionMatrix.set(getProjectionMatrix(FOV + getRunningFOVAdder(), getWindowWidth(), getWindowHeight(), Z_NEAR, (renderDistance * 2) * 16f));
         //update the view matrix
-        Matrix4d viewMatrix = getViewMatrix();
+        viewMatrix.set(getViewMatrix());
 
 
 
@@ -662,7 +662,7 @@ public class GameRenderer {
 
         glClear(GL_DEPTH_BUFFER_BIT);
 
-        projectionMatrix = getProjectionMatrix(FOV, getWindowWidth(), getWindowHeight(), Z_NEAR, 100);
+        projectionMatrix.set(getProjectionMatrix(FOV, getWindowWidth(), getWindowHeight(), Z_NEAR, 100));
 
 
         //draw wield hand or item
