@@ -19,7 +19,7 @@ public class MobSpawning {
         if (false){
             return;
         }
-        if (spawned > 5){
+        if (spawned > 0){
             return;
         }
         spawnTimer += getDelta();
@@ -41,7 +41,7 @@ public class MobSpawning {
         int yPos = (int)pos.y;//getMobSpawnYPos(x,z);
 
         if (yPos >= 0){
-            spawnMob((byte) 5/*randomByte((byte) 2)*/, new Vector3d(x,yPos,z), new Vector3f(0));
+            spawnMob((byte) 8/*randomByte((byte) 8)*/, new Vector3d(x,yPos,z), new Vector3f(0));
         }
     }
 
