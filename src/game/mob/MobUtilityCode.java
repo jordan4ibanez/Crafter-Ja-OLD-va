@@ -29,7 +29,7 @@ public class MobUtilityCode {
 
         headPos.add(adjustedHeadPos.set(Math.cos(-smoothToRad), 0,Math.sin(smoothToRad)).mul(thisObject.bodyOffsets[0].z).add(0,thisObject.bodyOffsets[0].y,0));
 
-        createParticle(new Vector3d(headPos), new Vector3f(0,0,0), 23);
+        //createParticle(new Vector3d(headPos), new Vector3f(0,0,0), 7); //debug
 
         headTurn.set(getPlayerPosWithEyeHeight()).sub(headPos);
         //headTurn.normalize();
