@@ -145,19 +145,6 @@ public class Controls {
         }
 
 
-        //spawn human mob
-        /*
-        if (isKeyPressed(GLFW_KEY_T)) {
-            if (!mobSpawningButtonPushed) {
-                mobSpawningButtonPushed = true;
-                spawnMob((int)Math.floor(Math.random() + 0.5f),new Vector3d( getPlayerPos()), new Vector3f(0,0,0));
-            }
-        } else if (!isKeyPressed(GLFW_KEY_T)){
-            mobSpawningButtonPushed = false;
-        }
-         */
-
-
         if (!isPlayerInventoryOpen() && !isPaused()) {
             //mouse left button input
             if (isLeftButtonPressed()) {
