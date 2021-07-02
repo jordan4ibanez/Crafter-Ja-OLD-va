@@ -184,8 +184,6 @@ public class GameRenderer {
     private static final HashMap<Double, Mesh[]> allFaceDrawTypeHash = new HashMap<>();
     private static final HashMap<Double, Vector2i> chunkHashKeys = new HashMap<>();
 
-    private static final AtomicReference<Double> maxDistance = new AtomicReference<>(0d);
-
     public static void renderGame(){
         processClearColorInterpolation();
 
@@ -233,6 +231,15 @@ public class GameRenderer {
             }
         }
 
+        double[]keySort = new double[meshCount];
+        int index = 0;
+        //sort all distances
+        for (double thisKey : chunkHashKeys.keySet()){
+            keySort[index] = thisKey;
+            index++;
+        }
+        
+        Arrays.sort(keySort);
 
         Mesh[][] normalDrawTypeArray = new Mesh[meshCount][8];
         Mesh[][] liquidDrawTypeArray = new Mesh[meshCount][8];
@@ -241,36 +248,31 @@ public class GameRenderer {
 
         int arrayIndex = 0;
 
-        //sort all distances
-        while (!normalDrawTypeHash.isEmpty()){
+        //render outwards in
+        for (int i = meshCount - 1; i >= 0; i--){
 
-            //this is sorting through all of them INFINITELY
-            //sort OUTWARDS IN
-
-            maxDistance.set(0d);
-
-            normalDrawTypeHash.forEach((distancer,y) ->{
-                if(maxDistance.get() <= distancer) {
-                    maxDistance.set(distancer);
-                }
-            });
-
-            double maxDistancePrimitive = maxDistance.get();
+            double key = keySort[i];
 
             //link
-            normalDrawTypeArray[arrayIndex] = normalDrawTypeHash.get(maxDistancePrimitive);
-            liquidDrawTypeArray[arrayIndex] = liquidDrawTypeHash.get(maxDistancePrimitive);
-            allFaceDrawTypeArray[arrayIndex] = allFaceDrawTypeHash.get(maxDistancePrimitive);
-            chunkArrayKeys[arrayIndex] = chunkHashKeys.get(maxDistancePrimitive);
+            normalDrawTypeArray[arrayIndex] = normalDrawTypeHash.get(key);
+            liquidDrawTypeArray[arrayIndex] = liquidDrawTypeHash.get(key);
+            allFaceDrawTypeArray[arrayIndex] = allFaceDrawTypeHash.get(key);
+            chunkArrayKeys[arrayIndex] = chunkHashKeys.get(key);
 
             arrayIndex++;
 
             //remove
-            normalDrawTypeHash.remove(maxDistancePrimitive);
-            liquidDrawTypeHash.remove(maxDistancePrimitive);
-            allFaceDrawTypeHash.remove(maxDistancePrimitive);
-            chunkHashKeys.remove(maxDistancePrimitive);
+            normalDrawTypeHash.remove(key);
+            liquidDrawTypeHash.remove(key);
+            allFaceDrawTypeHash.remove(key);
+            chunkHashKeys.remove(key);
         }
+
+        normalDrawTypeHash.clear();
+        liquidDrawTypeHash.clear();
+        allFaceDrawTypeHash.clear();
+        chunkHashKeys.clear();
+
         //todo END chunk sorting ---------------------------------------------------------------------------------------------
 
 
