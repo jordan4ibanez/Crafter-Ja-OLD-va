@@ -182,8 +182,6 @@ public class GameRenderer {
     private static final Vector3f workerVec3F = new Vector3f();
     private static final Vector3f workerVec3F2 = new Vector3f();
 
-
-
     private static final HashMap<Double, Mesh[]> normalDrawTypeHash = new HashMap<>();
     private static final HashMap<Double, Mesh[]> liquidDrawTypeHash = new HashMap<>();
     private static final HashMap<Double, Mesh[]> allFaceDrawTypeHash = new HashMap<>();
@@ -219,20 +217,19 @@ public class GameRenderer {
         double flickerFixer = 0d;
 
         //get all distances
-        for (Vector2i thisChunk : getChunkKeys()){
-            double currentDistance = camPos.distance((thisChunk.x * 16d) + 8d, 0,(thisChunk.y * 16d) + 8d);
+        for (Vector2i key : getChunkKeys()){
+            double currentDistance = camPos.distance((key.x * 16d) + 8d, 0,(key.y * 16d) + 8d);
 
             if (normalDrawTypeHash.get(currentDistance) != null){
                 currentDistance += flickerFixer;
                 flickerFixer += 0.00000000001d;
             }
 
-            if (getChunkDistanceFromPlayer(thisChunk.x, thisChunk.y) <= renderDistance) {
-                Vector2i key = new Vector2i(thisChunk.x, thisChunk.y);
+            if (getChunkDistanceFromPlayer(key.x, key.y) <= renderDistance) {
                 normalDrawTypeHash.put(currentDistance, normalChunkMeshes.get(key));
                 liquidDrawTypeHash.put(currentDistance, liquidChunkMeshes.get(key));
                 allFaceDrawTypeHash.put(currentDistance, allFaceChunkMeshes.get(key));
-                chunkHashKeys.put(currentDistance, thisChunk);
+                chunkHashKeys.put(currentDistance, key);
                 meshCount++;
             }
         }
