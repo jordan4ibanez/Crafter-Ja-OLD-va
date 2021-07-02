@@ -5,9 +5,7 @@ import org.joml.Math;
 import org.joml.Vector2i;
 import org.joml.Vector3i;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.LinkedList;
+import java.util.*;
 
 import static engine.Window.windowShouldClose;
 import static game.chunk.Chunk.getChunkKey;
@@ -36,21 +34,23 @@ public class BiomeGenerator implements Runnable{
     private static final byte dirtHeight = 4;
     private static final byte waterHeight = 50;
     private static final int noiseMultiplier = 50;
+    private static final Vector2i newData = new Vector2i();
 
+    private static final Vector3i[] treePosArray = new Vector3i[32]; //max of 32 trees per chunk
+    private static byte treeCount = 0;
 
     private static void runBiomeGeneration(){
 
         if (!queue.isEmpty()) {
 
-            Vector2i newData = queue.pop();
+            newData.set(queue.pop());
 
             int chunkX = newData.x;
             int chunkZ = newData.y;
 
-            Vector2i key = getChunkKey(new Vector2i(chunkX, chunkZ));
 
             //don't regen existing chunks
-            if (key != null) {
+            if (getChunkKey(newData) != null) {
                 return;
             }
 
@@ -59,8 +59,6 @@ public class BiomeGenerator implements Runnable{
             byte[] lightData = new byte[32768];
             byte[][] heightMapData = new byte[16][16];
 
-            //biome max 128 trees
-            LinkedList<Vector3i> treePosArray = new LinkedList<>();
             //standard generation
             byte generationX;
             byte generationZ;
@@ -109,7 +107,8 @@ public class BiomeGenerator implements Runnable{
 
                             //add tree to queue
                             if (noiseTest2 > 0.98f) {
-                                treePosArray.add(new Vector3i(generationX, generationY, generationZ));
+                                treePosArray[treeCount].set(generationX, generationY, generationZ);
+                                treeCount++;
                             }
                             //dirt/sand gen
                         } else if (generationY < height && generationY >= height - dirtHeight - dirtHeightRandom) {
@@ -174,7 +173,8 @@ public class BiomeGenerator implements Runnable{
 
                             //add tree to queue
                             if (noiseTest2 > 0.98f) {
-                                treePosArray.add(new Vector3i(generationX, height, generationZ));
+                                treePosArray[treeCount].set(generationX, height, generationZ);
+                                treeCount++;
                             }
 
                         }
@@ -198,7 +198,10 @@ public class BiomeGenerator implements Runnable{
             }
 
             //generate tree leaves
-            for (Vector3i basePos : treePosArray) {
+            for (int i = 0; i < treeCount; i++) {
+
+                Vector3i basePos = treePosArray[i];
+
                 byte treeWidth = 0;
                 for (byte y = 5; y > 1; y--) {
                     for (byte x = (byte) -treeWidth; x <= treeWidth; x++) {
@@ -267,6 +270,8 @@ public class BiomeGenerator implements Runnable{
             for (int i = 0; i < 8; i++) {
                 chunkUpdate(chunkX, chunkZ, i);
             }
+
+            treeCount = 0;
 
             //instantSave(thisChunk);
         }
