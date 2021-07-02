@@ -3,12 +3,10 @@ package engine.graphics;
 import org.joml.Matrix4d;
 import org.lwjgl.system.MemoryStack;
 
-import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.lwjgl.opengl.GL44.*;
-import static org.lwjgl.system.MemoryUtil.memAllocFloat;
 
 public class ShaderProgram {
     private final int programId;
