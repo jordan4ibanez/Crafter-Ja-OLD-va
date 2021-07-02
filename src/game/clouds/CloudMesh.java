@@ -52,7 +52,7 @@ public class CloudMesh {
                 
         indicesCount += 4;
 
-        textureWorker = calculateTexture(2, 0);
+        textureWorker = calculateTexture(2);
 
         //front
         textureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
@@ -69,7 +69,7 @@ public class CloudMesh {
         indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
         indicesCount += 4;
 
-        textureWorker = calculateTexture(2, 0);
+        textureWorker = calculateTexture(2);
         //back
         textureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
 
@@ -84,7 +84,7 @@ public class CloudMesh {
 
         indicesCount += 4;
 
-        textureWorker = calculateTexture(2, 0);
+        textureWorker = calculateTexture(2);
         //right
         textureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
 
@@ -101,7 +101,7 @@ public class CloudMesh {
         indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
         indicesCount += 4;
 
-        textureWorker = calculateTexture(2, 0);
+        textureWorker = calculateTexture(2);
         //left
         textureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
 
@@ -118,7 +118,7 @@ public class CloudMesh {
         indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
         indicesCount += 4;
 
-        textureWorker = calculateTexture(1, 0);
+        textureWorker = calculateTexture(1);
         //top
         textureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
 
@@ -133,7 +133,7 @@ public class CloudMesh {
         //bottom
         indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
 
-        textureWorker = calculateTexture(0, 0);
+        textureWorker = calculateTexture(0);
         //bottom
         textureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
 
@@ -184,7 +184,7 @@ public class CloudMesh {
         indices[4] = (2);
         indices[5] = (3);
 
-        float[] textureWorker = calculateTexture(1, 0);
+        float[] textureWorker = calculateTexture(1);
         textureCoord[0] = (textureWorker[1]);
         textureCoord[1] = (textureWorker[2]);
         textureCoord[2] = (textureWorker[0]);
@@ -197,13 +197,13 @@ public class CloudMesh {
         return new Mesh(positions, light, indices, textureCoord, cloudTexture);
     }
 
-    private static float[] calculateTexture(int x, int y){
+    private static float[] calculateTexture(int x){
         float[] texturePoints = new float[4];
         texturePoints[0] = (float)x/(float)atlasSizeX;     //min x (-)
         texturePoints[1] = (float)(x+1)/(float)atlasSizeX; //max x (+)
 
-        texturePoints[2] = (float)y/(float)atlasSizeY;     //min y (-)
-        texturePoints[3] = (float)(y+1)/(float)atlasSizeY; //max y (+)
+        texturePoints[2] = (float) 0 /(float)atlasSizeY;     //min y (-)
+        texturePoints[3] = (float)(1)/(float)atlasSizeY; //max y (+)
         return texturePoints;
     }
 }
