@@ -5,8 +5,6 @@ import engine.graphics.Texture;
 import engine.highPerformanceContainers.HyperFloatArray;
 import engine.highPerformanceContainers.HyperIntArray;
 
-import java.util.LinkedList;
-
 import static game.clouds.Cloud.getCloudScale;
 
 public class CloudMesh {
@@ -29,10 +27,10 @@ public class CloudMesh {
 
 
     public static Mesh buildCloud3DMesh(){
-        final HyperFloatArray positions    = new HyperFloatArray();
-        final HyperFloatArray textureCoord = new HyperFloatArray();
-        final HyperIntArray indices        = new HyperIntArray();
-        final HyperFloatArray light        = new HyperFloatArray();
+        final HyperFloatArray positions    = new HyperFloatArray(12);
+        final HyperFloatArray textureCoord = new HyperFloatArray(8);
+        final HyperIntArray indices        = new HyperIntArray(6);
+        final HyperFloatArray light        = new HyperFloatArray(12);
 
         float[] textureWorker;
 
@@ -139,7 +137,15 @@ public class CloudMesh {
         //bottom
         textureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
 
-        return new Mesh(positions.values(), light.values(), indices.values(), textureCoord.values(), cloudTexture);
+
+        Mesh cloud3DMesh = new Mesh(positions.values(), light.values(), indices.values(), textureCoord.values(), cloudTexture);
+
+        positions.clear();
+        light.clear();
+        indices.clear();
+        textureCoord.clear();
+
+        return cloud3DMesh;
     }
 
     public static Mesh buildCloud2DMesh() {
