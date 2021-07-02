@@ -32,18 +32,21 @@ public class CheckRuntimeInfo {
 
         //do THREAD and HEALTH calculation in real time
 
+        /*
         if (Thread.activeCount() > currentAmountOfThreads) {
             // Get number of threads currently being utilized
             currentAmountOfThreads = Thread.activeCount();
             // Show how much effort the CPU is exerting (Higher is better/Less cpu resources being used)
             cpuHealth = Math.round((((float)availableProcessors-((float)currentAmountOfThreads-1f)) / (float)availableProcessors) * 100.f);
         }
+         */
     }
 
     public static void updateRuntimeInfoText(){
         //update the info
         getHeapInfo();
 
+        /*
         //update the info text
         for (int i = 0; i < 6; i++) {
             if (runtimeInfoText[i] != null) {
@@ -60,6 +63,8 @@ public class CheckRuntimeInfo {
         } else {
             runtimeInfoText[5] = createTextWithShadow("CPU HEALTH: " + cpuHealth + "%", 1, 1, 1);
         }
+
+         */
     }
 
     //this is from:
@@ -70,6 +75,11 @@ public class CheckRuntimeInfo {
         heapMaxSize = Runtime.getRuntime().maxMemory();
         // Get amount of free memory within the heap in bytes. This size will increase // after garbage collection and decrease as new objects are created.
         heapFreeSize = Runtime.getRuntime().freeMemory();
+
+        System.out.println("---------------");
+        System.out.println("heap size: " + formatSize(heapSize));
+        System.out.println("heap max: " + formatSize(heapMaxSize));
+        System.out.println("heap free: " + formatSize(heapFreeSize));
 
         // Get number of cpu threads available
         availableProcessors = Runtime.getRuntime().availableProcessors();
