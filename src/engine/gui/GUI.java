@@ -201,16 +201,16 @@ public class GUI {
     }
 
     public static void buildMiningMesh() {
+        HyperFloatArray positions = new HyperFloatArray(12);
+        HyperFloatArray textureCoord = new HyperFloatArray(6);
+        HyperIntArray indices = new HyperIntArray(4);
+        HyperFloatArray light = new HyperFloatArray(12);
+
         for (byte level = 0; level < 9; level++) {
             final float min = -0.0001f;
             final float max = 1.0001f;
 
             int indicesCount = 0;
-
-            HyperFloatArray positions = new HyperFloatArray();
-            HyperFloatArray textureCoord = new HyperFloatArray();
-            HyperIntArray indices = new HyperIntArray();
-            HyperFloatArray light = new HyperFloatArray();
 
             final float maxLevels = 9;
 
@@ -254,7 +254,17 @@ public class GUI {
             textureCoord.pack(1f, textureMin, 0f, textureMin, 0f, textureMax, 1f, textureMax);
 
             miningCrackMesh[level] = new Mesh(positions.values(), light.values(), indices.values(), textureCoord.values(), miningCrack);
+
+            positions.reset();
+            light.reset();
+            indices.reset();
+            textureCoord.reset();
         }
+
+        positions.clear();
+        light.clear();
+        indices.clear();
+        textureCoord.clear();
     }
 
     private static void createWorldSelectionMesh() {
