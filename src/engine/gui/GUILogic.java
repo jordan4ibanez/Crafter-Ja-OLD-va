@@ -23,6 +23,8 @@ public class GUILogic {
     private static boolean chatOpen = false;
     private static int chatBoxEntryKey = 84;
 
+    private static final Vector2d mousePos = new Vector2d();
+
     private static boolean mouseButtonPushed = false;
     private static boolean mouseButtonWasPushed = false;
     private static boolean pollingButtonInputs = false;
@@ -466,7 +468,7 @@ public class GUILogic {
         float windowScale = getWindowScale();
 
         //need to create new object or the mouse position gets messed up
-        Vector2d mousePos = new Vector2d(getMousePos());
+        mousePos.set(getMousePos());
 
         //work from the center
         mousePos.x -= (getWindowSize().x/2f);
