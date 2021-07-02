@@ -179,6 +179,13 @@ public class GameRenderer {
 
     private static final Vector3d camPos = new Vector3d();
 
+    private static final HashMap<Double, Mesh[]> normalDrawTypeHash = new HashMap<>();
+    private static final HashMap<Double, Mesh[]> liquidDrawTypeHash = new HashMap<>();
+    private static final HashMap<Double, Mesh[]> allFaceDrawTypeHash = new HashMap<>();
+    private static final HashMap<Double, Vector2i> chunkHashKeys = new HashMap<>();
+
+    private static final AtomicReference<Double> maxDistance = new AtomicReference<>(0d);
+
     public static void renderGame(){
         processClearColorInterpolation();
 
@@ -199,12 +206,6 @@ public class GameRenderer {
 
         //todo BEGIN chunk sorting ---------------------------------------------------------------------------------------------
 
-        HashMap<Double, Mesh[]> normalDrawTypeHash = new HashMap<>();
-        HashMap<Double, Mesh[]> liquidDrawTypeHash = new HashMap<>();
-        HashMap<Double, Mesh[]> allFaceDrawTypeHash = new HashMap<>();
-
-
-        HashMap<Double, Vector2i> chunkHashKeys = new HashMap<>();
 
         AbstractMap<Vector2i,Mesh[]> normalChunkMeshes = getNormalMeshes();
         AbstractMap<Vector2i,Mesh[]> liquidChunkMeshes = getLiquidMeshes();
@@ -243,9 +244,10 @@ public class GameRenderer {
         //sort all distances
         while (!normalDrawTypeHash.isEmpty()){
 
-            //System.out.println(chunkHash.size());
+            //this is sorting through all of them INFINITELY
+            //sort OUTWARDS IN
 
-            AtomicReference<Double> maxDistance = new AtomicReference<>(0d);
+            maxDistance.set(0d);
 
             normalDrawTypeHash.forEach((distancer,y) ->{
                 if(maxDistance.get() <= distancer) {
@@ -269,7 +271,6 @@ public class GameRenderer {
             allFaceDrawTypeHash.remove(maxDistancePrimitive);
             chunkHashKeys.remove(maxDistancePrimitive);
         }
-
         //todo END chunk sorting ---------------------------------------------------------------------------------------------
 
 
