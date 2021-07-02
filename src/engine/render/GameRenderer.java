@@ -172,11 +172,12 @@ public class GameRenderer {
         }
     }
 
-
     private static Mesh workerMesh;
     private static final Matrix4d projectionMatrix = new Matrix4d();
     private static final Matrix4d viewMatrix = new Matrix4d();
     private static final Matrix4d modelViewMatrix = new Matrix4d();
+
+    private static final Vector3d camPos = new Vector3d();
 
     public static void renderGame(){
         processClearColorInterpolation();
@@ -193,8 +194,7 @@ public class GameRenderer {
         viewMatrix.set(getViewMatrix());
 
 
-
-        final Vector3d camPos = getCameraPosition();
+        camPos.set(getCameraPosition());
 
 
         //todo BEGIN chunk sorting ---------------------------------------------------------------------------------------------
