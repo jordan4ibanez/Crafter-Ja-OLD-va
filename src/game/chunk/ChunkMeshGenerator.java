@@ -28,6 +28,25 @@ public class ChunkMeshGenerator implements Runnable{
 
     private static byte currentGlobalLightLevel = 15;
 
+    //normal block mesh data
+    private static final HyperFloatArray positions = new HyperFloatArray(24);
+    private static final HyperFloatArray textureCoord = new HyperFloatArray(16);
+    private static final HyperIntArray indices = new HyperIntArray(12);
+    private static final HyperFloatArray light = new HyperFloatArray(24);
+
+    //liquid block mesh data
+    private static final HyperFloatArray liquidPositions = new HyperFloatArray(24);
+    private static final HyperFloatArray liquidTextureCoord = new HyperFloatArray(16);
+    private static final HyperIntArray liquidIndices = new HyperIntArray(12);
+    private static final HyperFloatArray liquidLight = new HyperFloatArray(24);
+
+    //allFaces block mesh data
+    private static final HyperFloatArray allFacesPositions = new HyperFloatArray(24);
+    private static final HyperFloatArray allFacesTextureCoord = new HyperFloatArray(16);
+    private static final HyperIntArray allFacesIndices = new HyperIntArray(12);
+    private static final HyperFloatArray allFacesLight = new HyperFloatArray(24);
+
+
 
     public static void passChunkMeshThreadData(BlockDefinition[] newBlockIDs, BlockShape[] newBlockShapeMap){
         //remove pointer data
@@ -112,26 +131,11 @@ public class ChunkMeshGenerator implements Runnable{
             byte[] chunkNeighborZPlusLightData  = getLightDataClone(key.x, key.z + 1);
             byte[] chunkNeighborZMinusLightData = getLightDataClone(key.x, key.z - 1);
 
-            //normal block mesh data
-            final HyperFloatArray positions = new HyperFloatArray();
-            final HyperFloatArray textureCoord = new HyperFloatArray();
-            final HyperIntArray indices = new HyperIntArray();
-            final HyperFloatArray light = new HyperFloatArray();
+
             int indicesCount = 0;
 
-            //liquid block mesh data
-            final HyperFloatArray liquidPositions = new HyperFloatArray();
-            final HyperFloatArray liquidTextureCoord = new HyperFloatArray();
-            final HyperIntArray liquidIndices = new HyperIntArray();
-            final HyperFloatArray liquidLight = new HyperFloatArray();
             int liquidIndicesCount = 0;
 
-
-            //allFaces block mesh data
-            final HyperFloatArray allFacesPositions = new HyperFloatArray();
-            final HyperFloatArray allFacesTextureCoord = new HyperFloatArray();
-            final HyperIntArray allFacesIndices = new HyperIntArray();
-            final HyperFloatArray allFacesLight = new HyperFloatArray();
             int allFacesIndicesCount = 0;
 
             //current global light level - dumped into the stack
@@ -158,19 +162,19 @@ public class ChunkMeshGenerator implements Runnable{
                             switch (thisBlockDrawType) {
 
                                 //normal
-                                case 1 -> indicesCount = calculateNormal(x, y, z, thisBlock, thisRotation, indicesCount, blockData, positions, light, indices, textureCoord, chunkNeighborZPlusBlockData,chunkNeighborZPlusLightData, chunkNeighborZMinusBlockData,chunkNeighborZMinusLightData, chunkNeighborXPlusBlockData,chunkNeighborXPlusLightData, chunkNeighborXMinusBlockData,chunkNeighborXMinusLightData, chunkLightLevel, lightData);
+                                case 1 -> indicesCount = calculateNormal(x, y, z, thisBlock, thisRotation, indicesCount, blockData, chunkNeighborZPlusBlockData,chunkNeighborZPlusLightData, chunkNeighborZMinusBlockData,chunkNeighborZMinusLightData, chunkNeighborXPlusBlockData,chunkNeighborXPlusLightData, chunkNeighborXMinusBlockData,chunkNeighborXMinusLightData, chunkLightLevel, lightData);
 
                                 //allfaces
-                                case 4 -> allFacesIndicesCount = calculateAllFaces(x, y, z, thisBlock, thisRotation, allFacesIndicesCount, allFacesPositions, allFacesLight, allFacesIndices, allFacesTextureCoord, chunkNeighborZPlusLightData, chunkNeighborZMinusLightData, chunkNeighborXPlusLightData, chunkNeighborXMinusLightData, chunkLightLevel, lightData);
+                                case 4 -> allFacesIndicesCount = calculateAllFaces(x, y, z, thisBlock, thisRotation, allFacesIndicesCount, chunkNeighborZPlusLightData, chunkNeighborZMinusLightData, chunkNeighborXPlusLightData, chunkNeighborXMinusLightData, chunkLightLevel, lightData);
 
                                 //torch
-                                case 7 -> indicesCount = calculateTorchLike(x, y, z, thisBlock, thisRotation, indicesCount, positions, light, indices, textureCoord, chunkNeighborZPlusBlockData,chunkNeighborZPlusLightData, chunkNeighborZMinusBlockData,chunkNeighborZMinusLightData, chunkNeighborXPlusBlockData,chunkNeighborXPlusLightData, chunkNeighborXMinusBlockData,chunkNeighborXMinusLightData, chunkLightLevel, lightData);
+                                case 7 -> indicesCount = calculateTorchLike(x, y, z, thisBlock, thisRotation, indicesCount, chunkNeighborZPlusLightData, chunkNeighborZMinusLightData, chunkNeighborXPlusLightData, chunkNeighborXMinusLightData, chunkLightLevel, lightData);
 
                                 //liquid
-                                case 8 -> liquidIndicesCount = calculateLiquids(x, y, z, thisBlock, thisRotation, liquidIndicesCount, blockData, chunkNeighborZPlusBlockData,chunkNeighborZPlusLightData, chunkNeighborZMinusBlockData,chunkNeighborZMinusLightData, chunkNeighborXPlusBlockData,chunkNeighborXPlusLightData, chunkNeighborXMinusBlockData,chunkNeighborXMinusLightData, liquidPositions, liquidLight, liquidIndices, liquidTextureCoord, chunkLightLevel, lightData);
+                                case 8 -> liquidIndicesCount = calculateLiquids(x, y, z, thisBlock, thisRotation, liquidIndicesCount, blockData, chunkNeighborZPlusBlockData,chunkNeighborZPlusLightData, chunkNeighborZMinusBlockData,chunkNeighborZMinusLightData, chunkNeighborXPlusBlockData,chunkNeighborXPlusLightData, chunkNeighborXMinusBlockData,chunkNeighborXMinusLightData, chunkLightLevel, lightData);
 
                                 //blockbox
-                                default -> indicesCount = calculateBlockBox(x, y, z, thisBlock, thisRotation, indicesCount, positions, light, indices, textureCoord, chunkNeighborZPlusBlockData,chunkNeighborZPlusLightData, chunkNeighborZMinusBlockData,chunkNeighborZMinusLightData, chunkNeighborXPlusBlockData,chunkNeighborXPlusLightData, chunkNeighborXMinusBlockData,chunkNeighborXMinusLightData, chunkLightLevel, lightData);
+                                default -> indicesCount = calculateBlockBox(x, y, z, thisBlock, thisRotation, indicesCount, chunkNeighborZPlusLightData, chunkNeighborZMinusLightData, chunkNeighborXPlusLightData, chunkNeighborXMinusLightData, chunkLightLevel, lightData);
                             }
                         }
                     }
@@ -218,19 +222,19 @@ public class ChunkMeshGenerator implements Runnable{
             }
 
 
-            //clear data so GC doesn't have to
-            positions.clear();
-            textureCoord.clear();
-            indices.clear();
-            light.clear();
-            liquidPositions.clear();
-            liquidTextureCoord.clear();
-            liquidIndices.clear();
-            liquidLight.clear();
-            allFacesPositions.clear();
-            allFacesTextureCoord.clear();
-            allFacesIndices.clear();
-            allFacesLight.clear();
+            //reset the data so it can be reused
+            positions.reset();
+            textureCoord.reset();
+            indices.reset();
+            light.reset();
+            liquidPositions.reset();
+            liquidTextureCoord.reset();
+            liquidIndices.reset();
+            liquidLight.reset();
+            allFacesPositions.reset();
+            allFacesTextureCoord.reset();
+            allFacesIndices.reset();
+            allFacesLight.reset();
 
             //finally add it into the queue to be popped
             addToChunkMeshQueue(newChunkData);
@@ -238,7 +242,7 @@ public class ChunkMeshGenerator implements Runnable{
     }
 
 
-    private static int calculateBlockBox(int x, int y, int z, byte thisBlock, byte thisRotation, int indicesCount, HyperFloatArray positions, HyperFloatArray light, HyperIntArray indices, HyperFloatArray textureCoord, byte[] chunkNeighborZPlusBlockData, byte[] chunkNeighborZPlusLightData, byte[] chunkNeighborZMinusBlockData, byte[] chunkNeighborZMinusLightData,byte[] chunkNeighborXPlusBlockData,byte[] chunkNeighborXPlusLightData, byte[] chunkNeighborXMinusBlockData, byte[] chunkNeighborXMinusLightData, byte chunkLightLevel, byte[] lightData){
+    private static int calculateBlockBox(int x, int y, int z, byte thisBlock, byte thisRotation, int indicesCount, byte[] chunkNeighborZPlusLightData, byte[] chunkNeighborZMinusLightData, byte[] chunkNeighborXPlusLightData, byte[] chunkNeighborXMinusLightData, byte chunkLightLevel, byte[] lightData){
         for (float[] thisBlockBox : getBlockShape(thisBlock, thisRotation)) {
             //front
             positions.pack(thisBlockBox[3] + x, thisBlockBox[4] + y, thisBlockBox[5] + z, thisBlockBox[0] + x, thisBlockBox[4] + y, thisBlockBox[5] + z, thisBlockBox[0] + x, thisBlockBox[1] + y, thisBlockBox[5] + z, thisBlockBox[3] + x, thisBlockBox[1] + y, thisBlockBox[5] + z);
@@ -398,7 +402,7 @@ public class ChunkMeshGenerator implements Runnable{
         return indicesCount;
     }
 
-    private static int calculateLiquids(int x, int y, int z, byte thisBlock, byte thisRotation, int liquidIndicesCount, byte[] blockData, byte[] chunkNeighborZPlusBlockData, byte[] chunkNeighborZPlusLightData, byte[] chunkNeighborZMinusBlockData, byte[] chunkNeighborZMinusLightData,byte[] chunkNeighborXPlusBlockData,byte[] chunkNeighborXPlusLightData, byte[] chunkNeighborXMinusBlockData, byte[] chunkNeighborXMinusLightData, HyperFloatArray liquidPositions, HyperFloatArray liquidLight, HyperIntArray liquidIndices, HyperFloatArray liquidTextureCoord, byte chunkLightLevel, byte[] lightData){
+    private static int calculateLiquids(int x, int y, int z, byte thisBlock, byte thisRotation, int liquidIndicesCount, byte[] blockData, byte[] chunkNeighborZPlusBlockData, byte[] chunkNeighborZPlusLightData, byte[] chunkNeighborZMinusBlockData, byte[] chunkNeighborZMinusLightData, byte[] chunkNeighborXPlusBlockData, byte[] chunkNeighborXPlusLightData, byte[] chunkNeighborXMinusBlockData, byte[] chunkNeighborXMinusLightData, byte chunkLightLevel, byte[] lightData){
         byte neighborBlock;
 
         if (z + 1 > 15) {
@@ -613,7 +617,7 @@ public class ChunkMeshGenerator implements Runnable{
         return liquidIndicesCount;
     }
 
-    private static int calculateNormal(int x, int y, int z, byte thisBlock, byte thisRotation, int indicesCount, byte[] blockData, HyperFloatArray positions, HyperFloatArray light, HyperIntArray indices, HyperFloatArray textureCoord, byte[] chunkNeighborZPlusBlockData, byte[] chunkNeighborZPlusLightData, byte[] chunkNeighborZMinusBlockData, byte[] chunkNeighborZMinusLightData,byte[] chunkNeighborXPlusBlockData,byte[] chunkNeighborXPlusLightData, byte[] chunkNeighborXMinusBlockData, byte[] chunkNeighborXMinusLightData, byte chunkLightLevel, byte[] lightData){
+    private static int calculateNormal(int x, int y, int z, byte thisBlock, byte thisRotation, int indicesCount, byte[] blockData, byte[] chunkNeighborZPlusBlockData, byte[] chunkNeighborZPlusLightData, byte[] chunkNeighborZMinusBlockData, byte[] chunkNeighborZMinusLightData, byte[] chunkNeighborXPlusBlockData, byte[] chunkNeighborXPlusLightData, byte[] chunkNeighborXMinusBlockData, byte[] chunkNeighborXMinusLightData, byte chunkLightLevel, byte[] lightData){
 
         byte neighborBlock;
         if (z + 1 > 15) {
@@ -828,7 +832,7 @@ public class ChunkMeshGenerator implements Runnable{
     private static final float pixel = (1f / 32f / 16f);
 
 
-    private static int calculateTorchLike(int x, int y, int z, byte thisBlock, byte thisRotation, int indicesCount, HyperFloatArray positions, HyperFloatArray light, HyperIntArray indices, HyperFloatArray textureCoord, byte[] chunkNeighborZPlusBlockData, byte[] chunkNeighborZPlusLightData, byte[] chunkNeighborZMinusBlockData, byte[] chunkNeighborZMinusLightData,byte[] chunkNeighborXPlusBlockData,byte[] chunkNeighborXPlusLightData, byte[] chunkNeighborXMinusBlockData, byte[] chunkNeighborXMinusLightData, byte chunkLightLevel, byte[] lightData){
+    private static int calculateTorchLike(int x, int y, int z, byte thisBlock, byte thisRotation, int indicesCount, byte[] chunkNeighborZPlusLightData, byte[] chunkNeighborZMinusLightData, byte[] chunkNeighborXPlusLightData, byte[] chunkNeighborXMinusLightData, byte chunkLightLevel, byte[] lightData){
         switch (thisRotation) {
             //+x dir
             case 0 -> {
@@ -1244,7 +1248,7 @@ public class ChunkMeshGenerator implements Runnable{
         return indicesCount;
     }
 
-    private static int calculateAllFaces(int x, int y, int z, byte thisBlock, byte thisRotation, int allFacesIndicesCount, HyperFloatArray allFacesPositions, HyperFloatArray allFacesLight, HyperIntArray allFacesIndices, HyperFloatArray allFacesTextureCoord, byte[] chunkNeighborZPlusLightData, byte[] chunkNeighborZMinusLightData, byte[] chunkNeighborXPlusLightData, byte[] chunkNeighborXMinusLightData, byte chunkLightLevel, byte[] lightData){
+    private static int calculateAllFaces(int x, int y, int z, byte thisBlock, byte thisRotation, int allFacesIndicesCount, byte[] chunkNeighborZPlusLightData, byte[] chunkNeighborZMinusLightData, byte[] chunkNeighborXPlusLightData, byte[] chunkNeighborXMinusLightData, byte chunkLightLevel, byte[] lightData){
 
         float[] textureWorker;
 
