@@ -16,6 +16,7 @@ public class SoundAPI {
             e.printStackTrace();
         }
         SoundSource thisSource = new SoundSource(false, false);
+        assert soundBuffer != null;
         thisSource.setBuffer(soundBuffer.getBufferId());
         thisSource.setPosition(pos);
         playSoundSource(soundBuffer, thisSource);
@@ -29,6 +30,7 @@ public class SoundAPI {
             e.printStackTrace();
         }
         SoundSource thisSource = new SoundSource(false, false);
+        assert soundBuffer != null;
         thisSource.setBuffer(soundBuffer.getBufferId());
         thisSource.setPosition(pos);
         thisSource.setProperty(AL_PITCH, 0.75f + (float)(Math.random()/2f));
@@ -68,6 +70,7 @@ public class SoundAPI {
 
         SoundSource thisSource = new SoundSource(false, true);
 
+        assert soundBuffer != null;
         thisSource.setBuffer(soundBuffer.getBufferId());
 
         playSoundSource(soundBuffer, thisSource);
@@ -82,6 +85,7 @@ public class SoundAPI {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        assert soundBuffer != null;
         soundBuffer.setLock(true);
         SoundSource thisSource = new SoundSource(false, true);
         thisSource.setBuffer(soundBuffer.getBufferId());
@@ -99,6 +103,7 @@ public class SoundAPI {
 
         SoundSource thisSource = new SoundSource(false, true);
 
+        assert soundBuffer != null;
         thisSource.setBuffer(soundBuffer.getBufferId());
         thisSource.setProperty(AL_PITCH, 0.75f + (float)(Math.random()/2f));
 

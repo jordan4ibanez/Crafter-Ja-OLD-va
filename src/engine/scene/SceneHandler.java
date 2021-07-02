@@ -50,8 +50,6 @@ public class SceneHandler {
 
     public static void setScene(byte newScene){
 
-
-
         //move the camera into position for the main menu
         if (newScene == 0){
 
