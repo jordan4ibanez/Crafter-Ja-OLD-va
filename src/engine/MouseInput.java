@@ -56,13 +56,11 @@ public class MouseInput {
 
     public static void mouseInput(){
 
-
-//        System.out.println(currentPos.x);
-        double[] testx = new double[1];
-        double[] testy = new double[1];
-        glfwGetCursorPos(getWindowHandle(), testx, testy);
-        currentPos.x = (float)testx[0];
-        currentPos.y = (float)testy[0];
+        double[] testX = new double[1];
+        double[] testY = new double[1];
+        glfwGetCursorPos(getWindowHandle(), testX, testY);
+        currentPos.x = (float)testX[0];
+        currentPos.y = (float)testY[0];
 
         if (mouseLocked) {
             displVec.x = 0;
