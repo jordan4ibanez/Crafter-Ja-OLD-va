@@ -30,516 +30,489 @@ public class TextHandling {
 
         float[] letterArray = new float[]{0,0,0};
 
-        switch (thisChar){
-            case 'a':
+        switch (thisChar) {
+            case 'a' -> {
                 letterArray[0] = 0;
                 letterArray[1] = 1;
-                letterArray[2] = 4f/FONT_PIXEL_WIDTH;
-                break;
-            case 'A':
+                letterArray[2] = 4f / FONT_PIXEL_WIDTH;
+            }
+            case 'A' -> {
                 letterArray[0] = 0;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-
-            case 'b':
+            }
+            case 'b' -> {
                 letterArray[0] = 1;
                 letterArray[1] = 1;
-                letterArray[2] = 4f/FONT_PIXEL_WIDTH;
-                break;
-            case 'B':
+                letterArray[2] = 4f / FONT_PIXEL_WIDTH;
+            }
+            case 'B' -> {
                 letterArray[0] = 1;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-
-            case 'c':
+            }
+            case 'c' -> {
                 letterArray[0] = 2;
                 letterArray[1] = 1;
-                letterArray[2] = 3f/FONT_PIXEL_WIDTH;
-                break;
-            case 'C':
+                letterArray[2] = 3f / FONT_PIXEL_WIDTH;
+            }
+            case 'C' -> {
                 letterArray[0] = 2;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-
-            case 'd':
+            }
+            case 'd' -> {
                 letterArray[0] = 3;
                 letterArray[1] = 1;
-                letterArray[2] = 4f/FONT_PIXEL_WIDTH;
-                break;
-            case 'D':
+                letterArray[2] = 4f / FONT_PIXEL_WIDTH;
+            }
+            case 'D' -> {
                 letterArray[0] = 3;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-
-            case 'e':
+            }
+            case 'e' -> {
                 letterArray[0] = 4;
                 letterArray[1] = 1;
-                letterArray[2] = 4f/FONT_PIXEL_WIDTH;
-                break;
-            case 'E':
+                letterArray[2] = 4f / FONT_PIXEL_WIDTH;
+            }
+            case 'E' -> {
                 letterArray[0] = 4;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-
-            case 'f':
+            }
+            case 'f' -> {
                 letterArray[0] = 5;
                 letterArray[1] = 1;
-                letterArray[2] = 4f/FONT_PIXEL_WIDTH;
-                break;
-            case 'F':
+                letterArray[2] = 4f / FONT_PIXEL_WIDTH;
+            }
+            case 'F' -> {
                 letterArray[0] = 5;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-
-            case 'g':
+            }
+            case 'g' -> {
                 letterArray[0] = 6;
                 letterArray[1] = 1;
-                letterArray[2] = 4f/FONT_PIXEL_WIDTH;
-                break;
-            case 'G':
+                letterArray[2] = 4f / FONT_PIXEL_WIDTH;
+            }
+            case 'G' -> {
                 letterArray[0] = 6;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-
-            case 'h':
+            }
+            case 'h' -> {
                 letterArray[0] = 7;
                 letterArray[1] = 1;
-                letterArray[2] = 4f/FONT_PIXEL_WIDTH;
-                break;
-            case 'H':
+                letterArray[2] = 4f / FONT_PIXEL_WIDTH;
+            }
+            case 'H' -> {
                 letterArray[0] = 7;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-
-            case 'i':
+            }
+            case 'i' -> {
                 letterArray[0] = 8;
                 letterArray[1] = 1;
-                letterArray[2] = 1f/FONT_PIXEL_WIDTH;
-                break;
-            case 'I':
+                letterArray[2] = 1f / FONT_PIXEL_WIDTH;
+            }
+            case 'I' -> {
                 letterArray[0] = 8;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-
-            case 'j':
+            }
+            case 'j' -> {
                 letterArray[0] = 9;
                 letterArray[1] = 1;
-                letterArray[2] = 3f/FONT_PIXEL_WIDTH;
-                break;
-            case 'J':
+                letterArray[2] = 3f / FONT_PIXEL_WIDTH;
+            }
+            case 'J' -> {
                 letterArray[0] = 9;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-
-            case 'k':
+            }
+            case 'k' -> {
                 letterArray[0] = 10;
                 letterArray[1] = 1;
-                letterArray[2] = 4f/FONT_PIXEL_WIDTH;
-                break;
-            case 'K':
+                letterArray[2] = 4f / FONT_PIXEL_WIDTH;
+            }
+            case 'K' -> {
                 letterArray[0] = 10;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-
-            case 'l':
+            }
+            case 'l' -> {
                 letterArray[0] = 11;
                 letterArray[1] = 1;
-                letterArray[2] = 1f/FONT_PIXEL_WIDTH;
-                break;
-            case 'L':
+                letterArray[2] = 1f / FONT_PIXEL_WIDTH;
+            }
+            case 'L' -> {
                 letterArray[0] = 11;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-
-            case 'm':
+            }
+            case 'm' -> {
                 letterArray[0] = 12;
                 letterArray[1] = 1;
                 letterArray[2] = 1f;
-                break;
-            case 'M':
+            }
+            case 'M' -> {
                 letterArray[0] = 12;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-
-            case 'n':
+            }
+            case 'n' -> {
                 letterArray[0] = 13;
                 letterArray[1] = 1;
-                letterArray[2] = 4f/FONT_PIXEL_WIDTH;
-                break;
-            case 'N':
+                letterArray[2] = 4f / FONT_PIXEL_WIDTH;
+            }
+            case 'N' -> {
                 letterArray[0] = 13;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-
-            case 'o':
+            }
+            case 'o' -> {
                 letterArray[0] = 14;
                 letterArray[1] = 1;
-                letterArray[2] = 4f/FONT_PIXEL_WIDTH;
-                break;
-            case 'O':
+                letterArray[2] = 4f / FONT_PIXEL_WIDTH;
+            }
+            case 'O' -> {
                 letterArray[0] = 14;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-
-            case 'p':
+            }
+            case 'p' -> {
                 letterArray[0] = 15;
                 letterArray[1] = 1;
-                letterArray[2] = 3f/FONT_PIXEL_WIDTH;
-                break;
-            case 'P':
+                letterArray[2] = 3f / FONT_PIXEL_WIDTH;
+            }
+            case 'P' -> {
                 letterArray[0] = 15;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-
-            case 'q':
+            }
+            case 'q' -> {
                 letterArray[0] = 16;
                 letterArray[1] = 1;
-                letterArray[2] = 3f/FONT_PIXEL_WIDTH;
-                break;
-            case 'Q':
+                letterArray[2] = 3f / FONT_PIXEL_WIDTH;
+            }
+            case 'Q' -> {
                 letterArray[0] = 16;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-
-            case 'r':
+            }
+            case 'r' -> {
                 letterArray[0] = 17;
                 letterArray[1] = 1;
-                letterArray[2] = 4f/FONT_PIXEL_WIDTH;
-                break;
-            case 'R':
+                letterArray[2] = 4f / FONT_PIXEL_WIDTH;
+            }
+            case 'R' -> {
                 letterArray[0] = 17;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-
-            case 's':
+            }
+            case 's' -> {
                 letterArray[0] = 18;
                 letterArray[1] = 1;
-                letterArray[2] = 4f/FONT_PIXEL_WIDTH;
-                break;
-            case 'S':
+                letterArray[2] = 4f / FONT_PIXEL_WIDTH;
+            }
+            case 'S' -> {
                 letterArray[0] = 18;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-
-            case 't':
+            }
+            case 't' -> {
                 letterArray[0] = 19;
                 letterArray[1] = 1;
-                letterArray[2] = 4f/FONT_PIXEL_WIDTH;
-                break;
-            case 'T':
+                letterArray[2] = 4f / FONT_PIXEL_WIDTH;
+            }
+            case 'T' -> {
                 letterArray[0] = 19;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-
-            case 'u':
+            }
+            case 'u' -> {
                 letterArray[0] = 20;
                 letterArray[1] = 1;
-                letterArray[2] = 4f/FONT_PIXEL_WIDTH;
-                break;
-            case 'U':
+                letterArray[2] = 4f / FONT_PIXEL_WIDTH;
+            }
+            case 'U' -> {
                 letterArray[0] = 20;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-
-            case 'v':
+            }
+            case 'v' -> {
                 letterArray[0] = 21;
                 letterArray[1] = 1;
                 letterArray[2] = 1f;
-                break;
-            case 'V':
+            }
+            case 'V' -> {
                 letterArray[0] = 21;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-
-            case 'w':
+            }
+            case 'w' -> {
                 letterArray[0] = 22;
                 letterArray[1] = 1;
                 letterArray[2] = 1f;
-                break;
-            case 'W':
+            }
+            case 'W' -> {
                 letterArray[0] = 22;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-
-            case 'x':
+            }
+            case 'x' -> {
                 letterArray[0] = 23;
                 letterArray[1] = 1;
                 letterArray[2] = 1f;
-                break;
-            case 'X':
+            }
+            case 'X' -> {
                 letterArray[0] = 23;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-
-            case 'y':
+            }
+            case 'y' -> {
                 letterArray[0] = 24;
                 letterArray[1] = 1;
-                letterArray[2] = 4f/FONT_PIXEL_WIDTH;
-                break;
-            case 'Y':
+                letterArray[2] = 4f / FONT_PIXEL_WIDTH;
+            }
+            case 'Y' -> {
                 letterArray[0] = 24;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-
-            case 'z':
+            }
+            case 'z' -> {
                 letterArray[0] = 25;
                 letterArray[1] = 1;
                 letterArray[2] = 1f;
-                break;
-            case 'Z':
+            }
+            case 'Z' -> {
                 letterArray[0] = 25;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
+            }
             //now I know my ABCs
 
-            case '0':
+            case '0' -> {
                 letterArray[0] = 26;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-            case '1':
+            }
+            case '1' -> {
                 letterArray[0] = 27;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-            case '2':
+            }
+            case '2' -> {
                 letterArray[0] = 28;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-            case '3':
+            }
+            case '3' -> {
                 letterArray[0] = 29;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-            case '4':
+            }
+            case '4' -> {
                 letterArray[0] = 30;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-            case '5':
+            }
+            case '5' -> {
                 letterArray[0] = 31;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-            case '6':
+            }
+            case '6' -> {
                 letterArray[0] = 32;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-            case '7':
+            }
+            case '7' -> {
                 letterArray[0] = 33;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-            case '8':
+            }
+            case '8' -> {
                 letterArray[0] = 34;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-            case '9':
+            }
+            case '9' -> {
                 letterArray[0] = 35;
                 letterArray[1] = 0;
                 letterArray[2] = 1f;
-                break;
-
-            case '.':
+            }
+            case '.' -> {
                 letterArray[0] = 26;
                 letterArray[1] = 1;
-                letterArray[2] = 1f/FONT_PIXEL_WIDTH;
-                break;
-            case '!':
+                letterArray[2] = 1f / FONT_PIXEL_WIDTH;
+            }
+            case '!' -> {
                 letterArray[0] = 27;
                 letterArray[1] = 1;
-                letterArray[2] = 1f/FONT_PIXEL_WIDTH;
-                break;
-            case '?':
+                letterArray[2] = 1f / FONT_PIXEL_WIDTH;
+            }
+            case '?' -> {
                 letterArray[0] = 28;
                 letterArray[1] = 1;
-                letterArray[2] = 4f/FONT_PIXEL_WIDTH;
-                break;
-
-            case ' ':
+                letterArray[2] = 4f / FONT_PIXEL_WIDTH;
+            }
+            case ' ' -> {
                 letterArray[0] = 29;
                 letterArray[1] = 1;
-                letterArray[2] = 3f/FONT_PIXEL_WIDTH;
-                break;
-            case '-':
+                letterArray[2] = 3f / FONT_PIXEL_WIDTH;
+            }
+            case '-' -> {
                 letterArray[0] = 30;
                 letterArray[1] = 1;
                 letterArray[2] = 1f;
-                break;
-            case ':':
+            }
+            case ':' -> {
                 letterArray[0] = 31;
                 letterArray[1] = 1;
-                letterArray[2] = 1f/FONT_PIXEL_WIDTH;
-                break;
-            case ',':
+                letterArray[2] = 1f / FONT_PIXEL_WIDTH;
+            }
+            case ',' -> {
                 letterArray[0] = 32;
                 letterArray[1] = 1;
-                letterArray[2] = 1f/FONT_PIXEL_WIDTH;
-                break;
-            case '/':
+                letterArray[2] = 1f / FONT_PIXEL_WIDTH;
+            }
+            case '/' -> {
                 letterArray[0] = 33;
                 letterArray[1] = 1;
                 letterArray[2] = 1f;
-                break;
-            case '\\':
+            }
+            case '\\' -> {
                 letterArray[0] = 34;
                 letterArray[1] = 1;
                 letterArray[2] = 1f;
-                break;
-            case '$':
+            }
+            case '$' -> {
                 letterArray[0] = 35;
                 letterArray[1] = 1;
                 letterArray[2] = 1f;
-                break;
-            case '@':
+            }
+            case '@' -> {
                 letterArray[0] = 0;
                 letterArray[1] = 2;
                 letterArray[2] = 1f;
-                break;
-            case '#':
+            }
+            case '#' -> {
                 letterArray[0] = 1;
                 letterArray[1] = 2;
                 letterArray[2] = 1f;
-                break;
-            case '%':
+            }
+            case '%' -> {
                 letterArray[0] = 2;
                 letterArray[1] = 2;
                 letterArray[2] = 1f;
-                break;
-            case '^':
+            }
+            case '^' -> {
                 letterArray[0] = 3;
                 letterArray[1] = 2;
                 letterArray[2] = 1f;
-                break;
-            case '&':
+            }
+            case '&' -> {
                 letterArray[0] = 4;
                 letterArray[1] = 2;
                 letterArray[2] = 1f;
-                break;
-            case '*':
+            }
+            case '*' -> {
                 letterArray[0] = 5;
                 letterArray[1] = 2;
-                letterArray[2] = 3f/FONT_PIXEL_WIDTH;
-                break;
-            case '(':
+                letterArray[2] = 3f / FONT_PIXEL_WIDTH;
+            }
+            case '(' -> {
                 letterArray[0] = 6;
                 letterArray[1] = 2;
-                letterArray[2] = 3f/FONT_PIXEL_WIDTH;
-                break;
-            case ')':
+                letterArray[2] = 3f / FONT_PIXEL_WIDTH;
+            }
+            case ')' -> {
                 letterArray[0] = 7;
                 letterArray[1] = 2;
-                letterArray[2] = 3f/FONT_PIXEL_WIDTH;
-                break;
-            case '_':
+                letterArray[2] = 3f / FONT_PIXEL_WIDTH;
+            }
+            case '_' -> {
                 letterArray[0] = 8;
                 letterArray[1] = 2;
                 letterArray[2] = 1f;
-                break;
-            case '=':
+            }
+            case '=' -> {
                 letterArray[0] = 9;
                 letterArray[1] = 2;
                 letterArray[2] = 1f;
-                break;
-            case '+':
+            }
+            case '+' -> {
                 letterArray[0] = 10;
                 letterArray[1] = 2;
                 letterArray[2] = 1f;
-                break;
-            case '[':
+            }
+            case '[' -> {
                 letterArray[0] = 11;
                 letterArray[1] = 2;
-                letterArray[2] = 3f/FONT_PIXEL_WIDTH;
-                break;
-            case ']':
+                letterArray[2] = 3f / FONT_PIXEL_WIDTH;
+            }
+            case ']' -> {
                 letterArray[0] = 12;
                 letterArray[1] = 2;
-                letterArray[2] = 3f/FONT_PIXEL_WIDTH;
-                break;
-            case '|':
+                letterArray[2] = 3f / FONT_PIXEL_WIDTH;
+            }
+            case '|' -> {
                 letterArray[0] = 13;
                 letterArray[1] = 2;
-                letterArray[2] = 1f/FONT_PIXEL_WIDTH;
-                break;
-            case ';':
+                letterArray[2] = 1f / FONT_PIXEL_WIDTH;
+            }
+            case ';' -> {
                 letterArray[0] = 14;
                 letterArray[1] = 2;
-                letterArray[2] = 1f/FONT_PIXEL_WIDTH;
-                break;
-            case '\'':
+                letterArray[2] = 1f / FONT_PIXEL_WIDTH;
+            }
+            case '\'' -> {
                 letterArray[0] = 15;
                 letterArray[1] = 2;
-                letterArray[2] = 1f/FONT_PIXEL_WIDTH;
-                break;
-            case '\"':
+                letterArray[2] = 1f / FONT_PIXEL_WIDTH;
+            }
+            case '\"' -> {
                 letterArray[0] = 16;
                 letterArray[1] = 2;
-                letterArray[2] = 3f/FONT_PIXEL_WIDTH;
-                break;
-            case '<':
+                letterArray[2] = 3f / FONT_PIXEL_WIDTH;
+            }
+            case '<' -> {
                 letterArray[0] = 17;
                 letterArray[1] = 2;
-                letterArray[2] = 4f/FONT_PIXEL_WIDTH;
-                break;
-            case '>':
+                letterArray[2] = 4f / FONT_PIXEL_WIDTH;
+            }
+            case '>' -> {
                 letterArray[0] = 18;
                 letterArray[1] = 2;
-                letterArray[2] = 4f/FONT_PIXEL_WIDTH;
-                break;
-            case '`':
+                letterArray[2] = 4f / FONT_PIXEL_WIDTH;
+            }
+            case '`' -> {
                 letterArray[0] = 19;
                 letterArray[1] = 2;
-                letterArray[2] = 2f/FONT_PIXEL_WIDTH;
-                break;
-            case '~':
+                letterArray[2] = 2f / FONT_PIXEL_WIDTH;
+            }
+            case '~' -> {
                 letterArray[0] = 20;
                 letterArray[1] = 2;
                 letterArray[2] = 1f;
-                break;
-            case '{':
+            }
+            case '{' -> {
                 letterArray[0] = 21;
                 letterArray[1] = 2;
-                letterArray[2] = 3f/FONT_PIXEL_WIDTH;
-                break;
-            case '}':
+                letterArray[2] = 3f / FONT_PIXEL_WIDTH;
+            }
+            case '}' -> {
                 letterArray[0] = 22;
                 letterArray[1] = 2;
-                letterArray[2] = 3f/FONT_PIXEL_WIDTH;
-                break;
-            default: //all unknown end up as a white box  ¯\_(ツ)_/¯
+                letterArray[2] = 3f / FONT_PIXEL_WIDTH;
+            }
+            default -> { //all unknown end up as a white box  ¯\_(ツ)_/¯
                 letterArray[0] = 23;
                 letterArray[1] = 2;
                 letterArray[2] = 1f;
-                break;
+            }
         }
 
         if (letterArray[2] == 1f){
@@ -627,10 +600,10 @@ public class TextHandling {
                 a += 3;
             }
 
-            indices[t    ] = (0 + indicesCount);
+            indices[t    ] = (indicesCount);
             indices[t + 1] = (1 + indicesCount);
             indices[t + 2] = (2 + indicesCount);
-            indices[t + 3] = (0 + indicesCount);
+            indices[t + 3] = (indicesCount);
             indices[t + 4] = (2 + indicesCount);
             indices[t + 5] = (3 + indicesCount);
 
@@ -722,10 +695,10 @@ public class TextHandling {
                 a += 3;
             }
 
-            indices[t    ] = (0 + indicesCount);
+            indices[t    ] = (indicesCount);
             indices[t + 1] = (1 + indicesCount);
             indices[t + 2] = (2 + indicesCount);
-            indices[t + 3] = (0 + indicesCount);
+            indices[t + 3] = (indicesCount);
             indices[t + 4] = (2 + indicesCount);
             indices[t + 5] = (3 + indicesCount);
 
@@ -786,10 +759,10 @@ public class TextHandling {
                 a += 3;
             }
 
-            indices[t    ] = (0 + indicesCount);
+            indices[t    ] = (indicesCount);
             indices[t + 1] = (1 + indicesCount);
             indices[t + 2] = (2 + indicesCount);
-            indices[t + 3] = (0 + indicesCount);
+            indices[t + 3] = (indicesCount);
             indices[t + 4] = (2 + indicesCount);
             indices[t + 5] = (3 + indicesCount);
 
@@ -871,10 +844,10 @@ public class TextHandling {
                 a += 3;
             }
 
-            indices[t    ] = (0 + indicesCount);
+            indices[t    ] = (indicesCount);
             indices[t + 1] = (1 + indicesCount);
             indices[t + 2] = (2 + indicesCount);
-            indices[t + 3] = (0 + indicesCount);
+            indices[t + 3] = (indicesCount);
             indices[t + 4] = (2 + indicesCount);
             indices[t + 5] = (3 + indicesCount);
 
@@ -956,10 +929,10 @@ public class TextHandling {
                 a += 3;
             }
 
-            indices[t    ] = (0 + indicesCount);
+            indices[t    ] = (indicesCount);
             indices[t + 1] = (1 + indicesCount);
             indices[t + 2] = (2 + indicesCount);
-            indices[t + 3] = (0 + indicesCount);
+            indices[t + 3] = (indicesCount);
             indices[t + 4] = (2 + indicesCount);
             indices[t + 5] = (3 + indicesCount);
 
@@ -1020,10 +993,10 @@ public class TextHandling {
                 a += 3;
             }
 
-            indices[t    ] = (0 + indicesCount);
+            indices[t    ] = (indicesCount);
             indices[t + 1] = (1 + indicesCount);
             indices[t + 2] = (2 + indicesCount);
-            indices[t + 3] = (0 + indicesCount);
+            indices[t + 3] = (indicesCount);
             indices[t + 4] = (2 + indicesCount);
             indices[t + 5] = (3 + indicesCount);
 
