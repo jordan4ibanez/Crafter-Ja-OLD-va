@@ -976,32 +976,35 @@ public class GUI {
         }
 
         wieldHandMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, playerTexture);
+
+        positions.clear();
+        light.clear();
+        indices.clear();
+        textureCoord.clear();
     }
 
 
     private static void createPlayerMesh(){
-        float[][] oneBlockyBoi = new float[][]{
-//                head
+        float[][] playerModelBoxes = new float[][]{
+                //head
                 {-0.75f,-0.5f,-0.75f,0.75f,1.0f,0.75f},
-////                body
+                //body
                 {-0.75f,-2.5f,-0.45f,0.75f,-0.5f,0.45f},
-//                //right arm
+                //right arm
                 {0.75f,-2.75f,-0.45f, 1.65f,-0.5f,0.45f},
-//                //left arm
+                //left arm
                 {-1.65f,-2.75f,-0.45f, -0.75f,-0.5f,0.45f},
-
                 //right leg
                 {-0.75f,-5.0f,-0.375f, 0.0f,-2.5f,0.375f},
-
                 //left leg
                 {0.0f,-5.0f,-0.375f,  0.75f,-2.5f,0.375f},
         };
 
         float[][] textureArrayArray = new float[][]{
                 //head
-                //front
-                calculateTexture(8,8,16,16),
                 //back
+                calculateTexture(8,8,16,16),
+                //front
                 calculateTexture(24,8,32,16),
                 //right
                 calculateTexture(16,8,24,16),
@@ -1013,9 +1016,9 @@ public class GUI {
                 calculateTexture(16,0,24,8),
 
                 //body
-                //front
-                calculateTexture(20,20,28,30),
                 //back
+                calculateTexture(20,20,28,30),
+                //front
                 calculateTexture(32,20,40,30),
                 //right
                 calculateTexture(28,20,32,30),
@@ -1028,9 +1031,9 @@ public class GUI {
 
 
                 //right arm
-                //front
-                calculateTexture(44,20,48,32), //light
                 //back
+                calculateTexture(44,20,48,32), //light
+                //front
                 calculateTexture(48,20,52,32), //dark
                 //right
                 calculateTexture(48,20,52,32), //dark
@@ -1042,9 +1045,9 @@ public class GUI {
                 calculateTexture(48,16,52,20), //palm
 
                 //left arm
-                //front
-                calculateTexture(44,20,48,32), //light
                 //back
+                calculateTexture(44,20,48,32), //light
+                //front
                 calculateTexture(48,20,52,32), //dark
                 //right
                 calculateTexture(44,20,48,32), //light
@@ -1057,9 +1060,9 @@ public class GUI {
 
 
                 //right leg
-                //front
-                calculateTexture(4,20,8,32), //light
                 //back
+                calculateTexture(4,20,8,32), //light
+                //front
                 calculateTexture(0,20,4,32), //dark
                 //right
                 calculateTexture(8,20,12,32), //dark
@@ -1071,9 +1074,9 @@ public class GUI {
                 calculateTexture(8,16,12,20), //bottom
 
                 //left leg
-                //front
-                calculateTexture(4,20,8,32), //light
                 //back
+                calculateTexture(4,20,8,32), //light
+                //front
                 calculateTexture(0,20,4,32), //dark
                 //right
                 calculateTexture(12,20,16,32), //light
@@ -1083,7 +1086,6 @@ public class GUI {
                 calculateTexture(4,16,8,20), //top
                 //bottom
                 calculateTexture(8,16,12,20), //bottom
-
         };
 
         List<Float> positions = new ArrayList<>();
@@ -1093,10 +1095,7 @@ public class GUI {
 
         int indicesCount = 0;
         int textureCounter = 0;
-        for (float[] thisBlockBox : oneBlockyBoi) {
-            // 0, 1, 2, 3, 4, 5
-            //-x,-y,-z, x, y, z
-            // 0, 0, 0, 1, 1, 1
+        for (float[] thisBlockBox : playerModelBoxes) {
 
             //front
             positions.add(thisBlockBox[3]);
@@ -1421,6 +1420,11 @@ public class GUI {
         }
 
         playerMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, playerTexture);
+
+        positions.clear();
+        light.clear();
+        indices.clear();
+        textureCoord.clear();
     }
 
 

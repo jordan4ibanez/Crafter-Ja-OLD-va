@@ -28,7 +28,7 @@ public class BiomeGenerator implements Runnable{
     public static void addChunkToBiomeGeneration(int x, int z){
         queue.add(new Vector2i(x,z));
     }
-    
+
     private static final double heightAdder = 70;
     private static final byte dirtHeight = 4;
     private static final byte waterHeight = 50;
