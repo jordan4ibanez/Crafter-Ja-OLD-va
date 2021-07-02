@@ -188,7 +188,6 @@ public class Controls {
             if (!F5Pushed) {
                 F5Pushed = true;
                 toggleCameraPerspective();
-                //System.out.println("CAMERA PERSPECTIVE IS NOW: " + getCameraPerspective());
             }
         } else if (!isKeyPressed(GLFW_KEY_F5)){
             F5Pushed = false;
