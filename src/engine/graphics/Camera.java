@@ -79,9 +79,7 @@ public class Camera {
     }
 
     public static void setCameraRotation(float x, float y, float z){
-        rotation.x = x;
-        rotation.y = y;
-        rotation.z = z;
+        rotation.set(x,y,z);
     }
 
     public static void moveCameraRotation(float offsetX, float offsetY, float offsetZ){
