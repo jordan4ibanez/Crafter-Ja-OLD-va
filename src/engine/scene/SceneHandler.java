@@ -103,9 +103,9 @@ public class SceneHandler {
 
 
         while (!windowShouldClose()){
-            if (getDebugInfo()) {
+            //if (getDebugInfo()) {
                 doRuntimeInfoUpdate();
-            }
+            //}
 
             switch (currentScene) {
                 case 0 -> mainMenuLoop();
