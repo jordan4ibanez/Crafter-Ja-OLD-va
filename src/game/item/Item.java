@@ -20,8 +20,8 @@ public class Item {
     public String name;
     public int stack;
     public ItemDefinition definition;
-    public Vector3d pos;
-    public Vector3d goalPos;
+    public final Vector3d pos = new Vector3d();
+    public final Vector3d goalPos = new Vector3d();
     public float scale;
     public float timer;
     public float hover;
@@ -30,8 +30,8 @@ public class Item {
     public boolean collecting;
     public float collectionTimer = 0;
     public boolean deletionOkay = false;
-    public Vector3f rotation;
-    public Vector3f inertia;
+    public final Vector3f rotation = new Vector3f();
+    public final Vector3f inertia = new Vector3f();
     public int ID;
 
     public byte light = 15;
@@ -64,11 +64,11 @@ public class Item {
     //item being mined
     public Item(String name, Vector3d pos, int stack) {
         this.name = name;
-        this.pos = pos;
+        this.pos.set(pos);
         this.definition = getItemDefinition(name);
         this.stack = stack;
-        this.inertia = new Vector3f(randomForceValue(2f), (float) Math.random() * 4f, randomForceValue(2f));
-        this.rotation = new Vector3f(0, 0, 0);
+        this.inertia.set(randomForceValue(2f), (float) Math.random() * 4f, randomForceValue(2f));
+        this.rotation.set(0);
         this.hover = 0f;
         this.floatUp = true;
         this.exists = true;
@@ -82,12 +82,12 @@ public class Item {
     //item being mined with interpolation
     public Item(String name, Vector3d pos, Vector3d goalPos, int stack) {
         this.name = name;
-        this.pos = pos;
-        this.goalPos = goalPos;
+        this.pos.set(pos);
+        this.goalPos.set(goalPos);
         this.definition = getItemDefinition(name);
         this.stack = stack;
-        this.inertia = new Vector3f(randomForceValue(2f), (float) Math.random() * 4f, randomForceValue(2f));
-        this.rotation = new Vector3f(0, 0, 0);
+        this.inertia.set(randomForceValue(2f), (float) Math.random() * 4f, randomForceValue(2f));
+        this.rotation.set(0);
         this.hover = 0f;
         this.floatUp = true;
         this.exists = true;
@@ -101,11 +101,11 @@ public class Item {
     //item being mined with life
     public Item(String name, Vector3d pos, int stack, float life) {
         this.name = name;
-        this.pos = pos;
+        this.pos.set(pos);
         this.definition = getItemDefinition(name);
         this.stack = stack;
-        this.inertia = new Vector3f(randomForceValue(2f), (float) Math.random() * 4f, randomForceValue(2f));
-        this.rotation = new Vector3f(0, 0, 0);
+        this.inertia.set(randomForceValue(2f), (float) Math.random() * 4f, randomForceValue(2f));
+        this.rotation.set(0);
         this.hover = 0f;
         this.floatUp = true;
         this.exists = true;
@@ -119,11 +119,11 @@ public class Item {
     //item with inertia vector when spawned (mined, blown up, etc)
     public Item(String name, Vector3d pos, Vector3f inertia, int stack) {
         this.name = name;
-        this.pos = pos;
+        this.pos.set(pos);
         this.definition = getItemDefinition(name);
         this.stack = stack;
-        this.inertia = inertia;
-        this.rotation = new Vector3f(0, 0, 0);
+        this.inertia.set(inertia);
+        this.rotation.set(0);
         this.hover = 0f;
         this.floatUp = true;
         this.exists = true;
@@ -137,11 +137,11 @@ public class Item {
     //item with inertia vector when spawned (mined, blown up, etc)
     public Item(String name, Vector3d pos, Vector3f inertia, int stack, float life) {
         this.name = name;
-        this.pos = pos;
+        this.pos.set(pos);
         this.definition = getItemDefinition(name);
         this.stack = stack;
-        this.inertia = inertia;
-        this.rotation = new Vector3f(0, 0, 0);
+        this.inertia.set(inertia);
+        this.rotation.set(0);
         this.hover = 0f;
         this.floatUp = true;
         this.exists = true;
@@ -155,19 +155,19 @@ public class Item {
     //clone item
     public Item(Item thisItem) {
         this.name = thisItem.name;
-        if (thisItem.pos == null){
-            this.pos = new Vector3d();
+        if (thisItem.pos != null){
+            this.pos.set(thisItem.pos);
         } else {
-            this.pos = new Vector3d(thisItem.pos);
+            this.pos.set(0);
         }
         this.definition = getItemDefinition(name);
         this.stack = thisItem.stack;
-        if (thisItem.inertia == null){
-            this.inertia = new Vector3f();
+        if (thisItem.inertia != null){
+            this.inertia.set(thisItem.inertia);
         } else {
-            this.inertia = new Vector3f(thisItem.inertia);
+            this.inertia.set(0);
         }
-        this.rotation = new Vector3f(0, 0, 0);
+        this.rotation.set(0);
         this.hover = 0f;
         this.floatUp = true;
         this.exists = true;

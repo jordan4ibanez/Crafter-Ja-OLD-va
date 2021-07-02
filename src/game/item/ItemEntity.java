@@ -60,7 +60,7 @@ public class ItemEntity {
 
             if (itemKeyExists(itemSendingObject.ID)) {
                 Item thisEntity = items.get(itemSendingObject.ID);
-                thisEntity.goalPos = itemSendingObject.pos;
+                thisEntity.goalPos.set(itemSendingObject.pos);
             } else {
                 //initial internal pos
                 items.put(itemSendingObject.ID, new Item(itemSendingObject.name, itemSendingObject.pos, itemSendingObject.pos, 1));
