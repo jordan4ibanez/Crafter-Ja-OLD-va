@@ -16,6 +16,8 @@ public class ChunkMeshGenerator implements Runnable{
     private static final ConcurrentLinkedDeque<Vector3i> generationQueue = new ConcurrentLinkedDeque<>();
 
 
+    private final static Vector3i key = new Vector3i();
+
     private static final byte maxIDs = 30;
 
     //holds the blockshape data - on this thread
@@ -95,19 +97,11 @@ public class ChunkMeshGenerator implements Runnable{
     private static void pollQueue() {
         if (!generationQueue.isEmpty()) {
 
-            final Vector3i key;
-
             try {
-                key = generationQueue.pop();
+                key.set(generationQueue.pop());
             } catch (Exception ignore) {
                 return; //don't crash basically
             }
-
-            //don't crash
-            if (key == null) {
-                return;
-            }
-
 
             byte[] blockData = getBlockDataClone(key.x, key.z);
             byte[] rotationData = getRotationDataClone(key.x, key.z);
@@ -133,7 +127,6 @@ public class ChunkMeshGenerator implements Runnable{
             byte[] chunkNeighborXMinusLightData = getLightDataClone(key.x - 1, key.z);
             byte[] chunkNeighborZPlusLightData  = getLightDataClone(key.x, key.z + 1);
             byte[] chunkNeighborZMinusLightData = getLightDataClone(key.x, key.z - 1);
-
 
             int indicesCount = 0;
 
