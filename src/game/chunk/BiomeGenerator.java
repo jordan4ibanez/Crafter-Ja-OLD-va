@@ -28,16 +28,13 @@ public class BiomeGenerator implements Runnable{
     public static void addChunkToBiomeGeneration(int x, int z){
         queue.add(new Vector2i(x,z));
     }
-
-
+    
     private static final double heightAdder = 70;
     private static final byte dirtHeight = 4;
     private static final byte waterHeight = 50;
     private static final int noiseMultiplier = 50;
     private static final Vector2i newData = new Vector2i();
-
-    private static final Vector3i[] treePosArray = new Vector3i[32]; //max of 32 trees per chunk
-    private static byte treeCount = 0;
+    private static final Deque<Vector3i> treePosQueue = new ArrayDeque<>();
 
     private static void runBiomeGeneration(){
 
@@ -107,8 +104,7 @@ public class BiomeGenerator implements Runnable{
 
                             //add tree to queue
                             if (noiseTest2 > 0.98f) {
-                                treePosArray[treeCount].set(generationX, generationY, generationZ);
-                                treeCount++;
+                                treePosQueue.add(new Vector3i(generationX, generationY, generationZ));
                             }
                             //dirt/sand gen
                         } else if (generationY < height && generationY >= height - dirtHeight - dirtHeightRandom) {
@@ -173,8 +169,7 @@ public class BiomeGenerator implements Runnable{
 
                             //add tree to queue
                             if (noiseTest2 > 0.98f) {
-                                treePosArray[treeCount].set(generationX, height, generationZ);
-                                treeCount++;
+                                treePosQueue.add(new Vector3i(generationX, height, generationZ));
                             }
 
                         }
@@ -183,7 +178,7 @@ public class BiomeGenerator implements Runnable{
             }
 
             //generate tree cores
-            for (Vector3i basePos : treePosArray) {
+            for (Vector3i basePos : treePosQueue) {
                 //generate stumps
                 for (byte y = 0; y < 4; y++) {
                     //stay within borders
@@ -198,10 +193,7 @@ public class BiomeGenerator implements Runnable{
             }
 
             //generate tree leaves
-            for (int i = 0; i < treeCount; i++) {
-
-                Vector3i basePos = treePosArray[i];
-
+            for (Vector3i basePos : treePosQueue) {
                 byte treeWidth = 0;
                 for (byte y = 5; y > 1; y--) {
                     for (byte x = (byte) -treeWidth; x <= treeWidth; x++) {
@@ -271,7 +263,7 @@ public class BiomeGenerator implements Runnable{
                 chunkUpdate(chunkX, chunkZ, i);
             }
 
-            treeCount = 0;
+            treePosQueue.clear();
 
             //instantSave(thisChunk);
         }
