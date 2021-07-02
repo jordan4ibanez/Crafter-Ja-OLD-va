@@ -3,12 +3,21 @@ package engine.highPerformanceContainers;
 //this container is specifically optimized for ChunkMeshGenerator
 //cache happy
 public class HyperIntArray {
-    private static final int growthRate = 1000;
+    //growth rate defines how big the cache trim is
+    //defines the initial size, limit of currentPos before it expands
+    //and when it does expand, the array will grow to CURRENTSIZE + growthRate
+    private final int growthRate;
 
-    int[] dataContainer = new int[growthRate];
+    int[] dataContainer;
 
     int currentPos = 0;
-    int maxSize = growthRate;
+    int maxSize;
+
+    public HyperIntArray(int growthRate){
+        this.growthRate = growthRate;
+        dataContainer = new int[growthRate];
+        maxSize = growthRate;
+    }
 
     private void put(int data){
         if (currentPos == maxSize){
@@ -50,7 +59,13 @@ public class HyperIntArray {
         return returningContainer;
     }
 
+    //is used to qualify the object for GC
     public void clear(){
         dataContainer = null;
+    }
+
+    //is used to recycle the array - just resets the index to 0
+    public void reset(){
+        currentPos = 0;
     }
 }

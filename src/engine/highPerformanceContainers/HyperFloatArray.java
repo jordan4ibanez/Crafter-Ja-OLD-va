@@ -3,12 +3,21 @@ package engine.highPerformanceContainers;
 //this container is specifically optimized for ChunkMeshGenerator
 //cache happy
 public class HyperFloatArray {
-    private static final int growthRate = 1000;
+    //growth rate defines how big the cache trim is
+    //defines the initial size, limit of currentPos before it expands
+    //and when it does expand, the array will grow to CURRENTSIZE + growthRate
+    private final int growthRate;
 
-    float[] dataContainer = new float[growthRate];
+    float[] dataContainer;
 
     int currentPos = 0;
-    int maxSize = growthRate;
+    int maxSize;
+
+    public HyperFloatArray(int growthRate){
+        this.growthRate = growthRate;
+        dataContainer = new float[growthRate];
+        maxSize = growthRate;
+    }
 
 
     //this is old delete it
@@ -78,7 +87,13 @@ public class HyperFloatArray {
         return returningContainer;
     }
 
+    //is used to qualify the object for GC
     public void clear(){
         dataContainer = null;
+    }
+
+    //is used to recycle the array - just resets the index to 0
+    public void reset(){
+        currentPos = 0;
     }
 }
