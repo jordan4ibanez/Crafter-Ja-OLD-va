@@ -1,5 +1,6 @@
 package engine.graphics;
 
+import org.joml.Math;
 import org.joml.Vector2f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
@@ -11,10 +12,11 @@ import static game.ray.Ray.genericWorldRaycast;
 public class Camera {
 
     private static final Vector3d position = new Vector3d();
-
     private static final Vector3f rotation = new Vector3f();
+    private static final Vector3f rotationVector = new Vector3f();
+    private static final Vector2f mouseRotationVector = new Vector2f();
 
-    private static final float   MOUSE_SENSITIVITY   = 0.09f;
+    private static final float MOUSE_SENSITIVITY   = 0.09f;
 
     private static byte cameraPerspective = 0;
 
@@ -23,20 +25,22 @@ public class Camera {
     }
 
     public static void setCameraPosition(double x, double y, double z){
-        position.x = x;
-        position.y = y;
-        position.z = z;
+        position.set(x,y,z);
+    }
+
+    public static void setCameraPosition(Vector3d newPos){
+        position.set(newPos);
     }
 
     public static void moveCameraPosition(float offsetX, float offsetY, float offsetZ){
         if ( offsetZ != 0){
-            position.x += (float)Math.sin(Math.toRadians(rotation.y)) * -1.0f * offsetZ;
-            position.z += (float)Math.cos(Math.toRadians(rotation.y)) * offsetZ;
+            position.x += Math.sin(Math.toRadians(rotation.y)) * -1.0f * offsetZ;
+            position.z += Math.cos(Math.toRadians(rotation.y)) * offsetZ;
         }
 
         if ( offsetX != 0) {
-            position.x += (float)Math.sin(Math.toRadians(rotation.y - 90f)) * -1.0f * offsetX;
-            position.z += (float)Math.cos(Math.toRadians(rotation.y - 90f)) * offsetX;
+            position.x += Math.sin(Math.toRadians(rotation.y - 90f)) * -1.0f * offsetX;
+            position.z += Math.cos(Math.toRadians(rotation.y - 90f)) * offsetX;
         }
 
         if (offsetY != 0) {
@@ -71,7 +75,7 @@ public class Camera {
     }
 
     public static Vector3f getCameraRotation(){
-        return new Vector3f(rotation);
+        return rotation;
     }
 
     public static void setCameraRotation(float x, float y, float z){
@@ -87,11 +91,10 @@ public class Camera {
     }
 
     public static Vector3f getCameraRotationVector(){
-        Vector3f rotationVector = new Vector3f();
-        float xzLen = (float)Math.cos(Math.toRadians(rotation.x + 180f));
-        rotationVector.z = xzLen * (float)Math.cos(Math.toRadians(rotation.y));
-        rotationVector.y = (float)Math.sin(Math.toRadians(rotation.x + 180f));
-        rotationVector.x = xzLen * (float)Math.sin(Math.toRadians(-rotation.y));
+        float xzLen = Math.cos(Math.toRadians(rotation.x + 180f));
+        rotationVector.z = xzLen * Math.cos(Math.toRadians(rotation.y));
+        rotationVector.y = Math.sin(Math.toRadians(rotation.x + 180f));
+        rotationVector.x = xzLen * Math.sin(Math.toRadians(-rotation.y));
         return rotationVector;
     }
 
@@ -103,8 +106,8 @@ public class Camera {
         }
 
         //update camera based on mouse
-        Vector2f rotVec = getMouseDisplVec();
-        moveCameraRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
+        mouseRotationVector.set(getMouseDisplVec());
+        moveCameraRotation(mouseRotationVector.x * MOUSE_SENSITIVITY, mouseRotationVector.y * MOUSE_SENSITIVITY, 0);
 
         //limit camera pitch
         if (getCameraRotation().x < -90f) {
@@ -125,8 +128,8 @@ public class Camera {
         //these must go after camera rotation
         //or weird inertia effect happens
         if (cameraPerspective > 0){
-            Vector3d newCameraPos = genericWorldRaycast(getPlayerPosWithEyeHeight(), getCameraRotationVector().mul(-1), 3);
-            setCameraPosition(newCameraPos.x,newCameraPos.y, newCameraPos.z);
+            //Vector3d newCameraPos = ;
+            setCameraPosition(genericWorldRaycast(getPlayerPosWithEyeHeight(), getCameraRotationVector().mul(-1), 3));
         }
     }
 }
