@@ -14,8 +14,7 @@ import static engine.network.Networking.getIfMultiplayer;
 import static engine.network.Networking.sendInventorySlot;
 import static engine.sound.SoundAPI.playSound;
 import static engine.time.Time.getDelta;
-import static game.blocks.BlockDefinition.getBlockDefinition;
-import static game.blocks.BlockDefinition.isBlockLiquid;
+import static game.blocks.BlockDefinition.*;
 import static game.chunk.Chunk.*;
 import static game.clouds.Cloud.setCloudPos;
 import static game.collision.Collision.applyInertia;
@@ -147,14 +146,13 @@ public class Player {
             oldWorldSelectionPos = new Vector3i(worldSelectionPos);
         }
         if (thePos != null){
-            int block = getBlock(thePos.x, thePos.y,thePos.z);
+            byte block = getBlock(thePos.x, thePos.y,thePos.z);
             //add in block hardness levels
             if (block > 0){
-                BlockDefinition thisDef = getBlockDefinition(block);
-                stoneHardness = thisDef.stoneHardness;
-                dirtHardness = thisDef.dirtHardness;
-                woodHardness = thisDef.woodHardness;
-                leafHardness = thisDef.leafHardness;
+                stoneHardness = getStoneHardness(block);
+                dirtHardness = getDirtHardness(block);
+                woodHardness = getWoodHardness(block);
+                leafHardness = getLeafHardness(block);
             }
             //reset when not pointing at any block
             else {
@@ -247,9 +245,9 @@ public class Player {
         }
 
         if (worldSelectionPos != null && soundTrigger && mining){
-            int block = getBlock(worldSelectionPos.x, worldSelectionPos.y, worldSelectionPos.z);
+            byte block = getBlock(worldSelectionPos.x, worldSelectionPos.y, worldSelectionPos.z);
             if (block > 0){
-                String digSound = getBlockDefinition(block).digSound;
+                String digSound = getDigSound(block);
                 if (!digSound.equals("")) {
                     playSound(digSound);
                     soundTrigger = false;
@@ -682,7 +680,7 @@ public class Player {
         //camera underwater effect trigger
         Vector3d camPos = new Vector3d(getCameraPosition());
         camPos.y -= 0.02f;
-        int cameraCheckBlock = getBlock((int)Math.floor(camPos.x),(int)Math.floor(camPos.y), (int)Math.floor(camPos.z));
+        byte cameraCheckBlock = getBlock((int)Math.floor(camPos.x),(int)Math.floor(camPos.y), (int)Math.floor(camPos.z));
 
         cameraSubmerged = cameraCheckBlock > 0 && isBlockLiquid(cameraCheckBlock);
 
@@ -873,7 +871,7 @@ public class Player {
             if (particleBufferTimer > 0.01f){
                 int randomDir = (int)Math.floor(Math.random()*6f);
                 int block;
-                int miningBlock = getBlock(worldSelectionPos.x, worldSelectionPos.y, worldSelectionPos.z);
+                byte miningBlock = getBlock(worldSelectionPos.x, worldSelectionPos.y, worldSelectionPos.z);
                 switch (randomDir) {
                     case 0 -> {
                         block = getBlock(worldSelectionPos.x + 1, worldSelectionPos.y, worldSelectionPos.z);

@@ -2,17 +2,12 @@ package game.chunk;
 
 import engine.highPerformanceContainers.HyperFloatArray;
 import engine.highPerformanceContainers.HyperIntArray;
-import game.blocks.BlockDefinition;
-import game.blocks.BlockShape;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
-import java.util.Arrays;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 import static engine.Window.windowShouldClose;
-import static game.blocks.BlockDefinition.getBlockIDsSize;
-import static game.blocks.BlockDefinition.getBlockShapeMapSize;
 import static game.chunk.Chunk.*;
 import static game.chunk.ChunkMeshGenerationHandler.addToChunkMeshQueue;
 
@@ -20,11 +15,21 @@ public class ChunkMeshGenerator implements Runnable{
     //DO NOT CHANGE THE DATA CONTAINER
     private static final ConcurrentLinkedDeque<Vector3i> generationQueue = new ConcurrentLinkedDeque<>();
 
-    //holds BlockDefinition data - on this thread
-    private static final BlockDefinition[] blockIDs = new BlockDefinition[getBlockIDsSize()];
+
+    private static final byte maxIDs = 30;
 
     //holds the blockshape data - on this thread
-    private static final BlockShape[] blockShapeMap = new BlockShape[getBlockShapeMapSize()];
+    private final static float[][][] blockShapeMap = new float[(byte)9][0][0];
+
+    //holds BlockDefinition data - on this thread
+    private static final byte[] drawTypes = new byte[maxIDs];
+    private static final float[][] frontTextures = new float[maxIDs][0];  //front
+    private static final float[][] backTextures = new float[maxIDs][0];   //back
+    private static final float[][] rightTextures = new float[maxIDs][0];  //right
+    private static final float[][] leftTextures = new float[maxIDs][0];   //left
+    private static final float[][] topTextures = new float[maxIDs][0];    //top
+    private static final float[][] bottomTextures = new float[maxIDs][0]; //bottom
+    private static final boolean[] isLiquids = new boolean[maxIDs];
 
     private static byte currentGlobalLightLevel = 15;
 
@@ -48,18 +53,16 @@ public class ChunkMeshGenerator implements Runnable{
 
 
 
-    public static void passChunkMeshThreadData(BlockDefinition[] newBlockIDs, BlockShape[] newBlockShapeMap){
-        //remove pointer data
-        BlockDefinition[] clonedBlockIDs = newBlockIDs.clone();
-        BlockShape[] clonedBlockShapeMap = newBlockShapeMap.clone();
-
+    public static void passChunkMeshThreadData(byte[] dupeDrawTypes, float[][] dupeFrontTextures, float[][] dupeBackTextures, float[][] dupeRightTextures, float[][] dupeLeftTextures, float[][] dupeTopTextures, float[][] dupeBottomTextures, boolean[] dupeIsLiquids){
         //copy data
-        System.arraycopy(clonedBlockIDs, 0, blockIDs, 0, clonedBlockIDs.length);
-        System.arraycopy(clonedBlockShapeMap, 0, blockShapeMap, 0, clonedBlockShapeMap.length);
-
-        //send to GC
-        Arrays.fill(clonedBlockIDs, null);
-        Arrays.fill(clonedBlockShapeMap, null);
+        System.arraycopy(dupeDrawTypes, 0, drawTypes, 0, dupeDrawTypes.length);
+        System.arraycopy(dupeFrontTextures, 0, frontTextures, 0, dupeFrontTextures.length);
+        System.arraycopy(dupeBackTextures, 0, backTextures, 0, dupeBackTextures.length);
+        System.arraycopy(dupeRightTextures, 0, rightTextures, 0, dupeRightTextures.length);
+        System.arraycopy(dupeLeftTextures, 0, leftTextures, 0, dupeLeftTextures.length);
+        System.arraycopy(dupeTopTextures, 0, topTextures, 0, dupeTopTextures.length);
+        System.arraycopy(dupeBottomTextures, 0, bottomTextures, 0, dupeBottomTextures.length);
+        System.arraycopy(dupeIsLiquids, 0, isLiquids, 0, dupeIsLiquids.length);
     }
 
     public void run() {
@@ -1474,58 +1477,59 @@ public class ChunkMeshGenerator implements Runnable{
 
 
     private static byte getBlockDrawType(byte ID){
-        return blockIDs[ID].drawType;
+        return drawTypes[ID];
     }
 
-    private static float[] getFrontTexturePoints(int ID, byte rotation){
+    public static float[] getFrontTexturePoints(byte ID, byte rotation){
         return switch (rotation) {
-            case 1 -> blockIDs[ID].rightTexture;
-            case 2 -> blockIDs[ID].backTexture;
-            case 3 -> blockIDs[ID].leftTexture;
-            default -> blockIDs[ID].frontTexture;
+            case 1 -> rightTextures[ID];
+            case 2 -> backTextures[ID];
+            case 3 -> leftTextures[ID];
+            default -> frontTextures[ID];
         };
     }
-    private static float[] getBackTexturePoints(int ID, byte rotation){
+    public static float[] getBackTexturePoints(byte ID, byte rotation){
         return switch (rotation) {
-            case 1 -> blockIDs[ID].leftTexture;
-            case 2 -> blockIDs[ID].frontTexture;
-            case 3 -> blockIDs[ID].rightTexture;
-            default -> blockIDs[ID].backTexture;
+            case 1 -> leftTextures[ID];
+            case 2 -> frontTextures[ID];
+            case 3 -> rightTextures[ID];
+            default -> backTextures[ID];
         };
 
     }
-    private static float[] getRightTexturePoints(int ID, byte rotation){
+    public static float[] getRightTexturePoints(byte ID, byte rotation){
         return switch (rotation) {
-            case 1 -> blockIDs[ID].backTexture;
-            case 2 -> blockIDs[ID].leftTexture;
-            case 3 -> blockIDs[ID].frontTexture;
-            default -> blockIDs[ID].rightTexture;
+            case 1 -> backTextures[ID];
+            case 2 -> leftTextures[ID];
+            case 3 -> frontTextures[ID];
+            default -> rightTextures[ID];
         };
     }
-    private static float[] getLeftTexturePoints(int ID, byte rotation){
+    public static float[] getLeftTexturePoints(byte ID, byte rotation){
         return switch (rotation) {
-            case 1 -> blockIDs[ID].frontTexture;
-            case 2 -> blockIDs[ID].rightTexture;
-            case 3 -> blockIDs[ID].backTexture;
-            default -> blockIDs[ID].leftTexture;
+            case 1 -> frontTextures[ID];
+            case 2 -> rightTextures[ID];
+            case 3 -> backTextures[ID];
+            default -> leftTextures[ID];
         };
     }
 
     private static float[] getTopTexturePoints(int ID){
-        return blockIDs[ID].topTexture;
+        return topTextures[ID];
     }
     private static float[] getBottomTexturePoints(int ID){
-        return blockIDs[ID].bottomTexture;
+        return bottomTextures[ID];
     }
-
     private static boolean getIfLiquid(int ID){
-        return blockIDs[ID].isLiquid;
+        return isLiquids[ID];
     }
 
 
     private static float[][] getBlockShape(byte ID, byte rot){
 
-        float[][] newBoxes = new float[blockShapeMap[blockIDs[ID].drawType].getBoxes().length][6];
+        byte drawType = drawTypes[ID];
+
+        float[][] newBoxes = new float[blockShapeMap[drawType].length][6];
 
 
         int index = 0;
@@ -1533,13 +1537,13 @@ public class ChunkMeshGenerator implements Runnable{
         //automated as base, since it's the same
         switch (rot) {
             case 0 -> {
-                for (float[] thisShape : blockShapeMap[blockIDs[ID].drawType].getBoxes()) {
+                for (float[] thisShape : blockShapeMap[drawType]) {
                     System.arraycopy(thisShape, 0, newBoxes[index], 0, 6);
                     index++;
                 }
             }
             case 1 -> {
-                for (float[] thisShape : blockShapeMap[blockIDs[ID].drawType].getBoxes()) {
+                for (float[] thisShape : blockShapeMap[drawType]) {
 
                     float blockDiffZ = 1f - thisShape[5];
                     float widthZ = thisShape[5] - thisShape[2];
@@ -1555,7 +1559,7 @@ public class ChunkMeshGenerator implements Runnable{
                 }
             }
             case 2 -> {
-                for (float[] thisShape : blockShapeMap[blockIDs[ID].drawType].getBoxes()) {
+                for (float[] thisShape : blockShapeMap[drawType]) {
 
                     float blockDiffZ = 1f - thisShape[5];
                     float widthZ = thisShape[5] - thisShape[2];
@@ -1574,7 +1578,7 @@ public class ChunkMeshGenerator implements Runnable{
                 }
             }
             case 3 -> {
-                for (float[] thisShape : blockShapeMap[blockIDs[ID].drawType].getBoxes()) {
+                for (float[] thisShape : blockShapeMap[drawType]) {
                     float blockDiffX = 1f - thisShape[3];
                     float widthX = thisShape[3] - thisShape[0];
 

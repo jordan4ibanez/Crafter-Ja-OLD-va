@@ -16,45 +16,44 @@ import static game.tnt.TNTEntity.createTNT;
 
 
 public class BlockDefinition {
-
     //holds BlockDefinition data
-    private final static BlockDefinition[] blockIDs = new BlockDefinition[(byte)30];
-
-    //holds the blockshape data
-    private final static BlockShape[] blockShapeMap = new BlockShape[(byte)9];
+    private static final byte maxIDs = 30;
 
     //fixed fields for the class
     private static final byte atlasSizeX = 32;
     private static final byte atlasSizeY = 32;
 
-    //actual block object fields
-    public byte     ID;
-    public String  name;
-    public boolean dropsItem;
-    public float[] frontTexture;  //front
-    public float[] backTexture;   //back
-    public float[] rightTexture;  //right
-    public float[] leftTexture;   //left
-    public float[] topTexture;    //top
-    public float[] bottomTexture; //bottom
-    public boolean walkable;
-    public boolean steppable;
-    public boolean isLiquid;
-    public byte drawType;
-    public String placeSound;
-    public String digSound;
-    public BlockModifier blockModifier;
-    public boolean isRightClickable;
-    public boolean isOnPlaced;
-    public float viscosity;
-    public boolean pointable;
-    public float stoneHardness;
-    public float dirtHardness;
-    public float woodHardness;
-    public float leafHardness;
-    public String droppedItem;
+    //holds the blockshape data
+    private final static float[][][] blockShapeMap = new float[(byte)9][0][0];
 
-    public BlockDefinition(
+    //actual block object fields
+    private static final String[] names = new String[maxIDs];
+    private static final boolean[] dropsItems = new boolean[maxIDs];
+    private static final byte[] drawTypes = new byte[maxIDs];
+    private static final float[][] frontTextures = new float[maxIDs][0];  //front
+    private static final float[][] backTextures = new float[maxIDs][0];   //back
+    private static final float[][] rightTextures = new float[maxIDs][0];  //right
+    private static final float[][] leftTextures = new float[maxIDs][0];   //left
+    private static final float[][] topTextures = new float[maxIDs][0];    //top
+    private static final float[][] bottomTextures = new float[maxIDs][0]; //bottom
+
+    private static final boolean[] walkables = new boolean[maxIDs];
+    private static final boolean[] steppables = new boolean[maxIDs];
+    private static final boolean[] isLiquids = new boolean[maxIDs];
+    private static final String[] placeSounds = new String[maxIDs];
+    private static final String[] digSounds = new String[maxIDs];
+    private static final BlockModifier[] blockModifiers = new BlockModifier[maxIDs];
+    private static final boolean[] isRightClickables = new boolean[maxIDs];
+    private static final boolean[] isOnPlaceds = new boolean[maxIDs];
+    private static final float[] viscositys = new float[maxIDs];
+    private static final boolean[] pointables = new boolean[maxIDs];
+    private static final float[] stoneHardnesses = new float[maxIDs];
+    private static final float[] dirtHardnesses = new float[maxIDs];
+    private static final float[] woodHardnesses = new float[maxIDs];
+    private static final float[] leafHardnesses = new float[maxIDs];
+    private static final String[] droppedItems = new String[maxIDs];
+
+    private static void registerBlock(
             byte ID,
             float stoneHardness,
             float dirtHardness,
@@ -82,76 +81,68 @@ public class BlockDefinition {
             String droppedItem
 
     ){
-
-        this.ID   = ID;
-        this.stoneHardness = stoneHardness;
-        this.dirtHardness = dirtHardness;
-        this.woodHardness = woodHardness;
-        this.leafHardness = leafHardness;
-        this.name = name;
-        this.dropsItem = dropsItem;
-        this.frontTexture  = calculateTexture(  front[0],  front[1] );
-        this.backTexture   = calculateTexture(   back[0],   back[1] );
-        this.rightTexture  = calculateTexture(  right[0],  right[1] );
-        this.leftTexture   = calculateTexture(   left[0],   left[1] );
-        this.topTexture    = calculateTexture(    top[0],    top[1] );
-        this.bottomTexture = calculateTexture( bottom[0], bottom[1] );
-        this.drawType = drawType;
-        this.walkable = walkable;
-        this.steppable = steppable;
-        this.isLiquid = isLiquid;
-        this.blockModifier = blockModifier;
-        this.placeSound = placeSound;
-        this.digSound = digSound;
-        this.isRightClickable = isRightClickable;
-        this.isOnPlaced = isOnPlaced;
-        this.viscosity = viscosity;
-        this.pointable = pointable;
-        this.droppedItem = droppedItem;
-        blockIDs[ID] = this;
+        stoneHardnesses[ID] = stoneHardness;
+        dirtHardnesses[ID] = dirtHardness;
+        woodHardnesses[ID] = woodHardness;
+        leafHardnesses[ID] = leafHardness;
+        names[ID] = name;
+        dropsItems[ID] = dropsItem;
+        frontTextures[ID]  = calculateTexture(  front[0],  front[1] );
+        backTextures[ID]   = calculateTexture(   back[0],   back[1] );
+        rightTextures[ID]  = calculateTexture(  right[0],  right[1] );
+        leftTextures[ID]   = calculateTexture(   left[0],   left[1] );
+        topTextures[ID]    = calculateTexture(    top[0],    top[1] );
+        bottomTextures[ID] = calculateTexture( bottom[0], bottom[1] );
+        drawTypes[ID] = drawType;
+        walkables[ID] = walkable;
+        steppables[ID] = steppable;
+        isLiquids[ID] = isLiquid;
+        blockModifiers[ID] = blockModifier;
+        placeSounds[ID] = placeSound;
+        digSounds[ID] = digSound;
+        isRightClickables[ID] = isRightClickable;
+        isOnPlaceds[ID] = isOnPlaced;
+        viscositys[ID] = viscosity;
+        pointables[ID] = pointable;
+        droppedItems[ID] = droppedItem;
 
         registerItem(name, ID);
     }
 
-    public static void onDigCall(int ID, Vector3d pos) {
-        BlockDefinition blockDefinition = blockIDs[ID];
-        if(blockDefinition != null){
-            if(blockDefinition.dropsItem){
-                //dropped defined item
-                if (blockDefinition.droppedItem != null){
-                    createItem(blockDefinition.droppedItem, pos.add(0.5d, 0.5d, 0.5d), 1, 2.5f);
-                }
-                //drop self
-                else {
-                    createItem(blockDefinition.name, pos.add(0.5d, 0.5d, 0.5d), 1, 2.5f);
-                }
+    public static void onDigCall(byte ID, Vector3d pos) {
+        if(dropsItems[ID]){
+            //dropped defined item
+            if (droppedItems[ID] != null){
+                createItem(droppedItems[ID], pos.add(0.5d, 0.5d, 0.5d), 1, 2.5f);
             }
-            if(blockDefinition.blockModifier != null){
-                try {
-                    blockDefinition.blockModifier.onDig(pos);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            //drop self
+            else {
+                createItem(names[ID], pos.add(0.5d, 0.5d, 0.5d), 1, 2.5f);
             }
-            if (!blockDefinition.digSound.equals("")) {
-                playSound(blockDefinition.digSound);
+        }
+        if(blockModifiers[ID] != null){
+            try {
+                blockModifiers[ID].onDig(pos);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+        }
+        if (!digSounds[ID].equals("")) {
+            playSound(digSounds[ID]);
         }
     }
 
-    public static void onPlaceCall(int ID, Vector3i pos) {
-        BlockDefinition blockDefinition = blockIDs[ID];
-        if (blockDefinition != null) {
-            if (blockDefinition.blockModifier != null){
-                try {
-                    blockDefinition.blockModifier.onPlace(pos);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+    public static void onPlaceCall(byte ID, Vector3i pos) {
+
+        if (blockModifiers[ID] != null){
+            try {
+                blockModifiers[ID].onPlace(pos);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            if (!blockDefinition.placeSound.equals("")) {
-                playSound(blockDefinition.placeSound);
-            }
+        }
+        if (!placeSounds[ID].equals("")) {
+            playSound(placeSounds[ID]);
         }
     }
 
@@ -166,45 +157,44 @@ public class BlockDefinition {
     }
 
     public static String getBlockName(byte ID){
-        return blockIDs[ID].name;
+        return names[ID];
     }
 
     public static boolean getRightClickable(byte ID){
-        return(blockIDs[ID].isRightClickable);
+        return(isRightClickables[ID]);
     }
 
     public static boolean getIsOnPlaced(byte ID){
-        return(blockIDs[ID].isOnPlaced);
+        return(isOnPlaceds[ID]);
     }
 
     public static byte getBlockDrawType(byte ID){
         if (ID < 0){
             return 0;
         }
-        return blockIDs[ID].drawType;
+        return drawTypes[ID];
     }
 
-    public static boolean getIfLiquid(int ID){
-        return blockIDs[ID].isLiquid;
+    public static boolean getIfLiquid(byte ID){
+        return isLiquids[ID];
     }
 
     public static float[][] getBlockShape(byte ID, byte rot){
 
-        float[][] newBoxes = new float[blockShapeMap[blockIDs[ID].drawType].getBoxes().length][6];
+        float[][] newBoxes = new float[blockShapeMap[drawTypes[ID]].length][6];
 
-
-        int index = 0;
+        byte index = 0;
 
         //automated as base, since it's the same
         switch (rot) {
             case 0 -> {
-                for (float[] thisShape : blockShapeMap[blockIDs[ID].drawType].getBoxes()) {
+                for (float[] thisShape : blockShapeMap[drawTypes[ID]]) {
                     System.arraycopy(thisShape, 0, newBoxes[index], 0, 6);
                     index++;
                 }
             }
             case 1 -> {
-                for (float[] thisShape : blockShapeMap[blockIDs[ID].drawType].getBoxes()) {
+                for (float[] thisShape : blockShapeMap[drawTypes[ID]]) {
 
                     float blockDiffZ = 1f - thisShape[5];
                     float widthZ = thisShape[5] - thisShape[2];
@@ -220,7 +210,7 @@ public class BlockDefinition {
                 }
             }
             case 2 -> {
-                for (float[] thisShape : blockShapeMap[blockIDs[ID].drawType].getBoxes()) {
+                for (float[] thisShape : blockShapeMap[drawTypes[ID]]) {
 
                     float blockDiffZ = 1f - thisShape[5];
                     float widthZ = thisShape[5] - thisShape[2];
@@ -239,7 +229,7 @@ public class BlockDefinition {
                 }
             }
             case 3 -> {
-                for (float[] thisShape : blockShapeMap[blockIDs[ID].drawType].getBoxes()) {
+                for (float[] thisShape : blockShapeMap[drawTypes[ID]]) {
                     float blockDiffX = 1f - thisShape[3];
                     float widthX = thisShape[3] - thisShape[0];
 
@@ -257,64 +247,47 @@ public class BlockDefinition {
         return newBoxes;
     }
 
-    public static boolean isBlockWalkable(int ID){
-        return blockIDs[ID].walkable;
+    public static boolean isBlockWalkable(byte ID){
+        return walkables[ID];
     }
 
-    public static boolean isSteppable(int ID){
-        return blockIDs[ID].steppable;
+    public static boolean isSteppable(byte ID){
+        return steppables[ID];
     }
 
     public static void initializeBlocks() {
 
         //air
-        blockShapeMap[0] = new BlockShape(new float[][]{{0f,0f,0f,1f,1f,1f}});
+        blockShapeMap[0] = new float[][]{{0f,0f,0f,1f,1f,1f}};
 
         //normal
-        blockShapeMap[1] = new BlockShape(new float[][]{{0f,0f,0f,1f,1f,1f}});
+        blockShapeMap[1] = new float[][]{{0f,0f,0f,1f,1f,1f}};
 
         //stair
-        blockShapeMap[2] =
-                new BlockShape(new float[][]{
+        blockShapeMap[2] = new float[][]{
                                 {0f,0f,0f,1f,0.5f,1f},
                                 {0f,0f,0f,1f,1f,0.5f}
-                        });
+                        };
 
         //slab
-        blockShapeMap[3] =
-                new BlockShape(new float[][]{
-                                {0f,0f,0f,1f,0.5f,1f}
-                        });
+        blockShapeMap[3] = new float[][]{{0f,0f,0f,1f,0.5f,1f}};
 
         //allfaces
-        blockShapeMap[4] =
-                new BlockShape(new float[][]{
-                                {0f,0f,0f,1f,1f,1f}
-                        });
+        blockShapeMap[4] = new float[][]{{0f,0f,0f,1f,1f,1f}};
 
         //door open
-        blockShapeMap[5] =
-                new BlockShape(
-                        new float[][]{
-                                {0f,0f,0f,2f/16f,1f,1f}
-                        }
-                );
+        blockShapeMap[5] = new float[][]{{0f,0f,0f,2f/16f,1f,1f}};
 
         //door closed
-        blockShapeMap[6] =
-                new BlockShape(
-                        new float[][]{
-                                {0f,0f,14f/16f,1f,1f,1f}
-                        }
-                );
+        blockShapeMap[6] = new float[][]{{0f,0f,14f/16f,1f,1f,1f}};
 
         //torch
-        blockShapeMap[7] = new BlockShape(new float[][]{{0f,0f,0f,1f,1f,1f}});
+        blockShapeMap[7] = new float[][]{{0f,0f,0f,1f,1f,1f}};
 
         //liquid source
-        blockShapeMap[8] = new BlockShape(new float[][]{{0f,0f,0f,1f,1f,1f}});
+        blockShapeMap[8] = new float[][]{{0f,0f,0f,1f,1f,1f}};
 
-        new BlockDefinition(
+        registerBlock(
                 (byte) 0,
                 -1f,
                 -1f,
@@ -342,7 +315,7 @@ public class BlockDefinition {
                 null
         );
 
-        new BlockDefinition(
+        registerBlock(
                 (byte) 1,
                 0f,
                 1f,
@@ -370,7 +343,7 @@ public class BlockDefinition {
                 null
         );
 
-        new BlockDefinition(
+        registerBlock(
                 (byte) 2,
                 0,
                 2f,
@@ -398,7 +371,7 @@ public class BlockDefinition {
                 "dirt"
         );
 
-        new BlockDefinition(
+        registerBlock(
                 (byte) 3,
                 1,
                 0,
@@ -426,7 +399,7 @@ public class BlockDefinition {
                 "cobblestone"
         );
 
-        new BlockDefinition(
+        registerBlock(
                 (byte) 4,
                 1.5f,
                 0,
@@ -454,7 +427,7 @@ public class BlockDefinition {
                 null
         );
 
-        new BlockDefinition(
+        registerBlock(
                 (byte) 5,
                 -1,
                 -1,
@@ -491,7 +464,7 @@ public class BlockDefinition {
             }
         };
 
-        new BlockDefinition(
+        registerBlock(
                 (byte) 6,
                 0,
                 0,
@@ -519,7 +492,7 @@ public class BlockDefinition {
                 null
         );
 
-        new BlockDefinition(
+        registerBlock(
                 (byte) 7,
                 -1,
                 -1,
@@ -547,7 +520,7 @@ public class BlockDefinition {
                 null
         );
 
-        new BlockDefinition(
+        registerBlock(
                 (byte) 8,
                 4,
                 0,
@@ -575,7 +548,7 @@ public class BlockDefinition {
                 "coal"
         );
 
-        new BlockDefinition(
+        registerBlock(
                 (byte) 9,
                 6,
                 0,
@@ -603,7 +576,7 @@ public class BlockDefinition {
                 null
         );
 
-        new BlockDefinition(
+        registerBlock(
                 (byte) 10,
                 8,
                 0,
@@ -631,7 +604,7 @@ public class BlockDefinition {
                 null
         );
 
-        new BlockDefinition(
+        registerBlock(
                 (byte) 11,
                 10,
                 0,
@@ -659,7 +632,7 @@ public class BlockDefinition {
                 "diamond"
         );
 
-        new BlockDefinition(
+        registerBlock(
                 (byte) 12,
                 12,
                 0,
@@ -687,7 +660,7 @@ public class BlockDefinition {
                 "emerald"
         );
 
-        new BlockDefinition(
+        registerBlock(
                 (byte) 13,
                 10,
                 0,
@@ -715,7 +688,7 @@ public class BlockDefinition {
                 "lapis"
         );
 
-        new BlockDefinition(
+        registerBlock(
                 (byte) 14,
                 14,
                 0,
@@ -743,7 +716,7 @@ public class BlockDefinition {
                 "sapphire"
         );
 
-        new BlockDefinition(
+        registerBlock(
                 (byte) 15,
                 16,
                 0,
@@ -771,7 +744,7 @@ public class BlockDefinition {
                 "ruby"
         );
 
-        new BlockDefinition(
+        registerBlock(
                 (byte) 16,
                 2,
                 0,
@@ -800,7 +773,7 @@ public class BlockDefinition {
         );
 
 
-        new BlockDefinition(
+        registerBlock(
                 (byte) 17,
                 0,
                 0,
@@ -827,7 +800,7 @@ public class BlockDefinition {
                 true,
                 null
         );
-        new BlockDefinition(
+        registerBlock(
                 (byte) 18,
                 0,
                 0,
@@ -854,7 +827,7 @@ public class BlockDefinition {
                 true,
                 null
         );
-        new BlockDefinition(
+        registerBlock(
                 (byte)19,
                 0,
                 0,
@@ -892,7 +865,7 @@ public class BlockDefinition {
                 }
             }
         };
-        new BlockDefinition(
+        registerBlock(
                 (byte) 20,
                 0,
                 1,
@@ -920,7 +893,7 @@ public class BlockDefinition {
                 null
         );
 
-        new BlockDefinition(
+        registerBlock(
                 (byte) 21,
                 0,
                 0,
@@ -966,7 +939,7 @@ public class BlockDefinition {
                 null
         );
 
-        new BlockDefinition(
+        registerBlock(
                 (byte) 22,
                 0,
                 0,
@@ -1013,7 +986,7 @@ public class BlockDefinition {
                 null
         );
 
-        new BlockDefinition(
+        registerBlock(
                 (byte) 23,
                 0,
                 0,
@@ -1060,7 +1033,7 @@ public class BlockDefinition {
                 null
         );
 
-        new BlockDefinition(
+        registerBlock(
                 (byte) 24,
                 0,
                 0,
@@ -1107,7 +1080,7 @@ public class BlockDefinition {
                 null
         );
 
-        new BlockDefinition(
+        registerBlock(
                 (byte) 25,
                 0,
                 0,
@@ -1135,7 +1108,7 @@ public class BlockDefinition {
                 null
         );
 
-        new BlockDefinition(
+        registerBlock(
                 (byte) 26,
                 0,
                 0,
@@ -1163,7 +1136,7 @@ public class BlockDefinition {
                 null
         );
 
-        new BlockDefinition(
+        registerBlock(
                 (byte) 27,
                 0,
                 0,
@@ -1199,7 +1172,7 @@ public class BlockDefinition {
             }
         };
 
-        new BlockDefinition(
+        registerBlock(
                 (byte) 28,
                 0,
                 0,
@@ -1240,7 +1213,7 @@ public class BlockDefinition {
             }
         };
 
-        new BlockDefinition(
+        registerBlock(
                 (byte) 29,
                 0,
                 0,
@@ -1268,81 +1241,92 @@ public class BlockDefinition {
                 "torchItem"
         );
 
-        passChunkMeshThreadData(blockIDs, blockShapeMap);
+        passChunkMeshThreadData(drawTypes,frontTextures,backTextures,rightTextures,leftTextures,topTextures,bottomTextures,isLiquids);
     }
 
-    public static BlockDefinition getBlockDefinition(int ID){
-        return blockIDs[ID];
+    public static boolean blockHasOnRightClickCall(byte ID){
+        return(isRightClickables[ID] && blockModifiers[ID] != null);
     }
 
-    public static BlockDefinition getBlockDefinition(String name){
-        for(BlockDefinition thisBlockDefinition : blockIDs){
-            if (thisBlockDefinition.name.equals(name)){
-                return thisBlockDefinition;
-            }
-        }
-        return null;
-    }
-
-    public static boolean blockHasOnRightClickCall(int ID){
-        return(blockIDs[ID].isRightClickable && blockIDs[ID].blockModifier != null);
-    }
-
-    public static float[] getFrontTexturePoints(int ID, byte rotation){
+    public static float[] getFrontTexturePoints(byte ID, byte rotation){
         return switch (rotation) {
-            case 1 -> blockIDs[ID].rightTexture;
-            case 2 -> blockIDs[ID].backTexture;
-            case 3 -> blockIDs[ID].leftTexture;
-            default -> blockIDs[ID].frontTexture;
+            case 1 -> rightTextures[ID];
+            case 2 -> backTextures[ID];
+            case 3 -> leftTextures[ID];
+            default -> frontTextures[ID];
         };
     }
-    public static float[] getBackTexturePoints(int ID, byte rotation){
+    public static float[] getBackTexturePoints(byte ID, byte rotation){
         return switch (rotation) {
-            case 1 -> blockIDs[ID].leftTexture;
-            case 2 -> blockIDs[ID].frontTexture;
-            case 3 -> blockIDs[ID].rightTexture;
-            default -> blockIDs[ID].backTexture;
+            case 1 -> leftTextures[ID];
+            case 2 -> frontTextures[ID];
+            case 3 -> rightTextures[ID];
+            default -> backTextures[ID];
         };
 
     }
-    public static float[] getRightTexturePoints(int ID, byte rotation){
+    public static float[] getRightTexturePoints(byte ID, byte rotation){
         return switch (rotation) {
-            case 1 -> blockIDs[ID].backTexture;
-            case 2 -> blockIDs[ID].leftTexture;
-            case 3 -> blockIDs[ID].frontTexture;
-            default -> blockIDs[ID].rightTexture;
+            case 1 -> backTextures[ID];
+            case 2 -> leftTextures[ID];
+            case 3 -> frontTextures[ID];
+            default -> rightTextures[ID];
         };
     }
-    public static float[] getLeftTexturePoints(int ID, byte rotation){
+    public static float[] getLeftTexturePoints(byte ID, byte rotation){
         return switch (rotation) {
-            case 1 -> blockIDs[ID].frontTexture;
-            case 2 -> blockIDs[ID].rightTexture;
-            case 3 -> blockIDs[ID].backTexture;
-            default -> blockIDs[ID].leftTexture;
+            case 1 -> frontTextures[ID];
+            case 2 -> rightTextures[ID];
+            case 3 -> backTextures[ID];
+            default -> leftTextures[ID];
         };
     }
 
-    public static boolean isBlockLiquid(int ID){
-        return blockIDs[ID].isLiquid;
+    public static BlockModifier getBlockModifier(byte ID){
+        return blockModifiers[ID];
     }
 
-    public static float getBlockViscosity(int ID){
-        return blockIDs[ID].viscosity;
-    }
-    public static float[] getTopTexturePoints(int ID){
-        return blockIDs[ID].topTexture;
-    }
-    public static float[] getBottomTexturePoints(int ID){
-        return blockIDs[ID].bottomTexture;
+    public static float getStoneHardness(byte ID){
+        return stoneHardnesses[ID];
     }
 
-    public static boolean isBlockPointable(int ID){
-        return blockIDs[ID].pointable;
+    public static float getDirtHardness(byte ID){
+        return dirtHardnesses[ID];
+    }
+
+    public static float getWoodHardness(byte ID){
+        return woodHardnesses[ID];
+    }
+
+    public static float getLeafHardness(byte ID){
+        return leafHardnesses[ID];
+    }
+
+    public static boolean isBlockLiquid(byte ID){
+        return isLiquids[ID];
+    }
+
+    public static float getBlockViscosity(byte ID){
+        return viscositys[ID];
+    }
+    public static float[] getTopTexturePoints(byte ID){
+        return topTextures[ID];
+    }
+    public static float[] getBottomTexturePoints(byte ID){
+        return bottomTextures[ID];
+    }
+
+    public static boolean isBlockPointable(byte ID){
+        return pointables[ID];
+    }
+
+    public static String getDigSound(byte ID){
+        return digSounds[ID];
     }
 
     //these two methods are specifically designed for the ChunkMeshGenerator
     public static byte getBlockIDsSize(){
-        return (byte)blockIDs.length;
+        return maxIDs;
     }
     public static byte getBlockShapeMapSize(){
         return (byte)blockShapeMap.length;

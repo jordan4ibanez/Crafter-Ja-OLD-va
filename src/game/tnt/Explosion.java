@@ -3,7 +3,7 @@ package game.tnt;
 import org.joml.Vector3d;
 
 import static engine.FancyMath.getDistance;
-import static game.blocks.BlockDefinition.getBlockDefinition;
+import static game.blocks.BlockDefinition.getBlockName;
 import static game.chunk.Chunk.getBlock;
 import static game.chunk.Chunk.setBlock;
 import static game.item.ItemEntity.createItem;
@@ -17,12 +17,12 @@ public class Explosion {
             for (int y = (int)Math.floor(pos.y) - boomDistance; y < (int)Math.floor(pos.y) + boomDistance; y++) {
                 for (int z = (int)Math.floor(pos.z) - boomDistance; z < (int)Math.floor(pos.z) + boomDistance; z++) {
                     if (getDistance(pos.x, pos.y, pos.z, x, y, z) <= boomDistance) {
-                        int currentBlock = getBlock(x, y, z);
+                        byte currentBlock = getBlock(x, y, z);
                         //don't destroy bedrock
                         if(currentBlock != 5) {
                             setBlock(x, y, z, (byte) 0, (byte) 0);
                             if (currentBlock > 0 && currentBlock != 6 && Math.random() > 0.994) {
-                                createItem(getBlockDefinition(currentBlock).name, new Vector3d(x,y,z), 1);
+                                createItem(getBlockName(currentBlock), new Vector3d(x,y,z), 1);
                             } else if (currentBlock == 6){
                                 createTNT(new Vector3d(x, y, z), (float)(Math.random() * 1f) + 1.0f, false);
                             }

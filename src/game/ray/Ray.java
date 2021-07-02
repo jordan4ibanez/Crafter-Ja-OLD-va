@@ -93,14 +93,14 @@ public class Ray {
             }
             setPlayerWorldSelectionPos(null);
         } else {
-            if (foundBlock > 0 && getBlockDefinition(foundBlock).pointable) {
+            if (foundBlock > 0 && isBlockPointable(foundBlock)) {
                 if (mining && hasMined) {
                     destroyBlock();
                 } else if (placing) {
 
                     //todo: make this call on punched
                     if (!isPlayerSneaking() && blockHasOnRightClickCall(foundBlock)) {
-                        getBlockDefinition(foundBlock).blockModifier.onRightClick(finalPos);
+                        getBlockModifier(foundBlock).onRightClick(finalPos);
                     } else {
                         Item wielding = getItemInInventorySlot(getPlayerInventorySelection(), 0);
 
@@ -125,7 +125,7 @@ public class Ray {
 
     private static void destroyBlock() {
 
-        int thisBlock = getBlock(finalPos.x, finalPos.y, finalPos.z);
+        byte thisBlock = getBlock(finalPos.x, finalPos.y, finalPos.z);
 
         if (thisBlock < 0) {
             return;

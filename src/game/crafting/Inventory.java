@@ -8,7 +8,6 @@ import java.util.Arrays;
 
 import static engine.time.Time.getDelta;
 import static engine.network.Networking.*;
-import static game.blocks.BlockDefinition.getBlockDefinition;
 import static game.item.ItemDefinition.getItemDefinition;
 import static game.item.ItemDefinition.getRandomItemDefinition;
 import static game.item.ItemEntity.createItem;

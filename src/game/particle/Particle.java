@@ -19,7 +19,7 @@ public class Particle {
 
     private static int currentID = 0;
 
-    public static void createParticle(Vector3d pos, Vector3f inertia, int blockID){
+    public static void createParticle(Vector3d pos, Vector3f inertia, byte blockID){
         particles.put(currentID, new ParticleObject(pos, inertia, createParticleMesh(blockID), currentID));
         currentID++;
     }
@@ -77,7 +77,7 @@ public class Particle {
         return particles.values().toArray();
     }
 
-    private static Mesh createParticleMesh(int blockID) {
+    private static Mesh createParticleMesh(byte blockID) {
 
         final float textureScale = (float)Math.ceil(Math.random() * 3f);
         final float pixelScale = (float)(int)textureScale / 25f;

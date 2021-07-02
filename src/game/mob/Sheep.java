@@ -89,7 +89,7 @@ public class Sheep {
 
             if (thisMob.health > 0) {
                 //check if swimming
-                int block = getBlock((int) Math.floor(thisMob.pos.x), (int) Math.floor(thisMob.pos.y), (int) Math.floor(thisMob.pos.z));
+                byte block = getBlock((int) Math.floor(thisMob.pos.x), (int) Math.floor(thisMob.pos.y), (int) Math.floor(thisMob.pos.z));
                 if (block > -1 && getIfLiquid(block)) {
                     thisMob.inertia.y += 100f * delta;
                 }
