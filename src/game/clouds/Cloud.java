@@ -7,7 +7,6 @@ import org.joml.Vector2i;
 import static engine.time.Time.getDelta;
 import static game.clouds.CloudMesh.buildCloud2DMesh;
 import static game.clouds.CloudMesh.buildCloud3DMesh;
-import static game.light.Light.getCurrentGlobalLightLevel;
 
 public class Cloud {
 
@@ -59,10 +58,6 @@ public class Cloud {
         return cloudScale;
     }
 
-    public static void scrollClouds(){
-
-    }
-
     private static final Mesh cloud2DMesh = buildCloud2DMesh();
     private static final Mesh cloud3DMesh = buildCloud3DMesh();
 
@@ -75,20 +70,9 @@ public class Cloud {
     }
 
 
-
-    private static boolean getIfCloud(byte x, byte z){
-        //return  cloudData[cloudPosToIndex(x,z)];
-        return cloudData[x][z];
-    }
-
     public static boolean[][] getCloudData(){
         return cloudData;
     }
-
-
-    //private static short cloudPosToIndex(byte x, byte z){
-        //return (short) ((z * 16) + x);
-    //}
 
     private final static FastNoise noise = new FastNoise();
 
