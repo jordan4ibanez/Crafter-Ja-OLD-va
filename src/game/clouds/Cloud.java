@@ -43,13 +43,12 @@ public class Cloud {
     }
 
     public static void setCloudPos(int x, int z){
-        cloudPos.x = x;
-        cloudPos.y = z;
+        cloudPos.set(x,z);
         generateCloudData();
     }
 
     public static Vector2i getCloudPos(){
-        return new Vector2i(cloudPos); //clone memory pointer
+        return cloudPos;
     }
 
     final private static float cloudScale = 16f;
