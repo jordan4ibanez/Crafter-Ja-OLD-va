@@ -946,7 +946,7 @@ public class GameRenderer {
                 }
 
                 //render items in hotbar
-                for (int x = 1; x <= 9; x++) {
+                for (byte x = 1; x <= 9; x++) {
 
                     Item thisItem = getItemInInventorySlot(x - 1, 0);
                     if (thisItem != null) {
