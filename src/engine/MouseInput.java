@@ -54,10 +54,12 @@ public class MouseInput {
         return displVec;
     }
 
+    private static final double[] testX = new double[1];
+    private static final double[] testY = new double[1];
+
     public static void mouseInput(){
 
-        double[] testX = new double[1];
-        double[] testY = new double[1];
+
         glfwGetCursorPos(getWindowHandle(), testX, testY);
         currentPos.x = (float)testX[0];
         currentPos.y = (float)testY[0];
