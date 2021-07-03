@@ -2,6 +2,7 @@ package game.crafting;
 
 import game.item.Item;
 import game.item.ItemDefinition;
+import org.joml.Math;
 import org.joml.Vector2d;
 
 import java.util.Arrays;
@@ -115,7 +116,7 @@ public class Inventory {
                 if (thisItem.equals("air")){
                     mainInventory.set(x,y,null);
                 } else {
-                    int thisAmount = (int) Math.floor(Math.random() * 65);
+                    int thisAmount = (int)Math.floor(Math.random() * 65);
                     if (thisAmount == 0){
                         thisAmount = 1;
                     }
