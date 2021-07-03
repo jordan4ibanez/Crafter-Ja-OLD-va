@@ -4,6 +4,7 @@ import org.joml.AABBd;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
+import org.joml.Math;
 
 import static engine.time.Time.getDelta;
 import static game.chunk.Chunk.getBlock;
@@ -13,6 +14,10 @@ import static game.chunk.Chunk.getBlockRotation;
 public class ParticleCollision {
 
     private static double adjustedDelta;
+
+    private static final Vector3d oldPos = new Vector3d();
+    private static final Vector3i fPos = new Vector3i();
+    private static final AABBd block = new AABBd();
 
     public static boolean applyParticleInertia(Vector3d pos, Vector3f inertia, boolean gravity, boolean applyCollision){
 
@@ -78,15 +83,11 @@ public class ParticleCollision {
     private static boolean collisionDetect(Vector3d pos, Vector3f inertia){
         boolean onGround = false;
 
-        final Vector3d oldPos = new Vector3d();
-
-        oldPos.x = pos.x;
-        oldPos.y = pos.y;
-        oldPos.z = pos.z;
+        oldPos.set(pos);
 
         pos.y += inertia.y * adjustedDelta;
 
-        final Vector3i fPos = floorPos(pos);
+        floorPos(pos);
 
         switch (inertiaToDir(inertia.y)) {
             case -1 -> {
@@ -109,7 +110,7 @@ public class ParticleCollision {
         //todo: begin X collision detection
         pos.x += inertia.x * adjustedDelta;
 
-        fPos.set(floorPos(pos));
+        floorPos(pos);
 
         switch (inertiaToDir(inertia.x)) {
             case 1 -> {
@@ -132,7 +133,7 @@ public class ParticleCollision {
 
         //todo: Begin Z collision detection
         pos.z += inertia.z * adjustedDelta;
-        fPos.set(floorPos(pos));
+        floorPos(pos);
 
         switch (inertiaToDir(inertia.z)) {
             case 1 -> {
@@ -157,7 +158,8 @@ public class ParticleCollision {
     private static boolean collideYNegative(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
         boolean onGround = false;
         for (float[] blockBox : getBlockShape(blockID, rot)) {
-            final AABBd block  = new AABBd(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ,blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
+            block.setMin(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ);
+            block.setMax(blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
             if (block.containsPoint(pos)) {
                 onGround = true;
                 pos.y = block.maxY;
@@ -169,7 +171,8 @@ public class ParticleCollision {
 
     private static void collideYPositive(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
         for (float[] blockBox : getBlockShape(blockID, rot)) {
-            final AABBd block  = new AABBd(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ,blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
+            block.setMin(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ);
+            block.setMax(blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
             //head detection
             if (block.containsPoint(pos)) {
                 pos.y = block.minY;
@@ -180,7 +183,8 @@ public class ParticleCollision {
 
     private static void collideXPositive(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
         for (float[] blockBox : getBlockShape(blockID, rot)) {
-            final AABBd block  = new AABBd(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ,blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
+            block.setMin(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ);
+            block.setMax(blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
             if (block.containsPoint(pos)) {
                 pos.x = block.minX;
                 inertia.x = 0;
@@ -190,7 +194,8 @@ public class ParticleCollision {
 
     private static void collideXNegative(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
         for (float[] blockBox : getBlockShape(blockID, rot)) {
-            final AABBd block  = new AABBd(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ,blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
+            block.setMin(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ);
+            block.setMax(blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
             if (block.containsPoint(pos)) {
                 pos.x = block.maxX;
                 inertia.x = 0;
@@ -201,7 +206,8 @@ public class ParticleCollision {
 
     private static void collideZPositive(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
         for (float[] blockBox : getBlockShape(blockID, rot)) {
-            final AABBd block  = new AABBd(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ,blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
+            block.setMin(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ);
+            block.setMax(blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
             if (block.containsPoint(pos)) {
                 pos.z = block.minZ;
                 inertia.z = 0;
@@ -211,7 +217,8 @@ public class ParticleCollision {
 
     private static void collideZNegative(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
         for (float[] blockBox : getBlockShape(blockID, rot)) {
-            final AABBd block  = new AABBd(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ,blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
+            block.setMin(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ);
+            block.setMax(blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
             if (block.containsPoint(pos)) {
                 pos.z = block.maxZ;
                 inertia.z = 0;
@@ -232,7 +239,7 @@ public class ParticleCollision {
 
     //simple type cast bolt on to JOML
     //converts floored Vector3d to Vector3i
-    private static Vector3i floorPos(Vector3d input){
-        return new Vector3i((int)Math.floor(input.x), (int)Math.floor(input.y),(int)Math.floor(input.z));
+    private static void floorPos(Vector3d input){
+        fPos.set((int) Math.floor(input.x), (int)Math.floor(input.y),(int)Math.floor(input.z));
     }
 }
