@@ -1009,7 +1009,7 @@ public class GameRenderer {
 
         //render chat messages
         {
-            int i = 1;
+            byte i = 1;
             for (Mesh mesh : getViewableChatMessages()){
                 if (mesh != null){
                     //render background
