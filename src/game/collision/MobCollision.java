@@ -9,10 +9,15 @@ import static game.player.Player.*;
 
 //basically cylindrical magnetic 2d collision detection class
 public class MobCollision {
+
+    private static final Vector2d workerVec2D = new Vector2d();
+    private static final Vector2d workerVec2D2 = new Vector2d();
+    private static final Vector2d normalizedPos = new Vector2d();
+
     public static void mobSoftCollisionDetect(MobObject thisMob){
         //get this mob's info
         Vector3d thisPos   = thisMob.pos;
-        Vector2d this2dPos = new Vector2d(thisPos.x, thisPos.z);
+        workerVec2D.set(thisPos.x, thisPos.z);
         float thisWidth    = thisMob.width;
         float thisHeight   = thisMob.height;
         double thisBottom  = thisPos.y;
@@ -22,20 +27,18 @@ public class MobCollision {
 
         for (MobObject otherMob : mobs){
 
-            //don't detect against self
+            //don't detect against self or dead mobs
             if (otherMob == thisMob || otherMob.health <= 0){
-                //System.out.println("i collided with myself! ID: " + thisMob.globalID);
-                //System.out.println("This guy's dead! ID: " + otherMob.globalID);
                 continue;
             }
 
             //get other mob's info
             float otherWidth    = otherMob.width;
             Vector3d otherPos   = otherMob.pos;
-            Vector2d other2DPos = new Vector2d(otherPos.x, otherPos.z);
+            workerVec2D2.set(otherPos.x, otherPos.z);
 
             //only continue if within 2D radius
-            if (this2dPos.distance(other2DPos) <= thisWidth + otherWidth) {
+            if (workerVec2D.distance(workerVec2D2) <= thisWidth + otherWidth) {
 
                 float otherHeight  = otherMob.height;
                 double otherBottom = otherPos.y;
@@ -47,7 +50,7 @@ public class MobCollision {
                     //success!
 
                     //normalize values and make it not shoot mobs out
-                    Vector2d normalizedPos = new Vector2d(this2dPos).sub(other2DPos).normalize().mul(0.05f);
+                    normalizedPos.set(workerVec2D2).sub(workerVec2D).normalize().mul(0.05f);
 
                     if (normalizedPos.isFinite()) {
                         thisMob.inertia.x += normalizedPos.x;
@@ -61,7 +64,7 @@ public class MobCollision {
     public static void mobSoftPlayerCollisionDetect(MobObject thisMob){
         //get this mob's info
         Vector3d thisPos   = thisMob.pos;
-        Vector2d this2dPos = new Vector2d(thisPos.x, thisPos.z);
+        workerVec2D.set(thisPos.x, thisPos.z);
         float thisWidth    = thisMob.width;
         float thisHeight   = thisMob.height;
         double thisBottom  = thisPos.y;
@@ -71,10 +74,10 @@ public class MobCollision {
         //get player's info
         float otherWidth    = getPlayerWidth();
         Vector3d otherPos   = getPlayerPos();
-        Vector2d other2DPos = new Vector2d(otherPos.x, otherPos.z);
+        workerVec2D2.set(otherPos.x, otherPos.z);
 
         //only continue if within 2D radius
-        if (this2dPos.distance(other2DPos) <= thisWidth + otherWidth) {
+        if (workerVec2D.distance(workerVec2D2) <= thisWidth + otherWidth) {
 
             float otherHeight = getPlayerHeight();
             double otherBottom = otherPos.y;
@@ -86,7 +89,7 @@ public class MobCollision {
                 //success!
 
                 //normalize values and make it not shoot mobs out
-                Vector2d normalizedPos = new Vector2d(this2dPos).sub(other2DPos).normalize().mul(0.05f);
+                normalizedPos.set(workerVec2D).sub(workerVec2D2).normalize().mul(0.05f);
 
                 if (normalizedPos.isFinite()) {
                     thisMob.inertia.x += normalizedPos.x;
