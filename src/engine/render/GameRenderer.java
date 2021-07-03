@@ -1050,8 +1050,8 @@ public class GameRenderer {
 
         double yProgram;
         if (inventory.isMainInventory()) {
-            for (int x = 0; x < inventory.getSize().x; x++) {
-                for (int y = 0; y < inventory.getSize().y; y++) {
+            for (byte x = 0; x < inventory.getSize().x; x++) {
+                for (byte y = 0; y < inventory.getSize().y; y++) {
 
                     //this is a quick and dirty hack to implement
                     //the space between the hotbar and rest of inventory
