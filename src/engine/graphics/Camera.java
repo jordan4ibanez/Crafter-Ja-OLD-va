@@ -126,7 +126,6 @@ public class Camera {
         //these must go after camera rotation
         //or weird inertia effect happens
         if (cameraPerspective > 0){
-            //Vector3d newCameraPos = ;
             setCameraPosition(genericWorldRaycast(getPlayerPosWithEyeHeight(), getCameraRotationVector().mul(-1), 3));
         }
     }
