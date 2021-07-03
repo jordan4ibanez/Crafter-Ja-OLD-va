@@ -138,18 +138,17 @@ public class Window {
         return windowHandle;
     }
 
-    private static Vector3f currentClearColor = new Vector3f();
-    private static Vector3f clearColorGoal  = new Vector3f();
+    private static final Vector3f currentClearColor = new Vector3f();
+    private static final Vector3f clearColorGoal  = new Vector3f();
 
     public static void setWindowClearColor(float r, float g, float b, float alpha){
         glClearColor(r, g, b, alpha);
-        currentClearColor = new Vector3f(r,g,b);
-        clearColorGoal = new Vector3f(r,g,b);
+        currentClearColor.set(r,g,b);
+        clearColorGoal.set(r,g,b);
     }
 
-
     public static void setWindowClearColorGoal(float r, float g, float b, float alpha){
-        clearColorGoal = new Vector3f(r,g,b);
+        clearColorGoal.set(r,g,b);
     }
 
     public static void processClearColorInterpolation(){
