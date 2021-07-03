@@ -49,9 +49,10 @@ public class Chunk {
     private static final HashMap<Vector2i, Mesh[]> liquidMeshes   = new HashMap<>();
     private static final HashMap<Vector2i, Mesh[]> allFaceMeshes  = new HashMap<>();
 
+    private static final Vector2i[] keyArray = new Vector2i[0];
 
     public static Vector2i[] getChunkKeys(){
-        return chunkKeys.values().toArray(new Vector2i[0]);
+        return chunkKeys.keySet().toArray(keyArray);
     }
 
     public static Vector2i getChunkKey(Vector2i key){
