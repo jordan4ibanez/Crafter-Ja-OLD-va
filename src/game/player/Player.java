@@ -1,6 +1,5 @@
 package game.player;
 
-import game.blocks.BlockDefinition;
 import org.joml.Quaternionf;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
@@ -59,8 +58,8 @@ public class Player {
 
     private static float lightCheckTimer = 0f;
     private static byte lightLevel = 0;
-    private static Vector3i oldPos = new Vector3i(0,0,0);
-    private static Vector3d oldRealPos = new Vector3d(0,0,0);
+    private static final Vector3i oldFlooredPos = new Vector3i(0,0,0);
+    private static final Vector3d oldRealPos = new Vector3d(0,0,0);
 
     private static float hurtCameraRotation = 0;
     private static boolean doHurtRotation = false;
@@ -78,14 +77,6 @@ public class Player {
     private static float woodMiningLevel = 1f;
     private static float leafMiningLevel = 1f;
 
-    public static String getName(){
-        return name;
-    }
-
-    public static void setPlayerName(String newName){
-        name = newName;
-    }
-
     //animation data
     private static final Vector3f[] bodyRotations = new Vector3f[]{
             new Vector3f(0,0,0),
@@ -95,6 +86,19 @@ public class Player {
             new Vector3f(0,0,0),
             new Vector3f(0,0,0),
     };
+
+
+
+
+    public static String getName(){
+        return name;
+    }
+
+    public static void setPlayerName(String newName){
+        name = newName;
+    }
+
+
     private static float animationTimer = 0f;
 
     public static void updatePlayerMiningLevelCache(float newStoneMiningLevel, float newDirtMiningLevel, float newWoodMiningLevel, float newLeafMiningLevel){
@@ -209,6 +213,13 @@ public class Player {
         }
     }
 
+    public static boolean isCameraSubmerged(){
+        return cameraSubmerged;
+    }
+    public static void resetWieldHandSetupTrigger(){
+        handSetUp = false;
+    }
+    private static boolean soundTrigger = true;
 
     //TODO --- begin wield hand stuff!
     private static final Vector3f wieldHandAnimationPosBaseEmpty = new Vector3f(13, -15, -14f);
@@ -217,7 +228,7 @@ public class Player {
     private static final Vector3f wieldRotationEmptyBegin = new Vector3f((float) Math.toRadians(30f), 0f, (float) Math.toRadians(-10f));
     private static final Vector3f wieldRotationEmptyEnd   = new Vector3f((float) Math.toRadians(40f), (float) Math.toRadians(20f), (float) Math.toRadians(20f));
 
-    private static final Vector3f wieldRotationItemBegin = new Vector3f((float)Math.toRadians(0f), (float)Math.toRadians(45f), (float)Math.toRadians(0f));
+    private static final Vector3f wieldRotationItemBegin = new Vector3f((float) Math.toRadians(0f), (float)Math.toRadians(45f), (float)Math.toRadians(0f));
     private static final Vector3f wieldRotationItemEnd   = new Vector3f((float) Math.toRadians(90f), (float) Math.toRadians(45f), (float) Math.toRadians(0f));
 
 
@@ -228,16 +239,9 @@ public class Player {
 
     private static boolean cameraSubmerged = false;
 
-    public static boolean isCameraSubmerged(){
-        return cameraSubmerged;
-    }
 
 
-    public static void resetWieldHandSetupTrigger(){
-        handSetUp = false;
-    }
 
-    private static boolean soundTrigger = true;
 
     public static void testPlayerDiggingAnimation(){
         if (!diggingAnimationGo && handSetUp && diggingAnimation == 0f){
@@ -1031,7 +1035,7 @@ public class Player {
         Vector3i newFlooredPos = new Vector3i((int)Math.floor(camPos.x), (int)Math.floor(camPos.y), (int)Math.floor(camPos.z));
 
         //System.out.println(lightCheckTimer);
-        if (lightCheckTimer >= 0.25f || !newFlooredPos.equals(oldPos)){
+        if (lightCheckTimer >= 0.25f || !newFlooredPos.equals(oldFlooredPos)){
             lightCheckTimer = 0f;
             lightLevel = getLight(newFlooredPos.x, newFlooredPos.y, newFlooredPos.z);
         }
@@ -1039,7 +1043,7 @@ public class Player {
         //do the same for the literal wield inventory
         updateWieldInventory(lightLevel);
 
-        oldPos.set(newFlooredPos);
+        oldFlooredPos.set(newFlooredPos);
         oldRealPos.set(pos);
         wasOnGround = onGround;
         oldInventorySelection = currentInventorySelection;
