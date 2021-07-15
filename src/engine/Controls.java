@@ -12,6 +12,7 @@ import static game.crafting.Inventory.*;
 import static game.crafting.InventoryLogic.closeCraftingInventory;
 import static game.crafting.InventoryLogic.openCraftingInventory;
 import static game.player.Player.*;
+import static game.player.WieldHand.startDiggingAnimation;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Controls {

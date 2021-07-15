@@ -39,6 +39,7 @@ import static game.mob.Mob.mobsOnTick;
 import static game.mob.MobSpawning.runSpawningAlgorithm;
 import static game.particle.Particle.particlesOnStep;
 import static game.player.Player.*;
+import static game.player.WieldHand.testPlayerDiggingAnimation;
 import static game.tnt.TNTEntity.onTNTStep;
 
 public class SceneHandler {

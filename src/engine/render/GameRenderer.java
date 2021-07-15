@@ -40,6 +40,8 @@ import static game.light.Light.getCurrentGlobalLightLevel;
 import static game.mob.Mob.*;
 import static game.particle.Particle.getAllParticles;
 import static game.player.Player.*;
+import static game.player.WieldHand.getWieldHandAnimationPos;
+import static game.player.WieldHand.getWieldHandAnimationRot;
 import static game.tnt.TNTEntity.*;
 import static org.lwjgl.opengl.GL44.*;
 import static org.lwjgl.opengl.GL44C.GL_BLEND;
