@@ -89,39 +89,32 @@ public class WieldHand {
 
         //hand
         if (getItemInInventorySlot(getPlayerInventorySelection(),0) == null) {
-            wieldHandAnimationPos.x = (float) (-5f * Math.sin(java.lang.Math.pow(diggingAnimation, 0.8f) * Math.PI)) + wieldHandAnimationPosBaseEmpty.x;
-            wieldHandAnimationPos.y = (float) (5f * Math.sin(diggingAnimation * 2f * Math.PI)) + wieldHandAnimationPosBaseEmpty.y;
-            wieldHandAnimationPos.z = wieldHandAnimationPosBaseEmpty.z;
+            wieldHandAnimationPos.set((float) (-5f * Math.sin(java.lang.Math.pow(diggingAnimation, 0.8f) * Math.PI)) + wieldHandAnimationPosBaseEmpty.x, (float) (5f * Math.sin(diggingAnimation * 2f * Math.PI)) + wieldHandAnimationPosBaseEmpty.y,wieldHandAnimationPosBaseEmpty.z);
+
             wieldHandAnimationRot.x = 180f;
 
             quatBegin.set(wieldRotationEmptyBegin.x, wieldRotationEmptyBegin.y, wieldRotationEmptyBegin.z,0);
-            quatEnd.set(wieldRotationEmptyEnd.x, wieldRotationEmptyEnd.y, wieldRotationEmptyEnd.z, 0);
-            quatEnd.set(quatBegin.slerp(quatEnd, (float) Math.sin(diggingAnimation * Math.PI)));
 
-            wieldHandAnimationRot.set(quatEnd.getEulerAnglesXYZ(wieldHandAnimationRot));
+            quatEnd.set(wieldRotationEmptyEnd.x, wieldRotationEmptyEnd.y, wieldRotationEmptyEnd.z, 0)
+                    .set(quatBegin.slerp(quatEnd, (float) Math.sin(diggingAnimation * Math.PI)));
 
-            wieldHandAnimationRot.x = (float) Math.toDegrees(wieldHandAnimationRot.x);
-            wieldHandAnimationRot.y = (float) Math.toDegrees(wieldHandAnimationRot.y);
-            wieldHandAnimationRot.z = (float) Math.toDegrees(wieldHandAnimationRot.z);
+            wieldHandAnimationRot.set(quatEnd.getEulerAnglesXYZ(wieldHandAnimationRot))
+                .add((float) Math.toDegrees(wieldHandAnimationRot.x) + 180f,(float) Math.toDegrees(wieldHandAnimationRot.y),(float) Math.toDegrees(wieldHandAnimationRot.z));
 
-            wieldHandAnimationRot.x += 180f;
             //block
         } else if (getItemInInventorySlot(getPlayerInventorySelection(),0).definition.blockID > 0) {
-            wieldHandAnimationPos.x = wieldHandAnimationPosBaseEmpty.x;
-            wieldHandAnimationPos.y = wieldHandAnimationPosBaseEmpty.y;
-            wieldHandAnimationPos.z = wieldHandAnimationPosBaseEmpty.z;
+            wieldHandAnimationPos.set(wieldHandAnimationPosBaseEmpty);
+
             wieldHandAnimationRot.x = 180f;
 
             quatBegin.set(wieldRotationItemBegin.x, wieldRotationItemBegin.y, wieldRotationItemBegin.z, 0);
-            quatEnd.set(wieldRotationItemEnd.x, wieldRotationItemEnd.y, wieldRotationItemEnd.z,0);
 
-            quatEnd.set(quatBegin.slerp(quatEnd, (float) Math.sin(diggingAnimation * Math.PI)));
+            quatEnd.set(wieldRotationItemEnd.x, wieldRotationItemEnd.y, wieldRotationItemEnd.z,0)
+                    .set(quatBegin.slerp(quatEnd, (float) Math.sin(diggingAnimation * Math.PI)));
 
-            wieldHandAnimationRot.set(quatEnd.getEulerAnglesXYZ(wieldHandAnimationRot));
+            wieldHandAnimationRot.set(quatEnd.getEulerAnglesXYZ(wieldHandAnimationRot))
+                    .set((float) Math.toDegrees(wieldHandAnimationRot.x),(float) Math.toDegrees(wieldHandAnimationRot.y),(float) Math.toDegrees(wieldHandAnimationRot.z));
 
-            wieldHandAnimationRot.x = (float) Math.toDegrees(wieldHandAnimationRot.x);
-            wieldHandAnimationRot.y = (float) Math.toDegrees(wieldHandAnimationRot.y);
-            wieldHandAnimationRot.z = (float) Math.toDegrees(wieldHandAnimationRot.z);
             //item/tool
         } else if (getItemInInventorySlot(getPlayerInventorySelection(),0).definition.isItem){
 
@@ -130,20 +123,15 @@ public class WieldHand {
             wieldHandAnimationRotBegin.set(Math.toRadians(0), Math.toRadians(65), Math.toRadians(-35));
             wieldHandAnimationRotEnd.set(Math.toRadians(50), Math.toRadians(75), Math.toRadians(-45));
 
-            wieldHandAnimationPos.x = (float) (-8f * Math.sin(java.lang.Math.pow(diggingAnimation, 0.6f) * Math.PI)) + wieldHandAnimationPosBaseTool.x;
-            wieldHandAnimationPos.y = (float) (5f * Math.sin(diggingAnimation * Math.PI)) + wieldHandAnimationPosBaseTool.y;
-            wieldHandAnimationPos.z = wieldHandAnimationPosBaseTool.z;
-
+            wieldHandAnimationPos.set((float) (-8f * Math.sin(java.lang.Math.pow(diggingAnimation, 0.6f) * Math.PI)) + wieldHandAnimationPosBaseTool.x,(float) (5f * Math.sin(diggingAnimation * Math.PI)) + wieldHandAnimationPosBaseTool.y,wieldHandAnimationPosBaseTool.z);
 
             quatBegin.set(wieldHandAnimationRotBegin.x, wieldHandAnimationRotBegin.y, wieldHandAnimationRotBegin.z,0);
-            quatEnd.set(wieldHandAnimationRotEnd.x, wieldHandAnimationRotEnd.y, wieldHandAnimationRotEnd.z,0);
-            quatEnd.set(quatBegin.slerp(quatEnd, (float) Math.sin(diggingAnimation * Math.PI)));
 
-            wieldHandAnimationRot.set(quatEnd.getEulerAnglesXYZ(wieldHandAnimationRot));
+            quatEnd.set(wieldHandAnimationRotEnd.x, wieldHandAnimationRotEnd.y, wieldHandAnimationRotEnd.z,0)
+                    .set(quatBegin.slerp(quatEnd, (float) Math.sin(diggingAnimation * Math.PI)));
 
-            wieldHandAnimationRot.x = (float) Math.toDegrees(wieldHandAnimationRot.x);
-            wieldHandAnimationRot.y = (float) Math.toDegrees(wieldHandAnimationRot.y);
-            wieldHandAnimationRot.z = (float) Math.toDegrees(wieldHandAnimationRot.z);
+            wieldHandAnimationRot.set(quatEnd.getEulerAnglesXYZ(wieldHandAnimationRot))
+                    .set((float) Math.toDegrees(wieldHandAnimationRot.x),(float) Math.toDegrees(wieldHandAnimationRot.y),(float) Math.toDegrees(wieldHandAnimationRot.z));
         }
 
     }
