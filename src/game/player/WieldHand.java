@@ -19,11 +19,11 @@ public class WieldHand {
     private static final Vector3f wieldHandAnimationPosBaseEmpty = new Vector3f(13, -15, -14f);
     private static final Vector3f wieldHandAnimationPosBaseItem = new Vector3f(13, -15, -14f);
 
-    private static final Vector3f wieldRotationEmptyBegin = new Vector3f((float) Math.toRadians(30f), 0f, (float) Math.toRadians(-10f));
-    private static final Vector3f wieldRotationEmptyEnd   = new Vector3f((float) Math.toRadians(40f), (float) Math.toRadians(20f), (float) Math.toRadians(20f));
+    private static final Vector3f wieldRotationEmptyBegin = new Vector3f(Math.toRadians(30f), 0f, Math.toRadians(-10f));
+    private static final Vector3f wieldRotationEmptyEnd   = new Vector3f(Math.toRadians(40f), Math.toRadians(20f), Math.toRadians(20f));
 
-    private static final Vector3f wieldRotationItemBegin = new Vector3f((float) Math.toRadians(0f), (float)Math.toRadians(45f), (float)Math.toRadians(0f));
-    private static final Vector3f wieldRotationItemEnd   = new Vector3f((float) Math.toRadians(90f), (float) Math.toRadians(45f), (float) Math.toRadians(0f));
+    private static final Vector3f wieldRotationItemBegin = new Vector3f(Math.toRadians(0f), Math.toRadians(45f), Math.toRadians(0f));
+    private static final Vector3f wieldRotationItemEnd   = new Vector3f(Math.toRadians(90f), Math.toRadians(45f), Math.toRadians(0f));
 
     private static final Vector3f wieldHandAnimationPos = new Vector3f(0, 0, 0);
     private static final Vector3f wieldHandAnimationRot = new Vector3f(0, 0, 0);
@@ -127,8 +127,8 @@ public class WieldHand {
 
             wieldHandAnimationPosBaseTool.set(10f,-6.5f,-8f);
 
-            wieldHandAnimationRotBegin.set((float)(Math.toRadians(0)),(float)(Math.toRadians(65)),(float)(Math.toRadians(-35)));
-            wieldHandAnimationRotEnd.set((float)(Math.toRadians(50)),(float)(Math.toRadians(75)),(float)(Math.toRadians(-45)));
+            wieldHandAnimationRotBegin.set(Math.toRadians(0), Math.toRadians(65), Math.toRadians(-35));
+            wieldHandAnimationRotEnd.set(Math.toRadians(50), Math.toRadians(75), Math.toRadians(-45));
 
             wieldHandAnimationPos.x = (float) (-8f * Math.sin(Math.pow(diggingAnimation, 0.6f) * Math.PI)) + wieldHandAnimationPosBaseTool.x;
             wieldHandAnimationPos.y = (float) (5f * Math.sin(diggingAnimation * Math.PI)) + wieldHandAnimationPosBaseTool.y;
@@ -175,7 +175,7 @@ public class WieldHand {
 
         double delta = getDelta();
 
-        float yaw = (float)Math.toRadians(getCameraRotation().y) + (float)Math.PI;
+        float yaw = Math.toRadians(getCameraRotation().y) + (float)Math.PI;
 
         float diff = yaw - oldYaw;
 
