@@ -89,7 +89,7 @@ public class WieldHand {
 
         //hand
         if (getItemInInventorySlot(getPlayerInventorySelection(),0) == null) {
-            wieldHandAnimationPos.x = (float) (-5f * Math.sin(Math.pow(diggingAnimation, 0.8f) * Math.PI)) + wieldHandAnimationPosBaseEmpty.x;
+            wieldHandAnimationPos.x = (float) (-5f * Math.sin(java.lang.Math.pow(diggingAnimation, 0.8f) * Math.PI)) + wieldHandAnimationPosBaseEmpty.x;
             wieldHandAnimationPos.y = (float) (5f * Math.sin(diggingAnimation * 2f * Math.PI)) + wieldHandAnimationPosBaseEmpty.y;
             wieldHandAnimationPos.z = wieldHandAnimationPosBaseEmpty.z;
             wieldHandAnimationRot.x = 180f;
@@ -130,7 +130,7 @@ public class WieldHand {
             wieldHandAnimationRotBegin.set(Math.toRadians(0), Math.toRadians(65), Math.toRadians(-35));
             wieldHandAnimationRotEnd.set(Math.toRadians(50), Math.toRadians(75), Math.toRadians(-45));
 
-            wieldHandAnimationPos.x = (float) (-8f * Math.sin(Math.pow(diggingAnimation, 0.6f) * Math.PI)) + wieldHandAnimationPosBaseTool.x;
+            wieldHandAnimationPos.x = (float) (-8f * Math.sin(java.lang.Math.pow(diggingAnimation, 0.6f) * Math.PI)) + wieldHandAnimationPosBaseTool.x;
             wieldHandAnimationPos.y = (float) (5f * Math.sin(diggingAnimation * Math.PI)) + wieldHandAnimationPosBaseTool.y;
             wieldHandAnimationPos.z = wieldHandAnimationPosBaseTool.z;
 
