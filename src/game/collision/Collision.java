@@ -208,10 +208,11 @@ public class Collision {
 
     private static boolean sneakCollideYNegative(int blockPosX, int blockPosY, int blockPosz, byte rot, float width, float height, byte blockID){
         for (float[] blockBox : getBlockShape(blockID, rot)) {
-            entity.setMin(clonedPos.x - width, clonedPos.y, clonedPos.z - width);
-            entity.setMax(clonedPos.x + width, clonedPos.y + height, clonedPos.z + width);
-            block.setMin(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosz);
-            block.setMax(blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosz);
+            entity.setMin(clonedPos.x - width, clonedPos.y, clonedPos.z - width)
+                    .setMax(clonedPos.x + width, clonedPos.y + height, clonedPos.z + width);
+
+            block.setMin(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosz)
+                    .setMax(blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosz);
 
             if (entity.intersectsAABB(block)) {
                 return true;
