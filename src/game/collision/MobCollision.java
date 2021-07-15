@@ -53,8 +53,7 @@ public class MobCollision {
                     normalizedPos.set(workerVec2D2).sub(workerVec2D).normalize().mul(0.05f);
 
                     if (normalizedPos.isFinite()) {
-                        thisMob.inertia.x += normalizedPos.x;
-                        thisMob.inertia.z += normalizedPos.y;
+                        thisMob.inertia.add((float)normalizedPos.x,0,(float)normalizedPos.y);
                     }
                 }
             }
@@ -92,8 +91,7 @@ public class MobCollision {
                 normalizedPos.set(workerVec2D).sub(workerVec2D2).normalize().mul(0.05f);
 
                 if (normalizedPos.isFinite()) {
-                    thisMob.inertia.x += normalizedPos.x;
-                    thisMob.inertia.z += normalizedPos.y;
+                    thisMob.inertia.add((float)normalizedPos.x,0,(float)normalizedPos.y);
                     addPlayerInertia((float) -normalizedPos.x, 0, (float) -normalizedPos.y);
                 }
             }
