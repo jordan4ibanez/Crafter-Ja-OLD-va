@@ -24,7 +24,6 @@ import static engine.graphics.Camera.*;
 import static engine.graphics.Transformation.*;
 import static engine.gui.GUI.*;
 import static engine.gui.GUILogic.*;
-import static engine.gui.TextHandling.*;
 import static engine.settings.Settings.*;
 import static engine.time.TimeOfDay.getTimeOfDayLinear;
 import static game.chat.Chat.getCurrentMessageMesh;
@@ -38,8 +37,6 @@ import static game.item.ItemDefinition.getItemDefinition;
 import static game.item.ItemDefinition.getItemMesh;
 import static game.item.ItemEntity.getAllItems;
 import static game.light.Light.getCurrentGlobalLightLevel;
-//import static game.mob.Human.getHumanBodyOffsets;
-//import static game.mob.Human.getHumanMeshes;
 import static game.mob.Mob.*;
 import static game.particle.Particle.getAllParticles;
 import static game.player.Player.*;
@@ -47,6 +44,9 @@ import static game.tnt.TNTEntity.*;
 import static org.lwjgl.opengl.GL44.*;
 import static org.lwjgl.opengl.GL44C.GL_BLEND;
 import static org.lwjgl.opengl.GL44C.glDisable;
+
+//import static game.mob.Human.getHumanBodyOffsets;
+//import static game.mob.Human.getHumanMeshes;
 
 public class GameRenderer {
 
@@ -191,10 +191,9 @@ public class GameRenderer {
 
     public static void renderGame(){
         processClearColorInterpolation();
-
         clearScreen();
-
         rescaleWindow();
+
 
 
 
@@ -698,12 +697,12 @@ public class GameRenderer {
 
             //wield hand
             if (getItemInInventorySlot(getPlayerInventorySelection(),0) == null){
-                modelViewMatrix.set(getGenericMatrixWithPosRotationScale(getWieldHandAnimationPos(), getWieldHandAnimationRot(), workerVec3D.set(5d, 5d, 5d)));
+                modelViewMatrix.set(getGenericMatrixWithPosRotationScale(getWieldHandAnimationPos().add(getCameraPosition()), getWieldHandAnimationRot().add(getCameraRotation()), workerVec3D.set(5d, 5d, 5d)));
                 entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 getWieldHandMesh().render();
             //block/item
             } else if (getWieldInventory() != null){
-                modelViewMatrix.set(getGenericMatrixWithPosRotationScale(getWieldHandAnimationPos(), getWieldHandAnimationRot(), workerVec3D.set(20d, 20d, 20d)));
+                modelViewMatrix.set(getGenericMatrixWithPosRotationScale(getWieldHandAnimationPos().add(getCameraPosition()), getWieldHandAnimationRot().add(getCameraRotation()), workerVec3D.set(20d, 20d, 20d)));
                 entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 getItemMesh(getWieldInventory().name).render();
             }

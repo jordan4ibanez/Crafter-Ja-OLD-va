@@ -39,6 +39,7 @@ import static game.mob.Mob.mobsOnTick;
 import static game.mob.MobSpawning.runSpawningAlgorithm;
 import static game.particle.Particle.particlesOnStep;
 import static game.player.Player.*;
+import static game.tnt.TNTEntity.onTNTStep;
 
 public class SceneHandler {
     //0 main menu
@@ -179,7 +180,6 @@ public class SceneHandler {
         runSpawningAlgorithm();
 
         updateWorldChunkLoader();
-
         popChunkMeshQueue(); //this actually transmits the data from the other threads into main thread
 
         updateListenerPosition();
@@ -197,8 +197,8 @@ public class SceneHandler {
     private static void gameUpdate() throws Exception {
         testPlayerDiggingAnimation();
         playerOnTick();
-        ItemEntity.itemsOnTick();
-        TNTEntity.onTNTStep();
+        itemsOnTick();
+        onTNTStep();
         pauseMenuOnTick();
         inventoryMenuOnTick();
         particlesOnStep();
