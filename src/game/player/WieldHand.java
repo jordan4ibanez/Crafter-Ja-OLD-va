@@ -35,11 +35,18 @@ public class WieldHand {
     private static final Quaternionf quatBegin = new Quaternionf();
     private static final Quaternionf quatEnd = new Quaternionf();
 
+    private static final Vector3d doubledHandAnimationPos = new Vector3d();
+
+
     private static float diggingAnimation = 0f;
 
     private static final Vector3d handInertia = new Vector3d(0,0,0);
 
 
+    private static boolean diggingAnimationGo = false;
+    private static boolean diggingAnimationBuffer = false;
+    private static boolean handSetUp = false;
+    
     private static float oldYaw = 0;
 
     private static final float doublePi = (float)Math.PI * 2f;
@@ -141,7 +148,6 @@ public class WieldHand {
     }
 
 
-    private static final Vector3d doubledHandAnimationPos = new Vector3d();
 
     public static Vector3d getWieldHandAnimationPos(){
 
@@ -157,9 +163,7 @@ public class WieldHand {
     }
 
 
-    private static boolean diggingAnimationGo = false;
-    private static boolean diggingAnimationBuffer = false;
-    private static boolean handSetUp = false;
+
     public static void startDiggingAnimation(){
         diggingAnimationGo = true;
         diggingAnimationBuffer = true;
