@@ -64,15 +64,13 @@ public class ParticleCollision {
             if (applyCollision) {
                 onGround = collisionDetect(pos, inertia);
             } else {
-                pos.x += inertia.x * adjustedDelta;
-                pos.y += inertia.y * adjustedDelta;
-                pos.z += inertia.z * adjustedDelta;
+                pos.add(inertia.x * adjustedDelta,inertia.y * adjustedDelta,inertia.z * adjustedDelta);
             }
 
             //apply friction
             if (onGround) {
-                inertia.x -= inertia.x * adjustedDelta * 10; // do (10 - 9.5f) for slippery!
-                inertia.z -= inertia.z * adjustedDelta * 10;
+                // do (10 - 9.5f) for slippery!
+                inertia.sub((float)(inertia.x * adjustedDelta * 10d),0,(float)(inertia.z * adjustedDelta * 10d));
             }
         }
         return onGround;
@@ -158,8 +156,8 @@ public class ParticleCollision {
     private static boolean collideYNegative(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
         boolean onGround = false;
         for (float[] blockBox : getBlockShape(blockID, rot)) {
-            block.setMin(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ);
-            block.setMax(blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
+            block.setMin(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ)
+                    .setMax(blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
             if (block.containsPoint(pos)) {
                 onGround = true;
                 pos.y = block.maxY;
@@ -171,8 +169,8 @@ public class ParticleCollision {
 
     private static void collideYPositive(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
         for (float[] blockBox : getBlockShape(blockID, rot)) {
-            block.setMin(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ);
-            block.setMax(blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
+            block.setMin(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ)
+                    .setMax(blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
             //head detection
             if (block.containsPoint(pos)) {
                 pos.y = block.minY;
@@ -183,8 +181,8 @@ public class ParticleCollision {
 
     private static void collideXPositive(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
         for (float[] blockBox : getBlockShape(blockID, rot)) {
-            block.setMin(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ);
-            block.setMax(blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
+            block.setMin(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ)
+                    .setMax(blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
             if (block.containsPoint(pos)) {
                 pos.x = block.minX;
                 inertia.x = 0;
@@ -194,8 +192,8 @@ public class ParticleCollision {
 
     private static void collideXNegative(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
         for (float[] blockBox : getBlockShape(blockID, rot)) {
-            block.setMin(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ);
-            block.setMax(blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
+            block.setMin(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ)
+                    .setMax(blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
             if (block.containsPoint(pos)) {
                 pos.x = block.maxX;
                 inertia.x = 0;
@@ -206,8 +204,8 @@ public class ParticleCollision {
 
     private static void collideZPositive(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
         for (float[] blockBox : getBlockShape(blockID, rot)) {
-            block.setMin(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ);
-            block.setMax(blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
+            block.setMin(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ)
+                    .setMax(blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
             if (block.containsPoint(pos)) {
                 pos.z = block.minZ;
                 inertia.z = 0;
@@ -217,8 +215,8 @@ public class ParticleCollision {
 
     private static void collideZNegative(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
         for (float[] blockBox : getBlockShape(blockID, rot)) {
-            block.setMin(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ);
-            block.setMax(blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
+            block.setMin(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ)
+                    .setMax(blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
             if (block.containsPoint(pos)) {
                 pos.z = block.maxZ;
                 inertia.z = 0;
