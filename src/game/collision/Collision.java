@@ -97,21 +97,18 @@ public class Collision {
                 }
 
             } else {
-                pos.x += inertia.x * adjustedDelta;
-                pos.y += inertia.y * adjustedDelta;
-                pos.z += inertia.z * adjustedDelta;
+                pos.add(inertia.x * adjustedDelta,inertia.y * adjustedDelta,inertia.z * adjustedDelta);
             }
 
             //apply friction
             if (onGround || airFriction) {
-                inertia.x += -inertia.x * adjustedDelta * 10; // do (10 - 9.5f) for slippery!
-                inertia.z += -inertia.z * adjustedDelta * 10;
+                // do (10 - 9.5f) for slippery!
+                inertia.add((float)(-inertia.x * adjustedDelta * 10d),0,(float)(-inertia.z * adjustedDelta * 10d));
             }
 
             //water resistance
             if (inWater > 0.f) {
-                inertia.x += -inertia.x * adjustedDelta * inWater;
-                inertia.z += -inertia.z * adjustedDelta * inWater;
+                inertia.add((float)(-inertia.x * adjustedDelta * inWater),0,(float)(-inertia.z * adjustedDelta * inWater));
             }
 
             if (gravity) {
@@ -161,9 +158,7 @@ public class Collision {
         for (byte x = -1; x <= 1; x++) {
             for (byte z = -1; z <= 1; z++) {
 
-                cachedPos.x = fPos.x + x;
-                cachedPos.y = fPos.y;
-                cachedPos.z = fPos.z + z;
+                cachedPos.set(fPos.x + x, fPos.y,fPos.z + z);
 
                 byte cachedBlock = getBlock(cachedPos);
                 byte rot = getBlockRotation(cachedPos);
@@ -193,9 +188,7 @@ public class Collision {
         for (byte x = -1; x <= 1; x++) {
             for (byte z = -1; z <= 1; z++) {
 
-                cachedPos.x = fPos.x + x;
-                cachedPos.y = fPos.y;
-                cachedPos.z = fPos.z + z;
+                cachedPos.set(fPos.x + x,fPos.y, fPos.z + z);
 
                 byte cachedBlock = getBlock(cachedPos);
                 byte rot = getBlockRotation(cachedPos);
