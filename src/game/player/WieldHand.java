@@ -1,5 +1,6 @@
 package game.player;
 
+import org.joml.Math;
 import org.joml.Quaternionf;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
@@ -46,7 +47,7 @@ public class WieldHand {
     private static boolean diggingAnimationGo = false;
     private static boolean diggingAnimationBuffer = false;
     private static boolean handSetUp = false;
-    
+
     private static float oldYaw = 0;
 
     private static final float doublePi = (float)Math.PI * 2f;
