@@ -239,9 +239,7 @@ public class Collision {
                 //y negative (falling)
                 for (byte x = -1; x <= 1; x++) {
                     for (byte z = -1; z <= 1; z++) {
-                        cachedPos.x = fPos.x + x;
-                        cachedPos.y = fPos.y;
-                        cachedPos.z = fPos.z + z;
+                        cachedPos.set(fPos.x + x,fPos.y,fPos.z + z);
 
                         byte cachedBlock = getBlock(cachedPos);
 
@@ -257,9 +255,7 @@ public class Collision {
                 //y positive (falling up)
                 for (byte x = -1; x <= 1; x++) {
                     for (byte z = -1; z <= 1; z++) {
-                        cachedPos.x = fPos.x + x;
-                        cachedPos.y = (int)Math.floor(pos.y + height);
-                        cachedPos.z = fPos.z + z;
+                        cachedPos.set(fPos.x + x,(int)Math.floor(pos.y + height),fPos.z + z);
 
                         byte cachedBlock = getBlock(cachedPos);
 
@@ -289,9 +285,7 @@ public class Collision {
                 for (byte z = -1; z <= 1; z++) {
 
                     //update to polling position
-                    cachedPos.x = fPos.x + x;
-                    cachedPos.y = fPos.y + y;
-                    cachedPos.z = fPos.z + z;
+                    cachedPos.set(fPos.x + x,fPos.y + y,fPos.z + z);
 
                     //get block ID
                     byte cachedBlock = getBlock(cachedPos);
@@ -319,9 +313,7 @@ public class Collision {
             for (byte x = -1; x <= 1; x++) {
                 for (byte z = -1; z <= 1; z++) {
                     //update to polling position
-                    cachedPos.x = fPos.x + x;
-                    cachedPos.y = fPos.y + y;
-                    cachedPos.z = fPos.z + z;
+                    cachedPos.set(fPos.x + x,fPos.y + y,fPos.z + z);
 
                     //get block ID
                     byte cachedBlock = getBlock(cachedPos);
@@ -341,9 +333,7 @@ public class Collision {
         for (byte y = 0; y <= height; y++) {
             for (byte x = -1; x <= 1; x++) {
                 for (byte z = -1; z <= 1; z++) {
-                    cachedPos.x = fPos.x + x;
-                    cachedPos.y = fPos.y + y;
-                    cachedPos.z = fPos.z + z;
+                    cachedPos.set(fPos.x + x,fPos.y + y,fPos.z + z);
 
                     //get block ID
                     byte cachedBlock = getBlock(cachedPos);
