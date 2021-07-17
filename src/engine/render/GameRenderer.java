@@ -24,6 +24,7 @@ import static engine.graphics.Camera.*;
 import static engine.graphics.Transformation.*;
 import static engine.gui.GUI.*;
 import static engine.gui.GUILogic.*;
+import static engine.gui.TextHandling.createTextWithShadow;
 import static engine.settings.Settings.*;
 import static engine.time.TimeOfDay.getTimeOfDayLinear;
 import static game.chat.Chat.getCurrentMessageMesh;
@@ -684,7 +685,7 @@ public class GameRenderer {
 
         entityShaderProgram.bind();
 
-        //BEGIN HUD (3d parts)
+        //BEGIN HUD (3d parts) - just wield hand for now
 
         glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -692,19 +693,19 @@ public class GameRenderer {
 
 
         //draw wield hand or item
-        if (getCameraPerspective() == 0) {
+        if (true){//(getCameraPerspective() == 0) {
 
             entityShaderProgram.setUniform("projectionMatrix", projectionMatrix);
             entityShaderProgram.setLightUniform("light", getPlayerLightLevel());
 
             //wield hand
             if (getItemInInventorySlot(getPlayerInventorySelection(),0) == null){
-                modelViewMatrix.set(getGenericMatrixWithPosRotationScale(getWieldHandAnimationPos().add(getCameraPosition()), getWieldHandAnimationRot().add(getCameraRotation()), workerVec3D.set(5d, 5d, 5d)));
+                modelViewMatrix.set(getWieldHandMatrix(getCameraPosition(),getWieldHandAnimationPos(),getCameraRotation(), getWieldHandAnimationRot(), workerVec3D.set(0.35d), workerVec3D2.set(0.05d)));
                 entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 getWieldHandMesh().render();
             //block/item
             } else if (getWieldInventory() != null){
-                modelViewMatrix.set(getGenericMatrixWithPosRotationScale(getWieldHandAnimationPos().add(getCameraPosition()), getWieldHandAnimationRot().add(getCameraRotation()), workerVec3D.set(20d, 20d, 20d)));
+                modelViewMatrix.set(getWieldHandMatrix(getCameraPosition(),getWieldHandAnimationPos(),getCameraRotation(), getWieldHandAnimationRot(), workerVec3D.set(1d, 1d, 1d), workerVec3D2.set(0.05d)));
                 entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 getItemMesh(getWieldInventory().name).render();
             }
@@ -891,9 +892,9 @@ public class GameRenderer {
                         glClear(GL_DEPTH_BUFFER_BIT);
                         modelViewMatrix.set(updateOrthoModelMatrix(workerVec3D.set((-windowSize.x / 2d), (windowSize.y / 2.3d), 0), workerVec3F.set(0, 0, 0), workerVec3D2.set(windowScale / 30d, windowScale / 30d, windowScale / 30d)));
                         hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                        //workerMesh = createTextWithShadow("X:" + getPlayerPos().x, 1f, 1f, 1f);
-                        //workerMesh.render();
-                        //workerMesh.cleanUp(false);
+                        Mesh workerMesh = createTextWithShadow("X:" + getPlayerPos().x, 1f, 1f, 1f);
+                        workerMesh.render();
+                        workerMesh.cleanUp(false);
                     }
 
                     //y info
@@ -902,9 +903,9 @@ public class GameRenderer {
                         glClear(GL_DEPTH_BUFFER_BIT);
                         modelViewMatrix.set(updateOrthoModelMatrix(workerVec3D.set((-windowSize.x / 2d), (windowSize.y / 2.6d), 0), workerVec3F.set(0, 0, 0), workerVec3D2.set(windowScale / 30d, windowScale / 30d, windowScale / 30d)));
                         hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                        //workerMesh = createTextWithShadow("Y:" + getPlayerPos().y, 1f, 1f, 1f);
-                        //workerMesh.render();
-                        //workerMesh.cleanUp(false);
+                        Mesh workerMesh = createTextWithShadow("Y:" + getPlayerPos().y, 1f, 1f, 1f);
+                        workerMesh.render();
+                        workerMesh.cleanUp(false);
                     }
 
                     //z info
@@ -912,9 +913,9 @@ public class GameRenderer {
                         glClear(GL_DEPTH_BUFFER_BIT);
                         modelViewMatrix.set(updateOrthoModelMatrix(workerVec3D.set((-windowSize.x / 2d), (float) (windowSize.y / 3d), 0), workerVec3F.set(0, 0, 0), workerVec3D2.set(windowScale / 30d, windowScale / 30d, windowScale / 30d)));
                         hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                        //workerMesh = createTextWithShadow("Z:" + getPlayerPos().z, 1f, 1f, 1f);
-                        //workerMesh.render();
-                        //workerMesh.cleanUp(false);
+                        Mesh workerMesh = createTextWithShadow("Z:" + getPlayerPos().z, 1f, 1f, 1f);
+                        workerMesh.render();
+                        workerMesh.cleanUp(false);
                     }
 
 
