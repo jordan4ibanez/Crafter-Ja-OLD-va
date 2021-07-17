@@ -204,8 +204,9 @@ public class Transformation {
                 //finish off the animation rotations
                 .rotateY(Math.toRadians(-bodyPartRotation.y))
                 .rotateX(Math.toRadians(-bodyPartRotation.x))
-                .rotateZ(Math.toRadians(-bodyPartRotation.z));
-        
+                .rotateZ(Math.toRadians(-bodyPartRotation.z))
+                .scale(scale);
+
         modelMatrix.set(viewMatrix);
         modelMatrix.mul(modelViewMatrix);
 
