@@ -175,9 +175,9 @@ public class Transformation {
 
 
     public static Matrix4d getMobMatrix(Vector3d basePos, Vector3f offsetPos, Vector3f bodyYaw, Vector3f bodyPartRotation, Vector3d scale){
-        modelViewMatrix.identity().
+        modelViewMatrix.identity()
                 //main rotation (positioning)
-                translate(basePos.x, basePos.y, basePos.z).
+                .translate(basePos.x, basePos.y, basePos.z).
                 rotateX(Math.toRadians(-bodyYaw.x)).
                 rotateY(Math.toRadians(-bodyYaw.y)).
                 rotateZ(Math.toRadians(-bodyYaw.z)).scale(scale)
@@ -188,6 +188,27 @@ public class Transformation {
                 rotateZ(Math.toRadians(-bodyPartRotation.z));
         modelMatrix.set(viewMatrix);
         modelMatrix.mul(modelViewMatrix);
+        return modelMatrix;
+    }
+
+    public static Matrix4d getWieldHandMatrix(Vector3d basePos, Vector3d offsetPos, Vector3f bodyYaw, Vector3f bodyPartRotation, Vector3d scale, Vector3d offsetScale){
+        modelViewMatrix.identity()
+                //main positioning
+                .translate(basePos.x, basePos.y, basePos.z)//.scale(scale);
+                //main rotation
+                .rotateY(Math.toRadians(-bodyYaw.y)) //y must be first - kind of like a tank aiming it's gun
+                .rotateX(Math.toRadians(-bodyYaw.x))
+                .rotateZ(Math.toRadians(-bodyYaw.z))
+                //do animation offsets
+                .translate(offsetPos.mul(offsetScale))
+                //finish off the animation rotations
+                .rotateY(Math.toRadians(-bodyPartRotation.y))
+                .rotateX(Math.toRadians(-bodyPartRotation.x))
+                .rotateZ(Math.toRadians(-bodyPartRotation.z));
+        
+        modelMatrix.set(viewMatrix);
+        modelMatrix.mul(modelViewMatrix);
+
         return modelMatrix;
     }
 
