@@ -618,10 +618,11 @@ public class Player {
         applyPlayerInertiaBuffer();
 
         //stop players from falling forever
+        //this only applies their inertia if they are within a loaded chunk, IE
+        //if the server doesn't load up something in time, they freeze in place
         if (getChunkKey(currentChunk.x, currentChunk.z) != null) {
             onGround = applyInertia(pos, inertia, true, width, height, true, sneaking, true, true, true);
         }
-
 
         //play sound when player lands on the ground
         if (onGround && !wasOnGround){
