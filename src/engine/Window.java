@@ -13,8 +13,10 @@ import java.nio.IntBuffer;
 import static engine.time.Time.getDelta;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL44.*;
+import static org.lwjgl.stb.STBImage.stbi_image_free;
 import static org.lwjgl.stb.STBImage.stbi_load;
 import static org.lwjgl.system.MemoryUtil.NULL;
+import static org.lwjgl.system.MemoryUtil.memFree;
 
 public class Window {
     private static String title;
@@ -65,7 +67,7 @@ public class Window {
             setWindowResized(true);
         });
 
-        // setup a key callback. it will be called every time a key is pressed, repeated or released.
+        // set up a key callback. it will be called every time a key is pressed, repeated or released.
         glfwSetKeyCallback(windowHandle, (window, key, scancode, action, mods) -> {
             //data stream of key inputs
             if (action == GLFW_PRESS){
@@ -102,7 +104,7 @@ public class Window {
         glEnable(GL_DEPTH_TEST);
         //glDepthFunc(GL_ALWAYS);
 
-        //enable backface culling
+        //enable back face culling
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
 
@@ -128,8 +130,12 @@ public class Window {
         GLFWImage.Buffer images = GLFWImage.malloc(1);
         images.put(0, image);
 
+
         //set icon
         glfwSetWindowIcon(windowHandle, images);
+
+        //free memory
+        stbi_image_free(buf);
     }
 
 
