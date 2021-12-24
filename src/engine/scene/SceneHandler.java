@@ -49,6 +49,7 @@ public class SceneHandler {
     public static void setScene(byte newScene){
 
         //move the camera into position for the main menu
+        //main menu
         if (newScene == 0){
 
             setWindowClearColor(0,0,0,1);
@@ -69,7 +70,7 @@ public class SceneHandler {
         //this cleans the memory out
         cleanMemory();
 
-
+        //gameplay
         if (newScene == 1){
             setWindowClearColor(0.53f,0.81f,0.92f,0.f);
             calculateHealthBarElements(); //todo move this into a loader for player file things
@@ -78,6 +79,7 @@ public class SceneHandler {
             generateCloudData();
         }
 
+        //multiplayer
         if (newScene == 3){
             setWindowClearColor(0.53f,0.81f,0.92f,0.f);
             calculateHealthBarElements(); //todo move this into a network thing or something
