@@ -31,6 +31,7 @@ public class Player {
     private static final float eyeHeight               = 1.5f;
     private static Vector3d pos = loadPlayerPos();
     private static Vector3d posWithEyeHeight = new Vector3d().set(pos.x,pos.y + eyeHeight,pos.z);
+    private static Vector3d posWithCollectionHeight = new Vector3d(pos.x, pos.y + collectionHeight, pos.z);
     private static Vector3d posWithEyeHeightViewBobbing = new Vector3d().set(posWithEyeHeight.x, posWithEyeHeight.y, posWithEyeHeight.z);
     private static final Vector3f inertia              = new Vector3f(0,0,0);
     private static final float height                  = 1.9f;
@@ -236,7 +237,6 @@ public class Player {
     public static Vector3d getPlayerPos() {
         return pos;
     }
-
     //immutable
     public static double getPlayerPosX(){
         return pos.x;
@@ -284,10 +284,23 @@ public class Player {
         return posWithEyeHeightViewBobbing.z;
     }
 
+    //this is mutable, be careful with this
     public static Vector3d getPlayerPosWithCollectionHeight(){
-        // THIS CREATES A NEW OBJECT IN HEAP!
-        return new Vector3d(pos.x, pos.y + collectionHeight, pos.z);
+        return posWithCollectionHeight;
     }
+    //immutable
+    public static double getPlayerPosWithCollectionHeightX(){
+        return posWithCollectionHeight.x;
+    }
+    //immutable
+    public static double getPlayerPosWithCollectionHeightY(){
+        return posWithCollectionHeight.y;
+    }
+    //immutable
+    public static double getPlayerPosWithCollectionHeightZ(){
+        return posWithCollectionHeight.z;
+    }
+
 
     private static void applyCameraViewBobbingOffset(){
         posWithEyeHeightViewBobbing.set(posWithEyeHeight.x, posWithEyeHeight.y,posWithEyeHeight.z);
@@ -309,7 +322,6 @@ public class Player {
             }
 
             float viewBobbingY = getPlayerViewBobbingY();
-
             if (viewBobbingY != 0) {
                 posWithEyeHeightViewBobbing.y += viewBobbingY;
             }
@@ -654,6 +666,9 @@ public class Player {
 
         //apply the eyeHeight offset to the eyeHeight position
         posWithEyeHeight.set(pos.x, pos.y + eyeHeight, pos.z);
+
+        //apply the collection height offset to the collection position
+        posWithCollectionHeight.set(pos.x, pos.y + collectionHeight, pos.z);
 
 
         //play sound when player lands on the ground
