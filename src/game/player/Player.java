@@ -704,15 +704,11 @@ public class Player {
             if (animationTimer >= 1f) {
                 animationTimer -= 1f;
             }
-
-            // THIS CREATES A NEW OBJECT IN HEAP!
-            bodyRotations[2] = new Vector3f((float) Math.toDegrees(Math.sin(animationTimer * Math.PI * 2f)), 0, 0);
-            // THIS CREATES A NEW OBJECT IN HEAP!
-            bodyRotations[3] = new Vector3f((float) Math.toDegrees(Math.sin(animationTimer * Math.PI * -2f)), 0, 0);
-            // THIS CREATES A NEW OBJECT IN HEAP!
-            bodyRotations[4] = new Vector3f((float) Math.toDegrees(Math.sin(animationTimer * Math.PI * -2f)), 0, 0);
-            // THIS CREATES A NEW OBJECT IN HEAP!
-            bodyRotations[5] = new Vector3f((float) Math.toDegrees(Math.sin(animationTimer * Math.PI * 2f)), 0, 0);
+            
+            bodyRotations[2].set((float) Math.toDegrees(Math.sin(animationTimer * Math.PI * 2f)), 0, 0);
+            bodyRotations[3].set((float) Math.toDegrees(Math.sin(animationTimer * Math.PI * -2f)), 0, 0);
+            bodyRotations[4].set((float) Math.toDegrees(Math.sin(animationTimer * Math.PI * -2f)), 0, 0);
+            bodyRotations[5].set((float) Math.toDegrees(Math.sin(animationTimer * Math.PI * 2f)), 0, 0);
         }
 
         updatePlayerHandInertia();
