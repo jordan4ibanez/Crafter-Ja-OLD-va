@@ -42,6 +42,7 @@ public class Player {
     private static boolean mining                = false;
     private static boolean placing               = false;
     private static float placeTimer              = 0;
+    private static Vector2f animationInertiaWorker = new Vector2f();
     private static final float accelerationMultiplier  = 0.07f;
     private static String name                   = "";
     private static int currentInventorySelection = 0;
@@ -697,10 +698,10 @@ public class Player {
 
         //body animation scope
         {
-            // THIS CREATES A NEW OBJECT IN HEAP!
-            Vector3f inertia2D = new Vector3f(inertia.x, 0, inertia.z);
 
-            animationTimer += delta * (inertia2D.length() / maxWalkSpeed) * 2f;
+            inertiaWorker.set(inertia.x, inertia.z);
+            
+            animationTimer += delta * (inertiaWorker.length() / maxWalkSpeed) * 2f;
 
             if (animationTimer >= 1f) {
                 animationTimer -= 1f;
