@@ -27,9 +27,10 @@ public class Player {
 
     private static float runningFOVAdder = 0f;
     private static int health = 20;
-    private static Vector3d pos                  = loadPlayerPos();
-    private static final float eyeHeight               = 1.5f;
     private static final float collectionHeight        = 0.7f;
+    private static final float eyeHeight               = 1.5f;
+    private static Vector3d pos = loadPlayerPos();
+    private static Vector3d posWithEyeHeight = new Vector3d().set(pos.x,pos.y + eyeHeight,pos.z);
     private static final Vector3f inertia              = new Vector3f(0,0,0);
     private static final float height                  = 1.9f;
     private static final float width                   = 0.3f;
