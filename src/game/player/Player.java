@@ -541,10 +541,7 @@ public class Player {
         double delta = getDelta();
 
         //camera underwater effect trigger
-        // THIS CREATES A NEW OBJECT IN HEAP!
-        Vector3d camPos = new Vector3d(getCameraPosition());
-        camPos.y -= 0.02f;
-        byte cameraCheckBlock = getBlock((int)Math.floor(camPos.x),(int)Math.floor(camPos.y), (int)Math.floor(camPos.z));
+        byte cameraCheckBlock = getBlock((int)Math.floor(getCameraPositionX()),(int)Math.floor(getCameraPositionY() - 0.02d), (int)Math.floor(getCameraPositionZ()));
 
         cameraSubmerged = cameraCheckBlock > 0 && isBlockLiquid(cameraCheckBlock);
 
@@ -700,7 +697,7 @@ public class Player {
         {
 
             inertiaWorker.set(inertia.x, inertia.z);
-            
+
             animationTimer += delta * (inertiaWorker.length() / maxWalkSpeed) * 2f;
 
             if (animationTimer >= 1f) {
