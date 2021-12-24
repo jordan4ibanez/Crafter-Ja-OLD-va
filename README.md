@@ -30,7 +30,7 @@ You must install ANT (Another Neat Tool) for the build to work.
 
 Once you have ANT installed, you can simply CD to the Crafter directory.
 
-Check build.properties to make sure that ``jdk.home.16=`` is pointing to your openJDK 16 install.
+Check build.properties to make sure that ``jdk.home.17=`` is pointing to your openJDK 17 install.
 
 You can find this with: ``readlink -f $(which java)`` (Don't copy the bin/java part)
 
