@@ -230,8 +230,22 @@ public class Player {
         return placing;
     }
 
+    //this is mutable, be careful with this
     public static Vector3d getPlayerPos() {
         return pos;
+    }
+
+    //immutable
+    public static double getPlayerPosX(){
+        return pos.x;
+    }
+    //immutable
+    public static double getPlayerPosY(){
+        return pos.y;
+    }
+    //immutable
+    public static double getPlayerPosZ(){
+        return pos.z;
     }
 
     public static Vector3d getPlayerPosWithEyeHeight(){
