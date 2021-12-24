@@ -67,16 +67,19 @@ public class ViewBobbing {
         viewBobbing.y = yBobPos/800f;
     }
 
+    //mutable, be careful with this
     public static Vector3f getPlayerViewBobbing(){
         return viewBobbing;
     }
-
+    //immutable
     public static float getPlayerViewBobbingX(){
         return viewBobbing.x;
     }
+    //immutable
     public static float getPlayerViewBobbingY(){
         return viewBobbing.y;
     }
+    //immutable
     public static float getPlayerViewBobbingZ(){
         return viewBobbing.z;
     }
