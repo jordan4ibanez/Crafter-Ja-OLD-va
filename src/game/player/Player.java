@@ -3,6 +3,7 @@ package game.player;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
+import org.joml.Vector2f;
 
 import static engine.disk.Disk.loadPlayerPos;
 import static engine.graphics.Camera.*;
@@ -470,6 +471,9 @@ public class Player {
         }
     }
 
+
+    private static final Vector2f inertiaWorker = new Vector2f();
+
     private static void applyPlayerInertiaBuffer(){
         setPlayerInertiaBuffer();
 
@@ -478,8 +482,7 @@ public class Player {
         inertia.z += inertiaBuffer.z;
 
         //max speed todo: make this call from a player object's maxSpeed!
-        // THIS CREATES A NEW OBJECT IN HEAP!
-        Vector3f inertia2D = new Vector3f(inertia.x, 0, inertia.z);
+        inertiaWorker.set(inertia.x, inertia.z);
 
         float maxSpeed; //this should probably be cached
 
@@ -491,12 +494,14 @@ public class Player {
             maxSpeed = maxWalkSpeed;
         }
 
-        if(inertia2D.isFinite() && inertia2D.length() > maxSpeed){
-            inertia2D = inertia2D.normalize().mul(maxSpeed);
-            inertia.x = inertia2D.x;
-            inertia.z = inertia2D.z;
+        //speed limit the player's movement
+        if(inertiaWorker.isFinite() && inertiaWorker.length() > maxSpeed){
+            inertiaWorker.normalize().mul(maxSpeed);
+            inertia.x = inertiaWorker.x;
+            inertia.z = inertiaWorker.y;
         }
-        
+
+        //reset buffer
         inertiaBuffer.x = 0f;
         inertiaBuffer.y = 0f;
         inertiaBuffer.z = 0f;
