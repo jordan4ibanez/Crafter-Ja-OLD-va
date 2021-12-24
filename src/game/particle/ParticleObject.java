@@ -6,7 +6,7 @@ import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 public class ParticleObject {
-    public final Vector3d pos;
+    public final Vector3d pos = new Vector3d();
     public final Vector3i oldFlooredPos;
     public final Vector3f inertia;
     public final Mesh mesh;
@@ -16,7 +16,19 @@ public class ParticleObject {
     public int key;
 
     public ParticleObject(Vector3d pos, Vector3f inertia, Mesh mesh, int key){
-        this.pos = pos;
+        this.pos.set(pos.x,pos.y,pos.z);
+        //set to impossible position to initialize a rebuild
+        this.oldFlooredPos = new Vector3i(0,-10,0);
+        this.inertia = inertia;
+        this.mesh = mesh;
+        this.timer = (float)Math.random()*2f;
+        this.key = key;
+        this.light = 15f;
+        this.lightUpdateTimer = 0;
+    }
+
+    public ParticleObject(double x, double y, double z, Vector3f inertia, Mesh mesh, int key){
+        this.pos.set(x,y,z);
         //set to impossible position to initialize a rebuild
         this.oldFlooredPos = new Vector3i(0,-10,0);
         this.inertia = inertia;
