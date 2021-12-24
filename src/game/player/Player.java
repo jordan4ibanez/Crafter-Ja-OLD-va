@@ -231,8 +231,7 @@ public class Player {
     }
 
     public static Vector3d getPlayerPos() {
-        // THIS CREATES A NEW OBJECT IN HEAP!
-        return new Vector3d(pos.x, pos.y, pos.z);
+        return pos;
     }
 
     public static Vector3d getPlayerPosWithEyeHeight(){
@@ -332,8 +331,6 @@ public class Player {
     public static void setPlayerSneaking(boolean isSneaking){
         sneaking = isSneaking;
     }
-
-
 
     public static void setPlayerRunning(boolean isRunning){
         if (!sneaking && isRunning) {
