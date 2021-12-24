@@ -6,19 +6,19 @@ Based off of what I've learned from Minetest's engine and lua api
 
 Discord: https://discord.gg/fEjssvEYMH
 
-Required Java version (JRE): 16
+Required Java version (JRE): 17
 
-You can get this version at: https://jdk.java.net/16/
+You can get this version at: https://jdk.java.net/17/
 
 Or you can install openJDK on most linux distros.
 
-Ubuntu: ``sudo apt install openjdk-16-jdk``
+Ubuntu: ``sudo apt install openjdk-17-jdk``
 
 Fedora: ``sudo dnf install java-latest-openjdk-devel.x86_64``
 
 To update default JRE: `sudo update-alternatives --config java`
 
-You can try these flags for a performance boost, if you want.
+You can try these flags for a performance boost, if you want. These are experimental.
 
 `
 -Xmx1G -XX:-UseAdaptiveSizePolicy -XX:-UseParallelGC -Xmn128M
