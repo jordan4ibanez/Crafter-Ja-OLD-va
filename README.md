@@ -54,3 +54,7 @@ You should now be able to run the game using java -jar Crafter.jar in the folder
 
 4. Implement multiplayer
 
+
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/jordan4ibanez/Crafter.svg)](https://starchart.cc/jordan4ibanez/Crafter)
