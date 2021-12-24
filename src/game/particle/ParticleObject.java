@@ -8,7 +8,7 @@ import org.joml.Vector3i;
 public class ParticleObject {
     public final Vector3d pos = new Vector3d();
     public final Vector3i oldFlooredPos;
-    public final Vector3f inertia;
+    public final Vector3f inertia = new Vector3f();
     public final Mesh mesh;
     public float light;
     public float timer;
@@ -19,7 +19,7 @@ public class ParticleObject {
         this.pos.set(pos.x,pos.y,pos.z);
         //set to impossible position to initialize a rebuild
         this.oldFlooredPos = new Vector3i(0,-10,0);
-        this.inertia = inertia;
+        this.inertia.set(inertia.x, inertia.y, inertia.z);
         this.mesh = mesh;
         this.timer = (float)Math.random()*2f;
         this.key = key;
@@ -31,7 +31,7 @@ public class ParticleObject {
         this.pos.set(x,y,z);
         //set to impossible position to initialize a rebuild
         this.oldFlooredPos = new Vector3i(0,-10,0);
-        this.inertia = inertia;
+        this.inertia.set(inertia.x, inertia.y, inertia.z);
         this.mesh = mesh;
         this.timer = (float)Math.random()*2f;
         this.key = key;
