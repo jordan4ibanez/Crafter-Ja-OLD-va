@@ -21,8 +21,21 @@ public class Camera {
 
     private static byte cameraPerspective = 0;
 
+    //this is mutable, be careful with this
     public static Vector3d getCameraPosition(){
         return position;
+    }
+    //immutable
+    public static double getCameraPositionX(){
+        return position.x;
+    }
+    //immutable
+    public static double getCameraPositionY(){
+        return position.y;
+    }
+    //immutable
+    public static double getCameraPositionZ(){
+        return position.z;
     }
 
     public static void setCameraPosition(double x, double y, double z){
