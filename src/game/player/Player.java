@@ -705,10 +705,13 @@ public class Player {
                 animationTimer -= 1f;
             }
 
+            // THIS CREATES A NEW OBJECT IN HEAP!
             bodyRotations[2] = new Vector3f((float) Math.toDegrees(Math.sin(animationTimer * Math.PI * 2f)), 0, 0);
+            // THIS CREATES A NEW OBJECT IN HEAP!
             bodyRotations[3] = new Vector3f((float) Math.toDegrees(Math.sin(animationTimer * Math.PI * -2f)), 0, 0);
-
+            // THIS CREATES A NEW OBJECT IN HEAP!
             bodyRotations[4] = new Vector3f((float) Math.toDegrees(Math.sin(animationTimer * Math.PI * -2f)), 0, 0);
+            // THIS CREATES A NEW OBJECT IN HEAP!
             bodyRotations[5] = new Vector3f((float) Math.toDegrees(Math.sin(animationTimer * Math.PI * 2f)), 0, 0);
         }
 
@@ -753,11 +756,13 @@ public class Player {
                     case 0 -> {
                         block = getBlock(worldSelectionPos.x + 1, worldSelectionPos.y, worldSelectionPos.z);
                         if (block == 0) {
+                            // THIS CREATES A NEW OBJECT IN HEAP!
                             Vector3d particlePos = new Vector3d(worldSelectionPos);
                             particlePos.x += 1.1f;
                             particlePos.z += Math.random();
                             particlePos.y += Math.random();
 
+                            // THIS CREATES A NEW OBJECT IN HEAP!
                             Vector3f particleInertia = new Vector3f();
                             particleInertia.x = (float) Math.random() * 2f;
                             particleInertia.y = (float) Math.random() * 2f;
@@ -769,11 +774,13 @@ public class Player {
                     case 1 -> {
                         block = getBlock(worldSelectionPos.x - 1, worldSelectionPos.y, worldSelectionPos.z);
                         if (block == 0) {
+                            // THIS CREATES A NEW OBJECT IN HEAP!
                             Vector3d particlePos = new Vector3d(worldSelectionPos);
                             particlePos.x -= 0.1f;
                             particlePos.z += Math.random();
                             particlePos.y += Math.random();
 
+                            // THIS CREATES A NEW OBJECT IN HEAP!
                             Vector3f particleInertia = new Vector3f();
                             particleInertia.x = (float) Math.random() * -2f;
                             particleInertia.y = (float) Math.random() * 2f;
@@ -909,7 +916,7 @@ public class Player {
 
         //update light level for the wield item
         lightCheckTimer += delta;
-        
+
         newFlooredPos.set((int)Math.floor(getCameraPositionX()), (int)Math.floor(getCameraPositionY()), (int)Math.floor(getCameraPositionZ()));
 
         //System.out.println(lightCheckTimer);
