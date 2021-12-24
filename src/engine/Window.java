@@ -1,6 +1,5 @@
 package engine;
 
-import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWImage;
@@ -121,7 +120,7 @@ public class Window {
         IntBuffer channels = stack.mallocInt(1);
         ByteBuffer buf = stbi_load("textures/icon.png", w, h, channels, 4);
         GLFWImage image = GLFWImage.malloc();
-        
+
         //stop crash
         assert buf != null;
 
