@@ -9,6 +9,7 @@ import org.lwjgl.system.MemoryStack;
 import java.awt.*;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.Objects;
 
 import static engine.time.Time.getDelta;
 import static org.lwjgl.glfw.GLFW.*;
@@ -188,12 +189,12 @@ public class Window {
         Toolkit tk = Toolkit.getDefaultToolkit();
         Dimension d = tk.getScreenSize();
         if (!fullScreen) {
-            glfwSetWindowMonitor(windowHandle, glfwGetPrimaryMonitor(), d.width / 2, d.height / 2, d.width, d.height, glfwGetVideoMode(glfwGetPrimaryMonitor()).refreshRate());
+            glfwSetWindowMonitor(windowHandle, glfwGetPrimaryMonitor(), d.width / 2, d.height / 2, d.width, d.height, Objects.requireNonNull(glfwGetVideoMode(glfwGetPrimaryMonitor())).refreshRate());
             width = d.width;
             height = d.height;
         }
         else {
-            glfwSetWindowMonitor(windowHandle, NULL, d.width / 4, d.height / 4,d.width / 2, d.height / 2, glfwGetVideoMode(glfwGetPrimaryMonitor()).refreshRate());
+            glfwSetWindowMonitor(windowHandle, NULL, d.width / 4, d.height / 4,d.width / 2, d.height / 2, Objects.requireNonNull(glfwGetVideoMode(glfwGetPrimaryMonitor())).refreshRate());
             width = d.width / 2;
             height = d.height / 2;
         }
