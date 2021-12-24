@@ -250,9 +250,21 @@ public class Player {
         return pos.z;
     }
 
+    //this is mutable, be careful with this
     public static Vector3d getPlayerPosWithEyeHeight(){
-        // THIS CREATES A NEW OBJECT IN HEAP!
-        return new Vector3d(pos.x, pos.y + eyeHeight, pos.z);
+        return posWithEyeHeight;
+    }
+    //immutable
+    public static double getPlayerPosWithEyeHeightX(){
+        return posWithEyeHeight.x;
+    }
+    //immutable
+    public static double getPlayerPosWithEyeHeightY(){
+        return posWithEyeHeight.y;
+    }
+    //immutable
+    public static double getPlayerPosWithEyeHeightZ(){
+        return posWithEyeHeight.z;
     }
 
 
@@ -623,6 +635,10 @@ public class Player {
         if (getChunkKey(currentChunk.x, currentChunk.z) != null) {
             onGround = applyInertia(pos, inertia, true, width, height, true, sneaking, true, true, true);
         }
+
+        //apply the eyeHeight offset to the eyeHeight position
+        posWithEyeHeight.set(pos.x, pos.y + eyeHeight, pos.z);
+
 
         //play sound when player lands on the ground
         if (onGround && !wasOnGround){
