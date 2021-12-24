@@ -28,14 +28,13 @@ public class Ray {
     private final static Vector3d realNewPos = new Vector3d();
     private final static Vector3d lastPos  = new Vector3d();
     private final static Vector3d cachePos = new Vector3d();
+    private static final Vector3i pointedThingAbove = new Vector3i();
 
     public static void playerRayCast(Vector3d pos, Vector3f dir, float length, boolean mining, boolean placing, boolean hasMined) {
 
-        Vector3i pointedThingAbove = new Vector3i();
+        pointedThingAbove.set(0,0,0);
+
         byte foundBlock = -1;
-
-        MobObject[] mobs = getAllMobs();
-
 
         MobObject foundMob = null;
 
@@ -52,6 +51,8 @@ public class Ray {
             realNewPos.x = pos.x + cachePos.x;
             realNewPos.y = pos.y + cachePos.y;
             realNewPos.z = pos.z + cachePos.z;
+
+            MobObject[] mobs = getAllMobs();
 
 
             for (MobObject thisMob : mobs){
@@ -79,7 +80,7 @@ public class Ray {
 
                     finalPos.set((int)Math.floor(newPos.x), (int)Math.floor(newPos.y), (int)Math.floor(newPos.z));
 
-                    pointedThingAbove = new Vector3i((int)Math.floor(lastPos.x), (int)Math.floor(lastPos.y), (int)Math.floor(lastPos.z));
+                    pointedThingAbove.set((int)Math.floor(lastPos.x), (int)Math.floor(lastPos.y), (int)Math.floor(lastPos.z));
                     break;
                 }
             }
@@ -104,10 +105,12 @@ public class Ray {
                     } else {
                         Item wielding = getItemInInventorySlot(getPlayerInventorySelection(), 0);
 
+                        // THIS CREATES A NEW OBJECT IN HEAP!
                         if (wielding != null && !wouldCollidePlacing(getPlayerPos(),getPlayerWidth(), getPlayerHeight(), new Vector3i(pointedThingAbove.x, pointedThingAbove.y, pointedThingAbove.z), wielding.definition.blockID, getPlayerDir()) && getItemInInventorySlot(getPlayerInventorySelection(), 0) != null && !getItemInInventorySlot(getPlayerInventorySelection(), 0).definition.isItem) {
                             rayPlaceBlock(getItemInInventorySlot(getPlayerInventorySelection(), 0).definition.blockID);
                         } else if (wielding != null && wielding.definition.isItem) {
                             if (getItemModifier(getItemInInventorySlot(getPlayerInventorySelection(), 0).name) != null) {
+                                // THIS CREATES A NEW OBJECT IN HEAP!
                                 getItemModifier(getItemInInventorySlot(getPlayerInventorySelection(), 0).name).onPlace(new Vector3i(finalPos.x, finalPos.y, finalPos.z), pointedThingAbove);
                             }
                         } else {
@@ -115,6 +118,7 @@ public class Ray {
                         }
                     }
                 } else {
+                    // THIS CREATES A NEW OBJECT IN HEAP!
                     setPlayerWorldSelectionPos(new Vector3i(finalPos.x, finalPos.y, finalPos.z));
                 }
             } else {
@@ -137,6 +141,7 @@ public class Ray {
             digBlock(finalPos.x, finalPos.y, finalPos.z);
         }
         for (int i = 0; i < 40 + (int)(Math.random() * 15); i++) {
+            // THIS CREATES 2 NEW OBJECTS IN HEAP!
             createParticle(new Vector3d(finalPos.x + (Math.random()-0.5d), finalPos.y + (Math.random()-0.5d), finalPos.z + (Math.random()-0.5d)), new Vector3f((float)(Math.random()-0.5f) * 2f, 0f, (float)(Math.random()-0.5f) * 2f), thisBlock);
         }
     }
