@@ -173,7 +173,7 @@ public class SceneHandler {
 
         //indexLight();
         mouseInput();
-        tickUpTimeOfDay();
+        //tickUpTimeOfDay();
         pollTimeOfDay(); //this needs to be in the main thread
         makeCloudsMove();
         countFPS();
