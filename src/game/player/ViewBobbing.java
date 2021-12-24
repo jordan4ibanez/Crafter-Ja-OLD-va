@@ -70,4 +70,14 @@ public class ViewBobbing {
     public static Vector3f getPlayerViewBobbing(){
         return viewBobbing;
     }
+
+    public static float getPlayerViewBobbingX(){
+        return viewBobbing.x;
+    }
+    public static float getPlayerViewBobbingY(){
+        return viewBobbing.y;
+    }
+    public static float getPlayerViewBobbingZ(){
+        return viewBobbing.z;
+    }
 }

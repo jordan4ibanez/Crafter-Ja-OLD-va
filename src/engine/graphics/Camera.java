@@ -7,6 +7,7 @@ import org.joml.Vector3f;
 
 import static engine.MouseInput.getMouseDisplVec;
 import static game.player.Player.*;
+import static game.player.ViewBobbing.*;
 import static game.ray.Ray.genericWorldRaycast;
 
 public class Camera {
@@ -78,6 +79,18 @@ public class Camera {
         return rotation;
     }
 
+    public static float getCameraRotationX(){
+        return rotation.x;
+    }
+
+    public static float getCameraRotationY(){
+        return rotation.y;
+    }
+
+    public static float getCameraRotationZ(){
+        return rotation.z;
+    }
+
 
     public static void setCameraRotation(float x, float y, float z){
         rotation.set(x,y,z);
@@ -101,7 +114,7 @@ public class Camera {
 
         if (cameraPerspective == 0) {
             setCameraPosition(getPlayerPosWithEyeHeight().x, getPlayerPosWithEyeHeight().y + getSneakOffset(), getPlayerPosWithEyeHeight().z);
-            moveCameraPosition(getPlayerViewBobbing().x, getPlayerViewBobbing().y, getPlayerViewBobbing().z);
+            moveCameraPosition(getPlayerViewBobbingX(), getPlayerViewBobbingY(), getPlayerViewBobbingZ());
         }
 
         //update camera based on mouse

@@ -18,8 +18,7 @@ import static game.clouds.Cloud.setCloudPos;
 import static game.collision.Collision.applyInertia;
 import static game.crafting.Inventory.updateWieldInventory;
 import static game.particle.Particle.createParticle;
-import static game.player.ViewBobbing.applyViewBobbing;
-import static game.player.ViewBobbing.returnPlayerViewBobbing;
+import static game.player.ViewBobbing.*;
 import static game.player.WieldHand.updatePlayerHandInertia;
 import static game.ray.Ray.playerRayCast;
 
@@ -245,18 +244,21 @@ public class Player {
         if (getCameraPerspective() == 0) {
             Vector3f cameraRotation = getCameraRotation();
 
-            if (viewBobbing.z != 0) {
-                position.x += (float) Math.sin(Math.toRadians(cameraRotation.y)) * -1.0f * viewBobbing.z;
-                position.z += (float) Math.cos(Math.toRadians(cameraRotation.y)) * viewBobbing.z;
+            float viewBobbingZ = getPlayerViewBobbingZ();
+            if (viewBobbingZ != 0) {
+                position.x += (float) Math.sin(Math.toRadians(cameraRotation.y)) * -1.0f * viewBobbingZ;
+                position.z += (float) Math.cos(Math.toRadians(cameraRotation.y)) * viewBobbingZ;
             }
 
-            if (viewBobbing.x != 0) {
-                position.x += (float) Math.sin(Math.toRadians(cameraRotation.y - 90f)) * -1.0f * viewBobbing.x;
-                position.z += (float) Math.cos(Math.toRadians(cameraRotation.y - 90f)) * viewBobbing.x;
+            float viewBobbingX = getPlayerViewBobbingX();
+            if (viewBobbingX != 0) {
+                position.x += (float) Math.sin(Math.toRadians(cameraRotation.y - 90f)) * -1.0f * viewBobbingX;
+                position.z += (float) Math.cos(Math.toRadians(cameraRotation.y - 90f)) * viewBobbingX;
             }
 
-            if (viewBobbing.y != 0) {
-                position.y += viewBobbing.y;
+            float viewBobbingY = getPlayerViewBobbingY();
+            if (viewBobbingY != 0) {
+                position.y += viewBobbingY;
             }
         }
         return position;
