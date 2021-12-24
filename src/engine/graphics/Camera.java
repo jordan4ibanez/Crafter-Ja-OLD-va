@@ -75,18 +75,19 @@ public class Camera {
         return cameraPerspective;
     }
 
+    //this is mutable, be careful with this
     public static Vector3f getCameraRotation(){
         return rotation;
     }
-
+    //immutable
     public static float getCameraRotationX(){
         return rotation.x;
     }
-
+    //immutable
     public static float getCameraRotationY(){
         return rotation.y;
     }
-
+    //immutable
     public static float getCameraRotationZ(){
         return rotation.z;
     }
