@@ -231,16 +231,20 @@ public class Player {
     }
 
     public static Vector3d getPlayerPos() {
+        // THIS CREATES A NEW OBJECT IN HEAP!
         return new Vector3d(pos.x, pos.y, pos.z);
     }
 
     public static Vector3d getPlayerPosWithEyeHeight(){
+        // THIS CREATES A NEW OBJECT IN HEAP!
         return new Vector3d(pos.x, pos.y + eyeHeight, pos.z);
     }
 
 
     public static Vector3d getPlayerPosWithViewBobbing(){
+
         Vector3d position = getPlayerPosWithEyeHeight();
+
         if (getCameraPerspective() == 0) {
             Vector3f cameraRotation = getCameraRotation();
 
@@ -265,6 +269,7 @@ public class Player {
     }
 
     public static Vector3d getPlayerPosWithCollectionHeight(){
+        // THIS CREATES A NEW OBJECT IN HEAP!
         return new Vector3d(pos.x, pos.y + collectionHeight, pos.z);
     }
 
