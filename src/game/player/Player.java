@@ -34,6 +34,7 @@ public class Player {
     private static Vector3d posWithEyeHeight = new Vector3d().set(pos.x,pos.y + eyeHeight,pos.z);
     private static Vector3d posWithCollectionHeight = new Vector3d(pos.x, pos.y + collectionHeight, pos.z);
     private static Vector3d posWithEyeHeightViewBobbing = new Vector3d().set(posWithEyeHeight.x, posWithEyeHeight.y, posWithEyeHeight.z);
+    private static Vector3i newFlooredPos = new Vector3i();
     private static final Vector3f inertia              = new Vector3f(0,0,0);
     private static final float height                  = 1.9f;
     private static final float width                   = 0.3f;
@@ -908,8 +909,8 @@ public class Player {
 
         //update light level for the wield item
         lightCheckTimer += delta;
-        // THIS CREATES A NEW OBJECT IN HEAP!
-        Vector3i newFlooredPos = new Vector3i((int)Math.floor(camPos.x), (int)Math.floor(camPos.y), (int)Math.floor(camPos.z));
+        
+        newFlooredPos.set((int)Math.floor(getCameraPositionX()), (int)Math.floor(getCameraPositionY()), (int)Math.floor(getCameraPositionZ()));
 
         //System.out.println(lightCheckTimer);
         if (lightCheckTimer >= 0.25f || !newFlooredPos.equals(oldFlooredPos)){
