@@ -256,6 +256,7 @@ public class Player {
 
     public static Vector3d getPlayerPosWithViewBobbing(){
 
+        // THIS CREATES A NEW OBJECT IN HEAP!
         Vector3d position = getPlayerPosWithEyeHeight();
 
         if (getCameraPerspective() == 0) {
@@ -435,6 +436,7 @@ public class Player {
         inertia.z += inertiaBuffer.z;
 
         //max speed todo: make this call from a player object's maxSpeed!
+        // THIS CREATES A NEW OBJECT IN HEAP!
         Vector3f inertia2D = new Vector3f(inertia.x, 0, inertia.z);
 
         float maxSpeed; //this should probably be cached
