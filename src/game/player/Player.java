@@ -269,37 +269,41 @@ public class Player {
 
 
     public static Vector3d getPlayerPosWithViewBobbing(){
-
-        // THIS CREATES A NEW OBJECT IN HEAP!
-        Vector3d position = getPlayerPosWithEyeHeight();
-
-        if (getCameraPerspective() == 0) {
-            Vector3f cameraRotation = getCameraRotation();
-
-            float viewBobbingZ = getPlayerViewBobbingZ();
-            if (viewBobbingZ != 0) {
-                position.x += (float) Math.sin(Math.toRadians(cameraRotation.y)) * -1.0f * viewBobbingZ;
-                position.z += (float) Math.cos(Math.toRadians(cameraRotation.y)) * viewBobbingZ;
-            }
-
-            float viewBobbingX = getPlayerViewBobbingX();
-            if (viewBobbingX != 0) {
-                position.x += (float) Math.sin(Math.toRadians(cameraRotation.y - 90f)) * -1.0f * viewBobbingX;
-                position.z += (float) Math.cos(Math.toRadians(cameraRotation.y - 90f)) * viewBobbingX;
-            }
-
-            float viewBobbingY = getPlayerViewBobbingY();
-            if (viewBobbingY != 0) {
-                position.y += viewBobbingY;
-            }
-        }
-        return position;
+        return posWithEyeHeightViewBobbing;
     }
 
     public static Vector3d getPlayerPosWithCollectionHeight(){
         // THIS CREATES A NEW OBJECT IN HEAP!
         return new Vector3d(pos.x, pos.y + collectionHeight, pos.z);
     }
+
+    private static void applyCameraViewBobbingOffset(){
+        posWithEyeHeightViewBobbing.set(posWithEyeHeight.x, posWithEyeHeight.y,posWithEyeHeight.z);
+
+        if (getCameraPerspective() == 0) {
+            float cameraRotationY = getCameraRotationY();
+
+            float viewBobbingZ = getPlayerViewBobbingZ();
+            if (viewBobbingZ != 0) {
+                //direct object modification
+                posWithEyeHeightViewBobbing.x += (float) Math.sin(Math.toRadians(cameraRotationY)) * -1.0f * viewBobbingZ;
+                posWithEyeHeightViewBobbing.z += (float) Math.cos(Math.toRadians(cameraRotationY)) * viewBobbingZ;
+            }
+
+            float viewBobbingX = getPlayerViewBobbingX();
+            if (viewBobbingX != 0) {
+                posWithEyeHeightViewBobbing.x += (float) Math.sin(Math.toRadians(cameraRotationY - 90f)) * -1.0f * viewBobbingX;
+                posWithEyeHeightViewBobbing.z += (float) Math.cos(Math.toRadians(cameraRotationY - 90f)) * viewBobbingX;
+            }
+
+            float viewBobbingY = getPlayerViewBobbingY();
+
+            if (viewBobbingY != 0) {
+                posWithEyeHeightViewBobbing.y += viewBobbingY;
+            }
+        }
+    }
+
 
     public static void setPlayerPos(Vector3d newPos) {
         pos = newPos;
@@ -679,11 +683,17 @@ public class Player {
 
         updatePlayerHandInertia();
 
+        //this creates the view bobbing internal calculation offset in the ViewBobbing class
+        //this is only creating the offsets that will be applied
         if(onGround && playerIsMoving() && !sneaking && !inWater){
             applyViewBobbing();
         } else {
             returnPlayerViewBobbing();
         }
+
+        //apply view bobbing offset to camera position literal form (Vector3D)
+        applyCameraViewBobbingOffset();
+
 
         //sneaking offset
         if (sneaking){
