@@ -31,6 +31,7 @@ public class Player {
     private static final float eyeHeight               = 1.5f;
     private static Vector3d pos = loadPlayerPos();
     private static Vector3d posWithEyeHeight = new Vector3d().set(pos.x,pos.y + eyeHeight,pos.z);
+    private static Vector3d posWithEyeHeightViewBobbing = new Vector3d().set(posWithEyeHeight.x, posWithEyeHeight.y, posWithEyeHeight.z);
     private static final Vector3f inertia              = new Vector3f(0,0,0);
     private static final float height                  = 1.9f;
     private static final float width                   = 0.3f;
