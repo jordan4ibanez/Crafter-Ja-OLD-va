@@ -52,6 +52,8 @@ public class Player {
     private static Vector3i worldSelectionPos    = new Vector3i();
     private static float sneakOffset = 0;
     private static boolean playerIsJumping = false;
+    private static Vector3d particlePos = new Vector3d(worldSelectionPos);
+    private static Vector3f particleInertia = new Vector3f();
     //this is like this because working with x and z is easier than x and y
     private static final Vector3i currentChunk = new Vector3i((int)Math.floor(pos.x / 16f),0,(int)Math.floor(pos.z / 16f));
     public static int oldY = 0;
@@ -704,7 +706,7 @@ public class Player {
             if (animationTimer >= 1f) {
                 animationTimer -= 1f;
             }
-            
+
             bodyRotations[2].set((float) Math.toDegrees(Math.sin(animationTimer * Math.PI * 2f)), 0, 0);
             bodyRotations[3].set((float) Math.toDegrees(Math.sin(animationTimer * Math.PI * -2f)), 0, 0);
             bodyRotations[4].set((float) Math.toDegrees(Math.sin(animationTimer * Math.PI * -2f)), 0, 0);
@@ -742,6 +744,7 @@ public class Player {
             }
         }
 
+
         if (mining && worldSelectionPos != null){
             particleBufferTimer += delta;
             if (particleBufferTimer > 0.01f){
@@ -752,14 +755,12 @@ public class Player {
                     case 0 -> {
                         block = getBlock(worldSelectionPos.x + 1, worldSelectionPos.y, worldSelectionPos.z);
                         if (block == 0) {
-                            // THIS CREATES A NEW OBJECT IN HEAP!
-                            Vector3d particlePos = new Vector3d(worldSelectionPos);
+                            particlePos.set(worldSelectionPos.x,worldSelectionPos.y,worldSelectionPos.z);
                             particlePos.x += 1.1f;
                             particlePos.z += Math.random();
                             particlePos.y += Math.random();
 
-                            // THIS CREATES A NEW OBJECT IN HEAP!
-                            Vector3f particleInertia = new Vector3f();
+                            particleInertia.set(0,0,0);
                             particleInertia.x = (float) Math.random() * 2f;
                             particleInertia.y = (float) Math.random() * 2f;
                             particleInertia.z = (float) (Math.random() - 0.5f) * 2f;
@@ -770,14 +771,12 @@ public class Player {
                     case 1 -> {
                         block = getBlock(worldSelectionPos.x - 1, worldSelectionPos.y, worldSelectionPos.z);
                         if (block == 0) {
-                            // THIS CREATES A NEW OBJECT IN HEAP!
-                            Vector3d particlePos = new Vector3d(worldSelectionPos);
+                            particlePos.set(worldSelectionPos.x,worldSelectionPos.y,worldSelectionPos.z);
                             particlePos.x -= 0.1f;
                             particlePos.z += Math.random();
                             particlePos.y += Math.random();
 
-                            // THIS CREATES A NEW OBJECT IN HEAP!
-                            Vector3f particleInertia = new Vector3f();
+                            particleInertia.set(0,0,0);
                             particleInertia.x = (float) Math.random() * -2f;
                             particleInertia.y = (float) Math.random() * 2f;
                             particleInertia.z = (float) (Math.random() - 0.5f) * 2f;
@@ -788,13 +787,12 @@ public class Player {
                     case 2 -> {
                         block = getBlock(worldSelectionPos.x, worldSelectionPos.y + 1, worldSelectionPos.z);
                         if (block == 0) {
-                            // THIS CREATES A NEW OBJECT IN HEAP!
-                            Vector3d particlePos = new Vector3d(worldSelectionPos);
+                            particlePos.set(worldSelectionPos.x,worldSelectionPos.y,worldSelectionPos.z);
                             particlePos.y += 1.1f;
                             particlePos.z += Math.random();
                             particlePos.x += Math.random();
-                            // THIS CREATES A NEW OBJECT IN HEAP!
-                            Vector3f particleInertia = new Vector3f();
+
+                            particleInertia.set(0,0,0);
                             particleInertia.x = (float) (Math.random() - 0.5f) * 2f;
                             particleInertia.y = (float) Math.random() * 2f;
                             particleInertia.z = (float) (Math.random() - 0.5f) * 2f;
@@ -805,13 +803,12 @@ public class Player {
                     case 3 -> {
                         block = getBlock(worldSelectionPos.x, worldSelectionPos.y - 1, worldSelectionPos.z);
                         if (block == 0) {
-                            // THIS CREATES A NEW OBJECT IN HEAP!
-                            Vector3d particlePos = new Vector3d(worldSelectionPos);
+                            particlePos.set(worldSelectionPos.x,worldSelectionPos.y,worldSelectionPos.z);
                             particlePos.y -= 0.1f;
                             particlePos.z += Math.random();
                             particlePos.x += Math.random();
-                            // THIS CREATES A NEW OBJECT IN HEAP!
-                            Vector3f particleInertia = new Vector3f();
+
+                            particleInertia.set(0,0,0);
                             particleInertia.x = (float) (Math.random() - 0.5f) * 2f;
                             particleInertia.y = (float) Math.random() * -1f;
                             particleInertia.z = (float) (Math.random() - 0.5f) * 2f;
@@ -822,13 +819,12 @@ public class Player {
                     case 4 -> {
                         block = getBlock(worldSelectionPos.x, worldSelectionPos.y, worldSelectionPos.z + 1);
                         if (block == 0) {
-                            // THIS CREATES A NEW OBJECT IN HEAP!
-                            Vector3d particlePos = new Vector3d(worldSelectionPos);
+                            particlePos.set(worldSelectionPos.x,worldSelectionPos.y,worldSelectionPos.z);
                             particlePos.z += 1.1f;
                             particlePos.x += Math.random();
                             particlePos.y += Math.random();
-                            // THIS CREATES A NEW OBJECT IN HEAP!
-                            Vector3f particleInertia = new Vector3f();
+
+                            particleInertia.set(0,0,0);
                             particleInertia.z = (float) Math.random() * 2f;
                             particleInertia.y = (float) Math.random() * 2f;
                             particleInertia.x = (float) (Math.random() - 0.5f) * 2f;
@@ -839,13 +835,12 @@ public class Player {
                     case 5 -> {
                         block = getBlock(worldSelectionPos.x, worldSelectionPos.y, worldSelectionPos.z - 1);
                         if (block == 0) {
-                            // THIS CREATES A NEW OBJECT IN HEAP!
-                            Vector3d particlePos = new Vector3d(worldSelectionPos);
+                            particlePos.set(worldSelectionPos.x,worldSelectionPos.y,worldSelectionPos.z);
                             particlePos.z -= 0.1f;
                             particlePos.x += Math.random();
                             particlePos.y += Math.random();
-                            // THIS CREATES A NEW OBJECT IN HEAP!
-                            Vector3f particleInertia = new Vector3f();
+
+                            particleInertia.set(0,0,0);
                             particleInertia.z = (float) Math.random() * -2f;
                             particleInertia.y = (float) Math.random() * 2f;
                             particleInertia.x = (float) (Math.random() - 0.5f) * 2f;
