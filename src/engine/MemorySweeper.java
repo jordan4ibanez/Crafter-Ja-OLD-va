@@ -10,7 +10,7 @@ import static game.particle.Particle.cleanParticleMemory;
 import static game.player.OtherPlayers.cleanOtherPLayerMemory;
 
 public class MemorySweeper {
-    public static void sweepMemory(){
+    public static void cleanMemory(){
         //System.out.println("sweeping memory!");
         cleanItemMemory();
         cleanChunkDataMemory();

@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import static engine.Controls.gameInput;
 import static engine.Controls.mainMenuInput;
-import static engine.MemorySweeper.sweepMemory;
+import static engine.MemorySweeper.cleanMemory;
 import static engine.MouseInput.*;
 import static engine.Window.*;
 import static engine.debug.CheckRuntimeInfo.doRuntimeInfoUpdate;
@@ -65,7 +65,9 @@ public class SceneHandler {
 
 
         //generic handler - this goes after scene 0 check for global final save chunks to disk
-        sweepMemory();
+
+        //this cleans the memory out
+        cleanMemory();
 
 
         if (newScene == 1){
