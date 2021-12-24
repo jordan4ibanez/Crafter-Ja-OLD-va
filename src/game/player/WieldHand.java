@@ -12,6 +12,7 @@ import static game.blocks.BlockDefinition.getDigSound;
 import static game.chunk.Chunk.getBlock;
 import static game.crafting.Inventory.getItemInInventorySlot;
 import static game.player.Player.*;
+import static game.player.ViewBobbing.getPlayerViewBobbing;
 
 public class WieldHand {
 

@@ -1,6 +1,5 @@
 package game.player;
 
-import org.joml.Quaternionf;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
@@ -17,9 +16,10 @@ import static game.blocks.BlockDefinition.*;
 import static game.chunk.Chunk.*;
 import static game.clouds.Cloud.setCloudPos;
 import static game.collision.Collision.applyInertia;
-import static game.crafting.Inventory.getItemInInventorySlot;
 import static game.crafting.Inventory.updateWieldInventory;
 import static game.particle.Particle.createParticle;
+import static game.player.ViewBobbing.applyViewBobbing;
+import static game.player.ViewBobbing.returnPlayerViewBobbing;
 import static game.player.WieldHand.updatePlayerHandInertia;
 import static game.ray.Ray.playerRayCast;
 
@@ -41,7 +41,6 @@ public class Player {
     private static float placeTimer              = 0;
     private static final float accelerationMultiplier  = 0.07f;
     private static String name                   = "";
-    private static final Vector3f viewBobbing          = new Vector3f(0,0,0);
     private static int currentInventorySelection = 0;
     private static int oldInventorySelection = 0;
     private static Vector3i oldWorldSelectionPos = new Vector3i();
@@ -195,10 +194,6 @@ public class Player {
         return currentInventorySelection;
     }
 
-    public static Vector3f getPlayerViewBobbing(){
-        return viewBobbing;
-    }
-
     public static void setPlayerMining( boolean isMining){
         mining = isMining;
     }
@@ -249,6 +244,7 @@ public class Player {
         Vector3d position = getPlayerPosWithEyeHeight();
         if (getCameraPerspective() == 0) {
             Vector3f cameraRotation = getCameraRotation();
+
             if (viewBobbing.z != 0) {
                 position.x += (float) Math.sin(Math.toRadians(cameraRotation.y)) * -1.0f * viewBobbing.z;
                 position.z += (float) Math.cos(Math.toRadians(cameraRotation.y)) * viewBobbing.z;
@@ -510,7 +506,7 @@ public class Player {
         } else if (camRot >= 135f && camRot < 225f){
 //            System.out.println(0);
             currentRotDir = 0;
-        } else if (camRot >= 225f && camRot < 315f){
+        } else if (camRot >= 225f){
 //            System.out.println(1);
             currentRotDir = 1;
         }
@@ -610,7 +606,7 @@ public class Player {
         }
 
 
-        //falldamage
+        //fall damage
         if (onGround){
 
             int currentY = (int)Math.floor(pos.y);
@@ -868,63 +864,6 @@ public class Player {
         }
     }
 
-    private static boolean xPositive = true;
-    private static float xBobPos = 0;
-    private static float yBobPos = 0;
-
-    private static void applyViewBobbing() {
-
-        double delta = getDelta();
-
-        double viewBobbingAddition = delta  * 250f;
-
-        //System.out.println(viewBobbingAddition);
-
-        if (running){
-            viewBobbingAddition = delta * 290f;
-        }
-
-        if (xPositive) {
-            xBobPos += viewBobbingAddition;
-            if (xBobPos >= 50f){
-                xBobPos = 50f;
-                xPositive = false;
-                playSound("dirt_" + (int)(Math.ceil(Math.random()*3)));
-            }
-        } else {
-            xBobPos -= viewBobbingAddition;
-            if (xBobPos <= -50f){
-                xBobPos = -50f;
-                xPositive = true;
-                playSound("dirt_"  + (int)(Math.ceil(Math.random()*3)));
-            }
-        }
-
-        yBobPos = Math.abs(xBobPos);
-
-        viewBobbing.x = xBobPos/700f;
-        viewBobbing.y = yBobPos/800f;
-    }
-
-    private static void returnPlayerViewBobbing(){
-
-        double delta = getDelta();
-
-        if ((Math.abs(xBobPos)) <= 300 * delta){
-            xBobPos = 0;
-        }
-
-        if (xBobPos > 0){
-            xBobPos -= 300 * delta;
-        } else if (xBobPos < 0){
-            xBobPos += 300 * delta;
-        }
-
-        yBobPos = Math.abs(xBobPos);
-
-        viewBobbing.x = xBobPos/700f;
-        viewBobbing.y = yBobPos/800f;
-    }
 
     public static void changeScrollSelection(int i){
         currentInventorySelection += i;
@@ -994,6 +933,10 @@ public class Player {
             //System.out.println("The player's health is: " + health);
             calculateHealthBarElements();
         }
+    }
+
+    public static boolean isPlayerRunning(){
+        return (running);
     }
 
     public static void hurtPlayer(int hurt){
