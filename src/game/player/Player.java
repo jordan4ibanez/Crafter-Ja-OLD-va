@@ -267,9 +267,21 @@ public class Player {
         return posWithEyeHeight.z;
     }
 
-
+    //this is mutable, be careful with this
     public static Vector3d getPlayerPosWithViewBobbing(){
         return posWithEyeHeightViewBobbing;
+    }
+    //immutable
+    public static double getPlayerPosWithViewBobbingX(){
+        return posWithEyeHeightViewBobbing.x;
+    }
+    //immutable
+    public static double getPlayerPosWithViewBobbingY(){
+        return posWithEyeHeightViewBobbing.y;
+    }
+    //immutable
+    public static double getPlayerPosWithViewBobbingZ(){
+        return posWithEyeHeightViewBobbing.z;
     }
 
     public static Vector3d getPlayerPosWithCollectionHeight(){
