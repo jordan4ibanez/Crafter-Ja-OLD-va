@@ -157,9 +157,9 @@ public class Player {
     }
 
     public static void setPlayerWorldSelectionPos(Vector3i thePos){
-        if (worldSelectionPos != null) {
-            oldWorldSelectionPos = new Vector3i(worldSelectionPos);
-        }
+
+        oldWorldSelectionPos.set(worldSelectionPos.x,worldSelectionPos.y,worldSelectionPos.z);
+
         if (thePos != null){
             byte block = getBlock(thePos.x, thePos.y,thePos.z);
             //add in block hardness levels
@@ -177,7 +177,9 @@ public class Player {
                 leafHardness = -1;
             }
         }
-        worldSelectionPos = thePos;
+        assert thePos != null;
+        System.out.println("need to make the ray NOT PRODUCE A NULL POINTER YOU DUMMY");
+        worldSelectionPos.set(thePos.x,thePos.y,thePos.z);
     }
 
 
@@ -185,8 +187,9 @@ public class Player {
         return lightLevel;
     }
 
-    public static void setPlayerWorldSelectionPos(){
-        worldSelectionPos = null;
+    //why does this even exist?
+    public static void setPlayerWorldSelectionPos(int x, int y, int z){
+        worldSelectionPos.set(x,y,z);
     }
 
     public static Vector3i getPlayerWorldSelectionPos(){
@@ -335,7 +338,7 @@ public class Player {
 
 
     public static void setPlayerPos(Vector3d newPos) {
-        pos = newPos;
+        pos.set(newPos.x,newPos.y, newPos.z);
     }
 
     public static Vector3f getPlayerInertia(){
