@@ -33,7 +33,7 @@ public class Window {
         vSync   = newVSync;
         resized = false;
 
-        // setup an error callback. The default implementation
+        // set up an error callback. The default implementation
         // will print the error message in System.err.
         GLFWErrorCallback.createPrint(System.err).set();
 
@@ -121,6 +121,10 @@ public class Window {
         IntBuffer channels = stack.mallocInt(1);
         ByteBuffer buf = stbi_load("textures/icon.png", w, h, channels, 4);
         GLFWImage image = GLFWImage.malloc();
+        
+        //stop crash
+        assert buf != null;
+
         image.set(32,32, buf);
         GLFWImage.Buffer images = GLFWImage.malloc(1);
         images.put(0, image);
