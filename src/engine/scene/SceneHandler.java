@@ -1,8 +1,5 @@
 package engine.scene;
 
-import game.item.ItemEntity;
-import game.tnt.TNTEntity;
-
 import java.io.IOException;
 
 import static engine.Controls.gameInput;
@@ -18,7 +15,6 @@ import static engine.network.Networking.getIfConnected;
 import static engine.network.Networking.sendPositionData;
 import static engine.render.GameRenderer.renderGame;
 import static engine.render.MainMenuRenderer.renderMainMenu;
-import static engine.settings.Settings.getDebugInfo;
 import static engine.sound.SoundManager.updateListenerPosition;
 import static engine.time.Time.calculateDelta;
 import static engine.time.TimeOfDay.pollTimeOfDay;
