@@ -23,8 +23,10 @@ You can try these flags for a performance boost, if you want. These are experime
 `
 -Xmx1G -XX:-UseAdaptiveSizePolicy -XX:-UseParallelGC -Xmn128M
 `
-
+ 
 # Building with ANT:
+
+### If you know how to improve the ant build script, feel free to.
 
 You must install ANT (Another Neat Tool) for the build to work.
 
