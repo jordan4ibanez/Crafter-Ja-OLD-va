@@ -356,7 +356,7 @@ public class Player {
         inertia.z = z;
     }
 
-    private static Vector3f inertiaBuffer = new Vector3f(0,0,0);
+    private static final Vector3f inertiaBuffer = new Vector3f(0,0,0);
 
     private static boolean forward = false;
     private static boolean backward = false;
