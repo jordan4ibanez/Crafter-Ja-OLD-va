@@ -41,6 +41,8 @@ import static game.light.Light.getCurrentGlobalLightLevel;
 import static game.mob.Mob.*;
 import static game.particle.Particle.getAllParticles;
 import static game.player.Player.*;
+import static game.player.PlayerMesh.getHumanBodyOffsets;
+import static game.player.PlayerMesh.getHumanMeshes;
 import static game.player.WieldHand.getWieldHandAnimationPos;
 import static game.player.WieldHand.getWieldHandAnimationRot;
 import static game.tnt.TNTEntity.*;
@@ -555,10 +557,9 @@ public class GameRenderer {
             workerMesh.cleanUp(false);
         }
 
+        */
 
 
-
-        //todo: remove dependency of Human mob
         //render player in third person mode
         if (getCameraPerspective() > 0){
             Mesh[] playerMeshes = getHumanMeshes();
@@ -575,12 +576,12 @@ public class GameRenderer {
                     if (offsetIndex == 0){
                         headRot = getCameraRotation().x;
                     }
-                    modelViewMatrix = getMobMatrix(pos, playerBodyOffsets[offsetIndex], workerVec3F.set(0, getCameraRotation().y, 0), workerVec3F2.set(headRot + playerBodyRotation[offsetIndex].x,playerBodyRotation[offsetIndex].y,playerBodyRotation[offsetIndex].z), workerVec3D2.set(1f, 1f, 1f), viewMatrix);
+                    modelViewMatrix.set(getMobMatrix(pos, playerBodyOffsets[offsetIndex], workerVec3F.set(0, getCameraRotation().y, 0), workerVec3F2.set(headRot + playerBodyRotation[offsetIndex].x,playerBodyRotation[offsetIndex].y,playerBodyRotation[offsetIndex].z), workerVec3D2.set(1f, 1f, 1f)));
                 } else {
                     if (offsetIndex == 0){
                         headRot = getCameraRotation().x * -1f;
                     }
-                    modelViewMatrix = getMobMatrix(pos, playerBodyOffsets[offsetIndex], workerVec3F.set(0, getCameraRotation().y + 180f, 0), workerVec3F2.set(headRot + playerBodyRotation[offsetIndex].x,playerBodyRotation[offsetIndex].y,playerBodyRotation[offsetIndex].z), workerVec3D2.set(1f, 1f, 1f), viewMatrix);
+                    modelViewMatrix.set(getMobMatrix(pos, playerBodyOffsets[offsetIndex], workerVec3F.set(0, getCameraRotation().y + 180f, 0), workerVec3F2.set(headRot + playerBodyRotation[offsetIndex].x,playerBodyRotation[offsetIndex].y,playerBodyRotation[offsetIndex].z), workerVec3D2.set(1f, 1f, 1f)));
                 }
                 entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 thisMesh.render();
@@ -589,14 +590,13 @@ public class GameRenderer {
 
             //finally render their name
             //this is a temporary hack to see what other people are playing
-            modelViewMatrix = updateTextIn3DSpaceViewMatrix(workerVec3D.set(pos).add(0,2.05d,0), workerVec3F.set(getCameraRotation()), workerVec3D2.set(0.25d,0.25d,0.25d), viewMatrix);
+            //modelViewMatrix = updateTextIn3DSpaceViewMatrix(workerVec3D.set(pos).add(0,2.05d,0), workerVec3F.set(getCameraRotation()), workerVec3D2.set(0.25d,0.25d,0.25d), viewMatrix);
 
-            entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            workerMesh = createTextCentered(getPlayerName(), 1f, 1f, 1f);
-            workerMesh.render();
-            workerMesh.cleanUp(false);
+            //entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            //workerMesh = createTextCentered(getPlayerName(), 1f, 1f, 1f);
+            //workerMesh.render();
+            //workerMesh.cleanUp(false);
         }
-        */
 
         //render particles
         for (Object loadedObject : getAllParticles()){
