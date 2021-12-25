@@ -24,6 +24,11 @@ import static game.player.WieldHand.updatePlayerHandInertia;
 import static game.ray.Ray.playerRayCast;
 
 
+/*
+TODO: REORGANIZE THIS AND MAKE THIS CLEANER
+TODO: BREAK THIS INTO INDIVIDUAL CLASSES, IT'S A MESS
+ */
+
 public class Player {
 
     //this is a final Vector3i which indicates that the player is not pointing at anything
