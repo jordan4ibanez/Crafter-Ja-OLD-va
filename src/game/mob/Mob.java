@@ -84,6 +84,7 @@ public class Mob {
     }
 
     public static MobObject[] getAllMobs(){
+        // THIS CREATES A NEW OBJECT IN HEAP!!!
         return mobs.values().toArray(new MobObject[0]);
     }
 
