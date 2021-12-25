@@ -691,7 +691,7 @@ public class GameRenderer {
 
 
         //draw wield hand or item
-        if (true){//(getCameraPerspective() == 0) {
+        if (getCameraPerspective() == 0) {
 
             entityShaderProgram.setUniform("projectionMatrix", projectionMatrix);
             entityShaderProgram.setLightUniform("light", getPlayerLightLevel());
