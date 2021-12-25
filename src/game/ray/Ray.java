@@ -23,11 +23,11 @@ import static game.player.Player.*;
 
 public class Ray {
 
-    private static final Vector3i finalPos = new Vector3i();
-    private static final Vector3d newPos   = new Vector3d();
+    private static final Vector3i finalPos   = new Vector3i();
+    private static final Vector3d newPos     = new Vector3d();
     private static final Vector3d realNewPos = new Vector3d();
-    private static final Vector3d lastPos  = new Vector3d();
-    private static final Vector3d cachePos = new Vector3d();
+    private static final Vector3d lastPos    = new Vector3d();
+    private static final Vector3d cachePos   = new Vector3d();
     private static final Vector3i pointedThingAbove = new Vector3i();
 
     public static void playerRayCast(Vector3d pos, Vector3f dir, float length, boolean mining, boolean placing, boolean hasMined) {
@@ -98,13 +98,21 @@ public class Ray {
 
         //if a mob is found, the pointer is pointing to that thing
         //this needs a rework
+        /*
+
+        rework:
+        only get if pointing to mob or a block
+
+        secondary functions externally call on right click or on leftclick (punch) or on mine (dug)
+
+
+         */
         if (foundMob != null){
             //punch mob if pointing to it
             if (mining) {
                 punchMob(foundMob);
             }
             setPlayerWorldSelectionPos(null);
-            System.out.println("Found a mob :)");
         } else {
             if (foundBlock > 0 && isBlockPointable(foundBlock)) {
                 if (mining && hasMined) {
@@ -114,16 +122,13 @@ public class Ray {
                     //todo: make this call on punched
                     if (!isPlayerSneaking() && blockHasOnRightClickCall(foundBlock)) {
                         getBlockModifier(foundBlock).onRightClick(finalPos);
-                        System.out.println("stage 1");
                     } else {
                         Item wielding = getItemInInventorySlot(getPlayerInventorySelection(), 0);
                         if (wielding != null && !wouldCollidePlacing(getPlayerPos(),getPlayerWidth(), getPlayerHeight(), pointedThingAbove, wielding.definition.blockID, getPlayerDir()) && getItemInInventorySlot(getPlayerInventorySelection(), 0) != null && !getItemInInventorySlot(getPlayerInventorySelection(), 0).definition.isItem) {
                             rayPlaceBlock(getItemInInventorySlot(getPlayerInventorySelection(), 0).definition.blockID);
-                            System.out.println("stage 2");
                         } else if (wielding != null && wielding.definition.isItem) {
                             if (getItemModifier(getItemInInventorySlot(getPlayerInventorySelection(), 0).name) != null) {
                                 getItemModifier(getItemInInventorySlot(getPlayerInventorySelection(), 0).name).onPlace(finalPos, pointedThingAbove);
-                                System.out.println("stage 3");
                             }
                         } else {
                             System.out.println("test3: This is a test of last branch of on place call");
@@ -131,11 +136,9 @@ public class Ray {
                     }
                 } else {
                     setPlayerWorldSelectionPos(finalPos);
-                    System.out.println(finalPos.x + " " + finalPos.y + " " + finalPos.z);
                 }
             } else {
                 setPlayerWorldSelectionPos(null);
-                System.out.println("stage 5");
             }
         }
     }
@@ -154,8 +157,7 @@ public class Ray {
             digBlock(finalPos.x, finalPos.y, finalPos.z);
         }
         for (int i = 0; i < 40 + (int)(Math.random() * 15); i++) {
-            // THIS CREATES 2 NEW OBJECTS IN HEAP!
-            createParticle(new Vector3d(finalPos.x + (Math.random()-0.5d), finalPos.y + (Math.random()-0.5d), finalPos.z + (Math.random()-0.5d)), new Vector3f((float)(Math.random()-0.5f) * 2f, 0f, (float)(Math.random()-0.5f) * 2f), thisBlock);
+            createParticle(finalPos.x + (Math.random()-0.5d), finalPos.y + (Math.random()-0.5d), finalPos.z + (Math.random()-0.5d), (float)(Math.random()-0.5f) * 2f, 0f, (float)(Math.random()-0.5f) * 2f, thisBlock);
         }
     }
     private static void rayPlaceBlock(byte ID) {
