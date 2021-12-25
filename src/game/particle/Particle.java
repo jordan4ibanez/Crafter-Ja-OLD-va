@@ -24,6 +24,11 @@ public class Particle {
         currentID++;
     }
 
+    public static void createParticle(double posX, double posY, double posZ, float inertiaX, float inertiaY, float inertiaZ, byte blockID){
+        particles.put(currentID, new ParticleObject(posX,posY,posZ,inertiaX,inertiaY,inertiaZ, createParticleMesh(blockID), currentID));
+        currentID++;
+    }
+
     public static void cleanParticleMemory(){
         for (ParticleObject particleObject : particles.values()){
             particleObject.mesh.cleanUp(false);
