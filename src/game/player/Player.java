@@ -26,6 +26,9 @@ import static game.ray.Ray.playerRayCast;
 
 public class Player {
 
+    //this is a final Vector3i which indicates that the player is not pointing at anything
+    private static final Vector3i notPointingAtAnything = new Vector3i(0,-555,0);
+
     private static float runningFOVAdder = 0f;
     private static int health = 20;
     private static final float collectionHeight        = 0.7f;
@@ -160,6 +163,7 @@ public class Player {
 
         oldWorldSelectionPos.set(worldSelectionPos.x,worldSelectionPos.y,worldSelectionPos.z);
 
+        //pointing at a block
         if (thePos != null){
             byte block = getBlock(thePos.x, thePos.y,thePos.z);
             //add in block hardness levels
@@ -176,10 +180,11 @@ public class Player {
                 woodHardness = -1;
                 leafHardness = -1;
             }
+
+            worldSelectionPos.set(thePos.x, thePos.y,thePos.z);
+        } else {
+            worldSelectionPos.set(notPointingAtAnything.x, notPointingAtAnything.y, notPointingAtAnything.z);
         }
-        assert thePos != null;
-        System.out.println("need to make the ray NOT PRODUCE A NULL POINTER YOU DUMMY");
-        worldSelectionPos.set(thePos.x,thePos.y,thePos.z);
     }
 
 

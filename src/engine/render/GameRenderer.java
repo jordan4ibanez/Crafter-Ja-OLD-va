@@ -612,21 +612,19 @@ public class GameRenderer {
             thisMesh.render();
         }
 
-        //render rain drops
-
 
         //render world selection mesh
-        if (getPlayerWorldSelectionPos() != null){
+        if (!getPlayerWorldSelectionPos().equals(0,-555,0)){
 
             entityShaderProgram.setLightUniform("light", 15); //todo make this work
 
             workerVec3D.set(getPlayerWorldSelectionPos());
-            modelViewMatrix.set(updateModelViewMatrix(workerVec3D, workerVec3F.set(0, 0, 0)));
+            modelViewMatrix.set(updateModelViewMatrix(workerVec3D, workerVec3F.set(0,0,0)));
             entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
             getWorldSelectionMesh().render();
 
             if (getDiggingFrame() >= 0) {
-                modelViewMatrix.set(updateModelViewMatrix(workerVec3D, workerVec3F.set(0, 0, 0)));
+                modelViewMatrix.set(updateModelViewMatrix(workerVec3D, workerVec3F.set(0,0,0)));
                 entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
                 getMiningCrackMesh(getDiggingFrame()).render();
             }
