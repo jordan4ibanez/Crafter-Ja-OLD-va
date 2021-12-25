@@ -104,7 +104,8 @@ public class SceneHandler {
 
         while (!windowShouldClose()){
             //if (getDebugInfo()) {
-                doRuntimeInfoUpdate();
+                //turn this back on
+                //doRuntimeInfoUpdate();
             //}
 
             switch (currentScene) {
