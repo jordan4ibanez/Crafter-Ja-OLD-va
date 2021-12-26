@@ -4,6 +4,7 @@ import engine.graphics.Mesh;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
+import static engine.time.Time.getDelta;
 import static game.mob.MobMeshBuilder.calculateMobTexture;
 import static game.mob.MobMeshBuilder.createMobMesh;
 import static game.player.Player.getPlayerInertiaX;
@@ -52,9 +53,11 @@ public class PlayerMesh {
     private static final Vector2f inertiaWorker = new Vector2f();
     public static void applyPlayerBodyAnimation(){
 
+        double delta = getDelta();
+
         inertiaWorker.set(getPlayerInertiaX(), getPlayerInertiaZ());
 
-        animationTimer += delta * (inertiaWorker.length() / maxWalkSpeed) * 2f;
+        animationTimer += delta * (inertiaWorker.length() / maxWalkSpeed);
 
         if (animationTimer >= 1f) {
             animationTimer -= 1f;
