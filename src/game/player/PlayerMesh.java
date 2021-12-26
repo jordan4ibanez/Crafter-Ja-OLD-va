@@ -1,27 +1,22 @@
 package game.player;
 
 import engine.graphics.Mesh;
-import game.mob.MobDefinition;
-import game.mob.MobInterface;
-import game.mob.MobObject;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-import static engine.FancyMath.randomDirFloat;
-import static engine.time.Time.getDelta;
-import static game.chunk.Chunk.getBlock;
-import static game.collision.Collision.applyInertia;
-import static game.mob.Mob.registerMob;
 import static game.mob.MobMeshBuilder.calculateMobTexture;
 import static game.mob.MobMeshBuilder.createMobMesh;
-import static game.mob.MobUtilityCode.doHeadCode;
-import static game.mob.MobUtilityCode.mobSmoothRotation;
+import static game.player.Player.getPlayerInertiaX;
+import static game.player.Player.getPlayerInertiaZ;
 
 public class PlayerMesh {
 
     //this is auto constructed
     private final static Mesh[] bodyMeshes = createMesh();
 
-    public static Mesh[] getHumanMeshes(){
+    private static float animationTimer = 0f;
+
+    public static Mesh[] getPlayerMeshes(){
         return bodyMeshes;
     }
 
@@ -54,9 +49,10 @@ public class PlayerMesh {
     };
 
     //body animation scope
+    private static final Vector2f inertiaWorker = new Vector2f();
     public static void applyPlayerBodyAnimation(){
 
-        inertiaWorker.set(inertia.x, inertia.z);
+        inertiaWorker.set(getPlayerInertiaX(), getPlayerInertiaZ());
 
         animationTimer += delta * (inertiaWorker.length() / maxWalkSpeed) * 2f;
 

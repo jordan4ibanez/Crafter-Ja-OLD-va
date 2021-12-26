@@ -41,8 +41,7 @@ import static game.light.Light.getCurrentGlobalLightLevel;
 import static game.mob.Mob.*;
 import static game.particle.Particle.getAllParticles;
 import static game.player.Player.*;
-import static game.player.PlayerMesh.getHumanBodyOffsets;
-import static game.player.PlayerMesh.getHumanMeshes;
+import static game.player.PlayerMesh.*;
 import static game.player.WieldHand.getWieldHandAnimationPos;
 import static game.player.WieldHand.getWieldHandAnimationRot;
 import static game.tnt.TNTEntity.*;
@@ -562,7 +561,7 @@ public class GameRenderer {
 
         //render player in third person mode
         if (getCameraPerspective() > 0){
-            Mesh[] playerMeshes = getHumanMeshes();
+            Mesh[] playerMeshes = getPlayerMeshes();
             Vector3f[] playerBodyOffsets = getHumanBodyOffsets();
             Vector3f[] playerBodyRotation = getPlayerBodyRotations();
             Vector3d pos = getPlayerPos();
