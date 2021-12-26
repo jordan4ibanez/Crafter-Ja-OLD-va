@@ -4,7 +4,6 @@ import engine.graphics.Mesh;
 import game.mob.MobDefinition;
 import game.mob.MobInterface;
 import game.mob.MobObject;
-import org.joml.Math;
 import org.joml.Vector3f;
 
 import static engine.FancyMath.randomDirFloat;
@@ -19,6 +18,7 @@ import static game.mob.MobUtilityCode.mobSmoothRotation;
 
 public class PlayerMesh {
 
+    //this is auto constructed
     private final static Mesh[] bodyMeshes = createMesh();
 
     public static Mesh[] getHumanMeshes(){
@@ -32,91 +32,6 @@ public class PlayerMesh {
     private static final float accelerationMultiplier  = 0.03f;
     final private static float maxWalkSpeed = 2.f;
     final private static float movementAcceleration = 900.f;
-
-    private final static MobInterface mobInterface = new MobInterface() {
-        @Override
-        public void onTick(MobObject thisMob) {
-
-            double delta = getDelta();
-
-            thisMob.timer += delta;
-
-            if (thisMob.globalID == 1){
-                System.out.println(thisMob.animationTimer);
-            }
-
-            if (thisMob.timer > 1.5f) {
-                thisMob.stand = !thisMob.stand;
-                thisMob.timer = (float) Math.random() * -2f;
-                thisMob.rotation = (float) (Math.toDegrees(Math.PI * Math.random() * randomDirFloat()));
-            }
-
-
-
-            //head test
-            //thisObject.bodyRotations[0] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),(float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),0);
-            float animation = (float) Math.toDegrees(Math.sin(thisMob.animationTimer * Math.PI * 2f));
-            thisMob.bodyRotations[2].x = animation;
-            thisMob.bodyRotations[3].x = -animation;
-
-            thisMob.bodyRotations[4].x = -animation;
-            thisMob.bodyRotations[5].x = animation;
-
-
-            //thisMob.animationTimer += delta * 2f;
-
-            float bodyYaw = Math.toRadians(thisMob.rotation) + (float) Math.PI;
-
-            thisMob.inertia.x +=  (Math.sin(-bodyYaw) * accelerationMultiplier) * movementAcceleration * delta;
-            thisMob.inertia.z +=  (Math.cos(bodyYaw) * accelerationMultiplier) * movementAcceleration * delta;
-
-            Vector3f inertia2D = new Vector3f(thisMob.inertia.x, 0, thisMob.inertia.z);
-
-            float maxSpeed = maxWalkSpeed;
-
-            if (thisMob.health <= 0){
-                maxSpeed = 0.01f;
-            }
-
-            boolean onGround = applyInertia(thisMob.pos, thisMob.inertia, false, thisMob.width, thisMob.height, true, false, true, false, false);
-
-            if (thisMob.animationTimer >= 1f) {
-                thisMob.animationTimer = 0f;
-            }
-
-            if (inertia2D.length() > maxSpeed) {
-                inertia2D = inertia2D.normalize().mul(maxSpeed);
-                thisMob.inertia.x = inertia2D.x;
-                thisMob.inertia.z = inertia2D.z;
-            }
-
-            thisMob.animationTimer += thisMob.pos.distance(thisMob.oldPos) / 2f;
-
-            if (thisMob.animationTimer >= 1f) {
-                thisMob.animationTimer -= 1f;
-            }
-
-
-            thisMob.onGround = onGround;
-
-
-
-            if (thisMob.health > 0) {
-                //check for block in front
-                if (onGround) {
-                    double x = Math.sin(-bodyYaw);
-                    double z = Math.cos(bodyYaw);
-
-                    if (getBlock((int) Math.floor(x + thisMob.pos.x), (int) Math.floor(thisMob.pos.y), (int) Math.floor(z + thisMob.pos.z)) > 0) {
-                        thisMob.inertia.y += 8.75f;
-                    }
-                }
-            }
-
-            mobSmoothRotation(thisMob);
-            doHeadCode(thisMob);
-        }
-    };
 
     private static final float yOffsetCorrection = 0.5f;
 
@@ -138,10 +53,26 @@ public class PlayerMesh {
             new Vector3f(0,0,0),
     };
 
-    public static void registerHumanMob(){
-        registerMob(new MobDefinition("human", "hurt",true, (byte) 7, createMesh(), bodyOffsets, bodyRotations,1.9f, 0.25f, mobInterface));
-    }
+    //body animation scope
+    public static void applyPlayerBodyAnimation(){
 
+        inertiaWorker.set(inertia.x, inertia.z);
+
+        animationTimer += delta * (inertiaWorker.length() / maxWalkSpeed) * 2f;
+
+        if (animationTimer >= 1f) {
+            animationTimer -= 1f;
+        }
+
+        bodyRotations[2].set((float) java.lang.Math.toDegrees(java.lang.Math.sin(animationTimer * java.lang.Math.PI * 2f)), 0, 0);
+        bodyRotations[3].set((float) java.lang.Math.toDegrees(java.lang.Math.sin(animationTimer * java.lang.Math.PI * -2f)), 0, 0);
+        bodyRotations[4].set((float) java.lang.Math.toDegrees(java.lang.Math.sin(animationTimer * java.lang.Math.PI * -2f)), 0, 0);
+        bodyRotations[5].set((float) java.lang.Math.toDegrees(java.lang.Math.sin(animationTimer * Math.PI * 2f)), 0, 0);
+    };
+
+    public static Vector3f[] getPlayerBodyRotations(){
+        return bodyRotations;
+    }
 
     private static Mesh[] createMesh(){
         final float modelScale = 0.25f; //lazy way to fix
