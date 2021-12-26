@@ -17,17 +17,7 @@ public class PlayerMesh {
 
     private static float animationTimer = 0f;
 
-    public static Mesh[] getPlayerMeshes(){
-        return bodyMeshes;
-    }
-
-    public static Vector3f[]getHumanBodyOffsets(){
-        return bodyOffsets;
-    }
-
-    private static final float accelerationMultiplier  = 0.03f;
     final private static float maxWalkSpeed = 2.f;
-    final private static float movementAcceleration = 900.f;
 
     private static final float yOffsetCorrection = 0.5f;
 
@@ -71,6 +61,14 @@ public class PlayerMesh {
 
     public static Vector3f[] getPlayerBodyRotations(){
         return bodyRotations;
+    }
+
+    public static Mesh[] getPlayerMeshes(){
+        return bodyMeshes;
+    }
+
+    public static Vector3f[]getHumanBodyOffsets(){
+        return bodyOffsets;
     }
 
     private static Mesh[] createMesh(){
