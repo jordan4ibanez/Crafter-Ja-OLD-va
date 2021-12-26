@@ -357,6 +357,7 @@ public class GameRenderer {
         entityShaderProgram.setUniform("texture_sampler", 0);
 
         //debug render cloud
+        /*
         {
             boolean[][] cloudData = getCloudData();
             float cloudScale = getCloudScale();
@@ -387,7 +388,7 @@ public class GameRenderer {
                 }
             }
         }
-
+         */
         entityShaderProgram.unbind();
 
         if (graphicsMode) {
@@ -425,6 +426,7 @@ public class GameRenderer {
 
 
         //render allFaces chunk meshes
+        /*
         for (int i = 0; i < arrayIndex; i++) {
 
             Mesh[] thisChunk = allFaceDrawTypeArray[i];
@@ -448,6 +450,7 @@ public class GameRenderer {
                 }
             }
         }
+         */
 
         if (graphicsMode) {
             glassLikeShaderProgram.unbind();
@@ -460,6 +463,7 @@ public class GameRenderer {
         entityShaderProgram.bind();
 
         //        render each item entity
+        /*
         for (Object thisObject : getAllItems()){
             Item thisItem = (Item) thisObject;
             modelViewMatrix.set(updateModelViewMatrix(workerVec3D.set(thisItem.pos).add(0,thisItem.hover,0), thisItem.rotation));
@@ -468,8 +472,11 @@ public class GameRenderer {
             getItemMesh(thisItem.name).render();
         }
 
+         */
+
 
         //render each TNT entity
+        /*
         Mesh tntMesh = getTNTMesh();
         for (int i = 0; i < getTotalTNT(); i++){
             if (!tntExists(i)){
@@ -480,17 +487,21 @@ public class GameRenderer {
             entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
             tntMesh.render();
         }
+         */
 
         //render falling entities
+        /*
         for (FallingEntityObject thisObject : getFallingEntities()){
             entityShaderProgram.setLightUniform("light", 15); //todo make this work
             modelViewMatrix.set(getGenericMatrixWithPosRotationScale(thisObject.pos, workerVec3F.set(0,0,0), workerVec3D.set(2.5d,2.5d,2.5d)));
             entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
             thisObject.mesh.render();
         }
+         */
 
 
         //render mobs
+        /*
         for (MobObject thisMob : getAllMobs()){
             if (thisMob == null){
                 continue;
@@ -516,6 +527,7 @@ public class GameRenderer {
                 glEnable(GL_CULL_FACE);
             }
         }
+         */
 
         //render other players
         /*
@@ -561,6 +573,7 @@ public class GameRenderer {
 
 
         //render player in third person mode
+        /*
         if (getCameraPerspective() > 0){
             Mesh[] playerMeshes = getPlayerMeshes();
             Vector3f[] playerBodyOffsets = getHumanBodyOffsets();
@@ -597,8 +610,10 @@ public class GameRenderer {
             //workerMesh.render();
             //workerMesh.cleanUp(false);
         }
+         */
 
         //render particles
+        /*
         for (Object loadedObject : getAllParticles()){
 
             ParticleObject thisParticle = (ParticleObject) loadedObject;
@@ -611,9 +626,11 @@ public class GameRenderer {
             entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
             thisMesh.render();
         }
+         */
 
 
         //render world selection mesh
+        /*
         if (!getPlayerWorldSelectionPos().equals(0,-555,0)){
 
             entityShaderProgram.setLightUniform("light", 15); //todo make this work
@@ -629,6 +646,8 @@ public class GameRenderer {
                 getMiningCrackMesh(getDiggingFrame()).render();
             }
         }
+
+         */
 
         entityShaderProgram.unbind();
 
@@ -648,6 +667,7 @@ public class GameRenderer {
             glDisable(GL_CULL_FACE);
         }
 
+        /*
         for (int i = 0; i < arrayIndex; i++) {
 
             Mesh[] thisChunk = liquidDrawTypeArray[i];
@@ -668,6 +688,7 @@ public class GameRenderer {
                 }
             }
         }
+         */
 
         Arrays.fill(normalDrawTypeArray, null);
         Arrays.fill(liquidDrawTypeArray, null);
@@ -691,6 +712,7 @@ public class GameRenderer {
 
 
         //draw wield hand or item
+        /*
         if (getCameraPerspective() == 0) {
 
             entityShaderProgram.setUniform("projectionMatrix", projectionMatrix);
@@ -711,6 +733,8 @@ public class GameRenderer {
             entityShaderProgram.unbind();
         }
 
+         */
+
         //finished with 3d
 
 
@@ -725,15 +749,18 @@ public class GameRenderer {
         updateOrthoProjectionMatrix(); // needed to get current screen size
 
         //render water effect
+        /*
         if (isCameraSubmerged()) {
             modelViewMatrix.set(updateOrthoModelMatrix(workerVec3D.set(0,0,0),workerVec3F.set(0,0,0), workerVec3D2.set(windowScale * 2,windowScale,windowScale)));
             hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
             getGlobalWaterEffectMesh().render();
         }
+         */
 
         glClear(GL_DEPTH_BUFFER_BIT);
 
         //render inverted crosshair
+        /*
         if (getCameraPerspective() == 0){
             glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
             modelViewMatrix.set(updateOrthoModelMatrix(workerVec3D.set(0,0,0),workerVec3F.set(0,0,0), workerVec3D2.set(windowScale/20f,windowScale/20f,windowScale/20f)));
@@ -741,10 +768,12 @@ public class GameRenderer {
             getCrossHairMesh().render();
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         }
+         */
 
         glClear(GL_DEPTH_BUFFER_BIT);
 
 
+        /*
         if (!isPaused()) {
 
             if (isPlayerInventoryOpen()) {
@@ -990,8 +1019,10 @@ public class GameRenderer {
 
             renderGameGUI();
         }
+         */
 
         //render chat bar
+        /*
         if (isChatOpen()){
 
             //render background
@@ -1006,8 +1037,10 @@ public class GameRenderer {
             hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
             getCurrentMessageMesh().render();
         }
+         */
 
         //render chat messages
+        /*
         {
             byte i = 1;
             for (Mesh mesh : getViewableChatMessages()){
@@ -1027,10 +1060,11 @@ public class GameRenderer {
                 }
             }
         }
-
+         */
         hudShaderProgram.unbind();
     }
 
+    /*
     private static void renderInventoryGUI(InventoryObject inventory){
 
         Vector2d startingPoint = inventory.getPosition();
@@ -1149,7 +1183,9 @@ public class GameRenderer {
         }
 
     }
+     */
 
+    /*
     private static void renderGameGUI(){
         for (GUIObject thisButton : getGamePauseMenuGUI()) {
             ShaderProgram hudShaderProgram = getHudShaderProgram();
@@ -1176,7 +1212,7 @@ public class GameRenderer {
             }
         }
     }
-
+     */
     public static void cleanupRenderer(){
         if (shaderProgram != null){
             shaderProgram.cleanup();
