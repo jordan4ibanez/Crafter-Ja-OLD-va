@@ -107,9 +107,6 @@ public class Player {
         name = newName;
     }
 
-
-    private static float animationTimer = 0f;
-
     public static void updatePlayerMiningLevelCache(float newStoneMiningLevel, float newDirtMiningLevel, float newWoodMiningLevel, float newLeafMiningLevel){
         //System.out.println("New levels: " + newStoneMiningLevel + " " + newDirtMiningLevel + " " + newWoodMiningLevel + " " + newLeafMiningLevel);
         stoneMiningLevel = newStoneMiningLevel;
