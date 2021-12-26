@@ -180,12 +180,13 @@ public class GameRenderer {
     private static final Matrix4d modelViewMatrix = new Matrix4d();
 
     private static final Vector3d camPos = new Vector3d();
-    private static final Vector3d workerVec3D = new Vector3d();
-    private static final Vector3d workerVec3D2 = new Vector3d();
-    private static final Vector3f workerVec3F = new Vector3f();
-    private static final Vector3f workerVec3F2 = new Vector3f();
 
-    private static final Vector2d workerVec2D = new Vector2d();
+    //private static final Vector3d workerVec3D = new Vector3d();
+    //private static final Vector3d workerVec3D2 = new Vector3d();
+    //private static final Vector3f workerVec3F = new Vector3f();
+    //private static final Vector3f workerVec3F2 = new Vector3f();
+
+    //private static final Vector2d workerVec2D = new Vector2d();
 
     private static final HashMap<Double, Mesh[]> normalDrawTypeHash = new HashMap<>();
     private static final HashMap<Double, Mesh[]> liquidDrawTypeHash = new HashMap<>();
