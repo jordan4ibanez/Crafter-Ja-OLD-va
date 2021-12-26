@@ -19,6 +19,7 @@ import static game.clouds.Cloud.setCloudPos;
 import static game.collision.Collision.applyInertia;
 import static game.crafting.Inventory.updateWieldInventory;
 import static game.particle.Particle.createParticle;
+import static game.player.PlayerMesh.applyPlayerBodyAnimation;
 import static game.player.ViewBobbing.*;
 import static game.player.WieldHand.updatePlayerHandInertia;
 import static game.ray.Ray.playerRayCast;
@@ -92,17 +93,6 @@ public class Player {
     private static float woodMiningLevel = 1f;
     private static float leafMiningLevel = 1f;
 
-    //animation data
-    private static final Vector3f[] bodyRotations = new Vector3f[]{
-            new Vector3f(0,0,0),
-            new Vector3f(0,0,0),
-            new Vector3f(0,0,0),
-            new Vector3f(0,0,0),
-            new Vector3f(0,0,0),
-            new Vector3f(0,0,0),
-    };
-
-
 
     public static Vector3d getOldRealPos(){
         return oldRealPos;
@@ -132,9 +122,7 @@ public class Player {
         inertia.add(x,y,z);
     }
 
-    public static Vector3f[] getPlayerBodyRotations(){
-        return bodyRotations;
-    }
+
 
     public static float getHurtCameraRotation(){
         return hurtCameraRotation;
@@ -351,8 +339,21 @@ public class Player {
         pos.set(newPos.x,newPos.y, newPos.z);
     }
 
+    //mutable, be careful with this
     public static Vector3f getPlayerInertia(){
         return inertia;
+    }
+    //immutable
+    public static float getPlayerInertiaX(){
+        return inertia.x;
+    }
+    //immutable
+    public static float getPlayerInertiaY(){
+        return inertia.y;
+    }
+    //immutable
+    public static float getPlayerInertiaZ(){
+        return inertia.z;
     }
 
     public static void setPlayerInertia(float x,float y,float z){
@@ -709,22 +710,8 @@ public class Player {
             oldY = currentY;
         }
 
-        //body animation scope
-        {
-
-            inertiaWorker.set(inertia.x, inertia.z);
-
-            animationTimer += delta * (inertiaWorker.length() / maxWalkSpeed) * 2f;
-
-            if (animationTimer >= 1f) {
-                animationTimer -= 1f;
-            }
-
-            bodyRotations[2].set((float) Math.toDegrees(Math.sin(animationTimer * Math.PI * 2f)), 0, 0);
-            bodyRotations[3].set((float) Math.toDegrees(Math.sin(animationTimer * Math.PI * -2f)), 0, 0);
-            bodyRotations[4].set((float) Math.toDegrees(Math.sin(animationTimer * Math.PI * -2f)), 0, 0);
-            bodyRotations[5].set((float) Math.toDegrees(Math.sin(animationTimer * Math.PI * 2f)), 0, 0);
-        }
+        //apply player's body animation
+        applyPlayerBodyAnimation();
 
         updatePlayerHandInertia();
 
