@@ -12,6 +12,7 @@ import static game.chunk.Chunk.getChunkKey;
 import static game.chunk.Chunk.setChunk;
 import static game.chunk.ChunkUpdateHandler.chunkUpdate;
 
+//this class is entirely run on it's own thread, be careful with OpenGL context
 public class BiomeGenerator implements Runnable{
 
     private final static Deque<Vector2i> queue = new ArrayDeque<>();
