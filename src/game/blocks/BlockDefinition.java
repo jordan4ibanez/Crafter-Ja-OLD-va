@@ -109,20 +109,20 @@ public class BlockDefinition {
         registerItem(name, ID);
     }
 
-    public static void onDigCall(byte ID, Vector3d pos) {
+    public static void onDigCall(byte ID, int posX, int posY, int posZ) {
         if(dropsItems[ID]){
             //dropped defined item
             if (droppedItems[ID] != null){
-                createItem(droppedItems[ID], pos.add(0.5d, 0.5d, 0.5d), 1, 2.5f);
+                createItem(droppedItems[ID], posX + 0.5d,posY + 0.5d, posZ + 0.5d, 1, 2.5f);
             }
             //drop self
             else {
-                createItem(names[ID], pos.add(0.5d, 0.5d, 0.5d), 1, 2.5f);
+                createItem(names[ID], posX + 0.5d, posY + 0.5d, posZ + 0.5d, 1, 2.5f);
             }
         }
         if(blockModifiers[ID] != null){
             try {
-                blockModifiers[ID].onDig(pos);
+                blockModifiers[ID].onDig(posX, posY, posZ);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -132,11 +132,11 @@ public class BlockDefinition {
         }
     }
 
-    public static void onPlaceCall(byte ID, Vector3i pos) {
+    public static void onPlaceCall(byte ID, int posX, int posY, int posZ) {
 
         if (blockModifiers[ID] != null){
             try {
-                blockModifiers[ID].onPlace(pos);
+                blockModifiers[ID].onPlace(posX,posY,posZ);
             } catch (Exception e) {
                 e.printStackTrace();
             }
