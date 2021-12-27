@@ -223,7 +223,7 @@ public class Transformation {
     }
 
 
-    //TODO--begin ortho creation
+    //ortholinear
 
     public static void resetOrthoProjectionMatrix() {
         orthoMatrix.identity();
