@@ -1,4 +1,4 @@
-# Crafter
+# Crafter 0.06b BugFix - Massive Engine Rework - Broken
 
 A blocky game written in java with LWJGL 3
 
