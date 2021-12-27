@@ -21,21 +21,26 @@ public class ChunkUpdateHandler {
     }
 
     private static final Random random = new Random();
-    private static final float goalTimer = 0.0003f;
-    private static float chunkUpdateTimer = 0f;
+
+    //private static final float goalTimer = 0.0003f;
+
+    //private static float chunkUpdateTimer = 0f;
+
+    //todo: make this interact with the updates button in the menu
+    private static final int MAX_UPDATES_PER_FRAME = 8;
 
     public static void chunkUpdater() {
 
-        chunkUpdateTimer += getDelta();
-        int updateAmount = 0;
+        //chunkUpdateTimer += getDelta();
+        //int updateAmount = 0;
 
-        if (chunkUpdateTimer >= goalTimer){
-            updateAmount = (int)(Math.ceil(chunkUpdateTimer / goalTimer));
+        //if (chunkUpdateTimer >= goalTimer){
+            //updateAmount = (int)(Math.ceil(chunkUpdateTimer / goalTimer));
 
-            chunkUpdateTimer = 0;
-        }
+            //chunkUpdateTimer = 0;
+        //}
 
-        for (int i = 0; i < updateAmount; i++) {
+        for (int i = 0; i < MAX_UPDATES_PER_FRAME; i++) {
             if (!queue.isEmpty()) {
 
                 Vector3i key;
