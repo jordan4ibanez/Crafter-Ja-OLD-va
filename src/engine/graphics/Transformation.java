@@ -39,7 +39,15 @@ public class Transformation {
     private static final Vector3d pos = new Vector3d();
     private static final Vector3d basePos = new Vector3d();
 
-    public static Matrix4d getViewMatrix(){
+    public static Matrix4d getProjectionMatrix(){
+        return projectionMatrix;
+    }
+
+    public static Matrix4d getModelMatrix(){
+        return modelMatrix;
+    }
+
+    public static void updateViewMatrix(){
         cameraPos.set(getCameraPosition());
         cameraRotation.set(getCameraRotation());
         viewMatrix.identity();
@@ -47,13 +55,11 @@ public class Transformation {
         viewMatrix.rotate(Math.toRadians(cameraRotation.x), constantLeft).rotate(Math.toRadians(cameraRotation.y),constantUp);
         //then do the translation
         viewMatrix.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
-        return viewMatrix;
     }
 
-    public static Matrix4d getProjectionMatrix(float fov, float width, float height, float zNear, float zFar){
+    public static void updateProjectionMatrix(float fov, float width, float height, float zNear, float zFar){
         projectionMatrix.identity();
         projectionMatrix.perspective(fov, width / height, zNear, zFar);
-        return projectionMatrix;
     }
 
 
@@ -125,16 +131,15 @@ public class Transformation {
 
 
 
-    public static  Matrix4d updateModelViewMatrix(Vector3d position, Vector3f rotation) {
+    public static void updateModelViewMatrix(double posX, double posY, double posZ, float rotX, float rotY, float rotZ) {
         // First do the rotation so camera rotates over its position
-        modelViewMatrix.identity().identity().translate(position).
-                rotateY(Math.toRadians(-rotation.y)).
-                rotateZ(Math.toRadians(-rotation.z)).
-                rotateX(Math.toRadians(-rotation.x)).
+        modelViewMatrix.identity().identity().translate(posX, posY, posZ).
+                rotateY(Math.toRadians(-rotY)).
+                rotateZ(Math.toRadians(-rotZ)).
+                rotateX(Math.toRadians(-rotX)).
                 scale(1f);
         modelMatrix.set(viewMatrix);
         modelMatrix.mul(modelViewMatrix);
-        return modelMatrix;
     }
 
 

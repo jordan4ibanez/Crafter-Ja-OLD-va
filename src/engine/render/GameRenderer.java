@@ -175,9 +175,9 @@ public class GameRenderer {
         }
     }
 
-    private static final Matrix4d projectionMatrix = new Matrix4d();
-    private static final Matrix4d viewMatrix = new Matrix4d();
-    private static final Matrix4d modelViewMatrix = new Matrix4d();
+    //private static final Matrix4d projectionMatrix = new Matrix4d();
+    //private static final Matrix4d viewMatrix = new Matrix4d();
+    //private static final Matrix4d modelViewMatrix = new Matrix4d();
 
     private static final Vector3d camPos = new Vector3d();
 
@@ -205,9 +205,9 @@ public class GameRenderer {
         int renderDistance = getRenderDistance();
 
         //update projection matrix
-        projectionMatrix.set(getProjectionMatrix(FOV + getRunningFOVAdder(), getWindowWidth(), getWindowHeight(), Z_NEAR, (renderDistance * 2) * 16f));
+        updateProjectionMatrix(FOV + getRunningFOVAdder(), getWindowWidth(), getWindowHeight(), Z_NEAR, (renderDistance * 2) * 16f);
         //update the view matrix
-        viewMatrix.set(getViewMatrix());
+        updateViewMatrix();
 
         camPos.set(getCameraPosition());
 
@@ -309,17 +309,18 @@ public class GameRenderer {
 
         if (graphicsMode) {
             glassLikeShaderProgram.bind();
-            glassLikeShaderProgram.setUniform("projectionMatrix", projectionMatrix);
+            glassLikeShaderProgram.setUniform("projectionMatrix", getProjectionMatrix());
             glassLikeShaderProgram.setUniform("texture_sampler", 0);
         } else {
             shaderProgram.bind();
-            shaderProgram.setUniform("projectionMatrix", projectionMatrix);
+            shaderProgram.setUniform("projectionMatrix", getProjectionMatrix());
             shaderProgram.setUniform("texture_sampler", 0);
         }
 
 
         //render the sun and moon
         //glDisable(GL_CULL_FACE);
+        /*
         {
 
             double timeOfDayLinear = getTimeOfDayLinear();
@@ -338,6 +339,7 @@ public class GameRenderer {
                 getMoonMesh().render();
             }
         }
+         */
         //glEnable(GL_CULL_FACE);//debugging
 
 
@@ -353,7 +355,7 @@ public class GameRenderer {
 
 
         entityShaderProgram.bind();
-        entityShaderProgram.setUniform("projectionMatrix", projectionMatrix);
+        entityShaderProgram.setUniform("projectionMatrix", getProjectionMatrix());
         entityShaderProgram.setUniform("texture_sampler", 0);
 
         //debug render cloud
@@ -413,11 +415,11 @@ public class GameRenderer {
             //normal
             for (Mesh thisMesh : thisChunk) {
                 if (thisMesh != null) {
-                    modelViewMatrix.set(updateModelViewMatrix(workerVec3D.set(thisPos.x * 16d, 0, thisPos.y * 16d), workerVec3F.set(0, 0, 0)));
+                    updateModelViewMatrix(thisPos.x * 16d, 0, thisPos.y * 16d, 0, 0, 0);
                     if (graphicsMode) {
-                        glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                        glassLikeShaderProgram.setUniform("modelViewMatrix", getModelMatrix());
                     } else {
-                        shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                        shaderProgram.setUniform("modelViewMatrix", getModelMatrix());
                     }
                     thisMesh.render();
                 }
@@ -657,9 +659,9 @@ public class GameRenderer {
         }
 
         //do standard blending
-        shaderProgram.bind();
-        shaderProgram.setUniform("projectionMatrix", projectionMatrix);
-        shaderProgram.setUniform("texture_sampler", 0);
+        //shaderProgram.bind();
+        //shaderProgram.setUniform("projectionMatrix", projectionMatrix);
+        //shaderProgram.setUniform("texture_sampler", 0);
 
 
         //render liquid chunk meshes
@@ -708,7 +710,7 @@ public class GameRenderer {
 
         glClear(GL_DEPTH_BUFFER_BIT);
 
-        projectionMatrix.set(getProjectionMatrix(FOV, getWindowWidth(), getWindowHeight(), Z_NEAR, 100));
+        //projectionMatrix.set(getProjectionMatrix(FOV, getWindowWidth(), getWindowHeight(), Z_NEAR, 100));
 
 
         //draw wield hand or item
