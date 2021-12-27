@@ -18,6 +18,8 @@ public class TNTEntity {
 
     //todo: this is crap and confusing - rewrite this
 
+    //TODO: REWRITE THIS IMMEDIATELY FOR 0.07
+
 
     private final static float tntSize = 0.5f;
     private final static int MAX_ID_AMOUNT = 126_000;
@@ -55,7 +57,7 @@ public class TNTEntity {
         float tntJump;
         if (punched){
             tntJump = (float)Math.random()*10f;
-            playSound("tnt_ignite", posX, posY, posZ);
+            playSound("tnt_ignite", posX, posY, posZ, false);
         } else {
             tntJump = 0f;
         }
@@ -82,7 +84,8 @@ public class TNTEntity {
 
                 boom(tntPos[i], 5);
 
-                playSound("tnt_explode", tntPos[i]);
+                //TODO: THIS IS HORRIBLE REWRITE THIS
+                playSound("tnt_explode", tntPos[i].x, tntPos[i].y, tntPos[i].z, false);
 
                 deleteTNT(i);
 
