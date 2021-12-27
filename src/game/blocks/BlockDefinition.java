@@ -1241,6 +1241,7 @@ public class BlockDefinition {
                 "torchItem"
         );
 
+        //this passes all block data to the chunk mesh generator thread
         passChunkMeshThreadData(drawTypes,frontTextures,backTextures,rightTextures,leftTextures,topTextures,bottomTextures,isLiquids);
     }
 
