@@ -24,8 +24,8 @@ public class SoundSource {
         alSourcei(sourceId, AL_BUFFER, bufferId);
     }
 
-    public void setPosition(Vector3f position){
-        alSource3f(sourceId, AL_POSITION, position.x, position.y, position.z);
+    public void setPosition(float posX, float posY, float posZ){
+        alSource3f(sourceId, AL_POSITION, posX, posY, posZ);
     }
 
     public void setGain(float gain){
