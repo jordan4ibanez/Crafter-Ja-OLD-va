@@ -3,9 +3,6 @@ package engine.render;
 import engine.graphics.Mesh;
 import engine.graphics.ShaderProgram;
 import engine.gui.GUIObject;
-import org.joml.Matrix4d;
-import org.joml.Vector3d;
-import org.joml.Vector3f;
 
 import static engine.time.Time.getDelta;
 import static engine.Window.getWindowHeight;
@@ -27,16 +24,6 @@ public class MainMenuRenderer {
     private static final ShaderProgram shaderProgram = getShaderProgram();
     private static final ShaderProgram hudShaderProgram = getHudShaderProgram();
 
-    private static final Matrix4d projectionMatrix = new Matrix4d();
-
-    private static final Matrix4d viewMatrix = new Matrix4d();
-
-    private static final Vector3d workerVector3D = new Vector3d();
-    private static final Vector3d workerVector3D2 = new Vector3d();
-    private static final Vector3f workerVector3F = new Vector3f();
-
-    private static final Matrix4d modelViewMatrix = new Matrix4d();
-
     public static void renderMainMenu(){
 
         clearScreen();
@@ -45,14 +32,14 @@ public class MainMenuRenderer {
 
         shaderProgram.bind();
 
+        //keep the camera located in the correct location for the 3D block text
+        resetViewMatrix();
+
         //update projection matrix
-        projectionMatrix.set(getProjectionMatrix(FOV, getWindowWidth(), getWindowHeight(), getzNear(), 100f));
-        shaderProgram.setUniform("projectionMatrix", projectionMatrix);
+        resetProjectionMatrix(FOV, getWindowWidth(), getWindowHeight(), getzNear(), 100f);
+        shaderProgram.setUniform("projectionMatrix", getProjectionMatrix());
 
-        //update the view matrix
-        viewMatrix.set(getViewMatrix());
         shaderProgram.setUniform("texture_sampler", 0);
-
 
 
         boolean onTitleScreen = getMainMenuPage() == 0;
@@ -61,13 +48,13 @@ public class MainMenuRenderer {
         //get background tile mesh
 
         //render scrolling background
-        //ultra wide screen compatible, for some reason
+        //ultra-wide screen compatible, for some reason
         for (int x = -15; x <= 15; x++){
             for (int y = -15; y <= 15; y++) {
                 float scale = 5f;
                 //these calculations are done to perfectly center the background in front of the camera (hopefully)
-                modelViewMatrix.set(getGenericMatrixWithPosRotationScale(workerVector3D.set(x * scale, (y + getBackGroundScroll()) * scale, -18), workerVector3F.set(0, 0, 0), workerVector3D2.set(scale, scale, 0)));
-                shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                updateViewMatrixWithPosRotationScale(x * scale, (y + getBackGroundScroll()) * scale, -18, 0, 0, 0,scale, scale, 0);
+                shaderProgram.setUniform("modelViewMatrix", getModelMatrix());
                 getTitleBackGroundMeshTile().render();
             }
         }
@@ -84,15 +71,13 @@ public class MainMenuRenderer {
                 for (int y = 0; y < worldTitleBlocks[0].length; y++) {
                     if (worldTitleBlocks[x][y] == 1) {
                         //these calculations are done to perfectly center the title in front of the camera (hopefully)
-                        modelViewMatrix.set(updateModelViewMatrix(workerVector3D.set(y - (27d / 2d), -x + (5d / 2d), -18 + worldTitleOffsets[x][y]), workerVector3F.set(0, 0, 0)));
-                        shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                        updateViewMatrix(y - (27d / 2d), -x + (5d / 2d), -18 + worldTitleOffsets[x][y], 0, 0, 0);
+                        shaderProgram.setUniform("modelViewMatrix", getModelMatrix());
                         getTitleBlockMesh().render();
                     }
                 }
             }
-        }
-
-        if (onTitleScreen) {
+        } else if (onTitleScreen) {
             byte[][] titleBlocks = getTitleBlocks();
             double[][] titleBlockOffsets = getTitleBlockOffsets();
             glClear(GL_DEPTH_BUFFER_BIT);
@@ -102,8 +87,8 @@ public class MainMenuRenderer {
                 for (int y = 0; y < titleBlocks[0].length; y++) {
                     if (titleBlocks[x][y] == 1) {
                         //these calculations are done to perfectly center the title in front of the camera (hopefully)
-                        modelViewMatrix.set(updateModelViewMatrix(workerVector3D.set(y - (27d / 2d), -x + (5d / 2d), -18 + titleBlockOffsets[x][y]), workerVector3F.set(0, 0, 0)));
-                        shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                        updateViewMatrix(y - (27d / 2d), -x + (5d / 2d), -18 + titleBlockOffsets[x][y], 0, 0, 0);
+                        shaderProgram.setUniform("modelViewMatrix", getModelMatrix());
                         getTitleBlockMesh().render();
                     }
                 }
@@ -119,7 +104,7 @@ public class MainMenuRenderer {
         //TODO: BEGIN HUD SHADER PROGRAM!
         hudShaderProgram.bind();
         hudShaderProgram.setUniform("texture_sampler", 0);
-        updateOrthoProjectionMatrix(); // needed to get current screen size
+        resetOrthoProjectionMatrix(); // needed to get current screen size
 
         float windowScale = getWindowScale();
 
@@ -141,8 +126,8 @@ public class MainMenuRenderer {
                 glClear(GL_DEPTH_BUFFER_BIT);
 
                 //gray shadow part
-                modelViewMatrix.set(updateOrthoModelMatrix(workerVector3D.set(windowScale / 2.27d, windowScale / 3.27f, 0), workerVector3F.set(0, 0, 20f), workerVector3D2.set(scale, scale, scale)));
-                hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                updateOrthoModelMatrix(windowScale / 2.27d, windowScale / 3.27f, 0, 0, 0, 20f, scale, scale, scale);
+                hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
                 //workerMesh = createTextCentered(getTitleScreenGag(), 0.2f, 0.2f, 0f);
                 //workerMesh.render();
                 //workerMesh.cleanUp(false);
@@ -150,8 +135,8 @@ public class MainMenuRenderer {
                 glClear(GL_DEPTH_BUFFER_BIT);
 
                 //yellow part
-                modelViewMatrix.set(updateOrthoModelMatrix(workerVector3D.set(windowScale / 2.25d, windowScale / 3.25f, 0), workerVector3F.set(0, 0, 20f), workerVector3D2.set(scale, scale, scale)));
-                hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                updateOrthoModelMatrix(windowScale / 2.25d, windowScale / 3.25f, 0, 0, 0, 20f, scale, scale, scale);
+                hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
                 //workerMesh = createTextCentered(getTitleScreenGag(), 1f, 1f, 0f);
                 //workerMesh.render();
                 //workerMesh.cleanUp(false);
@@ -171,8 +156,8 @@ public class MainMenuRenderer {
 
             for (int y = 0; y < creditParts.length; y++){
                 if (creditParts[y] != null) {
-                    modelViewMatrix.set(updateOrthoModelMatrix(workerVector3D.set(0, trueY + scroll, 0), workerVector3F.set(0, 0, 0), workerVector3D2.set(scale, scale, scale)));
-                    hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                    updateOrthoModelMatrix(0, trueY + scroll, 0, 0, 0, 0, scale, scale, scale);
+                    hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
                     creditParts[y].render();
 
 
@@ -219,15 +204,15 @@ public class MainMenuRenderer {
                 double xPos = thisGUIObject.pos.x * (windowScale / 100d);
                 double yPos = thisGUIObject.pos.y * (windowScale / 100d);
 
-                modelViewMatrix.set(updateOrthoModelMatrix(workerVector3D.set(xPos, yPos, 0), workerVector3F.set(0, 0, 0), workerVector3D2.set(windowScale / 20d, windowScale / 20d, windowScale / 20d)));
-                hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                updateOrthoModelMatrix(xPos, yPos, 0, 0, 0, 0, windowScale / 20d, windowScale / 20d, windowScale / 20d);
+                hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
                 thisGUIObject.textMesh.render();
 
                 float xAdder = 20 / thisGUIObject.buttonScale.x;
                 float yAdder = 20 / thisGUIObject.buttonScale.y;
 
-                modelViewMatrix.set(updateOrthoModelMatrix(workerVector3D.set(xPos, yPos, 0), workerVector3F.set(0, 0, 0), workerVector3D2.set(windowScale / xAdder, windowScale / yAdder, windowScale / 20d)));
-                hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                updateOrthoModelMatrix(xPos, yPos, 0, 0, 0, 0, windowScale / xAdder, windowScale / yAdder, windowScale / 20d);
+                hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
                 if (thisGUIObject.selected) {
                     getButtonSelectedMesh().render();
                 } else {
@@ -255,15 +240,15 @@ public class MainMenuRenderer {
                 double textOffset = (windowScale / 42d) * thisGUIObject.buttonScale.x;
 
 
-                modelViewMatrix.set(updateOrthoModelMatrix(workerVector3D.set(xPos - textOffset, yPos, 0), workerVector3F.set(0, 0, 0), workerVector3D2.set(windowScale / 20d, windowScale / 20d, windowScale / 20d)));
-                hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                updateOrthoModelMatrix(xPos - textOffset, yPos, 0, 0, 0, 0, windowScale / 20d, windowScale / 20d, windowScale / 20d);
+                hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
                 thisGUIObject.textMesh.render();
 
                 float xAdder = 20 / thisGUIObject.buttonScale.x;
                 float yAdder = 20 / thisGUIObject.buttonScale.y;
 
-                modelViewMatrix.set(updateOrthoModelMatrix(workerVector3D.set(xPos, yPos, 0), workerVector3F.set(0, 0, 0), workerVector3D2.set(windowScale / xAdder, windowScale / yAdder, windowScale / 20d)));
-                hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                updateOrthoModelMatrix(xPos, yPos, 0, 0, 0, 0, windowScale / xAdder, windowScale / yAdder, windowScale / 20d);
+                hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
                 if (thisGUIObject.selected) {
                     getTextInputSelectedMesh().render();
                 } else {
@@ -275,8 +260,8 @@ public class MainMenuRenderer {
                 double xPos = thisGUIObject.pos.x * (windowScale / 100d);
                 double yPos = thisGUIObject.pos.y * (windowScale / 100d);
 
-                modelViewMatrix.set(updateOrthoModelMatrix(workerVector3D.set(xPos, yPos, 0), workerVector3F.set(0, 0, 0), workerVector3D2.set(windowScale / 20d, windowScale / 20d, windowScale / 20d)));
-                hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                updateOrthoModelMatrix(xPos, yPos, 0, 0, 0, 0, windowScale / 20d, windowScale / 20d, windowScale / 20d);
+                hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
                 thisGUIObject.textMesh.render();
             }
         }
