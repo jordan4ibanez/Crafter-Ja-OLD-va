@@ -63,6 +63,7 @@ public class ChunkUpdateHandler {
                 //can attempt to remove null, so it's okay
                 queue.remove(key);
             } else {
+                //stop loop
                 return;
             }
         }
