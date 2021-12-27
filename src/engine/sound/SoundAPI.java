@@ -34,6 +34,9 @@ public class SoundAPI {
             e.printStackTrace();
         }
         SoundSource thisSource = new SoundSource(false, false);
+        
+        assert soundBuffer != null;
+
         thisSource.setBuffer(soundBuffer.getBufferId());
 
         thisSource.setPosition((float) posX, (float) posY, (float) posZ);
