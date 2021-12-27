@@ -90,6 +90,7 @@ public class Chunk {
     }
     //overload part 3 - immutable clones
     public static byte[] getBlockDataClone(int x, int z){
+        // THIS CREATES A NEW OBJECT IN MEMORY!
         byte[] blockData = blocks.get(new Vector2i(x,z));
         if (blockData == null){
             return null;
@@ -97,6 +98,7 @@ public class Chunk {
         return blockData.clone();
     }
     public static byte[] getRotationDataClone(int x, int z){
+        // THIS CREATES A NEW OBJECT IN MEMORY!
         byte[] rotationData = rotations.get(new Vector2i(x,z));
         if (rotationData == null){
             return null;
@@ -104,6 +106,7 @@ public class Chunk {
         return rotationData.clone();
     }
     public static byte[] getLightDataClone(int x, int z){
+        // THIS CREATES A NEW OBJECT IN MEMORY!
         byte[] lightData =  lights.get(new Vector2i(x,z));
         if (lightData == null){
             return null;
@@ -111,6 +114,7 @@ public class Chunk {
         return lightData.clone();
     }
     public static byte[][] getHeightMapDataClone(int x, int z){
+        // THIS CREATES A NEW OBJECT IN MEMORY!
         byte[][] heightMapData = heightmaps.get(new Vector2i(x,z));
         if (heightMapData == null){
             return null;
@@ -135,7 +139,7 @@ public class Chunk {
 
     //multiplayer chunk update
     public static void setChunk(int x, int z, byte[] blockData, byte[] rotationData, byte[] lightData, byte[][] heightMapData) {
-
+        // THIS CREATES A NEW OBJECT IN MEMORY!
         Vector2i key = new Vector2i(x, z);
 
         //don't allow old vertex data to leak - instead clone primitives
@@ -201,6 +205,7 @@ public class Chunk {
     }
 
     public static void setChunkNormalMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
+        // THIS CREATES A NEW OBJECT IN MEMORY!
         Mesh[] meshArray = normalMeshes.get(new Vector2i(chunkX, chunkZ));
 
         if (meshArray == null){
@@ -216,6 +221,7 @@ public class Chunk {
     }
 
     public static void setChunkLiquidMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
+        // THIS CREATES A NEW OBJECT IN MEMORY!
         Mesh[] meshArray = liquidMeshes.get(new Vector2i(chunkX, chunkZ));
         if (meshArray == null){
             if (newMesh != null) {
@@ -230,6 +236,7 @@ public class Chunk {
     }
 
     public static void setChunkAllFacesMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
+        // THIS CREATES A NEW OBJECT IN MEMORY!
         Mesh[] meshArray = allFaceMeshes.get(new Vector2i(chunkX, chunkZ));
         if (meshArray == null){
             if (newMesh != null) {
@@ -286,6 +293,7 @@ public class Chunk {
     }
 
     public static boolean chunkStackContainsBlock(int chunkX, int chunkZ, int yHeight){
+        // THIS CREATES A NEW OBJECT IN MEMORY!
         byte[] blockData = blocks.get(new Vector2i(chunkX, chunkZ));
 
         if (blockData == null){
@@ -312,6 +320,7 @@ public class Chunk {
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
 
+        // THIS CREATES A NEW OBJECT IN MEMORY!
         byte[][] heightMapData = heightmaps.get(new Vector2i(chunkX, chunkZ));
 
         if (heightMapData == null){
@@ -329,6 +338,7 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
+        // THIS CREATES A NEW OBJECT IN MEMORY!
         byte[][] heightMapData = heightmaps.get(new Vector2i(chunkX, chunkZ));
         if (heightMapData == null){
             return false;
@@ -345,6 +355,7 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
+        // THIS CREATES A NEW OBJECT IN MEMORY!
         byte[] blockData = blocks.get(new Vector2i(chunkX, chunkZ));
         if (blockData == null){
             return -1;
@@ -360,6 +371,7 @@ public class Chunk {
         int chunkZ = (int)Math.floor(pos.z/16d);
         int blockX = (int)(pos.x - (16d*chunkX));
         int blockZ = (int)(pos.z - (16d*chunkZ));
+        // THIS CREATES A NEW OBJECT IN MEMORY!
         byte[] blockData = blocks.get(new Vector2i(chunkX, chunkZ));
         if (blockData == null){
             return -1;
@@ -376,6 +388,7 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
+        // THIS CREATES A NEW OBJECT IN MEMORY!
         byte[] rotationData = rotations.get(new Vector2i(chunkX, chunkZ));
         if (rotationData == null){
             return 0;
@@ -391,6 +404,7 @@ public class Chunk {
         int chunkZ = (int)Math.floor(pos.z/16d);
         int blockX = (int)(pos.x - (16d*chunkX));
         int blockZ = (int)(pos.z - (16d*chunkZ));
+        // THIS CREATES A NEW OBJECT IN MEMORY!
         byte[] rotationData = rotations.get(new Vector2i(chunkX, chunkZ));
         if (rotationData == null){
             return 0;
@@ -407,6 +421,7 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
+        // THIS CREATES A NEW OBJECT IN MEMORY!
         Vector2i key = new Vector2i(chunkX, chunkZ);
         byte[] blockData = blocks.get(key);
         byte[] rotationData = rotations.get(key);
@@ -447,6 +462,7 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
+        // THIS CREATES A NEW OBJECT IN MEMORY!
         byte[] lightData = lights.get(new Vector2i(chunkX, chunkZ));
         if (lightData == null){
             return;
@@ -465,6 +481,7 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
+        // THIS CREATES A NEW OBJECT IN MEMORY!
         byte[] lightData = lights.get(new Vector2i(chunkX, chunkZ));
         if (lightData == null){
             return;
@@ -484,7 +501,7 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
-
+        // THIS CREATES A NEW OBJECT IN MEMORY!
         Vector2i key = new Vector2i(chunkX, chunkZ);
 
         byte[] blockData = blocks.get(key);
@@ -517,6 +534,7 @@ public class Chunk {
         lightData[posToIndex(blockX, y, blockZ)] = setByteNaturalLight(lightData[posToIndex(blockX, y, blockZ)], getImmediateLight(x,y,z));
 
         if (!getIfMultiplayer()) {
+            // THIS CREATES A NEW OBJECT IN MEMORY!
             onDigCall(oldBlock, new Vector3d(x, y, z));
         }
 
@@ -533,7 +551,7 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (x - (16*chunkX));
         int blockZ = (z - (16*chunkZ));
-
+        // THIS CREATES A NEW OBJECT IN MEMORY!
         Vector2i key = new Vector2i(chunkX, chunkZ);
 
         byte[] blockData = blocks.get(key);
@@ -559,6 +577,7 @@ public class Chunk {
         saveToDisk.replace(key, true);
 
         if (!getIfMultiplayer()) {
+            // THIS CREATES A NEW OBJECT IN MEMORY!
             onPlaceCall(ID, new Vector3i(x, y, z));
         }
 
@@ -574,7 +593,7 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
-
+        // THIS CREATES A NEW OBJECT IN MEMORY!
         byte[] lightData = lights.get(new Vector2i(chunkX, chunkZ));
 
         if (lightData == null){
@@ -608,7 +627,7 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
-
+        // THIS CREATES A NEW OBJECT IN MEMORY!
         byte[] lightData = lights.get(new Vector2i(chunkX,chunkZ));
 
         if (lightData == null){
@@ -626,7 +645,7 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
-
+        // THIS CREATES A NEW OBJECT IN MEMORY!
         byte[] lightData = lights.get(new Vector2i(chunkX,chunkZ));
 
         if (lightData == null){
@@ -703,25 +722,28 @@ public class Chunk {
     }
 
     private static void fullNeighborUpdate(int chunkX, int chunkZ){
-
+        // THIS CREATES A NEW OBJECT IN MEMORY!
         if (chunkKeys.get(new Vector2i(chunkX + 1, chunkZ)) != null){
             for (int y = 0; y < 8; y++){
                 chunkUpdate(chunkX+1, chunkZ, y);
             }
         }
 
+        // THIS CREATES A NEW OBJECT IN MEMORY!
         if (chunkKeys.get(new Vector2i(chunkX-1, chunkZ)) != null){
             for (int y = 0; y < 8; y++){
                 chunkUpdate(chunkX-1, chunkZ, y);
             }
         }
 
+        // THIS CREATES A NEW OBJECT IN MEMORY!
         if (chunkKeys.get(new Vector2i(chunkX, chunkZ+1)) != null){
             for (int y = 0; y < 8; y++){
                 chunkUpdate(chunkX, chunkZ+1, y);
             }
         }
 
+        // THIS CREATES A NEW OBJECT IN MEMORY!
         if (chunkKeys.get(new Vector2i(chunkX, chunkZ-1)) != null){
             for (int y = 0; y < 8; y++){
                 chunkUpdate(chunkX, chunkZ-1, y);
@@ -737,6 +759,7 @@ public class Chunk {
         for (int x = -chunkRenderDistance + currentChunk.x; x < chunkRenderDistance + currentChunk.x; x++){
             for (int z = -chunkRenderDistance + currentChunk.z; z< chunkRenderDistance + currentChunk.z; z++){
                 if (getChunkDistanceFromPlayer(x,z) <= chunkRenderDistance){
+                    // THIS CREATES A NEW OBJECT IN MEMORY!
                     if (chunkKeys.get(new Vector2i(x,z)) == null){
                         genBiome(x,z);
                         for (int y = 0; y < 8; y++) {
@@ -764,6 +787,7 @@ public class Chunk {
         for (int x = -chunkRenderDistance + currentChunk.x; x < chunkRenderDistance + currentChunk.x; x++){
             for (int z = -chunkRenderDistance + currentChunk.z; z< chunkRenderDistance + currentChunk.z; z++){
                 if (getChunkDistanceFromPlayer(x,z) <= chunkRenderDistance){
+                    // THIS CREATES A NEW OBJECT IN MEMORY!
                     if (chunkKeys.get(new Vector2i(x,z)) == null){
                         sendOutChunkRequest(new ChunkRequest(x,z, getPlayerName()));
                     }
@@ -846,6 +870,7 @@ public class Chunk {
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
 
+        // THIS CREATES A NEW OBJECT IN MEMORY!
         byte[] blockData = blocks.get(new Vector2i(chunkX, chunkZ));
 
         if (blockData == null){
@@ -883,6 +908,7 @@ public class Chunk {
         }
 
         if (chunkData != null) {
+            // THIS CREATES A NEW OBJECT IN MEMORY!
             Vector2i key = new Vector2i(chunkX, chunkZ);
             chunkKeys.put(key, key);
 
