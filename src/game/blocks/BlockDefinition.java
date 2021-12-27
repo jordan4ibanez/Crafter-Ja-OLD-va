@@ -858,10 +858,10 @@ public class BlockDefinition {
         //falling sand
         BlockModifier fallSand = new BlockModifier() {
             @Override
-            public void onPlace(Vector3i pos) {
-                if (getBlock(pos.x, pos.y - 1, pos.z) == 0) {
-                    digBlock(pos.x, pos.y, pos.z);
-                    addFallingEntity(new Vector3d(pos.x + 0.5d, pos.y, pos.z + 0.5d), new Vector3f(0, 0, 0), (byte)20);
+            public void onPlace(int posX, int posY, int posZ) {
+                if (getBlock(posX, posY - 1, posZ) == 0) {
+                    digBlock(posX, posY, posZ);
+                    addFallingEntity(posX + 0.5d, posY, posZ + 0.5d,0, 0, 0, (byte)20);
                 }
             }
         };
