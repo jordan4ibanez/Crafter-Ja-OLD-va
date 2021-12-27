@@ -74,6 +74,8 @@ public class ChunkMeshGenerationHandler {
                     }
 
 
+                    //todo: test if nullifying data then object reduces heap memory gc sweep pause
+
                 }
             } else {
                 return;

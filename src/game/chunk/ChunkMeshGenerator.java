@@ -11,6 +11,8 @@ import static engine.Window.windowShouldClose;
 import static game.chunk.Chunk.*;
 import static game.chunk.ChunkMeshGenerationHandler.addToChunkMeshQueue;
 
+//note: this entire class is held on it's own thread, be careful with OpenGL context or switch to Vulkan so it can dump data into the GPU
+
 public class ChunkMeshGenerator implements Runnable{
     //DO NOT CHANGE THE DATA CONTAINER
     private static final ConcurrentLinkedDeque<Vector3i> generationQueue = new ConcurrentLinkedDeque<>();
