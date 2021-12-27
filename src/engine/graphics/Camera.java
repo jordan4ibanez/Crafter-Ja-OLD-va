@@ -17,6 +17,7 @@ public class Camera {
     private static final Vector3f rotationVector = new Vector3f();
     private static final Vector2f mouseRotationVector = new Vector2f();
 
+    //make this adjustable 0.2 to 1.0 maybe - implement slider in menu system!
     private static final float MOUSE_SENSITIVITY   = 0.09f;
 
     private static byte cameraPerspective = 0;
