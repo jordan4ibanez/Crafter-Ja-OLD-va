@@ -459,8 +459,8 @@ public class BlockDefinition {
         //tnt explosion
         BlockModifier kaboom = new BlockModifier() {
             @Override
-            public void onDig(Vector3d pos) {
-                createTNT(pos, 0, true);
+            public void onDig(double posX, double posY, double posZ) {
+                createTNT(posX, posY, posZ, 0, true);
             }
         };
 
