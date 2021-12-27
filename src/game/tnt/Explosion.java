@@ -12,6 +12,7 @@ import static game.tnt.TNTEntity.createTNT;
 
 public class Explosion {
 
+    //todo: document this better
     public static void boom(Vector3d pos, int boomDistance) {
         for (int x = (int)Math.floor(pos.x) - boomDistance; x < (int)Math.floor(pos.x) + boomDistance; x++) {
             for (int y = (int)Math.floor(pos.y) - boomDistance; y < (int)Math.floor(pos.y) + boomDistance; y++) {
