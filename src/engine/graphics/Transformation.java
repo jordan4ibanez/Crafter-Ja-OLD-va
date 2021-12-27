@@ -47,7 +47,11 @@ public class Transformation {
         return modelMatrix;
     }
 
-    public static void updateViewMatrix(){
+    public static Matrix4d getOrthoModelMatrix(){
+        return orthoModelMatrix;
+    }
+
+    public static void resetViewMatrix(){
         cameraPos.set(getCameraPosition());
         cameraRotation.set(getCameraRotation());
         viewMatrix.identity();
@@ -57,7 +61,7 @@ public class Transformation {
         viewMatrix.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
     }
 
-    public static void updateProjectionMatrix(float fov, float width, float height, float zNear, float zFar){
+    public static void resetProjectionMatrix(float fov, float width, float height, float zNear, float zFar){
         projectionMatrix.identity();
         projectionMatrix.perspective(fov, width / height, zNear, zFar);
     }
@@ -131,7 +135,7 @@ public class Transformation {
 
 
 
-    public static void updateModelViewMatrix(double posX, double posY, double posZ, float rotX, float rotY, float rotZ) {
+    public static void updateViewMatrix(double posX, double posY, double posZ, float rotX, float rotY, float rotZ) {
         // First do the rotation so camera rotates over its position
         modelViewMatrix.identity().identity().translate(posX, posY, posZ).
                 rotateY(Math.toRadians(-rotY)).
@@ -168,14 +172,14 @@ public class Transformation {
     }
 
 
-    public static Matrix4d getGenericMatrixWithPosRotationScale(Vector3d position, Vector3f rotation,Vector3d scale){
-        modelViewMatrix.identity().translate(position.x, position.y, position.z).
-                rotateX(Math.toRadians(-rotation.x)).
-                rotateY(Math.toRadians(-rotation.y)).
-                rotateZ(Math.toRadians(-rotation.z)).scale(scale);
+    public static void updateViewMatrixWithPosRotationScale(double posX, double posY, double posZ, float rotX, float rotY, float rotZ,float scaleX, float scaleY, float scaleZ){
+        modelViewMatrix.identity().translate(posX, posY, posZ).
+                rotateX(Math.toRadians(-rotX)).
+                rotateY(Math.toRadians(-rotY)).
+                rotateZ(Math.toRadians(-rotZ)).
+                scale(scaleX, scaleY, scaleZ);
         modelMatrix.set(viewMatrix);
         modelMatrix.mul(modelViewMatrix);
-        return modelMatrix;
     }
 
 
@@ -221,20 +225,19 @@ public class Transformation {
 
     //TODO--begin ortho creation
 
-    public static void updateOrthoProjectionMatrix() {
+    public static void resetOrthoProjectionMatrix() {
         orthoMatrix.identity();
         orthoMatrix.setOrtho(-getWindowSize().x/2f, getWindowSize().x/2f, -getWindowSize().y/2f, getWindowSize().y/2f, -1000f, 1000f);
     }
 
-    public static Matrix4d updateOrthoModelMatrix(Vector3d position, Vector3f rotation, Vector3d scale) {
-        modelViewMatrix.identity().translate(position.x, position.y, position.z).
-                rotateX( Math.toRadians(rotation.x)).
-                rotateY( Math.toRadians(rotation.y)).
-                rotateZ( Math.toRadians(rotation.z)).
-                scale(scale);
+    public static void updateOrthoModelMatrix(double posX, double posY, double posZ, float rotX, float rotY, float rotZ, double scaleX, double scaleY, double scaleZ) {
+        modelViewMatrix.identity().translate(posX, posY, posZ).
+                rotateX( Math.toRadians(rotX)).
+                rotateY( Math.toRadians(rotY)).
+                rotateZ( Math.toRadians(rotZ)).
+                scale(scaleX, scaleY, scaleZ);
         orthoModelMatrix.set(orthoMatrix);
         orthoModelMatrix.mul(modelViewMatrix);
-        return orthoModelMatrix;
     }
 
 }
