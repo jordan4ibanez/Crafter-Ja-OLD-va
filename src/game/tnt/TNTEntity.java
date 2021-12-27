@@ -34,11 +34,11 @@ public class TNTEntity {
         return totalTNT;
     }
 
-    public static void createTNT(Vector3d pos){
-        pos.x += 0.5f;
+    public static void createTNT(double posX, double posY, double posZ){
+        posX += 0.5f;
         //pos.y += 0.5f;
-        pos.z += 0.5f;
-        tntPos[totalTNT] = new Vector3d(pos);
+        posZ += 0.5f;
+        tntPos[totalTNT] = new Vector3d(posX, posY, posZ);
         tntInertia[totalTNT] = new Vector3f(randomForceValue(3),(float)Math.random()*7f,randomForceValue(3f));
         tntExists[totalTNT] = true;
         tntTimer[totalTNT] = 0f;
@@ -47,15 +47,15 @@ public class TNTEntity {
         System.out.println("Created new TNT. Total TNT: " + totalTNT);
     }
 
-    public static void createTNT(Vector3d pos, float timer, boolean punched) {
-        pos.x += 0.5f;
+    public static void createTNT(double posX, double posY, double posZ, float timer, boolean punched) {
+        posX += 0.5f;
         //pos.y += 0.5f;
-        pos.z += 0.5f;
-        tntPos[totalTNT] = new Vector3d(pos);
+        posZ += 0.5f;
+        tntPos[totalTNT] = new Vector3d(posX, posY, posZ);
         float tntJump;
         if (punched){
             tntJump = (float)Math.random()*10f;
-            playSound("tnt_ignite", pos);
+            playSound("tnt_ignite", posX, posY, posZ);
         } else {
             tntJump = 0f;
         }
