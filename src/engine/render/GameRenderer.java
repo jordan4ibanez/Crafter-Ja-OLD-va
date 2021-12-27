@@ -3,12 +3,6 @@ package engine.render;
 import engine.Utils;
 import engine.graphics.Mesh;
 import engine.graphics.ShaderProgram;
-import engine.gui.GUIObject;
-import game.crafting.InventoryObject;
-import game.falling.FallingEntityObject;
-import game.item.Item;
-import game.mob.MobObject;
-import game.particle.ParticleObject;
 import org.joml.*;
 
 import java.lang.Math;
@@ -17,34 +11,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import static engine.FancyMath.getDistance;
-import static engine.MouseInput.getMousePos;
 import static engine.Window.*;
-import static engine.debug.CheckRuntimeInfo.getRuntimeInfoText;
 import static engine.graphics.Camera.*;
 import static engine.graphics.Transformation.*;
-import static engine.gui.GUI.*;
-import static engine.gui.GUILogic.*;
-import static engine.gui.TextHandling.createTextWithShadow;
 import static engine.settings.Settings.*;
-import static engine.time.TimeOfDay.getTimeOfDayLinear;
-import static game.chat.Chat.getCurrentMessageMesh;
-import static game.chat.Chat.getViewableChatMessages;
 import static game.chunk.Chunk.*;
-import static game.clouds.Cloud.*;
-import static game.crafting.Inventory.*;
-import static game.crafting.InventoryLogic.getPlayerHudRotation;
-import static game.falling.FallingEntity.getFallingEntities;
-import static game.item.ItemDefinition.getItemDefinition;
-import static game.item.ItemDefinition.getItemMesh;
-import static game.item.ItemEntity.getAllItems;
-import static game.light.Light.getCurrentGlobalLightLevel;
-import static game.mob.Mob.*;
-import static game.particle.Particle.getAllParticles;
 import static game.player.Player.*;
-import static game.player.PlayerMesh.*;
-import static game.player.WieldHand.getWieldHandAnimationPos;
-import static game.player.WieldHand.getWieldHandAnimationRot;
-import static game.tnt.TNTEntity.*;
 import static org.lwjgl.opengl.GL44.*;
 import static org.lwjgl.opengl.GL44C.GL_BLEND;
 import static org.lwjgl.opengl.GL44C.glDisable;
@@ -205,9 +177,9 @@ public class GameRenderer {
         int renderDistance = getRenderDistance();
 
         //update projection matrix
-        updateProjectionMatrix(FOV + getRunningFOVAdder(), getWindowWidth(), getWindowHeight(), Z_NEAR, (renderDistance * 2) * 16f);
+        resetProjectionMatrix(FOV + getRunningFOVAdder(), getWindowWidth(), getWindowHeight(), Z_NEAR, (renderDistance * 2) * 16f);
         //update the view matrix
-        updateViewMatrix();
+        resetViewMatrix();
 
         camPos.set(getCameraPosition());
 
@@ -415,7 +387,7 @@ public class GameRenderer {
             //normal
             for (Mesh thisMesh : thisChunk) {
                 if (thisMesh != null) {
-                    updateModelViewMatrix(thisPos.x * 16d, 0, thisPos.y * 16d, 0, 0, 0);
+                    updateViewMatrix(thisPos.x * 16d, 0, thisPos.y * 16d, 0, 0, 0);
                     if (graphicsMode) {
                         glassLikeShaderProgram.setUniform("modelViewMatrix", getModelMatrix());
                     } else {
@@ -748,7 +720,7 @@ public class GameRenderer {
         //TODO: BEGIN HUD SHADER PROGRAM!
         hudShaderProgram.bind();
         hudShaderProgram.setUniform("texture_sampler", 0);
-        updateOrthoProjectionMatrix(); // needed to get current screen size
+        resetOrthoProjectionMatrix(); // needed to get current screen size
 
         //render water effect
         /*
