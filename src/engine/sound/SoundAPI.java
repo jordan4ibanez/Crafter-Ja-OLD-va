@@ -9,7 +9,7 @@ import static org.lwjgl.openal.AL10.AL_PITCH;
 
 public class SoundAPI {
 
-    public static void playSound(String name, Vector3f pos) {
+    public static void playSound(String name, float posX, float posY, float posZ) {
         SoundBuffer soundBuffer = null;
         try {
             soundBuffer = new SoundBuffer("sounds/" + name + ".ogg");
@@ -19,7 +19,24 @@ public class SoundAPI {
         SoundSource thisSource = new SoundSource(false, false);
         assert soundBuffer != null;
         thisSource.setBuffer(soundBuffer.getBufferId());
-        thisSource.setPosition(pos);
+        thisSource.setPosition(posX, posY, posZ);
+        playSoundSource(soundBuffer, thisSource);
+    }
+
+    //overload for ease of use
+    //intakes doubles XYZ and casts to float XYZ
+    //precision is lost
+    public static void playSound(String name, double posX, double posY, double posZ) {
+        SoundBuffer soundBuffer = null;
+        try {
+            soundBuffer = new SoundBuffer("sounds/" + name + ".ogg");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        SoundSource thisSource = new SoundSource(false, false);
+        thisSource.setBuffer(soundBuffer.getBufferId());
+
+        thisSource.setPosition((float) posX, (float) posY, (float) posZ);
         playSoundSource(soundBuffer, thisSource);
     }
 
@@ -38,28 +55,6 @@ public class SoundAPI {
         playSoundSource(soundBuffer, thisSource);
     }
 
-
-
-    //overload for ease of use
-    public static void playSound(String name, Vector3d pos) {
-        SoundBuffer soundBuffer = null;
-        try {
-            soundBuffer = new SoundBuffer("sounds/" + name + ".ogg");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        SoundSource thisSource = new SoundSource(false, false);
-        thisSource.setBuffer(soundBuffer.getBufferId());
-
-        Vector3f floatedPos = new Vector3f();
-
-        floatedPos.x = (float)pos.x;
-        floatedPos.y = (float)pos.y;
-        floatedPos.z = (float)pos.z;
-
-        thisSource.setPosition(floatedPos);
-        playSoundSource(soundBuffer, thisSource);
-    }
 
     public static SoundSource playSound(String name) {
         SoundBuffer soundBuffer = null;
