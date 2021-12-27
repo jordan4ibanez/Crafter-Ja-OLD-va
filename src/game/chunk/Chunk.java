@@ -535,7 +535,7 @@ public class Chunk {
 
         if (!getIfMultiplayer()) {
             // THIS CREATES A NEW OBJECT IN MEMORY!
-            onDigCall(oldBlock, new Vector3d(x, y, z));
+            onDigCall(oldBlock, x, y, z);
         }
 
         instantGeneration(chunkX,chunkZ,yPillar);
@@ -578,7 +578,7 @@ public class Chunk {
 
         if (!getIfMultiplayer()) {
             // THIS CREATES A NEW OBJECT IN MEMORY!
-            onPlaceCall(ID, new Vector3i(x, y, z));
+            onPlaceCall(ID, x, y, z);
         }
 
         instantGeneration(chunkX,chunkZ,yPillar);
