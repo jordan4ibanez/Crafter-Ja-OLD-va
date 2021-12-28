@@ -27,21 +27,11 @@ public class ItemEntity {
         items.clear();
     }
 
-    public static void createItem(String name, Vector3d pos, int stack) {
-        items.put(getCurrentID(), new Item(name, pos, stack));
+
+    public static void createItem(String name, double posX, double posY, double posZ, float inertiaX, float inertiaY, float inertiaZ, int stack, float timer) {
+        items.put(getCurrentID(), new Item(name, posX, posY, posZ, inertiaX, inertiaY, inertiaZ, stack, timer));
     }
 
-    public static void createItem(String name, Vector3d pos, int stack, float life) {
-        items.put(getCurrentID(), new Item(name, pos, stack, life));
-    }
-
-    public static void createItem(String name, Vector3d pos, Vector3f inertia, int stack) {
-        items.put(getCurrentID(), new Item(name, pos, inertia, stack));
-    }
-
-    public static void createItem(String name, Vector3d pos, Vector3f inertia, int stack, float life) {
-        items.put(getCurrentID(), new Item(name, pos, inertia, stack, life));
-    }
 
     public static Object[] getAllItems() {
         return items.values().toArray();
@@ -63,7 +53,7 @@ public class ItemEntity {
                 thisEntity.goalPos.set(itemSendingObject.pos);
             } else {
                 //initial internal pos
-                items.put(itemSendingObject.ID, new Item(itemSendingObject.name, itemSendingObject.pos, itemSendingObject.pos, 1));
+                items.put(itemSendingObject.ID, new Item(itemSendingObject.name, itemSendingObject.pos.x, itemSendingObject.pos.y, itemSendingObject.pos.z, 0,0,0, 1, 0));
             }
         }
     }
