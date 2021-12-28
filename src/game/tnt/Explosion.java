@@ -6,7 +6,6 @@ import static engine.FancyMath.getDistance;
 import static game.blocks.BlockDefinition.getBlockName;
 import static game.chunk.Chunk.getBlock;
 import static game.chunk.Chunk.setBlock;
-import static game.item.ItemEntity.createItem;
 import static game.item.ItemEntity.throwItem;
 import static game.light.Light.lightFloodFill;
 import static game.tnt.TNTEntity.createTNT;
