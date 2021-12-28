@@ -7,6 +7,7 @@ import static game.blocks.BlockDefinition.getBlockName;
 import static game.chunk.Chunk.getBlock;
 import static game.chunk.Chunk.setBlock;
 import static game.item.ItemEntity.createItem;
+import static game.item.ItemEntity.throwItem;
 import static game.light.Light.lightFloodFill;
 import static game.tnt.TNTEntity.createTNT;
 
@@ -23,7 +24,7 @@ public class Explosion {
                         if(currentBlock != 5) {
                             setBlock(x, y, z, (byte) 0, (byte) 0);
                             if (currentBlock > 0 && currentBlock != 6 && Math.random() > 0.994) {
-                                createItem(getBlockName(currentBlock), new Vector3d(x,y,z), 1);
+                                throwItem(getBlockName(currentBlock), x,y,z, 1,0);
                             } else if (currentBlock == 6){
                                 createTNT(x, y, z, (float)(Math.random() * 1f) + 1.0f, false);
                             }
