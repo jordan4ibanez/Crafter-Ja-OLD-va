@@ -202,7 +202,7 @@ public class SceneHandler {
     }
 
     private static void gameUpdate() throws Exception {
-        testPlayerDiggingAnimation();
+        //testPlayerDiggingAnimation();
         playerOnTick();
         //itemsOnTick();
         //onTNTStep();
