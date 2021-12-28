@@ -694,6 +694,7 @@ public class Player {
 
         inertiaFly(pos,inertia);
 
+        pos.y = 120;
 
         //apply the eyeHeight offset to the eyeHeight position
         posWithEyeHeight.set(pos.x, pos.y + eyeHeight, pos.z);
