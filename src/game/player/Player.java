@@ -551,7 +551,7 @@ public class Player {
     }
 
     public static void playerOnTick() {
-
+        /*
         double delta = getDelta();
 
         //camera underwater effect trigger
@@ -618,18 +618,18 @@ public class Player {
             }
         }
 
-         */
+
 
 
 
         //mining timer
         hasDug = false;
         //reset mining timer
-        if ((mining && worldSelectionPos != null && !worldSelectionPos.equals(oldWorldSelectionPos)) || (currentInventorySelection != oldInventorySelection)){
+        if (mining && !worldSelectionPos.equals(oldWorldSelectionPos) || currentInventorySelection != oldInventorySelection){
             diggingFrame = -1;
             diggingProgress = 0f;
         }
-        if (mining && worldSelectionPos != null) {
+        if (mining) {
             float progress = 0;
             //don't let players even attempt to dig undiggable blocks
             if (leafHardness > -1 && dirtHardness > -1 && woodHardness > -1 && stoneHardness > -1){
@@ -674,6 +674,7 @@ public class Player {
         //values for application of inertia
         applyPlayerInertiaBuffer();
 
+        */
         //stop players from falling forever
         //this only applies their inertia if they are within a loaded chunk, IE
         //if the server doesn't load up something in time, they freeze in place
@@ -681,12 +682,14 @@ public class Player {
             onGround = applyInertia(pos, inertia, true, width, height, true, sneaking, true, true, true);
         }
 
+
         //apply the eyeHeight offset to the eyeHeight position
         posWithEyeHeight.set(pos.x, pos.y + eyeHeight, pos.z);
 
         //apply the collection height offset to the collection position
         posWithCollectionHeight.set(pos.x, pos.y + collectionHeight, pos.z);
 
+        /*
 
         //play sound when player lands on the ground
         if (onGround && !wasOnGround){
@@ -900,7 +903,7 @@ public class Player {
             }
         }
 
-         */
+
 
         //update light level for the wield item
         lightCheckTimer += delta;
@@ -920,6 +923,7 @@ public class Player {
         oldRealPos.set(pos);
         wasOnGround = onGround;
         oldInventorySelection = currentInventorySelection;
+         */
     }
 
     public static void updateWorldChunkLoader(){
