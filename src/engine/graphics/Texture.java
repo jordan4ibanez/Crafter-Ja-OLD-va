@@ -1,8 +1,9 @@
 package engine.graphics;
 
+import org.lwjgl.system.MemoryStack;
+
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import org.lwjgl.system.MemoryStack;
 
 import static org.lwjgl.opengl.GL44.*;
 import static org.lwjgl.stb.STBImage.*;

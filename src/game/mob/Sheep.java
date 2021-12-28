@@ -2,7 +2,6 @@ package game.mob;
 
 import engine.graphics.Mesh;
 import org.joml.Math;
-import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import static engine.FancyMath.randomDirFloat;
@@ -10,7 +9,6 @@ import static engine.time.Time.getDelta;
 import static game.blocks.BlockDefinition.getIfLiquid;
 import static game.chunk.Chunk.getBlock;
 import static game.collision.Collision.applyInertia;
-import static game.item.ItemEntity.createItem;
 import static game.item.ItemEntity.throwItem;
 import static game.mob.Mob.registerMob;
 import static game.mob.MobMeshBuilder.calculateMobTexture;

@@ -14,7 +14,8 @@ import static engine.render.GameRenderer.getWindowScale;
 import static engine.render.GameRenderer.getWindowSize;
 import static game.crafting.CraftRecipes.recipeScan;
 import static game.crafting.Inventory.*;
-import static game.player.Player.*;
+import static game.player.Player.getCurrentInventorySelection;
+import static game.player.Player.resetPlayerInputs;
 import static game.player.WieldHand.resetWieldHandSetupTrigger;
 
 public class InventoryLogic {

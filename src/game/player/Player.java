@@ -1,9 +1,9 @@
 package game.player;
 
+import org.joml.Vector2f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
-import org.joml.Vector2f;
 
 import static engine.disk.Disk.loadPlayerPos;
 import static engine.graphics.Camera.*;

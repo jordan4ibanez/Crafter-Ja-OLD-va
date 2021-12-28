@@ -5,8 +5,8 @@ import org.joml.Vector3i;
 import static engine.sound.SoundAPI.playSound;
 import static game.blocks.BlockDefinition.isBlockWalkable;
 import static game.chunk.Chunk.*;
-import static game.item.ItemDefinition.registerItem;
 import static game.crafting.Inventory.removeItemFromInventory;
+import static game.item.ItemDefinition.registerItem;
 import static game.player.Player.getCurrentInventorySelection;
 import static game.player.Player.getPlayerDir;
 

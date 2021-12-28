@@ -1,8 +1,6 @@
 package engine.sound;
 
 import org.joml.Math;
-import org.joml.Vector3d;
-import org.joml.Vector3f;
 
 import static engine.sound.SoundManager.playSoundSource;
 import static org.lwjgl.openal.AL10.AL_PITCH;

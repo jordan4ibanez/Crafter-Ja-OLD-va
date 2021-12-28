@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.Random;
 
 import static engine.MouseInput.*;
-import static engine.time.Time.getDelta;
 import static engine.Window.*;
 import static engine.credits.Credits.initializeCredits;
 import static engine.disk.Disk.setCurrentActiveWorld;
@@ -21,6 +20,7 @@ import static engine.scene.SceneHandler.setScene;
 import static engine.settings.Settings.*;
 import static engine.sound.SoundAPI.playMusic;
 import static engine.sound.SoundAPI.playSound;
+import static engine.time.Time.getDelta;
 import static game.Crafter.getVersionName;
 import static game.mainMenu.MainMenuAssets.createMainMenuBackGroundTile;
 import static game.mainMenu.MainMenuAssets.createMenuMenuTitleBlock;

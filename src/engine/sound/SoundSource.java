@@ -1,7 +1,5 @@
 package engine.sound;
 
-import org.joml.Vector3f;
-
 import static org.lwjgl.openal.AL10.*;
 
 public class SoundSource {

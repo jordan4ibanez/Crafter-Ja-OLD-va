@@ -5,7 +5,6 @@ import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import static engine.time.Time.getDelta;
-import static game.particle.Particle.createParticle;
 import static game.player.Player.getPlayerPosWithEyeHeight;
 import static game.ray.LineOfSight.getLineOfSight;
 

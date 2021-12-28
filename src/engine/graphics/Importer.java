@@ -6,7 +6,7 @@ import java.awt.image.DataBufferByte;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import static org.lwjgl.BufferUtils.*;
+import static org.lwjgl.BufferUtils.createByteBuffer;
 
 public class Importer {
     public static ByteBuffer ExtractByteBufferFromImagePath(String s) {

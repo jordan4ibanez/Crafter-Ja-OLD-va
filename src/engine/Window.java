@@ -17,7 +17,6 @@ import static org.lwjgl.opengl.GL44.*;
 import static org.lwjgl.stb.STBImage.stbi_image_free;
 import static org.lwjgl.stb.STBImage.stbi_load;
 import static org.lwjgl.system.MemoryUtil.NULL;
-import static org.lwjgl.system.MemoryUtil.memFree;
 
 public class Window {
     private static String title;

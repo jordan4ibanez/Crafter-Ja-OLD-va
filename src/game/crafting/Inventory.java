@@ -8,8 +8,8 @@ import org.joml.Vector2d;
 import java.util.Arrays;
 
 import static engine.graphics.Camera.*;
-import static engine.time.Time.getDelta;
 import static engine.network.Networking.*;
+import static engine.time.Time.getDelta;
 import static game.item.ItemDefinition.getItemDefinition;
 import static game.item.ItemDefinition.getRandomItemDefinition;
 import static game.item.ItemEntity.createItem;

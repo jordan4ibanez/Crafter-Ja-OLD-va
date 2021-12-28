@@ -3,7 +3,6 @@ package game.chunk;
 import engine.graphics.Mesh;
 import engine.network.ChunkRequest;
 import org.joml.Vector2i;
-import org.joml.Vector3d;
 import org.joml.Vector3i;
 
 import java.io.IOException;

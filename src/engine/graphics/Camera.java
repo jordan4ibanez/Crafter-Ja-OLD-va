@@ -6,7 +6,8 @@ import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import static engine.MouseInput.getMouseDisplVec;
-import static game.player.Player.*;
+import static game.player.Player.getPlayerPosWithEyeHeight;
+import static game.player.Player.getSneakOffset;
 import static game.player.ViewBobbing.*;
 import static game.ray.Ray.genericWorldRaycast;
 

@@ -1,8 +1,5 @@
 package game.falling;
 
-import org.joml.Vector3d;
-import org.joml.Vector3f;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;

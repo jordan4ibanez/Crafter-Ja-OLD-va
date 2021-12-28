@@ -4,13 +4,13 @@ import engine.graphics.Mesh;
 import engine.graphics.ShaderProgram;
 import engine.gui.GUIObject;
 
-import static engine.time.Time.getDelta;
 import static engine.Window.getWindowHeight;
 import static engine.Window.getWindowWidth;
 import static engine.credits.Credits.getCreditParts;
 import static engine.graphics.Transformation.*;
 import static engine.gui.GUI.*;
 import static engine.render.GameRenderer.*;
+import static engine.time.Time.getDelta;
 import static game.mainMenu.MainMenu.*;
 import static game.mainMenu.MainMenuAssets.getTitleBackGroundMeshTile;
 import static game.mainMenu.MainMenuAssets.getTitleBlockMesh;

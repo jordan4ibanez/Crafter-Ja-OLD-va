@@ -4,7 +4,6 @@ import org.joml.Math;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import static game.blocks.BlockDefinition.isBlockPointable;
 import static game.blocks.BlockDefinition.isBlockWalkable;
 import static game.chunk.Chunk.getBlock;
 

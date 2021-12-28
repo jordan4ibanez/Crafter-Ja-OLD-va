@@ -5,12 +5,12 @@ import org.joml.Matrix4d;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
+import static engine.graphics.Camera.getCameraPosition;
+import static engine.graphics.Camera.getCameraRotation;
 import static engine.render.GameRenderer.getWindowSize;
 import static engine.time.TimeOfDay.getTimeOfDayLinear;
 import static game.tnt.TNTEntity.getTNTPosition;
 import static game.tnt.TNTEntity.getTNTScale;
-import static engine.graphics.Camera.getCameraPosition;
-import static engine.graphics.Camera.getCameraRotation;
 
 //so much math
 public class Transformation {

@@ -5,7 +5,8 @@ import org.joml.Math;
 import org.joml.Vector2i;
 import org.joml.Vector3i;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 import static engine.Window.windowShouldClose;
 import static game.chunk.Chunk.getChunkKey;

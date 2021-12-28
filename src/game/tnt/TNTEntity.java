@@ -7,9 +7,9 @@ import org.joml.Vector3f;
 
 import java.util.ArrayList;
 
-import static engine.FancyMath.*;
-import static engine.time.Time.getDelta;
+import static engine.FancyMath.randomForceValue;
 import static engine.sound.SoundAPI.playSound;
+import static engine.time.Time.getDelta;
 import static game.blocks.BlockDefinition.*;
 import static game.collision.Collision.applyInertia;
 import static game.tnt.Explosion.boom;
