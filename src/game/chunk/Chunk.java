@@ -534,7 +534,6 @@ public class Chunk {
         lightData[posToIndex(blockX, y, blockZ)] = setByteNaturalLight(lightData[posToIndex(blockX, y, blockZ)], getImmediateLight(x,y,z));
 
         if (!getIfMultiplayer()) {
-            // THIS CREATES A NEW OBJECT IN MEMORY!
             onDigCall(oldBlock, x, y, z);
         }
 
