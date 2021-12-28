@@ -62,111 +62,30 @@ public class Item {
     }
 
     //item being mined
-    public Item(String name, Vector3d pos, int stack) {
+    public Item(String name, double posX, double posY, double posZ, float inertiaX, float inertiaY, float inertiaZ, int stack, float timer) {
         this.name = name;
-        this.pos.set(pos);
+        this.pos.set(posX, posY, posZ);
         this.definition = getItemDefinition(name);
         this.stack = stack;
-        this.inertia.set(randomForceValue(2f), (float) Math.random() * 4f, randomForceValue(2f));
+        this.inertia.set(inertiaX, inertiaY, inertiaZ);
         this.rotation.set(0);
         this.hover = 0f;
         this.floatUp = true;
         this.exists = true;
         this.collecting = false;
         this.scale = 1f;
-        this.timer = 0f;
-        this.ID = currentID;
-        tickUpCurrentID();
-    }
-
-    //item being mined with interpolation
-    public Item(String name, Vector3d pos, Vector3d goalPos, int stack) {
-        this.name = name;
-        this.pos.set(pos);
-        this.goalPos.set(goalPos);
-        this.definition = getItemDefinition(name);
-        this.stack = stack;
-        this.inertia.set(randomForceValue(2f), (float) Math.random() * 4f, randomForceValue(2f));
-        this.rotation.set(0);
-        this.hover = 0f;
-        this.floatUp = true;
-        this.exists = true;
-        this.collecting = false;
-        this.scale = 1f;
-        this.timer = 0f;
-        this.ID = currentID;
-        tickUpCurrentID();
-    }
-
-    //item being mined with life
-    public Item(String name, Vector3d pos, int stack, float life) {
-        this.name = name;
-        this.pos.set(pos);
-        this.definition = getItemDefinition(name);
-        this.stack = stack;
-        this.inertia.set(randomForceValue(2f), (float) Math.random() * 4f, randomForceValue(2f));
-        this.rotation.set(0);
-        this.hover = 0f;
-        this.floatUp = true;
-        this.exists = true;
-        this.collecting = false;
-        this.scale = 1f;
-        this.timer = life;
-        this.ID = currentID;
-        tickUpCurrentID();
-    }
-
-    //item with inertia vector when spawned (mined, blown up, etc)
-    public Item(String name, Vector3d pos, Vector3f inertia, int stack) {
-        this.name = name;
-        this.pos.set(pos);
-        this.definition = getItemDefinition(name);
-        this.stack = stack;
-        this.inertia.set(inertia);
-        this.rotation.set(0);
-        this.hover = 0f;
-        this.floatUp = true;
-        this.exists = true;
-        this.collecting = false;
-        this.scale = 1f;
-        this.timer = 0f;
-        this.ID = currentID;
-        tickUpCurrentID();
-    }
-
-    //item with inertia vector when spawned (mined, blown up, etc)
-    public Item(String name, Vector3d pos, Vector3f inertia, int stack, float life) {
-        this.name = name;
-        this.pos.set(pos);
-        this.definition = getItemDefinition(name);
-        this.stack = stack;
-        this.inertia.set(inertia);
-        this.rotation.set(0);
-        this.hover = 0f;
-        this.floatUp = true;
-        this.exists = true;
-        this.collecting = false;
-        this.scale = 1f;
-        this.timer = life;
+        this.timer = timer;
         this.ID = currentID;
         tickUpCurrentID();
     }
 
     //clone item
-    public Item(Item thisItem) {
-        this.name = thisItem.name;
-        if (thisItem.pos != null){
-            this.pos.set(thisItem.pos);
-        } else {
-            this.pos.set(0);
-        }
+    public Item(Item itemBeingCloned) {
+        this.name = itemBeingCloned.name;
+        this.pos.set(itemBeingCloned.pos);
         this.definition = getItemDefinition(name);
-        this.stack = thisItem.stack;
-        if (thisItem.inertia != null){
-            this.inertia.set(thisItem.inertia);
-        } else {
-            this.inertia.set(0);
-        }
+        this.stack = itemBeingCloned.stack;
+        this.inertia.set(itemBeingCloned.inertia);
         this.rotation.set(0);
         this.hover = 0f;
         this.floatUp = true;
