@@ -9,6 +9,7 @@ import org.joml.Vector3i;
 
 import java.util.*;
 
+import static engine.FancyMath.randomForceValue;
 import static engine.time.Time.getDelta;
 import static engine.sound.SoundAPI.playSound;
 import static game.chunk.Chunk.getLight;
@@ -30,6 +31,10 @@ public class ItemEntity {
 
     public static void createItem(String name, double posX, double posY, double posZ, float inertiaX, float inertiaY, float inertiaZ, int stack, float timer) {
         items.put(getCurrentID(), new Item(name, posX, posY, posZ, inertiaX, inertiaY, inertiaZ, stack, timer));
+    }
+
+    public static void throwItem(String name, double posX, double posY, double posZ, int stack, float timer){
+        items.put(getCurrentID(), new Item(name, posX, posY, posZ, randomForceValue(2f), (float) java.lang.Math.random() * 4f, randomForceValue(2f), stack, timer));
     }
 
 
