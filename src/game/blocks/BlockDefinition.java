@@ -4,6 +4,7 @@ import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
+import static engine.FancyMath.randomForceValue;
 import static engine.sound.SoundAPI.playSound;
 import static game.chunk.Chunk.*;
 import static game.chunk.ChunkMeshGenerator.passChunkMeshThreadData;
@@ -113,11 +114,11 @@ public class BlockDefinition {
         if(dropsItems[ID]){
             //dropped defined item
             if (droppedItems[ID] != null){
-                createItem(droppedItems[ID], posX + 0.5d,posY + 0.5d, posZ + 0.5d, 1, 2.5f);
+                createItem(droppedItems[ID], posX + 0.5d,posY + 0.5d, posZ + 0.5d, randomForceValue(2f), (float) Math.random() * 4f, randomForceValue(2f),1, 2.5f);
             }
             //drop self
             else {
-                createItem(names[ID], posX + 0.5d, posY + 0.5d, posZ + 0.5d, 1, 2.5f);
+                createItem(names[ID], posX + 0.5d, posY + 0.5d, posZ + 0.5d, randomForceValue(2f), (float) Math.random() * 4f, randomForceValue(2f), 1, 2.5f);
             }
         }
         if(blockModifiers[ID] != null){
@@ -916,7 +917,7 @@ public class BlockDefinition {
                     public void onDig(double posX, double posY, double posZ) {
                         if (getBlock((int)posX, (int)posY - 1, (int)posZ) == 22) {
                             setBlock((int)posX, (int)posY - 1, (int)posZ, (byte) 0, (byte) 0);
-                            createItem("door", posX + 0.5d, posY + 0.5d, posZ + 0.5d, 1);
+                            createItem("door", posX + 0.5d, posY + 0.5d, posZ + 0.5d,randomForceValue(2f), (float) Math.random() * 4f, randomForceValue(2f), 1, 0);
                         }
                     }
 
@@ -963,7 +964,7 @@ public class BlockDefinition {
                     public void onDig(double posX, double posY, double posZ) {
                         if (getBlock((int)posX, (int)posY + 1, (int)posZ) == 21) {
                             setBlock((int)posX, (int)posY + 1, (int)posZ, (byte) 0, (byte) 0);
-                            createItem("door", posX + 0.5d, posY + 0.5d, posZ + 0.5d, 1);
+                            createItem("door", posX + 0.5d, posY + 0.5d, posZ + 0.5d,randomForceValue(2f), (float) Math.random() * 4f, randomForceValue(2f), 1, 0);
                         }
                     }
 
@@ -1010,7 +1011,7 @@ public class BlockDefinition {
                     public void onDig(double posX, double posY, double posZ) {
                         if (getBlock((int)posX, (int)posY - 1, (int)posZ) == 24) {
                             setBlock((int)posX, (int)posY - 1, (int)posZ, (byte) 0, (byte) 0);
-                            createItem("door", posX + 0.5d, posY + 0.5d, posZ + 0.5d, 1);
+                            createItem("door", posX + 0.5d, posY + 0.5d, posZ + 0.5d, randomForceValue(2f), (float) Math.random() * 4f, randomForceValue(2f), 1, 0);
                         }
                     }
 
@@ -1057,7 +1058,7 @@ public class BlockDefinition {
                     public void onDig(double posX, double posY, double posZ) {
                         if (getBlock((int)posX, (int)posY + 1, (int)posZ) == 23) {
                             setBlock((int)posX, (int)posY + 1, (int)posZ, (byte) 0, (byte) 0);
-                            createItem("door", posX + 0.5d, posY + 0.5d, posZ + 0.5d, 1);
+                            createItem("door", posX + 0.5d, posY + 0.5d, posZ + 0.5d,randomForceValue(2f), (float) Math.random() * 4f, randomForceValue(2f), 1,0);
                         }
                     }
 
