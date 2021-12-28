@@ -7,12 +7,12 @@ import org.joml.Vector2d;
 
 import java.util.Arrays;
 
+import static engine.graphics.Camera.*;
 import static engine.time.Time.getDelta;
 import static engine.network.Networking.*;
 import static game.item.ItemDefinition.getItemDefinition;
 import static game.item.ItemDefinition.getRandomItemDefinition;
 import static game.item.ItemEntity.createItem;
-import static engine.graphics.Camera.getCameraRotationVector;
 import static game.player.Player.*;
 
 public class Inventory {
@@ -174,7 +174,10 @@ public class Inventory {
                     if (getIfMultiplayer()){
                         sendOutThrowItemUpdate();
                     } else {
-                        createItem(name, getPlayerPosWithEyeHeight(), getCameraRotationVector().mul(10f).add(getPlayerInertia()), test.stack);
+                        createItem(name,
+                                getPlayerPosWithEyeHeightX(),getPlayerPosWithEyeHeightY(),getPlayerPosWithEyeHeightZ(),
+                                (getCameraRotationVectorX()*10f) + getPlayerInertiaX(),(getCameraRotationVectorY()*10f) + getPlayerInertiaY(), (getCameraRotationVectorZ()*10f) + getPlayerInertiaZ()
+                                , test.stack, 0);
                     }
                     removeItemFromInventory(getPlayerInventorySelection(), 0);
                 }
@@ -190,7 +193,10 @@ public class Inventory {
                 Item thisItem = inventory.get(x, y);
                 if (thisItem != null) {
                     for (int i = 0; i < thisItem.stack; i++) {
-                        createItem(thisItem.name, getPlayerPosWithEyeHeight(), getCameraRotationVector().mul(10f).add(getPlayerInertia()), 1);
+                        createItem(thisItem.name,
+                                getPlayerPosWithEyeHeightX(),getPlayerPosWithEyeHeightY(),getPlayerPosWithEyeHeightZ(),
+                                (getCameraRotationVectorX()*10f) + getPlayerInertiaX(),(getCameraRotationVectorY()*10f) + getPlayerInertiaY(), (getCameraRotationVectorZ()*10f) + getPlayerInertiaZ()
+                                , 1, 0);
                     }
                     inventory.set(x, y, null);
                 }
@@ -204,7 +210,10 @@ public class Inventory {
                 Item thisItem = inventory2.get(x, y);
                 if (thisItem != null) {
                     for (int i = 0; i < thisItem.stack; i++) {
-                        createItem(thisItem.name, getPlayerPosWithEyeHeight(), getCameraRotationVector().mul(10f).add(getPlayerInertia()), 1);
+                        createItem(thisItem.name,
+                                getPlayerPosWithEyeHeightX(),getPlayerPosWithEyeHeightY(),getPlayerPosWithEyeHeightZ(),
+                                (getCameraRotationVectorX()*10f) + getPlayerInertiaX(),(getCameraRotationVectorY()*10f) + getPlayerInertiaY(), (getCameraRotationVectorZ()*10f) + getPlayerInertiaZ()
+                                , 1, 0);
                     }
                     inventory2.set(x, y, null);
                 }
@@ -258,7 +267,10 @@ public class Inventory {
         Item thisItem = getMouseInventory();
         if (thisItem != null) {
             for (int i = 0; i < thisItem.stack; i++) {
-                createItem(thisItem.name, getPlayerPosWithEyeHeight(), getCameraRotationVector().mul(10f).add(getPlayerInertia()), 1);
+                createItem(thisItem.name,
+                        getPlayerPosWithEyeHeightX(),getPlayerPosWithEyeHeightY(),getPlayerPosWithEyeHeightZ(),
+                        (getCameraRotationVectorX()*10f) + getPlayerInertiaX(),(getCameraRotationVectorY()*10f) + getPlayerInertiaY(), (getCameraRotationVectorZ()*10f) + getPlayerInertiaZ()
+                        , 1, 0);
             }
             setMouseInventory(null);
         }
