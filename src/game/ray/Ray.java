@@ -121,7 +121,7 @@ public class Ray {
 
                     //todo: make this call on punched
                     if (!isPlayerSneaking() && blockHasOnRightClickCall(foundBlock)) {
-                        getBlockModifier(foundBlock).onRightClick(finalPos);
+                        getBlockModifier(foundBlock).onRightClick(finalPos.x, finalPos.y, finalPos.z);
                     } else {
                         Item wielding = getItemInInventorySlot(getPlayerInventorySelection(), 0);
                         if (wielding != null && !wouldCollidePlacing(getPlayerPos(),getPlayerWidth(), getPlayerHeight(), pointedThingAbove, wielding.definition.blockID, getPlayerDir()) && getItemInInventorySlot(getPlayerInventorySelection(), 0) != null && !getItemInInventorySlot(getPlayerInventorySelection(), 0).definition.isItem) {
