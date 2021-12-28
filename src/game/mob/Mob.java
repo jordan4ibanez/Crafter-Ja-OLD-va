@@ -166,7 +166,7 @@ public class Mob {
         if (thisMob.hurtTimer <= 0 && thisMob.health > 0) {
             thisMob.health -= 1;
             //System.out.println("the mobs health is: " + thisMob.health);
-            playSound(getHurtSound(thisMob.ID), new Vector3f((float)thisMob.pos.x, (float)thisMob.pos.y, (float)thisMob.pos.z), true);
+            playSound(getHurtSound(thisMob.ID),(float)thisMob.pos.x, (float)thisMob.pos.y, (float)thisMob.pos.z, true);
             //play this after in case ID changes
             MobInterface thisInterface = getMobInterface(thisMob.ID);
             if (thisInterface != null){
