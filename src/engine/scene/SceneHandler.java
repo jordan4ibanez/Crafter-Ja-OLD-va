@@ -173,36 +173,44 @@ public class SceneHandler {
         //indexLight();
         mouseInput();
         //tickUpTimeOfDay();
-        pollTimeOfDay(); //this needs to be in the main thread
-        makeCloudsMove();
-        countFPS();
+        //pollTimeOfDay(); //this needs to be in the main thread
+        //makeCloudsMove();
+        //countFPS();
 
-        runSpawningAlgorithm();
+        //runSpawningAlgorithm();
 
         updateWorldChunkLoader();
         popChunkMeshQueue(); //this actually transmits the data from the other threads into main thread
 
         updateListenerPosition();
+
         chunkUpdater();
+
         globalChunkSaveToDisk();
+
         gameInput();
+
         gameUpdate();
+
         updateCamera();
+
         renderGame();
+
         windowUpdate();
+
         processOldChunks();
     }
 
     private static void gameUpdate() throws Exception {
         testPlayerDiggingAnimation();
         playerOnTick();
-        itemsOnTick();
-        onTNTStep();
+        //itemsOnTick();
+        //onTNTStep();
         pauseMenuOnTick();
         inventoryMenuOnTick();
-        particlesOnStep();
-        fallingEntityOnStep();
+        //particlesOnStep();
+        //fallingEntityOnStep();
         //rainDropsOnTick();
-        mobsOnTick();
+        //mobsOnTick();
     }
 }
