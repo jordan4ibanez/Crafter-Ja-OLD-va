@@ -11,6 +11,7 @@ import static game.blocks.BlockDefinition.getIfLiquid;
 import static game.chunk.Chunk.getBlock;
 import static game.collision.Collision.applyInertia;
 import static game.item.ItemEntity.createItem;
+import static game.item.ItemEntity.throwItem;
 import static game.mob.Mob.registerMob;
 import static game.mob.MobMeshBuilder.calculateMobTexture;
 import static game.mob.MobMeshBuilder.createMobMesh;
@@ -28,7 +29,8 @@ public class Sheep {
         public void onPunch(MobObject thisMob){
             //adding dirt for a placeholder
             for (byte i = 0; i < 3; i++) {
-                createItem("dirt", new Vector3d(thisMob.pos).add(0, 1f, 0), 1, 0);
+
+                throwItem("dirt", thisMob.pos.x, thisMob.pos.y + 1d, thisMob.pos.z, 1, 0);
             }
             //shaved sheep always comes after wool sheep
             thisMob.ID++;
