@@ -17,6 +17,7 @@ import static game.blocks.BlockDefinition.*;
 import static game.chunk.Chunk.*;
 import static game.clouds.Cloud.setCloudPos;
 import static game.collision.Collision.applyInertia;
+import static game.collision.Collision.inertiaFly;
 import static game.crafting.Inventory.updateWieldInventory;
 import static game.particle.Particle.createParticle;
 import static game.player.PlayerMesh.applyPlayerBodyAnimation;
@@ -500,13 +501,18 @@ public class Player {
         inertiaWorker.set(inertia.x, inertia.z);
 
         float maxSpeed; //this should probably be cached
+        boolean debug = true;
 
-        if(sneaking){
-            maxSpeed = maxSneakSpeed;
-        } else if (running){
-            maxSpeed = maxRunSpeed;
+        if (debug){
+            maxSpeed = 1000;
         } else {
-            maxSpeed = maxWalkSpeed;
+            if (sneaking) {
+                maxSpeed = maxSneakSpeed;
+            } else if (running) {
+                maxSpeed = maxRunSpeed;
+            } else {
+                maxSpeed = maxWalkSpeed;
+            }
         }
 
         //speed limit the player's movement
@@ -675,12 +681,18 @@ public class Player {
         applyPlayerInertiaBuffer();
 
         */
+
+        //todo: delete this application of inertiaBuffer
+        applyPlayerInertiaBuffer();
+
         //stop players from falling forever
         //this only applies their inertia if they are within a loaded chunk, IE
         //if the server doesn't load up something in time, they freeze in place
-        if (getChunkKey(currentChunk.x, currentChunk.z) != null) {
-            onGround = applyInertia(pos, inertia, true, width, height, true, sneaking, true, true, true);
-        }
+        //if (getChunkKey(currentChunk.x, currentChunk.z) != null) {
+            //onGround = applyInertia(pos, inertia, true, width, height, true, sneaking, true, true, true);
+        //}
+
+        inertiaFly(pos,inertia);
 
 
         //apply the eyeHeight offset to the eyeHeight position
