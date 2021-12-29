@@ -889,6 +889,8 @@ public class Chunk {
 
     public static void genBiome(int chunkX, int chunkZ) {
 
+        long startTime = System.nanoTime();
+
         ChunkData chunkData = null;
 
         /*
@@ -899,13 +901,24 @@ public class Chunk {
          */
 
         try {
-            //todo: make this non-blocking
+            //file format is causing extreme problems
+            /*
+             16.33 in a frame at 60 FPS
+
+            eating around 2-6 frames in worst case scenarios >:(
+             */
             chunkData = loadChunkFromDisk(chunkX, chunkZ);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         if (chunkData != null) {
+
+            long endTime = System.nanoTime();
+            double duration = ((double)endTime - (double)startTime) / 1000000d;
+
+            System.out.println("Chunk loading from disk took: " + duration);
+
             // THIS CREATES A NEW OBJECT IN MEMORY!
             Vector2i key = new Vector2i(chunkX, chunkZ);
             chunkKeys.put(key, key);
@@ -925,8 +938,14 @@ public class Chunk {
             for (int i = 0; i < 8; i++) {
                 chunkUpdate(chunkX, chunkZ, i); //delayed
             }
+
         } else {
             addChunkToBiomeGeneration(chunkX,chunkZ);
+
+            long endTime = System.nanoTime();
+            double duration = ((double)endTime - (double)startTime) / 1000000d;
+
+            System.out.println("Chunk generation:             " + duration);
         }
     }
 
