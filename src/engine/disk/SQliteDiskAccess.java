@@ -1,7 +1,9 @@
 package engine.disk;
 
+import javax.swing.plaf.nimbus.State;
 import java.sql.*;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Vector;
 
 public class SQliteDiskAccess {
@@ -94,6 +96,48 @@ public class SQliteDiskAccess {
             //something has to go very wrong for this to happen
             System.out.println(e.getMessage());
         }
+
+
+        try {
+            assert connection != null;
+            Statement statement = connection.createStatement();
+
+            ResultSet resultSet = meta.getTables(null,"PUBLIC",null, new String[] {"TABLE"});
+
+            boolean found = false;
+
+            while (resultSet.next()) {
+
+                String name = resultSet.getString("TABLE_NAME");
+                
+                //found the world table
+                if (name.equals("WORLD")){
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found){
+
+                System.out.println("CREATING WORLD TABLE!");
+
+                String sql = "CREATE TABLE WORLD " +
+                        "(ID TEXT PRIMARY KEY  NOT NULL," +
+                        "BLOCK           TEXT  NOT NULL," +
+                        "ROTATION        TEXT  NOT NULL," +
+                        "LIGHT           TEXT  NOT NULL," +
+                        "HEIGHTMAP       TEXT  NOT NULL)";
+                statement.executeUpdate(sql);
+                statement.close();
+            }
+
+
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+
+
+
     }
 
     //connection closer
