@@ -2,6 +2,7 @@ package engine.disk;
 
 import game.chunk.ChunkData;
 import org.joml.Vector2i;
+import org.sqlite.SQLiteConfig;
 
 import java.sql.*;
 import java.util.Arrays;
@@ -34,12 +35,30 @@ public class SQLiteDiskAccess {
                 //metadata testing
                 meta = connection.getMetaData();
 
+                //increase SQLite cache size
+                Statement statement = connection.createStatement();
+                String sql = "PRAGMA cache_size = -512000;";
+                statement.executeUpdate(sql);
+                //the following is for game usage, this is not a file server
+                //turn off synchronization
+                sql = "PRAGMA synchronous = OFF;";
+                statement.executeUpdate(sql);
+                //turn off journaling
+                sql = "PRAGMA journal_mode = OFF;";
+                statement.executeUpdate(sql);
+                //use the RAM for temp storage
+                sql = "PRAGMA temp_store = 2";
+                statement.executeUpdate(sql);
+                //exclusive locking mode (single user)
+                sql = "PRAGMA locking_mode = EXCLUSIVE;";
+                statement.executeUpdate(sql);
                 //turn on Write Ahead Log for performance
                 //this is disabled for testing
-                //Statement statement = connection.createStatement();
-                //String sql = "PRAGMA journal_mode=WAL";
-                //statement.executeUpdate(sql);
-                //statement.close();
+                sql = "PRAGMA journal_mode=WAL";
+                statement.executeUpdate(sql);
+
+                statement.close();
+
             }
         } catch (SQLException e){
             //something has to go very wrong for this to happen
