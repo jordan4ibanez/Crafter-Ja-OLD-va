@@ -2,17 +2,13 @@ package engine.disk;
 
 import game.chunk.ChunkData;
 
-import javax.swing.plaf.nimbus.State;
 import java.sql.*;
 import java.util.Arrays;
-import java.util.Objects;
-import java.util.Vector;
 
 import static engine.disk.SQLiteSerializer.byteSerialize;
-import static game.chunk.Chunk.*;
 import static game.chunk.Chunk.getRotationData;
 
-public class SQliteDiskAccess {
+public class SQLiteDiskAccess {
 
     private static String url;
 

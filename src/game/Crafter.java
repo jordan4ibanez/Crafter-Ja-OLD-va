@@ -13,7 +13,7 @@ import static engine.MouseInput.initMouseInput;
 import static engine.Window.initWindow;
 import static engine.disk.Disk.createWorldsDir;
 import static engine.disk.Disk.savePlayerPos;
-import static engine.disk.SQliteDiskAccess.connectWorldDataBase;
+import static engine.disk.SQLiteDiskAccess.connectWorldDataBase;
 import static engine.gui.GUI.createGUI;
 import static engine.gui.GUI.initializeHudAtlas;
 import static engine.render.GameRenderer.cleanupRenderer;

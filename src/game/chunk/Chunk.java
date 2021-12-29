@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static engine.FancyMath.getDistance;
 import static engine.disk.Disk.*;
-import static engine.disk.SQliteDiskAccess.saveChunk;
+import static engine.disk.SQLiteDiskAccess.saveChunk;
 import static engine.network.Networking.getIfMultiplayer;
 import static engine.network.Networking.sendOutChunkRequest;
 import static engine.settings.Settings.getRenderDistance;
