@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Vector;
 
+import static engine.disk.SQLiteSerializer.byteSerialize;
 import static game.chunk.Chunk.*;
 import static game.chunk.Chunk.getRotationData;
 
@@ -37,18 +38,10 @@ public class SQliteDiskAccess {
         test[54] = 12;
         test[53] = 20;
         test[1] = 5;
-        //build a raw custom string type to hold data, data elements only separated by commas
-        StringBuilder str = new StringBuilder();
-        for (int i = 0; i < test.length; i++){
-            str.append(test[i]);
-            if (i != test.length - 1){
-                str.append(",");
-            }
-        }
 
         //debug output
-        String myString = str.toString();
-        System.out.println(str.toString());
+        String myString = byteSerialize(test);
+        System.out.println(myString);
 
         //start at one to auto-add in the last item
         int numberOfThings = 1;
