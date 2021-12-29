@@ -1,15 +1,21 @@
 package engine.disk;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import engine.Utils;
 import org.joml.Vector2i;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.Scanner;
 import java.util.zip.GZIPOutputStream;
 
+import static engine.Utils.loadResource;
+import static engine.Utils.saveResource;
 import static engine.Window.windowShouldClose;
 import static game.chunk.Chunk.*;
 
@@ -25,33 +31,20 @@ public class SaveQueue {
 
     public static void startSaveThread(){
         new Thread(() -> {
-            final ObjectMapper mapper = new ObjectMapper();
 
+            final ObjectMapper mapper = new ObjectMapper();
             saveQueue = new ArrayDeque<>();
 
             while(!windowShouldClose()) {
                 if (!saveQueue.isEmpty()) {
                     try {
+
                         ChunkSavingObject thisChunk = saveQueue.pop();
+
 
                         String stringedChunk = mapper.writeValueAsString(thisChunk);
 
-                        //learned from https://www.journaldev.com/966/java-gzip-example-compress-decompress-file
-                        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(stringedChunk.getBytes());
-
-                        FileOutputStream fileOutputStream = new FileOutputStream("Worlds/world" + currentActiveWorld + "/" + thisChunk.x + " " + thisChunk.z + ".chunk");
-                        GZIPOutputStream gzipOutputStream = new GZIPOutputStream(fileOutputStream);
-
-                        byte[] buffer = new byte[4096];
-                        int len;
-                        while((len=byteArrayInputStream.read(buffer)) != -1){
-                            gzipOutputStream.write(buffer, 0, len);
-                        }
-
-                        //close resources
-                        gzipOutputStream.close();
-                        fileOutputStream.close();
-                        byteArrayInputStream.close();
+                        saveResource("Worlds/world" + currentActiveWorld + "/" + thisChunk.x + " " + thisChunk.z + ".chunk", stringedChunk);
 
                     } catch (IOException e) {
                         e.printStackTrace();
