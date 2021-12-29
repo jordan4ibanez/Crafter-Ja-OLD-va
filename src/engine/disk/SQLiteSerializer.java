@@ -1,7 +1,7 @@
 package engine.disk;
 
 public class SQLiteSerializer {
-    public static String crafterByteSerializer(byte[] bytes){
+    public static String byteSerialize(byte[] bytes){
 
         //build a raw custom string type to hold data, data elements only separated by commas
         StringBuilder str = new StringBuilder();
@@ -15,7 +15,7 @@ public class SQLiteSerializer {
         return str.toString();
     }
 
-    public static String crafterIntSerializer(int[] ints){
+    public static String intSerialize(int[] ints){
 
         //build a raw custom string type to hold data, data elements only separated by commas
         StringBuilder str = new StringBuilder();
