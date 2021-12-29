@@ -21,14 +21,9 @@ import static game.chunk.Chunk.*;
 
 public class SaveQueue {
 
-    private static byte currentActiveWorld = 1; //failsafe
+    /*
 
-    public static void updateSaveQueueCurrentActiveWorld(byte newWorld){
-        currentActiveWorld = newWorld;
-    }
-
-    public static Deque<ChunkSavingObject> saveQueue;
-
+    //public static Deque<ChunkSavingObject> saveQueue;
     public static void startSaveThread(){
         new Thread(() -> {
 
@@ -54,6 +49,7 @@ public class SaveQueue {
         }).start();
     }
 
+
     public static void saveChunk(Vector2i key){
         ChunkSavingObject saveData = new ChunkSavingObject();
         saveData.x = key.x;
@@ -63,10 +59,16 @@ public class SaveQueue {
         saveData.h = getHeightMapData(key).clone();
         saveData.l = getLightData(key).clone();
         saveData.r = getRotationData(key).clone();
-        saveQueue.add(saveData);
+
+
+        saveData = null;
+        //sqlite save goes here
+
+        //saveQueue.add(saveData);
     }
 
     public static void instantSave(Vector2i key){
+
         ObjectMapper mapper = new ObjectMapper();
         try {
             ChunkSavingObject saveData = new ChunkSavingObject();
@@ -97,5 +99,8 @@ public class SaveQueue {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
     }
+    */
 }
