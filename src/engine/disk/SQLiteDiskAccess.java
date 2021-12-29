@@ -26,7 +26,7 @@ public class SQLiteDiskAccess {
         //database parameters
         url = "jdbc:sqlite:" + System.getProperty("user.dir") +  "/Worlds/" + worldName + "/map.db";
 
-
+        /*
         //THIS IS DEBUG CODE FOR SQL
 
         //assign blank byte array
@@ -38,6 +38,7 @@ public class SQLiteDiskAccess {
         test[1] = 5;
 
         //debug output
+
         String myString = byteSerialize(test);
         System.out.println(myString);
 
@@ -47,6 +48,7 @@ public class SQLiteDiskAccess {
         //was byte[] then String and now byte[]
         //saved from game -> into database -> loaded into game
         System.out.println(Arrays.toString(outPut));
+         */
 
 
 
@@ -58,6 +60,11 @@ public class SQLiteDiskAccess {
                 //metadata testing
                 meta = connection.getMetaData();
 
+                //turn on Write Ahead Log for performance
+                Statement statement = connection.createStatement();
+                String sql = "PRAGMA journal_mode=WAL";
+                statement.executeUpdate(sql);
+                statement.close();
             }
         } catch (SQLException e){
             //something has to go very wrong for this to happen
@@ -178,7 +185,6 @@ public class SQLiteDiskAccess {
         } catch (SQLException e){
             System.out.println(e.getMessage());
         }
-
 
         return null;
     }
