@@ -5,22 +5,21 @@ import engine.settings.SettingsObject;
 import game.chunk.ChunkData;
 import org.joml.Vector3d;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
-import java.util.zip.GZIPInputStream;
-
-import static engine.disk.SaveQueue.updateSaveQueueCurrentActiveWorld;
 
 public class Disk {
 
     private static byte currentActiveWorld = 1; //failsafe
+
+    public static void updateSaveQueueCurrentActiveWorld(byte newWorld){
+        currentActiveWorld = newWorld;
+    }
 
     public static byte getCurrentActiveWorld(){
         return currentActiveWorld;
