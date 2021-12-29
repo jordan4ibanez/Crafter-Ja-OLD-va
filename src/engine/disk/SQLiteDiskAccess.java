@@ -61,10 +61,11 @@ public class SQLiteDiskAccess {
                 meta = connection.getMetaData();
 
                 //turn on Write Ahead Log for performance
-                Statement statement = connection.createStatement();
-                String sql = "PRAGMA journal_mode=WAL";
-                statement.executeUpdate(sql);
-                statement.close();
+                //this is disabled for testing
+                //Statement statement = connection.createStatement();
+                //String sql = "PRAGMA journal_mode=WAL";
+                //statement.executeUpdate(sql);
+                //statement.close();
             }
         } catch (SQLException e){
             //something has to go very wrong for this to happen
@@ -136,9 +137,7 @@ public class SQLiteDiskAccess {
 
         if (true ) {
             try {
-
-
-
+                
                 Statement statement = connection.createStatement();
 
                 Vector2i key = new Vector2i(x,z);
