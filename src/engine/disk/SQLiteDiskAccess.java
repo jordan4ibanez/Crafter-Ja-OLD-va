@@ -5,6 +5,7 @@ import game.chunk.ChunkData;
 import java.sql.*;
 import java.util.Arrays;
 
+import static engine.disk.SQLiteDeserializer.byteDeserialize;
 import static engine.disk.SQLiteSerializer.byteSerialize;
 import static game.chunk.Chunk.getRotationData;
 
@@ -39,36 +40,7 @@ public class SQLiteDiskAccess {
         String myString = byteSerialize(test);
         System.out.println(myString);
 
-        //start at one to auto-add in the last item
-        int numberOfThings = 1;
-
-        //iterate number of elements, this is why the stringed array contains only commas and numbers
-        for (char c : myString.toCharArray()){
-            if (c == ','){
-                numberOfThings++;
-            }
-        }
-
-        //create new blank array
-        byte[] outPut = new byte[numberOfThings];
-
-        //create a new string builder
-        StringBuilder decode = new StringBuilder();
-
-        int index = 0;
-        //auto-flush indexes
-        char[] charArray = myString.toCharArray();
-        for (int i = 0; i <= charArray.length; i++){
-            //flush the number to the array
-            if (i == (charArray.length) || charArray[i] == ','){
-                outPut[index] = Byte.parseByte(decode.toString());
-                decode.setLength(0);
-                //tick up index
-                index++;
-            } else {
-                decode.append(charArray[i]);
-            }
-        }
+        byte[] outPut = byteDeserialize(myString);
 
         //debug output of created array
         //was byte[] then String and now byte[]
