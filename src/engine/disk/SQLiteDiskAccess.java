@@ -143,8 +143,8 @@ public class SQLiteDiskAccess {
                         byteSerialize(getBlockData(key)) + "','" +//BLOCK ARRAY
                         byteSerialize(getRotationData(key)) + "','" +//ROTATION DATA
                         byteSerialize(getLightData(key)) + "','" +//LIGHT DATA
-                        byteSerialize(getHeightMapData(key))+ "','" +//HEIGHT DATA
-                        ");";
+                        byteSerialize(getHeightMapData(key))+ //HEIGHT DATA
+                        "');";
                 statement.executeUpdate(sql);
                 statement.close();
 
