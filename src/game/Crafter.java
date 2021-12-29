@@ -56,7 +56,7 @@ public class Crafter {
             initSoundManager();
             initGame();
             createWorldsDir();
-            startSaveThread();
+            //startSaveThread();
             initMainMenu();
 
             //this is the chunk mesh generator thread
