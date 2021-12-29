@@ -14,8 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static engine.FancyMath.getDistance;
 import static engine.disk.Disk.*;
-import static engine.disk.SaveQueue.instantSave;
-import static engine.disk.SaveQueue.saveChunk;
+import static engine.disk.SQliteDiskAccess.saveChunk;
 import static engine.network.Networking.getIfMultiplayer;
 import static engine.network.Networking.sendOutChunkRequest;
 import static engine.settings.Settings.getRenderDistance;
@@ -260,7 +259,7 @@ public class Chunk {
             for (Vector2i key : chunkKeys.values()){
                 Boolean needsToBeSaved = saveToDisk.get(key);
                 if (needsToBeSaved != null && needsToBeSaved) { //null is also no or false
-                    saveChunk(key);
+                    saveChunk(key.x, key.y);
                     saveToDisk.replace(key,false);
                 }
             }
@@ -280,7 +279,8 @@ public class Chunk {
     public static void globalFinalChunkSaveToDisk(){
         updateWorldsPathToAvoidCrash();
         for (Vector2i thisKey : chunkKeys.values()){
-            instantSave(thisKey);
+            //instantSave(thisKey);
+            saveChunk(thisKey.x, thisKey.y);
             saveToDisk.replace(thisKey, false);
         }
 
@@ -846,7 +846,7 @@ public class Chunk {
                     }
                 }
 
-                saveChunk(key);
+                saveChunk(key.x, key.y);
 
                 chunkKeys.remove(key);
                 blocks.remove(key);
