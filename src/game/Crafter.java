@@ -13,7 +13,7 @@ import static engine.MouseInput.initMouseInput;
 import static engine.Window.initWindow;
 import static engine.disk.Disk.createWorldsDir;
 import static engine.disk.Disk.savePlayerPos;
-import static engine.disk.SaveQueue.startSaveThread;
+import static engine.disk.SQliteDiskAccess.connectWorldDataBase;
 import static engine.gui.GUI.createGUI;
 import static engine.gui.GUI.initializeHudAtlas;
 import static engine.render.GameRenderer.cleanupRenderer;
@@ -56,7 +56,13 @@ public class Crafter {
             initSoundManager();
             initGame();
             createWorldsDir();
-            //startSaveThread();
+
+            //TODO: THIS IS DEBUG! THIS IS DEBUG! THIS IS DEBUG! THIS IS DEBUG! THIS IS DEBUG! THIS IS DEBUG! THIS IS DEBUG! THIS IS DEBUG! THIS IS DEBUG! THIS IS DEBUG!
+
+            connectWorldDataBase("world1");
+
+            //TODO: THIS IS DEBUG! THIS IS DEBUG! THIS IS DEBUG! THIS IS DEBUG! THIS IS DEBUG! THIS IS DEBUG! THIS IS DEBUG! THIS IS DEBUG! THIS IS DEBUG! THIS IS DEBUG!
+
             initMainMenu();
 
             //this is the chunk mesh generator thread

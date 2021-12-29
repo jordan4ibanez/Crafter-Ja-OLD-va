@@ -30,6 +30,8 @@ public class Disk {
         currentActiveWorld = newWorld;
         updateSaveQueueCurrentActiveWorld(newWorld);
         createAlphaWorldFolder();
+
+        System.out.println("CURRENT WORLD IS: " + newWorld);
     }
 
     //https://stackoverflow.com/a/24734290
