@@ -14,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static engine.FancyMath.getDistance;
 import static engine.disk.Disk.*;
+import static engine.disk.SQLiteDiskAccess.loadChunk;
 import static engine.disk.SQLiteDiskAccess.saveChunk;
 import static engine.network.Networking.getIfMultiplayer;
 import static engine.network.Networking.sendOutChunkRequest;
@@ -901,17 +902,13 @@ public class Chunk {
         3 - heightmaps
          */
 
-        try {
-            //file format is causing extreme problems
+        //file format is causing extreme problems
             /*
              16.33 in a frame at 60 FPS
 
             eating around 2-6 frames in worst case scenarios >:(
              */
-            chunkData = loadChunkFromDisk(chunkX, chunkZ);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        chunkData = loadChunk(chunkX, chunkZ);
 
         if (chunkData != null) {
 

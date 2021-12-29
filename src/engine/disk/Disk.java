@@ -113,6 +113,7 @@ public class Disk {
     }
 
 
+    /*
     public static ChunkData loadChunkFromDisk(int x, int z) throws IOException {
 
         //System.out.println("loading!!");
@@ -159,6 +160,7 @@ public class Disk {
 
         //return(abstractedChunk);
     }
+     */
 
     public static void savePlayerPos(Vector3d pos){
         SpecialSavingVector3d tempPos = new SpecialSavingVector3d();

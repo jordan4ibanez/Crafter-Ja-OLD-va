@@ -26,32 +26,6 @@ public class SQLiteDiskAccess {
         //database parameters
         url = "jdbc:sqlite:" + System.getProperty("user.dir") +  "/Worlds/" + worldName + "/map.db";
 
-        /*
-        //THIS IS DEBUG CODE FOR SQL
-
-        //assign blank byte array
-        byte[] test = new byte[55];
-        //random values
-        test[0] = 15;
-        test[54] = 12;
-        test[53] = 20;
-        test[1] = 5;
-
-        //debug output
-
-        String myString = byteSerialize(test);
-        System.out.println(myString);
-
-        byte[] outPut = byteDeserialize(myString);
-
-        //debug output of created array
-        //was byte[] then String and now byte[]
-        //saved from game -> into database -> loaded into game
-        System.out.println(Arrays.toString(outPut));
-         */
-
-
-
         try {
             //database connection, static private
             connection = DriverManager.getConnection(url);
@@ -113,20 +87,6 @@ public class SQLiteDiskAccess {
             statement.close();
 
 
-            /*
-            if (false) {
-                String sql = "INSERT INTO WORLD " +
-                        "(ID,BLOCK,ROTATION,LIGHT,HEIGHTMAP) " +
-                        "VALUES ('5', 'Alle324', '2544', '44Texas', '15000.00' );";
-                statement.executeUpdate(sql);
-
-                statement.close();
-            }
-
-            //resultSet = statement.executeQuery("SELECT 2 FROM WORLD");
-             */
-
-
         } catch (Exception e){
             System.out.println(e.getMessage());
         }
@@ -164,16 +124,23 @@ public class SQLiteDiskAccess {
     public static ChunkData loadChunk(int x, int z){
         try {
             Statement statement = connection.createStatement();
-            ResultSet resultTest = statement.executeQuery("SELECT * FROM WORLD WHERE ID = " + x + " " + z + ";");
+            ResultSet resultTest = statement.executeQuery("SELECT * FROM WORLD WHERE ID ='" + x + "-" + z + "';");
 
             //found a chunk
             if (resultTest.next()) {
 
-                String name = resultTest.getString("ID");
-                String name2 = resultTest.getString("BLOCK");
+                System.out.println("FOUND ONE!");
 
-                System.out.println(name);
-                System.out.println(name2);
+                ChunkData newChunk = new ChunkData();
+
+                newChunk.x = x;
+                newChunk.z = z;
+                newChunk.block = byteDeserialize(resultTest.getString("BLOCK"));
+                newChunk.rotation = byteDeserialize(resultTest.getString("ROTATION"));
+                newChunk.light = byteDeserialize(resultTest.getString("LIGHT"));
+                newChunk.heightMap = byteDeserialize(resultTest.getString("HEIGHTMAP"));
+
+                return newChunk;
             }
             //did not find a chunk
             else {
