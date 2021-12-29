@@ -61,20 +61,23 @@ public class Utils {
         if(Files.isReadable(path)){
             try (SeekableByteChannel fc = Files.newByteChannel(path)){
                 buffer = createByteBuffer((int)fc.size()+1);
-
+                //this is a stack reader, ignore intellij error
                 while (fc.read(buffer) != -1);
             }
         } else{
-            try(InputStream source = Utils.class.getResourceAsStream(resource); ReadableByteChannel rbc = Channels.newChannel(source)){
-                buffer = createByteBuffer(bufferSize);
+            try(InputStream source = Utils.class.getResourceAsStream(resource)) {
+                assert source != null;
+                try(ReadableByteChannel rbc = Channels.newChannel(source)){
+                    buffer = createByteBuffer(bufferSize);
 
-                while(true){
-                    int bytes = rbc.read(buffer);
-                    if(bytes == -1){
-                        break;
-                    }
-                    if(buffer.remaining() == 0){
-                        buffer = resizeBuffer(buffer, buffer.capacity() * 2);
+                    while(true){
+                        int bytes = rbc.read(buffer);
+                        if(bytes == -1){
+                            break;
+                        }
+                        if(buffer.remaining() == 0){
+                            buffer = resizeBuffer(buffer, buffer.capacity() * 2);
+                        }
                     }
                 }
             }
