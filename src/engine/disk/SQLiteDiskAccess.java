@@ -135,29 +135,27 @@ public class SQLiteDiskAccess {
 
     public static boolean saveChunk(int x, int z){
 
-        if (true ) {
-            try {
-                
-                Statement statement = connection.createStatement();
+        try {
 
-                Vector2i key = new Vector2i(x,z);
+            Statement statement = connection.createStatement();
 
-                String sql = "INSERT OR REPLACE INTO WORLD " +
-                        "(ID,BLOCK,ROTATION,LIGHT,HEIGHTMAP) " +
-                        "VALUES ('" +
-                        x + "-" + z + "','" + //ID
-                        byteSerialize(getBlockData(key)) + "','" +//BLOCK ARRAY
-                        byteSerialize(getRotationData(key)) + "','" +//ROTATION DATA
-                        byteSerialize(getLightData(key)) + "','" +//LIGHT DATA
-                        byteSerialize(getHeightMapData(key))+ //HEIGHT DATA
-                        "');";
-                statement.executeUpdate(sql);
-                statement.close();
+            Vector2i key = new Vector2i(x,z);
+
+            String sql = "INSERT OR REPLACE INTO WORLD " +
+                    "(ID,BLOCK,ROTATION,LIGHT,HEIGHTMAP) " +
+                    "VALUES ('" +
+                    x + "-" + z + "','" + //ID
+                    byteSerialize(getBlockData(key)) + "','" +//BLOCK ARRAY
+                    byteSerialize(getRotationData(key)) + "','" +//ROTATION DATA
+                    byteSerialize(getLightData(key)) + "','" +//LIGHT DATA
+                    byteSerialize(getHeightMapData(key))+ //HEIGHT DATA
+                    "');";
+            statement.executeUpdate(sql);
+            statement.close();
 
 
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
         return true;
     }
