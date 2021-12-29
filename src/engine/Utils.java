@@ -2,10 +2,7 @@ package engine;
 
 import org.lwjgl.BufferUtils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
@@ -30,6 +27,14 @@ public class Utils {
         }
         return result;
     }
+
+    //save string as plain text
+    public static void saveResource(String fileName, String data) throws IOException{
+        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+        writer.write(data);
+        writer.close();
+    }
+
     public static List<String> readAllLines(String fileName) throws Exception {
         List<String> list = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(Class.forName(Utils.class.getName()).getResourceAsStream(fileName)))) {
