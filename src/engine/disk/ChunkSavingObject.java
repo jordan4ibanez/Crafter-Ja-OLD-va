@@ -6,5 +6,5 @@ public class ChunkSavingObject {
     public byte [] b;
     public byte[] r;
     public byte[] l;
-    public byte[][] h;
+    public byte[] h;
 }
