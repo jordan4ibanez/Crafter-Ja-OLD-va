@@ -1,5 +1,7 @@
 package engine.disk;
 
+import game.chunk.ChunkData;
+
 import javax.swing.plaf.nimbus.State;
 import java.sql.*;
 import java.util.Arrays;
@@ -109,7 +111,7 @@ public class SQliteDiskAccess {
             while (resultSet.next()) {
 
                 String name = resultSet.getString("TABLE_NAME");
-                
+
                 //found the world table
                 if (name.equals("WORLD")){
                     found = true;
@@ -131,14 +133,50 @@ public class SQliteDiskAccess {
                 statement.close();
             }
 
+            resultSet.close();
+            statement.close();
+
+
+            /*
+            if (false) {
+                String sql = "INSERT INTO WORLD " +
+                        "(ID,BLOCK,ROTATION,LIGHT,HEIGHTMAP) " +
+                        "VALUES ('5', 'Alle324', '2544', '44Texas', '15000.00' );";
+                statement.executeUpdate(sql);
+
+                statement.close();
+            }
+
+            //resultSet = statement.executeQuery("SELECT 2 FROM WORLD");
+             */
+
 
         } catch (Exception e){
             System.out.println(e.getMessage());
         }
-
-
-
     }
+
+    public static ChunkData loadChunk(int x, int z){
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultTest = statement.executeQuery("SELECT * FROM WORLD WHERE ID = 2;");
+
+            if (resultTest.next()) {
+
+                String name = resultTest.getString("ID");
+                String name2 = resultTest.getString("BLOCK");
+
+                System.out.println(name);
+                System.out.println(name2);
+            }
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+
+
+        return null;
+    }
+
 
     //connection closer
     public static void closeWorldDataBase(){
