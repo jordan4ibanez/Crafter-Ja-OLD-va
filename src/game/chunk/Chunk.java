@@ -22,6 +22,7 @@ import static engine.time.Time.getDelta;
 import static game.blocks.BlockDefinition.*;
 import static game.chunk.BiomeGenerator.addChunkToBiomeGeneration;
 import static game.chunk.ChunkMath.posToIndex;
+import static game.chunk.ChunkMath.posToIndex2D;
 import static game.chunk.ChunkMeshGenerator.generateChunkMesh;
 import static game.chunk.ChunkMeshGenerator.instantGeneration;
 import static game.chunk.ChunkUpdateHandler.chunkUpdate;
@@ -39,7 +40,7 @@ public class Chunk {
     private static final ConcurrentHashMap<Vector2i, byte[]> blocks         = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<Vector2i, byte[]> rotations      = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<Vector2i, byte[]> lights         = new ConcurrentHashMap<>();
-    private static final ConcurrentHashMap<Vector2i, byte[][]> heightmaps   = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Vector2i, byte[]> heightmaps   = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<Vector2i, Boolean> saveToDisk    = new ConcurrentHashMap<>();
 
     //mesh data can only be held on the main thread, so it can use faster containers
@@ -70,7 +71,7 @@ public class Chunk {
     public static byte[] getLightData(int x, int z){
         return lights.get(new Vector2i(x,z));
     }
-    public static byte[][] getHeightMapData(int x, int z){
+    public static byte[] getHeightMapData(int x, int z){
         return heightmaps.get(new Vector2i(x,z));
     }
     //overload part 2
@@ -83,7 +84,7 @@ public class Chunk {
     public static byte[] getLightData(Vector2i key){
         return lights.get(key);
     }
-    public static byte[][] getHeightMapData(Vector2i key){
+    public static byte[] getHeightMapData(Vector2i key){
         return heightmaps.get(key);
     }
     //overload part 3 - immutable clones
@@ -111,9 +112,9 @@ public class Chunk {
         }
         return lightData.clone();
     }
-    public static byte[][] getHeightMapDataClone(int x, int z){
+    public static byte[] getHeightMapDataClone(int x, int z){
         // THIS CREATES A NEW OBJECT IN MEMORY!
-        byte[][] heightMapData = heightmaps.get(new Vector2i(x,z));
+        byte[] heightMapData = heightmaps.get(new Vector2i(x,z));
         if (heightMapData == null){
             return null;
         }
@@ -136,7 +137,7 @@ public class Chunk {
 
 
     //multiplayer chunk update
-    public static void setChunk(int x, int z, byte[] blockData, byte[] rotationData, byte[] lightData, byte[][] heightMapData) {
+    public static void setChunk(int x, int z, byte[] blockData, byte[] rotationData, byte[] lightData, byte[] heightMapData) {
         // THIS CREATES A NEW OBJECT IN MEMORY!
         Vector2i key = new Vector2i(x, z);
 
@@ -320,13 +321,13 @@ public class Chunk {
         int blockZ = (int)(z - (16d*chunkZ));
 
         // THIS CREATES A NEW OBJECT IN MEMORY!
-        byte[][] heightMapData = heightmaps.get(new Vector2i(chunkX, chunkZ));
+        byte[] heightMapData = heightmaps.get(new Vector2i(chunkX, chunkZ));
 
         if (heightMapData == null){
             return 555; //todo, handle this better
         }
 
-        return heightMapData[blockX][blockZ];
+        return heightMapData[posToIndex2D(blockX,blockZ)];
     }
 
     public static boolean underSunLight(int x, int y, int z){
@@ -338,11 +339,11 @@ public class Chunk {
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
         // THIS CREATES A NEW OBJECT IN MEMORY!
-        byte[][] heightMapData = heightmaps.get(new Vector2i(chunkX, chunkZ));
+        byte[] heightMapData = heightmaps.get(new Vector2i(chunkX, chunkZ));
         if (heightMapData == null){
             return false;
         }
-        return heightMapData[blockX][blockZ] < y + 1;
+        return heightMapData[posToIndex2D(blockX,blockZ)] < y + 1;
     }
 
     //overloaded block getter
@@ -424,7 +425,7 @@ public class Chunk {
         Vector2i key = new Vector2i(chunkX, chunkZ);
         byte[] blockData = blocks.get(key);
         byte[] rotationData = rotations.get(key);
-        byte[][] heightMapData = heightmaps.get(key);
+        byte[] heightMapData = heightmaps.get(key);
 
         if (blockData == null || rotationData == null){
             return;
@@ -434,17 +435,17 @@ public class Chunk {
         rotationData[posToIndex(blockX,y, blockZ)] = rot;
 
         if (newBlock == 0){
-            if (heightMapData[blockX][blockZ] == y){
-                for (int yCheck = heightMapData[blockX][blockZ]; yCheck > 0; yCheck--){
+            if (heightMapData[posToIndex2D(blockX,blockZ)] == y){
+                for (int yCheck = heightMapData[posToIndex2D(blockX,blockZ)]; yCheck > 0; yCheck--){
                     if (blockData[posToIndex(blockX, yCheck, blockZ)] != 0){
-                        heightMapData[blockX][blockZ] = (byte) yCheck;
+                        heightMapData[posToIndex2D(blockX,blockZ)] = (byte) yCheck;
                         break;
                     }
                 }
             }
         } else {
-            if (heightMapData[blockX][blockZ] < y){
-                heightMapData[blockX][blockZ] = (byte) y;
+            if (heightMapData[posToIndex2D(blockX,blockZ)] < y){
+                heightMapData[posToIndex2D(blockX,blockZ)] = (byte) y;
             }
         }
         saveToDisk.replace(key, true);
@@ -505,7 +506,7 @@ public class Chunk {
 
         byte[] blockData = blocks.get(key);
         byte[] rotationData = rotations.get(key);
-        byte[][] heightMapData = heightmaps.get(key);
+        byte[] heightMapData = heightmaps.get(key);
         byte[] lightData = lights.get(key);
 
         if (blockData == null || rotationData == null || heightMapData == null){
@@ -516,10 +517,10 @@ public class Chunk {
 
         blockData[posToIndex(blockX, y, blockZ)] = 0;
         rotationData[posToIndex(blockX, y, blockZ)] = 0;
-        if (heightMapData[blockX][blockZ] == y){
-            for (int yCheck = heightMapData[blockX][blockZ]; yCheck > 0; yCheck--){
+        if (heightMapData[posToIndex2D(blockX,blockZ)] == y){
+            for (int yCheck = heightMapData[posToIndex2D(blockX,blockZ)]; yCheck > 0; yCheck--){
                 if (blockData[posToIndex(blockX, yCheck, blockZ)] != 0){
-                    heightMapData[blockX][blockZ] = (byte) yCheck;
+                    heightMapData[posToIndex2D(blockX,blockZ)] = (byte) yCheck;
                     break;
                 }
             }
@@ -554,7 +555,7 @@ public class Chunk {
 
         byte[] blockData = blocks.get(key);
         byte[] rotationData = rotations.get(key);
-        byte[][] heightMapData = heightmaps.get(key);
+        byte[] heightMapData = heightmaps.get(key);
 
         if (blockData == null || rotationData == null || heightMapData == null){
             return;
@@ -565,8 +566,8 @@ public class Chunk {
 
         System.out.println("ADD A LIGHT PROPAGATES OR TRANSLUCENT THING TO PLACE BLOCK!");
         //todo: replace isBlockWalkable with isBlockTranslucent or something!
-        if (isBlockWalkable(ID) && heightMapData[blockX][blockZ] < y){
-            heightMapData[blockX][blockZ] = (byte) y;
+        if (isBlockWalkable(ID) && heightMapData[posToIndex2D(blockX,blockZ)] < y){
+            heightMapData[posToIndex2D(blockX,blockZ)] = (byte) y;
         }
 
         lightFloodFill(x, y, z);

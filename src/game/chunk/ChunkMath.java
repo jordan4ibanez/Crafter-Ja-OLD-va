@@ -11,6 +11,11 @@ public class ChunkMath {
         return (z * 2048) + (y * 16) + x;
     }
 
+    //make the inverse of this eventually
+    public static int posToIndex2D(int x, int z){
+        return (z * 16) + x;
+    }
+
     //keep this for if it's needed in the future
     //for ABMs or something
     public static Vector3i indexToPos( int i ) {

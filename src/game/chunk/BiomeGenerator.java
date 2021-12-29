@@ -56,7 +56,7 @@ public class BiomeGenerator implements Runnable{
             byte[] blockData = new byte[32768];
             byte[] rotationData = new byte[32768];
             byte[] lightData = new byte[32768];
-            byte[][] heightMapData = new byte[16][16];
+            byte[] heightMapData = new byte[256];
 
             //standard generation
             byte generationX;
@@ -139,9 +139,9 @@ public class BiomeGenerator implements Runnable{
                         blockData[posToIndex(generationX, generationY, generationZ)] = currBlock;
 
                         if (height >= waterHeight) {
-                            heightMapData[generationX][generationZ] = height;
+                            heightMapData[posToIndex2D(generationX,generationZ)] = height;
                         } else {
-                            heightMapData[generationX][generationZ] = waterHeight;
+                            heightMapData[posToIndex2D(generationX,generationZ)] = waterHeight;
                         }
 
                         if (gennedSand || gennedGrass) {
@@ -187,8 +187,8 @@ public class BiomeGenerator implements Runnable{
                     if (y + basePos.y < 127 && basePos.x >= 0 && basePos.x <= 15 && basePos.z >= 0 && basePos.z <= 15) {
                         blockData[posToIndex(basePos.x, basePos.y + y, basePos.z)] = 25;
                         //updates heightmap
-                        if (heightMapData[basePos.x][basePos.z] < y + basePos.y){
-                            heightMapData[basePos.x][basePos.z] = (byte)(y + basePos.y);
+                        if (heightMapData[posToIndex2D(basePos.x,basePos.z)] < y + basePos.y){
+                            heightMapData[posToIndex2D(basePos.x,basePos.z)] = (byte)(y + basePos.y);
                         }
                     }
                 }
@@ -210,8 +210,8 @@ public class BiomeGenerator implements Runnable{
                                 }
 
                                 //updates heightmap
-                                if (heightMapData[basePos.x + x][basePos.z + z] < y + basePos.y) {
-                                    heightMapData[basePos.x + x][basePos.z + z] = (byte) (y + basePos.y);
+                                if (heightMapData[posToIndex2D(basePos.x + x,basePos.z + z)] < y + basePos.y) {
+                                    heightMapData[posToIndex2D(basePos.x + x,basePos.z + z)] = (byte) (y + basePos.y);
                                 }
                             }
                         }
@@ -274,6 +274,11 @@ public class BiomeGenerator implements Runnable{
     //only use the current thread's core/thread to calculate
     public static int posToIndex( int x, int y, int z ) {
         return (z * 2048) + (y * 16) + x;
+    }
+
+    //make the inverse of this eventually
+    public static int posToIndex2D(int x, int z){
+        return (z * 16) + x;
     }
 
     //Thanks a lot Lars!!

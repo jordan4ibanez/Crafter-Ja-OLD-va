@@ -1,13 +1,14 @@
 package engine.disk;
 
 import game.chunk.ChunkData;
+import org.joml.Vector2i;
 
 import java.sql.*;
 import java.util.Arrays;
 
 import static engine.disk.SQLiteDeserializer.byteDeserialize;
 import static engine.disk.SQLiteSerializer.byteSerialize;
-import static game.chunk.Chunk.getRotationData;
+import static game.chunk.Chunk.*;
 
 public class SQLiteDiskAccess {
 
@@ -72,6 +73,7 @@ public class SQLiteDiskAccess {
 
             boolean found = false;
 
+            //check if there is a world table
             while (resultSet.next()) {
 
                 String name = resultSet.getString("TABLE_NAME");
@@ -83,6 +85,7 @@ public class SQLiteDiskAccess {
                 }
             }
 
+            //create the world table if this is a new database
             if (!found){
 
                 System.out.println("CREATING WORLD TABLE!");
@@ -97,6 +100,7 @@ public class SQLiteDiskAccess {
                 statement.close();
             }
 
+            //close resources
             resultSet.close();
             statement.close();
 
@@ -123,34 +127,31 @@ public class SQLiteDiskAccess {
 
     public static boolean saveChunk(int x, int z){
 
-        try {
+        if (true ) {
+            try {
 
-            Statement statement = connection.createStatement();
-            ResultSet resultTest = statement.executeQuery("SELECT * FROM WORLD WHERE ID = " + x + " " + z + ";");
 
-            //found a chunk - update
-            if (resultTest.next()) {
 
-            }
-            //did not find a chunk - create
-            else {
-                String sql = "INSERT INTO WORLD " +
+                Statement statement = connection.createStatement();
+
+                Vector2i key = new Vector2i(x,z);
+
+                String sql = "INSERT OR REPLACE INTO WORLD " +
                         "(ID,BLOCK,ROTATION,LIGHT,HEIGHTMAP) " +
-                        "VALUES ('5', 'Alle324', '2544', '44Texas', '15000.00' );";
+                        "VALUES ('" +
+                        x + "-" + z + "','" + //ID
+                        byteSerialize(getBlockData(key)) + "','" +//BLOCK ARRAY
+                        byteSerialize(getRotationData(key)) + "','" +//ROTATION DATA
+                        byteSerialize(getLightData(key)) + "','" +//LIGHT DATA
+                        byteSerialize(getHeightMapData(key))+ "','" +//HEIGHT DATA
+                        ");";
                 statement.executeUpdate(sql);
-
                 statement.close();
-            }
-            //saveData.x = key.x;
-            //saveData.z = key.y;
-            //todo: test if .clone() is not needed
-            //saveData.b = getBlockData(key).clone();
-            //saveData.h = getHeightMapData(key).clone();
-            //saveData.l = getLightData(key).clone();
-            //saveData.r = getRotationData(key).clone();
 
-        } catch (SQLException e){
-            System.out.println(e.getMessage());
+
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
         }
         return true;
     }

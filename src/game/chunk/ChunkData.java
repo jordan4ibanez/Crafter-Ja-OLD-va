@@ -6,5 +6,5 @@ public class ChunkData {
     public byte [] block = new byte[32768];
     public byte[] rotation = new byte[32768];
     public byte[] light = new byte[32768];
-    public byte[][] heightMap  = new byte[16][16];
+    public byte[] heightMap  = new byte[256];
 }
