@@ -8,6 +8,9 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Vector;
 
+import static game.chunk.Chunk.*;
+import static game.chunk.Chunk.getRotationData;
+
 public class SQliteDiskAccess {
 
     private static String url;
@@ -156,11 +159,48 @@ public class SQliteDiskAccess {
         }
     }
 
+
+    public static boolean saveChunk(int x, int z){
+
+        try {
+
+            Statement statement = connection.createStatement();
+            ResultSet resultTest = statement.executeQuery("SELECT * FROM WORLD WHERE ID = " + x + " " + z + ";");
+
+            //found a chunk - update
+            if (resultTest.next()) {
+
+            }
+            //did not find a chunk - create
+            else {
+                String sql = "INSERT INTO WORLD " +
+                        "(ID,BLOCK,ROTATION,LIGHT,HEIGHTMAP) " +
+                        "VALUES ('5', 'Alle324', '2544', '44Texas', '15000.00' );";
+                statement.executeUpdate(sql);
+
+                statement.close();
+            }
+            //saveData.x = key.x;
+            //saveData.z = key.y;
+            //todo: test if .clone() is not needed
+            //saveData.b = getBlockData(key).clone();
+            //saveData.h = getHeightMapData(key).clone();
+            //saveData.l = getLightData(key).clone();
+            //saveData.r = getRotationData(key).clone();
+
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return true;
+    }
+
+
     public static ChunkData loadChunk(int x, int z){
         try {
             Statement statement = connection.createStatement();
-            ResultSet resultTest = statement.executeQuery("SELECT * FROM WORLD WHERE ID = 2;");
+            ResultSet resultTest = statement.executeQuery("SELECT * FROM WORLD WHERE ID = " + x + " " + z + ";");
 
+            //found a chunk
             if (resultTest.next()) {
 
                 String name = resultTest.getString("ID");
@@ -168,6 +208,10 @@ public class SQliteDiskAccess {
 
                 System.out.println(name);
                 System.out.println(name2);
+            }
+            //did not find a chunk
+            else {
+                return null;
             }
         } catch (SQLException e){
             System.out.println(e.getMessage());
