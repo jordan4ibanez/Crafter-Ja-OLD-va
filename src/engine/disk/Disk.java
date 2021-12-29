@@ -111,6 +111,7 @@ public class Disk {
         }
     }
 
+
     public static ChunkData loadChunkFromDisk(int x, int z) throws IOException {
 
         //System.out.println("loading!!");
@@ -121,37 +122,18 @@ public class Disk {
 
         File test = new File(dir);
 
+         //cannot read file
         if (!test.canRead()){
-            //System.out.println("FAILED TO LOAD A CHUNK!");
             return(null);
         }
 
 
-        //learned from https://www.journaldev.com/966/java-gzip-example-compress-decompress-file
-        ByteArrayOutputStream bais;
-        try {
-            FileInputStream fis = new FileInputStream(dir);
-            GZIPInputStream gis = new GZIPInputStream(fis);
-            byte[] buffer = new byte[4096];
-            int len;
-            bais = new ByteArrayOutputStream();
-            while((len = gis.read(buffer)) != -1){
-                bais.write(buffer, 0, len);
-            }
-            //close resources
-            gis.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
 
         try {
-            thisChunkLoaded = objectMapper.readValue(bais.toString(), ChunkSavingObject.class);
+            thisChunkLoaded = objectMapper.readValue(test.toString(), ChunkSavingObject.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        bais.close();
 
         if (thisChunkLoaded == null){
             return null;
@@ -160,6 +142,7 @@ public class Disk {
         if (thisChunkLoaded.b == null){
             return null;
         }
+
 
         ChunkData abstractedChunk = new ChunkData();
 
@@ -170,7 +153,10 @@ public class Disk {
         abstractedChunk.light = thisChunkLoaded.l;
         abstractedChunk.heightMap = thisChunkLoaded.h;
 
-        return(abstractedChunk);
+        //a test to see if there are other problems besides object mapper
+        return(null);
+
+        //return(abstractedChunk);
     }
 
     public static void savePlayerPos(Vector3d pos){
