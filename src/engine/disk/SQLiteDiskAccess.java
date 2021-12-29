@@ -35,29 +35,32 @@ public class SQLiteDiskAccess {
                 //metadata testing
                 meta = connection.getMetaData();
 
-                //increase SQLite cache size
-                Statement statement = connection.createStatement();
-                String sql = "PRAGMA cache_size = -512000;";
-                statement.executeUpdate(sql);
-                //the following is for game usage, this is not a file server
-                //turn off synchronization
-                sql = "PRAGMA synchronous = OFF;";
-                statement.executeUpdate(sql);
-                //turn off journaling
-                sql = "PRAGMA journal_mode = OFF;";
-                statement.executeUpdate(sql);
-                //use the RAM for temp storage
-                sql = "PRAGMA temp_store = 2";
-                statement.executeUpdate(sql);
-                //exclusive locking mode (single user)
-                sql = "PRAGMA locking_mode = EXCLUSIVE;";
-                statement.executeUpdate(sql);
-                //turn on Write Ahead Log for performance
-                //this is disabled for testing
-                sql = "PRAGMA journal_mode=WAL";
-                statement.executeUpdate(sql);
+                boolean areYouInsane = false;
+                if (areYouInsane) {
+                    //increase SQLite cache size
+                    Statement statement = connection.createStatement();
+                    String sql = "PRAGMA cache_size = -512000;";
+                    statement.executeUpdate(sql);
+                    //the following is for game usage, this is not a file server
+                    //turn off synchronization
+                    sql = "PRAGMA synchronous = OFF;";
+                    statement.executeUpdate(sql);
+                    //turn off journaling
+                    sql = "PRAGMA journal_mode = OFF;";
+                    statement.executeUpdate(sql);
+                    //use the RAM for temp storage
+                    sql = "PRAGMA temp_store = 2";
+                    statement.executeUpdate(sql);
+                    //exclusive locking mode (single user)
+                    sql = "PRAGMA locking_mode = EXCLUSIVE;";
+                    statement.executeUpdate(sql);
+                    //turn on Write Ahead Log for performance
+                    //this is disabled for testing
+                    sql = "PRAGMA journal_mode=WAL";
+                    statement.executeUpdate(sql);
+                    statement.close();
+                }
 
-                statement.close();
 
             }
         } catch (SQLException e){
