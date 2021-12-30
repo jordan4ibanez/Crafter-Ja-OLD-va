@@ -250,7 +250,7 @@ public class SQLiteDiskAccessThread implements Runnable {
         }
 
         System.out.println("CLOSING WORLD DATABASE!");
-        //closeWorldDataBase();
+        closeWorldDataBase();
     }
 
     //deserializers
