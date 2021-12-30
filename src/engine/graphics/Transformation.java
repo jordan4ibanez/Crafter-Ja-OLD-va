@@ -126,6 +126,8 @@ public class Transformation {
     }
 
 
+
+    //THIS IS USED BY OPENAL - SOUND MANAGER
     public static void updateGenericViewMatrix(Vector3d position, Vector3f rotation, Matrix4d matrix) {
         // First do the rotation so camera rotates over its position
         matrix.rotationX(Math.toRadians(rotation.x))

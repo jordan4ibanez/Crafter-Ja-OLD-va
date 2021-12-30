@@ -17,12 +17,12 @@ import static engine.Window.*;
 import static engine.graphics.Camera.getCameraPerspective;
 import static engine.graphics.Camera.getCameraPosition;
 import static engine.graphics.Transformation.*;
-import static engine.gui.GUI.getCrossHairMesh;
+import static engine.gui.GUI.*;
 import static engine.settings.Settings.getGraphicsMode;
 import static engine.settings.Settings.getRenderDistance;
 import static game.chunk.Chunk.*;
-import static game.player.Player.getPlayerCurrentChunk;
-import static game.player.Player.getRunningFOVAdder;
+import static game.player.Player.*;
+import static game.player.Player.getPlayerWorldSelectionPos;
 import static org.lwjgl.opengl.GL44.*;
 import static org.lwjgl.opengl.GL44C.GL_BLEND;
 import static org.lwjgl.opengl.GL44C.glDisable;
@@ -610,24 +610,21 @@ public class GameRenderer {
 
 
         //render world selection mesh
-        /*
+
         if (!getPlayerWorldSelectionPos().equals(0,-555,0)){
 
             entityShaderProgram.setLightUniform("light", 15); //todo make this work
 
-            workerVec3D.set(getPlayerWorldSelectionPos());
-            modelViewMatrix.set(updateModelViewMatrix(workerVec3D, workerVec3F.set(0,0,0)));
-            entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            updateViewMatrix(getPlayerWorldSelectionPosX(), getPlayerWorldSelectionPosY(),getPlayerWorldSelectionPosZ(), 0,0,0);
+            entityShaderProgram.setUniform("modelViewMatrix", getModelMatrix());
             getWorldSelectionMesh().render();
 
             if (getDiggingFrame() >= 0) {
-                modelViewMatrix.set(updateModelViewMatrix(workerVec3D, workerVec3F.set(0,0,0)));
-                entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                updateViewMatrix(getPlayerWorldSelectionPosX(), getPlayerWorldSelectionPosY(),getPlayerWorldSelectionPosZ(), 0,0,0);
+                entityShaderProgram.setUniform("modelViewMatrix", getModelMatrix());
                 getMiningCrackMesh(getDiggingFrame()).render();
             }
         }
-
-         */
 
         entityShaderProgram.unbind();
 

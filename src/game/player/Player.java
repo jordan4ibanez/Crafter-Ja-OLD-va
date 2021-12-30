@@ -187,9 +187,23 @@ public class Player {
         worldSelectionPos.set(x,y,z);
     }
 
+    //mutable - be careful with this
     public static Vector3i getPlayerWorldSelectionPos(){
         return worldSelectionPos;
     }
+    //immutable
+    public static int getPlayerWorldSelectionPosX(){
+        return worldSelectionPos.x;
+    }
+    //immutable
+    public static int getPlayerWorldSelectionPosY(){
+        return worldSelectionPos.y;
+    }
+    //immutable
+    public static int getPlayerWorldSelectionPosZ(){
+        return worldSelectionPos.z;
+    }
+
 
     public static String getPlayerName(){
         return name;
