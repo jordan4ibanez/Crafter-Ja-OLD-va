@@ -63,6 +63,7 @@ public class WieldHand {
             return;
         }
 
+        //this is the sound trigger that makes the mining noise
         if (getPlayerWorldSelectionPos() != null && soundTrigger && getPlayerMining()){
             byte block = getBlock(getPlayerWorldSelectionPos().x, getPlayerWorldSelectionPos().y, getPlayerWorldSelectionPos().z);
             if (block > 0){
