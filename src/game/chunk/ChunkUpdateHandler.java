@@ -26,7 +26,7 @@ public class ChunkUpdateHandler {
     //private static float chunkUpdateTimer = 0f;
 
     //todo: make this interact with the updates button in the menu
-    private static final int MAX_UPDATES_PER_FRAME = 1000;
+    private static final int MAX_UPDATES_PER_FRAME = 200;
 
     public static void chunkUpdater() {
 
