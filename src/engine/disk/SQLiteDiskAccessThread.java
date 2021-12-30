@@ -1,9 +1,6 @@
 package engine.disk;
 
-import engine.graphics.Mesh;
-import game.chunk.ChunkData;
 import org.joml.Vector2i;
-import org.joml.Vector3i;
 
 import java.sql.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -21,6 +18,7 @@ public class SQLiteDiskAccessThread implements Runnable {
     private String url;
     private Connection connection;
     private DatabaseMetaData meta;
+    private static final ConcurrentLinkedDeque<Vector2i> chunksToLoad = new ConcurrentLinkedDeque<>();
 
     private final AtomicBoolean running = new AtomicBoolean(false);
 
@@ -114,34 +112,54 @@ public class SQLiteDiskAccessThread implements Runnable {
         }
     }
 
+    //these shall stay in sync
+    //they are bulk added in THIS thread
+    //cannot access anything from it until it has run through the next iteration
+    private static final ConcurrentLinkedDeque<Vector2i> chunksToSaveKey     = new ConcurrentLinkedDeque<>();
+    private static final ConcurrentLinkedDeque<byte[]> chunksToSaveBlock     = new ConcurrentLinkedDeque<>();
+    private static final ConcurrentLinkedDeque<byte[]> chunksToSaveRotation  = new ConcurrentLinkedDeque<>();
+    private static final ConcurrentLinkedDeque<byte[]> chunksToSaveLight     = new ConcurrentLinkedDeque<>();
+    private static final ConcurrentLinkedDeque<byte[]> chunksToSaveHeightMap = new ConcurrentLinkedDeque<>();
 
-    public void saveChunk(int x, int z){
-
-        try {
-
-            Statement statement = connection.createStatement();
-
-            Vector2i key = new Vector2i(x,z);
-
-            String sql = "INSERT OR REPLACE INTO WORLD " +
-                    "(ID,BLOCK,ROTATION,LIGHT,HEIGHTMAP) " +
-                    "VALUES ('" +
-                    x + "-" + z + "','" + //ID
-                    byteSerialize(getBlockData(key)) + "','" +//BLOCK ARRAY
-                    byteSerialize(getRotationData(key)) + "','" +//ROTATION DATA
-                    byteSerialize(getLightData(key)) + "','" +//LIGHT DATA
-                    byteSerialize(getHeightMapData(key))+ //HEIGHT DATA
-                    "');";
-            statement.executeUpdate(sql);
-            statement.close();
-
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
+    public void addSaveChunk(int x, int z, byte[] blockData, byte[] rotationData, byte[] lightData, byte[] heightMap ){
+        chunksToSaveKey.add(new Vector2i(x,z));
+        chunksToSaveBlock.add(blockData);
+        chunksToSaveRotation.add(rotationData);
+        chunksToSaveLight.add(lightData);
+        chunksToSaveHeightMap.add(heightMap);
     }
 
-    private static final ConcurrentLinkedDeque<Vector2i> chunksToLoad = new ConcurrentLinkedDeque<>();
+    private void tryToSaveChunk(){
+
+        if (!chunksToSaveKey.isEmpty()) {
+            try {
+                Vector2i poppedVector = chunksToSaveKey.pop();
+
+                int x = poppedVector.x;
+                int z = poppedVector.y;
+
+                Statement statement = connection.createStatement();
+
+                Vector2i key = new Vector2i(x, z);
+
+                String sql = "INSERT OR REPLACE INTO WORLD " +
+                        "(ID,BLOCK,ROTATION,LIGHT,HEIGHTMAP) " +
+                        "VALUES ('" +
+                        x + "-" + z + "','" + //ID
+                        byteSerialize(chunksToSaveBlock.pop()) + "','" +//BLOCK ARRAY
+                        byteSerialize(chunksToSaveRotation.pop()) + "','" +//ROTATION DATA
+                        byteSerialize(chunksToSaveLight.pop()) + "','" +//LIGHT DATA
+                        byteSerialize(chunksToSaveHeightMap.pop()) + //HEIGHT DATA
+                        "');";
+                statement.executeUpdate(sql);
+                statement.close();
+
+
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
 
     //do this so that the main thread does not hang
     public void addLoadChunk(int x, int z){
@@ -186,6 +204,8 @@ public class SQLiteDiskAccessThread implements Runnable {
                     System.out.println("generate chunk here");
                     addChunkToBiomeGeneration(x, z);
                 }
+
+                statement.close();
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
@@ -219,12 +239,11 @@ public class SQLiteDiskAccessThread implements Runnable {
     public void run() {
         running.set(true);
 
-        while(running.get() ) {
+        //do not shut down until all chunks are saved!
+        while(running.get() || !chunksToSaveKey.isEmpty()) {
             //System.out.println("NUMBER 5 IS ALIVE");
             tryToLoadChunk();
-
-            System.out.println("remember to make saving chunks non-blocking");
-
+            tryToSaveChunk();
         }
 
         System.out.println("CLOSING WORLD DATABASE!");

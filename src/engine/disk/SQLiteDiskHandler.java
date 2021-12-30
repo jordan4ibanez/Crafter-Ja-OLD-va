@@ -25,17 +25,17 @@ public class SQLiteDiskHandler {
 
 
     public static void loadChunk(int x, int z){
-        double startTime = System.nanoTime();
         sqLiteDiskAccessThread.addLoadChunk(x,z);
-        double endTime = System.nanoTime();
-
-        double duration = (endTime - startTime) / 1000000d;
-
-        System.out.println(duration);
     }
 
-    public static void saveChunk(int x, int z){
-        sqLiteDiskAccessThread.saveChunk(x,z);
+    public static void saveChunk(int x, int z, byte[] blockData, byte[] rotationData, byte[] lightData, byte[] heightMap){
+        //double startTime = System.nanoTime();
+        sqLiteDiskAccessThread.addSaveChunk(x,z,blockData,rotationData,lightData,heightMap);
+        //double endTime = System.nanoTime();
+
+        //double duration = (endTime - startTime) / 1000000d;
+
+        //System.out.println(duration);
     }
 
 

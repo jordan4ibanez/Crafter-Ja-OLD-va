@@ -260,7 +260,7 @@ public class Chunk {
             for (Vector2i key : chunkKeys.values()){
                 Boolean needsToBeSaved = saveToDisk.get(key);
                 if (needsToBeSaved != null && needsToBeSaved) { //null is also no or false
-                    saveChunk(key.x, key.y);
+                    saveChunk(key.x, key.y,blocks.get(key).clone(), rotations.get(key).clone(), lights.get(key).clone(), heightmaps.get(key).clone());
                     saveToDisk.replace(key,false);
                 }
             }
@@ -281,7 +281,7 @@ public class Chunk {
         updateWorldsPathToAvoidCrash();
         for (Vector2i thisKey : chunkKeys.values()){
             //instantSave(thisKey);
-            saveChunk(thisKey.x, thisKey.y);
+            saveChunk(thisKey.x, thisKey.y,blocks.get(thisKey).clone(), rotations.get(thisKey).clone(), lights.get(thisKey).clone(), heightmaps.get(thisKey).clone());
             saveToDisk.replace(thisKey, false);
         }
 
@@ -847,7 +847,7 @@ public class Chunk {
                     }
                 }
 
-                saveChunk(key.x, key.y);
+                saveChunk(key.x, key.y,blocks.get(key).clone(), rotations.get(key).clone(), lights.get(key).clone(), heightmaps.get(key).clone());
 
                 chunkKeys.remove(key);
                 blocks.remove(key);
