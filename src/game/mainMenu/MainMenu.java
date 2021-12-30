@@ -1,5 +1,6 @@
 package game.mainMenu;
 
+import engine.graphics.Mesh;
 import engine.gui.GUIObject;
 import engine.sound.SoundSource;
 import org.joml.Vector2d;
@@ -15,6 +16,7 @@ import static engine.credits.Credits.initializeCredits;
 import static engine.disk.Disk.setCurrentActiveWorld;
 import static engine.disk.Disk.worldSize;
 import static engine.gui.GUILogic.doGUIMouseCollisionDetection;
+import static engine.gui.TextHandling.createTextCentered;
 import static engine.network.Networking.*;
 import static engine.scene.SceneHandler.setScene;
 import static engine.settings.Settings.*;
@@ -868,6 +870,9 @@ public class MainMenu {
         return "NULL";
     }
 
+    private static Mesh titleScreenGagMeshBackGround = createTextCentered("", 0.2f, 0.2f, 0f);
+    private static Mesh titleScreenGagMeshForeGround = createTextCentered("", 1f, 1f, 0f);
+
     public static void selectTitleScreenGag(){
         titleScreenGag = titleScreenGags[random.nextInt(titleScreenGags.length)];
 
@@ -876,7 +881,25 @@ public class MainMenu {
         } else {
             updateWindowTitle(getVersionName());
         }
+
         titleScreenGagLength = (byte)titleScreenGag.length();
+
+        //create a new mesh for title screen gag
+        if (!titleScreenGag.equals("R_A_N_D_O_M")){
+            titleScreenGagMeshBackGround.cleanUp(false);
+            titleScreenGagMeshForeGround.cleanUp(false);
+
+            titleScreenGagMeshBackGround = createTextCentered(getTitleScreenGag(), 0.2f, 0.2f, 0f);
+            titleScreenGagMeshForeGround = createTextCentered(getTitleScreenGag(), 1f, 1f, 0f);
+        }
+    }
+
+    public static Mesh getTitleScreenGagMeshBackGround(){
+        return titleScreenGagMeshBackGround;
+    }
+
+    public static Mesh getTitleScreenGagMeshForeGround(){
+        return titleScreenGagMeshForeGround;
     }
 
     public static String getTitleScreenGag(){

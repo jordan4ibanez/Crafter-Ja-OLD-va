@@ -9,6 +9,7 @@ import static engine.Window.getWindowWidth;
 import static engine.credits.Credits.getCreditParts;
 import static engine.graphics.Transformation.*;
 import static engine.gui.GUI.*;
+import static engine.gui.TextHandling.createTextCentered;
 import static engine.render.GameRenderer.*;
 import static engine.time.Time.getDelta;
 import static game.mainMenu.MainMenu.*;
@@ -123,23 +124,42 @@ public class MainMenuRenderer {
                 scale += getTitleBounce();
 
 
-                glClear(GL_DEPTH_BUFFER_BIT);
+                //create a new mesh every frame
+                if (getTitleScreenGag().equals("R_A_N_D_O_M")) {
+                    glClear(GL_DEPTH_BUFFER_BIT);
 
-                //gray shadow part
-                updateOrthoModelMatrix(windowScale / 2.27d, windowScale / 3.27f, 0, 0, 0, 20f, scale, scale, scale);
-                hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
-                //workerMesh = createTextCentered(getTitleScreenGag(), 0.2f, 0.2f, 0f);
-                //workerMesh.render();
-                //workerMesh.cleanUp(false);
+                    //gray shadow part
+                    updateOrthoModelMatrix(windowScale / 2.27d, windowScale / 3.27f, 0, 0, 0, 20f, scale, scale, scale);
+                    hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
+                    Mesh myMesh = createTextCentered(getTitleScreenGag(), 0.2f, 0.2f, 0f);
+                    myMesh.render();
+                    myMesh.cleanUp(false);
 
-                glClear(GL_DEPTH_BUFFER_BIT);
+                    glClear(GL_DEPTH_BUFFER_BIT);
 
-                //yellow part
-                updateOrthoModelMatrix(windowScale / 2.25d, windowScale / 3.25f, 0, 0, 0, 20f, scale, scale, scale);
-                hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
-                //workerMesh = createTextCentered(getTitleScreenGag(), 1f, 1f, 0f);
-                //workerMesh.render();
-                //workerMesh.cleanUp(false);
+                    //yellow part
+                    updateOrthoModelMatrix(windowScale / 2.25d, windowScale / 3.25f, 0, 0, 0, 20f, scale, scale, scale);
+                    hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
+                    Mesh myMesh2 = createTextCentered(getTitleScreenGag(), 1f, 1f, 0f);
+                    myMesh2.render();
+                    myMesh2.cleanUp(false);
+                }
+                //constant mesh for text
+                else {
+                    glClear(GL_DEPTH_BUFFER_BIT);
+
+                    //gray shadow part
+                    updateOrthoModelMatrix(windowScale / 2.27d, windowScale / 3.27f, 0, 0, 0, 20f, scale, scale, scale);
+                    hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
+                    getTitleScreenGagMeshBackGround().render();
+
+                    glClear(GL_DEPTH_BUFFER_BIT);
+
+                    //yellow part
+                    updateOrthoModelMatrix(windowScale / 2.25d, windowScale / 3.25f, 0, 0, 0, 20f, scale, scale, scale);
+                    hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
+                    getTitleScreenGagMeshForeGround().render();
+                }
             }
 
         }
