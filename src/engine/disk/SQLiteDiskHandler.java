@@ -11,7 +11,6 @@ public class SQLiteDiskHandler {
         sqLiteDiskAccessThread = new SQLiteDiskAccessThread();
         //this is needed to create the WORLD table
         sqLiteDiskAccessThread.createWorldDataBase(worldName);
-
         sqLiteDiskAccessThread.start();
     }
 
@@ -21,7 +20,7 @@ public class SQLiteDiskHandler {
 
         //nullify, this thread will stop itself
         //this avoids an accidental pointer mix up
-        sqLiteDiskAccessThread = null;
+        //sqLiteDiskAccessThread = null;
     }
 
 

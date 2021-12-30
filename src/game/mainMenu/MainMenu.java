@@ -1044,6 +1044,10 @@ public class MainMenu {
             "Knows where to go!",
             "True + true = 2!",
             "Now for PC!",
-            "Faster than ever!"
+            "Faster than ever!",
+            "Cats love it!",
+            "Pie flavored!",
+            "The pointers are always NULL!",
+
     };
 }

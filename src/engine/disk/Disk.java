@@ -12,6 +12,8 @@ import java.nio.file.Paths;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
 
+import static engine.disk.SQLiteDiskHandler.connectWorldDataBase;
+
 public class Disk {
 
     private static byte currentActiveWorld = 1; //failsafe
@@ -24,11 +26,13 @@ public class Disk {
         return currentActiveWorld;
     }
 
+    //this is the main entry point for disk access to the world from the main menu
     public static void setCurrentActiveWorld(byte newWorld){
         currentActiveWorld = newWorld;
         updateSaveQueueCurrentActiveWorld(newWorld);
         createAlphaWorldFolder();
-
+        //eh no where to really put this so just gonna stick it here
+        connectWorldDataBase("world" + currentActiveWorld);
         System.out.println("CURRENT WORLD IS: " + newWorld);
     }
 

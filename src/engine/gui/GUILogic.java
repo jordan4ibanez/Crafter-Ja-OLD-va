@@ -5,6 +5,7 @@ import org.joml.Vector2d;
 import static engine.MouseInput.*;
 import static engine.Window.getDumpedKey;
 import static engine.Window.getWindowHandle;
+import static engine.disk.SQLiteDiskHandler.closeWorldDataBase;
 import static engine.network.Networking.disconnectClient;
 import static engine.network.Networking.sendChatMessage;
 import static engine.render.GameRenderer.getWindowScale;
@@ -209,12 +210,14 @@ public class GUILogic {
                     } else if (selection == 1) {
                         menuPage = 1;
                     } else if (selection == 2) {
+                        closeWorldDataBase();
                         resetMainMenuPage();
                         resetMainMenu();
                         setScene((byte) 0);
                         disconnectClient();
                         setPaused(false);
                     } else if (selection == 3) {
+                        closeWorldDataBase();
                         disconnectClient();
                         glfwSetWindowShouldClose(getWindowHandle(), true);
                     }

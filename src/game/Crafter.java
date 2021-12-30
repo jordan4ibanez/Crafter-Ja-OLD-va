@@ -58,18 +58,11 @@ public class Crafter {
             initGame();
             createWorldsDir();
 
-            //TODO: THIS IS DEBUG! THIS IS DEBUG! THIS IS DEBUG! THIS IS DEBUG! THIS IS DEBUG! THIS IS DEBUG! THIS IS DEBUG! THIS IS DEBUG! THIS IS DEBUG! THIS IS DEBUG!
-
-            connectWorldDataBase("world1");
-
-            //TODO: THIS IS DEBUG! THIS IS DEBUG! THIS IS DEBUG! THIS IS DEBUG! THIS IS DEBUG! THIS IS DEBUG! THIS IS DEBUG! THIS IS DEBUG! THIS IS DEBUG! THIS IS DEBUG!
-
             initMainMenu();
 
             //this is the chunk mesh generator thread
             ChunkMeshGenerator chunkMeshGenerator = new ChunkMeshGenerator();
             Thread chunkThread = new Thread(chunkMeshGenerator);
-
             chunkThread.start();
 
             //this is the biome generator thread
@@ -114,8 +107,5 @@ public class Crafter {
         Chunk.cleanChunkDataMemory();
         cleanupSoundManager();
         cleanupRenderer();
-
-        closeWorldDataBase();
-        System.out.println("REMEMBER TO REMOVE THE WORLD DATABASE CLOSURE FROM CLEANUP!");
     }
 }

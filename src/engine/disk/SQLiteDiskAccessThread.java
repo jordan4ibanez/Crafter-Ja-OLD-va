@@ -182,7 +182,7 @@ public class SQLiteDiskAccessThread implements Runnable {
                 //found a chunk
                 if (resultTest.next()) {
 
-                    System.out.println("LOADING CHUNK FROM DATABASE!");
+                    //System.out.println("LOADING CHUNK FROM DATABASE!");
 
                     //automatically set the chunk in memory
                     setChunk(x, z,
@@ -201,7 +201,7 @@ public class SQLiteDiskAccessThread implements Runnable {
 
                 //did not find a chunk - create a new one
                 else {
-                    System.out.println("generate chunk here");
+                    //System.out.println("generate chunk here");
                     addChunkToBiomeGeneration(x, z);
                 }
 
@@ -214,7 +214,7 @@ public class SQLiteDiskAccessThread implements Runnable {
 
 
     //connection closer
-    public void closeWorldDataBase(){
+    private void closeWorldDataBase(){
         try {
             connection.close();
         } catch (SQLException e){
