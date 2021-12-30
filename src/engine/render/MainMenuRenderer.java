@@ -124,8 +124,9 @@ public class MainMenuRenderer {
                 scale += getTitleBounce();
 
 
+
                 //create a new mesh every frame
-                if (getTitleScreenGag().equals("R_A_N_D_O_M")) {
+                if (titleScreenIsRandom()) {
                     glClear(GL_DEPTH_BUFFER_BIT);
 
                     //gray shadow part

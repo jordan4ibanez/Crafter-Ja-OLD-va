@@ -917,6 +917,10 @@ public class MainMenu {
         return titleScreenGag;
     }
 
+    public static boolean titleScreenIsRandom(){
+        return titleScreenGag.equals("R_A_N_D_O_M");
+    }
+
     public static byte getTitleScreenGagLength(){
         return titleScreenGagLength;
     }
@@ -1071,6 +1075,8 @@ public class MainMenu {
             "Cats love it!",
             "Pie flavored!",
             "The pointers are always NULL!",
-
+            "Uses Arch, BTW!",
+            "Also try Minetest!",
+            "Too many threads!"
     };
 }
