@@ -2,26 +2,25 @@ package engine.disk;
 
 import game.chunk.ChunkData;
 import org.joml.Vector2i;
-import org.sqlite.SQLiteConfig;
 
 import java.sql.*;
-import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static engine.disk.SQLiteDeserializer.byteDeserialize;
 import static engine.disk.SQLiteSerializer.byteSerialize;
 import static game.chunk.Chunk.*;
 
-public class SQLiteDiskAccess {
+public class SQLiteDiskAccessThread implements Runnable {
 
-    private static String url;
+    private String url;
+    private Connection connection;
+    private DatabaseMetaData meta;
 
-    private static Connection connection;
-
-    private static DatabaseMetaData meta;
+    private final AtomicBoolean running = new AtomicBoolean(false);
 
 
 
-    public static void connectWorldDataBase(String worldName){
+    public void connectWorldDataBase(String worldName){
         //databases are automatically created with the JBDC driver
 
         //database parameters
@@ -35,31 +34,28 @@ public class SQLiteDiskAccess {
                 //metadata testing
                 meta = connection.getMetaData();
 
-                boolean areYouInsane = false;
-                if (areYouInsane) {
-                    //increase SQLite cache size
-                    Statement statement = connection.createStatement();
-                    String sql = "PRAGMA cache_size = -512000;";
-                    statement.executeUpdate(sql);
-                    //the following is for game usage, this is not a file server
-                    //turn off synchronization
-                    sql = "PRAGMA synchronous = OFF;";
-                    statement.executeUpdate(sql);
-                    //turn off journaling
-                    sql = "PRAGMA journal_mode = OFF;";
-                    statement.executeUpdate(sql);
-                    //use the RAM for temp storage
-                    sql = "PRAGMA temp_store = 2";
-                    statement.executeUpdate(sql);
-                    //exclusive locking mode (single user)
-                    sql = "PRAGMA locking_mode = EXCLUSIVE;";
-                    statement.executeUpdate(sql);
-                    //turn on Write Ahead Log for performance
-                    //this is disabled for testing
-                    sql = "PRAGMA journal_mode=WAL";
-                    statement.executeUpdate(sql);
-                    statement.close();
-                }
+                Statement statement = connection.createStatement();
+                //increase SQLite cache size - 256MB
+                String sql = "PRAGMA cache_size = -256000;";
+                statement.executeUpdate(sql);
+                //the following is for game usage, this is not a file server
+                //OFF - turn off synchronization technically faster - NORMAL - can be used on servers and regular games
+                //this will corrupt chunks if the computer crashes or loses power
+                sql = "PRAGMA synchronous = NORMAL;";
+                statement.executeUpdate(sql);
+                //turn off journaling - WAL IS VERY UNSAFE - WAL will also make the disconnection hang
+                //this is a database rollback journal that is being turned off
+                //DELETE | TRUNCATE | PERSIST | MEMORY | WAL | OFF are the options
+                sql = "PRAGMA journal_mode = OFF;";
+                statement.executeUpdate(sql);
+                //use the RAM for temp storage
+                sql = "PRAGMA temp_store = 2";
+                statement.executeUpdate(sql);
+                //exclusive locking mode (single user)
+                //this does not release the .LOCK
+                sql = "PRAGMA locking_mode = EXCLUSIVE;";
+                statement.executeUpdate(sql);
+                statement.close();
 
 
             }
@@ -115,7 +111,7 @@ public class SQLiteDiskAccess {
     }
 
 
-    public static boolean saveChunk(int x, int z){
+    public boolean saveChunk(int x, int z){
 
         try {
 
@@ -143,7 +139,7 @@ public class SQLiteDiskAccess {
     }
 
 
-    public static ChunkData loadChunk(int x, int z){
+    public ChunkData loadChunk(int x, int z){
         try {
             Statement statement = connection.createStatement();
             ResultSet resultTest = statement.executeQuery("SELECT * FROM WORLD WHERE ID ='" + x + "-" + z + "';");
@@ -177,12 +173,21 @@ public class SQLiteDiskAccess {
 
 
     //connection closer
-    public static void closeWorldDataBase(){
+    public void closeWorldDataBase(){
         try {
             connection.close();
         } catch (SQLException e){
             System.out.println(e.getMessage());
         }
+
     }
 
+    @Override
+    public void run() {
+        running.set(true);
+
+        System.out.println("NUMBER 5 IS ALIVE");
+
+
+    }
 }
