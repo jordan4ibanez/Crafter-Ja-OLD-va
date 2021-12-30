@@ -17,7 +17,7 @@ import static game.chunk.ChunkUpdateHandler.chunkUpdate;
 public class BiomeGenerator implements Runnable{
 
     private final static Deque<Vector2i> queue = new ArrayDeque<>();
-    private final static int seed = 532_444_432;
+    private static int seed = 532_444_432;
     private final static FastNoise noise = new FastNoise();
 
     public void run() {
@@ -297,5 +297,9 @@ public class BiomeGenerator implements Runnable{
     public static byte setByteNaturalLight(byte input, byte newValue){
         byte torchLight = getByteTorchLight(input);
         return (byte) (newValue << 4 | torchLight);
+    }
+
+    public static void setSeed(int newSeed){
+        seed = newSeed;
     }
 }
