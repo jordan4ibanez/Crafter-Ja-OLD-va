@@ -13,8 +13,8 @@ import static engine.MouseInput.initMouseInput;
 import static engine.Window.initWindow;
 import static engine.disk.Disk.createWorldsDir;
 import static engine.disk.Disk.savePlayerPos;
-import static engine.disk.SQLiteDiskAccessThread.closeWorldDataBase;
-import static engine.disk.SQLiteDiskAccessThread.connectWorldDataBase;
+import static engine.disk.SQLiteDiskHandler.closeWorldDataBase;
+import static engine.disk.SQLiteDiskHandler.connectWorldDataBase;
 import static engine.gui.GUI.createGUI;
 import static engine.gui.GUI.initializeHudAtlas;
 import static engine.render.GameRenderer.cleanupRenderer;
@@ -73,9 +73,9 @@ public class Crafter {
             chunkThread.start();
 
             //this is the biome generator thread
+            //TODO: MOVE THIS SOMEWHERE SANE!
             BiomeGenerator biomeGenerator = new BiomeGenerator();
             Thread biomeThread = new Thread(biomeGenerator);
-
             biomeThread.start();
 
 
@@ -114,7 +114,8 @@ public class Crafter {
         Chunk.cleanChunkDataMemory();
         cleanupSoundManager();
         cleanupRenderer();
-        System.out.println("REMEMBER TO REMOVE THE WORLD DATABASE CLOSURE FROM CLEANUP!");
+
         closeWorldDataBase();
+        System.out.println("REMEMBER TO REMOVE THE WORLD DATABASE CLOSURE FROM CLEANUP!");
     }
 }

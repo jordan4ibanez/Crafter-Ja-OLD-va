@@ -1,24 +1,28 @@
 package engine.disk;
 
+import engine.graphics.Mesh;
 import game.chunk.ChunkData;
 import org.joml.Vector2i;
+import org.joml.Vector3i;
 
 import java.sql.*;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static engine.disk.SQLiteDeserializer.byteDeserialize;
 import static engine.disk.SQLiteSerializer.byteSerialize;
+import static game.chunk.BiomeGenerator.addChunkToBiomeGeneration;
 import static game.chunk.Chunk.*;
+import static game.chunk.ChunkUpdateHandler.chunkUpdate;
 
 public class SQLiteDiskAccessThread implements Runnable {
 
+    //class fields
     private String url;
     private Connection connection;
     private DatabaseMetaData meta;
 
     private final AtomicBoolean running = new AtomicBoolean(false);
-
-
 
     public void connectWorldDataBase(String worldName){
         //databases are automatically created with the JBDC driver
@@ -111,7 +115,7 @@ public class SQLiteDiskAccessThread implements Runnable {
     }
 
 
-    public boolean saveChunk(int x, int z){
+    public void saveChunk(int x, int z){
 
         try {
 
@@ -135,11 +139,9 @@ public class SQLiteDiskAccessThread implements Runnable {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        return true;
     }
 
-
-    public ChunkData loadChunk(int x, int z){
+    public void tryToLoadChunk(int x, int z){
         try {
             Statement statement = connection.createStatement();
             ResultSet resultTest = statement.executeQuery("SELECT * FROM WORLD WHERE ID ='" + x + "-" + z + "';");
@@ -149,26 +151,29 @@ public class SQLiteDiskAccessThread implements Runnable {
 
                 System.out.println("FOUND ONE!");
 
-                ChunkData newChunk = new ChunkData();
+                //automatically set the chunk in memory :)
+                setChunk(x,z,
+                        byteDeserialize(resultTest.getString("BLOCK")),
+                        byteDeserialize(resultTest.getString("ROTATION")),
+                        byteDeserialize(resultTest.getString("LIGHT")),
+                        byteDeserialize(resultTest.getString("HEIGHTMAP"))
+                );
 
-                newChunk.x = x;
-                newChunk.z = z;
-                newChunk.block = byteDeserialize(resultTest.getString("BLOCK"));
-                newChunk.rotation = byteDeserialize(resultTest.getString("ROTATION"));
-                newChunk.light = byteDeserialize(resultTest.getString("LIGHT"));
-                newChunk.heightMap = byteDeserialize(resultTest.getString("HEIGHTMAP"));
+                //dump everything into the chunk updater
+                for (int i = 0; i < 8; i++) {
+                    chunkUpdate(x, z, i);
+                }
 
-                return newChunk;
             }
-            //did not find a chunk
+
+            //did not find a chunk - create a new one
             else {
-                return null;
+                System.out.println("generate chunk here");
+                addChunkToBiomeGeneration(x,z);
             }
         } catch (SQLException e){
             System.out.println(e.getMessage());
         }
-
-        return null;
     }
 
 
@@ -179,15 +184,31 @@ public class SQLiteDiskAccessThread implements Runnable {
         } catch (SQLException e){
             System.out.println(e.getMessage());
         }
-
     }
+
+
+    public void start() {
+        System.out.println("started SQL thread!");
+        //thread fields
+        Thread worker = new Thread(this);
+        worker.start();
+    }
+
+    public void stop(){
+        running.set(false);
+    }
+
 
     @Override
     public void run() {
         running.set(true);
 
-        System.out.println("NUMBER 5 IS ALIVE");
+        while(running.get()) {
+            //System.out.println("NUMBER 5 IS ALIVE");
 
+        }
 
+        System.out.println("CLOSING WORLD DATABASE!");
+        closeWorldDataBase();
     }
 }

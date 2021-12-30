@@ -13,6 +13,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static engine.FancyMath.getDistance;
 import static engine.disk.Disk.*;
+import static engine.disk.SQLiteDiskHandler.loadChunk;
+import static engine.disk.SQLiteDiskHandler.saveChunk;
 import static engine.network.Networking.getIfMultiplayer;
 import static engine.network.Networking.sendOutChunkRequest;
 import static engine.settings.Settings.getRenderDistance;
@@ -136,7 +138,7 @@ public class Chunk {
 
     //multiplayer chunk update
     public static void setChunk(int x, int z, byte[] blockData, byte[] rotationData, byte[] lightData, byte[] heightMapData) {
-        // THIS CREATES A NEW OBJECT IN MEMORY!
+        // THIS CREATES A NEW OBJECT IN MEMORY! - it is necessary though, this needs a rework :L
         Vector2i key = new Vector2i(x, z);
 
         //don't allow old vertex data to leak - instead clone primitives
@@ -154,7 +156,7 @@ public class Chunk {
             rotations.put(key, rotationData.clone());
             lights.put(key, lightData.clone());
             heightmaps.put(key,heightMapData.clone());
-
+            //null meshes
             normalMeshes.put(key, new Mesh[8]);
             liquidMeshes.put(key, new Mesh[8]);
             allFaceMeshes.put(key, new Mesh[8]);
@@ -886,62 +888,12 @@ public class Chunk {
         return -1;
     }
 
+    //todo: this needs a new name
+    //this dispatches to the SQLite thread, checks if it exists in the data base
+    //then it either deserializes it or it tells the chunk mesh generator thread
+    //to create a new one if it doesn't exist
     public static void genBiome(int chunkX, int chunkZ) {
-
-        long startTime = System.nanoTime();
-
-        ChunkData chunkData = null;
-
-        /*
-        0 - blocks
-        1 - rotations
-        2 - lights
-        3 - heightmaps
-         */
-
-        //file format is causing extreme problems
-            /*
-             16.33 in a frame at 60 FPS
-
-            eating around 2-6 frames in worst case scenarios >:(
-             */
-        chunkData = loadChunk(chunkX, chunkZ);
-
-        if (chunkData != null) {
-
-            long endTime = System.nanoTime();
-            double duration = ((double)endTime - (double)startTime) / 1000000d;
-
-            System.out.println("Chunk loading from disk took: " + duration);
-
-            // THIS CREATES A NEW OBJECT IN MEMORY!
-            Vector2i key = new Vector2i(chunkX, chunkZ);
-            chunkKeys.put(key, key);
-
-            blocks.put(key, chunkData.block);
-            rotations.put(key, chunkData.rotation);
-            lights.put(key, chunkData.light);
-            heightmaps.put(key, chunkData.heightMap);
-
-            //todo: data orient this
-            normalMeshes.put(key, new Mesh[8]);
-            liquidMeshes.put(key, new Mesh[8]);
-            allFaceMeshes.put(key, new Mesh[8]);
-
-
-            //dump everything into the chunk updater
-            for (int i = 0; i < 8; i++) {
-                chunkUpdate(chunkX, chunkZ, i); //delayed
-            }
-
-        } else {
-            addChunkToBiomeGeneration(chunkX,chunkZ);
-
-            long endTime = System.nanoTime();
-            double duration = ((double)endTime - (double)startTime) / 1000000d;
-
-            System.out.println("Chunk generation:             " + duration);
-        }
+        loadChunk(chunkX,chunkZ);
     }
 
     public static void cleanChunkDataMemory(){

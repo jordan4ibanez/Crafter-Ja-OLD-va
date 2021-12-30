@@ -25,7 +25,13 @@ public class SQLiteDiskHandler {
 
 
     public static void loadChunk(int x, int z){
+        double startTime = System.nanoTime();
         sqLiteDiskAccessThread.loadChunk(x,z);
+        double endTime = System.nanoTime();
+
+        double duration = (endTime - startTime) / 1000000d;
+
+        System.out.println(duration);
     }
 
     public static void saveChunk(int x, int z){
