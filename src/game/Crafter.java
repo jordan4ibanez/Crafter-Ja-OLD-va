@@ -13,8 +13,6 @@ import static engine.MouseInput.initMouseInput;
 import static engine.Window.initWindow;
 import static engine.disk.Disk.createWorldsDir;
 import static engine.disk.Disk.savePlayerPos;
-import static engine.disk.SQLiteDiskHandler.closeWorldDataBase;
-import static engine.disk.SQLiteDiskHandler.connectWorldDataBase;
 import static engine.gui.GUI.createGUI;
 import static engine.gui.GUI.initializeHudAtlas;
 import static engine.render.GameRenderer.cleanupRenderer;
@@ -75,8 +73,8 @@ public class Crafter {
             //this is the scene controller
             handleSceneLogic();
 
-        } catch ( Exception excp ){
-            excp.printStackTrace();
+        } catch ( Exception e ){
+            e.printStackTrace();
             System.exit(-1);
         } finally {
             globalFinalChunkSaveToDisk();
