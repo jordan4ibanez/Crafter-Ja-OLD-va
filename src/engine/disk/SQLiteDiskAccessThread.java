@@ -160,7 +160,11 @@ public class SQLiteDiskAccessThread implements Runnable {
 
     //do this so that the main thread does not hang
     public void addLoadChunk(int x, int z){
-        chunksToLoad.add(new Vector2i(x,z));
+        Vector2i key = new Vector2i(x,z);
+        //do not allow loading chunks more than once!
+        if (!chunksToLoad.contains(key)){
+            chunksToLoad.add(key);
+        }
     }
 
     public void tryToLoadChunk(){
