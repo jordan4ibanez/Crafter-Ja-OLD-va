@@ -119,6 +119,7 @@ public class SQLiteDiskAccessThread implements Runnable {
     private static final ConcurrentLinkedDeque<byte[]> chunksToSaveHeightMap = new ConcurrentLinkedDeque<>();
 
     public void addSaveChunk(int x, int z, byte[] blockData, byte[] rotationData, byte[] lightData, byte[] heightMap ){
+
         chunksToSaveKey.add(new Vector2i(x,z));
         chunksToSaveBlock.add(blockData);
         chunksToSaveRotation.add(rotationData);
@@ -128,7 +129,7 @@ public class SQLiteDiskAccessThread implements Runnable {
 
     private void tryToSaveChunk(){
 
-        if (!chunksToSaveKey.isEmpty()) {
+        if (!chunksToSaveKey.isEmpty() && !chunksToSaveBlock.isEmpty() && !chunksToSaveRotation.isEmpty() && !chunksToSaveLight.isEmpty() && !chunksToSaveHeightMap.isEmpty()) {
             try {
                 Vector2i poppedVector = chunksToSaveKey.pop();
 
@@ -136,8 +137,6 @@ public class SQLiteDiskAccessThread implements Runnable {
                 int z = poppedVector.y;
 
                 Statement statement = connection.createStatement();
-
-                Vector2i key = new Vector2i(x, z);
 
                 String sql = "INSERT OR REPLACE INTO WORLD " +
                         "(ID,BLOCK,ROTATION,LIGHT,HEIGHTMAP) " +
