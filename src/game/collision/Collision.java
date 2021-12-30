@@ -22,29 +22,6 @@ public class Collision {
     private static final AABBd entity = new AABBd();
     private static final AABBd block = new AABBd();
 
-    public static void inertiaFly(Vector3d pos, Vector3f inertia){
-        double delta = getDelta();
-
-        double adjustedDelta;
-
-        //the precision goal for delta is 0.01f, this adjusts it to be so
-        //the side effect, is the lower your FPS, the more it has to loop - but this has been adjusted to not be so extreme
-        int loops = 1;
-
-        if (delta >  0.01f){
-            loops = (int) Math.floor(delta / 0.01f);
-            adjustedDelta = (delta/(double)loops);
-        } else {
-            adjustedDelta = delta;
-        }
-
-        for (int i = 0; i < loops; i++) {
-            pos.add(inertia.x * adjustedDelta,inertia.y * adjustedDelta,inertia.z * adjustedDelta);
-
-            //inertia.add((float)(-inertia.x * adjustedDelta * 5d),0,(float)(-inertia.z * adjustedDelta * 5d));
-        }
-    }
-
     //this probably definitely absolutely should not take isPlayer as a value
     public static boolean applyInertia(Vector3d pos, Vector3f inertia, boolean onGround, float width, float height, boolean gravity, boolean sneaking, boolean applyCollision, boolean airFriction, boolean isPlayer){
         double delta = getDelta();

@@ -17,7 +17,6 @@ import static game.blocks.BlockDefinition.*;
 import static game.chunk.Chunk.*;
 import static game.clouds.Cloud.setCloudPos;
 import static game.collision.Collision.applyInertia;
-import static game.collision.Collision.inertiaFly;
 import static game.crafting.Inventory.updateWieldInventory;
 import static game.particle.Particle.createParticle;
 import static game.player.PlayerMesh.applyPlayerBodyAnimation;
@@ -500,19 +499,14 @@ public class Player {
         //max speed todo: make this call from a player object's maxSpeed!
         inertiaWorker.set(inertia.x, inertia.z);
 
-        float maxSpeed; //this should probably be cached
-        boolean debug = true;
+        float maxSpeed;
 
-        if (debug){
-            maxSpeed = 1000;
+        if (sneaking) {
+            maxSpeed = maxSneakSpeed;
+        } else if (running) {
+            maxSpeed = maxRunSpeed;
         } else {
-            if (sneaking) {
-                maxSpeed = maxSneakSpeed;
-            } else if (running) {
-                maxSpeed = maxRunSpeed;
-            } else {
-                maxSpeed = maxWalkSpeed;
-            }
+            maxSpeed = maxWalkSpeed;
         }
 
         //speed limit the player's movement
@@ -557,7 +551,7 @@ public class Player {
     }
 
     public static void playerOnTick() {
-        /*
+
         double delta = getDelta();
 
         //camera underwater effect trigger
@@ -623,8 +617,7 @@ public class Player {
                 }
             }
         }
-
-
+         */
 
 
 
@@ -680,21 +673,13 @@ public class Player {
         //values for application of inertia
         applyPlayerInertiaBuffer();
 
-        */
-
-        //todo: delete this application of inertiaBuffer
-        applyPlayerInertiaBuffer();
 
         //stop players from falling forever
         //this only applies their inertia if they are within a loaded chunk, IE
         //if the server doesn't load up something in time, they freeze in place
-        //if (getChunkKey(currentChunk.x, currentChunk.z) != null) {
-            //onGround = applyInertia(pos, inertia, true, width, height, true, sneaking, true, true, true);
-        //}
-
-        inertiaFly(pos,inertia);
-
-        pos.y = 120;
+        if (getChunkKey(currentChunk.x, currentChunk.z) != null) {
+            onGround = applyInertia(pos, inertia, true, width, height, true, sneaking, true, true, true);
+        }
 
         //apply the eyeHeight offset to the eyeHeight position
         posWithEyeHeight.set(pos.x, pos.y + eyeHeight, pos.z);
@@ -702,7 +687,6 @@ public class Player {
         //apply the collection height offset to the collection position
         posWithCollectionHeight.set(pos.x, pos.y + collectionHeight, pos.z);
 
-        /*
 
         //play sound when player lands on the ground
         if (onGround && !wasOnGround){
@@ -917,6 +901,8 @@ public class Player {
         }
 
 
+        */
+
 
         //update light level for the wield item
         lightCheckTimer += delta;
@@ -936,7 +922,6 @@ public class Player {
         oldRealPos.set(pos);
         wasOnGround = onGround;
         oldInventorySelection = currentInventorySelection;
-         */
     }
 
     public static void updateWorldChunkLoader(){

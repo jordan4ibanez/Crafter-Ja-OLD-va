@@ -180,6 +180,7 @@ public class SceneHandler {
         //runSpawningAlgorithm();
 
         updateWorldChunkLoader();
+
         popChunkMeshQueue(); //this actually transmits the data from the other threads into main thread
 
         updateListenerPosition();
