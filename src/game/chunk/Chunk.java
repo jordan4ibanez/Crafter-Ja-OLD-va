@@ -5,7 +5,6 @@ import engine.network.ChunkRequest;
 import org.joml.Vector2i;
 import org.joml.Vector3i;
 
-import java.io.IOException;
 import java.util.AbstractMap;
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -14,8 +13,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static engine.FancyMath.getDistance;
 import static engine.disk.Disk.*;
-import static engine.disk.SQLiteDiskAccess.loadChunk;
-import static engine.disk.SQLiteDiskAccess.saveChunk;
 import static engine.network.Networking.getIfMultiplayer;
 import static engine.network.Networking.sendOutChunkRequest;
 import static engine.settings.Settings.getRenderDistance;
