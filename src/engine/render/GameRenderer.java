@@ -14,8 +14,10 @@ import java.util.HashMap;
 
 import static engine.FancyMath.getDistance;
 import static engine.Window.*;
+import static engine.graphics.Camera.getCameraPerspective;
 import static engine.graphics.Camera.getCameraPosition;
 import static engine.graphics.Transformation.*;
+import static engine.gui.GUI.getCrossHairMesh;
 import static engine.settings.Settings.getGraphicsMode;
 import static engine.settings.Settings.getRenderDistance;
 import static game.chunk.Chunk.*;
@@ -738,15 +740,13 @@ public class GameRenderer {
         glClear(GL_DEPTH_BUFFER_BIT);
 
         //render inverted crosshair
-        /*
         if (getCameraPerspective() == 0){
             glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ONE_MINUS_SRC_COLOR);
-            modelViewMatrix.set(updateOrthoModelMatrix(workerVec3D.set(0,0,0),workerVec3F.set(0,0,0), workerVec3D2.set(windowScale/20f,windowScale/20f,windowScale/20f)));
-            hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            updateOrthoModelMatrix(0,0,0,0,0,0, windowScale/20f,windowScale/20f,windowScale/20f);
+            hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
             getCrossHairMesh().render();
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         }
-         */
 
         glClear(GL_DEPTH_BUFFER_BIT);
 
