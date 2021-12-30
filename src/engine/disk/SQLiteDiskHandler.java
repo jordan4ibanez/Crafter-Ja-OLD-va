@@ -9,7 +9,8 @@ public class SQLiteDiskHandler {
     //this mirrors the object's call
     public static void connectWorldDataBase(String worldName){
         sqLiteDiskAccessThread = new SQLiteDiskAccessThread();
-        sqLiteDiskAccessThread.connectWorldDataBase(worldName);
+        //this is needed to create the WORLD table
+        sqLiteDiskAccessThread.createWorldDataBase(worldName);
 
         sqLiteDiskAccessThread.start();
     }
@@ -37,9 +38,6 @@ public class SQLiteDiskHandler {
 
         //System.out.println(duration);
     }
-
-
-
 
 
 }

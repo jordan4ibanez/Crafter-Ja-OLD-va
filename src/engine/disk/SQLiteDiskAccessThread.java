@@ -6,8 +6,6 @@ import java.sql.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static engine.disk.SQLiteDeserializer.byteDeserialize;
-import static engine.disk.SQLiteSerializer.byteSerialize;
 import static game.chunk.BiomeGenerator.addChunkToBiomeGeneration;
 import static game.chunk.Chunk.*;
 import static game.chunk.ChunkUpdateHandler.chunkUpdate;
@@ -22,7 +20,7 @@ public class SQLiteDiskAccessThread implements Runnable {
 
     private final AtomicBoolean running = new AtomicBoolean(false);
 
-    public void connectWorldDataBase(String worldName){
+    public void createWorldDataBase(String worldName){
         //databases are automatically created with the JBDC driver
 
         //database parameters
@@ -247,6 +245,117 @@ public class SQLiteDiskAccessThread implements Runnable {
         }
 
         System.out.println("CLOSING WORLD DATABASE!");
-        closeWorldDataBase();
+        //closeWorldDataBase();
+    }
+
+    //deserializers
+    private static byte[] byteDeserialize(String serializedArray){
+
+        //turn string into array for easier access
+        char[] charArray = serializedArray.toCharArray();
+
+        //start at one to auto-add in the last item
+        int numberOfThings = 1;
+
+        //iterate number of elements, this is why the stringed array contains only commas and numbers
+        for (char c : charArray){
+            if (c == ','){
+                numberOfThings++;
+            }
+        }
+
+        //create new blank array
+        byte[] outPut = new byte[numberOfThings];
+
+        //create a new string builder
+        StringBuilder decode = new StringBuilder();
+
+        //start index at 0
+        int index = 0;
+
+        //auto-flush indexes
+        for (int i = 0; i <= charArray.length; i++){
+            //flush the number to the array
+            if (i == (charArray.length) || charArray[i] == ','){
+                outPut[index] = Byte.parseByte(decode.toString());
+                decode.setLength(0);
+                //tick up index
+                index++;
+            } else {
+                decode.append(charArray[i]);
+            }
+        }
+
+        return outPut;
+    }
+
+    private static int[] intDeserialize(String serializedArray){
+
+        //turn string into array for easier access
+        char[] charArray = serializedArray.toCharArray();
+
+        //start at one to auto-add in the last item
+        int numberOfThings = 1;
+
+        //iterate number of elements, this is why the stringed array contains only commas and numbers
+        for (char c : charArray){
+            if (c == ','){
+                numberOfThings++;
+            }
+        }
+
+        //create new blank array
+        int[] outPut = new int[numberOfThings];
+
+        //create a new string builder
+        StringBuilder decode = new StringBuilder();
+
+        //start index at 0
+        int index = 0;
+
+        //auto-flush indexes
+        for (int i = 0; i <= charArray.length; i++){
+            //flush the number to the array
+            if (i == (charArray.length) || charArray[i] == ','){
+                outPut[index] = Byte.parseByte(decode.toString());
+                decode.setLength(0);
+                //tick up index
+                index++;
+            } else {
+                decode.append(charArray[i]);
+            }
+        }
+
+        return outPut;
+    }
+
+
+    //serializer
+    private static String byteSerialize(byte[] bytes){
+
+        //build a raw custom string type to hold data, data elements only separated by commas
+        StringBuilder str = new StringBuilder();
+        for (int i = 0; i < bytes.length; i++){
+            str.append(bytes[i]);
+            if (i != bytes.length - 1){
+                str.append(",");
+            }
+        }
+
+        return str.toString();
+    }
+
+    private static String intSerialize(int[] ints){
+
+        //build a raw custom string type to hold data, data elements only separated by commas
+        StringBuilder str = new StringBuilder();
+        for (int i = 0; i < ints.length; i++){
+            str.append(ints[i]);
+            if (i != ints.length - 1){
+                str.append(",");
+            }
+        }
+
+        return str.toString();
     }
 }
