@@ -141,38 +141,54 @@ public class SQLiteDiskAccessThread implements Runnable {
         }
     }
 
-    public void tryToLoadChunk(int x, int z){
-        try {
-            Statement statement = connection.createStatement();
-            ResultSet resultTest = statement.executeQuery("SELECT * FROM WORLD WHERE ID ='" + x + "-" + z + "';");
+    private static final ConcurrentLinkedDeque<Vector2i> chunksToLoad = new ConcurrentLinkedDeque<>();
 
-            //found a chunk
-            if (resultTest.next()) {
+    //do this so that the main thread does not hang
+    public void addLoadChunk(int x, int z){
+        chunksToLoad.add(new Vector2i(x,z));
+    }
 
-                System.out.println("FOUND ONE!");
+    public void tryToLoadChunk(){
+        if (!chunksToLoad.isEmpty()) {
+            try {
 
-                //automatically set the chunk in memory :)
-                setChunk(x,z,
-                        byteDeserialize(resultTest.getString("BLOCK")),
-                        byteDeserialize(resultTest.getString("ROTATION")),
-                        byteDeserialize(resultTest.getString("LIGHT")),
-                        byteDeserialize(resultTest.getString("HEIGHTMAP"))
-                );
+                Vector2i poppedVector = chunksToLoad.pop();
 
-                //dump everything into the chunk updater
-                for (int i = 0; i < 8; i++) {
-                    chunkUpdate(x, z, i);
+                int x = poppedVector.x;
+                int z = poppedVector.y;
+
+
+                Statement statement = connection.createStatement();
+                ResultSet resultTest = statement.executeQuery("SELECT * FROM WORLD WHERE ID ='" + x + "-" + z + "';");
+
+                //found a chunk
+                if (resultTest.next()) {
+
+                    System.out.println("LOADING CHUNK FROM DATABASE!");
+
+                    //automatically set the chunk in memory
+                    setChunk(x, z,
+                            byteDeserialize(resultTest.getString("BLOCK")),
+                            byteDeserialize(resultTest.getString("ROTATION")),
+                            byteDeserialize(resultTest.getString("LIGHT")),
+                            byteDeserialize(resultTest.getString("HEIGHTMAP"))
+                    );
+
+                    //dump everything into the chunk updater
+                    for (int i = 0; i < 8; i++) {
+                        chunkUpdate(x, z, i);
+                    }
+
                 }
 
+                //did not find a chunk - create a new one
+                else {
+                    System.out.println("generate chunk here");
+                    addChunkToBiomeGeneration(x, z);
+                }
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
             }
-
-            //did not find a chunk - create a new one
-            else {
-                System.out.println("generate chunk here");
-                addChunkToBiomeGeneration(x,z);
-            }
-        } catch (SQLException e){
-            System.out.println(e.getMessage());
         }
     }
 
@@ -203,8 +219,11 @@ public class SQLiteDiskAccessThread implements Runnable {
     public void run() {
         running.set(true);
 
-        while(running.get()) {
+        while(running.get() ) {
             //System.out.println("NUMBER 5 IS ALIVE");
+            tryToLoadChunk();
+
+            System.out.println("remember to make saving chunks non-blocking");
 
         }
 
