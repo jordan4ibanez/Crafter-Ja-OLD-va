@@ -57,7 +57,6 @@ public class SQLiteDiskAccessThread implements Runnable {
                 statement.executeUpdate(sql);
                 statement.close();
 
-
             }
         } catch (SQLException e){
             //something has to go very wrong for this to happen
@@ -240,7 +239,9 @@ public class SQLiteDiskAccessThread implements Runnable {
         //do not shut down until all chunks are saved!
         while(running.get() || !chunksToSaveKey.isEmpty()) {
             //System.out.println("NUMBER 5 IS ALIVE");
-            tryToLoadChunk();
+            if (running.get()) {
+                tryToLoadChunk();
+            }
             tryToSaveChunk();
         }
 
