@@ -145,7 +145,7 @@ public class SceneHandler {
     }
 
 
-    private static void multiPlayerUpdate() throws Exception {
+    private static void multiPlayerUpdate() {
         testPlayerDiggingAnimation();
         playerOnTick();
         pauseMenuOnTick();
@@ -203,7 +203,7 @@ public class SceneHandler {
     }
 
     private static void gameUpdate() throws Exception {
-        //testPlayerDiggingAnimation();
+        testPlayerDiggingAnimation();
         playerOnTick();
         //itemsOnTick();
         //onTNTStep();
