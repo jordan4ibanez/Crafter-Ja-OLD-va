@@ -2,7 +2,6 @@ package engine.disk;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import engine.settings.SettingsObject;
-import game.chunk.ChunkData;
 import org.joml.Vector3d;
 
 import java.io.File;
@@ -112,55 +111,6 @@ public class Disk {
         }
     }
 
-
-    /*
-    public static ChunkData loadChunkFromDisk(int x, int z) throws IOException {
-
-        //System.out.println("loading!!");
-        String key = x + " " + z;
-        String dir = "Worlds/world" + currentActiveWorld + "/" + key + ".chunk";
-
-        ChunkSavingObject thisChunkLoaded = null;
-
-        File test = new File(dir);
-
-         //cannot read file
-        if (!test.canRead()){
-            return(null);
-        }
-
-
-
-        try {
-            thisChunkLoaded = objectMapper.readValue(test.toString(), ChunkSavingObject.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        if (thisChunkLoaded == null){
-            return null;
-        }
-
-        if (thisChunkLoaded.b == null){
-            return null;
-        }
-
-
-        ChunkData abstractedChunk = new ChunkData();
-
-        abstractedChunk.x = thisChunkLoaded.x;
-        abstractedChunk.z = thisChunkLoaded.z;
-        abstractedChunk.block = thisChunkLoaded.b;
-        abstractedChunk.rotation = thisChunkLoaded.r;
-        abstractedChunk.light = thisChunkLoaded.l;
-        abstractedChunk.heightMap = thisChunkLoaded.h;
-
-        //a test to see if there are other problems besides object mapper
-        return(null);
-
-        //return(abstractedChunk);
-    }
-     */
 
     public static void savePlayerPos(Vector3d pos){
         SpecialSavingVector3d tempPos = new SpecialSavingVector3d();
