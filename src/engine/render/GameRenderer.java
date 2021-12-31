@@ -6,6 +6,7 @@ import engine.graphics.ShaderProgram;
 import engine.gui.GUIObject;
 import game.crafting.InventoryObject;
 import game.item.Item;
+import game.particle.ParticleObject;
 import org.joml.*;
 
 import java.lang.Math;
@@ -34,6 +35,7 @@ import static game.crafting.InventoryLogic.*;
 import static game.item.ItemDefinition.getItemDefinition;
 import static game.item.ItemDefinition.getItemMesh;
 import static game.item.ItemEntity.getAllItems;
+import static game.particle.Particle.getAllParticles;
 import static game.player.Player.*;
 import static game.player.Player.getPlayerWorldSelectionPos;
 import static game.player.PlayerMesh.*;
@@ -601,20 +603,17 @@ public class GameRenderer {
         }
 
         //render particles
-        /*
+
         for (Object loadedObject : getAllParticles()){
 
             ParticleObject thisParticle = (ParticleObject) loadedObject;
 
             entityShaderProgram.setLightUniform("light", thisParticle.light); //todo make this work
 
-            Mesh thisMesh = thisParticle.mesh;
-
-            modelViewMatrix.set(updateParticleViewMatrix(thisParticle.pos, workerVec3F.set(getCameraRotation())));
-            entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            thisMesh.render();
+            updateParticleViewMatrix(thisParticle.pos.x, thisParticle.pos.y, thisParticle.pos.z, getCameraRotationX(), getCameraRotationY(), getCameraRotationZ());
+            entityShaderProgram.setUniform("modelViewMatrix", getModelMatrix());
+            thisParticle.mesh.render();
         }
-         */
 
 
         //render world selection mesh

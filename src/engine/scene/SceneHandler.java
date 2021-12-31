@@ -209,7 +209,7 @@ public class SceneHandler {
         //onTNTStep();
         pauseMenuOnTick();
         inventoryMenuOnTick();
-        //particlesOnStep();
+        particlesOnStep();
         //fallingEntityOnStep();
         //rainDropsOnTick();
         //mobsOnTick();

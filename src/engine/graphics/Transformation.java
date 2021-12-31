@@ -149,16 +149,15 @@ public class Transformation {
     }
 
 
-    public static Matrix4d updateParticleViewMatrix(Vector3d position, Vector3f rotation) {
+    public static void updateParticleViewMatrix(double positionX, double positionY, double positionZ, float rotationX, float rotationY, float rotationZ) {
         // First do the rotation so camera rotates over its position
-        modelViewMatrix.identity().identity().translate(position).
-                rotateY(Math.toRadians(-rotation.y)).
-                rotateZ(Math.toRadians(-rotation.z)).
-                rotateX(Math.toRadians(-rotation.x)).
+        modelViewMatrix.identity().identity().translate(positionX, positionY, positionZ).
+                rotateY(Math.toRadians(-rotationY)).
+                rotateZ(Math.toRadians(-rotationZ)).
+                rotateX(Math.toRadians(-rotationX)).
                 scale(1f);
         modelMatrix.set(viewMatrix);
         modelMatrix.mul(modelViewMatrix);
-        return modelMatrix;
     }
 
     public static  Matrix4d updateTextIn3DSpaceViewMatrix(Vector3d position, Vector3f rotation, Vector3d scale) {
