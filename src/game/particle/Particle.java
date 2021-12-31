@@ -38,6 +38,8 @@ public class Particle {
         particles.clear();
     }
 
+    private static final Vector3i currentFlooredPos = new Vector3i();
+
     private static final Deque<Integer> deletionQueue = new ArrayDeque<>();
 
     public static void particlesOnStep(){
@@ -50,7 +52,7 @@ public class Particle {
             thisParticle.timer += delta;
             thisParticle.lightUpdateTimer += delta;
 
-            Vector3i currentFlooredPos = new Vector3i((int)Math.floor(thisParticle.pos.x), (int)Math.floor(thisParticle.pos.y), (int)Math.floor(thisParticle.pos.z));
+            currentFlooredPos.set((int)Math.floor(thisParticle.pos.x), (int)Math.floor(thisParticle.pos.y), (int)Math.floor(thisParticle.pos.z));
 
             //poll local light every quarter second
             if (thisParticle.lightUpdateTimer >= 0.25f || !currentFlooredPos.equals(thisParticle.oldFlooredPos)){
