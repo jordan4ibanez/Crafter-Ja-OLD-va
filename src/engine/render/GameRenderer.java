@@ -627,9 +627,9 @@ public class GameRenderer {
         }
 
         //do standard blending
-        //shaderProgram.bind();
-        //shaderProgram.setUniform("projectionMatrix", projectionMatrix);
-        //shaderProgram.setUniform("texture_sampler", 0);
+        shaderProgram.bind();
+        shaderProgram.setUniform("projectionMatrix", getProjectionMatrix());
+        shaderProgram.setUniform("texture_sampler", 0);
 
 
         //render liquid chunk meshes
@@ -637,7 +637,7 @@ public class GameRenderer {
             glDisable(GL_CULL_FACE);
         }
 
-        /*
+
         for (int i = 0; i < arrayIndex; i++) {
 
             Mesh[] thisChunk = liquidDrawTypeArray[i];
@@ -652,13 +652,12 @@ public class GameRenderer {
 
             for (Mesh thisMesh : thisChunk) {
                 if (thisMesh != null) {
-                    modelViewMatrix.set(updateModelViewMatrix(workerVec3D.set(thisPos.x * 16d, 0, thisPos.y * 16d), workerVec3F.set(0, 0, 0)));
-                    shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                    updateViewMatrix(thisPos.x * 16d, 0, thisPos.y * 16d, 0, 0, 0);
+                    shaderProgram.setUniform("modelViewMatrix", getModelMatrix());
                     thisMesh.render();
                 }
             }
         }
-         */
 
         Arrays.fill(normalDrawTypeArray, null);
         Arrays.fill(liquidDrawTypeArray, null);
