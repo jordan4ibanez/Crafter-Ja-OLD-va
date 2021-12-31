@@ -30,11 +30,13 @@ import static engine.settings.Settings.*;
 import static game.chat.Chat.getCurrentMessageMesh;
 import static game.chat.Chat.getViewableChatMessages;
 import static game.chunk.Chunk.*;
+import static game.clouds.Cloud.*;
 import static game.crafting.Inventory.*;
 import static game.crafting.InventoryLogic.*;
 import static game.item.ItemDefinition.getItemDefinition;
 import static game.item.ItemDefinition.getItemMesh;
 import static game.item.ItemEntity.getAllItems;
+import static game.light.Light.getCurrentGlobalLightLevel;
 import static game.particle.Particle.getAllParticles;
 import static game.player.Player.*;
 import static game.player.Player.getPlayerWorldSelectionPos;
@@ -351,8 +353,7 @@ public class GameRenderer {
         entityShaderProgram.setUniform("projectionMatrix", getProjectionMatrix());
         entityShaderProgram.setUniform("texture_sampler", 0);
 
-        //debug render cloud
-        /*
+        //Render clouds
         {
             boolean[][] cloudData = getCloudData();
             float cloudScale = getCloudScale();
@@ -362,10 +363,9 @@ public class GameRenderer {
                 for (byte x = 0; x < 16; x++) {
                     for (byte z = 0; z < 16; z++) {
                         if (cloudData[x][z]) {
-                            modelViewMatrix.set(updateModelViewMatrix(workerVec3D.set((x * cloudScale) + ((cloudPos.x - 8) * 16d), 130, (z * cloudScale) + ((cloudPos.y - 8) * 16d) + cloudScroll), workerVec3F.set(0, 0, 0)));
+                            updateViewMatrix((x * cloudScale) + ((cloudPos.x - 8) * 16d), 130, (z * cloudScale) + ((cloudPos.y - 8) * 16d) + cloudScroll, 0, 0, 0);
                             entityShaderProgram.setLightUniform("light", getCurrentGlobalLightLevel());
-                            entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                            //getCloud2DMesh().render();
+                            entityShaderProgram.setUniform("modelViewMatrix", getModelMatrix());
                             getCloud3DMesh().render();
                         }
                     }
@@ -374,16 +374,15 @@ public class GameRenderer {
                 for (byte x = 0; x < 16; x++) {
                     for (byte z = 0; z < 16; z++) {
                         if (cloudData[x][z]) {
-                            modelViewMatrix.set(updateModelViewMatrix(workerVec3D.set((x * cloudScale) + ((cloudPos.x - 8) * 16d), 130, (z * cloudScale) + ((cloudPos.y - 8) * 16d) + cloudScroll), workerVec3F.set(0, 0, 0)));
+                            updateViewMatrix((x * cloudScale) + ((cloudPos.x - 8) * 16d), 130, (z * cloudScale) + ((cloudPos.y - 8) * 16d) + cloudScroll, 0, 0, 0);
                             entityShaderProgram.setLightUniform("light", getCurrentGlobalLightLevel());
-                            entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                            entityShaderProgram.setUniform("modelViewMatrix", getModelMatrix());
                             getCloud2DMesh().render();
                         }
                     }
                 }
             }
         }
-         */
         entityShaderProgram.unbind();
 
         if (graphicsMode) {

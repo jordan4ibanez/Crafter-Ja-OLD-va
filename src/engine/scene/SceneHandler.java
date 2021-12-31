@@ -22,8 +22,7 @@ import static game.chat.Chat.*;
 import static game.chunk.Chunk.*;
 import static game.chunk.ChunkMeshGenerationHandler.popChunkMeshQueue;
 import static game.chunk.ChunkUpdateHandler.chunkUpdater;
-import static game.clouds.Cloud.generateCloudData;
-import static game.clouds.Cloud.makeCloudsMove;
+import static game.clouds.Cloud.*;
 import static game.crafting.Inventory.generateRandomInventory;
 import static game.crafting.InventoryLogic.inventoryMenuOnTick;
 import static game.falling.FallingEntity.fallingEntityOnStep;
@@ -74,6 +73,8 @@ public class SceneHandler {
             calculateHealthBarElements(); //todo move this into a loader for player file things
             initialChunkPayload();
             //generateRandomInventory();
+            System.out.println("link the cloud position setter into the world initialization protocol");
+            setCloudPos(getPlayerCurrentChunkX(),getPlayerCurrentChunkZ());
             generateCloudData();
         }
 
@@ -174,7 +175,7 @@ public class SceneHandler {
         mouseInput();
         //tickUpTimeOfDay();
         //pollTimeOfDay(); //this needs to be in the main thread
-        //makeCloudsMove();
+        makeCloudsMove();
         countFPS();
 
         //runSpawningAlgorithm();

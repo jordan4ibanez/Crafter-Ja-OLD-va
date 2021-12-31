@@ -141,9 +141,20 @@ public class Player {
         return(playerIsJumping);
     }
 
+    //todo make this 2D
     public static Vector3i getPlayerCurrentChunk(){
         return currentChunk;
     }
+
+    public static int getPlayerCurrentChunkX(){
+        return currentChunk.x;
+    }
+
+    public static int getPlayerCurrentChunkZ(){
+        return currentChunk.z;
+    }
+
+
 
     public static float getSneakOffset(){
         return sneakOffset / 900f;
