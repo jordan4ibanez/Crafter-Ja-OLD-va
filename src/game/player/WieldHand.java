@@ -1,9 +1,7 @@
 package game.player;
 
+import org.joml.*;
 import org.joml.Math;
-import org.joml.Quaternionf;
-import org.joml.Vector3d;
-import org.joml.Vector3f;
 
 import static engine.graphics.Camera.getCameraRotation;
 import static engine.sound.SoundAPI.playSound;
@@ -16,24 +14,34 @@ import static game.player.ViewBobbing.getPlayerViewBobbing;
 
 public class WieldHand {
 
-    //TODO --- begin wield hand stuff!
-    private static final Vector3f wieldHandAnimationPosBaseEmpty = new Vector3f(13, -15, -14f);
-    private static final Vector3f wieldHandAnimationPosBaseItem = new Vector3f(13, -15, -14f);
+    //this is a mess :O
+    //z is distance from camera
+    //x - horizontal
+    //y - vertical
+    //These are the base positions of holding different types of items
+    private static final Vector3f wieldHandAnimationPosBaseEmptyStart = new Vector3f(14, -20, -16f);
+    private static final Vector3f wieldHandAnimationPosBaseEmptyEnd = new Vector3f(12, -8, -16f);
 
-    private static final Vector3f wieldRotationEmptyBegin = new Vector3f(Math.toRadians(30f), 0f, Math.toRadians(-10f));
-    private static final Vector3f wieldRotationEmptyEnd   = new Vector3f(Math.toRadians(40f), Math.toRadians(20f), Math.toRadians(20f));
+    //private static final Vector3f wieldHandAnimationPosBaseBlock = new Vector3f(13, -15, -14f);
+    //private static final Vector3f wieldHandAnimationPosBaseItem = new Vector3f(13, -15, -14f);
 
-    private static final Vector3f wieldRotationItemBegin = new Vector3f(Math.toRadians(0f), Math.toRadians(45f), Math.toRadians(0f));
-    private static final Vector3f wieldRotationItemEnd   = new Vector3f(Math.toRadians(90f), Math.toRadians(45f), Math.toRadians(0f));
+    //this is the animation
+    private static final Vector3f wieldRotationEmptyBegin = radianVector3f(135, 75, 20); //THE REAL BASE ROTATION
+    private static final Vector3f wieldRotationEmptyEnd = radianVector3f(110, 75, -20);
 
+    //private static final Vector3f wieldRotationItemBegin = new Vector3f(Math.toRadians(0f), Math.toRadians(45f), Math.toRadians(0f));
+    //private static final Vector3f wieldRotationItemEnd   = new Vector3f(Math.toRadians(90f), Math.toRadians(45f), Math.toRadians(0f));
+
+    //These are the actual realtime values of where the hand is
     private static final Vector3f wieldHandAnimationPos = new Vector3f(0, 0, 0);
     private static final Vector3f wieldHandAnimationRot = new Vector3f(0, 0, 0);
 
-    private static final Vector3f wieldHandAnimationRotBegin = new Vector3f();
-    private static final Vector3f wieldHandAnimationRotEnd = new Vector3f();
+    //private static final Vector3f wieldHandAnimationRotBegin = new Vector3f(0, 0, 0);
+    //private static final Vector3f wieldHandAnimationRotEnd = new Vector3f(0,0,0);
 
-    private static final Vector3f wieldHandAnimationPosBaseTool = new Vector3f();
+    //private static final Vector3f wieldHandAnimationPosBaseTool = new Vector3f();
 
+    //These are Quaternion workers - a 4x4 dimensional array
     private static final Quaternionf quatBegin = new Quaternionf();
     private static final Quaternionf quatEnd = new Quaternionf();
 
@@ -91,21 +99,19 @@ public class WieldHand {
 
         //hand
         if (getItemInInventorySlot(getPlayerInventorySelection(),0) == null) {
-            wieldHandAnimationPos.set((float) (-5f * Math.sin(java.lang.Math.pow(diggingAnimation, 0.8f) * Math.PI)) + wieldHandAnimationPosBaseEmpty.x, (float) (5f * Math.sin(diggingAnimation * 2f * Math.PI)) + wieldHandAnimationPosBaseEmpty.y,wieldHandAnimationPosBaseEmpty.z);
+            //set position
+            //wieldHandAnimationPos.set(wieldHandAnimationPosBaseEmptyStart);
+            //wieldHandAnimationPos.lerp(wieldHandAnimationPosBaseEmptyEnd, (float) Math.sin(diggingAnimation * (Math.PI * 2)));
 
-            wieldHandAnimationRot.x = 180f;
-
-            quatBegin.set(wieldRotationEmptyBegin.x, wieldRotationEmptyBegin.y, wieldRotationEmptyBegin.z,0);
-
-            quatEnd.set(wieldRotationEmptyEnd.x, wieldRotationEmptyEnd.y, wieldRotationEmptyEnd.z, 0)
-                    .set(quatBegin.slerp(quatEnd, (float) Math.sin(diggingAnimation * Math.PI)));
-
-            wieldHandAnimationRot.set(quatEnd.getEulerAnglesXYZ(wieldHandAnimationRot))
-                .add((float) Math.toDegrees(wieldHandAnimationRot.x) + 180f,(float) Math.toDegrees(wieldHandAnimationRot.y),(float) Math.toDegrees(wieldHandAnimationRot.z));
+            wieldHandAnimationPos.set((float) (-5f * Math.sin(java.lang.Math.pow(diggingAnimation, 0.8f) * Math.PI)) + wieldHandAnimationPosBaseEmptyStart.x, (float) (7f * Math.sin(diggingAnimation * 2f * Math.PI)) + wieldHandAnimationPosBaseEmptyStart.y,wieldHandAnimationPosBaseEmptyStart.z);
+            //set rotation
+            wieldHandAnimationRot.set(wieldRotationEmptyBegin);
+            //linear interpolate rotation in a circle
+            wieldHandAnimationRot.lerp(wieldRotationEmptyEnd, (float) Math.sin(diggingAnimation * Math.PI));
 
             //block
-        } else if (getItemInInventorySlot(getPlayerInventorySelection(),0).definition.blockID > 0) {
-            wieldHandAnimationPos.set(wieldHandAnimationPosBaseEmpty);
+        /*} else if (getItemInInventorySlot(getPlayerInventorySelection(),0).definition.blockID > 0) {
+            wieldHandAnimationPos.set(wieldHandAnimationPosBaseBlock);
 
             wieldHandAnimationRot.x = 180f;
 
@@ -134,6 +140,7 @@ public class WieldHand {
 
             wieldHandAnimationRot.set(quatEnd.getEulerAnglesXYZ(wieldHandAnimationRot))
                     .set((float) Math.toDegrees(wieldHandAnimationRot.x),(float) Math.toDegrees(wieldHandAnimationRot.y),(float) Math.toDegrees(wieldHandAnimationRot.z));
+         */
         }
 
     }
@@ -244,5 +251,10 @@ public class WieldHand {
         }
 
         oldYaw = yaw;
+    }
+
+    //a quick auto converter for laziness sake
+    private static Vector3f radianVector3f(float angleX, float angleY, float angleZ){
+        return new Vector3f(Math.toRadians(angleX), Math.toRadians(angleY), Math.toRadians(angleZ));
     }
 }
