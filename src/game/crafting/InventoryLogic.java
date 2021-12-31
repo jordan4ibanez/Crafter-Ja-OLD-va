@@ -377,8 +377,21 @@ public class InventoryLogic {
         }
     }
 
+    //mutable - be careful with this
     public static Vector3f getPlayerHudRotation(){
         return playerRot;
+    }
+    //immutable
+    public static float getPlayerHudRotationX(){
+        return playerRot.x;
+    }
+    //immutable
+    public static float getPlayerHudRotationY(){
+        return playerRot.y;
+    }
+    //immutable
+    public static float getPlayerHudRotationZ(){
+        return playerRot.z;
     }
 
 
