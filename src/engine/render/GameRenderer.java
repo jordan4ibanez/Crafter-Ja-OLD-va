@@ -3,6 +3,7 @@ package engine.render;
 import engine.Utils;
 import engine.graphics.Mesh;
 import engine.graphics.ShaderProgram;
+import game.item.Item;
 import org.joml.Vector2d;
 import org.joml.Vector2i;
 import org.joml.Vector3d;
@@ -21,6 +22,8 @@ import static engine.gui.GUI.*;
 import static engine.settings.Settings.getGraphicsMode;
 import static engine.settings.Settings.getRenderDistance;
 import static game.chunk.Chunk.*;
+import static game.item.ItemDefinition.getItemMesh;
+import static game.item.ItemEntity.getAllItems;
 import static game.player.Player.*;
 import static game.player.Player.getPlayerWorldSelectionPos;
 import static org.lwjgl.opengl.GL44.*;
@@ -439,16 +442,13 @@ public class GameRenderer {
         entityShaderProgram.bind();
 
         //        render each item entity
-        /*
         for (Object thisObject : getAllItems()){
             Item thisItem = (Item) thisObject;
-            modelViewMatrix.set(updateModelViewMatrix(workerVec3D.set(thisItem.pos).add(0,thisItem.hover,0), thisItem.rotation));
+            updateViewMatrix(thisItem.pos.x,thisItem.pos.y + thisItem.hover,thisItem.pos.z, thisItem.rotation.x, thisItem.rotation.y, thisItem.rotation.z);
             entityShaderProgram.setLightUniform("light", thisItem.light);
-            entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            entityShaderProgram.setUniform("modelViewMatrix", getModelMatrix());
             getItemMesh(thisItem.name).render();
         }
-
-         */
 
 
         //render each TNT entity

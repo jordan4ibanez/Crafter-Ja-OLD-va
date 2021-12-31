@@ -205,7 +205,7 @@ public class SceneHandler {
     private static void gameUpdate() throws Exception {
         testPlayerDiggingAnimation();
         playerOnTick();
-        //itemsOnTick();
+        itemsOnTick();
         //onTNTStep();
         pauseMenuOnTick();
         inventoryMenuOnTick();
