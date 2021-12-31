@@ -14,16 +14,21 @@ import java.util.HashMap;
 import static engine.FancyMath.getDistance;
 import static engine.Window.*;
 import static engine.graphics.Camera.*;
+import static engine.graphics.Camera.getCameraRotation;
 import static engine.graphics.Transformation.*;
 import static engine.gui.GUI.*;
 import static engine.settings.Settings.getGraphicsMode;
 import static engine.settings.Settings.getRenderDistance;
 import static game.chunk.Chunk.*;
+import static game.crafting.Inventory.getItemInInventorySlot;
+import static game.crafting.Inventory.getWieldInventory;
 import static game.item.ItemDefinition.getItemMesh;
 import static game.item.ItemEntity.getAllItems;
 import static game.player.Player.*;
 import static game.player.Player.getPlayerWorldSelectionPos;
 import static game.player.PlayerMesh.*;
+import static game.player.WieldHand.*;
+import static game.player.WieldHand.getWieldHandAnimationRot;
 import static org.lwjgl.opengl.GL44.*;
 import static org.lwjgl.opengl.GL44C.GL_BLEND;
 import static org.lwjgl.opengl.GL44C.glDisable;
@@ -671,38 +676,50 @@ public class GameRenderer {
         //finished with standard shader
         shaderProgram.unbind();
 
-        entityShaderProgram.bind();
+
 
         //BEGIN HUD (3d parts) - just wield hand for now
 
         glClear(GL_DEPTH_BUFFER_BIT);
 
-        //projectionMatrix.set(getProjectionMatrix(FOV, getWindowWidth(), getWindowHeight(), Z_NEAR, 100));
+        //resetting the rendering position here
+        resetProjectionMatrix(FOV, getWindowWidth(), getWindowHeight(), Z_NEAR, 100);
 
 
         //draw wield hand or item
-        /*
-        if (getCameraPerspective() == 0) {
 
-            entityShaderProgram.setUniform("projectionMatrix", projectionMatrix);
+        if (getCameraPerspective() == 0) {
+            entityShaderProgram.bind();
+
+            entityShaderProgram.setUniform("projectionMatrix", getProjectionMatrix());
             entityShaderProgram.setLightUniform("light", getPlayerLightLevel());
 
             //wield hand
             if (getItemInInventorySlot(getPlayerInventorySelection(),0) == null){
-                modelViewMatrix.set(getWieldHandMatrix(getCameraPosition(),getWieldHandAnimationPos(),getCameraRotation(), getWieldHandAnimationRot(), workerVec3D.set(0.35d), workerVec3D2.set(0.05d)));
-                entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                setWieldHandMatrix(
+                        getCameraPositionX(),getCameraPositionY(), getCameraPositionZ(),
+                        getWieldHandAnimationPosX(), getWieldHandAnimationPosY(), getWieldHandAnimationPosZ(),
+                        getCameraRotationX(),getCameraRotationY(), getCameraRotationZ(),
+                        getWieldHandAnimationRotX(),getWieldHandAnimationRotY(),getWieldHandAnimationRotZ(),
+                        0.35d,0.35d,0.35d,
+                        0.05d,0.05d,0.05d);
+                entityShaderProgram.setUniform("modelViewMatrix", getModelMatrix());
                 getWieldHandMesh().render();
             //block/item
             } else if (getWieldInventory() != null){
-                modelViewMatrix.set(getWieldHandMatrix(getCameraPosition(),getWieldHandAnimationPos(),getCameraRotation(), getWieldHandAnimationRot(), workerVec3D.set(1d, 1d, 1d), workerVec3D2.set(0.05d)));
-                entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                setWieldHandMatrix(
+                        getCameraPositionX(), getCameraPositionY(), getCameraPositionZ(),
+                        getWieldHandAnimationPosX(), getWieldHandAnimationPosY(), getWieldHandAnimationPosZ(),
+                        getCameraRotationX(), getCameraRotationY(), getCameraRotationZ(),
+                        getWieldHandAnimationRotX(), getWieldHandAnimationRotY(), getWieldHandAnimationRotZ(),
+                        1d, 1d, 1d,
+                        0.05d,0.05d,0.05d);
+                entityShaderProgram.setUniform("modelViewMatrix", getModelMatrix());
                 getItemMesh(getWieldInventory().name).render();
             }
 
             entityShaderProgram.unbind();
         }
-
-         */
 
         //finished with 3d
 
