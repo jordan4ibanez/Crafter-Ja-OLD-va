@@ -185,21 +185,26 @@ public class Transformation {
     }
 
 
-    public static Matrix4d getMobMatrix(Vector3d basePos, Vector3f offsetPos, Vector3f bodyYaw, Vector3f bodyPartRotation, Vector3d scale){
+    public static void setMobMatrix(
+            double basePosX, double basePosY, double basePosZ,
+            float offsetPosX, float offsetPosY, float offsetPosZ,
+            float bodyYawX, float bodyYawY, float bodyYawZ,
+            float bodyPartRotationX, float bodyPartRotationY, float bodyPartRotationZ,
+            double scaleX, double scaleY, double scaleZ){
         modelViewMatrix.identity()
                 //main rotation (positioning)
-                .translate(basePos.x, basePos.y, basePos.z).
-                rotateX(Math.toRadians(-bodyYaw.x)).
-                rotateY(Math.toRadians(-bodyYaw.y)).
-                rotateZ(Math.toRadians(-bodyYaw.z)).scale(scale)
+                .translate(basePosX, basePosY, basePosZ).
+                rotateX(Math.toRadians(-bodyYawX)).
+                rotateY(Math.toRadians(-bodyYawY)).
+                rotateZ(Math.toRadians(-bodyYawZ))
+                .scale(scaleX,scaleY,scaleZ)
                 //animation translation
-                .translate(offsetPos).
-                rotateY(Math.toRadians(-bodyPartRotation.y)).
-                rotateX(Math.toRadians(-bodyPartRotation.x)).
-                rotateZ(Math.toRadians(-bodyPartRotation.z));
+                .translate(offsetPosX, offsetPosY, offsetPosZ).
+                rotateY(Math.toRadians(-bodyPartRotationY)).
+                rotateX(Math.toRadians(-bodyPartRotationX)).
+                rotateZ(Math.toRadians(-bodyPartRotationZ));
         modelMatrix.set(viewMatrix);
         modelMatrix.mul(modelViewMatrix);
-        return modelMatrix;
     }
 
     public static Matrix4d getWieldHandMatrix(Vector3d basePos, Vector3d offsetPos, Vector3f bodyYaw, Vector3f bodyPartRotation, Vector3d scale, Vector3d offsetScale){
