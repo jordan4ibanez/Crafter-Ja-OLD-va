@@ -1239,7 +1239,7 @@ public class BlockDefinition {
         );
 
         //this passes all block data to the chunk mesh generator thread
-        passChunkMeshThreadData(drawTypes,frontTextures,backTextures,rightTextures,leftTextures,topTextures,bottomTextures,isLiquids);
+        passChunkMeshThreadData(drawTypes,frontTextures,backTextures,rightTextures,leftTextures,topTextures,bottomTextures,isLiquids,blockShapeMap);
     }
 
     public static boolean blockHasOnRightClickCall(byte ID){

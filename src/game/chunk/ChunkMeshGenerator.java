@@ -5,6 +5,7 @@ import engine.highPerformanceContainers.HyperIntArray;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 import static engine.Window.windowShouldClose;
@@ -23,6 +24,7 @@ public class ChunkMeshGenerator implements Runnable{
     private static final byte maxIDs = 30;
 
     //holds the blockshape data - on this thread
+    //maybe a dynamic type would be better for this for api usage in the future?
     private final static float[][][] blockShapeMap = new float[(byte)9][0][0];
 
     //holds BlockDefinition data - on this thread
@@ -57,7 +59,7 @@ public class ChunkMeshGenerator implements Runnable{
 
 
 
-    public static void passChunkMeshThreadData(byte[] dupeDrawTypes, float[][] dupeFrontTextures, float[][] dupeBackTextures, float[][] dupeRightTextures, float[][] dupeLeftTextures, float[][] dupeTopTextures, float[][] dupeBottomTextures, boolean[] dupeIsLiquids){
+    public static void passChunkMeshThreadData(byte[] dupeDrawTypes, float[][] dupeFrontTextures, float[][] dupeBackTextures, float[][] dupeRightTextures, float[][] dupeLeftTextures, float[][] dupeTopTextures, float[][] dupeBottomTextures, boolean[] dupeIsLiquids, float[][][]dupeBlockShapeMap){
         //copy data
         System.arraycopy(dupeDrawTypes, 0, drawTypes, 0, dupeDrawTypes.length);
         System.arraycopy(dupeFrontTextures, 0, frontTextures, 0, dupeFrontTextures.length);
@@ -67,6 +69,18 @@ public class ChunkMeshGenerator implements Runnable{
         System.arraycopy(dupeTopTextures, 0, topTextures, 0, dupeTopTextures.length);
         System.arraycopy(dupeBottomTextures, 0, bottomTextures, 0, dupeBottomTextures.length);
         System.arraycopy(dupeIsLiquids, 0, isLiquids, 0, dupeIsLiquids.length);
+
+        //copy block shape map
+        for (int i = 0; i < dupeBlockShapeMap.length; i++){
+            float[][] baseOfShape = dupeBlockShapeMap[i];
+            blockShapeMap[i] = new float[baseOfShape.length][0];
+            for (int q = 0; q < baseOfShape.length; q++){
+                float[] actualShape = baseOfShape[q];
+                blockShapeMap[i][q] = new float[actualShape.length];
+                System.arraycopy(actualShape, 0, blockShapeMap[i][q], 0, actualShape.length);
+            }
+        }
+
     }
 
     public void run() {
