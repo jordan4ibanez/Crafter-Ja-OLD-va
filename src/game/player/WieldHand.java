@@ -139,9 +139,21 @@ public class WieldHand {
     }
 
 
-
+    //mutable - be careful with this
     public static Vector3d getWieldHandAnimationPos(){
         return doubledHandAnimationPos.set(wieldHandAnimationPos.x + handInertia.x - (getPlayerViewBobbing().x * 10f),wieldHandAnimationPos.y + handInertia.y + (getPlayerViewBobbing().y * 10f),wieldHandAnimationPos.z);
+    }
+    //immutable
+    public static double getWieldHandAnimationPosX(){
+        return wieldHandAnimationPos.x + handInertia.x - (getPlayerViewBobbing().x * 10f);
+    }
+    //immutable
+    public static double getWieldHandAnimationPosY(){
+        return wieldHandAnimationPos.y + handInertia.y + (getPlayerViewBobbing().y * 10f);
+    }
+    //immutable
+    public static double getWieldHandAnimationPosZ(){
+        return wieldHandAnimationPos.z;
     }
 
     public static Vector3f getWieldHandAnimationRot(){
