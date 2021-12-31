@@ -692,7 +692,8 @@ public class GameRenderer {
 
         glClear(GL_DEPTH_BUFFER_BIT);
 
-        //resetting the rendering position here
+        //resetting the rendering position here for wield hand
+        //the HUD is ortholinear, it is not affected by FOV
         resetProjectionMatrix(FOV, getWindowWidth(), getWindowHeight(), Z_NEAR, 100);
 
 
