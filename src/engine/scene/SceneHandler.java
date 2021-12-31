@@ -73,7 +73,7 @@ public class SceneHandler {
             setWindowClearColor(0.53f,0.81f,0.92f,0.f);
             calculateHealthBarElements(); //todo move this into a loader for player file things
             initialChunkPayload();
-            generateRandomInventory();
+            //generateRandomInventory();
             generateCloudData();
         }
 
