@@ -67,7 +67,7 @@ public class PlayerMesh {
         return bodyMeshes;
     }
 
-    public static Vector3f[]getHumanBodyOffsets(){
+    public static Vector3f[]getPlayerBodyOffsets(){
         return bodyOffsets;
     }
 

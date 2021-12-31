@@ -4,19 +4,16 @@ import engine.Utils;
 import engine.graphics.Mesh;
 import engine.graphics.ShaderProgram;
 import game.item.Item;
-import org.joml.Vector2d;
-import org.joml.Vector2i;
-import org.joml.Vector3d;
-import org.joml.Vector3i;
+import org.joml.*;
 
+import java.lang.Math;
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.HashMap;
 
 import static engine.FancyMath.getDistance;
 import static engine.Window.*;
-import static engine.graphics.Camera.getCameraPerspective;
-import static engine.graphics.Camera.getCameraPosition;
+import static engine.graphics.Camera.*;
 import static engine.graphics.Transformation.*;
 import static engine.gui.GUI.*;
 import static engine.settings.Settings.getGraphicsMode;
@@ -26,6 +23,7 @@ import static game.item.ItemDefinition.getItemMesh;
 import static game.item.ItemEntity.getAllItems;
 import static game.player.Player.*;
 import static game.player.Player.getPlayerWorldSelectionPos;
+import static game.player.PlayerMesh.*;
 import static org.lwjgl.opengl.GL44.*;
 import static org.lwjgl.opengl.GL44C.GL_BLEND;
 import static org.lwjgl.opengl.GL44C.glDisable;
@@ -549,10 +547,10 @@ public class GameRenderer {
 
 
         //render player in third person mode
-        /*
+
         if (getCameraPerspective() > 0){
             Mesh[] playerMeshes = getPlayerMeshes();
-            Vector3f[] playerBodyOffsets = getHumanBodyOffsets();
+            Vector3f[] playerBodyOffsets = getPlayerBodyOffsets();
             Vector3f[] playerBodyRotation = getPlayerBodyRotations();
             Vector3d pos = getPlayerPos();
 
@@ -565,14 +563,14 @@ public class GameRenderer {
                     if (offsetIndex == 0){
                         headRot = getCameraRotation().x;
                     }
-                    modelViewMatrix.set(getMobMatrix(pos, playerBodyOffsets[offsetIndex], workerVec3F.set(0, getCameraRotation().y, 0), workerVec3F2.set(headRot + playerBodyRotation[offsetIndex].x,playerBodyRotation[offsetIndex].y,playerBodyRotation[offsetIndex].z), workerVec3D2.set(1f, 1f, 1f)));
+                    setMobMatrix(pos.x, pos.y, pos.z, playerBodyOffsets[offsetIndex].x, playerBodyOffsets[offsetIndex].y, playerBodyOffsets[offsetIndex].z, 0, getCameraRotation().y, 0, headRot + playerBodyRotation[offsetIndex].x,playerBodyRotation[offsetIndex].y,playerBodyRotation[offsetIndex].z, 1f, 1f, 1f);
                 } else {
                     if (offsetIndex == 0){
                         headRot = getCameraRotation().x * -1f;
                     }
-                    modelViewMatrix.set(getMobMatrix(pos, playerBodyOffsets[offsetIndex], workerVec3F.set(0, getCameraRotation().y + 180f, 0), workerVec3F2.set(headRot + playerBodyRotation[offsetIndex].x,playerBodyRotation[offsetIndex].y,playerBodyRotation[offsetIndex].z), workerVec3D2.set(1f, 1f, 1f)));
+                    setMobMatrix(pos.x, pos.y, pos.z, playerBodyOffsets[offsetIndex].x,playerBodyOffsets[offsetIndex].y,playerBodyOffsets[offsetIndex].z, 0, getCameraRotation().y + 180f, 0, headRot + playerBodyRotation[offsetIndex].x,playerBodyRotation[offsetIndex].y,playerBodyRotation[offsetIndex].z, 1f, 1f, 1f);
                 }
-                entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                entityShaderProgram.setUniform("modelViewMatrix", getModelMatrix());
                 thisMesh.render();
                 offsetIndex++;
             }
@@ -586,7 +584,6 @@ public class GameRenderer {
             //workerMesh.render();
             //workerMesh.cleanUp(false);
         }
-         */
 
         //render particles
         /*
