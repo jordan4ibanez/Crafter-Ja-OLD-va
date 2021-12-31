@@ -207,26 +207,30 @@ public class Transformation {
         modelMatrix.mul(modelViewMatrix);
     }
 
-    public static Matrix4d getWieldHandMatrix(Vector3d basePos, Vector3d offsetPos, Vector3f bodyYaw, Vector3f bodyPartRotation, Vector3d scale, Vector3d offsetScale){
+    public static void setWieldHandMatrix(
+            double basePosX, double basePosY, double basePosZ,
+            double offsetPosX, double offsetPosY, double offsetPosZ,
+            float bodyYawX, float bodyYawY, float bodyYawZ,
+            float bodyPartRotationX, float bodyPartRotationY, float bodyPartRotationZ,
+            double scaleX, double scaleY, double scaleZ,
+            double offsetScaleX, double offsetScaleY, double offsetScaleZ){
         modelViewMatrix.identity()
                 //main positioning
-                .translate(basePos.x, basePos.y, basePos.z)//.scale(scale);
+                .translate(basePosX, basePosY, basePosZ)//.scale(scale);
                 //main rotation
-                .rotateY(Math.toRadians(-bodyYaw.y)) //y must be first - kind of like a tank aiming it's gun
-                .rotateX(Math.toRadians(-bodyYaw.x))
-                .rotateZ(Math.toRadians(-bodyYaw.z))
+                .rotateY(Math.toRadians(-bodyYawY)) //y must be first - kind of like a tank aiming it's gun
+                .rotateX(Math.toRadians(-bodyYawX))
+                .rotateZ(Math.toRadians(-bodyYawZ))
                 //do animation offsets
-                .translate(offsetPos.mul(offsetScale))
+                .translate(offsetPosX * offsetScaleX, offsetPosY * offsetScaleY, offsetPosZ * offsetScaleZ)
                 //finish off the animation rotations
-                .rotateY(Math.toRadians(-bodyPartRotation.y))
-                .rotateX(Math.toRadians(-bodyPartRotation.x))
-                .rotateZ(Math.toRadians(-bodyPartRotation.z))
-                .scale(scale);
+                .rotateY(Math.toRadians(-bodyPartRotationY))
+                .rotateX(Math.toRadians(-bodyPartRotationX))
+                .rotateZ(Math.toRadians(-bodyPartRotationZ))
+                .scale(scaleX, scaleY, scaleZ);
 
         modelMatrix.set(viewMatrix);
         modelMatrix.mul(modelViewMatrix);
-
-        return modelMatrix;
     }
 
 
