@@ -259,11 +259,10 @@ public class GUILogic {
                         case 3 -> {
                             int renderDistance = getRenderDistance();
                             renderDistance = switch (renderDistance) {
-                                case 3 -> 5;
                                 case 5 -> 7;
                                 case 7 -> 9;
                                 case 9 -> 3;
-                                default -> getRenderDistance();
+                                default -> 5;
                             };
                             setRenderDistance(renderDistance, true);
                             gameSettingsMenuGUI[3].updateTextCenteredFixed("RENDER DISTANCE: " + renderDistance);
