@@ -1,5 +1,9 @@
 package engine.disk;
 
+import static engine.disk.Disk.savePlayerPos;
+import static game.chunk.Chunk.globalFinalChunkSaveToDisk;
+import static game.player.Player.getPlayerPos;
+
 //this handles the thread object and tells it what to do
 public class SQLiteDiskHandler {
 
@@ -16,6 +20,9 @@ public class SQLiteDiskHandler {
 
     //closes the world's database, kills the thread, removes the object pointer
     public static void closeWorldDataBase(){
+        //DUMP EVERYTHING IN!
+        globalFinalChunkSaveToDisk();
+        savePlayerPos(getPlayerPos());
         sqLiteDiskAccessThread.stop();
 
         //nullify, this thread will stop itself

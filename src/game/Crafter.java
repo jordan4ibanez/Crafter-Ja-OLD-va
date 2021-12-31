@@ -77,8 +77,6 @@ public class Crafter {
             e.printStackTrace();
             System.exit(-1);
         } finally {
-            globalFinalChunkSaveToDisk();
-            savePlayerPos(getPlayerPos());
             cleanup();
         }
     }

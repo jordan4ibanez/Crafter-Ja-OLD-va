@@ -31,8 +31,12 @@ public class SQLiteDiskAccessThread implements Runnable {
             connection = DriverManager.getConnection(url);
 
             if (connection != null){
+
+                System.out.println("SQLITE IS CONNECTED TO WORLD: " + worldName);
                 //metadata testing
                 meta = connection.getMetaData();
+
+                boolean test = connection.getAutoCommit();
 
                 Statement statement = connection.createStatement();
                 //increase SQLite cache size - 256MB
