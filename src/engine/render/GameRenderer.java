@@ -27,9 +27,6 @@ import static org.lwjgl.opengl.GL44.*;
 import static org.lwjgl.opengl.GL44C.GL_BLEND;
 import static org.lwjgl.opengl.GL44C.glDisable;
 
-//import static game.mob.Human.getHumanBodyOffsets;
-//import static game.mob.Human.getHumanMeshes;
-
 public class GameRenderer {
 
     private static final float FOV = (float) Math.toRadians(72.0f); //todo: make this a calculator method ala calculateFOV(float);
@@ -406,7 +403,7 @@ public class GameRenderer {
 
 
         //render allFaces chunk meshes
-        /*
+
         for (int i = 0; i < arrayIndex; i++) {
 
             Mesh[] thisChunk = allFaceDrawTypeArray[i];
@@ -420,17 +417,16 @@ public class GameRenderer {
             //allFaces
             for (Mesh thisMesh : thisChunk) {
                 if (thisMesh != null) {
-                    modelViewMatrix.set(updateModelViewMatrix(workerVec3D.set(thisPos.x * 16d, 0, thisPos.y * 16d), workerVec3F.set(0, 0, 0)));
+                    updateViewMatrix(thisPos.x * 16d, 0, thisPos.y * 16d, 0, 0, 0);
                     if (graphicsMode) {
-                        glassLikeShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                        glassLikeShaderProgram.setUniform("modelViewMatrix", getModelMatrix());
                     } else {
-                        shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                        shaderProgram.setUniform("modelViewMatrix", getModelMatrix());
                     }
                     thisMesh.render();
                 }
             }
         }
-         */
 
         if (graphicsMode) {
             glassLikeShaderProgram.unbind();
