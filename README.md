@@ -48,13 +48,7 @@ You should now be able to run the game using java -jar Crafter.jar in the folder
 
 # Todo List: (This is probably outdated)
 
-1. Re-implement basic lighting
-
-2. Implement torches
-
-3. Implement day/night
-
-4. Implement multiplayer
+1. Modularize things - less hardcoded implementations
 
 
 ## Stargazers over time
