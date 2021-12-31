@@ -746,13 +746,12 @@ public class GameRenderer {
         resetOrthoProjectionMatrix(); // needed to get current screen size
 
         //render water effect
-        /*
+
         if (isCameraSubmerged()) {
-            modelViewMatrix.set(updateOrthoModelMatrix(workerVec3D.set(0,0,0),workerVec3F.set(0,0,0), workerVec3D2.set(windowScale * 2,windowScale,windowScale)));
-            hudShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+            updateOrthoModelMatrix(0,0,0,0,0,0, windowScale * 2,windowScale,windowScale);
+            hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
             getGlobalWaterEffectMesh().render();
         }
-         */
 
         glClear(GL_DEPTH_BUFFER_BIT);
 
