@@ -65,6 +65,8 @@ public class Particle {
             if (thisParticle.timer > 1f){
                 deletionQueue.add(thisParticle.key);
             }
+
+            thisParticle.oldFlooredPos.set(currentFlooredPos);
         }
 
         while (!deletionQueue.isEmpty()) {

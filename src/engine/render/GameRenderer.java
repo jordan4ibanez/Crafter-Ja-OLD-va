@@ -608,7 +608,7 @@ public class GameRenderer {
 
             ParticleObject thisParticle = (ParticleObject) loadedObject;
 
-            entityShaderProgram.setLightUniform("light", thisParticle.light); //todo make this work
+            entityShaderProgram.setLightUniform("light", thisParticle.light);
 
             updateParticleViewMatrix(thisParticle.pos.x, thisParticle.pos.y, thisParticle.pos.z, getCameraRotationX(), getCameraRotationY(), getCameraRotationZ());
             entityShaderProgram.setUniform("modelViewMatrix", getModelMatrix());
