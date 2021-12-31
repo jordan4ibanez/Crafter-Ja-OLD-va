@@ -823,7 +823,7 @@ public class GameRenderer {
                         updateOrthoModelMatrix( getMousePosCenteredX(), getMousePosCenteredY() - (windowScale / 55d), 0, 45, 45, 0, windowScale / 8d, windowScale / 8d, windowScale / 8d);
                     }
 
-                    hudShaderProgram.setUniform("modelViewMatrix", getModelMatrix());
+                    hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
 
                     getItemMesh(getMouseInventory().name).render();
 
