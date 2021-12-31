@@ -156,8 +156,21 @@ public class WieldHand {
         return wieldHandAnimationPos.z;
     }
 
+    //mutable - be careful with this
     public static Vector3f getWieldHandAnimationRot(){
         return wieldHandAnimationRot;
+    }
+    //immutable
+    public static float getWieldHandAnimationRotX(){
+        return wieldHandAnimationRot.x;
+    }
+    //immutable
+    public static float getWieldHandAnimationRotY(){
+        return wieldHandAnimationRot.y;
+    }
+    //immutable
+    public static float getWieldHandAnimationRotZ(){
+        return wieldHandAnimationRot.z;
     }
 
 
