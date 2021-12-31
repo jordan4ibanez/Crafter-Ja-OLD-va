@@ -210,23 +210,23 @@ public class Transformation {
     public static void setWieldHandMatrix(
             double basePosX, double basePosY, double basePosZ,
             double offsetPosX, double offsetPosY, double offsetPosZ,
-            float bodyYawX, float bodyYawY, float bodyYawZ,
-            float bodyPartRotationX, float bodyPartRotationY, float bodyPartRotationZ,
+            float cameraRotationX, float cameraRotationY, float cameraRotationZ,
+            float handRotationX, float handRotationY, float handRotationZ,
             double scaleX, double scaleY, double scaleZ,
             double offsetScaleX, double offsetScaleY, double offsetScaleZ){
         modelViewMatrix.identity()
                 //main positioning
                 .translate(basePosX, basePosY, basePosZ)//.scale(scale);
                 //main rotation
-                .rotateY(Math.toRadians(-bodyYawY)) //y must be first - kind of like a tank aiming it's gun
-                .rotateX(Math.toRadians(-bodyYawX))
-                .rotateZ(Math.toRadians(-bodyYawZ))
+                .rotateY(Math.toRadians(-cameraRotationY)) //y must be first - kind of like a tank aiming it's gun
+                .rotateX(Math.toRadians(-cameraRotationX))
+                .rotateZ(Math.toRadians(-cameraRotationZ))
                 //do animation offsets
                 .translate(offsetPosX * offsetScaleX, offsetPosY * offsetScaleY, offsetPosZ * offsetScaleZ)
                 //finish off the animation rotations
-                .rotateY(Math.toRadians(-bodyPartRotationY))
-                .rotateX(Math.toRadians(-bodyPartRotationX))
-                .rotateZ(Math.toRadians(-bodyPartRotationZ))
+                .rotateX(handRotationX)
+                .rotateZ(handRotationZ)
+                .rotateY(handRotationY)
                 .scale(scaleX, scaleY, scaleZ);
 
         modelMatrix.set(viewMatrix);
