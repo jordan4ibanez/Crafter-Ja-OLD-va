@@ -24,10 +24,6 @@ public class SQLiteDiskHandler {
         globalFinalChunkSaveToDisk();
         savePlayerPos(getPlayerPos());
         sqLiteDiskAccessThread.stop();
-
-        //nullify, this thread will stop itself
-        //this avoids an accidental pointer mix up
-        //sqLiteDiskAccessThread = null;
     }
 
 
