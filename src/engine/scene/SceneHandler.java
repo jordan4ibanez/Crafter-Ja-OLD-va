@@ -175,7 +175,7 @@ public class SceneHandler {
         //tickUpTimeOfDay();
         //pollTimeOfDay(); //this needs to be in the main thread
         //makeCloudsMove();
-        //countFPS();
+        countFPS();
 
         //runSpawningAlgorithm();
 
