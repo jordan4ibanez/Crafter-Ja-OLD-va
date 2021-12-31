@@ -832,7 +832,6 @@ public class GameRenderer {
                         glClear(GL_DEPTH_BUFFER_BIT);
                         updateOrthoModelMatrix( getMousePosCenteredX() + (windowScale/47d),  getMousePosCenteredY() - (windowScale / 35f), 0, 0, 0, 0, windowScale / 48, windowScale / 48, windowScale / 48);
                         hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
-                        System.out.println("probably should create a better way to render text instead of regenerating it over and over bub");
                         Mesh workerMesh = createTextCenteredWithShadow(Integer.toString(getMouseInventory().stack), 1f, 1f, 1f);
                         workerMesh.render();
                         workerMesh.cleanUp(false);
