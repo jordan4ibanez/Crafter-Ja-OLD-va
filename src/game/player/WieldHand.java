@@ -21,6 +21,7 @@ public class WieldHand {
     //These are the base positions of holding different types of items
     private static final Vector3f wieldHandAnimationPosEmpty = new Vector3f(14, -20, -16f);
     private static final Vector3f wieldHandAnimationPosBlock = new Vector3f(12, -16, -14f);
+    private static final Vector3f wieldHandAnimationPosItem = new Vector3f(9, -8, -7f);
 
     //private static final Vector3f wieldHandAnimationPosBaseBlock = new Vector3f(13, -15, -14f);
     //private static final Vector3f wieldHandAnimationPosBaseItem = new Vector3f(13, -15, -14f);
@@ -31,6 +32,9 @@ public class WieldHand {
 
     private static final Vector3f wieldRotationBlockBegin = radianVector3f(0f, 45f, 0f);
     private static final Vector3f wieldRotationBlockEnd   = radianVector3f(-75f, 45f, 0f);
+
+    private static final Vector3f wieldRotationItemBegin = radianVector3f(-30f, -75, 0f);
+    private static final Vector3f wieldRotationItemEnd   = radianVector3f(-70, -75, 0f);
 
     //These are the actual realtime values of where the hand is
     private static final Vector3f wieldHandAnimationPos = new Vector3f(0, 0, 0);
@@ -119,26 +123,14 @@ public class WieldHand {
             wieldHandAnimationRot.lerp(wieldRotationBlockEnd, (float) Math.sin(diggingAnimation * Math.PI));
 
             //item/tool
-        }/* else if (getItemInInventorySlot(getPlayerInventorySelection(),0).definition.isItem){
-
-            wieldHandAnimationPosBaseTool.set(10f,-6.5f,-8f);
-
-            wieldHandAnimationRotBegin.set(Math.toRadians(0), Math.toRadians(65), Math.toRadians(-35));
-            wieldHandAnimationRotEnd.set(Math.toRadians(50), Math.toRadians(75), Math.toRadians(-45));
-
-            wieldHandAnimationPos.set((float) (-8f * Math.sin(java.lang.Math.pow(diggingAnimation, 0.6f) * Math.PI)) + wieldHandAnimationPosBaseTool.x,(float) (5f * Math.sin(diggingAnimation * Math.PI)) + wieldHandAnimationPosBaseTool.y,wieldHandAnimationPosBaseTool.z);
-
-            quatBegin.set(wieldHandAnimationRotBegin.x, wieldHandAnimationRotBegin.y, wieldHandAnimationRotBegin.z,0);
-
-            quatEnd.set(wieldHandAnimationRotEnd.x, wieldHandAnimationRotEnd.y, wieldHandAnimationRotEnd.z,0)
-                    .set(quatBegin.slerp(quatEnd, (float) Math.sin(diggingAnimation * Math.PI)));
-
-            wieldHandAnimationRot.set(quatEnd.getEulerAnglesXYZ(wieldHandAnimationRot))
-                    .set((float) Math.toDegrees(wieldHandAnimationRot.x),(float) Math.toDegrees(wieldHandAnimationRot.y),(float) Math.toDegrees(wieldHandAnimationRot.z));
-
+        } else if (getItemInInventorySlot(getPlayerInventorySelection(),0).definition.isItem){
+            //set position
+            wieldHandAnimationPos.set((float) (-6f * Math.sin(java.lang.Math.pow(diggingAnimation, 0.8f) * Math.PI)) + wieldHandAnimationPosItem.x, (float) (4f * Math.sin(diggingAnimation * 2f * Math.PI)) + wieldHandAnimationPosItem.y, wieldHandAnimationPosItem.z);
+            //set rotation
+            wieldHandAnimationRot.set(wieldRotationItemBegin);
+            //linear interpolate
+            wieldHandAnimationRot.lerp(wieldRotationItemEnd, (float) Math.sin(diggingAnimation * Math.PI));
         }
-        */
-
     }
 
 
