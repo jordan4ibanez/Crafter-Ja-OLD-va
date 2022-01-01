@@ -33,7 +33,7 @@ import static game.tnt.TNTEntity.createTNTEntityMesh;
 public class Crafter {
 
     //fields
-    private static final String versionName = "Crafter 0.07a - General Rework - Broken";
+    private static final String versionName = "Crafter 0.07a";
 
     public static String getVersionName(){
         return versionName;

@@ -1,4 +1,4 @@
-# Crafter 0.07a - General Rework - Broken
+# Crafter 0.07a
 
 A blocky game written in java with LWJGL 3
 
