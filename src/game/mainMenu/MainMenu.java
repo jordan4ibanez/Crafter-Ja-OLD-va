@@ -5,7 +5,8 @@ import engine.gui.GUIObject;
 import engine.sound.SoundSource;
 import org.joml.Vector2d;
 
-import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Random;
@@ -268,7 +269,7 @@ public class MainMenu {
         connectionFailure = true;
     }
 
-    public static void doMainMenuLogic() throws IOException {
+    public static void doMainMenuLogic() {
 
         if(connectionFailure){
             connectionFailure = false;
@@ -872,8 +873,38 @@ public class MainMenu {
     private static Mesh titleScreenGagMeshBackGround = createTextCentered("", 0.2f, 0.2f, 0f);
     private static Mesh titleScreenGagMeshForeGround = createTextCentered("", 1f, 1f, 0f);
 
+    private static final DateTimeFormatter dtf =  DateTimeFormatter.ofPattern("MM/dd");
+    private static final LocalDateTime now = LocalDateTime.now();
+    private static final String date = dtf.format(now);
+    private static final String[][] specialDates = {
+            {"01/01", "Happy new year!"},
+            {"03/17", "Luck o' the Irish!"},
+            {"04/17", "Happy Easter!"},
+            {"04/26", "Happy Anniversary!"},
+            {"09/17", "Happy birthday Linux!"},
+            {"10/10", "Happy birthday Minetest!"},
+            {"10/14", "Happy birthday KDE!"},
+            {"10/31", "Happy Halloween!"},
+            {"11/24", "Happy Thanksgiving!"},
+            {"12/24", "Merry Christmas!"},
+            {"12/25", "Merry Christmas!"},
+            {"12/31", "Happy new year's eve!"}
+    };
+
     public static void selectTitleScreenGag(){
-        titleScreenGag = titleScreenGags[random.nextInt(titleScreenGags.length)];
+        boolean dateFound = false;
+
+        for (String[] dateArray : specialDates){
+            if (date.equals(dateArray[0])){
+                dateFound = true;
+                titleScreenGag = dateArray[1];
+                break;
+            }
+        }
+
+        if (!dateFound) {
+            titleScreenGag = titleScreenGags[random.nextInt(titleScreenGags.length)];
+        }
 
         if (titleScreenGag.equals("Look at the window title!")){
             updateWindowTitle("Got you!");
@@ -1077,6 +1108,10 @@ public class MainMenu {
             "Uses Arch, BTW!",
             "Also try Minetest!",
             "Too many threads!",
-            "Luultavasti kaannetty oikein!"
+            "Luultavasti kaannetty oikein!",
+            "Found in the Arctic!",
+            "New build now!",
+            "Now with static water!",
+            "Wooden tools!",
     };
 }
