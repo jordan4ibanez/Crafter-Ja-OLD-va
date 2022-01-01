@@ -157,7 +157,7 @@ public class Ray {
             digBlock(finalPos.x, finalPos.y, finalPos.z);
         }
         for (int i = 0; i < 40 + (int)(Math.random() * 15); i++) {
-            createParticle(finalPos.x + (Math.random()-0.5d), finalPos.y + (Math.random()-0.5d), finalPos.z + (Math.random()-0.5d), (float)(Math.random()-0.5f) * 2f, 0f, (float)(Math.random()-0.5f) * 2f, thisBlock);
+            createParticle(finalPos.x + (Math.random()), finalPos.y + (Math.random()), finalPos.z + (Math.random()), (float)(Math.random()-0.5f) * 2f, 0f, (float)(Math.random()-0.5f) * 2f, thisBlock);
         }
     }
     private static void rayPlaceBlock(byte ID) {

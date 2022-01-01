@@ -1076,6 +1076,7 @@ public class MainMenu {
             "The pointers are always NULL!",
             "Uses Arch, BTW!",
             "Also try Minetest!",
-            "Too many threads!"
+            "Too many threads!",
+            "Luultavasti kaannetty oikein!"
     };
 }

@@ -6,7 +6,6 @@ import engine.graphics.ShaderProgram;
 import engine.gui.GUIObject;
 import game.crafting.InventoryObject;
 import game.item.Item;
-import game.particle.ParticleObject;
 import org.joml.*;
 
 import java.lang.Math;
@@ -38,12 +37,11 @@ import static game.item.ItemDefinition.getItemDefinition;
 import static game.item.ItemDefinition.getItemMesh;
 import static game.item.ItemEntity.getAllItems;
 import static game.light.Light.getCurrentGlobalLightLevel;
-import static game.particle.Particle.getAllParticles;
+import static game.particle.Particle.*;
 import static game.player.Player.*;
 import static game.player.Player.getPlayerWorldSelectionPos;
 import static game.player.PlayerMesh.*;
 import static game.player.WieldHand.*;
-import static game.player.WieldHand.getWieldHandAnimationRot;
 import static org.lwjgl.opengl.GL44.*;
 import static org.lwjgl.opengl.GL44C.GL_BLEND;
 import static org.lwjgl.opengl.GL44C.glDisable;
@@ -587,15 +585,12 @@ public class GameRenderer {
 
         //render particles
 
-        for (Object loadedObject : getAllParticles()){
+        for (int key : getParticleKeys()){
+            entityShaderProgram.setLightUniform("light", getParticleLight(key));
 
-            ParticleObject thisParticle = (ParticleObject) loadedObject;
-
-            entityShaderProgram.setLightUniform("light", thisParticle.light);
-
-            updateParticleViewMatrix(thisParticle.pos.x, thisParticle.pos.y, thisParticle.pos.z, getCameraRotationX(), getCameraRotationY(), getCameraRotationZ());
+            updateParticleViewMatrix(getParticlePosX(key), getParticlePosY(key), getParticlePosZ(key), getCameraRotationX(), getCameraRotationY(), getCameraRotationZ());
             entityShaderProgram.setUniform("modelViewMatrix", getModelMatrix());
-            thisParticle.mesh.render();
+            getParticleMesh(key).render();
         }
 
 

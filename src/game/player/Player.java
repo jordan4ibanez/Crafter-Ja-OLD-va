@@ -787,7 +787,7 @@ public class Player {
                             particleInertia.y = (float) Math.random() * 2f;
                             particleInertia.z = (float) (Math.random() - 0.5f) * 2f;
 
-                            createParticle(particlePos, particleInertia, miningBlock);
+                            createParticle(particlePos.x, particlePos.y ,particlePos.z, particleInertia.x, particleInertia.y, particleInertia.z, miningBlock);
                         }
                     }
                     case 1 -> {
@@ -803,7 +803,7 @@ public class Player {
                             particleInertia.y = (float) Math.random() * 2f;
                             particleInertia.z = (float) (Math.random() - 0.5f) * 2f;
 
-                            createParticle(particlePos, particleInertia, miningBlock);
+                            createParticle(particlePos.x, particlePos.y ,particlePos.z, particleInertia.x, particleInertia.y, particleInertia.z, miningBlock);
                         }
                     }
                     case 2 -> {
@@ -819,7 +819,7 @@ public class Player {
                             particleInertia.y = (float) Math.random() * 2f;
                             particleInertia.z = (float) (Math.random() - 0.5f) * 2f;
 
-                            createParticle(particlePos, particleInertia, miningBlock);
+                            createParticle(particlePos.x, particlePos.y ,particlePos.z, particleInertia.x, particleInertia.y, particleInertia.z, miningBlock);
                         }
                     }
                     case 3 -> {
@@ -835,7 +835,7 @@ public class Player {
                             particleInertia.y = (float) Math.random() * -1f;
                             particleInertia.z = (float) (Math.random() - 0.5f) * 2f;
 
-                            createParticle(particlePos, particleInertia, miningBlock);
+                            createParticle(particlePos.x, particlePos.y ,particlePos.z, particleInertia.x, particleInertia.y, particleInertia.z, miningBlock);
                         }
                     }
                     case 4 -> {
@@ -851,7 +851,7 @@ public class Player {
                             particleInertia.y = (float) Math.random() * 2f;
                             particleInertia.x = (float) (Math.random() - 0.5f) * 2f;
 
-                            createParticle(particlePos, particleInertia, miningBlock);
+                            createParticle(particlePos.x, particlePos.y ,particlePos.z, particleInertia.x, particleInertia.y, particleInertia.z, miningBlock);
                         }
                     }
                     case 5 -> {
@@ -867,7 +867,7 @@ public class Player {
                             particleInertia.y = (float) Math.random() * 2f;
                             particleInertia.x = (float) (Math.random() - 0.5f) * 2f;
 
-                            createParticle(particlePos, particleInertia, miningBlock);
+                            createParticle(particlePos.x, particlePos.y ,particlePos.z, particleInertia.x, particleInertia.y, particleInertia.z, miningBlock);
                         }
                     }
                 }
