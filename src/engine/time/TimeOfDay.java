@@ -1,7 +1,5 @@
 package engine.time;
 
-import org.joml.Vector3f;
-
 import static engine.Window.setWindowClearColorGoal;
 import static engine.time.Time.getDelta;
 import static game.light.Light.setCurrentLightLevel;
@@ -9,8 +7,10 @@ import static game.light.Light.setCurrentLightLevel;
 public class TimeOfDay {
 
     private static final double dayCompletion = 86_400d;
-    private static double timeOfDay = 21_600d; //6AM 0600 Hours //21_600d
-    private static double timeSpeed = 9000;//72;//72d; //following Minetest wiki - 72 times faster (following time_speed in minetest.conf)
+    //3600 per hour, this is messed up maybe?
+    private static double timeOfDay = 21_600; //6am 21_600
+
+    private static double timeSpeed = 72d; //following Minetest wiki - 72 times faster (following time_speed in minetest.conf)
 
 
     public static void tickUpTimeOfDay(){
@@ -167,10 +167,30 @@ public class TimeOfDay {
             { 0,   0,   0   } // night begins
     };
 
-    private static byte currentDayStage = 0;
+    private static byte currentDayStage = calculateCurrentDayStage();
     private static float currentDayTimeGoal = dayStageGoal[currentDayStage];
     private static final byte maxStage = 20;
     private static byte oldStageLight = 0;
+
+    private static byte calculateCurrentDayStage(){
+        double linearTime = getTimeOfDayLinear();
+        for (byte i = 0; i < dayStageGoal.length; i++){
+            if (linearTime >= dayStageGoal[i]){
+                currentDayStage = i;
+                currentDayTimeGoal = dayStageGoal[currentDayStage];
+
+                if (dayStageLight[currentDayStage] != oldStageLight){
+                    setCurrentLightLevel(dayStageLight[currentDayStage]);
+                    setWindowClearColorGoal(skyColors[currentDayStage][0]/255f,skyColors[currentDayStage][1]/255f, skyColors[currentDayStage][2]/255f, 1f);
+                }
+                oldStageLight = dayStageLight[currentDayStage];
+
+                return (i);
+            }
+        }
+
+        return (0);
+    }
 
     private static void triggerNextStage(){
         double linearTime = getTimeOfDayLinear();
