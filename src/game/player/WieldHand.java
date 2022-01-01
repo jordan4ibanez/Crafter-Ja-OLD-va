@@ -14,8 +14,7 @@ import static game.player.ViewBobbing.getPlayerViewBobbing;
 
 public class WieldHand {
 
-    //this is a mess :O
-    //z is distance from camera
+    //z is distance from camera - negative is further
     //x - horizontal
     //y - vertical
     //These are the base positions of holding different types of items
@@ -23,34 +22,21 @@ public class WieldHand {
     private static final Vector3f wieldHandAnimationPosBlock = new Vector3f(12, -16, -14f);
     private static final Vector3f wieldHandAnimationPosItem = new Vector3f(9, -8, -7f);
 
-    //private static final Vector3f wieldHandAnimationPosBaseBlock = new Vector3f(13, -15, -14f);
-    //private static final Vector3f wieldHandAnimationPosBaseItem = new Vector3f(13, -15, -14f);
-
     //this is the animation beginning and ending
-    private static final Vector3f wieldRotationEmptyBegin = radianVector3f(135, 75, 20);
+    private static final Vector3f wieldRotationEmptyBegin = radianVector3f(135, 75, 20); //empty
     private static final Vector3f wieldRotationEmptyEnd = radianVector3f(110, 75, -20);
 
-    private static final Vector3f wieldRotationBlockBegin = radianVector3f(0f, 45f, 0f);
+    private static final Vector3f wieldRotationBlockBegin = radianVector3f(0f, 45f, 0f); //block
     private static final Vector3f wieldRotationBlockEnd   = radianVector3f(-75f, 45f, 0f);
 
-    private static final Vector3f wieldRotationItemBegin = radianVector3f(-30f, -75, 0f);
+    private static final Vector3f wieldRotationItemBegin = radianVector3f(-30f, -75, 0f); //item/tool
     private static final Vector3f wieldRotationItemEnd   = radianVector3f(-70, -75, 0f);
 
     //These are the actual realtime values of where the hand is
     private static final Vector3f wieldHandAnimationPos = new Vector3f(0, 0, 0);
     private static final Vector3f wieldHandAnimationRot = new Vector3f(0, 0, 0);
 
-    //private static final Vector3f wieldHandAnimationRotBegin = new Vector3f(0, 0, 0);
-    //private static final Vector3f wieldHandAnimationRotEnd = new Vector3f(0,0,0);
-
-    //private static final Vector3f wieldHandAnimationPosBaseTool = new Vector3f();
-
-    //These are Quaternion workers - a 4x4 dimensional array
-    private static final Quaternionf quatBegin = new Quaternionf();
-    private static final Quaternionf quatEnd = new Quaternionf();
-
     private static final Vector3d doubledHandAnimationPos = new Vector3d();
-
 
     private static float diggingAnimation = 0f;
 
