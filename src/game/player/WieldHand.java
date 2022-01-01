@@ -95,14 +95,11 @@ public class WieldHand {
             wieldHandAnimationRot.set(wieldRotationEmptyBegin);
             //linear interpolate rotation in a circle
             wieldHandAnimationRot.lerp(wieldRotationEmptyEnd, (float) Math.sin(diggingAnimation * Math.PI));
-
-
         }
         //block
         else if (getItemInInventorySlot(getPlayerInventorySelection(),0).definition.blockID > 0) {
             //set position
             wieldHandAnimationPos.set((float) (-5f * Math.sin(java.lang.Math.pow(diggingAnimation, 0.8f) * Math.PI)) + wieldHandAnimationPosBlock.x, (float) (2f * Math.sin(diggingAnimation * 2f * Math.PI)) + wieldHandAnimationPosBlock.y, wieldHandAnimationPosBlock.z);
-            //wieldHandAnimationPos.set(wieldHandAnimationPosBlock);
             //set rotation
             wieldHandAnimationRot.set(wieldRotationBlockBegin);
             //linear interpolate
