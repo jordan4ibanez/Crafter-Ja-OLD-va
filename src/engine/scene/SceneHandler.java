@@ -17,6 +17,7 @@ import static engine.render.MainMenuRenderer.renderMainMenu;
 import static engine.sound.SoundManager.updateListenerPosition;
 import static engine.time.Time.calculateDelta;
 import static engine.time.TimeOfDay.pollTimeOfDay;
+import static engine.time.TimeOfDay.tickUpTimeOfDay;
 import static engine.time.Timer.countFPS;
 import static game.chat.Chat.*;
 import static game.chunk.Chunk.*;
@@ -173,7 +174,7 @@ public class SceneHandler {
 
         //indexLight();
         mouseInput();
-        //tickUpTimeOfDay();
+        tickUpTimeOfDay();
         //pollTimeOfDay(); //this needs to be in the main thread
         makeCloudsMove();
         countFPS();
