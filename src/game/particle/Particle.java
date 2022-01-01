@@ -1,13 +1,14 @@
 package game.particle;
 
 import engine.graphics.Mesh;
-import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.HashMap;
+import java.util.Set;
 
 import static engine.time.Time.getDelta;
 import static game.blocks.BlockDefinition.*;
@@ -16,26 +17,45 @@ import static game.chunk.ChunkMeshGenerationHandler.getTextureAtlas;
 import static game.collision.ParticleCollision.applyParticleInertia;
 
 public class Particle {
-    private final static Int2ObjectArrayMap<ParticleObject> particles = new Int2ObjectArrayMap<>();
+    //this is an abstraction of particle objects
+    //they exist, but only implicitly
+    //this list is synced on the main thread
+    private static final HashMap<Integer, Vector3d> position = new HashMap<>();
+    private static final HashMap<Integer, Vector3i> oldFlooredPosition = new HashMap<>();
+    private static final HashMap<Integer, Vector3f> inertia = new HashMap<>();
+    private static final HashMap<Integer, Mesh> mesh = new HashMap<>();
+
+    private static final HashMap<Integer, Byte> light = new HashMap<>();
+    private static final HashMap<Integer, Float> timer = new HashMap<>();
+    private static final HashMap<Integer, Float> lightUpdateTimer = new HashMap<>();
 
     private static int currentID = 0;
 
-    public static void createParticle(Vector3d pos, Vector3f inertia, byte blockID){
-        particles.put(currentID, new ParticleObject(pos, inertia, createParticleMesh(blockID), currentID));
-        currentID++;
-    }
-
     public static void createParticle(double posX, double posY, double posZ, float inertiaX, float inertiaY, float inertiaZ, byte blockID){
-        particles.put(currentID, new ParticleObject(posX,posY,posZ,inertiaX,inertiaY,inertiaZ, createParticleMesh(blockID), currentID));
+        position.put(currentID, new Vector3d(posX,posY,posZ));
+        oldFlooredPosition.put(currentID, new Vector3i(0,-10,0));
+        inertia.put(currentID, new Vector3f(inertiaX,inertiaY,inertiaZ));
+        mesh.put(currentID,createParticleMesh(blockID));
+
+        light.put(currentID, (byte) 15); //this should probably check automagically
+        timer.put(currentID, (float)Math.random()*2f);
+        lightUpdateTimer.put(currentID, 0f);
+
         currentID++;
     }
 
     public static void cleanParticleMemory(){
-        for (ParticleObject particleObject : particles.values()){
-            particleObject.mesh.cleanUp(false);
+        for (Mesh thisMesh : mesh.values()){
+            thisMesh.cleanUp(false);
         }
 
-        particles.clear();
+        position.clear();
+        oldFlooredPosition.clear();
+        inertia.clear();
+        mesh.clear();
+        light.clear();
+        timer.clear();
+        lightUpdateTimer.clear();
     }
 
     private static final Vector3i currentFlooredPos = new Vector3i();
@@ -46,45 +66,69 @@ public class Particle {
 
         double delta = getDelta();
 
-        for (ParticleObject thisParticle : particles.values()){
-            applyParticleInertia(thisParticle.pos, thisParticle.inertia, true,true);
+        for (int i : position.keySet()){
+            applyParticleInertia(position.get(i),inertia.get(i), true,true);
 
-            thisParticle.timer += delta;
-            thisParticle.lightUpdateTimer += delta;
+            float newTimer = (float) (timer.get(i) + delta);
+            timer.put(i,newTimer);
 
-            currentFlooredPos.set((int)Math.floor(thisParticle.pos.x), (int)Math.floor(thisParticle.pos.y), (int)Math.floor(thisParticle.pos.z));
+            currentFlooredPos.set((int)Math.floor(position.get(i).x), (int)Math.floor(position.get(i).y), (int)Math.floor(position.get(i).z));
 
             //poll local light every quarter second
-            if (thisParticle.lightUpdateTimer >= 0.25f || !currentFlooredPos.equals(thisParticle.oldFlooredPos)){
+            if (lightUpdateTimer.get(i) >= 0.25f || !currentFlooredPos.equals(oldFlooredPosition.get(i))){
 
-                thisParticle.light = getLight(currentFlooredPos.x, currentFlooredPos.y, currentFlooredPos.z);
+                light.put(i, getLight(currentFlooredPos.x, currentFlooredPos.y, currentFlooredPos.z));
 
-                thisParticle.lightUpdateTimer = 0f;
+                lightUpdateTimer.put(i,0f);
             }
 
-            if (thisParticle.timer > 1f){
-                deletionQueue.add(thisParticle.key);
+            if (newTimer > 1f){
+                deletionQueue.add(i);
             }
 
-            thisParticle.oldFlooredPos.set(currentFlooredPos);
+            oldFlooredPosition.get(i).set(currentFlooredPos.x,currentFlooredPos.y,currentFlooredPos.z);
         }
 
         while (!deletionQueue.isEmpty()) {
 
             int key = deletionQueue.pop();
 
-            ParticleObject thisParticle = particles.get(key);
-
-            if (thisParticle != null && thisParticle.mesh != null) {
-                thisParticle.mesh.cleanUp(false);
+            //this must delete the pointers in the C and OpenGL stack
+            if (mesh.get(key) != null) {
+                mesh.get(key).cleanUp(false);
             }
-            particles.remove(key);
+
+            position.remove(key);
+            oldFlooredPosition.remove(key);
+            inertia.remove(key);
+            mesh.remove(key);
+            light.remove(key);
+            timer.remove(key);
+            lightUpdateTimer.remove(key);
         }
 
     }
 
-    public static Object[] getAllParticles(){
-        return particles.values().toArray();
+    public static Set<Integer> getParticleKeys(){
+        return position.keySet();
+    }
+
+    public static byte getParticleLight(int key){
+        return light.get(key);
+    }
+
+    public static double getParticlePosX(int key){
+        return position.get(key).x;
+    }
+    public static double getParticlePosY(int key){
+        return position.get(key).y;
+    }
+    public static double getParticlePosZ(int key){
+        return position.get(key).z;
+    }
+
+    public static Mesh getParticleMesh(int key){
+        return mesh.get(key);
     }
 
     private static Mesh createParticleMesh(byte blockID) {
