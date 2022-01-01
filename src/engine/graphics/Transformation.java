@@ -79,7 +79,7 @@ public class Transformation {
     }
 
 
-    public static Matrix4d updateSunMatrix() {
+    public static void updateSunMatrix() {
 
         pos.set(0);
         basePos.set(getCameraPosition());
@@ -99,10 +99,9 @@ public class Transformation {
 
         modelMatrix.set(viewMatrix);
         modelMatrix.mul(modelViewMatrix);
-        return modelMatrix;
     }
 
-    public static Matrix4d updateMoonMatrix() {
+    public static void updateMoonMatrix() {
 
         pos.set(0);
         basePos.set(getCameraPosition());
@@ -122,7 +121,6 @@ public class Transformation {
 
         modelMatrix.set(viewMatrix);
         modelMatrix.mul(modelViewMatrix);
-        return modelMatrix;
     }
 
 
