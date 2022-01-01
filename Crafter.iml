@@ -10,6 +10,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="windows" level="project" />
     <orderEntry type="library" exported="" name="linux" level="project" />
-    <orderEntry type="library" name="generic" level="project" />
+    <orderEntry type="library" exported="" name="generic" level="project" />
   </component>
 </module>
