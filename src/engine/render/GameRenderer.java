@@ -27,6 +27,7 @@ import static engine.gui.GUILogic.*;
 import static engine.gui.TextHandling.createTextCenteredWithShadow;
 import static engine.gui.TextHandling.createTextWithShadow;
 import static engine.settings.Settings.*;
+import static engine.time.TimeOfDay.getTimeOfDayLinear;
 import static game.chat.Chat.getCurrentMessageMesh;
 import static game.chat.Chat.getViewableChatMessages;
 import static game.chunk.Chunk.*;
@@ -300,26 +301,24 @@ public class GameRenderer {
 
         //render the sun and moon
         //glDisable(GL_CULL_FACE);
-        /*
         {
 
             double timeOfDayLinear = getTimeOfDayLinear();
 
             //daytime sky
             if (timeOfDayLinear <= 0.85 && timeOfDayLinear >= 0.15) {
-                modelViewMatrix.set(updateSunMatrix());
-                shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                updateSunMatrix();
+                shaderProgram.setUniform("modelViewMatrix", getModelMatrix());
                 getSunMesh().render();
 
             }
             //nighttime sky
             if (timeOfDayLinear > 0.65 || timeOfDayLinear < 0.35){
-                modelViewMatrix.set(updateMoonMatrix());
-                shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+                updateMoonMatrix();
+                shaderProgram.setUniform("modelViewMatrix", getModelMatrix());
                 getMoonMesh().render();
             }
         }
-         */
         //glEnable(GL_CULL_FACE);//debugging
 
 
