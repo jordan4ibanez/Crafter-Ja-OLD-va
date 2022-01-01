@@ -9,8 +9,9 @@ import static game.light.Light.setCurrentLightLevel;
 public class TimeOfDay {
 
     private static final double dayCompletion = 86_400d;
-    private static double timeOfDay = 9_600d; //6AM 0600 Hours //21_600d
-    private static double timeSpeed = 72d; //following Minetest wiki - 72 times faster (following time_speed in minetest.conf)
+    private static double timeOfDay = 21_600d; //6AM 0600 Hours //21_600d
+    private static double timeSpeed = 9000;//72;//72d; //following Minetest wiki - 72 times faster (following time_speed in minetest.conf)
+
 
     public static void tickUpTimeOfDay(){
         timeOfDay += getDelta() * timeSpeed; //this calculation was ridiculous to get
@@ -142,28 +143,28 @@ public class TimeOfDay {
     };
 
     //I completely winged these colors :T
-    private static final Vector3f[] skyColors = new Vector3f[]{
-            new Vector3f(0,0,0),
-            new Vector3f( 20, 20, 20), // night ends - morning begins
-            new Vector3f( 45, 55, 50),
-            new Vector3f( 70, 90, 95),
-            new Vector3f( 90, 130, 155),
-            new Vector3f( 100, 155, 175),
-            new Vector3f( 123, 185, 205),
-            new Vector3f( 132, 195, 220),
-            new Vector3f( 132, 200, 225),
-            new Vector3f( 135, 206, 235), // mid day - sun is at highest
-            new Vector3f( 132, 200, 225),// evening begins
-            new Vector3f( 132, 190, 210),
-            new Vector3f( 130, 175, 195),
-            new Vector3f( 125, 160, 170),
-            new Vector3f( 115, 150, 150),
-            new Vector3f( 105, 135, 145),
-            new Vector3f( 95, 115, 125),
-            new Vector3f( 70, 90, 95),
-            new Vector3f( 55, 70, 75),
-            new Vector3f( 54, 55, 45),
-            new Vector3f( 0, 0, 0), // night begins
+    private static final float[][] skyColors = new float[][]{
+            {0,   0,    0   },
+            { 20, 20,   20  }, // night ends - morning begins
+            { 45, 55,   50  },
+            { 70, 90,   95  },
+            { 90, 130,  155 },
+            { 100, 155, 175 },
+            { 123, 185, 205 },
+            { 132, 195, 220 },
+            { 132, 200, 225 },
+            { 135, 206, 235 }, // mid day - sun is at highest
+            { 132, 200, 225 },// evening begins
+            { 132, 190, 210 },
+            { 130, 175, 195 },
+            { 125, 160, 170 },
+            { 115, 150, 150 },
+            { 105, 135, 145 },
+            { 95,  115, 125 },
+            { 70,  90,  95  },
+            { 55,  70,  75  },
+            { 54,  55,  45  },
+            { 0,   0,   0   } // night begins
     };
 
     private static byte currentDayStage = 0;
@@ -180,7 +181,7 @@ public class TimeOfDay {
 
             if (dayStageLight[currentDayStage] != oldStageLight){
                 setCurrentLightLevel(dayStageLight[currentDayStage]);
-                setWindowClearColorGoal(skyColors[currentDayStage].x/255f,skyColors[currentDayStage].y/255f, skyColors[currentDayStage].z/255f, 1f);
+                setWindowClearColorGoal(skyColors[currentDayStage][0]/255f,skyColors[currentDayStage][1]/255f, skyColors[currentDayStage][2]/255f, 1f);
             }
             oldStageLight = dayStageLight[currentDayStage];
 
@@ -195,7 +196,7 @@ public class TimeOfDay {
             if (dayStageLight[currentDayStage] != oldStageLight){
                 setCurrentLightLevel(dayStageLight[currentDayStage]);
             }
-            setWindowClearColorGoal(skyColors[currentDayStage].x/255f,skyColors[currentDayStage].y/255f, skyColors[currentDayStage].z/255f, 1f);
+            setWindowClearColorGoal(skyColors[currentDayStage][0]/255f,skyColors[currentDayStage][1]/255f, skyColors[currentDayStage][2]/255f, 1f);
 
             oldStageLight = dayStageLight[currentDayStage];
         }
