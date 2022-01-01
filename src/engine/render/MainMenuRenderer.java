@@ -110,12 +110,12 @@ public class MainMenuRenderer {
         float windowScale = getWindowScale();
 
         if (onTitleScreen) {
-            //title screen gag
+            //title screen text
             {
                 glClear(GL_DEPTH_BUFFER_BIT);
 
-                //process scale of title screen gag text
-                float scale = (15f / (float) getTitleScreenGagLength());
+                //process scale of title screen text
+                float scale = (15f / (float) getTitleScreenTextLength());
                 if (scale > 1) {
                     scale = 1;
                 }
@@ -132,7 +132,7 @@ public class MainMenuRenderer {
                     //gray shadow part
                     updateOrthoModelMatrix(windowScale / 2.27d, windowScale / 3.27f, 0, 0, 0, 20f, scale, scale, scale);
                     hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
-                    Mesh myMesh = createTextCentered(getTitleScreenGag(), 0.2f, 0.2f, 0f);
+                    Mesh myMesh = createTextCentered(getTitleScreenText(), 0.2f, 0.2f, 0f);
                     myMesh.render();
                     myMesh.cleanUp(false);
 
@@ -141,7 +141,7 @@ public class MainMenuRenderer {
                     //yellow part
                     updateOrthoModelMatrix(windowScale / 2.25d, windowScale / 3.25f, 0, 0, 0, 20f, scale, scale, scale);
                     hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
-                    Mesh myMesh2 = createTextCentered(getTitleScreenGag(), 1f, 1f, 0f);
+                    Mesh myMesh2 = createTextCentered(getTitleScreenText(), 1f, 1f, 0f);
                     myMesh2.render();
                     myMesh2.cleanUp(false);
                 }
@@ -152,14 +152,14 @@ public class MainMenuRenderer {
                     //gray shadow part
                     updateOrthoModelMatrix(windowScale / 2.27d, windowScale / 3.27f, 0, 0, 0, 20f, scale, scale, scale);
                     hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
-                    getTitleScreenGagMeshBackGround().render();
+                    getTitleScreenTextMeshBackGround().render();
 
                     glClear(GL_DEPTH_BUFFER_BIT);
 
                     //yellow part
                     updateOrthoModelMatrix(windowScale / 2.25d, windowScale / 3.25f, 0, 0, 0, 20f, scale, scale, scale);
                     hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
-                    getTitleScreenGagMeshForeGround().render();
+                    getTitleScreenTextMeshForeGround().render();
                 }
             }
 

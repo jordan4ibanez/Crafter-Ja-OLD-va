@@ -41,8 +41,8 @@ public class MainMenu {
     private static boolean haltWorldBlockFlyIn = false;
 
 
-    private static String titleScreenGag = "";
-    private static byte titleScreenGagLength = 0;
+    private static String titleScreenText = "";
+    private static byte titleScreenTextLength = 0;
     private static final float blockOffsetInitial = 15f;
     private static float titleBounce = 10f;
     private static float bounceAnimation = 0.75f;
@@ -210,7 +210,7 @@ public class MainMenu {
 
         createMenuMenuTitleBlock();
         createMainMenuBackGroundTile();
-        selectTitleScreenGag();
+        selectTitleScreenText();
 
         titleMusic = playMusic("main_menu");
         creditsMusic = playMusic("credits");
@@ -244,7 +244,7 @@ public class MainMenu {
         haltBlockFlyIn = false;
         haltWorldBlockFlyIn = false;
 
-        selectTitleScreenGag();
+        selectTitleScreenText();
     }
 
     public static byte[][] getTitleBlocks(){
@@ -870,8 +870,8 @@ public class MainMenu {
         return "NULL";
     }
 
-    private static Mesh titleScreenGagMeshBackGround = createTextCentered("", 0.2f, 0.2f, 0f);
-    private static Mesh titleScreenGagMeshForeGround = createTextCentered("", 1f, 1f, 0f);
+    private static Mesh titleScreenTextMeshBackGround = createTextCentered("", 0.2f, 0.2f, 0f);
+    private static Mesh titleScreenTextMeshForeGround = createTextCentered("", 1f, 1f, 0f);
 
     private static final DateTimeFormatter dtf =  DateTimeFormatter.ofPattern("MM/dd");
     private static final LocalDateTime now = LocalDateTime.now();
@@ -891,49 +891,49 @@ public class MainMenu {
             {"12/31", "Happy new year's eve!"}
     };
 
-    public static void selectTitleScreenGag(){
+    public static void selectTitleScreenText(){
         boolean dateFound = false;
 
         for (String[] dateArray : specialDates){
             if (date.equals(dateArray[0])){
                 dateFound = true;
-                titleScreenGag = dateArray[1];
+                titleScreenText = dateArray[1];
                 break;
             }
         }
 
         if (!dateFound) {
-            titleScreenGag = titleScreenGags[random.nextInt(titleScreenGags.length)];
+            titleScreenText = titleScreenTextList[random.nextInt(titleScreenTextList.length)];
         }
 
-        if (titleScreenGag.equals("Look at the window title!")){
+        if (titleScreenText.equals("Look at the window title!")){
             updateWindowTitle("Got you!");
         } else {
             updateWindowTitle(getVersionName());
         }
 
-        titleScreenGagLength = (byte)titleScreenGag.length();
+        titleScreenTextLength = (byte) titleScreenText.length();
 
-        //create a new mesh for title screen gag
-        if (!titleScreenGag.equals("R_A_N_D_O_M")){
-            titleScreenGagMeshBackGround.cleanUp(false);
-            titleScreenGagMeshForeGround.cleanUp(false);
+        //create a new mesh for title screen text
+        if (!titleScreenText.equals("R_A_N_D_O_M")){
+            titleScreenTextMeshBackGround.cleanUp(false);
+            titleScreenTextMeshForeGround.cleanUp(false);
 
-            titleScreenGagMeshBackGround = createTextCentered(getTitleScreenGag(), 0.2f, 0.2f, 0f);
-            titleScreenGagMeshForeGround = createTextCentered(getTitleScreenGag(), 1f, 1f, 0f);
+            titleScreenTextMeshBackGround = createTextCentered(getTitleScreenText(), 0.2f, 0.2f, 0f);
+            titleScreenTextMeshForeGround = createTextCentered(getTitleScreenText(), 1f, 1f, 0f);
         }
     }
 
-    public static Mesh getTitleScreenGagMeshBackGround(){
-        return titleScreenGagMeshBackGround;
+    public static Mesh getTitleScreenTextMeshBackGround(){
+        return titleScreenTextMeshBackGround;
     }
 
-    public static Mesh getTitleScreenGagMeshForeGround(){
-        return titleScreenGagMeshForeGround;
+    public static Mesh getTitleScreenTextMeshForeGround(){
+        return titleScreenTextMeshForeGround;
     }
 
-    public static String getTitleScreenGag(){
-        if (titleScreenGag.equals("R_A_N_D_O_M")){
+    public static String getTitleScreenText(){
+        if (titleScreenText.equals("R_A_N_D_O_M")){
             int leftLimit = 97; // letter 'a'
             int rightLimit = 122; // letter 'z'
             int targetStringLength = 10;
@@ -944,19 +944,19 @@ public class MainMenu {
                     .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                     .toString() + "!";
         }
-        return titleScreenGag;
+        return titleScreenText;
     }
 
     public static boolean titleScreenIsRandom(){
-        return titleScreenGag.equals("R_A_N_D_O_M");
+        return titleScreenText.equals("R_A_N_D_O_M");
     }
 
-    public static byte getTitleScreenGagLength(){
-        return titleScreenGagLength;
+    public static byte getTitleScreenTextLength(){
+        return titleScreenTextLength;
     }
 
     //please keep this on the bottom
-    private static final String[] titleScreenGags = new String[]{
+    private static final String[] titleScreenTextList = new String[]{
             "R_A_N_D_O_M",
             "aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ!",
             "Made in America!",
