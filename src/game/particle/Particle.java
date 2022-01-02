@@ -1,6 +1,5 @@
 package game.particle;
 
-import engine.graphics.Mesh;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
@@ -10,6 +9,8 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.Set;
 
+import static engine.graphics.Mesh.cleanUpMesh;
+import static engine.graphics.Mesh.createMesh;
 import static engine.time.Time.getDelta;
 import static game.blocks.BlockDefinition.*;
 import static game.chunk.Chunk.getLight;
@@ -23,7 +24,7 @@ public class Particle {
     private static final HashMap<Integer, Vector3d> position = new HashMap<>();
     private static final HashMap<Integer, Vector3i> oldFlooredPosition = new HashMap<>();
     private static final HashMap<Integer, Vector3f> inertia = new HashMap<>();
-    private static final HashMap<Integer, Mesh> mesh = new HashMap<>();
+    private static final HashMap<Integer, Integer> mesh = new HashMap<>();
 
     private static final HashMap<Integer, Byte> light = new HashMap<>();
     private static final HashMap<Integer, Float> timer = new HashMap<>();
@@ -45,8 +46,8 @@ public class Particle {
     }
 
     public static void cleanParticleMemory(){
-        for (Mesh thisMesh : mesh.values()){
-            thisMesh.cleanUp(false);
+        for (int thisMesh : mesh.values()){
+            cleanUpMesh(thisMesh, false);
         }
 
         position.clear();
@@ -94,9 +95,7 @@ public class Particle {
             int key = deletionQueue.pop();
 
             //this must delete the pointers in the C and OpenGL stack
-            if (mesh.get(key) != null) {
-                mesh.get(key).cleanUp(false);
-            }
+            cleanUpMesh(mesh.get(key),false);
 
             position.remove(key);
             oldFlooredPosition.remove(key);
@@ -127,11 +126,11 @@ public class Particle {
         return position.get(key).z;
     }
 
-    public static Mesh getParticleMesh(int key){
+    public static int getParticleMesh(int key){
         return mesh.get(key);
     }
 
-    private static Mesh createParticleMesh(byte blockID) {
+    private static int createParticleMesh(byte blockID) {
 
         final float textureScale = (float)Math.ceil(Math.random() * 3f);
         final float pixelScale = (float)(int)textureScale / 25f;
@@ -199,6 +198,6 @@ public class Particle {
         textureCoord[6] = (texturePoints[0] + pixelXMax);//1
         textureCoord[7] = (texturePoints[2] + pixelYMax);//3
 
-        return new Mesh(positions, light, indices, textureCoord, getTextureAtlas());
+        return createMesh(positions, light, indices, textureCoord, getTextureAtlas());
     }
 }
