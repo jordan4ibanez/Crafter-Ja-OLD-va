@@ -131,7 +131,7 @@ public class Pig {
     }
 
 
-    private static Mesh[] createMesh(){
+    private static int[] createMesh(){
 
         float size = 0.25f; //lazy way to fix
 
