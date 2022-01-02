@@ -3,23 +3,26 @@ package engine.graphics;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
+import static engine.graphics.Texture.cleanUpTexture;
 import static org.lwjgl.opengl.ARBVertexArrayObject.glBindVertexArray;
 import static org.lwjgl.opengl.ARBVertexArrayObject.glGenVertexArrays;
 import static org.lwjgl.opengl.GL44.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 public class Mesh {
+    //this is the actual ID of the object in video memory
     private final int vaoId;
 
+    //these are openGL object fields
     private final int posVboId;
     private final int colorVboId;
     private final int textureVboId;
     private final int idxVboId;
     private final int vertexCount;
 
-    private Texture texture;
+    private int texture;
 
-    public Mesh(float[] positions, float[] colors, int[] indices, float[] textCoords, Texture texture) {
+    public Mesh(float[] positions, float[] colors, int[] indices, float[] textCoords, int texture) {
         this.texture = texture;
         this.vertexCount = indices.length;
         this.vaoId = glGenVertexArrays();
@@ -83,7 +86,7 @@ public class Mesh {
         glActiveTexture(GL_TEXTURE0);
 
         //bind the texture
-        glBindTexture(GL_TEXTURE_2D, this.texture.getId());
+        glBindTexture(GL_TEXTURE_2D, this.texture);
 
         //draw the mesh
         glBindVertexArray(this.vaoId);
@@ -122,10 +125,7 @@ public class Mesh {
 
         //delete the texture
         if (deleteTexture) {
-            this.texture.cleanup();
+            cleanUpTexture(this.texture);
         }
-
-        //remove pointer
-        this.texture = null;
     }
 }

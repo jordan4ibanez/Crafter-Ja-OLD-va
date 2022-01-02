@@ -101,15 +101,15 @@ final public class Texture {
         return textureId;
     }
 
-    public int getWidth(int gettingID) {
+    public static int getWidth(int gettingID) {
         return width.get(gettingID);
     }
 
-    public int getHeight(int gettingID) {
+    public static int getHeight(int gettingID) {
         return height.get(gettingID);
     }
 
-    public void cleanup(int gettingID) {
+    public static void cleanUpTexture(int gettingID) {
         glDeleteTextures(gettingID);
 
         width.remove(gettingID);
