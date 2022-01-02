@@ -16,6 +16,7 @@ import static engine.Window.*;
 import static engine.credits.Credits.initializeCredits;
 import static engine.disk.Disk.setCurrentActiveWorld;
 import static engine.disk.Disk.worldSize;
+import static engine.graphics.Mesh.cleanUpMesh;
 import static engine.gui.GUILogic.doGUIMouseCollisionDetection;
 import static engine.gui.TextHandling.createTextCentered;
 import static engine.network.Networking.*;
@@ -870,8 +871,8 @@ public class MainMenu {
         return "NULL";
     }
 
-    private static Mesh titleScreenTextMeshBackGround = createTextCentered("", 0.2f, 0.2f, 0f);
-    private static Mesh titleScreenTextMeshForeGround = createTextCentered("", 1f, 1f, 0f);
+    private static int titleScreenTextMeshBackGround = createTextCentered("", 0.2f, 0.2f, 0f);
+    private static int titleScreenTextMeshForeGround = createTextCentered("", 1f, 1f, 0f);
 
     private static final DateTimeFormatter dtf =  DateTimeFormatter.ofPattern("MM/dd");
     private static final LocalDateTime now = LocalDateTime.now();
@@ -916,19 +917,19 @@ public class MainMenu {
 
         //create a new mesh for title screen text
         if (!titleScreenText.equals("R_A_N_D_O_M")){
-            titleScreenTextMeshBackGround.cleanUp(false);
-            titleScreenTextMeshForeGround.cleanUp(false);
+            cleanUpMesh(titleScreenTextMeshBackGround, false);
+            cleanUpMesh(titleScreenTextMeshForeGround, false);
 
             titleScreenTextMeshBackGround = createTextCentered(getTitleScreenText(), 0.2f, 0.2f, 0f);
             titleScreenTextMeshForeGround = createTextCentered(getTitleScreenText(), 1f, 1f, 0f);
         }
     }
 
-    public static Mesh getTitleScreenTextMeshBackGround(){
+    public static int getTitleScreenTextMeshBackGround(){
         return titleScreenTextMeshBackGround;
     }
 
-    public static Mesh getTitleScreenTextMeshForeGround(){
+    public static int getTitleScreenTextMeshForeGround(){
         return titleScreenTextMeshForeGround;
     }
 
