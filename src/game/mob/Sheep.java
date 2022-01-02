@@ -1,6 +1,5 @@
 package game.mob;
 
-import engine.graphics.Mesh;
 import org.joml.Math;
 import org.joml.Vector3f;
 
@@ -155,7 +154,7 @@ public class Sheep {
     }
 
 
-    private static Mesh[] createWoolMesh(){
+    private static int[] createWoolMesh(){
 
         float size = 0.25f; //lazy way to fix
         float woolSize = 1.25f; //ultra lazy way to fix
@@ -269,7 +268,7 @@ public class Sheep {
         return createMobMesh(modelPieceArray,modelTextureArray, "textures/sheep_wool.png");
     }
 
-    private static Mesh[] createShavedMesh(){
+    private static int[] createShavedMesh(){
 
         float size = 0.25f; //lazy way to fix
         float bodySize = 0.9f;
