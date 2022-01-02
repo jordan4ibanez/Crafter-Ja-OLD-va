@@ -4,7 +4,7 @@ import engine.graphics.Mesh;
 import org.joml.Vector3f;
 
 public class MobDefinition {
-    public final Mesh[] bodyMeshes;
+    public final int[] bodyMeshes;
     public final MobInterface mobInterface;
     public final String mobName;
     public final Vector3f[] bodyOffsets;
@@ -15,7 +15,7 @@ public class MobDefinition {
     public final byte baseHealth;
     public final boolean backFaceCulling;
 
-    public MobDefinition(String name, String hurtSound, boolean backFaceCulling, byte baseHealth, Mesh[] bodyMeshes,Vector3f[] bodyOffsets,Vector3f[] bodyRotations, float height, float width, MobInterface mobInterface){
+    public MobDefinition(String name, String hurtSound, boolean backFaceCulling, byte baseHealth, int[] bodyMeshes,Vector3f[] bodyOffsets,Vector3f[] bodyRotations, float height, float width, MobInterface mobInterface){
         this.bodyMeshes = bodyMeshes;
         this.mobInterface = mobInterface;
         this.mobName = name;
