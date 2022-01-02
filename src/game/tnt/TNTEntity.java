@@ -7,6 +7,7 @@ import org.joml.Vector3f;
 import java.util.ArrayList;
 
 import static engine.FancyMath.randomForceValue;
+import static engine.graphics.Mesh.createMesh;
 import static engine.graphics.Texture.createTexture;
 import static engine.sound.SoundAPI.playSound;
 import static engine.time.Time.getDelta;
@@ -25,7 +26,7 @@ public class TNTEntity {
     private final static int MAX_ID_AMOUNT = 126_000;
     private static int totalTNT = 0;
     //TODO: pseudo object holder
-    private static Mesh mesh;
+    private static int mesh;
     private static final Vector3d[] tntPos = new Vector3d[MAX_ID_AMOUNT];
     private static final Vector3d[] tntScale = new Vector3d[MAX_ID_AMOUNT];
     private static final float[] tntTimer =    new float[MAX_ID_AMOUNT];
@@ -128,7 +129,7 @@ public class TNTEntity {
         return tntScale[ID];
     }
 
-    public static Mesh getTNTMesh(){
+    public static int getTNTMesh(){
         return mesh;
     }
 
@@ -306,10 +307,10 @@ public class TNTEntity {
 
         int texture = createTexture("textures/textureAtlas.png");
 
-        mesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, texture);
+        mesh = createMesh(positionsArray, lightArray, indicesArray, textureCoordArray, texture);
     }
 
-    public static void cleanTNTUp(){
-        mesh.cleanUp(false);
-    }
+    //public static void cleanTNTUp(){
+        //mesh.cleanUp(false);
+    //}
 }
