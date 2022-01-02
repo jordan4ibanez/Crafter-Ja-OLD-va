@@ -38,17 +38,19 @@ final public class Texture {
 
         int thisID = createTexture(buf, thisWidth, thisHeight);
 
-        if (buf != null) {
-            width.put(thisID, thisWidth);
-            height.put(thisID, thisHeight);
+        //crash with assertion error instead of throwing exception
+        assert buf != null;
 
-            stbi_image_free(buf);
-        }
+        width.put(thisID, thisWidth);
+        height.put(thisID, thisHeight);
+
+        stbi_image_free(buf);
 
         return thisID;
     }
 
-    public Texture(ByteBuffer imageBuffer) {
+    //create texture from image buffer
+    public static int createTexture(ByteBuffer imageBuffer) {
         final ByteBuffer buf;
         int thisWidth;
         int thisHeight;
@@ -71,14 +73,15 @@ final public class Texture {
 
         int thisID = createTexture(buf, thisWidth,thisHeight);
 
-        if (buf != null) {
-            width.put(thisID, thisWidth);
-            height.put(thisID, thisHeight);
+        //crash with assertion error instead of throwing exception
+        assert buf != null;
 
-            stbi_image_free(buf);
-        }
+        width.put(thisID, thisWidth);
+        height.put(thisID, thisHeight);
 
+        stbi_image_free(buf);
 
+        return thisID;
     }
 
     private static int createTexture(ByteBuffer buf, int thisWidth, int thisHeight) {
