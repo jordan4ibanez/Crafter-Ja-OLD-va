@@ -1,10 +1,9 @@
 package engine.gui;
 
-import engine.graphics.Mesh;
-
+import static engine.graphics.Mesh.createMesh;
 import static engine.graphics.Texture.createTexture;
 
-public class TextHandling {
+final public class TextHandling {
 
 
     //textures
@@ -533,7 +532,7 @@ public class TextHandling {
     }
 
 
-    public static Mesh createTextCentered(String text, float r, float g, float b){
+    public static int createTextCentered(String text, float r, float g, float b){
 
         //calculate the length for the entire string
         float totalLengthReal = 0;
@@ -624,10 +623,10 @@ public class TextHandling {
             x += thisCharacterArray[4] + 0.1f;
         }
 
-        return new Mesh(positions, light, indices, textureCoord, fontTextureAtlas);
+        return createMesh(positions, light, indices, textureCoord, fontTextureAtlas);
     }
 
-    public static Mesh createTextCenteredWithShadow(String text, float r, float g, float b){
+    public static int createTextCenteredWithShadow(String text, float r, float g, float b){
 
         //calculate the length for the entire string
         float totalLengthReal = 0;
@@ -783,13 +782,13 @@ public class TextHandling {
             x += thisCharacterArray[4] + 0.1f;
         }
 
-        return new Mesh(positions, light, indices, textureCoord, fontTextureAtlas);
+        return createMesh(positions, light, indices, textureCoord, fontTextureAtlas);
     }
 
 
 
     //this one is not centered (goes from the center to the right)
-    public static Mesh createText(String text, float r, float g, float b){
+    public static int createText(String text, float r, float g, float b){
 
         //x is the actual position in the mesh creation of the letter
         float x = 0;
@@ -868,10 +867,10 @@ public class TextHandling {
             x += thisCharacterArray[4] + 0.1f;
         }
 
-        return new Mesh(positions, light, indices, textureCoord, fontTextureAtlas);
+        return createMesh(positions, light, indices, textureCoord, fontTextureAtlas);
     }
 
-    public static Mesh createTextWithShadow(String text, float r, float g, float b){
+    public static int createTextWithShadow(String text, float r, float g, float b){
 
         //x is the actual position in the mesh creation of the letter
         //divide the actual length before it's created, start the typewriter
@@ -1017,6 +1016,6 @@ public class TextHandling {
             x += thisCharacterArray[4] + 0.1f;
         }
 
-        return new Mesh(positions, light, indices, textureCoord, fontTextureAtlas);
+        return createMesh(positions, light, indices, textureCoord, fontTextureAtlas);
     }
 }
