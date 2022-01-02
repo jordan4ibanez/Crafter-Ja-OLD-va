@@ -32,6 +32,10 @@ final public class Mesh {
         //Vertex Array Object (VAO)
         final int thisVaoId = glGenVertexArrays();
 
+        //if you uncomment this, you can see the allocator working in real time :)
+        //I just thought this was cool
+        //System.out.println(thisVaoId);
+
         glBindVertexArray(thisVaoId);
 
         //position VBO
