@@ -132,7 +132,7 @@ public class Zombie {
     }
 
 
-    private static Mesh[] createMesh(){
+    private static int[] createMesh(){
         final float modelScale = 0.25f; //lazy way to fix
 
         final float[][][] modelPieceArray = new float[][][]{
