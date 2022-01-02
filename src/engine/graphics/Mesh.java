@@ -104,6 +104,11 @@ final public class Mesh {
     }
 
     public static void renderMesh(final int meshID){
+        //don't render null mesh
+        if (meshID == 0){
+            return;
+        }
+        
         //activate first texture bank
         glActiveTexture(GL_TEXTURE0);
 
