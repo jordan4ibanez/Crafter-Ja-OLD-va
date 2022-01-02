@@ -13,7 +13,7 @@ import static game.player.Player.getPlayerInertiaZ;
 public class PlayerMesh {
 
     //this is auto constructed
-    private final static Mesh[] bodyMeshes = createMesh();
+    private final static int[] bodyMeshes = createMesh();
 
     private static float animationTimer = 0f;
 
@@ -63,7 +63,7 @@ public class PlayerMesh {
         return bodyRotations;
     }
 
-    public static Mesh[] getPlayerMeshes(){
+    public static int[] getPlayerMeshes(){
         return bodyMeshes;
     }
 
@@ -71,7 +71,7 @@ public class PlayerMesh {
         return bodyOffsets;
     }
 
-    private static Mesh[] createMesh(){
+    private static int[] createMesh(){
         final float modelScale = 0.25f; //lazy way to fix
 
         final float[][][] modelPieceArray = new float[][][]{
