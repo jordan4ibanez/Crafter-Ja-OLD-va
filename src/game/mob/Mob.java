@@ -35,7 +35,7 @@ public class Mob {
     private static int currentID = 0;
     private static int currentMobDefinitionKey = 0;
 
-    public static Mesh[] getMobMesh(byte ID){
+    public static int[] getMobMesh(byte ID){
         return mobDefinitions[ID].bodyMeshes;
     }
 
