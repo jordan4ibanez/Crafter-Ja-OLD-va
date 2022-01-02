@@ -132,7 +132,7 @@ public class Skeleton {
         registerMob(new MobDefinition("skeleton", "hurt",false, (byte) 7, createMesh(), bodyOffsets, bodyRotations,1.9f, 0.25f, mobInterface));
     }
 
-    private static Mesh[] createMesh(){
+    private static int[] createMesh(){
         final float modelScale = 0.25f; //lazy way to fix
 
         final float[][][] modelPieceArray = new float[][][]{
