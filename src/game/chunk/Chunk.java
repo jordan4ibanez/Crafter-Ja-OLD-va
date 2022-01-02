@@ -15,12 +15,12 @@ import static engine.FancyMath.getDistance;
 import static engine.disk.Disk.*;
 import static engine.disk.SQLiteDiskHandler.loadChunk;
 import static engine.disk.SQLiteDiskHandler.saveChunk;
+import static engine.graphics.Mesh.cleanUpMesh;
 import static engine.network.Networking.getIfMultiplayer;
 import static engine.network.Networking.sendOutChunkRequest;
 import static engine.settings.Settings.getRenderDistance;
 import static engine.time.Time.getDelta;
 import static game.blocks.BlockDefinition.*;
-import static game.chunk.BiomeGenerator.addChunkToBiomeGeneration;
 import static game.chunk.ChunkMath.posToIndex;
 import static game.chunk.ChunkMath.posToIndex2D;
 import static game.chunk.ChunkMeshGenerator.generateChunkMesh;
@@ -29,7 +29,7 @@ import static game.chunk.ChunkUpdateHandler.chunkUpdate;
 import static game.light.Light.*;
 import static game.player.Player.*;
 
-public class Chunk {
+final public class Chunk {
 
     //DO NOT CHANGE THE DATA CONTAINER
     //private static final ConcurrentHashMap<Vector2i, ChunkMeshObject> mapMeshes = new ConcurrentHashMap<>();
@@ -44,9 +44,9 @@ public class Chunk {
     private static final ConcurrentHashMap<Vector2i, Boolean> saveToDisk    = new ConcurrentHashMap<>();
 
     //mesh data can only be held on the main thread, so it can use faster containers
-    private static final HashMap<Vector2i, Mesh[]> normalMeshes   = new HashMap<>();
-    private static final HashMap<Vector2i, Mesh[]> liquidMeshes   = new HashMap<>();
-    private static final HashMap<Vector2i, Mesh[]> allFaceMeshes  = new HashMap<>();
+    private static final HashMap<Vector2i, int[]> normalMeshes   = new HashMap<>();
+    private static final HashMap<Vector2i, int[]> liquidMeshes   = new HashMap<>();
+    private static final HashMap<Vector2i, int[]> allFaceMeshes  = new HashMap<>();
 
     private static final Vector2i[] keyArray = new Vector2i[0];
 
@@ -122,15 +122,15 @@ public class Chunk {
     }
 
 
-    public static AbstractMap<Vector2i, Mesh[]> getNormalMeshes(){
+    public static AbstractMap<Vector2i, int[]> getNormalMeshes(){
         return normalMeshes;
     }
 
-    public static AbstractMap<Vector2i, Mesh[]> getLiquidMeshes(){
+    public static AbstractMap<Vector2i, int[]> getLiquidMeshes(){
         return liquidMeshes;
     }
 
-    public static AbstractMap<Vector2i, Mesh[]> getAllFaceMeshes(){
+    public static AbstractMap<Vector2i, int[]> getAllFaceMeshes(){
         return allFaceMeshes;
     }
 
@@ -157,9 +157,9 @@ public class Chunk {
             lights.put(key, lightData.clone());
             heightmaps.put(key,heightMapData.clone());
             //null meshes
-            normalMeshes.put(key, new Mesh[8]);
-            liquidMeshes.put(key, new Mesh[8]);
-            allFaceMeshes.put(key, new Mesh[8]);
+            normalMeshes.put(key, new int[8]);
+            liquidMeshes.put(key, new int[8]);
+            allFaceMeshes.put(key, new int[8]);
         }
 
         for (int y = 0; y < 8; y++) {
@@ -203,50 +203,37 @@ public class Chunk {
         return Math.max(getDistance(0,0,currentChunk.z, 0, 0, z), getDistance(currentChunk.x,0,0, x, 0, 0));
     }
 
-    public static void setChunkNormalMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
+    public static void setChunkNormalMesh(int chunkX, int chunkZ, int yHeight, int newMesh){
         // THIS CREATES A NEW OBJECT IN MEMORY!
-        Mesh[] meshArray = normalMeshes.get(new Vector2i(chunkX, chunkZ));
+        int[] meshArray = normalMeshes.get(new Vector2i(chunkX, chunkZ));
 
         if (meshArray == null){
-            if (newMesh != null) {
-                newMesh.cleanUp(false);
-            }
+            cleanUpMesh(newMesh,false);
             return;
         }
-        if (meshArray[yHeight] != null){
-            meshArray[yHeight].cleanUp(false);
-        }
+        cleanUpMesh(meshArray[yHeight], false);
         meshArray[yHeight] = newMesh;
     }
 
-    public static void setChunkLiquidMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
+    public static void setChunkLiquidMesh(int chunkX, int chunkZ, int yHeight, int newMesh){
         // THIS CREATES A NEW OBJECT IN MEMORY!
-        Mesh[] meshArray = liquidMeshes.get(new Vector2i(chunkX, chunkZ));
+        int[] meshArray = liquidMeshes.get(new Vector2i(chunkX, chunkZ));
         if (meshArray == null){
-            if (newMesh != null) {
-                newMesh.cleanUp(false);
-            }
+            cleanUpMesh(newMesh,false);
             return;
         }
-        if (meshArray[yHeight] != null){
-            meshArray[yHeight].cleanUp(false);
-        }
+        cleanUpMesh(meshArray[yHeight], false);
         meshArray[yHeight] = newMesh;
     }
 
-    public static void setChunkAllFacesMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
+    public static void setChunkAllFacesMesh(int chunkX, int chunkZ, int yHeight, int newMesh){
         // THIS CREATES A NEW OBJECT IN MEMORY!
-        Mesh[] meshArray = allFaceMeshes.get(new Vector2i(chunkX, chunkZ));
+        int[] meshArray = allFaceMeshes.get(new Vector2i(chunkX, chunkZ));
         if (meshArray == null){
-            if (newMesh != null) {
-                newMesh.cleanUp(false);
-            }
+            cleanUpMesh(newMesh,false);
             return;
         }
-        if (meshArray[yHeight] != null){
-            meshArray[yHeight].cleanUp(false);
-            meshArray[yHeight] = null;
-        }
+        cleanUpMesh(meshArray[yHeight],false);
         meshArray[yHeight] = newMesh;
     }
 
@@ -823,28 +810,22 @@ public class Chunk {
 
 
                 //clean up mesh data
-                Mesh[] normalMeshData = normalMeshes.get(key);
+                int[] normalMeshData = normalMeshes.get(key);
 
-                for (Mesh meshData : normalMeshData){
-                    if (meshData != null){
-                        meshData.cleanUp(false);
-                    }
+                for (int meshData : normalMeshData){
+                    cleanUpMesh(meshData,false);
                 }
 
-                Mesh[] liquidMeshData = liquidMeshes.get(key);
+                int[] liquidMeshData = liquidMeshes.get(key);
 
-                for (Mesh meshData : liquidMeshData){
-                    if (meshData != null){
-                        meshData.cleanUp(false);
-                    }
+                for (int meshData : liquidMeshData){
+                    cleanUpMesh(meshData, false);
                 }
 
-                Mesh[] allFacesMeshData = allFaceMeshes.get(key);
+                int[] allFacesMeshData = allFaceMeshes.get(key);
 
-                for (Mesh meshData : allFacesMeshData){
-                    if (meshData != null){
-                        meshData.cleanUp(false);
-                    }
+                for (int meshData : allFacesMeshData){
+                    cleanUpMesh(meshData,false);
                 }
 
                 saveChunk(key.x, key.y,blocks.get(key).clone(), rotations.get(key).clone(), lights.get(key).clone(), heightmaps.get(key).clone());
@@ -898,25 +879,19 @@ public class Chunk {
 
     public static void cleanChunkDataMemory(){
 
-        for (Mesh[] meshArray : normalMeshes.values()){
-            for (Mesh meshData : meshArray){
-                if (meshData != null){
-                    meshData.cleanUp(false);
-                }
+        for (int[] meshArray : normalMeshes.values()){
+            for (int meshData : meshArray){
+                cleanUpMesh(meshData,false);
             }
         }
-        for (Mesh[] meshArray : liquidMeshes.values()){
-            for (Mesh meshData : meshArray){
-                if (meshData != null){
-                    meshData.cleanUp(false);
-                }
+        for (int[] meshArray : liquidMeshes.values()){
+            for (int meshData : meshArray){
+                cleanUpMesh(meshData, false);
             }
         }
-        for (Mesh[] meshArray : allFaceMeshes.values()){
-            for (Mesh meshData : meshArray){
-                if (meshData != null){
-                    meshData.cleanUp(false);
-                }
+        for (int[] meshArray : allFaceMeshes.values()){
+            for (int meshData : meshArray){
+                cleanUpMesh(meshData, false);
             }
         }
 
