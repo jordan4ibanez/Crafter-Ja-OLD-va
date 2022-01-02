@@ -4,20 +4,21 @@ import engine.graphics.Mesh;
 
 import java.util.ArrayList;
 
+import static engine.graphics.Mesh.createMesh;
 import static engine.graphics.Texture.createTexture;
 
 public class MainMenuAssets {
 
-    private static Mesh titleBlockMesh;
+    private static int titleBlockMesh;
 
-    private static Mesh titleBackGroundMeshTile;
+    private static int titleBackGroundMeshTile;
 
 
-    public static Mesh getTitleBlockMesh(){
+    public static int getTitleBlockMesh(){
         return titleBlockMesh;
     }
 
-    public static Mesh getTitleBackGroundMeshTile(){
+    public static int getTitleBackGroundMeshTile(){
         return titleBackGroundMeshTile;
     }
 
@@ -348,10 +349,10 @@ public class MainMenuAssets {
             textureCoordArray[i] = (float) textureCoord.get(i);
         }
 
-        titleBlockMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, titleScreenBlockTexture);
+        titleBlockMesh = createMesh(positionsArray, lightArray, indicesArray, textureCoordArray, titleScreenBlockTexture);
     }
 
-    public static void createMainMenuBackGroundTile() throws Exception {
+    public static void createMainMenuBackGroundTile() {
         ArrayList positions = new ArrayList();
         ArrayList textureCoord = new ArrayList();
         ArrayList indices = new ArrayList();
@@ -432,6 +433,6 @@ public class MainMenuAssets {
             textureCoordArray[i] = (float) textureCoord.get(i);
         }
 
-        titleBackGroundMeshTile = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, createTexture("textures/title_screen_background.png"));
+        titleBackGroundMeshTile = createMesh(positionsArray, lightArray, indicesArray, textureCoordArray, createTexture("textures/title_screen_background.png"));
     }
 }
