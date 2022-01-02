@@ -20,7 +20,7 @@ public class Mesh {
     private final int idxVboId;
     private final int vertexCount;
 
-    private int texture;
+    private final int texture;
 
     public Mesh(float[] positions, float[] colors, int[] indices, float[] textCoords, final int texture) {
         this.texture = texture;
