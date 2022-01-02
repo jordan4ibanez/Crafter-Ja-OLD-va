@@ -5,32 +5,33 @@ import engine.graphics.Mesh;
 import java.util.ArrayDeque;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static engine.graphics.Mesh.cleanUpMesh;
 import static engine.gui.TextHandling.createTextWithShadow;
 import static engine.time.Time.getDelta;
 import static game.player.Player.getPlayerName;
 
-public class Chat {
+final public class Chat {
 
     private static int ID = 0; //linear ID count
 
     private static final int chatWordWrapCharCount = 40;
 
     //private static final HashMap<Integer,String> chatString = new HashMap<>(); not needed for now
-    private static final ConcurrentHashMap<Integer, Mesh> chatMesh   = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Integer, Integer> chatMesh   = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<Integer, Double>  chatTimer   = new ConcurrentHashMap<>();
     private static final ArrayDeque<String> chatBuffer = new ArrayDeque<>();
 
     private static double oldChatDeletionTimer = 0f;
 
     private static String currentMessage;
-    private static Mesh currentMessageMesh;
+    private static int currentMessageMesh;
 
     private static final int chatHeightLimit = 9;
     private static final float chatTimerLimit = 5f;
 
     public static void cleanChatMemory(){
-        for (Mesh thisMesh : chatMesh.values()){
-            thisMesh.cleanUp(false);
+        for (int thisMesh : chatMesh.values()){
+            cleanUpMesh(thisMesh,false);
         }
 
         chatMesh.clear();
@@ -47,7 +48,7 @@ public class Chat {
                 thisTimer += delta;
                 if (thisTimer > chatTimerLimit) {
                     if (chatMesh.get(index) != null){
-                        chatMesh.get(index).cleanUp(false);
+                        cleanUpMesh(chatMesh.get(index),false);
                         chatMesh.remove(index);
                     }
                     chatTimer.remove(index);
@@ -65,7 +66,7 @@ public class Chat {
             for (int key : chatMesh.keySet()){
                 if (ID - key > chatHeightLimit){
                     if (chatMesh.get(key) != null){
-                        chatMesh.get(key).cleanUp(false);
+                        cleanUpMesh(chatMesh.get(key),false);
                         chatMesh.remove(key);
                         if (chatTimer.get(key) != null){
                             chatTimer.remove(key);
@@ -81,9 +82,7 @@ public class Chat {
         currentMessage = message;
 
         //rebuild current chat message
-        if (currentMessageMesh != null) {
-            currentMessageMesh.cleanUp(false);
-        }
+        cleanUpMesh(currentMessageMesh,false);
 
         String playerName = getPlayerName();
         if (playerName.equals("")){
@@ -96,15 +95,14 @@ public class Chat {
         return currentMessage;
     }
 
-    public static Mesh getCurrentMessageMesh(){
+    public static int getCurrentMessageMesh(){
         return currentMessageMesh;
     }
 
     public static void clearCurrentChatMessage(){
         currentMessage = "";
-        if (currentMessageMesh != null) {
-            currentMessageMesh.cleanUp(false);
-        }
+        cleanUpMesh(currentMessageMesh, false);
+        currentMessageMesh = -1;
     }
 
     public static void addToChatMessageBuffer(String message){
@@ -178,8 +176,10 @@ public class Chat {
         }
     }
 
-    public static Mesh[] getViewableChatMessages(){
-        Mesh[] returningMeshes = new Mesh[chatHeightLimit];
+    //todo: fix this - this is programmed horribly
+    public static int[] getViewableChatMessages(){
+        /*
+        int[] returningMeshes = new int[chatHeightLimit];
         int index = 0;
         for (int i = ID - 1; i > ID - chatHeightLimit - 1; i--){
             if (i >= 0) {
@@ -188,6 +188,8 @@ public class Chat {
             }
         }
         return returningMeshes;
+         */
+        return new int[0];
     }
 
     private static int getCurrentChatID(){
@@ -196,8 +198,8 @@ public class Chat {
 
     public static void cleanChatQueueMemory(){
         //clean chat message messages
-        for (Mesh thisMesh : chatMesh.values()){
-            thisMesh.cleanUp(false);
+        for (int thisMesh : chatMesh.values()){
+            cleanUpMesh(thisMesh,false);
         }
 
         //clear data
