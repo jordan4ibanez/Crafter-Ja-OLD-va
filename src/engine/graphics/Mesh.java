@@ -22,7 +22,7 @@ public class Mesh {
 
     private int texture;
 
-    public Mesh(float[] positions, float[] colors, int[] indices, float[] textCoords, int texture) {
+    public Mesh(float[] positions, float[] colors, int[] indices, float[] textCoords, final int texture) {
         this.texture = texture;
         this.vertexCount = indices.length;
         this.vaoId = glGenVertexArrays();
