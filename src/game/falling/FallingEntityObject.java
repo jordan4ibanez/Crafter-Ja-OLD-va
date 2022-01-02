@@ -7,11 +7,11 @@ import org.joml.Vector3f;
 public class FallingEntityObject {
     public Vector3d pos;
     public Vector3f inertia;
-    public Mesh mesh;
+    public int mesh;
     public int key;
     public byte ID;
 
-    public FallingEntityObject(Vector3d pos, Vector3f inertia, Mesh mesh, int key, byte ID){
+    public FallingEntityObject(Vector3d pos, Vector3f inertia, int mesh, int key, byte ID){
         this.pos = pos;
         this.inertia = inertia;
         this.mesh = mesh;
