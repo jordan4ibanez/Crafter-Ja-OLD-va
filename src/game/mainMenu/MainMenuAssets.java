@@ -1,9 +1,10 @@
 package game.mainMenu;
 
 import engine.graphics.Mesh;
-import engine.graphics.Texture;
 
 import java.util.ArrayList;
+
+import static engine.graphics.Texture.createTexture;
 
 public class MainMenuAssets {
 
@@ -23,7 +24,7 @@ public class MainMenuAssets {
     //this is reused garbage because I'm too busy to turn it into an internal API
     public static void createMenuMenuTitleBlock() throws Exception {
 
-        Texture titleScreenBlockTexture = new Texture("textures/title_screen_block.png");
+        int titleScreenBlockTexture = createTexture("textures/title_screen_block.png");
 
         float sideLight = 0.6f;
 
@@ -431,6 +432,6 @@ public class MainMenuAssets {
             textureCoordArray[i] = (float) textureCoord.get(i);
         }
 
-        titleBackGroundMeshTile = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, new Texture("textures/title_screen_background.png"));
+        titleBackGroundMeshTile = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, createTexture("textures/title_screen_background.png"));
     }
 }

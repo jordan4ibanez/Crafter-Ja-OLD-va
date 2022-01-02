@@ -1,21 +1,15 @@
 package engine.gui;
 
 import engine.graphics.Mesh;
-import engine.graphics.Texture;
+
+import static engine.graphics.Texture.createTexture;
 
 public class TextHandling {
 
 
     //textures
-    private static Texture fontTextureAtlas;
+    private static final int fontTextureAtlas = createTexture("textures/font.png");
 
-    static {
-        try {
-            fontTextureAtlas = new Texture("textures/font.png");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     private static final float FONT_WIDTH = 216f;
     private static final float LETTER_WIDTH = 6f;

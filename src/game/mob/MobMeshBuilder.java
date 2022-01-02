@@ -1,9 +1,10 @@
 package game.mob;
 
 import engine.graphics.Mesh;
-import engine.graphics.Texture;
 import engine.highPerformanceContainers.MicroFloatArray;
 import engine.highPerformanceContainers.MicroIntArray;
+
+import static engine.graphics.Texture.createTexture;
 
 public class MobMeshBuilder {
 
@@ -82,13 +83,7 @@ public class MobMeshBuilder {
                 textureCounter++;
             }
 
-            Texture playerTexture = null;
-            try {
-                playerTexture = new Texture(texturePath);
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println("AKA: YOUR TEXTURE WAS NOT FOUND!");
-            }
+            int playerTexture = createTexture(texturePath);
 
             bodyMeshes[bodyMeshesIndex] = new Mesh(positions.values(), light.values(), indices.values(), textureCoord.values(), playerTexture);
 

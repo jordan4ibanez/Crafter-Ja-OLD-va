@@ -1,11 +1,11 @@
 package game.chunk;
 
 import engine.graphics.Mesh;
-import engine.graphics.Texture;
 
 import java.util.Deque;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
+import static engine.graphics.Texture.createTexture;
 import static engine.time.Time.getDelta;
 import static game.chunk.Chunk.*;
 
@@ -17,17 +17,9 @@ public class ChunkMeshGenerationHandler {
         queue.add(chunkMeshDataObject);
     }
 
-    private static Texture textureAtlas;
+    private static final int textureAtlas = createTexture("textures/textureAtlas.png");
 
-    static {
-        try {
-            textureAtlas = new Texture("textures/textureAtlas.png");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static Texture getTextureAtlas(){
+    public static int getTextureAtlas(){
         return textureAtlas;
     }
 

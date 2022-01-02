@@ -1,26 +1,15 @@
 package game.clouds;
 
 import engine.graphics.Mesh;
-import engine.graphics.Texture;
 import engine.highPerformanceContainers.HyperFloatArray;
 import engine.highPerformanceContainers.HyperIntArray;
 
+import static engine.graphics.Texture.createTexture;
 import static game.clouds.Cloud.getCloudScale;
 
 public class CloudMesh {
 
-    private static final Texture cloudTexture = loadCloudTexture();
-
-    private static Texture loadCloudTexture() {
-        Texture texture = null;
-        try {
-            texture = new Texture("textures/cloud.png");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return texture;
-    }
-
+    private static final int cloudTexture = createTexture("textures/cloud.png");
 
     private static final byte atlasSizeX = 3;
     private static final byte atlasSizeY = 1;

@@ -1,7 +1,6 @@
 package game.item;
 
 import engine.graphics.Mesh;
-import engine.graphics.Texture;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 
 import javax.imageio.ImageIO;
@@ -11,6 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static engine.graphics.Texture.createTexture;
 import static game.blocks.BlockDefinition.*;
 import static game.chunk.ChunkMeshGenerationHandler.getTextureAtlas;
 
@@ -784,12 +784,7 @@ public class ItemDefinition {
         }
 
 
-        Texture thisTexture = null;
-        try {
-            thisTexture = new Texture(texturePath);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        int thisTexture = createTexture(texturePath);
 
         return  new Mesh(positionsArray, lightArray,indicesArray, textureCoordArray, thisTexture);
     }

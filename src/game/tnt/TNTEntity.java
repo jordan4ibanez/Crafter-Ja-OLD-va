@@ -1,13 +1,13 @@
 package game.tnt;
 
 import engine.graphics.Mesh;
-import engine.graphics.Texture;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
 
 import static engine.FancyMath.randomForceValue;
+import static engine.graphics.Texture.createTexture;
 import static engine.sound.SoundAPI.playSound;
 import static engine.time.Time.getDelta;
 import static game.blocks.BlockDefinition.*;
@@ -140,7 +140,7 @@ public class TNTEntity {
         return tntPos[ID];
     }
 
-    public static void createTNTEntityMesh() throws Exception {
+    public static void createTNTEntityMesh()  {
 
         int indicesCount = 0;
 
@@ -304,7 +304,7 @@ public class TNTEntity {
             textureCoordArray[i] = textureCoord.get(i);
         }
 
-        Texture texture = new Texture("textures/textureAtlas.png");
+        int texture = createTexture("textures/textureAtlas.png");
 
         mesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, texture);
     }

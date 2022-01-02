@@ -1,12 +1,12 @@
 package game.weather;
 
 import engine.graphics.Mesh;
-import engine.graphics.Texture;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import java.util.*;
 
+import static engine.graphics.Texture.createTexture;
 import static game.collision.ParticleCollision.applyParticleInertia;
 
 public class Weather {
@@ -128,12 +128,7 @@ public class Weather {
             textureCoordArray[i] = textureCoord.get(i);
         }
 
-        Texture rainDropTexture = null;
-        try {
-            rainDropTexture = new Texture("textures/raindrop.png");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        int rainDropTexture = createTexture("textures/raindrop.png");
 
         return new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray,rainDropTexture);
     }

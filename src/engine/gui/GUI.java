@@ -1,7 +1,6 @@
 package engine.gui;
 
 import engine.graphics.Mesh;
-import engine.graphics.Texture;
 import engine.highPerformanceContainers.HyperFloatArray;
 import engine.highPerformanceContainers.HyperIntArray;
 import org.joml.Vector3f;
@@ -9,6 +8,7 @@ import org.joml.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
 
+import static engine.graphics.Texture.createTexture;
 import static engine.gui.TextHandling.createTextWithShadow;
 import static engine.time.Timer.getFpsCounted;
 import static game.Crafter.getVersionName;
@@ -16,9 +16,9 @@ import static game.Crafter.getVersionName;
 public class GUI {
 
     //textures
-    private static Texture worldSelection;
-    private static Texture playerTexture;
-    private static Texture miningCrack;
+    private static int worldSelectionTexture;
+    private static int playerTexture;
+    private static int miningCrack;
 
     //meshes
     private static final Mesh[] miningCrackMesh = new Mesh[9];
@@ -52,7 +52,7 @@ public class GUI {
 
     private static Mesh fpsMesh;
 
-    public static void createGUI() throws Exception {
+    public static void createGUI() {
 
         //2D mesh creations
         hotBarMesh = create2DMesh(0.5f,0.06043956043f, "textures/hotbar.png");
@@ -88,10 +88,10 @@ public class GUI {
     }
 
 
-    public static void initializeHudAtlas() throws Exception {
-        worldSelection = new Texture("textures/selection.png");
-        playerTexture = new Texture("textures/player.png");
-        miningCrack = new Texture("textures/crack_anylength.png");
+    public static void initializeHudAtlas() {
+        worldSelectionTexture = createTexture("textures/selection.png");
+        playerTexture = createTexture("textures/player.png");
+        miningCrack = createTexture("textures/crack_anylength.png");
     }
 
     public static Mesh getSunMesh(){
@@ -612,7 +612,7 @@ public class GUI {
             textureCoordArray[i] = textureCoord.get(i);
         }
 
-        thisWorldSelectionMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, worldSelection);
+        thisWorldSelectionMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, worldSelectionTexture);
     }
 
 
@@ -1428,7 +1428,7 @@ public class GUI {
     }
 
 
-    public static Mesh create2DMesh(float width, float height, String texture) throws Exception {
+    public static Mesh create2DMesh(float width, float height, String texture) {
         float[] positions = new float[12];
         float[] textureCoord = new float[8];
         int[] indices = new int[6];
@@ -1467,10 +1467,10 @@ public class GUI {
         textureCoord[6] = (1f);
         textureCoord[7] = (1f);
 
-        return new Mesh(positions, light, indices, textureCoord, new Texture(texture));
+        return new Mesh(positions, light, indices, textureCoord, createTexture(texture));
     }
 
-    public static Mesh create2DMeshOffsetRight(float width, float height, String texture) throws Exception {
+    public static Mesh create2DMeshOffsetRight(float width, float height, String texture) {
         float[] positions = new float[12];
         float[] textureCoord = new float[8];
         int[] indices = new int[6];
@@ -1512,11 +1512,11 @@ public class GUI {
         textureCoord[6] = (1f);
         textureCoord[7] = (1f);
 
-        return new Mesh(positions, light, indices, textureCoord, new Texture(texture));
+        return new Mesh(positions, light, indices, textureCoord, createTexture(texture));
     }
 
     //overloaded for texture width (used for half hearts)
-    public static Mesh create2DMesh(float width, float height, float textureWidth, String texture) throws Exception {
+    public static Mesh create2DMesh(float width, float height, float textureWidth, String texture) {
         float[] positions = new float[12];
         float[] textureCoord = new float[8];
         int[] indices = new int[6];
@@ -1555,6 +1555,6 @@ public class GUI {
         textureCoord[6] = (textureWidth);
         textureCoord[7] = (1f);
 
-        return new Mesh(positions, light, indices, textureCoord, new Texture(texture));
+        return new Mesh(positions, light, indices, textureCoord, createTexture(texture));
     }
 }
