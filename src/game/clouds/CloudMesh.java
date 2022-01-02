@@ -1,9 +1,9 @@
 package game.clouds;
 
-import engine.graphics.Mesh;
 import engine.highPerformanceContainers.HyperFloatArray;
 import engine.highPerformanceContainers.HyperIntArray;
 
+import static engine.graphics.Mesh.createMesh;
 import static engine.graphics.Texture.createTexture;
 import static game.clouds.Cloud.getCloudScale;
 
@@ -15,7 +15,7 @@ public class CloudMesh {
     private static final byte atlasSizeY = 1;
 
 
-    public static Mesh buildCloud3DMesh(){
+    public static int buildCloud3DMesh(){
         final HyperFloatArray positions    = new HyperFloatArray(12);
         final HyperFloatArray textureCoord = new HyperFloatArray(8);
         final HyperIntArray indices        = new HyperIntArray(6);
@@ -127,7 +127,7 @@ public class CloudMesh {
         textureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
 
 
-        Mesh cloud3DMesh = new Mesh(positions.values(), light.values(), indices.values(), textureCoord.values(), cloudTexture);
+        int cloud3DMesh = createMesh(positions.values(), light.values(), indices.values(), textureCoord.values(), cloudTexture);
 
         positions.clear();
         light.clear();
@@ -137,7 +137,7 @@ public class CloudMesh {
         return cloud3DMesh;
     }
 
-    public static Mesh buildCloud2DMesh() {
+    public static int buildCloud2DMesh() {
         float[] positions = new float[12];
         float[] textureCoord = new float[8];
         int[] indices = new int[6];
@@ -183,7 +183,7 @@ public class CloudMesh {
         textureCoord[6] = (textureWorker[1]);
         textureCoord[7] = (textureWorker[3]);
 
-        return new Mesh(positions, light, indices, textureCoord, cloudTexture);
+        return createMesh(positions, light, indices, textureCoord, cloudTexture);
     }
 
     private static float[] calculateTexture(int x){
