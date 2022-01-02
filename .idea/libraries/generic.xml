@@ -12,12 +12,7 @@
       <root url="jar://$PROJECT_DIR$/lib/generic/pngdecoder.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/generic/sqlite-jdbc-3.36.0.3.jar!/" />
     </CLASSES>
-    <JAVADOC>
-      <root url="jar://$PROJECT_DIR$/lib/generic/joml-1.9.25-javadoc.jar!/" />
-    </JAVADOC>
-    <SOURCES>
-      <root url="jar://$PROJECT_DIR$/lib/generic/joml-1.9.25-sources.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/generic/joml-1.9.25-sources.jar!/" />
-    </SOURCES>
+    <JAVADOC />
+    <SOURCES />
   </library>
 </component>

@@ -5,7 +5,6 @@
       <root url="jar://$PROJECT_DIR$/lib/linux/lwjgl.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/linux/lwjgl-opengl.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/linux/lwjgl-stb.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/linux/lwjgl-sources.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/linux/lwjgl-glfw-natives-linux.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/linux/lwjgl-assimp-natives-linux.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/linux/lwjgl-openal-natives-linux.jar!/" />
