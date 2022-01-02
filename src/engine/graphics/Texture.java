@@ -10,6 +10,7 @@ import static org.lwjgl.opengl.GL44.*;
 import static org.lwjgl.stb.STBImage.*;
 
 final public class Texture {
+
     private static final Int2IntOpenHashMap width  = new Int2IntOpenHashMap();
     private static final Int2IntOpenHashMap height = new Int2IntOpenHashMap();
 
