@@ -8,13 +8,13 @@ import static engine.gui.TextHandling.createTextCenteredWithShadow;
 public class Credits {
 
     //all the stuff for the credits are stored here
-    private static final Mesh[] creditParts = new Mesh[19];
+    private static final int[] creditParts = new int[19];
 
-    public static Mesh[] getCreditParts(){
+    public static int[] getCreditParts(){
         return creditParts;
     }
 
-    public static void initializeCredits() throws Exception {
+    public static void initializeCredits() {
         creditParts[0] = createTextCenteredWithShadow("Inspired by:", 1,1,1);
         creditParts[1] = create2DMesh(8.4375f,1f,"textures/minetest_logo.png");
         creditParts[2] = create2DMesh(9.34782608696f,1f,"textures/mineclone2.png");
