@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static engine.graphics.Mesh.createMesh;
 import static engine.graphics.Texture.createTexture;
 import static game.blocks.BlockDefinition.*;
 import static game.chunk.ChunkMeshGenerationHandler.getTextureAtlas;
@@ -19,7 +20,7 @@ public class ItemDefinition {
     private final static float itemSize   = 0.4f;
 
     private final static Object2ObjectArrayMap<String, ItemDefinition> definitions = new Object2ObjectArrayMap<>();
-    private final static Object2ObjectArrayMap<String, Mesh>           meshes      = new Object2ObjectArrayMap<>();
+    private final static Object2ObjectArrayMap<String, Integer>           meshes      = new Object2ObjectArrayMap<>();
 
     public final String name;
     public byte blockID;
@@ -34,7 +35,7 @@ public class ItemDefinition {
     public float woodMiningLevel;
     public float leafMiningLevel;
 
-    public static Mesh getItemMesh(String name){
+    public static int getItemMesh(String name){
         return meshes.get(name);
     }
 
@@ -95,7 +96,7 @@ public class ItemDefinition {
 
 
 
-    public static Mesh createItemBlockMesh(byte blockID) {
+    public static int createItemBlockMesh(byte blockID) {
         int indicesCount = 0;
 
         List<Float> positions     = new ArrayList<>();
@@ -423,11 +424,11 @@ public class ItemDefinition {
         for (int i = 0; i < textureCoord.size(); i++) {
             textureCoordArray[i] = textureCoord.get(i);
         }
-       return new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, getTextureAtlas());
+       return createMesh(positionsArray, lightArray, indicesArray, textureCoordArray, getTextureAtlas());
     }
 
 
-    public static Mesh createItemToolMesh(String texturePath){
+    public static int createItemToolMesh(String texturePath){
         int indicesCount = 0;
 
         List<Float> positions     = new ArrayList<>();
@@ -786,7 +787,7 @@ public class ItemDefinition {
 
         int thisTexture = createTexture(texturePath);
 
-        return  new Mesh(positionsArray, lightArray,indicesArray, textureCoordArray, thisTexture);
+        return createMesh(positionsArray, lightArray,indicesArray, textureCoordArray, thisTexture);
     }
 
     public static ItemDefinition getRandomItemDefinition(){
