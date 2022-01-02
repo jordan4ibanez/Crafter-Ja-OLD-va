@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import static engine.graphics.Mesh.cleanUpMesh;
 import static game.chunk.Chunk.placeBlock;
 import static game.collision.Collision.applyInertia;
 //import static game.item.ItemDefinition.createItemBlockMeshReturnsMesh;
@@ -22,9 +23,7 @@ public class FallingEntity {
             boolean onGround = applyInertia(thisObject.pos, thisObject.inertia, false, 0.45f, 1f, true, false, true, false, false);
             if (thisObject.inertia.y == 0 || onGround){
                 placeBlock((int)Math.floor(thisObject.pos.x), (int)Math.floor(thisObject.pos.y), (int)Math.floor(thisObject.pos.z), thisObject.ID, (byte) 0);
-                if (thisObject.mesh != null){
-                    thisObject.mesh.cleanUp(false);
-                }
+                cleanUpMesh(thisObject.mesh,false);
                 objects.remove(thisObject.key);
                 return;
             }
@@ -33,7 +32,7 @@ public class FallingEntity {
 
     public static void cleanFallingEntities() {
         for (FallingEntityObject object : objects.values()) {
-            object.mesh.cleanUp(false);
+            cleanUpMesh(object.mesh,false);
         }
         objects.clear();
     }
