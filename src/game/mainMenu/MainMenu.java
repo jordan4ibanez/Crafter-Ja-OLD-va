@@ -909,7 +909,9 @@ public class MainMenu {
 
         if (titleScreenText.equals("Look at the window title!")){
             updateWindowTitle("Got you!");
-        } else {
+        } else if (titleScreenText.equals("Jump scare free!")){
+            updateWindowTitle("BOO!");
+        }else {
             updateWindowTitle(getVersionName());
         }
 
@@ -1114,5 +1116,11 @@ public class MainMenu {
             "New build now!",
             "Now with static water!",
             "Wooden tools!",
+            "Massages your CPU!",
+            "Rated H for human!",
+            "Filled with Strings!",
+            "Jump scare free!",
+            "Ghost free!",
+            "Moving clouds!"
     };
 }
