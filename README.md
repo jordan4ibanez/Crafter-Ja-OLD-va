@@ -4,7 +4,7 @@ A blocky game written in java with LWJGL 3
 
 Based off of what I've learned from Minetest's engine and lua api
 
-Discord: https://discord.gg/fEjssvEYMH
+Discord: https://discord.gg/dRPyvubfyg
 
 Required Java version (JRE): 17
 
