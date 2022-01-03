@@ -1,7 +1,5 @@
 package engine.graphics;
 
-import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
-
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
@@ -16,21 +14,59 @@ final public class Mesh {
     //most of these acronyms can be learned as to what they're referring to on the Khronos wiki
     //https://www.khronos.org/opengl/wiki/Vertex_Specification
 
-    //openGL VAO array attribution field IDs
-    private static final Int2IntOpenHashMap posVboId  = new Int2IntOpenHashMap();
-    private static final Int2IntOpenHashMap colorVboId  = new Int2IntOpenHashMap();
-    private static final Int2IntOpenHashMap textureVboId  = new Int2IntOpenHashMap();
-    private static final Int2IntOpenHashMap idxVboId  = new Int2IntOpenHashMap();
-    private static final Int2IntOpenHashMap vertexCount  = new Int2IntOpenHashMap();
+    //(4 bytes * currentBufferSize) = bytes of memory per array
+    private static int currentBufferSize = 0;
 
+    //openGL VAO array attribution field IDs
+    private static int[] posVboId     = new int[0];
+    private static int[] colorVboId   = new int[0];
+    private static int[] textureVboId = new int[0];
+    private static int[] idxVboId     = new int[0];
+    private static int[] vertexCount  = new int[0];
     //texture ID field
-    private static final Int2IntOpenHashMap texture  = new Int2IntOpenHashMap();
+    private static int[] texture = new int[0];
+
+    //this expands the arrays - keeps them in sync as well
+    private static void expandMemory(){
+        //+100 because memory is cheap on this scale
+        currentBufferSize += 100;
+
+        //this is debug info
+        //System.out.println("EXPANDING MESH ARRAY TO: " + currentBufferSize);
+
+        int[] posVboId2     = new int[currentBufferSize];
+        int[] colorVboId2   = new int[currentBufferSize];
+        int[] textureVboId2 = new int[currentBufferSize];
+        int[] idxVboId2     = new int[currentBufferSize];
+        int[] vertexCount2  = new int[currentBufferSize];
+        int[] texture2      = new int[currentBufferSize];
+
+        System.arraycopy(posVboId, 0, posVboId2, 0, posVboId.length);
+        System.arraycopy(colorVboId, 0, colorVboId2, 0, colorVboId.length);
+        System.arraycopy(textureVboId, 0, textureVboId2, 0, textureVboId.length);
+        System.arraycopy(idxVboId, 0, idxVboId2, 0, idxVboId.length);
+        System.arraycopy(vertexCount, 0, vertexCount2, 0, vertexCount.length);
+        System.arraycopy(texture, 0, texture2, 0, texture.length);
+
+        posVboId = posVboId2;
+        colorVboId = colorVboId2;
+        textureVboId = textureVboId2;
+        idxVboId = idxVboId2;
+        vertexCount = vertexCount2;
+        texture = texture2;
+    }
 
     public static int createMesh(final float[] positions, final float[] colors, final int[] indices, final float[] textCoords, final int newTexture) {
 
         //the key for the mesh
         //Vertex Array Object (VAO)
         final int thisVaoId = glGenVertexArrays();
+
+        //this works on the assumption that the OpenGL allocator uses only free slots
+        //IE: 1->2->3->(2 gets freed)->2->4
+        if (thisVaoId >= currentBufferSize){
+            expandMemory();
+        }
 
         //if you uncomment this, you can see the allocator working in real time :)
         //I just thought this was cool
@@ -40,7 +76,7 @@ final public class Mesh {
 
         //position VBO
         final int thisPosVboId = glGenBuffers();
-        posVboId.put(thisVaoId,thisPosVboId);
+        posVboId[thisVaoId] = thisPosVboId;
 
         final FloatBuffer posBuffer = memAllocFloat(positions.length);
         posBuffer.put(positions).flip();
@@ -52,7 +88,7 @@ final public class Mesh {
 
         // color VBO
         final int thisColorVboId = glGenBuffers();
-        colorVboId.put(thisVaoId,thisColorVboId);
+        colorVboId[thisVaoId] = thisColorVboId;
 
         final FloatBuffer colorBuffer = memAllocFloat(colors.length);
         colorBuffer.put(colors).flip();
@@ -64,7 +100,7 @@ final public class Mesh {
 
         //texture coordinates vbo
         final int thisTextureVboId = glGenBuffers();
-        textureVboId.put(thisVaoId, thisTextureVboId);
+        textureVboId[thisVaoId] = thisTextureVboId;
 
         FloatBuffer textCoordsBuffer = memAllocFloat(textCoords.length);
         textCoordsBuffer.put(textCoords).flip();
@@ -77,7 +113,7 @@ final public class Mesh {
 
         //index vbo
         final int thisIdxVboId = glGenBuffers();
-        idxVboId.put(thisVaoId, thisIdxVboId);
+        idxVboId[thisVaoId] = thisIdxVboId;
 
         IntBuffer indicesBuffer = memAllocInt(indices.length);
         indicesBuffer.put(indices).flip();
@@ -95,10 +131,10 @@ final public class Mesh {
         memFree(indicesBuffer);
 
         //next add the vertex count to it's hashmap
-        vertexCount.put(thisVaoId, indices.length);
+        vertexCount[thisVaoId] = indices.length;
 
         //finally, store the texture ID
-        texture.put(thisVaoId, newTexture);
+        texture[thisVaoId] = newTexture;
 
         return thisVaoId;
     }
@@ -113,14 +149,14 @@ final public class Mesh {
         glActiveTexture(GL_TEXTURE0);
 
         //bind the texture
-        glBindTexture(GL_TEXTURE_2D, texture.get(meshID));
+        glBindTexture(GL_TEXTURE_2D, texture[meshID]);
 
         //draw the mesh
         glBindVertexArray(meshID);
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
 
-        glDrawElements(GL_TRIANGLES, vertexCount.get(meshID), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, vertexCount[meshID], GL_UNSIGNED_INT, 0);
 
         //restore data
         glDisableVertexAttribArray(0);
@@ -142,10 +178,10 @@ final public class Mesh {
         glDisableVertexAttribArray(0);
 
         //clear the buffer data in memory - basically destroy all mesh variables in your GPU
-        glDeleteBuffers(posVboId.get(meshID));
-        glDeleteBuffers(colorVboId.get(meshID));
-        glDeleteBuffers(textureVboId.get(meshID));
-        glDeleteBuffers(idxVboId.get(meshID));
+        glDeleteBuffers(posVboId[meshID]);
+        glDeleteBuffers(colorVboId[meshID]);
+        glDeleteBuffers(textureVboId[meshID]);
+        glDeleteBuffers(idxVboId[meshID]);
 
         //explicitly break the previous bindings
         //you can read more about this here https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glBindVertexArray.xhtml
@@ -161,15 +197,15 @@ final public class Mesh {
 
         //delete the texture - if explicitly specified to
         if (deleteTexture) {
-            cleanUpTexture(texture.get(meshID));
+            cleanUpTexture(texture[meshID]);
         }
 
         //finally, clear the data out of Java memory
-        posVboId.remove(meshID);
-        colorVboId.remove(meshID);
-        textureVboId.remove(meshID);
-        idxVboId.remove(meshID);
-        vertexCount.remove(meshID);
-        texture.remove(meshID);
+        posVboId[meshID] = 0;
+        colorVboId[meshID] = 0;
+        textureVboId[meshID] = 0;
+        idxVboId[meshID] = 0;
+        vertexCount[meshID] = 0;
+        texture[meshID] = 0;
     }
 }
