@@ -91,8 +91,6 @@ public class Crafter {
 
         registerMobs();
 
-        setAttenuationModel(AL11.AL_LINEAR_DISTANCE);
-        setListener(new SoundListener(new Vector3d()));
         createGUI();
         registerItems();
         registerCraftRecipes();
