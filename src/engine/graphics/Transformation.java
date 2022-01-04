@@ -23,7 +23,6 @@ public class Transformation {
     //another master matrix, only modified by resetOrthoProjectionMatrix
     private static final Matrix4d orthoMatrix = new Matrix4d();
 
-
     //these are worker matrices, they can be modified freely
     private static final Matrix4d modelMatrix = new Matrix4d();
     private static final Matrix4d viewMatrix = new Matrix4d();
@@ -33,6 +32,9 @@ public class Transformation {
     private static final Vector3f cameraRotation = new Vector3f();
     private static final Vector3d constantLeft = new Vector3d(1,0,0);
     private static final Vector3d constantUp = new Vector3d(0,1,0);
+
+    //this is specifically used for openAL
+    private static final Matrix4d openALMatrix = new Matrix4d();
 
     //these are workers for the sun and moon
     private static final Vector3d pos = new Vector3d();
@@ -124,11 +126,15 @@ public class Transformation {
 
 
     //THIS IS USED BY OPENAL - SOUND MANAGER
-    public static void updateGenericViewMatrix(double positionX, double positionY, double positionZ, float rotationX, float rotationY, Matrix4d matrix) {
+    public static void updateOpenALSoundMatrix(double positionX, double positionY, double positionZ, float rotationX, float rotationY) {
         // First do the rotation so camera rotates over its position
-        matrix.rotationX(Math.toRadians(rotationX))
+        openALMatrix.rotationX(Math.toRadians(rotationX))
                 .rotateY(Math.toRadians(rotationY))
                 .translate(-positionX, -positionY, -positionZ);
+    }
+
+    public static Matrix4d getOpenALMatrix(){
+        return openALMatrix;
     }
 
 
