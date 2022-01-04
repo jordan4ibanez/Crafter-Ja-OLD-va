@@ -137,7 +137,7 @@ final public class Texture {
         // Upload the texture data
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, thisWidth, thisHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, buf);
         // Generate Mip Map
-//        glGenerateMipmap(GL_TEXTURE_2D);
+        //glGenerateMipmap(GL_TEXTURE_2D);
 
         return textureId;
     }
