@@ -1,7 +1,5 @@
 package engine.sound;
 
-import engine.graphics.Transformation;
-import org.joml.Matrix4d;
 import org.joml.Vector3d;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.AL11;
