@@ -879,28 +879,27 @@ public class Player {
 
         if (getCameraPerspective() < 2) {
             if (mining && hasDug) {
-                playerRayCast(getPlayerPosWithViewBobbing(), getCameraRotationVector(), reach, true, false, true);
+                playerRayCast(getPlayerPosWithViewBobbingX(),getPlayerPosWithViewBobbingY(),getPlayerPosWithViewBobbingZ(), getCameraRotationVectorX(),getCameraRotationVectorY(),getCameraRotationVectorZ(), reach, true, false, true);
             } else if (mining) {
-                playerRayCast(getPlayerPosWithViewBobbing(), getCameraRotationVector(), reach, true, false, false);
+                playerRayCast(getPlayerPosWithViewBobbingX(),getPlayerPosWithViewBobbingY(),getPlayerPosWithViewBobbingZ(), getCameraRotationVectorX(),getCameraRotationVectorY(),getCameraRotationVectorZ(), reach, true, false, false);
             } else if (placing && placeTimer <= 0) {
-                playerRayCast(getPlayerPosWithViewBobbing(), getCameraRotationVector(), reach, false, true, false);
+                playerRayCast(getPlayerPosWithViewBobbingX(),getPlayerPosWithViewBobbingY(),getPlayerPosWithViewBobbingZ(), getCameraRotationVectorX(),getCameraRotationVectorY(),getCameraRotationVectorZ(), reach, false, true, false);
                 placeTimer = 0.25f; // every quarter second you can place
             } else {
-                playerRayCast(getPlayerPosWithViewBobbing(), getCameraRotationVector(), reach, false, false, false);
+                playerRayCast(getPlayerPosWithViewBobbingX(),getPlayerPosWithViewBobbingY(),getPlayerPosWithViewBobbingZ(), getCameraRotationVectorX(),getCameraRotationVectorY(),getCameraRotationVectorZ(), reach, false, false, false);
             }
         } else {
             if (mining && hasDug) {
-                playerRayCast(getPlayerPosWithViewBobbing(), getCameraRotationVector().mul(-1), reach, true, false, true);
+                playerRayCast(getPlayerPosWithViewBobbingX(),getPlayerPosWithViewBobbingY(),getPlayerPosWithViewBobbingZ(), getCameraRotationVectorX()*-1f,getCameraRotationVectorY()*-1f,getCameraRotationVectorZ()*-1f, reach, true, false, true);
             } else if (mining) {
-                playerRayCast(getPlayerPosWithViewBobbing(), getCameraRotationVector().mul(-1), reach, true, false, false);
+                playerRayCast(getPlayerPosWithViewBobbingX(),getPlayerPosWithViewBobbingY(),getPlayerPosWithViewBobbingZ(), getCameraRotationVectorX()*-1f,getCameraRotationVectorY()*-1f,getCameraRotationVectorZ()*-1f, reach, true, false, false);
             } else if (placing && placeTimer <= 0) {
-                playerRayCast(getPlayerPosWithViewBobbing(), getCameraRotationVector().mul(-1), reach, false, true, false);
+                playerRayCast(getPlayerPosWithViewBobbingX(),getPlayerPosWithViewBobbingY(),getPlayerPosWithViewBobbingZ(), getCameraRotationVectorX()*-1f,getCameraRotationVectorY()*-1f,getCameraRotationVectorZ()*-1f, reach, false, true, false);
                 placeTimer = 0.25f; // every quarter second you can place
             } else {
-                playerRayCast(getPlayerPosWithViewBobbing(), getCameraRotationVector().mul(-1), reach, false, false, false);
+                playerRayCast(getPlayerPosWithViewBobbingX(),getPlayerPosWithViewBobbingY(),getPlayerPosWithViewBobbingZ(), getCameraRotationVectorX()*-1f,getCameraRotationVectorY()*-1f,getCameraRotationVectorZ()*-1f, reach, false, false, false);
             }
         }
-
 
         if (health <= 6) {
             makeHeartsJiggle();

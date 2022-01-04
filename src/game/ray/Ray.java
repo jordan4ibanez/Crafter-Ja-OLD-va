@@ -30,7 +30,7 @@ public class Ray {
     private static final Vector3d cachePos   = new Vector3d();
     private static final Vector3i pointedThingAbove = new Vector3i();
 
-    public static void playerRayCast(Vector3d pos, Vector3f dir, float length, boolean mining, boolean placing, boolean hasMined) {
+    public static void playerRayCast(double posX, double posY, double posZ, float dirX, float dirY, float dirZ, float length, boolean mining, boolean placing, boolean hasMined) {
 
         pointedThingAbove.set(0,0,0);
 
@@ -43,17 +43,17 @@ public class Ray {
 
         for(double step = 0d; step <= length ; step += 0.001d) {
 
-            cachePos.x = dir.x * step;
-            cachePos.y = dir.y * step;
-            cachePos.z = dir.z * step;
+            cachePos.x = dirX * step;
+            cachePos.y = dirY * step;
+            cachePos.z = dirZ * step;
 
-            newPos.x = Math.floor(pos.x + cachePos.x);
-            newPos.y = Math.floor(pos.y + cachePos.y);
-            newPos.z = Math.floor(pos.z + cachePos.z);
+            newPos.x = Math.floor(posX + cachePos.x);
+            newPos.y = Math.floor(posY + cachePos.y);
+            newPos.z = Math.floor(posZ + cachePos.z);
 
-            realNewPos.x = pos.x + cachePos.x;
-            realNewPos.y = pos.y + cachePos.y;
-            realNewPos.z = pos.z + cachePos.z;
+            realNewPos.x = posX + cachePos.x;
+            realNewPos.y = posY + cachePos.y;
+            realNewPos.z = posZ + cachePos.z;
 
 
             for (MobObject thisMob : mobs){
@@ -170,20 +170,20 @@ public class Ray {
         removeItemFromInventory(getCurrentInventorySelection(), 0);
     }
 
-    public static Vector3d genericWorldRaycast(Vector3d pos, Vector3f dir, float length){
+    public static Vector3d genericWorldRaycast(double posX, double posY, double posZ, float dirX, float dirY, float dirZ, float length){
         for(double step = 0d; step <= length ; step += 0.001d) {
 
-            cachePos.x = dir.x * step;
-            cachePos.y = dir.y * step;
-            cachePos.z = dir.z * step;
+            cachePos.x = dirX * step;
+            cachePos.y = dirY * step;
+            cachePos.z = dirZ * step;
 
-            newPos.x = Math.floor(pos.x + cachePos.x);
-            newPos.y = Math.floor(pos.y + cachePos.y);
-            newPos.z = Math.floor(pos.z + cachePos.z);
+            newPos.x = Math.floor(posX + cachePos.x);
+            newPos.y = Math.floor(posY + cachePos.y);
+            newPos.z = Math.floor(posZ + cachePos.z);
 
-            realNewPos.x = pos.x + cachePos.x;
-            realNewPos.y = pos.y + cachePos.y;
-            realNewPos.z = pos.z + cachePos.z;
+            realNewPos.x = posX + cachePos.x;
+            realNewPos.y = posY + cachePos.y;
+            realNewPos.z = posZ + cachePos.z;
 
             //stop wasting cpu resources
             if (!newPos.equals(lastPos)) {
