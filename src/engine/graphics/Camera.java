@@ -26,6 +26,7 @@ public class Camera {
     public static Vector3d getCameraPosition(){
         return position;
     }
+
     //immutable
     public static double getCameraPositionX(){
         return position.x;

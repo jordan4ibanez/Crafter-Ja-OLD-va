@@ -5,8 +5,7 @@ import org.joml.Matrix4d;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import static engine.graphics.Camera.getCameraPosition;
-import static engine.graphics.Camera.getCameraRotation;
+import static engine.graphics.Camera.*;
 import static engine.render.GameRenderer.getWindowSize;
 import static engine.time.TimeOfDay.getTimeOfDayLinear;
 import static game.tnt.TNTEntity.getTNTPosition;
@@ -52,7 +51,7 @@ public class Transformation {
     }
 
     public static void resetViewMatrix(){
-        cameraPos.set(getCameraPosition());
+        cameraPos.set(getCameraPositionX(),getCameraPositionY(),getCameraPositionZ());
         cameraRotation.set(getCameraRotation());
         viewMatrix.identity();
         //first do the rotation so the camera rotates over it's position
@@ -82,7 +81,7 @@ public class Transformation {
     public static void updateSunMatrix() {
 
         pos.set(0);
-        basePos.set(getCameraPosition());
+        basePos.set(getCameraPositionX(),getCameraPositionY(),getCameraPositionZ());
 
         double timeLinear = getTimeOfDayLinear() - 0.5d;
 
@@ -104,7 +103,7 @@ public class Transformation {
     public static void updateMoonMatrix() {
 
         pos.set(0);
-        basePos.set(getCameraPosition());
+        basePos.set(getCameraPositionX(),getCameraPositionY(),getCameraPositionZ());
 
         double timeLinear = getTimeOfDayLinear();
 
@@ -125,11 +124,11 @@ public class Transformation {
 
 
     //THIS IS USED BY OPENAL - SOUND MANAGER
-    public static void updateGenericViewMatrix(Vector3d position, Vector3f rotation, Matrix4d matrix) {
+    public static void updateGenericViewMatrix(double positionX, double positionY, double positionZ, float rotationX, float rotationY, Matrix4d matrix) {
         // First do the rotation so camera rotates over its position
-        matrix.rotationX(Math.toRadians(rotation.x))
-                .rotateY(Math.toRadians(rotation.y))
-                .translate(-position.x, -position.y, -position.z);
+        matrix.rotationX(Math.toRadians(rotationX))
+                .rotateY(Math.toRadians(rotationY))
+                .translate(-positionX, -positionY, -positionZ);
     }
 
 
