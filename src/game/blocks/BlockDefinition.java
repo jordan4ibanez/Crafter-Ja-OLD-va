@@ -6,7 +6,7 @@ import static game.chunk.Chunk.*;
 import static game.chunk.ChunkMeshGenerator.passChunkMeshThreadData;
 import static game.crafting.InventoryLogic.openCraftingInventory;
 import static game.falling.FallingEntity.addFallingEntity;
-import static game.item.ItemDefinition.registerItem;
+import static game.item.ItemDefinition.registerBlockItemDefinition;
 import static game.item.ItemEntity.throwItem;
 import static game.light.Light.torchFloodFill;
 import static game.tnt.TNTEntity.createTNT;
@@ -103,7 +103,7 @@ public class BlockDefinition {
         pointables[ID] = pointable;
         droppedItems[ID] = droppedItem;
 
-        registerItem(name, ID);
+        registerBlockItemDefinition(name, ID);
     }
 
     public static void onDigCall(byte ID, int posX, int posY, int posZ) {
