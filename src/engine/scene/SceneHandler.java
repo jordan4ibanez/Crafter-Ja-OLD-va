@@ -24,6 +24,7 @@ import static game.chunk.Chunk.*;
 import static game.chunk.ChunkMeshGenerationHandler.popChunkMeshQueue;
 import static game.chunk.ChunkUpdateHandler.chunkUpdater;
 import static game.clouds.Cloud.*;
+import static game.crafting.Inventory.generateRandomInventory;
 import static game.crafting.InventoryLogic.inventoryMenuOnTick;
 import static game.item.ItemEntity.*;
 import static game.mainMenu.MainMenu.*;
@@ -127,8 +128,8 @@ public class SceneHandler {
         pollTimeOfDay(); //this needs to be in the main thread
         tickUpChatTimers();
         deleteOldChatMeshes();
-        processQueuedItemsToBeAddedInMultiplayer();
-        itemsOnTickMultiplayer();
+        //processQueuedItemsToBeAddedInMultiplayer();
+        //itemsOnTickMultiplayer();
         popItemsAddingQueue();
         popChunkMeshQueue(); //this actually transmits the data from the other threads into main thread
         updateListenerPosition();
