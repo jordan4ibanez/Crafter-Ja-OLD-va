@@ -1,7 +1,5 @@
 package game.crafting;
 
-import game.item.Item;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -217,11 +215,11 @@ public class CraftRecipes {
         }
 
         //dump item strings into array
-        for (int x = 0; x < inventory.getSize().x; x++) {
-            for (int y = 0; y < inventory.getSize().y; y++) {
-                Item thisItem = inventory.get(x, y);
+        for (int x = 0; x < inventory.getSizeX(); x++) {
+            for (int y = 0; y < inventory.getSizeY(); y++) {
+                String thisItem = inventory.getItem(x, y);
                 if (thisItem != null) {
-                    inventoryToStringArray[y][x] = thisItem.name;
+                    inventoryToStringArray[y][x] = thisItem;
                 } else {
                     inventoryToStringArray[y][x] = "";
                 }
