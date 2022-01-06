@@ -1,12 +1,12 @@
 package game.item;
 
-import engine.graphics.Mesh;
-import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
+import it.unimi.dsi.fastutil.objects.*;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,88 +15,118 @@ import static engine.graphics.Texture.createTexture;
 import static game.blocks.BlockDefinition.*;
 import static game.chunk.ChunkMeshGenerationHandler.getTextureAtlas;
 
-//this needs a rework
-public class ItemDefinition {
-    private final static float itemSize   = 0.4f;
+final public class ItemDefinition {
+    private static final float itemSize   = 0.4f;
 
-    private final static Object2ObjectArrayMap<String, ItemDefinition> definitions = new Object2ObjectArrayMap<>();
-    private final static Object2ObjectArrayMap<String, Integer>           meshes      = new Object2ObjectArrayMap<>();
+    private static final Object2ByteOpenHashMap<String> blockID = new Object2ByteOpenHashMap<>();
+    private static final Object2IntOpenHashMap<String> mesh = new Object2IntOpenHashMap<>();
 
-    public final String name;
-    public byte blockID;
+    private static final Object2BooleanOpenHashMap<String> isItem = new Object2BooleanOpenHashMap<>();
+    private static final Object2ObjectOpenHashMap<String,ItemModifier> itemModifier = new Object2ObjectOpenHashMap<>();
 
-    public final boolean isItem;
-    public final ItemModifier itemModifier;
-    public boolean isRightClickable;
-    public boolean isOnPlaced;
+    private static final Object2BooleanOpenHashMap<String> isRightClickable = new Object2BooleanOpenHashMap<>();
+    private static final Object2BooleanOpenHashMap<String> isOnPlaced = new Object2BooleanOpenHashMap<>();
 
-    public float stoneMiningLevel;
-    public float dirtMiningLevel;
-    public float woodMiningLevel;
-    public float leafMiningLevel;
-
-    public static int getItemMesh(String name){
-        return meshes.get(name);
-    }
+    private static final Object2BooleanOpenHashMap<String> isTool = new Object2BooleanOpenHashMap<>();
+    private static final Object2FloatOpenHashMap<String> stoneMiningLevel = new Object2FloatOpenHashMap<>();
+    private static final Object2FloatOpenHashMap<String> dirtMiningLevel = new Object2FloatOpenHashMap<>();
+    private static final Object2FloatOpenHashMap<String> woodMiningLevel = new Object2FloatOpenHashMap<>();
+    private static final Object2FloatOpenHashMap<String> leafMiningLevel = new Object2FloatOpenHashMap<>();
 
     //block item
-    public ItemDefinition(String name, byte blockID){
-        this.name = name;
-        this.blockID = blockID;
-        this.isItem = false;
-        this.itemModifier = null;
-        this.isRightClickable = getRightClickable(blockID);
-        this.isOnPlaced = getIsOnPlaced(blockID);
+    public static void registerBlockItemDefinition(String newName, byte newBlockID){
+        blockID.put(newName, newBlockID);
+        isItem.put(newName, false);
+        itemModifier.put(newName, null);
+        isRightClickable.put(newName,getRightClickable(newBlockID));
+        isOnPlaced.put(newName,getIsOnPlaced(newBlockID));
+        isTool.put(newName, false);
+        stoneMiningLevel.put(newName,0f);
+        dirtMiningLevel.put(newName,0f);
+        woodMiningLevel.put(newName,0f);
+        leafMiningLevel.put(newName,0f);
+        mesh.put(newName, createItemBlockMesh(newBlockID));
     }
 
     //craft item
-    public ItemDefinition(String name, ItemModifier itemModifier){
-        this.name = name;
-        this.isItem = true;
-        this.itemModifier = itemModifier;
+    public static void registerItemDefinition(String newName, String texturePath, ItemModifier newItemModifier){
+        blockID.put(newName, (byte) -1);
+        isItem.put(newName, true);
+        itemModifier.put(newName, newItemModifier);
+        isRightClickable.put(newName,false);
+        isOnPlaced.put(newName,false);
+        isTool.put(newName,false);
+        stoneMiningLevel.put(newName,0f);
+        dirtMiningLevel.put(newName,0f);
+        woodMiningLevel.put(newName,0f);
+        leafMiningLevel.put(newName,0f);
+        mesh.put(newName, createItemToolMesh(texturePath));
     }
 
     //tool item
-    public ItemDefinition(String name, ItemModifier itemModifier, float stoneMiningLevel, float dirtMiningLevel, float woodMiningLevel, float leafMiningLevel){
-        this.name = name;
-        this.isItem = true;
-        this.itemModifier = itemModifier;
-        this.stoneMiningLevel = stoneMiningLevel;
-        this.dirtMiningLevel = dirtMiningLevel;
-        this.woodMiningLevel = woodMiningLevel;
-        this.leafMiningLevel = leafMiningLevel;
+    public static void registerToolDefinition(String newName, String texturePath, ItemModifier newItemModifier, float newStoneMiningLevel, float newDirtMiningLevel, float newWoodMiningLevel, float newLeafMiningLevel){
+        blockID.put(newName, (byte) -1);
+        isItem.put(newName, true);
+        itemModifier.put(newName, newItemModifier);
+        isRightClickable.put(newName,false);
+        isOnPlaced.put(newName,false);
+        isTool.put(newName,true);
+        stoneMiningLevel.put(newName,newStoneMiningLevel);
+        dirtMiningLevel.put(newName,newDirtMiningLevel);
+        woodMiningLevel.put(newName,newWoodMiningLevel);
+        leafMiningLevel.put(newName,newLeafMiningLevel);
+        mesh.put(newName, createItemToolMesh(texturePath));
     }
 
+    //immutable
+    public static int getItemMesh(String name){
+        return mesh.getInt(name);
+    }
+
+    //mutable - but harder to mutate
     public static ItemModifier getItemModifier(String name){
-        return definitions.get(name).itemModifier;
+        return itemModifier.get(name);
     }
 
-    //block item
-    public static void registerItem(String name, byte blockID){
-        definitions.put(name, new ItemDefinition(name, blockID));
-        meshes.put(name, createItemBlockMesh(blockID));
+    //mutable
+    public static boolean getIfItem(String name){
+        return isItem.getBoolean(name);
     }
 
-    //craft item
-    public static void registerItem(String name, String texturePath, ItemModifier itemModifier){
-        definitions.put(name, new ItemDefinition(name, itemModifier));
-        meshes.put(name, createItemToolMesh(texturePath));
+    //immutable
+    public static float getStoneMiningLevel(String name){
+        return stoneMiningLevel.getFloat(name);
+    }
+    //immutable
+    public static float getDirtMiningLevel(String name){
+        return dirtMiningLevel.getFloat(name);
+    }
+    //immutable
+    public static float getWoodMiningLevel(String name){
+        return woodMiningLevel.getFloat(name);
+    }
+    //immutable
+    public static float getLeafMiningLevel(String name){
+        return leafMiningLevel.getFloat(name);
     }
 
-    //tool
-    public static void registerItem(String name,String texturePath, ItemModifier itemModifier, float stoneMiningLevel, float dirtMiningLevel, float woodMiningLevel, float leafMiningLevel){
-        definitions.put(name, new ItemDefinition(name, itemModifier, stoneMiningLevel, dirtMiningLevel, woodMiningLevel, leafMiningLevel));
-        meshes.put(name, createItemToolMesh(texturePath));
+    //immutable - has been abstracted
+    public static String getRandomItemDefinition(){
+        Object[] definitionsArray = blockID.keySet().toArray();
+        int thisItem = (int)Math.floor(Math.random() * definitionsArray.length);
+        return (String)definitionsArray[thisItem];
     }
 
-    public static ItemDefinition getItemDefinition(String name){
-        return definitions.get(name);
+    public static boolean itemIsBlock(String name){
+        return blockID.getByte(name) > 0;
     }
 
+    public static byte getBlockID(String name){
+        return blockID.getByte(name);
+    }
 
-
-
-    public static int createItemBlockMesh(byte blockID) {
+    //internal
+    private static int createItemBlockMesh(byte blockID) {
         int indicesCount = 0;
 
         List<Float> positions     = new ArrayList<>();
@@ -427,8 +457,8 @@ public class ItemDefinition {
        return createMesh(positionsArray, lightArray, indicesArray, textureCoordArray, getTextureAtlas());
     }
 
-
-    public static int createItemToolMesh(String texturePath){
+    //internal
+    private static int createItemToolMesh(String texturePath){
         int indicesCount = 0;
 
         List<Float> positions     = new ArrayList<>();
@@ -790,9 +820,4 @@ public class ItemDefinition {
         return createMesh(positionsArray, lightArray,indicesArray, textureCoordArray, thisTexture);
     }
 
-    public static ItemDefinition getRandomItemDefinition(){
-        Object[] definitionsArray = definitions.values().toArray();
-        int thisItem = (int)Math.floor(Math.random() * definitionsArray.length);
-        return (ItemDefinition)definitionsArray[thisItem];
-    }
 }
