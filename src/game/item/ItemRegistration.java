@@ -6,7 +6,7 @@ import static engine.sound.SoundAPI.playSound;
 import static game.blocks.BlockDefinition.isBlockWalkable;
 import static game.chunk.Chunk.*;
 import static game.crafting.Inventory.removeItemFromInventory;
-import static game.item.ItemDefinition.registerItem;
+import static game.item.ItemDefinition.*;
 import static game.player.Player.getCurrentInventorySelection;
 import static game.player.Player.getPlayerDir;
 
@@ -29,12 +29,12 @@ public class ItemRegistration {
 
         int toolLevel = 2;
         for (String material : materials) {
-            registerItem(material + "pick", "textures/tools/" + material + "pick.png", null, toolLevel,0,0,0);
-            registerItem(material + "shovel", "textures/tools/" + material + "shovel.png", null,0,toolLevel,0,0);
-            registerItem(material + "axe", "textures/tools/" + material + "axe.png", null,0,0,toolLevel,0);
+            registerToolDefinition(material + "pick", "textures/tools/" + material + "pick.png", null, toolLevel,0,0,0);
+            registerToolDefinition(material + "shovel", "textures/tools/" + material + "shovel.png", null,0,toolLevel,0,0);
+            registerToolDefinition(material + "axe", "textures/tools/" + material + "axe.png", null,0,0,toolLevel,0);
 
             if (!material.equals("wood") && !material.equals("stone")){
-                registerItem(material, "textures/items/" + material + ".png", null);
+                registerItemDefinition(material, "textures/items/" + material + ".png", null);
             }
 
             toolLevel++;
@@ -55,11 +55,11 @@ public class ItemRegistration {
             }
         };
 
-        registerItem("door", "textures/door.png", test);
+        registerItemDefinition("door", "textures/door.png", test);
 
-        registerItem("boat", "textures/boatitem.png", null);
+        registerItemDefinition("boat", "textures/boatitem.png", null);
 
-        registerItem("stick", "textures/items/stick.png", null);
+        registerItemDefinition("stick", "textures/items/stick.png", null);
 
         ItemModifier torchPlace = new ItemModifier() {
             @Override
@@ -87,6 +87,6 @@ public class ItemRegistration {
             }
         };
 
-        registerItem("torchItem", "textures/torch.png", torchPlace);
+        registerItemDefinition("torchItem", "textures/torch.png", torchPlace);
     }
 }
