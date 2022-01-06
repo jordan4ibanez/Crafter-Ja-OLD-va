@@ -103,7 +103,7 @@ public class Networking {
                 if (object instanceof NetworkHandshake encodedName) {
                     if (encodedName.name != null && encodedName.name.equals(getPlayerName())){
                         setServerConnected(true);
-                        sendServerUpdatedInventory();
+                        //sendServerUpdatedInventory();
                         System.out.println("connected to server");
                     } else {
                         client.stop();
@@ -117,7 +117,7 @@ public class Networking {
                 } else if (object instanceof  BlockBreakUpdate blockBreakUpdate){
                     digBlock(blockBreakUpdate.pos.x, blockBreakUpdate.pos.y, blockBreakUpdate.pos.z);
                 } else if (object instanceof ItemSendingObject itemSendingObject){
-                    addItemToQueueToBeUpdated(itemSendingObject);
+                    //addItemToQueueToBeUpdated(itemSendingObject);
                 } else if (object instanceof ItemPickupNotification itemPickupNotification){
                     addItemToCollectionQueue(itemPickupNotification.name);
                 } else if (object instanceof ItemDeletionSender itemDeletionSender){
@@ -188,6 +188,7 @@ public class Networking {
         client.sendTCP(myPosition);
     }
 
+    /*
     public static void sendServerUpdatedInventory(){
         InventoryObject mainInv = getMainInventory();
 
@@ -206,6 +207,7 @@ public class Networking {
         //send compacted inventory
         client.sendTCP(inv);
     }
+     */
 
     public static void sendInventorySlot(int slot){
         client.sendTCP(new HotBarSlotUpdate(slot));
