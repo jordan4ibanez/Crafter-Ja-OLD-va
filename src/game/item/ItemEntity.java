@@ -1,9 +1,9 @@
 package game.item;
 
-import engine.network.ItemSendingObject;
-import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
+import it.unimi.dsi.fastutil.ints.*;
 import org.joml.Math;
 import org.joml.Vector3d;
+import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 import java.util.ArrayDeque;
@@ -15,40 +15,93 @@ import static engine.time.Time.getDelta;
 import static game.chunk.Chunk.getLight;
 import static game.collision.Collision.applyInertia;
 import static game.crafting.Inventory.addItemToInventory;
-import static game.item.Item.getCurrentID;
-import static game.player.Player.getPlayerPos;
 import static game.player.Player.getPlayerPosWithCollectionHeight;
 
-public class ItemEntity {
-    private final static Int2ObjectArrayMap<Item> items = new Int2ObjectArrayMap<>();
+final public class ItemEntity {
 
     private final static float itemCollisionWidth = 0.2f;
 
-    public static void cleanItemMemory(){
-        items.clear();
+    private static int currentID = 0;
+
+    private static final Int2ObjectOpenHashMap<String> name = new Int2ObjectOpenHashMap<>();
+    private static final Int2IntOpenHashMap stack = new Int2IntOpenHashMap();
+    private static final Int2ObjectOpenHashMap<Vector3d> pos = new Int2ObjectOpenHashMap<>();
+    private static final Int2ObjectOpenHashMap<Vector3d> goalPos = new Int2ObjectOpenHashMap<>();
+    private static final Int2ObjectOpenHashMap<Vector3f> inertia = new Int2ObjectOpenHashMap<>();
+    private static final Int2FloatOpenHashMap timer = new Int2FloatOpenHashMap();
+    private static final Int2FloatOpenHashMap hover = new Int2FloatOpenHashMap();
+    private static final Int2BooleanOpenHashMap floatUp = new Int2BooleanOpenHashMap();
+    private static final Int2BooleanOpenHashMap collecting = new Int2BooleanOpenHashMap();
+    private static final Int2FloatOpenHashMap collectionTimer = new Int2FloatOpenHashMap();
+    private static final Int2BooleanOpenHashMap deletionOkay = new Int2BooleanOpenHashMap();
+    private static final Int2FloatOpenHashMap rotation = new Int2FloatOpenHashMap();
+
+    private static final Int2ByteOpenHashMap light = new Int2ByteOpenHashMap();
+    private static final Int2FloatOpenHashMap lightUpdateTimer = new Int2FloatOpenHashMap();
+    private static final Int2ObjectOpenHashMap<Vector3i> oldFlooredPos = new Int2ObjectOpenHashMap<>();
+
+
+    public static void createItem(String newName, double posX, double posY, double posZ, float inertiaX, float inertiaY, float inertiaZ, int newStack, float newTimer) {
+        name.put(currentID, newName);
+        stack.put(currentID, newStack);
+        pos.put(currentID, new Vector3d(posX, posY, posZ));
+        goalPos.put(currentID, new Vector3d(posX, posY, posZ));
+        inertia.put(currentID, new Vector3f(inertiaX,inertiaY,inertiaZ));
+        timer.put(currentID,newTimer);
+        hover.put(currentID,0);
+        floatUp.put(currentID, true);
+        collecting.put(currentID,false);
+        collectionTimer.put(currentID,0);
+        deletionOkay.put(currentID, false);
+        rotation.put(currentID, 0);
+        light.put(currentID, (byte) 15);
+        lightUpdateTimer.put(currentID,1f);
+        oldFlooredPos.put(currentID, new Vector3i(0,0,0));
+
+        tickUpCurrentID();
+    }
+
+    public static void throwItem(String newName, double posX, double posY, double posZ, int newStack, float newTimer){
+        name.put(currentID, newName);
+        stack.put(currentID, newStack);
+        pos.put(currentID, new Vector3d(posX, posY, posZ));
+        goalPos.put(currentID, new Vector3d(posX, posY, posZ));
+        inertia.put(currentID, new Vector3f(randomForceValue(2f), (float) java.lang.Math.random() * 4f, randomForceValue(2f)));
+        timer.put(currentID,newTimer);
+        hover.put(currentID,0);
+        floatUp.put(currentID, true);
+        collecting.put(currentID,false);
+        collectionTimer.put(currentID,0);
+        deletionOkay.put(currentID, false);
+        rotation.put(currentID, 0);
+        light.put(currentID, (byte) 15);
+        lightUpdateTimer.put(currentID,1f);
+        oldFlooredPos.put(currentID, new Vector3i(0,0,0));
+
+        tickUpCurrentID();
+    }
+
+    //internal automatic integer overflow to 0
+    private static void tickUpCurrentID(){
+        currentID++;
+        if (currentID == 2147483647){
+            currentID = 0;
+        }
+    }
+
+    public static IntSet getAllItems() {
+        return name.keySet();
     }
 
 
-    public static void createItem(String name, double posX, double posY, double posZ, float inertiaX, float inertiaY, float inertiaZ, int stack, float timer) {
-        items.put(getCurrentID(), new Item(name, posX, posY, posZ, inertiaX, inertiaY, inertiaZ, stack, timer));
-    }
+    //public static boolean itemKeyExists(int ID) {
+        //return name.containsKey(ID);
+    //}
 
-    public static void throwItem(String name, double posX, double posY, double posZ, int stack, float timer){
-        items.put(getCurrentID(), new Item(name, posX, posY, posZ, randomForceValue(2f), (float) java.lang.Math.random() * 4f, randomForceValue(2f), stack, timer));
-    }
+    //private static final Deque<ItemSendingObject> addingUpdatingList = new ArrayDeque<>();
 
-
-    public static Object[] getAllItems() {
-        return items.values().toArray();
-    }
-
-
-    public static boolean itemKeyExists(int ID) {
-        return items.containsKey(ID);
-    }
-
-    private static final Deque<ItemSendingObject> addingUpdatingList = new ArrayDeque<>();
-
+    /*
+    //probably receives items from the multiplayer server then puts them in memory
     public static void processQueuedItemsToBeAddedInMultiplayer() {
         while (!addingUpdatingList.isEmpty()) {
             ItemSendingObject itemSendingObject = addingUpdatingList.pop();
@@ -63,9 +116,12 @@ public class ItemEntity {
         }
     }
 
+
+    //a true mystery
     public static void addItemToQueueToBeUpdated(ItemSendingObject itemSendingObject){
         addingUpdatingList.add(itemSendingObject);
     }
+     */
 
     private static final Deque<Integer> deletionQueue = new ArrayDeque<>();
 
@@ -73,99 +129,199 @@ public class ItemEntity {
         deletionQueue.add(ID);
     }
 
+    private static void removeItem(int ID){
+        name.remove(ID);
+        stack.remove(ID);
+        pos.remove(ID);
+        goalPos.remove(ID);
+        inertia.remove(ID);
+        timer.remove(ID);
+        hover.remove(ID);
+        floatUp.remove(ID);
+        collecting.remove(ID);
+        collectionTimer.remove(ID);
+        deletionOkay.remove(ID);
+        rotation.remove(ID);
+        light.remove(ID);
+        lightUpdateTimer.remove(ID);
+        oldFlooredPos.remove(ID);
+    }
+
+    //immutable
+    public static double getItemPosX(int ID){
+        return pos.get(ID).x;
+    }
+    //immutable
+    public static double getItemPosY(int ID){
+        return pos.get(ID).y;
+    }
+    //immutable
+    public static double getItemPosZ(int ID){
+        return pos.get(ID).z;
+    }
+
+    //immutable - special case for renderer
+    public static double getItemPosYWithHover(int ID){
+        return pos.get(ID).y + hover.get(ID);
+    }
+
+    //immutable
+    public static float getItemHover(int ID){
+        return hover.get(ID);
+    }
+
+    //immutable
+    public static float getItemRotation(int ID){
+        return rotation.get(ID);
+    }
+
+    //immutable
+    public static float getItemLight(int ID){
+        return light.get(ID);
+    }
+
+    //mutable - be careful with this
+    public static String getItemName(int ID){
+        return name.get(ID);
+    }
+
+
     final private static Vector3i currentFlooredPos = new Vector3i();
     final private static Vector3d normalizedPos = new Vector3d();
+    final private static Vector3d currentPos = new Vector3d();
 
     public static void itemsOnTick(){
         double delta = getDelta();
 
-        for (Item thisItem : items.values()){
+        for (int thisKey : name.keySet()){
 
-            if (thisItem.collectionTimer > 0f){
+            float thisCollectionTimer = collectionTimer.get(thisKey);
 
-                thisItem.collectionTimer -= delta;
-                if (thisItem.collectionTimer <= 0){
-                    thisItem.deletionOkay = true;
+            if (thisCollectionTimer > 0f){
+
+                thisCollectionTimer -= delta;
+
+                collectionTimer.put(thisKey, thisCollectionTimer);
+
+                if (thisCollectionTimer <= 0){
+                    deletionOkay.put(thisKey,true);
                 }
             }
 
-            thisItem.timer += delta;
-            thisItem.lightUpdateTimer += delta;
 
-            currentFlooredPos.set((int) Math.floor(thisItem.pos.x), (int)Math.floor(thisItem.pos.y), (int)Math.floor(thisItem.pos.z));
+            float thisTimer = timer.get(thisKey);
+            float thisLightUpdateTimer = lightUpdateTimer.get(thisKey);
+
+            thisTimer += delta;
+            thisLightUpdateTimer += delta;
+
+            timer.put(thisKey,thisTimer);
+
+            currentPos.set(pos.get(thisKey));
+            currentFlooredPos.set((int) Math.floor(currentPos.x), (int)Math.floor(currentPos.y), (int)Math.floor(currentPos.z));
 
             //poll local light every quarter second
-            if (thisItem.lightUpdateTimer >= 0.25f || !currentFlooredPos.equals(thisItem.oldFlooredPos)){
+            if (thisLightUpdateTimer >= 0.25f || !currentFlooredPos.equals(oldFlooredPos.get(thisKey))){
 
-                thisItem.light = getLight(currentFlooredPos.x, currentFlooredPos.y, currentFlooredPos.z);
+                light.put(thisKey, getLight(currentFlooredPos.x, currentFlooredPos.y, currentFlooredPos.z));
 
-                thisItem.lightUpdateTimer = 0f;
+                thisLightUpdateTimer = 0f;
             }
 
-            thisItem.oldFlooredPos.set(currentFlooredPos);
+            lightUpdateTimer.put(thisKey,thisLightUpdateTimer);
+
+            oldFlooredPos.get(thisKey).set(currentFlooredPos);
 
             //delete items that are too old
-            if (thisItem.timer > 50f){
-                deletionQueue.add(thisItem.ID);
+            if (thisTimer > 50f){
+                deletionQueue.add(thisKey);
             }
 
+            boolean thisCollecting = collecting.get(thisKey);
+            boolean oldCollecting = thisCollecting;
+
             //collect items after 3 seconds
-            if (thisItem.timer > 3f){
-                if (thisItem.pos.distance(getPlayerPosWithCollectionHeight()) < 3f){
-                    if (!thisItem.collecting){
-                        if (addItemToInventory(thisItem.name)) {
+            if (thisTimer > 3f){
+                if (currentPos.distance(getPlayerPosWithCollectionHeight()) < 3f){
+                    if (!thisCollecting){
+                        if (addItemToInventory(name.get(thisKey))) {
                             playSound("pickup");
-                            thisItem.collecting = true;
-                            thisItem.collectionTimer = 0.1f;
+                            thisCollecting = true;
+                            collectionTimer.put(thisKey,0.1f);
+                        }
+                        //an extreme edge case so a completely full inventory does not
+                        //hammer the player's RAM
+                        else {
+                            timer.put(thisKey, 2);
                         }
                     }
                     //do not do else-if here, can go straight to this logic
-                    if (thisItem.collecting) {
-                        normalizedPos.set(getPlayerPosWithCollectionHeight().sub(thisItem.pos).normalize().mul(15f));
-                        thisItem.inertia.set((float)normalizedPos.x,(float)normalizedPos.y,(float)normalizedPos.z);
+                    if (thisCollecting) {
+                        normalizedPos.set(getPlayerPosWithCollectionHeight().sub(currentPos).normalize().mul(15f));
+                        inertia.get(thisKey).set((float)normalizedPos.x,(float)normalizedPos.y,(float)normalizedPos.z);
                     }
                 }
 
-                if (thisItem.pos.distance(getPlayerPosWithCollectionHeight()) < 0.2f || thisItem.deletionOkay){
-                    deletionQueue.add(thisItem.ID);
+                if (currentPos.distance(getPlayerPosWithCollectionHeight()) < 0.2f || deletionOkay.get(thisKey)){
+                    deletionQueue.add(thisKey);
                 }
             }
 
-            if (thisItem.collecting) {
-                applyInertia(thisItem.pos, thisItem.inertia, false, itemCollisionWidth, itemCollisionWidth, false, false, false, false, false);
+            if (thisCollecting != oldCollecting){
+                collecting.put(thisKey,thisCollecting);
+            }
+
+            if (thisCollecting) {
+                applyInertia(pos.get(thisKey), inertia.get(thisKey), false, itemCollisionWidth, itemCollisionWidth, false, false, false, false, false);
             } else {
-                applyInertia(thisItem.pos, thisItem.inertia, false, itemCollisionWidth, itemCollisionWidth, true, false, true, false, false);
+                applyInertia(pos.get(thisKey), inertia.get(thisKey), false, itemCollisionWidth, itemCollisionWidth, true, false, true, false, false);
             }
 
-            thisItem.rotation.y += delta * 50;
+            float thisRotation = rotation.get(thisKey);
 
-            if (thisItem.rotation.y > 360f) {
-                thisItem.rotation.y -= 360f;
+            thisRotation += delta * 50;
+
+            if (thisRotation > 360f) {
+                thisRotation -= 360f;
             }
 
-            if (thisItem.floatUp){
-                thisItem.hover += delta / 10;
-                if (thisItem.hover >= 0.5f){
-                    thisItem.floatUp = false;
+            boolean thisFloatUp = floatUp.get(thisKey);
+            boolean oldFloatUp = thisFloatUp;
+
+            float thisHover = hover.get(thisKey);
+
+            if (thisFloatUp){
+                thisHover += delta / 10;
+                if (thisHover >= 0.5f){
+                    thisFloatUp = false;
                 }
             } else {
-                thisItem.hover -= delta / 10;
-                if (thisItem.hover <= 0.0f){
-                    thisItem.floatUp = true;
+                thisHover -= delta / 10;
+                if (thisHover <= 0.0f){
+                    thisFloatUp = true;
                 }
             }
 
-            if (thisItem.pos.y < 0){
-                deletionQueue.add(thisItem.ID);
+            if (thisFloatUp != oldFloatUp){
+                floatUp.put(thisKey, thisFloatUp);
+            }
+
+            hover.put(thisKey,thisHover);
+
+            rotation.put(thisKey,thisRotation);
+
+            if (currentPos.y < 0){
+                deletionQueue.add(thisKey);
             }
         }
 
         while (!deletionQueue.isEmpty()){
             int thisItemKey = deletionQueue.pop();
-            items.remove(thisItemKey);
+            removeItem(thisItemKey);
         }
     }
 
+    /*
     public static void itemsOnTickMultiplayer(){
         double delta = getDelta();
         for (Item thisItem : items.values()){
@@ -185,9 +341,6 @@ public class ItemEntity {
             if (thisItem.pos.distance(getPlayerPos()) > 15f){
                 deletionQueue.add(thisItem.ID);
             }
-
-
-
 
             thisItem.lightUpdateTimer += delta;
 
@@ -223,6 +376,7 @@ public class ItemEntity {
             items.remove(thisItemKey);
         }
     }
+     */
 
     private static final Deque<String> itemsAddingQueue = new ArrayDeque<>();
 
@@ -237,5 +391,20 @@ public class ItemEntity {
                 playSound("pickup");
             }
         }
+    }
+
+    public static void cleanItemMemory(){
+        name.clear();
+        stack.clear();
+        pos.clear();
+        goalPos.clear();
+        inertia.clear();
+        timer.clear();
+        hover.clear();
+        floatUp.clear();
+        collecting.clear();
+        collectionTimer.clear();
+        deletionOkay.clear();
+        rotation.clear();
     }
 }
