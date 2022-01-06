@@ -1,10 +1,8 @@
 package game.ray;
 
-import game.item.Item;
 import game.mob.MobObject;
 import org.joml.Math;
 import org.joml.Vector3d;
-import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 import static engine.network.Networking.*;
@@ -15,7 +13,7 @@ import static game.collision.PointCollision.pointIsWithin;
 import static game.collision.PointCollision.setPointAABB;
 import static game.crafting.Inventory.getItemInInventorySlot;
 import static game.crafting.Inventory.removeItemFromInventory;
-import static game.item.ItemDefinition.getItemModifier;
+import static game.item.ItemDefinition.*;
 import static game.mob.Mob.getAllMobs;
 import static game.mob.Mob.punchMob;
 import static game.particle.Particle.createParticle;
@@ -123,12 +121,12 @@ public class Ray {
                     if (!isPlayerSneaking() && blockHasOnRightClickCall(foundBlock)) {
                         getBlockModifier(foundBlock).onRightClick(finalPos.x, finalPos.y, finalPos.z);
                     } else {
-                        Item wielding = getItemInInventorySlot(getPlayerInventorySelection(), 0);
-                        if (wielding != null && !wouldCollidePlacing(getPlayerPos(),getPlayerWidth(), getPlayerHeight(), pointedThingAbove, wielding.definition.blockID, getPlayerDir()) && getItemInInventorySlot(getPlayerInventorySelection(), 0) != null && !getItemInInventorySlot(getPlayerInventorySelection(), 0).definition.isItem) {
-                            rayPlaceBlock(getItemInInventorySlot(getPlayerInventorySelection(), 0).definition.blockID);
-                        } else if (wielding != null && wielding.definition.isItem) {
-                            if (getItemModifier(getItemInInventorySlot(getPlayerInventorySelection(), 0).name) != null) {
-                                getItemModifier(getItemInInventorySlot(getPlayerInventorySelection(), 0).name).onPlace(finalPos, pointedThingAbove);
+                        String wielding = getItemInInventorySlot(getPlayerInventorySelection(), 0);
+                        if (wielding != null && itemIsBlock(wielding) && !wouldCollidePlacing(getPlayerPos(),getPlayerWidth(), getPlayerHeight(), pointedThingAbove, getBlockID(wielding), getPlayerDir())) {
+                            rayPlaceBlock(getBlockID(wielding));
+                        } else if (wielding != null && getIfItem(wielding)) {
+                            if (getItemModifier(wielding) != null) {
+                                getItemModifier(wielding).onPlace(finalPos, pointedThingAbove);
                             }
                         } else {
                             System.out.println("test3: This is a test of last branch of on place call");
