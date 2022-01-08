@@ -120,10 +120,6 @@ final public class Inventory {
         }
     }
 
-    public static boolean addItemToMainInventory(String name){
-        return addToInventory("main", name);
-    }
-
     public static void throwItem(){
         String thisItem = getItemInInventory("main", getPlayerInventorySelection(), 0);
 
