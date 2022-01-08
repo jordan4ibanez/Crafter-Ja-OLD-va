@@ -33,6 +33,7 @@ import static game.chunk.Chunk.*;
 import static game.clouds.Cloud.*;
 import static game.crafting.Inventory.*;
 import static game.crafting.InventoryLogic.*;
+import static game.crafting.InventoryObject.*;
 import static game.item.ItemDefinition.*;
 import static game.item.ItemEntity.*;
 import static game.light.Light.getCurrentGlobalLightLevel;
@@ -681,7 +682,7 @@ public class GameRenderer {
             entityShaderProgram.setLightUniform("light", getPlayerLightLevel());
 
             //wield hand
-            if (getItemInInventorySlot(getPlayerInventorySelection(),0) == null){
+            if (getItemInInventory("main", getPlayerInventorySelection(),0) == null){
                 setWieldHandMatrix(
                         getCameraPositionX(),getCameraPositionY(), getCameraPositionZ(),
                         getWieldHandAnimationPosX(), getWieldHandAnimationPosY(), getWieldHandAnimationPosZ(),
@@ -774,17 +775,17 @@ public class GameRenderer {
 
                 glClear(GL_DEPTH_BUFFER_BIT);
 
-                renderInventoryGUI(getMainInventory());
+                renderInventoryGUI("main");
 
                 if (isAtCraftingBench()){
-                    renderInventoryGUI(getBigCraftInventory());
+                    renderInventoryGUI("bigCraft");
                 } else {
-                    renderInventoryGUI(getSmallCraftInventory());
+                    renderInventoryGUI("smallCraft");
                 }
 
 
-                renderInventoryGUI(getOutputInventory());
-                renderInventoryGUI(getArmorInventory());
+                renderInventoryGUI("output");
+                renderInventoryGUI("armor");
 
 
 
@@ -941,7 +942,7 @@ public class GameRenderer {
                 //render items in hotbar
                 for (byte x = 1; x <= 9; x++) {
 
-                    String thisItem = getItemInInventorySlot(x - 1, 0);
+                    String thisItem = getItemInInventory("main", x - 1, 0);
 
                     if (thisItem != null) {
 
@@ -960,7 +961,7 @@ public class GameRenderer {
 
                         //render hotbar counts if greater than 1
 
-                        int count = getCountInInventorySlot(x - 1 , 0);
+                        int count = getInventoryCount("main", x - 1 , 0);
 
                         if (count > 1) {
                             updateOrthoModelMatrix(((x - 4.8d) * (windowScale / 9.1d)),  (-windowSize.y / 2d) + (windowScale / 32d), 0, 0, 0, 0, windowScale / 48, windowScale / 48, windowScale / 48);
@@ -1027,10 +1028,10 @@ public class GameRenderer {
     }
 
 
-    private static void renderInventoryGUI(InventoryObject inventory){
+    private static void renderInventoryGUI(String inventoryName){
 
-        double startingPointX = inventory.getPosX();
-        double startingPointY = inventory.getPosY();
+        double startingPointX = getInventoryPosX(inventoryName);
+        double startingPointY = getInventoryPosY(inventoryName);
 
         //this is the size of the actual slots
         //it also makes the default spacing of (0)
@@ -1043,14 +1044,20 @@ public class GameRenderer {
         //this is the spacing between the slots
         double spacing = windowScale / 75d;
 
-        int sizeX = inventory.getSizeX();
-        int sizeY = inventory.getSizeY();
+        int sizeX = getInventorySizeX(inventoryName);
+        int sizeY = getInventorySizeY(inventoryName);
 
         double inventoryHalfSizeX = (double)sizeX/2d;
         double inventoryHalfSizeY = (double)sizeY/2d;
 
+        int selectionX = getInventorySelectionX(inventoryName);
+        int selectionY = getInventorySelectionY(inventoryName);
+
+        String[][] thisInventory = getInventoryAsArray(inventoryName);
+        int[][] thisCount = getInventoryCountAsArray(inventoryName);
+
         double yProgram;
-        if (inventory.isMainInventory()) {
+        if (inventoryName.equals("main")) {
             for (byte x = 0; x < sizeX; x++) {
                 for (byte y = 0; y < sizeY; y++) {
 
@@ -1069,13 +1076,13 @@ public class GameRenderer {
                     updateOrthoModelMatrix(((double) x + 0.5d - inventoryHalfSizeX + startingPointX) * (scale + spacing), ((y * -1d) - 0.5d + startingPointY + inventoryHalfSizeY + yProgram) * (scale + spacing), 0, 0, 0, 0, scale, scale, scale);
                     hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
 
-                    if (inventory.getSelectionX() == x && inventory.getSelectionY() == y){
+                    if (selectionX == x && selectionY == y){
                         renderMesh(getInventorySlotSelectedMesh());
                     } else {
                         renderMesh(getInventorySlotMesh());
                     }
 
-                    String thisItem = inventory.getItem(x,y);
+                    String thisItem = thisInventory[y][x];
 
                     //only attempt if an actual item and not empty slot
                     if (thisItem != null) {
@@ -1090,7 +1097,7 @@ public class GameRenderer {
                         hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
                         renderMesh(getItemMesh(thisItem));
 
-                        int count = inventory.getCount(x,y);
+                        int count = thisCount[y][x];
 
                         //render item stack number
                         if (count > 1) {
@@ -1107,8 +1114,8 @@ public class GameRenderer {
                 }
             }
         } else {
-            for (int x = 0; x < inventory.getSizeX(); x++) {
-                for (int y = 0; y < inventory.getSizeY(); y++) {
+            for (int x = 0; x < sizeX; x++) {
+                for (int y = 0; y < sizeY; y++) {
 
                     //background of the slot
                     glClear(GL_DEPTH_BUFFER_BIT);
@@ -1116,14 +1123,14 @@ public class GameRenderer {
                     updateOrthoModelMatrix(((double) x + 0.5d - inventoryHalfSizeX + startingPointX) * (scale + spacing), ((y * -1d) - 0.5d + startingPointY + inventoryHalfSizeY) * (scale + spacing), 0, 0, 0, 0, scale, scale, scale);
                     hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
 
-                    if (inventory.getSelectionX() == x && inventory.getSelectionY() == y){
+                    if (selectionX == x && selectionY == y){
                         renderMesh(getInventorySlotSelectedMesh());
                     } else {
                         renderMesh(getInventorySlotMesh());
                     }
 
 
-                    String thisItem = inventory.getItem(x,y);
+                    String thisItem = thisInventory[y][x];
 
                     //only attempt if an actual item and not empty slot
                     if (thisItem != null) {
@@ -1138,7 +1145,7 @@ public class GameRenderer {
                         hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
                         renderMesh(getItemMesh(thisItem));
 
-                        int count = inventory.getCount(x,y);
+                        int count = thisCount[y][x];
 
                         //render item stack number
                         if (count > 1) {

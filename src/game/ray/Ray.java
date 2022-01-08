@@ -11,15 +11,15 @@ import static game.chunk.Chunk.*;
 import static game.collision.Collision.wouldCollidePlacing;
 import static game.collision.PointCollision.pointIsWithin;
 import static game.collision.PointCollision.setPointAABB;
-import static game.crafting.Inventory.getItemInInventorySlot;
-import static game.crafting.Inventory.removeItemFromInventory;
+import static game.crafting.InventoryObject.getItemInInventory;
+import static game.crafting.InventoryObject.removeItemFromInventory;
 import static game.item.ItemDefinition.*;
 import static game.mob.Mob.getAllMobs;
 import static game.mob.Mob.punchMob;
 import static game.particle.Particle.createParticle;
 import static game.player.Player.*;
 
-public class Ray {
+final public class Ray {
 
     private static final Vector3i finalPos   = new Vector3i();
     private static final Vector3d newPos     = new Vector3d();
@@ -121,7 +121,7 @@ public class Ray {
                     if (!isPlayerSneaking() && blockHasOnRightClickCall(foundBlock)) {
                         getBlockModifier(foundBlock).onRightClick(finalPos.x, finalPos.y, finalPos.z);
                     } else {
-                        String wielding = getItemInInventorySlot(getPlayerInventorySelection(), 0);
+                        String wielding = getItemInInventory("main", getPlayerInventorySelection(), 0);
                         if (wielding != null && itemIsBlock(wielding) && !wouldCollidePlacing(getPlayerPos(),getPlayerWidth(), getPlayerHeight(), pointedThingAbove, getBlockID(wielding), getPlayerDir())) {
                             rayPlaceBlock(getBlockID(wielding));
                         } else if (wielding != null && getIfItem(wielding)) {
@@ -165,7 +165,7 @@ public class Ray {
             placeBlock((int) lastPos.x, (int) lastPos.y, (int) lastPos.z, ID, getPlayerDir());
         }
 
-        removeItemFromInventory(getCurrentInventorySelection(), 0);
+        removeItemFromInventory("main", getCurrentInventorySelection(), 0);
     }
 
     public static Vector3d genericWorldRaycast(double posX, double posY, double posZ, float dirX, float dirY, float dirZ, float length){

@@ -5,12 +5,12 @@ import org.joml.Vector3i;
 import static engine.sound.SoundAPI.playSound;
 import static game.blocks.BlockDefinition.isBlockWalkable;
 import static game.chunk.Chunk.*;
-import static game.crafting.Inventory.removeItemFromInventory;
+import static game.crafting.InventoryObject.removeItemFromInventory;
 import static game.item.ItemDefinition.*;
 import static game.player.Player.getCurrentInventorySelection;
 import static game.player.Player.getPlayerDir;
 
-public class ItemRegistration {
+final public class ItemRegistration {
 
     private final static String[] materials = new String[]{
             "wood",
@@ -50,7 +50,7 @@ public class ItemRegistration {
                     setBlock(pos.x, pos.y, pos.z, (byte) 24, rot);
                     playSound("wood_1");
 
-                    removeItemFromInventory(getCurrentInventorySelection(), 0);
+                    removeItemFromInventory("main", getCurrentInventorySelection(), 0);
                 }
             }
         };

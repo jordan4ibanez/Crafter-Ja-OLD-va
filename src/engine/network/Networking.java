@@ -17,13 +17,12 @@ import static engine.graphics.Camera.getCameraRotation;
 import static engine.time.TimeOfDay.setTimeOfDay;
 import static game.chat.Chat.addToChatMessageBuffer;
 import static game.chunk.Chunk.*;
-import static game.crafting.Inventory.getMainInventory;
 import static game.item.ItemEntity.*;
 import static game.mainMenu.MainMenu.*;
 import static game.player.OtherPlayers.updateOtherPlayer;
 import static game.player.Player.*;
 
-public class Networking {
+final public class Networking {
 
     private static int port = 30_150;
 

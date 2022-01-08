@@ -2,10 +2,12 @@ package game.crafting;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 import static game.crafting.Inventory.isAtCraftingBench;
+import static game.crafting.InventoryObject.getInventoryAsArray;
 
-public class CraftRecipes {
+final public class CraftRecipes {
     private static CraftRecipeObject[] recipes;
     private static ArrayList<CraftRecipeObject> craftRecipeAccumulator = new ArrayList<>();
 
@@ -24,8 +26,7 @@ public class CraftRecipes {
     //craft recipe initializer
     public static void registerCraftRecipes(){
 
-        //everything is case sensitive
-
+        //everything is case-sensitive
 
         for (String material : materials) {
             String recipeItem = material;
@@ -192,7 +193,7 @@ public class CraftRecipes {
     }
 
 
-    public static CraftRecipeObject recipeScan(InventoryObject inventory){
+    public static CraftRecipeObject recipeScan(String inventory){
         CraftRecipeObject returningRecipe = null;
 
         String[][] inventoryToStringArray;
@@ -214,15 +215,13 @@ public class CraftRecipes {
             };
         }
 
+        String[][] thisInventory = getInventoryAsArray(inventory);
+
         //dump item strings into array
-        for (int x = 0; x < inventory.getSizeX(); x++) {
-            for (int y = 0; y < inventory.getSizeY(); y++) {
-                String thisItem = inventory.getItem(x, y);
-                if (thisItem != null) {
-                    inventoryToStringArray[y][x] = thisItem;
-                } else {
-                    inventoryToStringArray[y][x] = "";
-                }
+        for (int x = 0; x < thisInventory.length; x++) {
+            for (int y = 0; y < thisInventory[0].length; y++) {
+                String thisItem = thisInventory[y][x];
+                inventoryToStringArray[y][x] = Objects.requireNonNullElse(thisItem, "");
             }
         }
 

@@ -14,7 +14,7 @@ import static engine.sound.SoundAPI.playSound;
 import static engine.time.Time.getDelta;
 import static game.chunk.Chunk.getLight;
 import static game.collision.Collision.applyInertia;
-import static game.crafting.Inventory.addItemToInventory;
+import static game.crafting.Inventory.addItemToMainInventory;
 import static game.player.Player.getPlayerPosWithCollectionHeight;
 
 final public class ItemEntity {
@@ -244,7 +244,7 @@ final public class ItemEntity {
             if (thisTimer > 3f){
                 if (currentPos.distance(getPlayerPosWithCollectionHeight()) < 3f){
                     if (!thisCollecting){
-                        if (addItemToInventory(name.get(thisKey))) {
+                        if (addItemToMainInventory(name.get(thisKey))) {
                             playSound("pickup");
                             thisCollecting = true;
                             collectionTimer.put(thisKey,0.1f);
@@ -387,7 +387,7 @@ final public class ItemEntity {
     public static void popItemsAddingQueue(){
         if (!itemsAddingQueue.isEmpty()) {
             String newItem = itemsAddingQueue.pop();
-            if (addItemToInventory(newItem)) {
+            if (addItemToMainInventory(newItem)) {
                 playSound("pickup");
             }
         }

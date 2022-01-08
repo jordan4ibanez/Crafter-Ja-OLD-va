@@ -24,6 +24,7 @@ import static engine.sound.SoundManager.*;
 import static game.blocks.BlockDefinition.initializeBlocks;
 import static game.chunk.Chunk.globalFinalChunkSaveToDisk;
 import static game.crafting.CraftRecipes.registerCraftRecipes;
+import static game.crafting.Inventory.createInitialInventory;
 import static game.item.ItemRegistration.registerItems;
 import static game.mainMenu.MainMenu.initMainMenu;
 import static game.mob.Mob.registerMobs;
@@ -88,6 +89,8 @@ public class Crafter {
         initializeBlocks();
         //this creates a TNT mesh (here for now)
         createTNTEntityMesh();
+
+        createInitialInventory();
 
         registerMobs();
 
