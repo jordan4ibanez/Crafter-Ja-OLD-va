@@ -6,7 +6,8 @@ import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import static engine.graphics.Camera.*;
-import static engine.render.GameRenderer.getWindowSize;
+import static engine.render.GameRenderer.getWindowSizeX;
+import static engine.render.GameRenderer.getWindowSizeY;
 import static engine.time.TimeOfDay.getTimeOfDayLinear;
 import static game.tnt.TNTEntity.getTNTPosition;
 import static game.tnt.TNTEntity.getTNTScale;
@@ -239,7 +240,7 @@ public class Transformation {
 
     public static void resetOrthoProjectionMatrix() {
         orthoMatrix.identity();
-        orthoMatrix.setOrtho(-getWindowSize().x/2f, getWindowSize().x/2f, -getWindowSize().y/2f, getWindowSize().y/2f, -1000f, 1000f);
+        orthoMatrix.setOrtho(-getWindowSizeX()/2f, getWindowSizeX()/2f, -getWindowSizeY()/2f, getWindowSizeY()/2f, -1000f, 1000f);
     }
 
     public static void updateOrthoModelMatrix(double posX, double posY, double posZ, float rotX, float rotY, float rotZ, double scaleX, double scaleY, double scaleZ) {

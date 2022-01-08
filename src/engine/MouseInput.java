@@ -4,7 +4,8 @@ import org.joml.Vector2d;
 import org.joml.Vector2f;
 
 import static engine.Window.*;
-import static engine.render.GameRenderer.getWindowSize;
+import static engine.render.GameRenderer.getWindowSizeX;
+import static engine.render.GameRenderer.getWindowSizeY;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class MouseInput {
@@ -136,10 +137,10 @@ public class MouseInput {
 
     //SPECIAL gui management tool for mouse position
     public static double getMousePosCenteredX(){
-        return currentPos.x - (getWindowSize().x / 2f);
+        return currentPos.x - (getWindowSizeX() / 2f);
     }
     public static double getMousePosCenteredY(){
-        return (currentPos.y - (getWindowSize().y / 2f)) * -1;
+        return (currentPos.y - (getWindowSizeY() / 2f)) * -1;
     }
 
     public static void toggleMouseLock(){

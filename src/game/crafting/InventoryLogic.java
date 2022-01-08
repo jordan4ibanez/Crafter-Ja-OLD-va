@@ -7,8 +7,7 @@ import static engine.MouseInput.*;
 import static engine.Window.getWindowHeight;
 import static engine.Window.getWindowWidth;
 import static engine.network.Networking.getIfMultiplayer;
-import static engine.render.GameRenderer.getWindowScale;
-import static engine.render.GameRenderer.getWindowSize;
+import static engine.render.GameRenderer.*;
 import static game.crafting.CraftRecipes.recipeScan;
 import static game.crafting.Inventory.*;
 import static game.crafting.InventoryObject.*;
@@ -54,15 +53,18 @@ final public class InventoryLogic {
                 double mousePosX = getMousePosX();
                 double mousePosY = getMousePosY();
 
+                double windowSizeX = getWindowSizeX();
+                double windowSizeY = getWindowSizeY();
+
                 //limiters
-                if (mousePosX > getWindowSize().x){
-                    mousePosX = getWindowSize().x;
+                if (mousePosX > windowSizeX){
+                    mousePosX = windowSizeX;
                 } else if (mousePosX < 0){
                     mousePosX = 0;
                 }
 
-                if (mousePosY > getWindowSize().y){
-                    mousePosY = getWindowSize().y;
+                if (mousePosY > windowSizeY){
+                    mousePosY = windowSizeY;
                 } else if (mousePosY < 0){
                     mousePosY = 0;
                 }
@@ -427,8 +429,8 @@ final public class InventoryLogic {
         Vector2d mousePos = new Vector2d(getMousePos());
 
         //work from the center
-        mousePos.x -= (getWindowSize().x/2f);
-        mousePos.y -= (getWindowSize().y/2f);
+        mousePos.x -= (getWindowSizeX()/2f);
+        mousePos.y -= (getWindowSizeY()/2f);
 
         //invert mouse
         mousePos.y *= -1;

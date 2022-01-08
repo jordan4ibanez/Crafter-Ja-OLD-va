@@ -8,8 +8,7 @@ import static engine.Window.getWindowHandle;
 import static engine.disk.SQLiteDiskHandler.closeWorldDataBase;
 import static engine.network.Networking.disconnectClient;
 import static engine.network.Networking.sendChatMessage;
-import static engine.render.GameRenderer.getWindowScale;
-import static engine.render.GameRenderer.getWindowSize;
+import static engine.render.GameRenderer.*;
 import static engine.scene.SceneHandler.setScene;
 import static engine.settings.Settings.*;
 import static engine.sound.SoundAPI.playSound;
@@ -475,8 +474,8 @@ public class GUILogic {
         mousePos.set(getMousePos());
 
         //work from the center
-        mousePos.x -= (getWindowSize().x/2f);
-        mousePos.y -= (getWindowSize().y/2f);
+        mousePos.x -= (getWindowSizeX()/2f);
+        mousePos.y -= (getWindowSizeY()/2f);
         byte count = 0;
         for (GUIObject thisButton : guiElements){
             double xPos = thisButton.pos.x * (windowScale / 100d);

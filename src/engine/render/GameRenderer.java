@@ -54,22 +54,28 @@ public class GameRenderer {
 
     private static float windowScale = 0f;
 
-    private static final Vector2d windowSize = new Vector2d();
+    private static double windowSizeX = 0;
+    private static double windowSizeY = 0;
 
     private static ShaderProgram shaderProgram;
     private static ShaderProgram hudShaderProgram;
     private static ShaderProgram glassLikeShaderProgram;
     private static ShaderProgram entityShaderProgram;
 
-    public static Vector2d getWindowSize(){
-        return windowSize;
+
+    public static double getWindowSizeX(){
+        return windowSizeX;
+    }
+
+    public static double getWindowSizeY(){
+        return windowSizeY;
     }
 
     private static void resetWindowScale(){
-        if (windowSize.x <= windowSize.y){
-            windowScale = (float)windowSize.x;
+        if (windowSizeX <= windowSizeY){
+            windowScale = (float)windowSizeX;
         } else {
-            windowScale = (float) windowSize.y;
+            windowScale = (float) windowSizeY;
         }
         System.out.println("Window scale is now: " + windowScale);
     }
@@ -148,8 +154,8 @@ public class GameRenderer {
         //setWindowClearColor(0.f,0.f,0.f,0.f);
         setWindowClearColor(0.53f,0.81f,0.92f,0.f);
 
-        windowSize.x = getWindowWidth();
-        windowSize.y = getWindowHeight();
+        windowSizeX = getWindowWidth();
+        windowSizeY = getWindowHeight();
 
         resetWindowScale();
     }
@@ -161,8 +167,8 @@ public class GameRenderer {
 
     public static void rescaleWindow(){
         if (isWindowResized()){
-            windowSize.x = getWindowWidth();
-            windowSize.y = getWindowHeight();
+            windowSizeX = getWindowWidth();
+            windowSizeY = getWindowHeight();
             glViewport(0,0, getWindowWidth(), getWindowHeight());
             setWindowResized(false);
             resetWindowScale();
@@ -831,7 +837,7 @@ public class GameRenderer {
                             jiggle = 0f;
                         }
 
-                        updateOrthoModelMatrix(-windowScale / 2.105f + (i * (windowScale / 19.5d)), (-windowSize.y / 2d) + (windowScale / 6.8d) + jiggle, 0, 0, 0, 0, (windowScale / 20f), (windowScale / 20f), (windowScale / 20f));
+                        updateOrthoModelMatrix(-windowScale / 2.105f + (i * (windowScale / 19.5d)), (-windowSizeY / 2d) + (windowScale / 6.8d) + jiggle, 0, 0, 0, 0, (windowScale / 20f), (windowScale / 20f), (windowScale / 20f));
                         hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
 
                         //save cpu render calls
@@ -850,7 +856,7 @@ public class GameRenderer {
 
                 //hotbar
                 {
-                    updateOrthoModelMatrix(0,  (-windowSize.y / 2d) + (windowScale / 16.5d), 0, 0, 0, 0, (windowScale), (windowScale), (windowScale));
+                    updateOrthoModelMatrix(0,  (-windowSizeY / 2d) + (windowScale / 16.5d), 0, 0, 0, 0, (windowScale), (windowScale), (windowScale));
                     hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
                     renderMesh(getHotBarMesh());
                 }
@@ -859,7 +865,7 @@ public class GameRenderer {
 
                 //selection bar (in the hotbar)
                 {
-                    updateOrthoModelMatrix((getPlayerInventorySelection() - 4) * (windowScale / 9.1d),  (-windowSize.y / 2f) + ((windowScale / 8.25f) / 2f), 0, 0, 0, 0, windowScale / 8.25f, windowScale / 8.25f, windowScale / 8.25f);
+                    updateOrthoModelMatrix((getPlayerInventorySelection() - 4) * (windowScale / 9.1d),  (-windowSizeY / 2f) + ((windowScale / 8.25f) / 2f), 0, 0, 0, 0, windowScale / 8.25f, windowScale / 8.25f, windowScale / 8.25f);
                     hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
                     renderMesh(getHotBarSelectionMesh());
                 }
@@ -870,7 +876,7 @@ public class GameRenderer {
 
                 //version info
                 {
-                    updateOrthoModelMatrix(-windowSize.x / 2d, (windowSize.y / 2.1d), 0, 0, 0, 0, windowScale / 30d, windowScale / 30d, windowScale / 30d);
+                    updateOrthoModelMatrix(-windowSizeX / 2d, (windowSizeY / 2.1d), 0, 0, 0, 0, windowScale / 30d, windowScale / 30d, windowScale / 30d);
                     hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
                     renderMesh(getVersionInfoText());
                 }
@@ -881,7 +887,7 @@ public class GameRenderer {
                     {
 
                         glClear(GL_DEPTH_BUFFER_BIT);
-                        updateOrthoModelMatrix((-windowSize.x / 2d), (windowSize.y / 2.3d), 0, 0, 0, 0, windowScale / 30d, windowScale / 30d, windowScale / 30d);
+                        updateOrthoModelMatrix((-windowSizeX / 2d), (windowSizeY / 2.3d), 0, 0, 0, 0, windowScale / 30d, windowScale / 30d, windowScale / 30d);
                         hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
                         //this creates a new object every frame >:(
                         int workerMesh = createTextWithShadow("X:" + getPlayerPos().x, 1f, 1f, 1f);
@@ -893,7 +899,7 @@ public class GameRenderer {
                     {
 
                         glClear(GL_DEPTH_BUFFER_BIT);
-                        updateOrthoModelMatrix((-windowSize.x / 2d), (windowSize.y / 2.6d), 0, 0, 0, 0, windowScale / 30d, windowScale / 30d, windowScale / 30d);
+                        updateOrthoModelMatrix((-windowSizeX / 2d), (windowSizeY / 2.6d), 0, 0, 0, 0, windowScale / 30d, windowScale / 30d, windowScale / 30d);
                         hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
                         //this creates a new object every frame >:(
                         int workerMesh = createTextWithShadow("Y:" + getPlayerPos().y, 1f, 1f, 1f);
@@ -904,7 +910,7 @@ public class GameRenderer {
                     //z info
                     {
                         glClear(GL_DEPTH_BUFFER_BIT);
-                        updateOrthoModelMatrix((-windowSize.x / 2d), (float) (windowSize.y / 3d), 0, 0, 0, 0, windowScale / 30d, windowScale / 30d, windowScale / 30d);
+                        updateOrthoModelMatrix((-windowSizeX / 2d), (float) (windowSizeY / 3d), 0, 0, 0, 0, windowScale / 30d, windowScale / 30d, windowScale / 30d);
                         hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
                         //this creates a new object every frame >:(
                         int workerMesh = createTextWithShadow("Z:" + getPlayerPos().z, 1f, 1f, 1f);
@@ -916,7 +922,7 @@ public class GameRenderer {
                     int[] runtimeInfo = getRuntimeInfoText();
                     for (int i = 0; i < runtimeInfo.length; i++){
                         glClear(GL_DEPTH_BUFFER_BIT);
-                        updateOrthoModelMatrix((-windowSize.x / 2d), (float) (windowSize.y / 3d) + ((-i - 1) * (windowSize.y/20d)), 0, 0, 0, 0, windowScale / 30d, windowScale / 30d, windowScale / 30d);
+                        updateOrthoModelMatrix((-windowSizeX / 2d), (float) (windowSizeY / 3d) + ((-i - 1) * (windowSizeY/20d)), 0, 0, 0, 0, windowScale / 30d, windowScale / 30d, windowScale / 30d);
                         hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
                         renderMesh(runtimeInfo[i]);
                     }
@@ -925,7 +931,7 @@ public class GameRenderer {
                     //render fps
                     {
                         glClear(GL_DEPTH_BUFFER_BIT);
-                        updateOrthoModelMatrix((-windowSize.x / 2d), (windowSize.y / 3d + (-7 * (windowSize.y/20d))), 0, 0, 0, 0, windowScale / 30d, windowScale / 30d, windowScale / 30d);
+                        updateOrthoModelMatrix((-windowSizeX / 2d), (windowSizeY / 3d + (-7 * (windowSizeY/20d))), 0, 0, 0, 0, windowScale / 30d, windowScale / 30d, windowScale / 30d);
                         hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
                         renderMesh(getFPSMesh());
                     }
@@ -933,7 +939,7 @@ public class GameRenderer {
                     //only show FPS
                     {
                         glClear(GL_DEPTH_BUFFER_BIT);
-                        updateOrthoModelMatrix((-windowSize.x / 2d), (windowSize.y / 2.3d), 0, 0, 0, 0, windowScale / 30d, windowScale / 30d, windowScale / 30d);
+                        updateOrthoModelMatrix((-windowSizeX / 2d), (windowSizeY / 2.3d), 0, 0, 0, 0, windowScale / 30d, windowScale / 30d, windowScale / 30d);
                         hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
                         renderMesh(getFPSMesh());
                     }
@@ -949,9 +955,9 @@ public class GameRenderer {
                         glClear(GL_DEPTH_BUFFER_BIT);
 
                         if (getIfItem(thisItem)) {
-                            updateOrthoModelMatrix(((x - 5d) * (windowScale / 9.1d)), (-windowSize.y / 2d) + (windowScale / 48d), 0, 0, 0, 0, windowScale / 5d, windowScale / 5d, windowScale / 5d);
+                            updateOrthoModelMatrix(((x - 5d) * (windowScale / 9.1d)), (-windowSizeY / 2d) + (windowScale / 48d), 0, 0, 0, 0, windowScale / 5d, windowScale / 5d, windowScale / 5d);
                         } else {
-                            updateOrthoModelMatrix(((x - 5d) * (windowScale / 9.1d)), (-windowSize.y / 2d) + (windowScale / 24d), 0, 45, 45, 0, windowScale / 8.01d, windowScale / 8.01d, windowScale / 8.01d);
+                            updateOrthoModelMatrix(((x - 5d) * (windowScale / 9.1d)), (-windowSizeY / 2d) + (windowScale / 24d), 0, 45, 45, 0, windowScale / 8.01d, windowScale / 8.01d, windowScale / 8.01d);
                         }
                         hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
                         renderMesh(getItemMesh(thisItem));
@@ -964,7 +970,7 @@ public class GameRenderer {
                         int count = getInventoryCount("main", x - 1 , 0);
 
                         if (count > 1) {
-                            updateOrthoModelMatrix(((x - 4.8d) * (windowScale / 9.1d)),  (-windowSize.y / 2d) + (windowScale / 32d), 0, 0, 0, 0, windowScale / 48, windowScale / 48, windowScale / 48);
+                            updateOrthoModelMatrix(((x - 4.8d) * (windowScale / 9.1d)),  (-windowSizeY / 2d) + (windowScale / 32d), 0, 0, 0, 0, windowScale / 48, windowScale / 48, windowScale / 48);
                             hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
                             //
                             int workerMesh = createTextCenteredWithShadow(Integer.toString(count), 1f, 1f, 1f);
@@ -977,7 +983,7 @@ public class GameRenderer {
         } else {
             //render inventory base
             {
-                updateOrthoModelMatrix(0, 0, 0, 0, 0, 0, windowSize.x, windowSize.y, windowScale);
+                updateOrthoModelMatrix(0, 0, 0, 0, 0, 0, windowSizeX, windowSizeY, windowScale);
                 hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
                 renderMesh(getMenuBgMesh());
             }
@@ -992,13 +998,13 @@ public class GameRenderer {
 
             //render background
             glClear(GL_DEPTH_BUFFER_BIT);
-            updateOrthoModelMatrix((-windowSize.x / 2d), (-windowSize.y / 2.9d), 0, 0, 0, 0, windowSize.x / 1.5d, windowScale / 15d, windowScale / 5d);
+            updateOrthoModelMatrix((-windowSizeX / 2d), (-windowSizeY / 2.9d), 0, 0, 0, 0, windowSizeX / 1.5d, windowScale / 15d, windowScale / 5d);
             hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
             renderMesh(getChatBoxMesh());
 
             //render typing text
             glClear(GL_DEPTH_BUFFER_BIT);
-            updateOrthoModelMatrix((-windowSize.x / 2d), (-windowSize.y / 2.9d), 0, 0, 0, 0, windowScale / 30d, windowScale / 30d, windowScale / 30d);
+            updateOrthoModelMatrix((-windowSizeX / 2d), (-windowSizeY / 2.9d), 0, 0, 0, 0, windowScale / 30d, windowScale / 30d, windowScale / 30d);
             hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
             renderMesh(getCurrentMessageMesh());
         }
@@ -1012,13 +1018,13 @@ public class GameRenderer {
             for (int mesh : getViewableChatMessages()){
                 //render background
                 glClear(GL_DEPTH_BUFFER_BIT);
-                updateOrthoModelMatrix((-windowSize.x / 2d), (-windowSize.y / 2.9d) + ((windowScale/15d) * i), 0, 0, 0, 0, windowSize.x / 1.5d, windowScale / 15d, windowScale / 5d);
+                updateOrthoModelMatrix((-windowSizeX / 2d), (-windowSizeY / 2.9d) + ((windowScale/15d) * i), 0, 0, 0, 0, windowSizeX / 1.5d, windowScale / 15d, windowScale / 5d);
                 hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
                 renderMesh(getChatBoxMesh());
 
                 //render chat mesh
                 glClear(GL_DEPTH_BUFFER_BIT);
-                updateOrthoModelMatrix((-windowSize.x / 2d), (-windowSize.y / 2.9d)+ ((windowScale/15d) * i), 0, 0, 0, 0, windowScale / 30d, windowScale / 30d, windowScale / 30d);
+                updateOrthoModelMatrix((-windowSizeX / 2d), (-windowSizeY / 2.9d)+ ((windowScale/15d) * i), 0, 0, 0, 0, windowScale / 30d, windowScale / 30d, windowScale / 30d);
                 hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
                 renderMesh(mesh);
                 i++;
