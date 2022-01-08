@@ -46,30 +46,33 @@ final public class InventoryLogic {
             //begin player in inventory thing
             //new scope because lazy
             {
-                //todo - what the hell is this mess
                 float windowScale = getWindowScale();
-                Vector2d basePlayerPos = new Vector2d(-(windowScale / 3.75d), (windowScale / 2.8d));
-                Vector2d mousePos = getMousePos();
+
+                double basePlayerPosX = -(windowScale / 3.75d);
+                double basePlayerPosY = (windowScale / 2.8d);
+
+                double mousePosX = getMousePosX();
+                double mousePosY = getMousePosY();
 
                 //limiters
-                if (mousePos.x > getWindowSize().x){
-                    mousePos.x = getWindowSize().x;
-                } else if (mousePos.x < 0){
-                    mousePos.x = 0;
+                if (mousePosX > getWindowSize().x){
+                    mousePosX = getWindowSize().x;
+                } else if (mousePosX < 0){
+                    mousePosX = 0;
                 }
 
-                if (mousePos.y > getWindowSize().y){
-                    mousePos.y = getWindowSize().y;
-                } else if (mousePos.y < 0){
-                    mousePos.y = 0;
+                if (mousePosY > getWindowSize().y){
+                    mousePosY = getWindowSize().y;
+                } else if (mousePosY < 0){
+                    mousePosY = 0;
                 }
 
-                float rotationY = (float)((mousePos.x - (getWindowWidth()/2f)) - basePlayerPos.x) / (windowScale * 1.2f);
+                float rotationY = (float)((mousePosX - (getWindowWidth()/2f)) - basePlayerPosX) / (windowScale * 1.2f);
                 rotationY *= 40f;
                 playerRot.y = rotationY;
 
 
-                float rotationX = (float)((mousePos.y - (getWindowHeight()/2f)) + (basePlayerPos.y /2f)) / (windowScale * 1.2f);
+                float rotationX = (float)((mousePosY - (getWindowHeight()/2f)) + (basePlayerPosY /2f)) / (windowScale * 1.2f);
                 rotationX *= 40f;
                 playerRot.x = rotationX;
             }
