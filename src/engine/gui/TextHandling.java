@@ -5,7 +5,6 @@ import static engine.graphics.Texture.createTexture;
 
 final public class TextHandling {
 
-
     //textures
     private static final int fontTextureAtlas = createTexture("textures/font.png");
 
@@ -874,7 +873,7 @@ final public class TextHandling {
 
         //x is the actual position in the mesh creation of the letter
         //divide the actual length before it's created, start the typewriter
-        //half way across
+        //halfway across
         float x = 0;
 
         //get the amount of letters in the string
@@ -953,7 +952,7 @@ final public class TextHandling {
         }
 
 
-        //reset x position like a type writer
+        //reset x position like a typewriter
         x = 0.075f;
         float y = -0.075f;
 
@@ -1008,7 +1007,7 @@ final public class TextHandling {
             w += 8;
 
             //shift the left of the letter to the right
-            //kind of like a type writer
+            //kind of like a typewriter
 
             //make this use the 4th float array variable to space properly
             //add 0.1f so that characters are not squished together
