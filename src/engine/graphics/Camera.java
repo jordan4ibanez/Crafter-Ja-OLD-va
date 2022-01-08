@@ -5,7 +5,8 @@ import org.joml.Vector2f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import static engine.MouseInput.getMouseDisplVec;
+import static engine.MouseInput.getMouseDisplVecX;
+import static engine.MouseInput.getMouseDisplVecY;
 import static game.player.Player.*;
 import static game.player.ViewBobbing.*;
 import static game.ray.Ray.genericWorldRaycast;
@@ -153,7 +154,7 @@ public class Camera {
         }
 
         //update camera based on mouse
-        mouseRotationVector.set(getMouseDisplVec());
+        mouseRotationVector.set(getMouseDisplVecX(), getMouseDisplVecY());
         moveCameraRotation(mouseRotationVector.x * MOUSE_SENSITIVITY, mouseRotationVector.y * MOUSE_SENSITIVITY, 0);
 
         //limit camera pitch

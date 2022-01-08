@@ -16,7 +16,9 @@ final public class MouseInput {
     private static double currentPosX = 0;
     private static double currentPosY = 0;
 
-    private static final Vector2f displVec    = new Vector2f();
+    private static float displVecX = 0;
+    private static float displVecY = 0;
+
 
     private static boolean  inWindow    = false;
     private static boolean  leftButtonPressed  = false;
@@ -57,8 +59,13 @@ final public class MouseInput {
         glfwSetScrollCallback(getWindowHandle(), (windowHandle, xOffset, yOffset) -> scroll = (float)yOffset);
     }
 
-    public static Vector2f getMouseDisplVec() {
-        return displVec;
+
+    public static float getMouseDisplVecX(){
+        return displVecX;
+    }
+
+    public static float getMouseDisplVecY(){
+        return displVecY;
     }
 
     private static final double[] testX = new double[1];
@@ -72,8 +79,8 @@ final public class MouseInput {
         currentPosY = (float)testY[0];
 
         if (mouseLocked) {
-            displVec.x = 0;
-            displVec.y = 0;
+            displVecX = 0;
+            displVecY = 0;
             glfwSetCursorPos(getWindowHandle(), getWindowWidth() / 2d, getWindowHeight() / 2d);
             if (previousPosX > 0 && previousPosY > 0 && inWindow) {
                 double deltax = currentPosX - getWindowWidth() / 2f;
@@ -83,18 +90,18 @@ final public class MouseInput {
                 boolean rotateY = deltay != 0;
 
                 if (rotateX) {
-                    displVec.y = (float) deltax;
+                    displVecY = (float) deltax;
                 }
 
                 if (rotateY) {
-                    displVec.x = (float) deltay;
+                    displVecX = (float) deltay;
                 }
             }
             previousPosX = currentPosX;
             previousPosY = currentPosY;
         } else {
-            displVec.x = 0;
-            displVec.y = 0;
+            displVecX = 0;
+            displVecY = 0;
         }
     }
 
