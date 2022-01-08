@@ -1,6 +1,5 @@
 package game.mainMenu;
 
-import engine.graphics.Mesh;
 import engine.gui.GUIObject;
 import engine.sound.SoundSource;
 import org.joml.Vector2d;
@@ -31,7 +30,7 @@ import static game.mainMenu.MainMenuAssets.createMenuMenuTitleBlock;
 import static game.player.Player.setPlayerName;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
-public class MainMenu {
+final public class MainMenu {
 
     private static byte[][] titleBlocks;
     private static double[][] titleOffsets;
@@ -1121,6 +1120,22 @@ public class MainMenu {
             "Filled with Strings!",
             "Jump scare free!",
             "Ghost free!",
-            "Moving clouds!"
+            "Moving clouds!",
+            "3 2 1 Let's sausage!",
+            "It's an anomaly!",
+            "Data oriented!",
+            "Bleep bloop!",
+            "Robotic!",
+            "Verbose!",
+            "Also try Open Miner!",
+            "Rubenwardy is cool!",
+            "Dynamic allocations!",
+            "Flushes buffers!",
+            "Steams hams!",
+            "Static!",
+            "Speeeeeeen!",
+            "It's magic, Joel!",
+            "Error!",
+            "Hello there!",
     };
 }
