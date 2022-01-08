@@ -8,11 +8,16 @@ import static engine.render.GameRenderer.getWindowSizeX;
 import static engine.render.GameRenderer.getWindowSizeY;
 import static org.lwjgl.glfw.GLFW.*;
 
-public class MouseInput {
+final public class MouseInput {
 
-    private static final Vector2d previousPos = new Vector2d(-1,-1);
-    private static final Vector2d currentPos  = new Vector2d(0,0);
+    private static double previousPosX = -1;
+    private static double previousPosY = -1;
+
+    private static double currentPosX = 0;
+    private static double currentPosY = 0;
+
     private static final Vector2f displVec    = new Vector2f();
+
     private static boolean  inWindow    = false;
     private static boolean  leftButtonPressed  = false;
     private static boolean  rightButtonPressed = false;
@@ -25,21 +30,21 @@ public class MouseInput {
         double[] testx = new double[1];
         double[] testy = new double[1];
         glfwGetCursorPos(getWindowHandle(), testx, testy);
-        currentPos.x = (float)testx[0];
-        currentPos.y = (float)testy[0];
+        currentPosX = (float)testx[0];
+        currentPosY = (float)testy[0];
 
-        currentPos.x = getWindowWidth() / 2f;
-        currentPos.y = getWindowHeight() / 2f;
+        currentPosX = getWindowWidth() / 2f;
+        currentPosY = getWindowHeight() / 2f;
 
-        previousPos.x = currentPos.x;
-        previousPos.y = currentPos.y;
+        previousPosX = currentPosX;
+        previousPosY = currentPosY;
     }
 
     public static void initMouseInput(){
 
         glfwSetCursorPosCallback(getWindowHandle(), (windowHandle, xpos, ypos) -> {
-            currentPos.x = xpos;
-            currentPos.y = ypos;
+            currentPosX = xpos;
+            currentPosY = ypos;
         });
 
         glfwSetCursorEnterCallback(getWindowHandle(), (windowHandle, entered) -> inWindow = entered);
@@ -63,16 +68,16 @@ public class MouseInput {
 
 
         glfwGetCursorPos(getWindowHandle(), testX, testY);
-        currentPos.x = (float)testX[0];
-        currentPos.y = (float)testY[0];
+        currentPosX = (float)testX[0];
+        currentPosY = (float)testY[0];
 
         if (mouseLocked) {
             displVec.x = 0;
             displVec.y = 0;
             glfwSetCursorPos(getWindowHandle(), getWindowWidth() / 2d, getWindowHeight() / 2d);
-            if (previousPos.x > 0 && previousPos.y > 0 && inWindow) {
-                double deltax = currentPos.x - getWindowWidth() / 2f;
-                double deltay = currentPos.y - getWindowHeight() / 2f;
+            if (previousPosX > 0 && previousPosY > 0 && inWindow) {
+                double deltax = currentPosX - getWindowWidth() / 2f;
+                double deltay = currentPosY - getWindowHeight() / 2f;
 
                 boolean rotateX = deltax != 0;
                 boolean rotateY = deltay != 0;
@@ -85,8 +90,8 @@ public class MouseInput {
                     displVec.x = (float) deltay;
                 }
             }
-            previousPos.x = currentPos.x;
-            previousPos.y = currentPos.y;
+            previousPosX = currentPosX;
+            previousPosY = currentPosY;
         } else {
             displVec.x = 0;
             displVec.y = 0;
@@ -122,25 +127,21 @@ public class MouseInput {
         return thisScroll;
     }
 
-    //mutable - be careful with this
-    public static Vector2d getMousePos(){
-        return currentPos;
-    }
     //immutable
     public static double getMousePosX(){
-        return currentPos.x;
+        return currentPosX;
     }
     //immutable
     public static double getMousePosY(){
-        return currentPos.y;
+        return currentPosY;
     }
 
     //SPECIAL gui management tool for mouse position
     public static double getMousePosCenteredX(){
-        return currentPos.x - (getWindowSizeX() / 2f);
+        return currentPosX - (getWindowSizeX() / 2f);
     }
     public static double getMousePosCenteredY(){
-        return (currentPos.y - (getWindowSizeY() / 2f)) * -1;
+        return (currentPosY - (getWindowSizeY() / 2f)) * -1;
     }
 
     public static void toggleMouseLock(){

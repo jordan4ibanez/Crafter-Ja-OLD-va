@@ -425,15 +425,15 @@ final public class InventoryLogic {
 
         float windowScale = getWindowScale();
 
-        //need to create new object or the mouse position gets messed up
-        Vector2d mousePos = new Vector2d(getMousePos());
+        double mousePosX = getMousePosX();
+        double mousePosY = getMousePosY();
 
         //work from the center
-        mousePos.x -= (getWindowSizeX()/2f);
-        mousePos.y -= (getWindowSizeY()/2f);
+        mousePosX -= (getWindowSizeX()/2f);
+        mousePosY -= (getWindowSizeY()/2f);
 
         //invert mouse
-        mousePos.y *= -1;
+        mousePosY *= -1;
 
         //this is the size of the actual slots
         //it also makes the default spacing of (0)
@@ -470,7 +470,7 @@ final public class InventoryLogic {
                     //scale is the size
 
                     //found selection break out of loop
-                    if (mousePos.x >= slotPosition.x - (scale / 2) && mousePos.x <= slotPosition.x + (scale / 2) && mousePos.y >= slotPosition.y - (scale / 2) && mousePos.y <= slotPosition.y + (scale / 2)) {
+                    if (mousePosX >= slotPosition.x - (scale / 2) && mousePosX <= slotPosition.x + (scale / 2) && mousePosY >= slotPosition.y - (scale / 2) && mousePosY <= slotPosition.y + (scale / 2)) {
                         setInventorySelection(inventoryName, x, y);
                         return;
                     }
@@ -485,7 +485,7 @@ final public class InventoryLogic {
                     double slotPosY = ((y * -1d) - 0.5d + startingPointY + offset.y) * (scale + spacing);
 
                     //found selection break out of loop
-                    if (mousePos.x >= slotPosX - (scale / 2) && mousePos.x <= slotPosX + (scale / 2) && mousePos.y >= slotPosY - (scale / 2) && mousePos.y <= slotPosY + (scale / 2)) {
+                    if (mousePosX >= slotPosX - (scale / 2) && mousePosX <= slotPosX + (scale / 2) && mousePosY >= slotPosY - (scale / 2) && mousePosY <= slotPosY + (scale / 2)) {
                         setInventorySelection(inventoryName, x, y);
                         return;
                     }

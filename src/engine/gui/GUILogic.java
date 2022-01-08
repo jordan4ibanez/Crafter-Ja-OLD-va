@@ -25,8 +25,6 @@ public class GUILogic {
     private static boolean chatOpen = false;
     private static int chatBoxEntryKey = 84;
 
-    private static final Vector2d mousePos = new Vector2d();
-
     private static boolean mouseButtonPushed = false;
     private static boolean mouseButtonWasPushed = false;
     private static boolean pollingButtonInputs = false;
@@ -470,12 +468,12 @@ public class GUILogic {
         byte selected = -1;
         float windowScale = getWindowScale();
 
-        //need to create new object or the mouse position gets messed up
-        mousePos.set(getMousePos());
+        double mousePosX = getMousePosX();
+        double mousePosY = getMousePosY();
 
         //work from the center
-        mousePos.x -= (getWindowSizeX()/2f);
-        mousePos.y -= (getWindowSizeY()/2f);
+        mousePosX -= (getWindowSizeX()/2f);
+        mousePosY -= (getWindowSizeY()/2f);
         byte count = 0;
         for (GUIObject thisButton : guiElements){
             double xPos = thisButton.pos.x * (windowScale / 100d);
@@ -487,7 +485,7 @@ public class GUILogic {
             float xAdder = (float)Math.ceil(windowScale / ( 20 / thisButton.buttonScale.x)) / 2f;
             float yAdder = (float)Math.ceil(windowScale / (20 / thisButton.buttonScale.y)) / 2f;
 
-            if (mousePos.y <= yPos + yAdder && mousePos.y >= yPos - yAdder && mousePos.x <= xPos + xAdder && mousePos.x >= xPos - xAdder){
+            if (mousePosY <= yPos + yAdder && mousePosY >= yPos - yAdder && mousePosX <= xPos + xAdder && mousePosX >= xPos - xAdder){
                 thisButton.selected = true;
                 selected = count;
             } else {
