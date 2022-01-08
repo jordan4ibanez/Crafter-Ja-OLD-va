@@ -29,8 +29,6 @@ final public class Inventory {
     private static int mouseInventoryCount;
     //special pseudo inventory for wielding item
     private static String wieldInventory;
-    private static float wieldLight = 15f;
-
 
     private static int oldSelectionPos = 0;
     private static String oldItemName = "";
@@ -83,8 +81,6 @@ final public class Inventory {
                         woodMiningLevel  != 0 ? woodMiningLevel  : 1,
                         leafMiningLevel  != 0 ? leafMiningLevel  : 1);
             }
-            //update light level
-            wieldLight = light;
             updateTimer = 0f;
         }
 
