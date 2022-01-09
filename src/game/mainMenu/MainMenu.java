@@ -878,6 +878,7 @@ final public class MainMenu {
     private static final String date = dtf.format(now);
     private static final String[][] specialDates = {
             {"01/01", "Happy new year!"},
+            {"01/08", "Happy Birthday Stephen Hawking!"},
             {"03/17", "Luck o' the Irish!"},
             {"04/17", "Happy Easter!"},
             {"04/26", "Happy Anniversary!"},
@@ -890,6 +891,13 @@ final public class MainMenu {
             {"12/25", "Merry Christmas!"},
             {"12/31", "Happy new year's eve!"}
     };
+
+    public static void easterEgg(){
+        if (date.equals("01/08")) {
+            playSound("easter_egg_1");
+        }
+    }
+
 
     public static void selectTitleScreenText(){
         boolean dateFound = false;
@@ -948,7 +956,6 @@ final public class MainMenu {
         }
         return titleScreenText;
     }
-
     public static boolean titleScreenIsRandom(){
         return titleScreenText.equals("R_A_N_D_O_M");
     }
