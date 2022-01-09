@@ -38,7 +38,7 @@ final public class CraftRecipes {
         for (String material : materials) {
             String recipeItem = material;
             if (recipeItem.equals("stone")){
-                recipeItem = "cobblestone";
+                recipeItem = "cobble";
             }
             String[][] pick = {
                     {recipeItem, recipeItem, recipeItem},
@@ -109,6 +109,23 @@ final public class CraftRecipes {
                 {"stick"}
         };
         generateRecipe(torch, "torchItem", 4);
+
+
+        String[][] cobbleStairRight = {
+                {"cobble", "",       ""},
+                {"cobble", "cobble", ""},
+                {"cobble", "cobble", "cobble"},
+        };
+        generateRecipe(cobbleStairRight, "cobble stair", 4);
+
+
+        String[][] cobbleStairLeft = {
+                {"",       "",       "cobble"},
+                {"",       "cobble", "cobble"},
+                {"cobble", "cobble", "cobble"},
+        };
+
+        generateRecipe(cobbleStairLeft, "cobble stair", 4);
 
         printAmountOfRecipes();
     }

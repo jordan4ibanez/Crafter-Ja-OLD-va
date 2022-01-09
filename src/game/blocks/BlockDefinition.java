@@ -393,7 +393,7 @@ public class BlockDefinition {
                 false,
                 0,
                 true,
-                "cobblestone"
+                "cobble"
         );
 
         registerBlock(
@@ -402,7 +402,7 @@ public class BlockDefinition {
                 0,
                 0,
                 0,
-                "cobblestone",
+                "cobble",
                 true,
                 new byte[]{2,0}, //front
                 new byte[]{2,0}, //back
@@ -747,7 +747,7 @@ public class BlockDefinition {
                 0,
                 0,
                 0,
-                "cobblestone stair",
+                "cobble stair",
                 true,
                 new byte[]{2,0}, //front
                 new byte[]{2,0}, //back
@@ -1237,6 +1237,8 @@ public class BlockDefinition {
                 true,
                 "torchItem"
         );
+
+
 
         //this passes all block data to the chunk mesh generator thread
         passChunkMeshThreadData(drawTypes,frontTextures,backTextures,rightTextures,leftTextures,topTextures,bottomTextures,isLiquids,blockShapeMap);
