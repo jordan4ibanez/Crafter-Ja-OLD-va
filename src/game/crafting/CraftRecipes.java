@@ -157,6 +157,22 @@ final public class CraftRecipes {
 
         generateRecipe(woodSlab, "wood slab", 3);
 
+        String[][] cobbleVerticalSlab = {
+                {"cobble"},
+                {"cobble"},
+                {"cobble"},
+        };
+
+        generateRecipe(cobbleVerticalSlab, "cobble vertical slab", 3);
+
+        String[][] woodVerticalSlab = {
+                {"wood"},
+                {"wood"},
+                {"wood"},
+        };
+
+        generateRecipe(woodVerticalSlab, "wood vertical slab", 3);
+
         printAmountOfRecipes();
     }
 

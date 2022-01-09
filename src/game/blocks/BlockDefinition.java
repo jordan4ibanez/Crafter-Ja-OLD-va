@@ -14,7 +14,7 @@ import static game.tnt.TNTEntity.createTNT;
 
 public class BlockDefinition {
     //holds BlockDefinition data
-    private static final byte maxIDs = 33;
+    private static final byte maxIDs = 35;
 
     public static byte getMaxIDs(){
         return maxIDs;
@@ -25,7 +25,7 @@ public class BlockDefinition {
     private static final byte atlasSizeY = 32;
 
     //holds the blockshape data
-    private final static float[][][] blockShapeMap = new float[(byte)9][0][0];
+    private final static float[][][] blockShapeMap = new float[(byte)10][0][0];
 
     //actual block object fields
     private static final String[] names = new String[maxIDs];
@@ -287,6 +287,9 @@ public class BlockDefinition {
 
         //liquid source
         blockShapeMap[8] = new float[][]{{0f,0f,0f,1f,1f,1f}};
+
+        //vertical slab
+        blockShapeMap[9] = new float[][]{{0f,0f,0f,1f,1f,0.5f}};
 
         registerBlock(
                 (byte) 0,
@@ -1320,6 +1323,62 @@ public class BlockDefinition {
                 null,
                 "wood_1",
                 "wood_2",
+                false,
+                false,
+                0,
+                true,
+                null
+        );
+
+        registerBlock(
+                (byte) 33,
+                1.5f,
+                0,
+                0,
+                0,
+                "cobble vertical slab",
+                true,
+                new byte[]{2,0}, //front
+                new byte[]{2,0}, //back
+                new byte[]{2,0}, //right
+                new byte[]{2,0}, //left
+                new byte[]{2,0}, //top
+                new byte[]{2,0},  //bottom
+                (byte) 9,
+                true,
+                true,
+                false,
+                null,
+                "stone_3",
+                "stone_2",
+                false,
+                false,
+                0,
+                true,
+                null
+        );
+
+        registerBlock(
+                (byte) 34,
+                2,
+                0,
+                0,
+                0,
+                "wood vertical slab",
+                true,
+                new byte[]{29,0}, //front
+                new byte[]{29,0}, //back
+                new byte[]{29,0}, //right
+                new byte[]{29,0}, //left
+                new byte[]{29,0}, //top
+                new byte[]{29,0},  //bottom
+                (byte) 9,
+                true,
+                true,
+                false,
+                null,
+                "wood_1",
+                "stone_2",
                 false,
                 false,
                 0,

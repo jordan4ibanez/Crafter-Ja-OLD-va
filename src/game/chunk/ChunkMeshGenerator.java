@@ -24,7 +24,7 @@ public class ChunkMeshGenerator implements Runnable{
 
     //holds the blockshape data - on this thread
     //maybe a dynamic type would be better for this for api usage in the future?
-    private final static float[][][] blockShapeMap = new float[(byte)9][0][0];
+    private final static float[][][] blockShapeMap = new float[(byte)10][0][0];
 
     //holds BlockDefinition data - on this thread
     private static final byte[] drawTypes = new byte[maxIDs];
