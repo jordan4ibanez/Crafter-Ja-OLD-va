@@ -6,6 +6,8 @@ Based off of what I've learned from Minetest's engine and lua api
 
 Discord: https://discord.gg/dRPyvubfyg
 
+IRC: #crafter on Libera (https://libera.chat/)
+
 Required Java version (JRE): 17
 
 You can get this version at: https://jdk.java.net/17/
