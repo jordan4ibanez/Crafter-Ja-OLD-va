@@ -14,7 +14,7 @@ import static game.tnt.TNTEntity.createTNT;
 
 public class BlockDefinition {
     //holds BlockDefinition data
-    private static final byte maxIDs = 32;
+    private static final byte maxIDs = 33;
 
     public static byte getMaxIDs(){
         return maxIDs;
@@ -1271,7 +1271,6 @@ public class BlockDefinition {
                 null
         );
 
-
         registerBlock(
                 (byte) 31,
                 1.5f,
@@ -1293,6 +1292,34 @@ public class BlockDefinition {
                 null,
                 "stone_3",
                 "stone_2",
+                false,
+                false,
+                0,
+                true,
+                null
+        );
+
+        registerBlock(
+                (byte) 32,
+                0,
+                2,
+                0,
+                0,
+                "wood slab",
+                true,
+                new byte[]{29,0}, //front
+                new byte[]{29,0}, //back
+                new byte[]{29,0}, //right
+                new byte[]{29,0}, //left
+                new byte[]{29,0}, //top
+                new byte[]{29,0},  //bottom
+                (byte) 3,
+                true,
+                true,
+                false,
+                null,
+                "wood_1",
+                "wood_2",
                 false,
                 false,
                 0,
