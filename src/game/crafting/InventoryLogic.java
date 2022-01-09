@@ -1,5 +1,6 @@
 package game.crafting;
 
+import it.unimi.dsi.fastutil.objects.ObjectIntImmutablePair;
 import org.joml.Vector2d;
 import org.joml.Vector3f;
 
@@ -290,7 +291,7 @@ final public class InventoryLogic {
             if (foundInventory != null){
                 if (foundInventory.equals("smallCraft") || foundInventory.equals("bigCraft")){
 
-                    CraftRecipeObject newItems;
+                    ObjectIntImmutablePair<String> newItems;
                     //small craft recipe scan
                     if (foundInventory.equals("smallCraft")){
                         newItems = recipeScan("smallCraft");
@@ -301,7 +302,7 @@ final public class InventoryLogic {
 
                     if (newItems != null){
                         //addItemToInventory(newItems.output);
-                        setInventoryItem("output", 0,0, newItems.output, newItems.amountOutput);
+                        setInventoryItem("output", 0,0, newItems.left(), newItems.rightInt());
                     //clear output inventory
                     } else {
                         setInventoryItem("output", 0, 0, null, 0);
@@ -322,7 +323,7 @@ final public class InventoryLogic {
 
     public static void updateCraftingGrid(){
 
-        CraftRecipeObject newItems;
+        ObjectIntImmutablePair<String> newItems;
 
         if (isAtCraftingBench()){
             String[][] thisInventory = getInventoryAsArray("bigCraft");
@@ -367,7 +368,7 @@ final public class InventoryLogic {
 
         if (newItems != null){
             //addItemToInventory(newItems.output);
-            setInventoryItem("output", 0,0, newItems.output, newItems.amountOutput);
+            setInventoryItem("output", 0,0, newItems.left(), newItems.rightInt());
             //clear output inventory
         } else {
             setInventoryItem("output", 0, 0, null, 0);

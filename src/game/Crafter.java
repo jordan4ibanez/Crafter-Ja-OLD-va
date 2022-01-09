@@ -1,18 +1,14 @@
 package game;
 
-import engine.sound.SoundListener;
 import game.chunk.BiomeGenerator;
 import game.chunk.Chunk;
 import game.chunk.ChunkMeshGenerator;
-import org.joml.Vector3d;
-import org.lwjgl.openal.AL11;
 
 import java.awt.*;
 
 import static engine.MouseInput.initMouseInput;
 import static engine.Window.initWindow;
 import static engine.disk.Disk.createWorldsDir;
-import static engine.disk.Disk.savePlayerPos;
 import static engine.gui.GUI.createGUI;
 import static engine.gui.GUI.initializeHudAtlas;
 import static engine.render.GameRenderer.cleanupRenderer;
@@ -22,14 +18,12 @@ import static engine.settings.Settings.getSettingsVsync;
 import static engine.settings.Settings.loadSettings;
 import static engine.sound.SoundManager.*;
 import static game.blocks.BlockDefinition.initializeBlocks;
-import static game.chunk.Chunk.globalFinalChunkSaveToDisk;
 import static game.crafting.CraftRecipes.registerCraftRecipes;
 import static game.crafting.Inventory.createInitialInventory;
 import static game.item.ItemRegistration.registerItems;
 import static game.mainMenu.MainMenu.easterEgg;
 import static game.mainMenu.MainMenu.initMainMenu;
 import static game.mob.Mob.registerMobs;
-import static game.player.Player.getPlayerPos;
 import static game.tnt.TNTEntity.createTNTEntityMesh;
 
 public class Crafter {
@@ -70,7 +64,6 @@ public class Crafter {
             BiomeGenerator biomeGenerator = new BiomeGenerator();
             Thread biomeThread = new Thread(biomeGenerator);
             biomeThread.start();
-
 
             easterEgg();
 
