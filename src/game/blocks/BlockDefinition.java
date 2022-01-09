@@ -14,7 +14,7 @@ import static game.tnt.TNTEntity.createTNT;
 
 public class BlockDefinition {
     //holds BlockDefinition data
-    private static final byte maxIDs = 31;
+    private static final byte maxIDs = 32;
 
     public static byte getMaxIDs(){
         return maxIDs;
@@ -1271,6 +1271,34 @@ public class BlockDefinition {
                 null
         );
 
+
+        registerBlock(
+                (byte) 31,
+                1.5f,
+                0,
+                0,
+                0,
+                "cobble slab",
+                true,
+                new byte[]{2,0}, //front
+                new byte[]{2,0}, //back
+                new byte[]{2,0}, //right
+                new byte[]{2,0}, //left
+                new byte[]{2,0}, //top
+                new byte[]{2,0},  //bottom
+                (byte) 3,
+                true,
+                true,
+                false,
+                null,
+                "stone_3",
+                "stone_2",
+                false,
+                false,
+                0,
+                true,
+                null
+        );
 
         //this passes all block data to the chunk mesh generator thread
         passChunkMeshThreadData(drawTypes,frontTextures,backTextures,rightTextures,leftTextures,topTextures,bottomTextures,isLiquids,blockShapeMap);

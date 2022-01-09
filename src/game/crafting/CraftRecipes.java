@@ -145,6 +145,12 @@ final public class CraftRecipes {
 
         generateRecipe(woodStairLeft, "wood stair", 4);
 
+        String[][] cobbleSlab = {
+                {"cobble", "cobble", "cobble"},
+        };
+
+        generateRecipe(cobbleSlab, "cobble slab", 3);
+
         printAmountOfRecipes();
     }
 
