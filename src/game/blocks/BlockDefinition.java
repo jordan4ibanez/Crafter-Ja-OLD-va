@@ -14,7 +14,11 @@ import static game.tnt.TNTEntity.createTNT;
 
 public class BlockDefinition {
     //holds BlockDefinition data
-    private static final byte maxIDs = 30;
+    private static final byte maxIDs = 31;
+
+    public static byte getMaxIDs(){
+        return maxIDs;
+    }
 
     //fixed fields for the class
     private static final byte atlasSizeX = 32;
@@ -1238,6 +1242,34 @@ public class BlockDefinition {
                 "torchItem"
         );
 
+
+        registerBlock(
+                (byte) 30,
+                0,
+                2,
+                0,
+                0,
+                "wood stair",
+                true,
+                new byte[]{29,0}, //front
+                new byte[]{29,0}, //back
+                new byte[]{29,0}, //right
+                new byte[]{29,0}, //left
+                new byte[]{29,0}, //top
+                new byte[]{29,0},  //bottom
+                (byte) 2,
+                true,
+                true,
+                false,
+                null,
+                "wood_1",
+                "wood_2",
+                false,
+                false,
+                0,
+                true,
+                null
+        );
 
 
         //this passes all block data to the chunk mesh generator thread

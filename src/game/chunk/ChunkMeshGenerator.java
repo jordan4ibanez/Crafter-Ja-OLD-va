@@ -8,6 +8,7 @@ import org.joml.Vector3i;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 import static engine.Window.windowShouldClose;
+import static game.blocks.BlockDefinition.getMaxIDs;
 import static game.chunk.Chunk.*;
 import static game.chunk.ChunkMeshGenerationHandler.addToChunkMeshQueue;
 
@@ -19,7 +20,7 @@ public class ChunkMeshGenerator implements Runnable{
 
     private final static Vector3i key = new Vector3i();
 
-    private static final byte maxIDs = 30;
+    private static final byte maxIDs = getMaxIDs();
 
     //holds the blockshape data - on this thread
     //maybe a dynamic type would be better for this for api usage in the future?
