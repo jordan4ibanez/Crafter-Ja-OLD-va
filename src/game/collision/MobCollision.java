@@ -13,10 +13,11 @@ public class MobCollision {
     private static final Vector2d workerVec2D = new Vector2d();
     private static final Vector2d workerVec2D2 = new Vector2d();
     private static final Vector2d normalizedPos = new Vector2d();
+    private static final Vector3d thisPos = new Vector3d();
 
     public static void mobSoftCollisionDetect(MobObject thisMob){
         //get this mob's info
-        Vector3d thisPos   = thisMob.pos;
+        thisPos.set(thisMob.pos);
         workerVec2D.set(thisPos.x, thisPos.z);
         float thisWidth    = thisMob.width;
         float thisHeight   = thisMob.height;
@@ -62,7 +63,7 @@ public class MobCollision {
 
     public static void mobSoftPlayerCollisionDetect(MobObject thisMob){
         //get this mob's info
-        Vector3d thisPos   = thisMob.pos;
+        thisPos.set(thisMob.pos);
         workerVec2D.set(thisPos.x, thisPos.z);
         float thisWidth    = thisMob.width;
         float thisHeight   = thisMob.height;
