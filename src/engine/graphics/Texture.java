@@ -131,13 +131,22 @@ final public class Texture {
         // Tell OpenGL how to unpack the RGBA bytes. Each component is 1 byte size
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
+        //GL LINEAR gives it a smoothened look like an n64 game
+        //GL NEAREST gives it a blocky look
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-        // Upload the texture data
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, thisWidth, thisHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, buf);
+        //Do not repeat texture
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+
         // Generate Mip Map
         //glGenerateMipmap(GL_TEXTURE_2D);
+
+        // Upload the texture data
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, thisWidth, thisHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, buf);
 
         return textureId;
     }
