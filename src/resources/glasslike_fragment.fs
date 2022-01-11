@@ -1,4 +1,4 @@
-#version 330
+#version 440
 
 in  vec3 exColor;
 in  vec2 outTexCoord;
@@ -10,9 +10,10 @@ uniform sampler2D texture_sampler;
 void main()
 {
 
-   //thank you Th3HolyMoose!
-    vec4 p = texture( texture_sampler, outTexCoord);
-    if (p.a == 0.0) {
+   //export the processed matrix to a pixel
+   vec4 p = texture( texture_sampler, outTexCoord);
+
+    if (p.a == 0) {
         discard;
     }
 
