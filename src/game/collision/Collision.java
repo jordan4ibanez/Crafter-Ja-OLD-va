@@ -10,7 +10,7 @@ import static game.chunk.Chunk.getBlockRotation;
 import static game.player.Player.getIfPlayerIsJumping;
 import static game.player.Player.setPlayerInWater;
 
-public class Collision {
+final public class Collision {
     private static float inWater = 0;
     private static final Vector3d clonedPos = new Vector3d();
     private static final Vector3i cachedPos = new Vector3i();
@@ -575,6 +575,7 @@ public class Collision {
 
     //simple type cast bolt on to JOML
     //converts floored Vector3d to Vector3i
+    //this needs to be like this because input.floor() will break whatever position is being put into it
     private static void floorPos(Vector3d input){
         fPos.set((int) Math.floor(input.x), (int)Math.floor(input.y),(int)Math.floor(input.z));
     }
