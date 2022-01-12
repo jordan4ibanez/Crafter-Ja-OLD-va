@@ -20,7 +20,7 @@ public class Human {
 
     private final static MobInterface mobInterface = new MobInterface() {
         @Override
-        public void onTick(MobObject thisMob) {
+        public void onTick(int thisMob) {
 
             double delta = getDelta();
 
