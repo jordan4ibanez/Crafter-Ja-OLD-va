@@ -2,6 +2,14 @@ package game.mob;
 
 import org.joml.Vector3f;
 
+import static game.mob.Chicken.registerChickenMob;
+import static game.mob.Cow.registerCowMob;
+import static game.mob.Exploder.registerExploderMob;
+import static game.mob.Human.registerHumanMob;
+import static game.mob.Pig.registerPigMob;
+import static game.mob.Sheep.registerSheepMob;
+import static game.mob.Skeleton.registerSkeletonMob;
+import static game.mob.Zombie.registerZombieMob;
 
 
 final public class MobDefinition {
@@ -33,6 +41,19 @@ final public class MobDefinition {
         backFaceCulling[count] = newBackFaceCulling;
 
         count++;
+    }
+
+    //entry point
+    //todo: make this not a confusing linkage
+    public static void registerMobs(){
+        registerHumanMob();
+        registerPigMob();
+        registerZombieMob();
+        registerExploderMob();
+        registerSkeletonMob();
+        registerSheepMob();
+        registerChickenMob();
+        registerCowMob();
     }
 
     public static int[] getMobBodyMeshes(int ID){
