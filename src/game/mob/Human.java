@@ -1,6 +1,5 @@
 package game.mob;
 
-import engine.graphics.Mesh;
 import org.joml.Math;
 import org.joml.Vector3f;
 
@@ -8,14 +7,13 @@ import static engine.FancyMath.randomDirFloat;
 import static engine.time.Time.getDelta;
 import static game.chunk.Chunk.getBlock;
 import static game.collision.Collision.applyInertia;
-import static game.mob.Mob.registerMob;
+import static game.mob.MobDefinition.registerMob;
 import static game.mob.MobMeshBuilder.calculateMobTexture;
 import static game.mob.MobMeshBuilder.createMobMesh;
 import static game.mob.MobUtilityCode.doHeadCode;
 import static game.mob.MobUtilityCode.mobSmoothRotation;
 
 public class Human {
-
     private static final float accelerationMultiplier  = 0.03f;
     final private static float maxWalkSpeed = 2.f;
     final private static float movementAcceleration = 900.f;
@@ -126,7 +124,7 @@ public class Human {
     };
 
     public static void registerHumanMob(){
-        registerMob(new MobDefinition("human", "hurt",true, (byte) 7, createMesh(), bodyOffsets, bodyRotations,1.9f, 0.25f, mobInterface));
+        registerMob("human", "hurt",true, (byte) 7, createMesh(), bodyOffsets, bodyRotations,1.9f, 0.25f, mobInterface);
     }
 
 
