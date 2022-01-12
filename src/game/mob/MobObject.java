@@ -84,6 +84,29 @@ final public class MobObject {
         globalMobs++;
     }
 
+    public static void deleteMob(int newMobID){
+        mobID.remove(newMobID);
+        pos.remove(newMobID);
+        oldFlooredPos.remove(newMobID);
+        oldPos.remove(newMobID);
+        inertia.remove(newMobID);
+        rotation.remove(newMobID);
+        smoothRotation.remove(newMobID);
+        bodyRotations.remove(newMobID);
+        light.remove(newMobID);
+        lightTimer.remove(newMobID);
+        animationTimer.remove(newMobID);
+        timer.remove(newMobID);
+        onGround.remove(newMobID);
+        stand.remove(newMobID);
+        hurtTimer.remove(newMobID);
+        health.remove(newMobID);
+        deathRotation.remove(newMobID);
+        hurtAdder.remove(newMobID);
+
+        globalMobs--;
+    }
+
     //getters start here
 
     public static int getNumberOfMobs(){
