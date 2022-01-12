@@ -91,7 +91,7 @@ public class Human {
             if (worker2f.length() > maxSpeed) {
                 worker2f.normalize().mul(maxSpeed);
                 thisMobInertia.x = worker2f.x;
-                thisMobInertia.z = worker2f.z;
+                thisMobInertia.z = worker2f.y;
             }
 
             thisMobAnimationTimer += thisMobPos.distance(thisMobOldPos) / 2f;
