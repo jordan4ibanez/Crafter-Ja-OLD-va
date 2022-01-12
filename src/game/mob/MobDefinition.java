@@ -34,4 +34,36 @@ final public class MobDefinition {
 
         count++;
     }
+
+    public static int[] getMobBodyMeshes(int ID){
+        return bodyMeshes[ID];
+    }
+    public static MobInterface getMobInterface(int ID){
+        return mobInterface[ID];
+    }
+    public static String getMobName(int ID){
+        return mobName[ID];
+    }
+    public static Vector3f[] getMobBodyOffsets(int ID){
+        return bodyOffsets[ID];
+    }
+    public static Vector3f[] getMobBodyRotations(int ID){
+        return bodyRotations[ID];
+    }
+    public static float getMobHeight(int ID){
+        return height[ID];
+    }
+    public static float getMobWidth(int ID){
+        return width[ID];
+    }
+    public static String getMobHurtSound(int ID){
+        return hurtSound[ID];
+    }
+    public static byte getMobBaseHealth(int ID){
+        return baseHealth[ID];
+    }
+    public static boolean getMobBackFaceCulling(int ID){
+        return backFaceCulling[ID];
+    }
+
 }
