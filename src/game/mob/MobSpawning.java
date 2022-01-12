@@ -7,8 +7,9 @@ import static engine.FancyMath.randomByte;
 import static engine.FancyMath.randomIntFromMinToMaxNegativePositive;
 import static engine.time.Time.getDelta;
 import static game.chunk.Chunk.getMobSpawnYPos;
-import static game.mob.Mob.getNumberOfMobs;
-import static game.mob.Mob.spawnMob;
+
+import static game.mob.MobObject.getNumberOfMobs;
+import static game.mob.MobObject.spawnMob;
 import static game.player.Player.getPlayerPos;
 
 public class MobSpawning {
@@ -39,7 +40,7 @@ public class MobSpawning {
         int yPos = getMobSpawnYPos(x,z);
 
         if (yPos >= 0){
-            spawnMob(randomByte((byte) 9), new Vector3d(x,yPos,z), new Vector3f(0));
+            spawnMob(randomByte((byte) 9), x, yPos, z, 0, 0, 0);
         }
     }
 
