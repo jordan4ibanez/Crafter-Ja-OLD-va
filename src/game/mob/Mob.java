@@ -42,8 +42,8 @@ final public class Mob {
             float thisMobHurtTimer = getMobHurtTimer(thisMob);
             float thisMobLightTimer = getMobLightTimer(thisMob);
             float thisMobDeathRotation = getMobDeathRotation(thisMob);
-            float thisMobWidth = getMobWidth(thisMobDefinitionID);
-            float thisMobHeight = getMobHeight(thisMobDefinitionID);
+            float thisMobWidth = getMobDefinitionWidth(thisMobDefinitionID);
+            float thisMobHeight = getMobDefinitionHeight(thisMobDefinitionID);
 
             byte thisMobHealth = getMobHealth(thisMob);
 
@@ -56,7 +56,7 @@ final public class Mob {
 
             //interface consumes object - no need for re-assignment to vars
             //todo: this needs a complete reimplementation
-            getMobInterface(thisMobDefinitionID).onTick(thisMob);
+            getMobDefinitionInterface(thisMobDefinitionID).onTick(thisMob);
 
             if (thisMobPos.y < 0){
                 deletionQueue.add(thisMob);
@@ -121,9 +121,11 @@ final public class Mob {
 
             Vector3d thisMobPos = getMobPos(thisMob);
 
-            playSound(getMobHurtSound(thisMob),(float)thisMobPos.x, (float)thisMobPos.y, (float)thisMobPos.z, true);
+            int thisMobDefinitionID = getMobID(thisMob);
+
+            playSound(getMobDefinitionHurtSound(thisMobDefinitionID),(float)thisMobPos.x, (float)thisMobPos.y, (float)thisMobPos.z, true);
             //play this after in case ID changes
-            MobInterface thisInterface = getMobInterface(thisMob);
+            MobInterface thisInterface = getMobDefinitionInterface(thisMobDefinitionID);
             if (thisInterface != null){
                 thisInterface.onPunch(thisMob);
             }
