@@ -6,9 +6,7 @@ import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 import static engine.FancyMath.randomDirFloat;
-import static game.mob.Mob.getMobDefinition;
 import static game.mob.MobDefinition.getMobBaseHealth;
-import static game.mob.MobDefinition.getMobBodyRotations;
 
 final public class MobObject {
     //todo: ADD MOBS TO MEMORY SWEEPER
