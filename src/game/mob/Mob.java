@@ -18,47 +18,19 @@ import static game.mob.Chicken.registerChickenMob;
 import static game.mob.Cow.registerCowMob;
 import static game.mob.Exploder.registerExploderMob;
 import static game.mob.Human.registerHumanMob;
+import static game.mob.MobObject.createNewMob;
 import static game.mob.Pig.registerPigMob;
 import static game.mob.Sheep.registerSheepMob;
 import static game.mob.Skeleton.registerSkeletonMob;
 import static game.mob.Zombie.registerZombieMob;
 
-public class Mob {
+final public class Mob {
 
-    //todo: ADD MOBS TO MEMORY SWEEPER
-    //todo: Data orient! - maybe
-    private static final MobDefinition[] mobDefinitions = new MobDefinition[9];
+
     private static final Int2ObjectArrayMap<MobObject> mobs = new Int2ObjectArrayMap<>();
 
+
     private static int globalMobs = 0;
-
-    private static int currentID = 0;
-    private static int currentMobDefinitionKey = 0;
-
-    public static int[] getMobMesh(byte ID){
-        return mobDefinitions[ID].bodyMeshes;
-    }
-
-    public static MobDefinition getMobDefinition(int key){
-        return mobDefinitions[key];
-    }
-
-    public static MobObject[] getMobs(){
-        return mobs.values().toArray(new MobObject[0]);
-    }
-
-    public static boolean getMobBackFaceCulling(byte ID){
-        return mobDefinitions[ID].backFaceCulling;
-    }
-
-    public static void registerMob(MobDefinition newMobDefinition){
-        mobDefinitions[currentMobDefinitionKey] = newMobDefinition;
-        currentMobDefinitionKey++;
-    }
-
-    public static MobInterface getMobInterface(byte ID){
-        return mobDefinitions[ID].mobInterface;
-    }
 
     //entry point
     //todo: make this not a confusing linkage
@@ -71,17 +43,8 @@ public class Mob {
         registerSheepMob();
         registerChickenMob();
         registerCowMob();
-
     }
 
-    public static void spawnMob(byte ID, Vector3d pos, Vector3f inertia){
-        //System.out.println("spawning mob! ID: " + currentID);
-        //System.out.println("pos y:" + pos.y);
-
-        mobs.put(currentID,new MobObject(new Vector3d(pos),new Vector3f(inertia),ID,currentID));
-        currentID++;
-        globalMobs++;
-    }
 
     public static MobObject[] getAllMobs(){
         // THIS CREATES A NEW OBJECT IN HEAP!!!

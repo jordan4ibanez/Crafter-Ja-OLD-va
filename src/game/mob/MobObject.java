@@ -7,8 +7,11 @@ import org.joml.Vector3i;
 
 import static engine.FancyMath.randomDirFloat;
 import static game.mob.Mob.getMobDefinition;
+import static game.mob.MobDefinition.getMobBaseHealth;
+import static game.mob.MobDefinition.getMobBodyRotations;
 
 final public class MobObject {
+    //todo: ADD MOBS TO MEMORY SWEEPER
 
     //the mobDefinition ID
     private static final Int2IntOpenHashMap mobID = new Int2IntOpenHashMap();
@@ -50,20 +53,20 @@ final public class MobObject {
 
     private static int currentMobPublicID = 0;
 
-    public static void createNewMob(Vector3d newPos, Vector3f newInertia, int newMobID){
+    public static void spawnMob(int newMobID, double posX, double posY, double posZ, float inertiaX, float inertiaY, float inertiaZ){
 
         //todo, tick up until null mob slot is found boi
         //do this to avoid overwriting a mob because that's silly
 
         mobID.put(currentMobPublicID,newMobID);
-        pos.put(currentMobPublicID, newPos);
+        pos.put(currentMobPublicID, new Vector3d(posX, posY, posZ));
         oldFlooredPos.put(currentMobPublicID, new Vector3i(0,-1,0));
-        oldPos.put(currentMobPublicID, new Vector3d(newPos));
-        inertia.put(currentMobPublicID, newInertia);
+        oldPos.put(currentMobPublicID, new Vector3d(posX, posY, posZ));
+        inertia.put(currentMobPublicID, new Vector3f(inertiaX, inertiaY, inertiaZ));
         rotation.put(currentMobPublicID, (float)(Math.toDegrees(Math.PI * Math.random() * randomDirFloat())));
         smoothRotation.put(currentMobPublicID, 0f);
         //stop memory leak with thorough clone
-        bodyRotations.put(currentMobPublicID, getMobDefinition(newMobID).bodyRotations.clone());
+        bodyRotations.put(currentMobPublicID, getMobBodyRotations(newMobID).clone());
         light.put(currentMobPublicID, (byte) 0);
         //causes an instant update
         lightTimer.put(currentMobPublicID, 1f);
@@ -72,7 +75,7 @@ final public class MobObject {
         onGround.put(currentMobPublicID, false);
         stand.put(currentMobPublicID, false);
         hurtTimer.put(currentMobPublicID, 0f);
-        health.put(currentMobPublicID, getMobDefinition(newMobID).baseHealth);
+        health.put(currentMobPublicID, getMobBaseHealth(newMobID));
         deathRotation.put(currentMobPublicID, 0);
         hurtAdder.put(currentMobPublicID, (byte) 0);
 
