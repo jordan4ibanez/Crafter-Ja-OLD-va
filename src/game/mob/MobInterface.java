@@ -1,5 +1,6 @@
 package game.mob;
 
+//this is an Object which holds methods, amazing
 public interface MobInterface {
     //what a mob does each tick
     default void onTick(int thisMob){
