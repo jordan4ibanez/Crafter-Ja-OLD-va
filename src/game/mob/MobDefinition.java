@@ -56,31 +56,31 @@ final public class MobDefinition {
         registerCowMob();
     }
 
-    public static int[] getMobBodyMeshes(int ID){
+    public static int[] getMobDefinitionBodyMeshes(int ID){
         return bodyMeshes[ID];
     }
-    public static MobInterface getMobInterface(int ID){
+    public static MobInterface getMobDefinitionInterface(int ID){
         return mobInterface[ID];
     }
-    public static String getMobName(int ID){
+    public static String getMobDefinitionName(int ID){
         return mobName[ID];
     }
-    public static Vector3f[] getMobBodyOffsets(int ID){
+    public static Vector3f[] getMobDefinitionBodyOffsets(int ID){
         return bodyOffsets[ID];
     }
-    public static Vector3f[] getMobBodyRotations(int ID){
+    public static Vector3f[] getMobDefinitionBodyRotations(int ID){
         return bodyRotations[ID];
     }
-    public static float getMobHeight(int ID){
+    public static float getMobDefinitionHeight(int ID){
         return height[ID];
     }
-    public static float getMobWidth(int ID){
+    public static float getMobDefinitionWidth(int ID){
         return width[ID];
     }
-    public static String getMobHurtSound(int ID){
+    public static String getMobDefinitionHurtSound(int ID){
         return hurtSound[ID];
     }
-    public static byte getMobBaseHealth(int ID){
+    public static byte getMobDefinitionBaseHealth(int ID){
         return baseHealth[ID];
     }
     public static boolean getMobBackFaceCulling(int ID){
