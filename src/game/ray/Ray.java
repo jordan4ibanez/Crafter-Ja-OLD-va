@@ -1,6 +1,6 @@
 package game.ray;
 
-import game.mob.MobObject;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import org.joml.Math;
 import org.joml.Vector3d;
 import org.joml.Vector3i;
@@ -14,8 +14,10 @@ import static game.collision.PointCollision.setPointAABB;
 import static game.crafting.InventoryObject.getItemInInventory;
 import static game.crafting.InventoryObject.removeItemFromInventory;
 import static game.item.ItemDefinition.*;
-import static game.mob.Mob.getAllMobs;
 import static game.mob.Mob.punchMob;
+import static game.mob.MobDefinition.getMobHeight;
+import static game.mob.MobDefinition.getMobWidth;
+import static game.mob.MobObject.*;
 import static game.particle.Particle.createParticle;
 import static game.player.Player.*;
 
@@ -27,6 +29,7 @@ final public class Ray {
     private static final Vector3d lastPos    = new Vector3d();
     private static final Vector3d cachePos   = new Vector3d();
     private static final Vector3i pointedThingAbove = new Vector3i();
+    private static final Vector3d mobPosWorker = new Vector3d();
 
     public static void playerRayCast(double posX, double posY, double posZ, float dirX, float dirY, float dirZ, float length, boolean mining, boolean placing, boolean hasMined) {
 
@@ -34,10 +37,10 @@ final public class Ray {
 
         byte foundBlock = -1;
 
-        MobObject foundMob = null;
+        int foundMob = -1;
 
         //get all mobs once
-        MobObject[] mobs = getAllMobs();
+        IntSet mobs = getMobKeys();
 
         for(double step = 0d; step <= length ; step += 0.001d) {
 
@@ -54,15 +57,14 @@ final public class Ray {
             realNewPos.z = posZ + cachePos.z;
 
 
-            for (MobObject thisMob : mobs){
+            for (int thisMob : mobs){
 
-                //null pointer catch
-                if (thisMob == null){
-                    continue;
-                }
+                mobPosWorker.set(getMobPos(thisMob));
+                byte thisMobHealth = getMobHealth(thisMob);
+                int thisMobDefinitionID = getMobID(thisMob);
 
-                if (thisMob.pos.distance(realNewPos) <= 4.5 && thisMob.health > 0){
-                    setPointAABB(thisMob.pos.x, thisMob.pos.y, thisMob.pos.z, thisMob.width,thisMob.height);
+                if (mobPosWorker.distance(realNewPos) <= 4.5 && thisMobHealth > 0){
+                    setPointAABB(mobPosWorker.x, mobPosWorker.y, mobPosWorker.z, getMobWidth(thisMobDefinitionID),getMobHeight(thisMobDefinitionID));
                     if(pointIsWithin(realNewPos.x, realNewPos.y, realNewPos.z)){
                         foundMob = thisMob;
                         break;
@@ -71,7 +73,7 @@ final public class Ray {
             }
 
             //pointing to a mob, break mob detection loop
-            if (foundMob != null){
+            if (foundMob != -1){
                 break;
             }
 
@@ -105,7 +107,7 @@ final public class Ray {
 
 
          */
-        if (foundMob != null){
+        if (foundMob != -1){
             //punch mob if pointing to it
             if (mining) {
                 punchMob(foundMob);
