@@ -4,8 +4,7 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 import org.joml.Vector2d;
 import org.joml.Vector3d;
 
-import static game.mob.MobDefinition.getMobHeight;
-import static game.mob.MobDefinition.getMobWidth;
+import static game.mob.MobDefinition.*;
 import static game.mob.MobObject.*;
 import static game.player.Player.*;
 
@@ -33,14 +32,14 @@ public class MobCollision {
             }
 
             //get other mob's info
-            float otherWidth    = getMobWidth(getMobID(otherMob));
+            float otherWidth    = getMobDefinitionWidth(getMobID(otherMob));
             Vector3d otherPos   = getMobPos(otherMob);
             workerVec2D2.set(otherPos.x, otherPos.z);
 
             //only continue if within 2D radius
             if (workerVec2D.distance(workerVec2D2) <= thisMobWidth + otherWidth) {
 
-                float otherHeight  = getMobHeight(otherMob);
+                float otherHeight  = getMobDefinitionHeight(otherMob);
                 double otherBottom = otherPos.y;
                 double otherTop = otherHeight + otherPos.y;
 
