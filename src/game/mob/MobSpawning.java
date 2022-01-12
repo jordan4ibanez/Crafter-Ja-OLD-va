@@ -1,7 +1,6 @@
 package game.mob;
 
 import org.joml.Vector3d;
-import org.joml.Vector3f;
 
 import static engine.FancyMath.randomByte;
 import static engine.FancyMath.randomIntFromMinToMaxNegativePositive;
