@@ -15,25 +15,25 @@ public class MobUtilityCode {
     private final static Vector3d headTurn = new Vector3d();
     private final static Vector3d adjustedHeadPos = new Vector3d();
 
-    public static void doHeadCode(MobObject thisObject){
+    public static void doHeadCode(int thisMob){
 
-        if (!getLineOfSight(thisObject.pos, getPlayerPosWithEyeHeight())){
+        if (!getLineOfSight(thisMob.pos, getPlayerPosWithEyeHeight())){
             return;
         }
 
         //silly head turning
-        headPos.set(thisObject.pos);
+        headPos.set(thisMob.pos);
 
-        float smoothToRad = Math.toRadians(thisObject.smoothRotation + 90f);
+        float smoothToRad = Math.toRadians(thisMob.smoothRotation + 90f);
 
-        headPos.add(adjustedHeadPos.set(Math.cos(-smoothToRad), 0,Math.sin(smoothToRad)).mul(thisObject.bodyOffsets[0].z).add(0,thisObject.bodyOffsets[0].y,0));
+        headPos.add(adjustedHeadPos.set(Math.cos(-smoothToRad), 0,Math.sin(smoothToRad)).mul(thisMob.bodyOffsets[0].z).add(0,thisMob.bodyOffsets[0].y,0));
 
         //createParticle(new Vector3d(headPos), new Vector3f(0,0,0), 7); //debug
 
         headTurn.set(getPlayerPosWithEyeHeight()).sub(headPos);
         //headTurn.normalize();
 
-        float headYaw = (float) Math.toDegrees(Math.atan2(headTurn.z, headTurn.x)) + 90 - thisObject.smoothRotation;
+        float headYaw = (float) Math.toDegrees(Math.atan2(headTurn.z, headTurn.x)) + 90 - thisMob.smoothRotation;
         float pitch = (float)Math.toDegrees(Math.atan2(Math.sqrt(headTurn.z * headTurn.z + headTurn.x * headTurn.x), headTurn.y) + (Math.PI * 1.5));
 
 
@@ -50,7 +50,7 @@ public class MobUtilityCode {
             pitch = 0;
         }
 
-        thisObject.bodyRotations[0] = new Vector3f(pitch,headYaw,0);
+        thisMob.bodyRotations[0] = new Vector3f(pitch,headYaw,0);
     }
 
 
