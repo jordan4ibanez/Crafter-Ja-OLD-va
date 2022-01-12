@@ -162,4 +162,85 @@ final public class MobObject {
         return hurtAdder.get(ID);
     }
 
+
+    //setters start here
+
+    //useful for mobs like sheep
+    public static void setMobID(int ID, int newID){
+        mobID.put(ID, newID);
+    }
+
+    public static void setMobPos(int ID, double posX, double posY, double posZ){
+        //an interesting usage of object orientation - continues on below
+        pos.get(ID).set(posX,posY,posZ);
+    }
+
+    public static void setMobOldFlooredPos(int ID, int posX, int posY, int posZ){
+        oldFlooredPos.get(ID).set(posX,posY,posZ);
+    }
+
+    public static void setMobOldPos(int ID, double posX, double posY, double posZ){
+        oldPos.get(ID).set(posX,posY,posZ);
+    }
+
+    public static void setMobInertia(int ID, float inertiaX, float inertiaY, float inertiaZ){
+        inertia.get(ID).set(inertiaX,inertiaY,inertiaZ);
+    }
+
+    public static void setMobRotation(int ID, float newRotation){
+        rotation.put(ID, newRotation);
+    }
+
+    public static void setMobSmoothRotation(int ID, float newSmoothRotation){
+        smoothRotation.put(ID, newSmoothRotation);
+    }
+
+    public static void setMobBodyRotations(int ID, Vector3f[] vectorArray){
+        int count = 0;
+        for (Vector3f aVector : bodyRotations.get(ID)) {
+            aVector.set(vectorArray[count]);
+            count++;
+        }
+    }
+
+    public static void setMobLight(int ID, byte newLight){
+        light.put(ID, newLight);
+    }
+
+    public static void setMobLightTimer(int ID, float newLightTimer){
+        lightTimer.put(ID, newLightTimer);
+    }
+
+    public static void setMobAnimationTimer(int ID, float newAnimationTimer){
+        animationTimer.put(ID,newAnimationTimer);
+    }
+
+    public static void setMobTimer(int ID, float newTimer){
+        timer.put(ID, newTimer);
+    }
+
+    public static void setIfMobOnGround(int ID, boolean newOnGround){
+        onGround.put(ID, newOnGround);
+    }
+
+    public static void setIfMobStanding(int ID, boolean isMobStanding){
+        stand.put(ID, isMobStanding);
+    }
+
+    public static void setMobHurtTimer(int ID, float newHurtTimer){
+        hurtTimer.put(ID, newHurtTimer);
+    }
+
+    public static void setMobHealth(int ID, byte newHealth){
+        health.put(ID, newHealth);
+    }
+
+    public static void setMobDeathRotation(int ID, float newDeathRotation){
+        deathRotation.put(ID, newDeathRotation);
+    }
+
+    public static void setMobHurtAdder(int ID, byte newHurtAdder){
+        hurtAdder.put(ID, newHurtAdder);
+    }
+
 }
