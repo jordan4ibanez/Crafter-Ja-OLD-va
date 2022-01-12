@@ -1,6 +1,7 @@
 package game.mob;
 
 
+import org.joml.Vector3d;
 import org.joml.Vector3i;
 
 import java.util.ArrayDeque;
@@ -11,15 +12,12 @@ import static engine.time.Time.getDelta;
 import static game.chunk.Chunk.getLight;
 import static game.collision.MobCollision.mobSoftCollisionDetect;
 import static game.collision.MobCollision.mobSoftPlayerCollisionDetect;
-import static game.mob.MobObject.getMobKeys;
+import static game.mob.MobDefinition.getMobHeight;
+import static game.mob.MobDefinition.getMobWidth;
+import static game.mob.MobObject.*;
 
+//runs on main thread
 final public class Mob {
-
-
-    //public static MobObject[] getAllMobs(){
-        // THIS CREATES A NEW OBJECT IN HEAP!!!
-        //return mobs.values().toArray(new MobObject[0]);
-    //}
 
 
     private static final Deque<Integer> deletionQueue = new ArrayDeque<>();
@@ -29,14 +27,20 @@ final public class Mob {
         double delta = getDelta();
 
         for (int thisMob : getMobKeys()){
-            if (thisMob == null){
-                continue;
-            }
+
+            //this is the mob definition ID
+            int thisMobID = getMobID(thisMob);
+
+            float thisMobWidth = getMobWidth(thisMobID);
+            float thisMobHeight = getMobHeight(thisMobID);
+
+            //this is an object pointer
+            Vector3d thisMobPos = getMobPos(thisMob);
 
             //only collision detect if alive
-            if (thisMob.health > 0) {
-                mobSoftPlayerCollisionDetect(thisMob);
-                mobSoftCollisionDetect(thisMob);
+            if (getMobHealth(thisMob) > 0) {
+                mobSoftPlayerCollisionDetect(thisMob, thisMobPos, thisMobHeight, thisMobWidth);
+                mobSoftCollisionDetect(thisMob, thisMobPos, thisMobHeight, thisMobWidth);
             }
 
             //interface consumes object - no need for re-assignment to vars
@@ -44,6 +48,7 @@ final public class Mob {
 
             if (thisMob.pos.y < 0){
                 deletionQueue.add(thisMob.globalID);
+                continue;
             }
 
             //mob dying animation
