@@ -1,16 +1,18 @@
 package game.mob;
 
-import engine.graphics.Mesh;
 import org.joml.Math;
+import org.joml.Vector2f;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import static engine.FancyMath.randomDirFloat;
 import static engine.time.Time.getDelta;
 import static game.chunk.Chunk.getBlock;
 import static game.collision.Collision.applyInertia;
-import static game.mob.Mob.registerMob;
+import static game.mob.MobDefinition.*;
 import static game.mob.MobMeshBuilder.calculateMobTexture;
 import static game.mob.MobMeshBuilder.createMobMesh;
+import static game.mob.MobObject.*;
 import static game.mob.MobUtilityCode.doHeadCode;
 import static game.mob.MobUtilityCode.mobSmoothRotation;
 
@@ -19,86 +21,104 @@ public class Exploder {
     private static final float accelerationMultiplier  = 0.03f;
     final private static float maxWalkSpeed = 2.f;
     final private static float movementAcceleration = 900.f;
+    private static final Vector2f workerVector2f = new Vector2f();
 
     private final static MobInterface mobInterface = new MobInterface() {
         @Override
-        public void onTick(MobObject thisMob) {
+        public void onTick(int thisMob) {
 
 
             double delta = getDelta();
 
-            thisMob.timer += delta;
+            //primitive
+            int thisMobDefinitionID = getMobID(thisMob);
+            float thisMobTimer = getMobTimer(thisMob);
+            float thisMobAnimationTimer = getMobAnimationTimer(thisMob);
+            float thisMobRotation = getMobRotation(thisMob);
+            byte thisMobHealth = getMobHealth(thisMob);
 
-            if (thisMob.globalID == 1){
-                System.out.println(thisMob.animationTimer);
+            //pointers
+            Vector3d thisMobPos = getMobPos(thisMob);
+            Vector3d thisMobOldPos = getMobOldPos(thisMob);
+            Vector3f[] thisMobBodyRotations = getMobBodyRotations(thisMob);
+            Vector3f thisMobInertia = getMobInertia(thisMob);
+
+            thisMobTimer += delta;
+
+            //debug output
+            if (thisMob == 1){
+                System.out.println(thisMobAnimationTimer);
             }
 
-            if (thisMob.timer > 1.5f) {
-                thisMob.stand = !thisMob.stand;
-                thisMob.timer = (float) Math.random() * -2f;
-                thisMob.rotation = (float) (Math.toDegrees(Math.PI * Math.random() * randomDirFloat()));
+            if (thisMobTimer > 1.5f) {
+                boolean thisMobStand = getIfMobStanding(thisMob);
+                setIfMobStanding(thisMob, !thisMobStand);
+                thisMobTimer = (float) Math.random() * -2f;
+                thisMobRotation = (float) (Math.toDegrees(Math.PI * Math.random() * randomDirFloat()));
             }
-
-
 
             //head test
             //thisObject.bodyRotations[0] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),(float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),0);
             //these are the legs
-            float animation = (float) Math.toDegrees(Math.sin(thisMob.animationTimer * Math.PI * 2f) / 1.6f);
-            thisMob.bodyRotations[2].x = -animation;
-            thisMob.bodyRotations[3].x = animation;
+            float animation = (float) Math.toDegrees(Math.sin(thisMobAnimationTimer * Math.PI * 2f) / 1.6f);
+            thisMobBodyRotations[2].x = -animation;
+            thisMobBodyRotations[3].x = animation;
             //the legs are diagonally synced, so the multiplier is flipped
-            thisMob.bodyRotations[4].x = animation;
-            thisMob.bodyRotations[5].x = -animation;
+            thisMobBodyRotations[4].x = animation;
+            thisMobBodyRotations[5].x = -animation;
 
 
-            float bodyYaw = Math.toRadians(thisMob.rotation) + (float) Math.PI;
+            float bodyYaw = Math.toRadians(thisMobRotation) + (float) Math.PI;
 
 
-            thisMob.inertia.x +=  (Math.sin(-bodyYaw) * accelerationMultiplier) * movementAcceleration * delta;
-            thisMob.inertia.z +=  (Math.cos(bodyYaw) * accelerationMultiplier) * movementAcceleration * delta;
+            thisMobInertia.x +=  (Math.sin(-bodyYaw) * accelerationMultiplier) * movementAcceleration * delta;
+            thisMobInertia.z +=  (Math.cos(bodyYaw)  * accelerationMultiplier) * movementAcceleration * delta;
 
 
-            Vector3f inertia2D = new Vector3f(thisMob.inertia.x, 0, thisMob.inertia.z);
+            workerVector2f.set(thisMobInertia.x, thisMobInertia.z);
 
             float maxSpeed = maxWalkSpeed;
 
-            if (thisMob.health <= 0){
+            if (thisMobHealth <= 0){
                 maxSpeed = 0.01f;
             }
 
-            boolean onGround = applyInertia(thisMob.pos, thisMob.inertia, false, thisMob.width, thisMob.height, true, false, true, false, false);
+            boolean onGround = applyInertia(thisMobPos, thisMobInertia, false, getMobDefinitionWidth(thisMobDefinitionID), getMobDefinitionHeight(thisMobDefinitionID), true, false, true, false, false);
 
-            if (thisMob.animationTimer >= 1f) {
-                thisMob.animationTimer = 0f;
+            if (thisMobAnimationTimer >= 1f) {
+                thisMobAnimationTimer = 0f;
             }
 
-            if (inertia2D.length() > maxSpeed) {
-                inertia2D = inertia2D.normalize().mul(maxSpeed);
-                thisMob.inertia.x = inertia2D.x;
-                thisMob.inertia.z = inertia2D.z;
+            if (workerVector2f.length() > maxSpeed) {
+                workerVector2f.normalize().mul(maxSpeed);
+                thisMobInertia.x = workerVector2f.x;
+                thisMobInertia.z = workerVector2f.y;
             }
 
-            thisMob.animationTimer += thisMob.pos.distance(thisMob.oldPos) / 1.5f;
+            thisMobAnimationTimer += thisMobPos.distance(thisMobOldPos) / 1.5f;
 
-            if (thisMob.animationTimer >= 1f) {
-                thisMob.animationTimer -= 1f;
+            if (thisMobAnimationTimer >= 1f) {
+                thisMobAnimationTimer -= 1f;
             }
 
 
-            thisMob.onGround = onGround;
+            setIfMobOnGround(thisMob, onGround);
 
-            if (thisMob.health > 0) {
+            if (thisMobHealth > 0) {
                 //check for block in front
                 if (onGround) {
                     double x = Math.sin(-bodyYaw);
                     double z = Math.cos(bodyYaw);
 
-                    if (getBlock((int) Math.floor(x + thisMob.pos.x), (int) Math.floor(thisMob.pos.y), (int) Math.floor(z + thisMob.pos.z)) > 0) {
-                        thisMob.inertia.y += 8.75f;
+                    if (getBlock((int) Math.floor(x + thisMobPos.x), (int) Math.floor(thisMobPos.y), (int) Math.floor(z + thisMobPos.z)) > 0) {
+                        thisMobInertia.y += 8.75f;
                     }
                 }
             }
+
+            setMobAnimationTimer(thisMob, thisMobAnimationTimer);
+            setMobTimer(thisMob, thisMobTimer);
+            thisMobOldPos.set(thisMobPos);
 
             mobSmoothRotation(thisMob);
             doHeadCode(thisMob);
@@ -133,7 +153,7 @@ public class Exploder {
     };
 
     public static void registerExploderMob(){
-        registerMob(new MobDefinition("exploder", "hurt",true, (byte) 7, createMesh(), bodyOffsets, bodyRotations,1.9f, 0.25f, mobInterface));
+        registerMob("exploder", "hurt",true, (byte) 7, createMesh(), bodyOffsets, bodyRotations,1.9f, 0.25f, mobInterface);
     }
 
 
