@@ -27,24 +27,10 @@ import static game.mob.Zombie.registerZombieMob;
 final public class Mob {
 
 
-    //entry point
-    //todo: make this not a confusing linkage
-    public static void registerMobs(){
-        registerHumanMob();
-        registerPigMob();
-        registerZombieMob();
-        registerExploderMob();
-        registerSkeletonMob();
-        registerSheepMob();
-        registerChickenMob();
-        registerCowMob();
-    }
-
-
-    public static MobObject[] getAllMobs(){
+    //public static MobObject[] getAllMobs(){
         // THIS CREATES A NEW OBJECT IN HEAP!!!
-        return mobs.values().toArray(new MobObject[0]);
-    }
+        //return mobs.values().toArray(new MobObject[0]);
+    //}
 
 
     private static final Deque<Integer> deletionQueue = new ArrayDeque<>();
@@ -113,9 +99,6 @@ final public class Mob {
         }
     }
 
-    public static int getNumberOfMobs(){
-        return globalMobs;
-    }
 
     public static void punchMob(MobObject thisMob){
         if (thisMob.hurtTimer <= 0 && thisMob.health > 0) {
