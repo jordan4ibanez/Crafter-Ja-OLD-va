@@ -71,7 +71,10 @@ public class MobUtilityCode {
     public static void mobSmoothRotation(int thisMob){
         double delta = getDelta();
 
-        float diff = thisMob.rotation - thisMob.smoothRotation;
+        float thisMobRotation = getMobRotation(thisMob);
+        float thisMobSmoothRotation = getMobSmoothRotation(thisMob);
+
+        float diff = thisMobRotation - thisMobSmoothRotation;
 
         //correction of degrees overflow (-piToDegrees to piToDegrees) so it is workable
         if (diff < -180) {
@@ -87,29 +90,31 @@ public class MobUtilityCode {
          */
 
         if (Math.abs(diff) < delta * 500f){
-            thisMob.smoothRotation = thisMob.rotation;
+            thisMobSmoothRotation = thisMobRotation;
         } else {
             if (Math.abs(diff) > 180) {
                 if (diff < 0) {
-                    thisMob.smoothRotation += delta * 500f;
+                    thisMobSmoothRotation += delta * 500f;
                 } else if (diff > 0) {
-                    thisMob.smoothRotation -= delta * 500f;
+                    thisMobSmoothRotation -= delta * 500f;
                 }
 
                 //correction of degrees overflow (-piToDegrees to piToDegrees) so it is workable
-                if (thisMob.smoothRotation < -180) {
-                    thisMob.smoothRotation += 360;
-                } else if (thisMob.smoothRotation > 180) {
-                    thisMob.smoothRotation -= 360;
+                if (thisMobSmoothRotation < -180) {
+                    thisMobSmoothRotation += 360;
+                } else if (thisMobSmoothRotation > 180) {
+                    thisMobSmoothRotation -= 360;
                 }
 
             } else {
                 if (diff < 0) {
-                    thisMob.smoothRotation -= delta * 500f;
+                    thisMobSmoothRotation -= delta * 500f;
                 } else if (diff > 0) {
-                    thisMob.smoothRotation += delta * 500f;
+                    thisMobSmoothRotation += delta * 500f;
                 }
             }
         }
+
+        setMobSmoothRotation(thisMob, thisMobSmoothRotation);
     }
 }
