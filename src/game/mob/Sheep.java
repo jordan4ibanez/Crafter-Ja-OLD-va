@@ -1,6 +1,8 @@
 package game.mob;
 
 import org.joml.Math;
+import org.joml.Vector2f;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import static engine.FancyMath.randomDirFloat;
@@ -9,9 +11,9 @@ import static game.blocks.BlockDefinition.getIfLiquid;
 import static game.chunk.Chunk.getBlock;
 import static game.collision.Collision.applyInertia;
 import static game.item.ItemEntity.throwItem;
-import static game.mob.Mob.registerMob;
 import static game.mob.MobMeshBuilder.calculateMobTexture;
 import static game.mob.MobMeshBuilder.createMobMesh;
+import static game.mob.MobObject.*;
 import static game.mob.MobUtilityCode.doHeadCode;
 import static game.mob.MobUtilityCode.mobSmoothRotation;
 
@@ -19,22 +21,24 @@ public class Sheep {
     private static final float accelerationMultiplier  = 0.04f;
     final private static float maxWalkSpeed = 2.f;
     final private static float movementAcceleration = 900.f;
+    private static final Vector2f workerVector2f = new Vector2f();
 
     private final static MobInterface woolInterface = new MobInterface() {
 
         @Override
-        public void onPunch(MobObject thisMob){
+        public void onPunch(int thisMob){
+            Vector3d thisMobPos = getMobPos(thisMob);
             //adding dirt for a placeholder
             for (byte i = 0; i < 3; i++) {
 
-                throwItem("dirt", thisMob.pos.x, thisMob.pos.y + 1d, thisMob.pos.z, 1, 0);
+                throwItem("dirt", thisMobPos.x, thisMobPos.y + 1d, thisMobPos.z, 1, 0);
             }
             //shaved sheep always comes after wool sheep
-            thisMob.ID++;
+            setMobID(thisMob, getMobID(thisMob) + 1);
         }
 
         @Override
-        public void onTick(MobObject thisMob) {
+        public void onTick(int thisMob) {
 
             double delta = getDelta();
 
