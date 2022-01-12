@@ -1,6 +1,7 @@
 package game.mob;
 
 import org.joml.Math;
+import org.joml.Vector2f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
@@ -20,6 +21,7 @@ public class Cow {
     private static final float accelerationMultiplier  = 0.04f;
     final private static float maxWalkSpeed = 2.f;
     final private static float movementAcceleration = 900.f;
+    private static final Vector2f worker2f = new Vector2f();
 
     private final static MobInterface mobInterface = new MobInterface() {
         @Override
@@ -63,7 +65,7 @@ public class Cow {
             thisMobInertia.x += (Math.sin(-yaw) * accelerationMultiplier) * movementAcceleration * delta;
             thisMobInertia.z += (Math.cos(yaw) * accelerationMultiplier) * movementAcceleration * delta;
 
-            Vector3f inertia2D = new Vector3f(thisMobInertia.x, 0, thisMobInertia.z);
+            worker2f.set(thisMobInertia.x, thisMobInertia.z);
 
             float maxSpeed = maxWalkSpeed;
 
@@ -71,10 +73,10 @@ public class Cow {
                 maxSpeed = 0.01f;
             }
 
-            if (inertia2D.length() > maxSpeed) {
-                inertia2D = inertia2D.normalize().mul(maxSpeed);
-                thisMobInertia.x = inertia2D.x;
-                thisMobInertia.z = inertia2D.z;
+            if (worker2f.length() > maxSpeed) {
+                worker2f.normalize().mul(maxSpeed);
+                thisMobInertia.x = worker2f.x;
+                thisMobInertia.z = worker2f.y;
             }
 
             boolean onGround = applyInertia(thisMobPos, thisMobInertia, false, getMobDefinitionWidth(thisMobDefinitionID),getMobDefinitionHeight(thisMobDefinitionID), true, false, true, false, false);
