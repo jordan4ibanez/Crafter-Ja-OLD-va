@@ -6,7 +6,7 @@ import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 import static engine.FancyMath.randomDirFloat;
-import static game.mob.MobDefinition.getMobBaseHealth;
+import static game.mob.MobDefinition.getMobDefinitionBaseHealth;
 
 final public class MobObject {
     //todo: ADD MOBS TO MEMORY SWEEPER
@@ -76,7 +76,7 @@ final public class MobObject {
         onGround.put(currentMobPublicID, false);
         stand.put(currentMobPublicID, false);
         hurtTimer.put(currentMobPublicID, 0f);
-        health.put(currentMobPublicID, getMobBaseHealth(newMobID));
+        health.put(currentMobPublicID, getMobDefinitionBaseHealth(newMobID));
         deathRotation.put(currentMobPublicID, 0);
         hurtAdder.put(currentMobPublicID, (byte) 0);
 
