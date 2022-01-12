@@ -1,30 +1,37 @@
 package game.mob;
 
-import engine.graphics.Mesh;
 import org.joml.Vector3f;
 
-public class MobDefinition {
-    public final int[] bodyMeshes;
-    public final MobInterface mobInterface;
-    public final String mobName;
-    public final Vector3f[] bodyOffsets;
-    public final Vector3f[] bodyRotations;
-    public final float height;
-    public final float width;
-    public final String hurtSound;
-    public final byte baseHealth;
-    public final boolean backFaceCulling;
 
-    public MobDefinition(String name, String hurtSound, boolean backFaceCulling, byte baseHealth, int[] bodyMeshes,Vector3f[] bodyOffsets,Vector3f[] bodyRotations, float height, float width, MobInterface mobInterface){
-        this.bodyMeshes = bodyMeshes;
-        this.mobInterface = mobInterface;
-        this.mobName = name;
-        this.bodyOffsets = bodyOffsets;
-        this.bodyRotations = bodyRotations;
-        this.height = height;
-        this.width = width;
-        this.hurtSound = hurtSound;
-        this.baseHealth = baseHealth;
-        this.backFaceCulling = backFaceCulling;
+
+final public class MobDefinition {
+    private static final int numberOfMobDefinitions = 9;
+    private static int count = 0;
+
+    private static final int[][] bodyMeshes = new int[numberOfMobDefinitions][0];
+    private static final MobInterface[] mobInterface = new MobInterface[numberOfMobDefinitions];
+    private static final String[] mobName = new String[numberOfMobDefinitions];
+    private static final Vector3f[][] bodyOffsets = new Vector3f[numberOfMobDefinitions][0];
+    private static final Vector3f[][] bodyRotations = new Vector3f[numberOfMobDefinitions][0];
+    private static final float[] height = new float[numberOfMobDefinitions];
+    private static final float[] width = new float[numberOfMobDefinitions];
+    private static final String[] hurtSound = new String[numberOfMobDefinitions];
+    private static final byte[] baseHealth = new byte[numberOfMobDefinitions];
+    private static final boolean[] backFaceCulling = new boolean[numberOfMobDefinitions];
+
+
+    public static void registerMob(String name, String newHurtSound, boolean newBackFaceCulling, byte newBaseHealth, int[] newBodyMeshes,Vector3f[] newBodyOffsets,Vector3f[] newBodyRotations, float newHeight, float newWidth, MobInterface newMobInterface){
+        bodyMeshes[count] = newBodyMeshes;
+        mobInterface[count] = newMobInterface;
+        mobName[count] = name;
+        bodyOffsets[count] = newBodyOffsets;
+        bodyRotations[count] = newBodyRotations;
+        height[count] = newHeight;
+        width[count] = newWidth;
+        hurtSound[count] = newHurtSound;
+        baseHealth[count] = newBaseHealth;
+        backFaceCulling[count] = newBackFaceCulling;
+
+        count++;
     }
 }
