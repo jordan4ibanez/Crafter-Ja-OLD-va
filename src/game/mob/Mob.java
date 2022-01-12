@@ -1,9 +1,6 @@
 package game.mob;
 
-import engine.graphics.Mesh;
-import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
-import org.joml.Vector3d;
-import org.joml.Vector3f;
+
 import org.joml.Vector3i;
 
 import java.util.ArrayDeque;
@@ -14,15 +11,6 @@ import static engine.time.Time.getDelta;
 import static game.chunk.Chunk.getLight;
 import static game.collision.MobCollision.mobSoftCollisionDetect;
 import static game.collision.MobCollision.mobSoftPlayerCollisionDetect;
-import static game.mob.Chicken.registerChickenMob;
-import static game.mob.Cow.registerCowMob;
-import static game.mob.Exploder.registerExploderMob;
-import static game.mob.Human.registerHumanMob;
-import static game.mob.MobObject.createNewMob;
-import static game.mob.Pig.registerPigMob;
-import static game.mob.Sheep.registerSheepMob;
-import static game.mob.Skeleton.registerSkeletonMob;
-import static game.mob.Zombie.registerZombieMob;
 
 final public class Mob {
 
