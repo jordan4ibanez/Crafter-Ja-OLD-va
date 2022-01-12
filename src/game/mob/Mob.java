@@ -12,8 +12,7 @@ import static engine.time.Time.getDelta;
 import static game.chunk.Chunk.getLight;
 import static game.collision.MobCollision.mobSoftCollisionDetect;
 import static game.collision.MobCollision.mobSoftPlayerCollisionDetect;
-import static game.mob.MobDefinition.getMobHeight;
-import static game.mob.MobDefinition.getMobWidth;
+import static game.mob.MobDefinition.*;
 import static game.mob.MobObject.*;
 
 //runs on main thread
@@ -44,7 +43,8 @@ final public class Mob {
             }
 
             //interface consumes object - no need for re-assignment to vars
-            mobDefinitions[thisMob.ID].mobInterface.onTick(thisMob);
+            //todo: this needs a complete reimplementation 
+            getMobInterface(thisMobID).onTick(thisMob);
 
             if (thisMob.pos.y < 0){
                 deletionQueue.add(thisMob.globalID);
