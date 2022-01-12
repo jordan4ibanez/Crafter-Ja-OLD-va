@@ -85,4 +85,83 @@ final public class MobObject {
         currentMobPublicID++;
         globalMobs++;
     }
+
+    //getters start here
+
+    public static int getNumberOfMobs(){
+        return globalMobs;
+    }
+
+    public static int getMobID(int ID){
+        return mobID.get(ID);
+    }
+
+    public static Vector3d getMobPos(int ID){
+        return pos.get(ID);
+    }
+
+    public static Vector3i getMobOldFlooredPos(int ID){
+        return oldFlooredPos.get(ID);
+    }
+
+    public static Vector3d getMobOldPos(int ID){
+        return oldPos.get(ID);
+    }
+
+    public static Vector3f getMobInertia(int ID){
+        return inertia.get(ID);
+    }
+
+    public static float getMobRotation(int ID){
+        return rotation.get(ID);
+    }
+
+    public static float getMobSmoothRotation(int ID){
+        return smoothRotation.get(ID);
+    }
+
+    public static Vector3f[] getMobBodyRotations(int ID){
+        return bodyRotations.get(ID);
+    }
+
+    public static byte getMobLight(int ID){
+        return light.get(ID);
+    }
+
+    public static float getMobLightTimer(int ID){
+        return lightTimer.get(ID);
+    }
+
+    public static float getMobAnimationTimer(int ID){
+        return animationTimer.get(ID);
+    }
+
+    public static float getMobTimer(int ID){
+        return timer.get(ID);
+    }
+
+    public static boolean getIfMobOnGround(int ID){
+        return onGround.get(ID);
+    }
+
+    public static boolean getIfMobStanding(int ID){
+        return stand.get(ID);
+    }
+
+    public static float getMobHurtTimer(int ID){
+        return hurtTimer.get(ID);
+    }
+
+    public static byte getMobHealth(int ID){
+        return health.get(ID);
+    }
+
+    public static float getMobDeathRotation(int ID){
+        return deathRotation.get(ID);
+    }
+
+    public static byte getMobHurtAdder(int ID){
+        return hurtAdder.get(ID);
+    }
+
 }
