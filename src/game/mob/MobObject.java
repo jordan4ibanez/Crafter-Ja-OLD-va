@@ -13,6 +13,9 @@ import static game.mob.MobDefinition.getMobBodyRotations;
 final public class MobObject {
     //todo: ADD MOBS TO MEMORY SWEEPER
 
+    //this is the counter to count how many mobs are spawned into the world
+    private static int globalMobs = 0;
+
     //the mobDefinition ID
     private static final Int2IntOpenHashMap mobID = new Int2IntOpenHashMap();
 
@@ -65,7 +68,7 @@ final public class MobObject {
         inertia.put(currentMobPublicID, new Vector3f(inertiaX, inertiaY, inertiaZ));
         rotation.put(currentMobPublicID, (float)(Math.toDegrees(Math.PI * Math.random() * randomDirFloat())));
         smoothRotation.put(currentMobPublicID, 0f);
-        //stop memory leak with thorough clone
+        //stop memory pointer leak with thorough clone
         bodyRotations.put(currentMobPublicID, getMobBodyRotations(newMobID).clone());
         light.put(currentMobPublicID, (byte) 0);
         //causes an instant update
@@ -80,5 +83,6 @@ final public class MobObject {
         hurtAdder.put(currentMobPublicID, (byte) 0);
 
         currentMobPublicID++;
+        globalMobs++;
     }
 }

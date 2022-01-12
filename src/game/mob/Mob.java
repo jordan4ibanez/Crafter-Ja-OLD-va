@@ -27,11 +27,6 @@ import static game.mob.Zombie.registerZombieMob;
 final public class Mob {
 
 
-    private static final Int2ObjectArrayMap<MobObject> mobs = new Int2ObjectArrayMap<>();
-
-
-    private static int globalMobs = 0;
-
     //entry point
     //todo: make this not a confusing linkage
     public static void registerMobs(){
@@ -51,9 +46,6 @@ final public class Mob {
         return mobs.values().toArray(new MobObject[0]);
     }
 
-    private static String getHurtSound(byte ID){
-        return mobDefinitions[ID].hurtSound;
-    }
 
     private static final Deque<Integer> deletionQueue = new ArrayDeque<>();
 
