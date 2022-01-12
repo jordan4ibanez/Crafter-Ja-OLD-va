@@ -109,8 +109,8 @@ final public class MobObject {
 
     //getters start here
 
-    public static int[] getMobKeys(){
-        return mobID.keySet().toIntArray();
+    public static IntSet getMobKeys(){
+        return mobID.keySet();
     }
 
     public static int getNumberOfMobs(){
