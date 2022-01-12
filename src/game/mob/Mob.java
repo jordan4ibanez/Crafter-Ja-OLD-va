@@ -11,6 +11,7 @@ import static engine.time.Time.getDelta;
 import static game.chunk.Chunk.getLight;
 import static game.collision.MobCollision.mobSoftCollisionDetect;
 import static game.collision.MobCollision.mobSoftPlayerCollisionDetect;
+import static game.mob.MobObject.getMobKeys;
 
 final public class Mob {
 
@@ -27,7 +28,7 @@ final public class Mob {
 
         double delta = getDelta();
 
-        for (MobObject thisMob : mobs.values()){
+        for (int thisMob : getMobKeys()){
             if (thisMob == null){
                 continue;
             }
