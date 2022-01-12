@@ -55,10 +55,10 @@ public class MobUtilityCode {
 
 
     //todo: shortest distance
-    public static void mobSmoothRotation(MobObject thisObject){
+    public static void mobSmoothRotation(int thisMob){
         double delta = getDelta();
 
-        float diff = thisObject.rotation - thisObject.smoothRotation;
+        float diff = thisMob.rotation - thisMob.smoothRotation;
 
         //correction of degrees overflow (-piToDegrees to piToDegrees) so it is workable
         if (diff < -180) {
@@ -74,27 +74,27 @@ public class MobUtilityCode {
          */
 
         if (Math.abs(diff) < delta * 500f){
-            thisObject.smoothRotation = thisObject.rotation;
+            thisMob.smoothRotation = thisMob.rotation;
         } else {
             if (Math.abs(diff) > 180) {
                 if (diff < 0) {
-                    thisObject.smoothRotation += delta * 500f;
+                    thisMob.smoothRotation += delta * 500f;
                 } else if (diff > 0) {
-                    thisObject.smoothRotation -= delta * 500f;
+                    thisMob.smoothRotation -= delta * 500f;
                 }
 
                 //correction of degrees overflow (-piToDegrees to piToDegrees) so it is workable
-                if (thisObject.smoothRotation < -180) {
-                    thisObject.smoothRotation += 360;
-                } else if (thisObject.smoothRotation > 180) {
-                    thisObject.smoothRotation -= 360;
+                if (thisMob.smoothRotation < -180) {
+                    thisMob.smoothRotation += 360;
+                } else if (thisMob.smoothRotation > 180) {
+                    thisMob.smoothRotation -= 360;
                 }
 
             } else {
                 if (diff < 0) {
-                    thisObject.smoothRotation -= delta * 500f;
+                    thisMob.smoothRotation -= delta * 500f;
                 } else if (diff > 0) {
-                    thisObject.smoothRotation += delta * 500f;
+                    thisMob.smoothRotation += delta * 500f;
                 }
             }
         }
