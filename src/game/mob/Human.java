@@ -25,16 +25,19 @@ public class Human {
         public void onTick(int thisMob) {
 
             double delta = getDelta();
+
+            //primitive
             int thisMobDefinitionID = getMobID(thisMob);
             float thisMobTimer = getMobTimer(thisMob);
             float thisMobAnimationTimer = getMobAnimationTimer(thisMob);
-            boolean thisMobStand = getIfMobStanding(thisMob);
             float thisMobRotation = getMobRotation(thisMob);
-            float thisMobWidth = getMobDefinitionWidth(thisMobDefinitionID);
-            float thisMobHeight = getMobDefinitionHeight(thisMobDefinitionID);
             byte thisMobHealth = getMobHealth(thisMob);
+
+            //pointers
             Vector3d thisMobPos = getMobPos(thisMob);
             Vector3d thisMobOldPos = getMobOldPos(thisMob);
+            Vector3f[] thisMobBodyRotations = getMobBodyRotations(thisMob);
+            Vector3f thisMobInertia = getMobInertia(thisMob);
 
             thisMobTimer += delta;
 
@@ -45,13 +48,12 @@ public class Human {
 
 
             if (thisMobTimer > 1.5f) {
+                boolean thisMobStand = getIfMobStanding(thisMob);
                 setIfMobStanding(thisMob,!thisMobStand);
                 setMobTimer(thisMob, (float)Math.random() * -2f);
                 setMobRotation(thisMob, (float) (Math.toDegrees(Math.PI * Math.random() * randomDirFloat())));
             }
 
-
-            Vector3f[] thisMobBodyRotations = getMobBodyRotations(thisMob);
 
             //head test
             //thisObject.bodyRotations[0] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),(float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),0);
@@ -67,9 +69,6 @@ public class Human {
 
             float bodyYaw = Math.toRadians(thisMobRotation) + (float) Math.PI;
 
-            //this object has been pulled from memory and is now a pointer
-            Vector3f thisMobInertia = getMobInertia(thisMob);
-
             thisMobInertia.x += (Math.sin(-bodyYaw) * accelerationMultiplier) * movementAcceleration * delta;
             thisMobInertia.z += (Math.cos(bodyYaw)  * accelerationMultiplier) * movementAcceleration * delta;
 
@@ -81,7 +80,7 @@ public class Human {
                 maxSpeed = 0.01f;
             }
 
-            boolean onGround = applyInertia(thisMobPos, thisMobInertia, false, thisMobWidth, thisMobHeight, true, false, true, false, false);
+            boolean onGround = applyInertia(thisMobPos, thisMobInertia, false, getMobDefinitionWidth(thisMobDefinitionID), getMobDefinitionHeight(thisMobDefinitionID), true, false, true, false, false);
 
             if (thisMobAnimationTimer >= 1f) {
                 thisMobAnimationTimer = 0f;
