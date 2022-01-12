@@ -1,5 +1,6 @@
 package game.mob;
 
+import it.unimi.dsi.fastutil.ints.*;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
@@ -7,74 +8,74 @@ import org.joml.Vector3i;
 import static engine.FancyMath.randomDirFloat;
 import static game.mob.Mob.getMobDefinition;
 
-public class MobObject {
+final public class MobObject {
+
     //the mobDefinition ID
-    public byte ID;
+    private static final Int2IntOpenHashMap mobID = new Int2IntOpenHashMap();
 
     //the global reference to the object in the list
-    public final int globalID;
+    //public final int globalID;
 
-    public final Vector3d pos;
-    public final Vector3i oldFlooredPos = new Vector3i(0,-1,0);
-    public final  Vector3d oldPos;
-    public final Vector3f inertia;
-    public final float width;
-    public final float height;
-    public float rotation;
-    public float smoothRotation;
-    public final Vector3f[] bodyOffsets;
-    public final Vector3f[] bodyRotations;
-    public byte light = 0;
-    public float lightTimer = 1; //causes an instant update
+    private static final Int2ObjectOpenHashMap<Vector3d> pos = new Int2ObjectOpenHashMap<>();
+    //was new Vector3i(0,-1,0)
+    private static final Int2ObjectOpenHashMap<Vector3i> oldFlooredPos = new Int2ObjectOpenHashMap<>();
+    private static final Int2ObjectOpenHashMap<Vector3d> oldPos = new Int2ObjectOpenHashMap<>();
+    private static final Int2ObjectOpenHashMap<Vector3f> inertia = new Int2ObjectOpenHashMap<>();
+    private static final Int2FloatOpenHashMap rotation = new Int2FloatOpenHashMap();
+    private static final Int2FloatOpenHashMap smoothRotation = new Int2FloatOpenHashMap();
 
-    public float animationTimer;
-    public float timer;
-    public boolean onGround;
-    public boolean stand;
+    private static final Int2ObjectOpenHashMap<Vector3f[]> bodyRotations = new Int2ObjectOpenHashMap<>();
 
-    public float hurtTimer = 0f;
-    public byte health;
-    public float deathRotation = 0;
-    public byte hurtAdder = 0;
+    //was 0
+    private static final Int2ByteOpenHashMap light = new Int2ByteOpenHashMap();
 
+    //was 1 //causes an instant update
+    private static final Int2FloatOpenHashMap lightTimer = new Int2FloatOpenHashMap();
 
-    public MobObject(Vector3d pos, Vector3f inertia, byte ID, int globalID){
-        this.pos = pos;
-        this.oldPos = new Vector3d(pos);
-        this.inertia = inertia;
+    private static final Int2FloatOpenHashMap animationTimer = new Int2FloatOpenHashMap();
 
-        this.timer = 0f;
-        this.animationTimer = 0f;
+    private static final Int2FloatOpenHashMap timer = new Int2FloatOpenHashMap();
+    private static final Int2BooleanOpenHashMap onGround = new Int2BooleanOpenHashMap();
+    //what is this even for?
+    private static final Int2BooleanOpenHashMap stand = new Int2BooleanOpenHashMap();
 
-        //inheritance to prevent lookup every frame
-        this.height = getMobDefinition(ID).height;
-        this.width = getMobDefinition(ID).width;
+    //was 0f
+    private static final Int2FloatOpenHashMap hurtTimer = new Int2FloatOpenHashMap();
 
-        this.rotation = (float)(Math.toDegrees(Math.PI * Math.random() * randomDirFloat()));
-        this.smoothRotation = 0f;
+    private static final Int2ByteOpenHashMap health = new Int2ByteOpenHashMap();
+    //was 0
+    private static final Int2FloatOpenHashMap deathRotation = new Int2FloatOpenHashMap();
+    //was 0
+    private static final Int2ByteOpenHashMap hurtAdder = new Int2ByteOpenHashMap();
 
+    private static int currentMobPublicID = 0;
+
+    public static void createNewMob(Vector3d newPos, Vector3f newInertia, int newMobID){
+
+        //todo, tick up until null mob slot is found boi
+        //do this to avoid overwriting a mob because that's silly
+
+        mobID.put(currentMobPublicID,newMobID);
+        pos.put(currentMobPublicID, newPos);
+        oldFlooredPos.put(currentMobPublicID, new Vector3i(0,-1,0));
+        oldPos.put(currentMobPublicID, new Vector3d(newPos));
+        inertia.put(currentMobPublicID, newInertia);
+        rotation.put(currentMobPublicID, (float)(Math.toDegrees(Math.PI * Math.random() * randomDirFloat())));
+        smoothRotation.put(currentMobPublicID, 0f);
         //stop memory leak with thorough clone
-        Vector3f[] offSets = getMobDefinition(ID).bodyOffsets;
-        this.bodyOffsets = new Vector3f[offSets.length];
-        byte count = 0;
-        for (Vector3f thisOffset : offSets.clone()){
-            this.bodyOffsets[count] = new Vector3f(thisOffset);
-            count++;
-        }
+        bodyRotations.put(currentMobPublicID, getMobDefinition(newMobID).bodyRotations.clone());
+        light.put(currentMobPublicID, (byte) 0);
+        //causes an instant update
+        lightTimer.put(currentMobPublicID, 1f);
+        animationTimer.put(currentMobPublicID, 0f);
+        timer.put(currentMobPublicID, 0f);
+        onGround.put(currentMobPublicID, false);
+        stand.put(currentMobPublicID, false);
+        hurtTimer.put(currentMobPublicID, 0f);
+        health.put(currentMobPublicID, getMobDefinition(newMobID).baseHealth);
+        deathRotation.put(currentMobPublicID, 0);
+        hurtAdder.put(currentMobPublicID, (byte) 0);
 
-        //stop memory leak with thorough clone
-        Vector3f[] bodyRotations = getMobDefinition(ID).bodyRotations;
-        this.bodyRotations = new Vector3f[bodyRotations.length];
-        byte count2 = 0;
-        for (Vector3f thisRotation : bodyRotations.clone()){
-            this.bodyRotations[count2] = new Vector3f(thisRotation);
-            count2++;
-        }
-
-        this.ID = ID;
-
-        this.globalID = globalID;
-
-        this.health = getMobDefinition(ID).baseHealth;
+        currentMobPublicID++;
     }
 }
