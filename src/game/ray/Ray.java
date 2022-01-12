@@ -15,8 +15,8 @@ import static game.crafting.InventoryObject.getItemInInventory;
 import static game.crafting.InventoryObject.removeItemFromInventory;
 import static game.item.ItemDefinition.*;
 import static game.mob.Mob.punchMob;
-import static game.mob.MobDefinition.getMobHeight;
-import static game.mob.MobDefinition.getMobWidth;
+import static game.mob.MobDefinition.getMobDefinitionHeight;
+import static game.mob.MobDefinition.getMobDefinitionWidth;
 import static game.mob.MobObject.*;
 import static game.particle.Particle.createParticle;
 import static game.player.Player.*;
@@ -64,7 +64,7 @@ final public class Ray {
                 int thisMobDefinitionID = getMobID(thisMob);
 
                 if (mobPosWorker.distance(realNewPos) <= 4.5 && thisMobHealth > 0){
-                    setPointAABB(mobPosWorker.x, mobPosWorker.y, mobPosWorker.z, getMobWidth(thisMobDefinitionID),getMobHeight(thisMobDefinitionID));
+                    setPointAABB(mobPosWorker.x, mobPosWorker.y, mobPosWorker.z, getMobDefinitionWidth(thisMobDefinitionID),getMobDefinitionHeight(thisMobDefinitionID));
                     if(pointIsWithin(realNewPos.x, realNewPos.y, realNewPos.z)){
                         foundMob = thisMob;
                         break;
