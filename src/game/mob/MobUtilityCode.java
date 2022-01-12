@@ -5,6 +5,7 @@ import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import static engine.time.Time.getDelta;
+import static game.mob.MobObject.*;
 import static game.player.Player.getPlayerPosWithEyeHeight;
 import static game.ray.LineOfSight.getLineOfSight;
 
@@ -17,23 +18,34 @@ public class MobUtilityCode {
 
     public static void doHeadCode(int thisMob){
 
-        if (!getLineOfSight(thisMob.pos, getPlayerPosWithEyeHeight())){
+        //this is a pointer object
+        Vector3d thisMobPos = getMobPos(thisMob);
+
+        //yet another pointer object
+        Vector3f[] thisMobBodyOffsets = getMobBodyRotations(thisMob);
+
+        //look another pointer object
+        Vector3f[] thisMobBodyRotations = getMobBodyRotations(thisMob);
+
+        float thisMobSmoothRotation = getMobSmoothRotation(thisMob);
+
+        if (!getLineOfSight(thisMobPos, getPlayerPosWithEyeHeight())){
             return;
         }
 
         //silly head turning
-        headPos.set(thisMob.pos);
+        headPos.set(thisMobPos);
 
-        float smoothToRad = Math.toRadians(thisMob.smoothRotation + 90f);
+        float smoothToRad = Math.toRadians(thisMobSmoothRotation + 90f);
 
-        headPos.add(adjustedHeadPos.set(Math.cos(-smoothToRad), 0,Math.sin(smoothToRad)).mul(thisMob.bodyOffsets[0].z).add(0,thisMob.bodyOffsets[0].y,0));
+        headPos.add(adjustedHeadPos.set(Math.cos(-smoothToRad), 0,Math.sin(smoothToRad)).mul(thisMobBodyOffsets[0].z).add(0,thisMobBodyOffsets[0].y,0));
 
         //createParticle(new Vector3d(headPos), new Vector3f(0,0,0), 7); //debug
 
         headTurn.set(getPlayerPosWithEyeHeight()).sub(headPos);
         //headTurn.normalize();
 
-        float headYaw = (float) Math.toDegrees(Math.atan2(headTurn.z, headTurn.x)) + 90 - thisMob.smoothRotation;
+        float headYaw = (float) Math.toDegrees(Math.atan2(headTurn.z, headTurn.x)) + 90 - thisMobSmoothRotation;
         float pitch = (float)Math.toDegrees(Math.atan2(Math.sqrt(headTurn.z * headTurn.z + headTurn.x * headTurn.x), headTurn.y) + (Math.PI * 1.5));
 
 
@@ -50,7 +62,8 @@ public class MobUtilityCode {
             pitch = 0;
         }
 
-        thisMob.bodyRotations[0] = new Vector3f(pitch,headYaw,0);
+        //weird OOP application
+        thisMobBodyRotations[0].set(pitch,headYaw,0);
     }
 
 
