@@ -43,14 +43,14 @@ public class Human {
 
             //a debug for the animation timer
             if (thisMob == 1){
-                System.out.println(thisMobAnimationTimer);
+                //System.out.println(thisMobAnimationTimer);
             }
 
 
             if (thisMobTimer > 1.5f) {
                 boolean thisMobStand = getIfMobStanding(thisMob);
                 setIfMobStanding(thisMob,!thisMobStand);
-                setMobTimer(thisMob, (float)Math.random() * -2f);
+                thisMobTimer = (float)Math.random() * -2f;
                 setMobRotation(thisMob, (float) (Math.toDegrees(Math.PI * Math.random() * randomDirFloat())));
             }
 
