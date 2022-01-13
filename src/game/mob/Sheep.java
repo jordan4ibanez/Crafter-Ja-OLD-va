@@ -11,6 +11,7 @@ import static game.blocks.BlockDefinition.getIfLiquid;
 import static game.chunk.Chunk.getBlock;
 import static game.collision.Collision.applyInertia;
 import static game.item.ItemEntity.throwItem;
+import static game.mob.MobDefinition.*;
 import static game.mob.MobMeshBuilder.calculateMobTexture;
 import static game.mob.MobMeshBuilder.createMobMesh;
 import static game.mob.MobObject.*;
@@ -42,59 +43,73 @@ public class Sheep {
 
             double delta = getDelta();
 
-            thisMob.timer += delta;
+            //primitive
+            int thisMobDefinitionID = getMobID(thisMob);
+            float thisMobTimer = getMobTimer(thisMob);
+            float thisMobAnimationTimer = getMobAnimationTimer(thisMob);
+            float thisMobRotation = getMobRotation(thisMob);
+            byte thisMobHealth = getMobHealth(thisMob);
 
-            if (thisMob.timer > 1.5f) {
-                thisMob.stand = !thisMob.stand;
-                thisMob.timer = (float) Math.random() * -2f;
-                thisMob.rotation = (float) (Math.toDegrees(Math.PI * Math.random() * randomDirFloat()));
+            //pointers
+            Vector3d thisMobPos = getMobPos(thisMob);
+            Vector3d thisMobOldPos = getMobOldPos(thisMob);
+            Vector3f[] thisMobBodyRotations = getMobBodyRotations(thisMob);
+            Vector3f thisMobInertia = getMobInertia(thisMob);
+
+            thisMobTimer += delta;
+
+            if (thisMobTimer > 1.5f) {
+                boolean thisMobStand = getIfMobStanding(thisMob);
+                setIfMobStanding(thisMob, !thisMobStand);
+                setMobTimer(thisMob, (float)Math.random() * -2f);
+                setMobRotation(thisMob, (float) (Math.toDegrees(Math.PI * Math.random() * randomDirFloat())));
             }
 
             //head test
             //thisObject.bodyRotations[0] = new Vector3f((float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),(float)Math.toDegrees(Math.sin(thisObject.animationTimer * Math.PI * 2f) * 1.65f),0);
-            float animation = (float) Math.toDegrees(Math.sin(thisMob.animationTimer * Math.PI * 2f));
-            thisMob.bodyRotations[2].x = animation;
-            thisMob.bodyRotations[3].x = -animation;
+            float animation = (float) Math.toDegrees(Math.sin(thisMobAnimationTimer * Math.PI * 2f));
+            thisMobBodyRotations[2].x = animation;
+            thisMobBodyRotations[3].x = -animation;
 
-            thisMob.bodyRotations[4].x = -animation;
-            thisMob.bodyRotations[5].x = animation;
+            thisMobBodyRotations[4].x = -animation;
+            thisMobBodyRotations[5].x = animation;
 
-            float yaw = Math.toRadians(thisMob.rotation) + (float) Math.PI;
+            float yaw = Math.toRadians(thisMobRotation) + (float) Math.PI;
 
-            thisMob.inertia.x += (Math.sin(-yaw) * accelerationMultiplier) * movementAcceleration * delta;
-            thisMob.inertia.z += (Math.cos(yaw) * accelerationMultiplier) * movementAcceleration * delta;
+            thisMobInertia.x += (Math.sin(-yaw) * accelerationMultiplier) * movementAcceleration * delta;
+            thisMobInertia.z += (Math.cos(yaw)  * accelerationMultiplier) * movementAcceleration * delta;
 
-            Vector3f inertia2D = new Vector3f(thisMob.inertia.x, 0, thisMob.inertia.z);
+            workerVector2f.set(thisMobInertia.x, thisMobInertia.z);
 
             float maxSpeed = maxWalkSpeed;
 
-            if (thisMob.health <= 0) {
+            if (thisMobHealth <= 0) {
                 maxSpeed = 0.01f;
             }
 
-            if (inertia2D.length() > maxSpeed) {
-                inertia2D = inertia2D.normalize().mul(maxSpeed);
-                thisMob.inertia.x = inertia2D.x;
-                thisMob.inertia.z = inertia2D.z;
+            if (workerVector2f.length() > maxSpeed) {
+                workerVector2f.normalize().mul(maxSpeed);
+                thisMobInertia.x = workerVector2f.x;
+                thisMobInertia.z = workerVector2f.y;
             }
 
-            boolean onGround = applyInertia(thisMob.pos, thisMob.inertia, false, thisMob.width, thisMob.height, true, false, true, false, false);
+            boolean onGround = applyInertia(thisMobPos, thisMobInertia, false, getMobDefinitionWidth(thisMobDefinitionID), getMobDefinitionHeight(thisMobDefinitionID), true, false, true, false, false);
 
-            thisMob.animationTimer += delta * (inertia2D.length() / maxSpeed);
+            thisMobAnimationTimer += delta * (workerVector2f.length() / maxSpeed);
 
-            if (thisMob.animationTimer >= 1f) {
-                thisMob.animationTimer = 0f;
+            if (thisMobAnimationTimer >= 1f) {
+                thisMobAnimationTimer = 0f;
             }
 
 
-            thisMob.onGround = onGround;
+            setIfMobOnGround(thisMob, onGround);
 
 
-            if (thisMob.health > 0) {
+            if (thisMobHealth > 0) {
                 //check if swimming
-                byte block = getBlock((int) Math.floor(thisMob.pos.x), (int) Math.floor(thisMob.pos.y), (int) Math.floor(thisMob.pos.z));
+                byte block = getBlock((int) Math.floor(thisMobPos.x), (int) Math.floor(thisMobPos.y), (int) Math.floor(thisMobPos.z));
                 if (block > -1 && getIfLiquid(block)) {
-                    thisMob.inertia.y += 100f * delta;
+                    thisMobInertia.y += 100f * delta;
                 }
 
                 //check for block in front
@@ -102,11 +117,15 @@ public class Sheep {
                     double x = Math.sin(-yaw);
                     double z = Math.cos(yaw);
 
-                    if (getBlock((int) Math.floor(x + thisMob.pos.x), (int) Math.floor(thisMob.pos.y), (int) Math.floor(z + thisMob.pos.z)) > 0) {
-                        thisMob.inertia.y += 8.75f;
+                    if (getBlock((int) Math.floor(x + thisMobPos.x), (int) Math.floor(thisMobPos.y), (int) Math.floor(z + thisMobPos.z)) > 0) {
+                        thisMobInertia.y += 8.75f;
                     }
                 }
             }
+
+            setMobAnimationTimer(thisMob, thisMobAnimationTimer);
+            setMobTimer(thisMob, thisMobTimer);
+            thisMobOldPos.set(thisMobPos);
 
             mobSmoothRotation(thisMob);
             doHeadCode(thisMob);
@@ -114,9 +133,10 @@ public class Sheep {
     };
 
 
+    //this is a method pointer
     private final static MobInterface shavedInterface = new MobInterface() {
         @Override
-        public void onTick(MobObject thisMob) {
+        public void onTick(int thisMob) {
             //link them together to prevent boilerplate
             woolInterface.onTick(thisMob);
         }
@@ -153,8 +173,8 @@ public class Sheep {
     };
 
     public static void registerSheepMob(){
-        registerMob(new MobDefinition("sheep_wool", "sheep_1",true, (byte) 6, createWoolMesh(), bodyOffsets, bodyRotations,0.9f, 0.45f, woolInterface));
-        registerMob(new MobDefinition("sheep_shaved", "sheep_2",true, (byte) 6, createShavedMesh(), bodyOffsets, bodyRotations,0.9f, 0.45f, shavedInterface));
+        registerMob("sheep_wool", "sheep_1",true, (byte) 6, createWoolMesh(), bodyOffsets, bodyRotations,0.9f, 0.45f, woolInterface);
+        registerMob("sheep_shaved", "sheep_2",true, (byte) 6, createShavedMesh(), bodyOffsets, bodyRotations,0.9f, 0.45f, shavedInterface);
     }
 
 
