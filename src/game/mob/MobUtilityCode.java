@@ -45,7 +45,7 @@ public class MobUtilityCode {
         }
 
         //this is debug code for creating a new mob
-        createParticle(headPos.x, headPos.y, headPos.z, 0.f,0.f,0.f, (byte) 7); //debug
+        //createParticle(headPos.x, headPos.y, headPos.z, 0.f,0.f,0.f, (byte) 7); //debug
 
         headTurn.set(getPlayerPosWithEyeHeight()).sub(headPos);
         //headTurn.normalize();
