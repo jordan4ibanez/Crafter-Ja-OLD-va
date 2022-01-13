@@ -3,7 +3,6 @@ package engine.render;
 import engine.Utils;
 import engine.graphics.ShaderProgram;
 import engine.gui.GUIObject;
-import game.crafting.InventoryObject;
 import org.joml.*;
 
 import java.lang.Math;
@@ -37,6 +36,8 @@ import static game.crafting.InventoryObject.*;
 import static game.item.ItemDefinition.*;
 import static game.item.ItemEntity.*;
 import static game.light.Light.getCurrentGlobalLightLevel;
+import static game.mob.MobDefinition.*;
+import static game.mob.MobObject.*;
 import static game.particle.Particle.*;
 import static game.player.Player.*;
 import static game.player.Player.getPlayerWorldSelectionPos;
@@ -478,25 +479,37 @@ public class GameRenderer {
 
 
         //render mobs
-        /*
-        for (MobObject thisMob : getAllMobs()){
-            if (thisMob == null){
-                continue;
-            }
+
+        for (int thisMob : getMobKeys()){
+
             int offsetIndex = 0;
 
-            boolean backFaceCulling = getMobBackFaceCulling(thisMob.ID);
+            //primitive
+            int thisMobDefinitionID = getMobID(thisMob);
+            boolean backFaceCulling = getMobBackFaceCulling(thisMobDefinitionID);
+            float thisMobSmoothRotation = getMobSmoothRotation(thisMob);
+            float thisMobDeathRotation = getMobDeathRotation(thisMob);
+
+            //pointer
+            Vector3d thisMobPos = getMobPos(thisMob);
+            Vector3f[] thisMobBodyOffsets = getMobDefinitionBodyOffsets(thisMobDefinitionID);
+            Vector3f[] thisMobBodyRotations = getMobBodyRotations(thisMob);
 
             if (!backFaceCulling){
                 glDisable(GL_CULL_FACE);
             }
 
-            entityShaderProgram.setLightUniform("light", thisMob.light + thisMob.hurtAdder); //hurt adder adds 15 to the value so it turns red
+            entityShaderProgram.setLightUniform("light", getMobLight(thisMob) + getMobHurtAdder(thisMob)); //hurt adder adds 15 to the value so it turns red
 
-            for (Mesh thisMesh : getMobMesh(thisMob.ID)) {
-                modelViewMatrix.set(getMobMatrix(thisMob.pos, thisMob.bodyOffsets[offsetIndex], workerVec3F.set(0, thisMob.smoothRotation, thisMob.deathRotation), workerVec3F2.set(thisMob.bodyRotations[offsetIndex]), workerVec3D2.set(1f, 1f, 1f)));
-                entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-                thisMesh.render();
+            for (int thisMesh : getMobDefinitionBodyMeshes(thisMobDefinitionID)) {
+                updateMobMatrix(
+                        thisMobPos.x, thisMobPos.y, thisMobPos.z,
+                        thisMobBodyOffsets[offsetIndex].x, thisMobBodyOffsets[offsetIndex].y, thisMobBodyOffsets[offsetIndex].z,
+                        0, thisMobSmoothRotation, thisMobDeathRotation,
+                        thisMobBodyRotations[offsetIndex].x,thisMobBodyRotations[offsetIndex].y, thisMobBodyRotations[offsetIndex].z,
+                        1f, 1f, 1f);
+                entityShaderProgram.setUniform("modelViewMatrix", getModelMatrix());
+                renderMesh(thisMesh);
                 offsetIndex++;
             }
 
@@ -504,7 +517,6 @@ public class GameRenderer {
                 glEnable(GL_CULL_FACE);
             }
         }
-         */
 
         //render other players
         /*
@@ -566,12 +578,12 @@ public class GameRenderer {
                     if (offsetIndex == 0){
                         headRot = getCameraRotation().x;
                     }
-                    setMobMatrix(pos.x, pos.y, pos.z, playerBodyOffsets[offsetIndex].x, playerBodyOffsets[offsetIndex].y, playerBodyOffsets[offsetIndex].z, 0, getCameraRotation().y, 0, headRot + playerBodyRotation[offsetIndex].x,playerBodyRotation[offsetIndex].y,playerBodyRotation[offsetIndex].z, 1f, 1f, 1f);
+                    updateMobMatrix(pos.x, pos.y, pos.z, playerBodyOffsets[offsetIndex].x, playerBodyOffsets[offsetIndex].y, playerBodyOffsets[offsetIndex].z, 0, getCameraRotation().y, 0, headRot + playerBodyRotation[offsetIndex].x,playerBodyRotation[offsetIndex].y,playerBodyRotation[offsetIndex].z, 1f, 1f, 1f);
                 } else {
                     if (offsetIndex == 0){
                         headRot = getCameraRotation().x * -1f;
                     }
-                    setMobMatrix(pos.x, pos.y, pos.z, playerBodyOffsets[offsetIndex].x,playerBodyOffsets[offsetIndex].y,playerBodyOffsets[offsetIndex].z, 0, getCameraRotation().y + 180f, 0, headRot + playerBodyRotation[offsetIndex].x,playerBodyRotation[offsetIndex].y,playerBodyRotation[offsetIndex].z, 1f, 1f, 1f);
+                    updateMobMatrix(pos.x, pos.y, pos.z, playerBodyOffsets[offsetIndex].x,playerBodyOffsets[offsetIndex].y,playerBodyOffsets[offsetIndex].z, 0, getCameraRotation().y + 180f, 0, headRot + playerBodyRotation[offsetIndex].x,playerBodyRotation[offsetIndex].y,playerBodyRotation[offsetIndex].z, 1f, 1f, 1f);
                 }
                 entityShaderProgram.setUniform("modelViewMatrix", getModelMatrix());
                 renderMesh(thisMesh);
