@@ -69,7 +69,10 @@ public class SQLiteDiskAccessThread implements Runnable {
 
 
         try {
+
             assert connection != null;
+
+            //make the world table
             Statement statement = connection.createStatement();
 
             ResultSet resultSet = meta.getTables(null,"PUBLIC",null, new String[] {"TABLE"});
@@ -106,6 +109,43 @@ public class SQLiteDiskAccessThread implements Runnable {
             //close resources
             resultSet.close();
             statement.close();
+
+
+            //make the player inventory table
+            Statement statement2 = connection.createStatement();
+
+            ResultSet resultSet2 = meta.getTables(null,"PUBLIC",null, new String[] {"TABLE"});
+
+            boolean found2 = false;
+
+            //check if there is a world table
+            while (resultSet2.next()) {
+
+                String name = resultSet2.getString("TABLE_NAME");
+
+                //found the world table
+                if (name.equals("PLAYER_DATA")){
+                    found2 = true;
+                    break;
+                }
+            }
+
+            //create the world table if this is a new database
+            if (!found2){
+
+                System.out.println("CREATING WORLD TABLE!");
+
+                String sql = "CREATE TABLE PLAYER_DATA " +
+                        "(ID TEXT PRIMARY KEY  NOT NULL," +
+                        "INVENTORY       TEXT  NOT NULL," +
+                        "AMOUNT          TEXT  NOT NULL)";
+                statement2.executeUpdate(sql);
+                statement2.close();
+            }
+
+            //close resources
+            resultSet2.close();
+            statement2.close();
 
 
         } catch (Exception e){
