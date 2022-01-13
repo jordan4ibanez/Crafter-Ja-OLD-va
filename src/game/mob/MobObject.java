@@ -269,7 +269,7 @@ final public class MobObject {
         hurtAdder.put(ID, newHurtAdder);
     }
 
-    public static void setMobDeathTimer(int ID, byte newDeathTimer){
+    public static void setMobDeathTimer(int ID, float newDeathTimer){
         deathTimer.put(ID, newDeathTimer);
     }
 
