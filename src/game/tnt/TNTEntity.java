@@ -85,9 +85,6 @@ public class TNTEntity {
 
                 boom(tntPos[i], 5);
 
-                //TODO: THIS IS HORRIBLE REWRITE THIS
-                playSound("tnt_explode", tntPos[i].x, tntPos[i].y, tntPos[i].z, false);
-
                 deleteTNT(i);
 
                 continue;

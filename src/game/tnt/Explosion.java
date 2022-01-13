@@ -3,6 +3,7 @@ package game.tnt;
 import org.joml.Vector3d;
 
 import static engine.FancyMath.getDistance;
+import static engine.sound.SoundAPI.playSound;
 import static game.blocks.BlockDefinition.getBlockName;
 import static game.chunk.Chunk.getBlock;
 import static game.chunk.Chunk.setBlock;
@@ -14,6 +15,8 @@ public class Explosion {
 
     //todo: document this better
     public static void boom(Vector3d pos, int boomDistance) {
+        playSound("tnt_explode", pos.x, pos.y, pos.z, false);
+        
         for (int x = (int)Math.floor(pos.x) - boomDistance; x < (int)Math.floor(pos.x) + boomDistance; x++) {
             for (int y = (int)Math.floor(pos.y) - boomDistance; y < (int)Math.floor(pos.y) + boomDistance; y++) {
                 for (int z = (int)Math.floor(pos.z) - boomDistance; z < (int)Math.floor(pos.z) + boomDistance; z++) {
