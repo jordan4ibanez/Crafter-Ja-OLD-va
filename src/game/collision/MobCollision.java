@@ -14,11 +14,10 @@ public class MobCollision {
     private static final Vector2d workerVec2D = new Vector2d();
     private static final Vector2d workerVec2D2 = new Vector2d();
     private static final Vector2d normalizedPos = new Vector2d();
-    private static final Vector3d thisPos = new Vector3d();
 
     public static void mobSoftCollisionDetect(int thisMob, Vector3d thisMobPos, float thisMobHeight, float thisMobWidth){
         //get this mob's info
-        workerVec2D.set(thisPos.x, thisPos.z);
+        workerVec2D.set(thisMobPos.x, thisMobPos.z);
         double thisBottom  = thisMobPos.y;
         double thisTop     = thisMobHeight + thisMobPos.y;
 
@@ -39,7 +38,7 @@ public class MobCollision {
             //only continue if within 2D radius
             if (workerVec2D.distance(workerVec2D2) <= thisMobWidth + otherWidth) {
 
-                float otherHeight  = getMobDefinitionHeight(otherMob);
+                float otherHeight  = getMobDefinitionHeight(getMobID(otherMob));
                 double otherBottom = otherPos.y;
                 double otherTop = otherHeight + otherPos.y;
 
