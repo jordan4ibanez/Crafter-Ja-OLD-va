@@ -119,7 +119,6 @@ public class Chicken {
 
             setMobAnimationTimer(thisMob, thisMobAnimationTimer);
             setMobTimer(thisMob, thisMobTimer);
-            thisMobOldPos.set(thisMobPos);
 
             mobSmoothRotation(thisMob);
             doHeadCode(thisMob);

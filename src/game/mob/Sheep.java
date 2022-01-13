@@ -125,7 +125,6 @@ public class Sheep {
 
             setMobAnimationTimer(thisMob, thisMobAnimationTimer);
             setMobTimer(thisMob, thisMobTimer);
-            thisMobOldPos.set(thisMobPos);
 
             mobSmoothRotation(thisMob);
             doHeadCode(thisMob);

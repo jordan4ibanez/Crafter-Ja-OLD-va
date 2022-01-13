@@ -110,7 +110,6 @@ public class Cow {
 
             setMobAnimationTimer(thisMob, thisMobAnimationTimer);
             setMobTimer(thisMob, thisMobTimer);
-            thisMobOldPos.set(thisMobPos);
 
 
             mobSmoothRotation(thisMob);
