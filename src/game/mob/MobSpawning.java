@@ -17,7 +17,7 @@ public class MobSpawning {
     private static final float spawnGoal = 3f; //every 3 seconds
 
     public static void runSpawningAlgorithm(){
-        if (getNumberOfMobs() >= 0){
+        if (getNumberOfMobs() >= spawnLimit){
             return;
         }
         //having this not count up allows a minor cool down
@@ -37,7 +37,6 @@ public class MobSpawning {
         int x = (int)pos.x + randomIntFromMinToMaxNegativePositive(24,56);
         int z = (int)pos.z + randomIntFromMinToMaxNegativePositive(24,56);
         int yPos = getMobSpawnYPos(x,z);
-
         if (yPos >= 0){
             spawnMob(randomByte((byte) 9), x, yPos, z, 0, 0, 0);
         }
