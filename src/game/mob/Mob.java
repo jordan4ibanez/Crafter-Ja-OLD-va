@@ -44,8 +44,8 @@ final public class Mob {
             float thisMobDeathRotation = getMobDeathRotation(thisMob);
             float thisMobWidth = getMobDefinitionWidth(thisMobDefinitionID);
             float thisMobHeight = getMobDefinitionHeight(thisMobDefinitionID);
-
             byte thisMobHealth = getMobHealth(thisMob);
+            float thisMobDeathTimer = 0;
 
             thisMobLightTimer += delta;
 
@@ -56,22 +56,34 @@ final public class Mob {
             }
 
             //interface consumes object - no need for re-assignment to vars
-            getMobDefinitionInterface(thisMobDefinitionID).onTick(thisMob);
+            //only do it during alive state
+            if (thisMobHealth > 0) {
+                getMobDefinitionInterface(thisMobDefinitionID).onTick(thisMob);
+            }
 
             if (thisMobPos.y < 0){
                 deletionQueue.add(thisMob);
                 continue;
             }
 
-            //mob dying animation
-            if (thisMobHealth <= 0 && thisMobDeathRotation < 90){
-                thisMobDeathRotation += delta * 300f;
-                if (thisMobDeathRotation >= 90){
-                    thisMobDeathRotation = 90;
-                    thisMobTimer = 0f;
+            //mob is now dead
+            if (thisMobHealth <= 0){
+                //mob dying animation
+                if (thisMobDeathRotation < 90) {
+                    System.out.println(thisMobDeathRotation);
+                    thisMobDeathRotation += delta * 300f;
+                    if (thisMobDeathRotation >= 90) {
+                        thisMobDeathRotation = 90;
+                        thisMobTimer = 0f;
+                        setMobDeathTimer(thisMob, 0.0001f);
+                    }
+                    setMobDeathRotation(thisMob, thisMobDeathRotation);
+                //mob will now sit there for a second
+                } else {
+                    thisMobDeathTimer = getMobDeathTimer(thisMob);
+                    thisMobDeathTimer += delta;
+                    setMobDeathTimer(thisMob, thisMobDeathTimer);
                 }
-
-                setMobDeathRotation(thisMob, thisMobDeathRotation);
             }
 
             currentFlooredPos.set((int)Math.floor(thisMobPos.x), (int)Math.floor(thisMobPos.y), (int)Math.floor(thisMobPos.z));
@@ -82,11 +94,9 @@ final public class Mob {
                 thisMobLightTimer = 0f;
             }
 
-            if (thisMobHealth <= 0 && thisMobTimer >= 0.5f && thisMobDeathRotation == 90){
+            if (thisMobHealth <= 0 && thisMobDeathTimer >= 0.5f && thisMobDeathRotation == 90){
                 deletionQueue.add(thisMob);
             }
-
-            System.out.println("Light: " + thisMobLightTimer);
 
             //count down hurt timer
             if(thisMobHurtTimer > 0f && thisMobHealth > 0){ //don't reset when dead
