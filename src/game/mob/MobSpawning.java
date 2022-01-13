@@ -12,9 +12,9 @@ import static game.mob.MobObject.spawnMob;
 import static game.player.Player.getPlayerPos;
 
 public class MobSpawning {
-    private static final int spawnLimit = 40;
+    private static final int spawnLimit = 20;
     private static double spawnTimer = 1f;
-    private static final float spawnGoal = 0.5f; //every 3 seconds
+    private static final float spawnGoal = 3f; //every 3 seconds
 
     public static void runSpawningAlgorithm(){
         if (getNumberOfMobs() >= spawnLimit){
@@ -34,11 +34,10 @@ public class MobSpawning {
     //this is a square distance, acceptable is 24-56 blocks away from the player
     private static void trySpawn(Vector3d pos){
         //a 2d calculation
-        //24,56
-        int x = (int)pos.x + randomIntFromMinToMaxNegativePositive(5,10);
-        int z = (int)pos.z + randomIntFromMinToMaxNegativePositive(5,10);
+        int x = (int)pos.x + randomIntFromMinToMaxNegativePositive(24,56);
+        int z = (int)pos.z + randomIntFromMinToMaxNegativePositive(24,56);
         int yPos = getMobSpawnYPos(x,z);
-        if (yPos >= 0){
+        if (yPos > 0){
             spawnMob(randomByte((byte) 9), x, yPos, z, 0, 0, 0);
         }
     }
