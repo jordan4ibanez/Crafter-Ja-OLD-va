@@ -38,7 +38,6 @@ final public class Mob {
             Vector3i thisMobOldFlooredPos = getMobOldFlooredPos(thisMob);
 
             //these are immutable primitives - they need to be set after they are modified
-            float thisMobTimer = getMobTimer(thisMob);
             float thisMobHurtTimer = getMobHurtTimer(thisMob);
             float thisMobLightTimer = getMobLightTimer(thisMob);
             float thisMobDeathRotation = getMobDeathRotation(thisMob);
@@ -70,11 +69,10 @@ final public class Mob {
             if (thisMobHealth <= 0){
                 //mob dying animation
                 if (thisMobDeathRotation < 90) {
-                    System.out.println(thisMobDeathRotation);
+                    //System.out.println(thisMobDeathRotation);
                     thisMobDeathRotation += delta * 300f;
                     if (thisMobDeathRotation >= 90) {
                         thisMobDeathRotation = 90;
-                        thisMobTimer = 0f;
                         setMobDeathTimer(thisMob, 0.0001f);
                     }
                     setMobDeathRotation(thisMob, thisMobDeathRotation);
@@ -95,6 +93,7 @@ final public class Mob {
             }
 
             if (thisMobHealth <= 0 && thisMobDeathTimer >= 0.5f && thisMobDeathRotation == 90){
+                getMobDefinitionInterface(thisMobDefinitionID).onDeath(thisMob);
                 deletionQueue.add(thisMob);
             }
 
