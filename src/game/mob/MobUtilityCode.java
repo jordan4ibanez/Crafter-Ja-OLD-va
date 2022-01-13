@@ -7,12 +7,10 @@ import org.joml.Vector3f;
 import static engine.time.Time.getDelta;
 import static game.mob.MobDefinition.getMobDefinitionBodyOffsets;
 import static game.mob.MobObject.*;
-import static game.particle.Particle.createParticle;
 import static game.player.Player.getPlayerPosWithEyeHeight;
 import static game.ray.LineOfSight.getLineOfSight;
 
 public class MobUtilityCode {
-
 
     private final static Vector3d headPos = new Vector3d();
     private final static Vector3d headTurn = new Vector3d();
