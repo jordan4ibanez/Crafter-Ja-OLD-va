@@ -7,6 +7,7 @@ import org.joml.Vector3i;
 
 import static engine.FancyMath.randomDirFloat;
 import static game.mob.MobDefinition.getMobDefinitionBaseHealth;
+import static game.mob.MobDefinition.getMobDefinitionBodyRotations;
 
 final public class MobObject {
     //todo: ADD MOBS TO MEMORY SWEEPER
@@ -67,7 +68,7 @@ final public class MobObject {
         rotation.put(currentMobPublicID, (float)(Math.toDegrees(Math.PI * Math.random() * randomDirFloat())));
         smoothRotation.put(currentMobPublicID, 0f);
         //stop memory pointer leak with thorough clone
-        bodyRotations.put(currentMobPublicID, getMobBodyRotations(newMobID).clone());
+        bodyRotations.put(currentMobPublicID, getMobDefinitionBodyRotations(newMobID).clone());
         light.put(currentMobPublicID, (byte) 0);
         //causes an instant update
         lightTimer.put(currentMobPublicID, 1f);
