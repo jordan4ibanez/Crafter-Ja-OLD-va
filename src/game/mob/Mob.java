@@ -47,6 +47,7 @@ final public class Mob {
 
             byte thisMobHealth = getMobHealth(thisMob);
 
+            thisMobLightTimer += delta;
 
             //only collision detect if alive
             if (getMobHealth(thisMob) > 0) {
@@ -78,12 +79,14 @@ final public class Mob {
             //poll local light every quarter second
             if (thisMobLightTimer >= 0.25f || !currentFlooredPos.equals(thisMobOldFlooredPos)){
                 setMobLight(thisMob, getLight(currentFlooredPos.x, currentFlooredPos.y, currentFlooredPos.z));
-                setMobLightTimer(thisMob, 0f);
+                thisMobLightTimer = 0f;
             }
 
             if (thisMobHealth <= 0 && thisMobTimer >= 0.5f && thisMobDeathRotation == 90){
                 deletionQueue.add(thisMob);
             }
+
+            System.out.println("Light: " + thisMobLightTimer);
 
             //count down hurt timer
             if(thisMobHurtTimer > 0f && thisMobHealth > 0){ //don't reset when dead
@@ -96,6 +99,7 @@ final public class Mob {
                 setMobHurtTimer(thisMob, thisMobHurtTimer);
             }
 
+            setMobLightTimer(thisMob, thisMobLightTimer);
             setMobOldFlooredPos(thisMob, currentFlooredPos.x, currentFlooredPos.y, currentFlooredPos.z);
             setMobOldPos(thisMob, thisMobPos.x, thisMobPos.y, thisMobPos.z);
         }
