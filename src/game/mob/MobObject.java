@@ -18,39 +18,23 @@ final public class MobObject {
     //the mobDefinition ID
     private static final Int2IntOpenHashMap mobID = new Int2IntOpenHashMap();
 
-    //the global reference to the object in the list
-    //public final int globalID;
-
+    //the mobs exist as a collection of variables
     private static final Int2ObjectOpenHashMap<Vector3d> pos = new Int2ObjectOpenHashMap<>();
-    //was new Vector3i(0,-1,0)
     private static final Int2ObjectOpenHashMap<Vector3i> oldFlooredPos = new Int2ObjectOpenHashMap<>();
     private static final Int2ObjectOpenHashMap<Vector3d> oldPos = new Int2ObjectOpenHashMap<>();
     private static final Int2ObjectOpenHashMap<Vector3f> inertia = new Int2ObjectOpenHashMap<>();
     private static final Int2FloatOpenHashMap rotation = new Int2FloatOpenHashMap();
     private static final Int2FloatOpenHashMap smoothRotation = new Int2FloatOpenHashMap();
-
     private static final Int2ObjectOpenHashMap<Vector3f[]> bodyRotations = new Int2ObjectOpenHashMap<>();
-
-    //was 0
     private static final Int2ByteOpenHashMap light = new Int2ByteOpenHashMap();
-
-    //was 1 //causes an instant update
     private static final Int2FloatOpenHashMap lightTimer = new Int2FloatOpenHashMap();
-
     private static final Int2FloatOpenHashMap animationTimer = new Int2FloatOpenHashMap();
-
     private static final Int2FloatOpenHashMap timer = new Int2FloatOpenHashMap();
     private static final Int2BooleanOpenHashMap onGround = new Int2BooleanOpenHashMap();
-    //what is this even for?
     private static final Int2BooleanOpenHashMap stand = new Int2BooleanOpenHashMap();
-
-    //was 0f
     private static final Int2FloatOpenHashMap hurtTimer = new Int2FloatOpenHashMap();
-
     private static final Int2ByteOpenHashMap health = new Int2ByteOpenHashMap();
-    //was 0
     private static final Int2FloatOpenHashMap deathRotation = new Int2FloatOpenHashMap();
-    //was 0
     private static final Int2ByteOpenHashMap hurtAdder = new Int2ByteOpenHashMap();
 
     private static int currentMobPublicID = 0;
