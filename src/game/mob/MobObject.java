@@ -68,7 +68,15 @@ final public class MobObject {
         rotation.put(currentMobPublicID, (float)(Math.toDegrees(Math.PI * Math.random() * randomDirFloat())));
         smoothRotation.put(currentMobPublicID, 0f);
         //stop memory pointer leak with thorough clone
-        bodyRotations.put(currentMobPublicID, getMobDefinitionBodyRotations(newMobID).clone());
+        Vector3f[] cloningArray = getMobDefinitionBodyRotations(newMobID);
+        Vector3f[] newArray = new Vector3f[cloningArray.length];
+        //deep clone
+        int indexer = 0;
+        for (Vector3f thisVec : cloningArray){
+            newArray[indexer] = new Vector3f(thisVec.x, thisVec.y, thisVec.z);
+            indexer++;
+        }
+        bodyRotations.put(currentMobPublicID, newArray);
         light.put(currentMobPublicID, (byte) 0);
         //causes an instant update
         lightTimer.put(currentMobPublicID, 1f);
