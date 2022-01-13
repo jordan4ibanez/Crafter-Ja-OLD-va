@@ -5,7 +5,9 @@ import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import static engine.time.Time.getDelta;
+import static game.mob.MobDefinition.getMobDefinitionBodyOffsets;
 import static game.mob.MobObject.*;
+import static game.particle.Particle.createParticle;
 import static game.player.Player.getPlayerPosWithEyeHeight;
 import static game.ray.LineOfSight.getLineOfSight;
 
@@ -22,7 +24,7 @@ public class MobUtilityCode {
         Vector3d thisMobPos = getMobPos(thisMob);
 
         //yet another pointer object
-        Vector3f[] thisMobBodyOffsets = getMobBodyRotations(thisMob);
+        Vector3f[] thisMobBodyOffsets = getMobDefinitionBodyOffsets(getMobID(thisMob));
 
         //look another pointer object
         Vector3f[] thisMobBodyRotations = getMobBodyRotations(thisMob);
@@ -33,14 +35,18 @@ public class MobUtilityCode {
             return;
         }
 
+        float smoothToRad = Math.toRadians(thisMobSmoothRotation + 90f);
+
         //silly head turning
         headPos.set(thisMobPos);
 
-        float smoothToRad = Math.toRadians(thisMobSmoothRotation + 90f);
+        adjustedHeadPos.set(Math.cos(-smoothToRad), 0,Math.sin(smoothToRad));
 
-        headPos.add(adjustedHeadPos.set(Math.cos(-smoothToRad), 0,Math.sin(smoothToRad)).mul(thisMobBodyOffsets[0].z).add(0,thisMobBodyOffsets[0].y,0));
+        adjustedHeadPos.mul(thisMobBodyOffsets[0].z).add(0,thisMobBodyOffsets[0].y,0);
 
-        //createParticle(new Vector3d(headPos), new Vector3f(0,0,0), 7); //debug
+        headPos.add(adjustedHeadPos);
+
+        createParticle(headPos.x, headPos.y, headPos.z, 0.f,0.f,0.f, (byte) 7); //debug
 
         headTurn.set(getPlayerPosWithEyeHeight()).sub(headPos);
         //headTurn.normalize();
