@@ -1,6 +1,7 @@
 package engine.disk;
 
 import org.joml.Vector2i;
+import org.joml.Vector3d;
 
 import java.sql.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -138,7 +139,9 @@ public class SQLiteDiskAccessThread implements Runnable {
                 String sql = "CREATE TABLE PLAYER_DATA " +
                         "(ID TEXT PRIMARY KEY  NOT NULL," +
                         "INVENTORY       TEXT  NOT NULL," +
-                        "AMOUNT          TEXT  NOT NULL)";
+                        "AMOUNT          TEXT  NOT NULL," +
+                        "POS             TEXT  NOT NULL," +
+                        "HEALTH          TEXT  NOT NULL)";
                 statement2.executeUpdate(sql);
                 statement2.close();
             }
@@ -156,6 +159,16 @@ public class SQLiteDiskAccessThread implements Runnable {
     //these shall stay in sync
     //they are bulk added in THIS thread
     //cannot access anything from it until it has run through the next iteration
+    private static final ConcurrentLinkedDeque<String> playerToSave         = new ConcurrentLinkedDeque<>();
+    private static final ConcurrentLinkedDeque<byte[]> playerInventory      = new ConcurrentLinkedDeque<>();
+    private static final ConcurrentLinkedDeque<byte[]> playerInventoryCount = new ConcurrentLinkedDeque<>();
+    private static final ConcurrentLinkedDeque<Vector3d> playerPos          = new ConcurrentLinkedDeque<>();
+    private static final ConcurrentLinkedDeque<Byte> playerHealth           = new ConcurrentLinkedDeque<>();
+
+
+    //these shall stay in sync
+    //they are bulk added in THIS thread
+    //cannot access anything from it until it has run through the next iteration
     private static final ConcurrentLinkedDeque<Vector2i> chunksToSaveKey     = new ConcurrentLinkedDeque<>();
     private static final ConcurrentLinkedDeque<byte[]> chunksToSaveBlock     = new ConcurrentLinkedDeque<>();
     private static final ConcurrentLinkedDeque<byte[]> chunksToSaveRotation  = new ConcurrentLinkedDeque<>();
@@ -163,7 +176,6 @@ public class SQLiteDiskAccessThread implements Runnable {
     private static final ConcurrentLinkedDeque<byte[]> chunksToSaveHeightMap = new ConcurrentLinkedDeque<>();
 
     public void addSaveChunk(int x, int z, byte[] blockData, byte[] rotationData, byte[] lightData, byte[] heightMap ){
-
         chunksToSaveKey.add(new Vector2i(x,z));
         chunksToSaveBlock.add(blockData);
         chunksToSaveRotation.add(rotationData);
