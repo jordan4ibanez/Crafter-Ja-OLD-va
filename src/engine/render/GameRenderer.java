@@ -446,7 +446,7 @@ public class GameRenderer {
 
         //        render each item entity
         for (int thisItem : getAllItems()){
-            updateViewMatrix(getItemPosX(thisItem),getItemPosYWithHover(thisItem),getItemPosZ(thisItem), 0, getItemRotation(thisItem), 0);
+            updateItemViewMatrix(getItemPosX(thisItem),getItemPosYWithHover(thisItem),getItemPosZ(thisItem), 0, getItemRotation(thisItem), 0);
             entityShaderProgram.setLightUniform("light", getItemLight(thisItem));
             entityShaderProgram.setUniform("modelViewMatrix", getModelMatrix());
             renderMesh(getItemMesh(getItemName(thisItem)));

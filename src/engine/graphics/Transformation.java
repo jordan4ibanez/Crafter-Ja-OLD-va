@@ -151,6 +151,18 @@ public class Transformation {
         modelMatrix.mul(modelViewMatrix);
     }
 
+    //a silly addon method to modify the item size
+    public static void updateItemViewMatrix(double posX, double posY, double posZ, float rotX, float rotY, float rotZ) {
+        // First do the rotation so camera rotates over its position
+        modelViewMatrix.identity().identity().translate(posX, posY, posZ).
+                rotateY(Math.toRadians(-rotY)).
+                rotateZ(Math.toRadians(-rotZ)).
+                rotateX(Math.toRadians(-rotX)).
+                scale(0.75);
+        modelMatrix.set(viewMatrix);
+        modelMatrix.mul(modelViewMatrix);
+    }
+
 
     public static void updateParticleViewMatrix(double positionX, double positionY, double positionZ, float rotationX, float rotationY, float rotationZ) {
         // First do the rotation so camera rotates over its position
