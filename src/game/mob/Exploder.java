@@ -15,6 +15,7 @@ import static game.mob.MobMeshBuilder.createMobMesh;
 import static game.mob.MobObject.*;
 import static game.mob.MobUtilityCode.doHeadCode;
 import static game.mob.MobUtilityCode.mobSmoothRotation;
+import static game.tnt.Explosion.boom;
 
 public class Exploder {
 
@@ -24,6 +25,12 @@ public class Exploder {
     private static final Vector2f workerVector2f = new Vector2f();
 
     private final static MobInterface mobInterface = new MobInterface() {
+        @Override
+        public void onDeath(int thisMob) {
+            Vector3d thisPos = getMobPos(thisMob);
+            boom(thisPos, 4);
+        }
+
         @Override
         public void onTick(int thisMob) {
 
@@ -46,9 +53,11 @@ public class Exploder {
             thisMobTimer += delta;
 
             //debug output
+            /*
             if (thisMob == 1){
                 System.out.println(thisMobAnimationTimer);
             }
+             */
 
             if (thisMobTimer > 1.5f) {
                 boolean thisMobStand = getIfMobStanding(thisMob);
