@@ -36,6 +36,7 @@ final public class MobObject {
     private static final Int2ByteOpenHashMap health = new Int2ByteOpenHashMap();
     private static final Int2FloatOpenHashMap deathRotation = new Int2FloatOpenHashMap();
     private static final Int2ByteOpenHashMap hurtAdder = new Int2ByteOpenHashMap();
+    private static final Int2FloatOpenHashMap deathTimer = new Int2FloatOpenHashMap();
 
     private static int currentMobPublicID = 0;
 
@@ -72,6 +73,7 @@ final public class MobObject {
         health.put(currentMobPublicID, getMobDefinitionBaseHealth(newMobID));
         deathRotation.put(currentMobPublicID, 0);
         hurtAdder.put(currentMobPublicID, (byte) 0);
+        deathTimer.put(currentMobPublicID, 0f);
 
         currentMobPublicID++;
         globalMobs++;
@@ -96,6 +98,7 @@ final public class MobObject {
         health.remove(newMobID);
         deathRotation.remove(newMobID);
         hurtAdder.remove(newMobID);
+        deathTimer.remove(newMobID);
 
         globalMobs--;
     }
@@ -182,6 +185,9 @@ final public class MobObject {
         return hurtAdder.get(ID);
     }
 
+    public static float getMobDeathTimer(int ID){
+        return deathTimer.get(ID);
+    }
 
     //setters start here
 
@@ -261,6 +267,10 @@ final public class MobObject {
 
     public static void setMobHurtAdder(int ID, byte newHurtAdder){
         hurtAdder.put(ID, newHurtAdder);
+    }
+
+    public static void setMobDeathTimer(int ID, byte newDeathTimer){
+        deathTimer.put(ID, newDeathTimer);
     }
 
 }
