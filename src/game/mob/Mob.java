@@ -33,7 +33,7 @@ final public class Mob {
             //this is the mob definition ID
             int thisMobDefinitionID = getMobID(thisMob);
 
-            //this is an object pointer
+            //these are object pointers
             Vector3d thisMobPos = getMobPos(thisMob);
             Vector3i thisMobOldFlooredPos = getMobOldFlooredPos(thisMob);
 
@@ -55,7 +55,6 @@ final public class Mob {
             }
 
             //interface consumes object - no need for re-assignment to vars
-            //todo: this needs a complete reimplementation
             getMobDefinitionInterface(thisMobDefinitionID).onTick(thisMob);
 
             if (thisMobPos.y < 0){
@@ -97,8 +96,8 @@ final public class Mob {
                 setMobHurtTimer(thisMob, thisMobHurtTimer);
             }
 
-            getMobOldFlooredPos(thisMob).set(currentFlooredPos);
-            getMobOldPos(thisMob).set(thisMob);
+            setMobOldFlooredPos(thisMob, currentFlooredPos.x, currentFlooredPos.y, currentFlooredPos.z);
+            setMobOldPos(thisMob, thisMobPos.x, thisMobPos.y, thisMobPos.z);
         }
 
         while (!deletionQueue.isEmpty()){
