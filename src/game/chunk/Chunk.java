@@ -853,7 +853,7 @@ final public class Chunk {
         byte[] blockData = blocks.get(new Vector2i(chunkX, chunkZ));
 
         if (blockData == null){
-            return 0;
+            return -1;
         }
 
         //simple algorithm for now
