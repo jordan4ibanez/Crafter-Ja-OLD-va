@@ -187,7 +187,7 @@ public class Transformation {
     }
 
 
-    public static void setMobMatrix(
+    public static void updateMobMatrix(
             double basePosX, double basePosY, double basePosZ,
             float offsetPosX, float offsetPosY, float offsetPosZ,
             float bodyYawX, float bodyYawY, float bodyYawZ,
