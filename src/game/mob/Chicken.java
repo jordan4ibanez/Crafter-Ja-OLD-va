@@ -52,8 +52,8 @@ public class Chicken {
 
                 boolean thisMobStand = getIfMobStanding(thisMob);
                 setIfMobStanding(thisMob, !thisMobStand);
-                thisMobTimer = (float) Math.random() * -2f;
-                thisMobRotation = (float) (Math.toDegrees(Math.PI * Math.random() * randomDirFloat()));
+                setMobTimer(thisMob, (float)Math.random() * -2f);
+                setMobRotation(thisMob, (float) (Math.toDegrees(Math.PI * Math.random() * randomDirFloat())));
             }
 
 
