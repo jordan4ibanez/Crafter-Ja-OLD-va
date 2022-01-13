@@ -9,7 +9,6 @@ import static game.chunk.Chunk.getBlock;
 
 public class LineOfSight {
     private final static Vector3d newPos   = new Vector3d();
-    private final static Vector3d realNewPos = new Vector3d();
     private final static Vector3d lastPos  = new Vector3d();
     private final static Vector3d cachePos = new Vector3d();
     private final static Vector3f dir = new Vector3f();
@@ -27,10 +26,6 @@ public class LineOfSight {
             newPos.x = Math.floor(pos1.x + cachePos.x);
             newPos.y = Math.floor(pos1.y + cachePos.y);
             newPos.z = Math.floor(pos1.z + cachePos.z);
-
-            realNewPos.x = pos1.x + cachePos.x;
-            realNewPos.y = pos1.y + cachePos.y;
-            realNewPos.z = pos1.z + cachePos.z;
 
             //stop wasting cpu resources
             if (!newPos.equals(lastPos)) {
