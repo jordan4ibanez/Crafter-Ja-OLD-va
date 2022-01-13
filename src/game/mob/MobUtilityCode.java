@@ -31,20 +31,18 @@ public class MobUtilityCode {
 
         float thisMobSmoothRotation = getMobSmoothRotation(thisMob);
 
-        if (!getLineOfSight(thisMobPos, getPlayerPosWithEyeHeight())){
-            return;
-        }
-
         float smoothToRad = Math.toRadians(thisMobSmoothRotation + 90f);
 
         //silly head turning
-        headPos.set(thisMobPos);
-
+        headPos.set(thisMobPos.x, thisMobPos.y, thisMobPos.z);
         adjustedHeadPos.set(Math.cos(-smoothToRad), 0,Math.sin(smoothToRad));
-
         adjustedHeadPos.mul(thisMobBodyOffsets[0].z).add(0,thisMobBodyOffsets[0].y,0);
-
         headPos.add(adjustedHeadPos);
+
+        //check if the mob can actual "see" the player
+        if (!getLineOfSight(headPos, getPlayerPosWithEyeHeight())){
+            return;
+        }
 
         createParticle(headPos.x, headPos.y, headPos.z, 0.f,0.f,0.f, (byte) 7); //debug
 
@@ -53,7 +51,6 @@ public class MobUtilityCode {
 
         float headYaw = (float) Math.toDegrees(Math.atan2(headTurn.z, headTurn.x)) + 90 - thisMobSmoothRotation;
         float pitch = (float)Math.toDegrees(Math.atan2(Math.sqrt(headTurn.z * headTurn.z + headTurn.x * headTurn.x), headTurn.y) + (Math.PI * 1.5));
-
 
         //correction of degrees overflow (-piToDegrees to piToDegrees) so it is workable
         if (headYaw < -180) {
