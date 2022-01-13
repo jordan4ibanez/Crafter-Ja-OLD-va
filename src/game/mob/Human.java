@@ -42,9 +42,11 @@ public class Human {
             thisMobTimer += delta;
 
             //a debug for the animation timer
+            /*
             if (thisMob == 1){
-                //System.out.println(thisMobAnimationTimer);
+                System.out.println(thisMobAnimationTimer);
             }
+             */
 
 
             if (thisMobTimer > 1.5f) {
@@ -82,11 +84,6 @@ public class Human {
 
             boolean onGround = applyInertia(thisMobPos, thisMobInertia, false, getMobDefinitionWidth(thisMobDefinitionID), getMobDefinitionHeight(thisMobDefinitionID), true, false, true, false, false);
 
-            if (thisMobAnimationTimer >= 1f) {
-                thisMobAnimationTimer = 0f;
-
-            }
-
             if (worker2f.length() > maxSpeed) {
                 worker2f.normalize().mul(maxSpeed);
                 thisMobInertia.x = worker2f.x;
@@ -99,10 +96,7 @@ public class Human {
                 thisMobAnimationTimer -= 1f;
             }
 
-
-
             setIfMobOnGround(thisMob, onGround);
-
 
 
             if (thisMobHealth > 0) {
@@ -119,7 +113,6 @@ public class Human {
 
             setMobAnimationTimer(thisMob, thisMobAnimationTimer);
             setMobTimer(thisMob, thisMobTimer);
-            thisMobOldPos.set(thisMobPos);
 
             mobSmoothRotation(thisMob);
             doHeadCode(thisMob);
