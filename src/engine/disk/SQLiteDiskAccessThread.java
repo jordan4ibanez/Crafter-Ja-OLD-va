@@ -649,7 +649,9 @@ public class SQLiteDiskAccessThread implements Runnable {
             int innerCount = 0;
             int innerGoal = baseArray.length - 1;
             for (String stringInArray : baseArray){
-                output.append(stringInArray);
+                if (stringInArray != null) {
+                    output.append(stringInArray);
+                }
                 if (innerCount != innerGoal){
                     //indicates a new index has started
                     output.append(",");
