@@ -424,6 +424,10 @@ public class SQLiteDiskAccessThread implements Runnable {
         return outPutStringArray;
     }
 
+    private static String[][] intArrayArrayDeserialize(String serializedArrayArray){
+
+    }
+
 
     private static byte[] byteDeserialize(String serializedArray){
 
@@ -534,6 +538,30 @@ public class SQLiteDiskAccessThread implements Runnable {
         return output.toString();
     }
 
+    private static String intArrayArraySerialize(int[][] inputStringArray){
+        StringBuilder output = new StringBuilder();
+        int outerCount = 0;
+        int outerGoal = inputStringArray.length - 1;
+        for (int[] baseArray : inputStringArray){
+            int innerCount = 0;
+            int innerGoal = baseArray.length - 1;
+            for (int stringInArray : baseArray){
+                output.append(stringInArray);
+                if (innerCount != innerGoal){
+                    output.append(",");
+                }
+                innerCount++;
+            }
+
+            if (outerCount != outerGoal){
+                //add on the array "?" to indicate new array
+                output.append("?");
+            }
+            outerCount++;
+        }
+
+        return output.toString();
+    }
 
     private static String byteSerialize(byte[] bytes){
 
