@@ -9,9 +9,13 @@ import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static engine.disk.SQLiteDiskHandler.receiveDataFromSQLiteDiskAccessThread;
 import static game.chunk.BiomeGenerator.addChunkToBiomeGeneration;
 import static game.chunk.Chunk.*;
 import static game.chunk.ChunkUpdateHandler.chunkUpdate;
+import static game.crafting.InventoryObject.setInventoryItem;
+import static game.player.Player.setPlayerHealth;
+import static game.player.Player.setPlayerPos;
 
 public class SQLiteDiskAccessThread implements Runnable {
 
@@ -19,7 +23,9 @@ public class SQLiteDiskAccessThread implements Runnable {
     private String url;
     private Connection connection;
     private DatabaseMetaData meta;
+
     private static final ConcurrentLinkedDeque<Vector2i> chunksToLoad = new ConcurrentLinkedDeque<>();
+    private static final ConcurrentLinkedDeque<String> playersToLoad  = new ConcurrentLinkedDeque<>();
 
     private final AtomicBoolean running = new AtomicBoolean(false);
 
@@ -216,19 +222,58 @@ public class SQLiteDiskAccessThread implements Runnable {
         }
     }
 
+    //do this so that the main thread does not hang
+    public void addPlayerToLoad(String name){
+        //do not allow loading players more than once!
+        if (!playersToLoad.contains(name)){
+            playersToLoad.add(name);
+        }
+    }
+
+
+    private void tryToLoadPlayer(){
+        if (!playersToLoad.isEmpty()) {
+            System.out.println("I AM LOADING A PLAYER BOI AHAHHAHAHAHAH");
+            try {
+
+                String poppedPlayer = playersToLoad.pop();
+
+                Statement statement = connection.createStatement();
+                ResultSet resultTest = statement.executeQuery("SELECT * FROM PLAYER_DATA WHERE ID ='" + poppedPlayer + "';");
+
+                //found a chunk
+                if (resultTest.next()) {
+
+                    System.out.println("I HAVE FOUND THIS PLAYER! I AM DOING THE THING :D");
+                    //automatically set the player's data
+                    String[][] loadedInventory = stringArrayArrayDeserialize((resultTest.getString("INVENTORY")));
+                    int[][] loadedCount = intArrayArrayDeserialize(resultTest.getString("AMOUNT"));
+                    Vector3d playerPos = deserializeVector3d(resultTest.getString("POS"));
+                    byte playerHealth = Byte.parseByte(resultTest.getString("HEALTH"));
+
+                    receiveDataFromSQLiteDiskAccessThread("singleplayer", loadedInventory, loadedCount, playerPos, playerHealth);
+
+                }
+
+                //did not find player
+
+                statement.close();
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
 
     //begin world data
 
     //these shall stay in sync
     //they are bulk added in THIS thread
     //cannot access anything from it until it has run through the next iteration
-    /*
     private static final ConcurrentLinkedDeque<Vector2i> chunksToSaveKey     = new ConcurrentLinkedDeque<>();
     private static final ConcurrentLinkedDeque<byte[]> chunksToSaveBlock     = new ConcurrentLinkedDeque<>();
     private static final ConcurrentLinkedDeque<byte[]> chunksToSaveRotation  = new ConcurrentLinkedDeque<>();
     private static final ConcurrentLinkedDeque<byte[]> chunksToSaveLight     = new ConcurrentLinkedDeque<>();
     private static final ConcurrentLinkedDeque<byte[]> chunksToSaveHeightMap = new ConcurrentLinkedDeque<>();
-     */
 
     public void addSaveChunk(int x, int z, byte[] blockData, byte[] rotationData, byte[] lightData, byte[] heightMap ){
         chunksToSaveKey.add(new Vector2i(x,z));
@@ -355,6 +400,7 @@ public class SQLiteDiskAccessThread implements Runnable {
             //System.out.println("NUMBER 5 IS ALIVE");
             if (running.get()) {
                 tryToLoadChunk();
+                tryToLoadPlayer();
             }
             tryToSaveChunk();
             tryToSavePlayer();
