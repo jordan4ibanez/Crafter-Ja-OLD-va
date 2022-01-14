@@ -2,8 +2,10 @@ package engine.disk;
 
 import org.joml.Vector2i;
 import org.joml.Vector3d;
+import org.joml.Vector3f;
 
 import java.sql.*;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -156,24 +158,77 @@ public class SQLiteDiskAccessThread implements Runnable {
         }
     }
 
+    //begin player data
+
     //these shall stay in sync
     //they are bulk added in THIS thread
     //cannot access anything from it until it has run through the next iteration
     private static final ConcurrentLinkedDeque<String> playerToSave         = new ConcurrentLinkedDeque<>();
-    private static final ConcurrentLinkedDeque<byte[]> playerInventory      = new ConcurrentLinkedDeque<>();
-    private static final ConcurrentLinkedDeque<byte[]> playerInventoryCount = new ConcurrentLinkedDeque<>();
+    private static final ConcurrentLinkedDeque<String[][]> playerInventory    = new ConcurrentLinkedDeque<>();
+    private static final ConcurrentLinkedDeque<int[][]> playerInventoryCount = new ConcurrentLinkedDeque<>();
     private static final ConcurrentLinkedDeque<Vector3d> playerPos          = new ConcurrentLinkedDeque<>();
     private static final ConcurrentLinkedDeque<Byte> playerHealth           = new ConcurrentLinkedDeque<>();
 
+    public void addPlayerToSave(String playerName, String[][] inventoryToSave, int[][] inventoryCount, Vector3d newPlayerPos, byte newPlayerHealth){
+        playerToSave.add(playerName);
+
+        //deep clone - remove pointer
+        String[][] clonedInventory = new String[inventoryToSave.length][inventoryToSave[0].length];
+        for (int i = 0; i < inventoryToSave.length; i++) {
+            System.arraycopy(inventoryToSave[i], 0, clonedInventory[i], 0, inventoryToSave[0].length);
+        }
+        playerInventory.add(clonedInventory);
+
+        //deep clone - remove pointer
+        int[][] clonedCount = new int[inventoryCount.length][inventoryCount[0].length];
+        for (int i = 0; i < inventoryCount.length; i++) {
+            System.arraycopy(inventoryCount[i], 0, clonedCount[i], 0, inventoryCount[0].length);
+        }
+        playerInventoryCount.add(clonedCount);
+
+        playerPos.add(new Vector3d(newPlayerPos.x, newPlayerPos.y, newPlayerPos.z));
+        playerHealth.add(newPlayerHealth);
+    }
+
+    private void tryToSavePlayer(){
+        if (!playerToSave.isEmpty() && !playerInventory.isEmpty() && !playerInventoryCount.isEmpty() && !playerPos.isEmpty() && !playerHealth.isEmpty()) {
+            try {
+                String poppedPlayer = playerToSave.pop();
+
+                Statement statement = connection.createStatement();
+
+                String sql = "INSERT OR REPLACE INTO PLAYER_DATA " +
+                        "(ID,INVENTORY,AMOUNT,POS,HEALTH) " +
+                        "VALUES ('" +
+                        poppedPlayer + "','" + //ID
+                        byteSerialize(chunksToSaveBlock.pop()) + "','" +//INVENTORY STRING ARRAY
+                        byteSerialize(chunksToSaveRotation.pop()) + "','" +//INVENTORY AMOUNT BYTE ARRAY
+                        byteSerialize(chunksToSaveLight.pop()) + "','" +//POS VECTOR DATA
+                        byteSerialize(chunksToSaveHeightMap.pop()) + //PLAYER HEALTH DATA
+                        "');";
+                statement.executeUpdate(sql);
+                statement.close();
+
+
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+
+    //begin world data
 
     //these shall stay in sync
     //they are bulk added in THIS thread
     //cannot access anything from it until it has run through the next iteration
+    /*
     private static final ConcurrentLinkedDeque<Vector2i> chunksToSaveKey     = new ConcurrentLinkedDeque<>();
     private static final ConcurrentLinkedDeque<byte[]> chunksToSaveBlock     = new ConcurrentLinkedDeque<>();
     private static final ConcurrentLinkedDeque<byte[]> chunksToSaveRotation  = new ConcurrentLinkedDeque<>();
     private static final ConcurrentLinkedDeque<byte[]> chunksToSaveLight     = new ConcurrentLinkedDeque<>();
     private static final ConcurrentLinkedDeque<byte[]> chunksToSaveHeightMap = new ConcurrentLinkedDeque<>();
+     */
 
     public void addSaveChunk(int x, int z, byte[] blockData, byte[] rotationData, byte[] lightData, byte[] heightMap ){
         chunksToSaveKey.add(new Vector2i(x,z));
@@ -391,6 +446,33 @@ public class SQLiteDiskAccessThread implements Runnable {
 
 
     //serializer
+    private static String stringArrayArraySerialize(String[][] inputStringArray){
+
+        StringBuilder output = new StringBuilder();
+        int outerCount = 0;
+        int outerGoal = inputStringArray.length - 1;
+        for (String[] baseArray : inputStringArray){
+            int innerCount = 0;
+            int innerGoal = baseArray.length - 1;
+            for (String stringInArray : baseArray){
+                output.append(stringInArray);
+                if (innerCount != innerGoal){
+                    output.append(",");
+                }
+                innerCount++;
+            }
+
+            if (outerCount != outerGoal){
+                //add on the array "?" to indicate new array
+                output.append("?");
+            }
+            outerCount++;
+        }
+
+        return output.toString();
+    }
+
+
     private static String byteSerialize(byte[] bytes){
 
         //build a raw custom string type to hold data, data elements only separated by commas
