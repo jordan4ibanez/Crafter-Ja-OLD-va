@@ -7,6 +7,7 @@ import org.joml.Vector3f;
 import static engine.MouseInput.*;
 import static engine.Window.getWindowHeight;
 import static engine.Window.getWindowWidth;
+import static engine.disk.SQLiteDiskHandler.savePlayerData;
 import static engine.network.Networking.getIfMultiplayer;
 import static engine.render.GameRenderer.*;
 import static game.crafting.CraftRecipes.recipeScan;
@@ -314,6 +315,12 @@ final public class InventoryLogic {
             if (inventoryUpdate && getIfMultiplayer()){
                 System.out.println("WHOOPS GOTTA FIX THIS TOO");
                 //sendServerUpdatedInventory();
+            }
+
+            //overkill but it gets the job done
+            //save the player's main inventory
+            if (inventoryUpdate){
+                savePlayerData("singleplayer");
             }
 
             leftMouseButtonWasPushed = leftMouseButtonPushed;
