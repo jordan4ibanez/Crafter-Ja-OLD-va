@@ -56,3 +56,9 @@ You should now be able to run the game using java -jar Crafter.jar in the folder
 ## Stargazers over time
 
 [![Stargazers over time](https://starchart.cc/jordan4ibanez/Crafter.svg)](https://starchart.cc/jordan4ibanez/Crafter)
+
+If you want to see the first ever commit done to this project:
+
+https://github.com/oilboi/Crafter/commit/282313ab6d3f3041e385161907d0b551240f3cbd
+
+This was done on my secondary account.
