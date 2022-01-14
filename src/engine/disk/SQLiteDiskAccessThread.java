@@ -351,12 +351,13 @@ public class SQLiteDiskAccessThread implements Runnable {
         running.set(true);
 
         //do not shut down until all chunks are saved!
-        while(running.get() || !chunksToSaveKey.isEmpty()) {
+        while(running.get() || !chunksToSaveKey.isEmpty() || !playerToSave.isEmpty()) {
             //System.out.println("NUMBER 5 IS ALIVE");
             if (running.get()) {
                 tryToLoadChunk();
             }
             tryToSaveChunk();
+            tryToSavePlayer();
         }
 
         System.out.println("CLOSING WORLD DATABASE!");
