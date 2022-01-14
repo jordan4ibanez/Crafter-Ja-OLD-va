@@ -201,7 +201,7 @@ public class SQLiteDiskAccessThread implements Runnable {
                         "(ID,INVENTORY,AMOUNT,POS,HEALTH) " +
                         "VALUES ('" +
                         poppedPlayer + "','" + //ID
-                        byteSerialize(chunksToSaveBlock.pop()) + "','" +//INVENTORY STRING ARRAY
+                        stringArrayArraySerialize(playerInventory.pop()) + "','" +//INVENTORY STRING ARRAY
                         byteSerialize(chunksToSaveRotation.pop()) + "','" +//INVENTORY AMOUNT BYTE ARRAY
                         byteSerialize(chunksToSaveLight.pop()) + "','" +//POS VECTOR DATA
                         byteSerialize(chunksToSaveHeightMap.pop()) + //PLAYER HEALTH DATA
