@@ -45,9 +45,11 @@ public class Skeleton {
             thisMobTimer += delta;
 
             //debug output
+            /*
             if (thisMob == 1){
                 System.out.println(thisMobAnimationTimer);
             }
+             */
 
             if (thisMobTimer > 1.5f) {
                 boolean thisMobStand = getIfMobStanding(thisMob);

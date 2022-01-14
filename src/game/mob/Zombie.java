@@ -45,9 +45,11 @@ public class Zombie {
             thisMobTimer += delta;
 
             //debug
+            /*
             if (thisMob == 1){
                 System.out.println(thisMobAnimationTimer);
             }
+             */
 
             if (thisMobTimer > 1.5f) {
                 boolean thisMobStand = getIfMobStanding(thisMob);
