@@ -44,7 +44,7 @@ public class SQLiteDiskHandler {
         hasPolledLoadingPlayer = false;
     }
 
-    public static void receiveDataFromSQLiteDiskAccessThread(String playerName, String[][] thisPlayerInventory, int[][] thisPlayerCount, Vector3d thisPlayerPos, byte thisPlayerHealth){
+    public static void passDataFromSQLiteDiskAccessThread(String playerName, String[][] thisPlayerInventory, int[][] thisPlayerCount, Vector3d thisPlayerPos, byte thisPlayerHealth){
         playerData.add(playerName);
 
         //deep clone - remove pointer

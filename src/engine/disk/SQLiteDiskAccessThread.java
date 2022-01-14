@@ -2,20 +2,15 @@ package engine.disk;
 
 import org.joml.Vector2i;
 import org.joml.Vector3d;
-import org.joml.Vector3f;
 
 import java.sql.*;
-import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static engine.disk.SQLiteDiskHandler.receiveDataFromSQLiteDiskAccessThread;
+import static engine.disk.SQLiteDiskHandler.passDataFromSQLiteDiskAccessThread;
 import static game.chunk.BiomeGenerator.addChunkToBiomeGeneration;
 import static game.chunk.Chunk.*;
 import static game.chunk.ChunkUpdateHandler.chunkUpdate;
-import static game.crafting.InventoryObject.setInventoryItem;
-import static game.player.Player.setPlayerHealth;
-import static game.player.Player.setPlayerPos;
 
 public class SQLiteDiskAccessThread implements Runnable {
 
@@ -193,6 +188,7 @@ public class SQLiteDiskAccessThread implements Runnable {
         playerInventoryCount.add(clonedCount);
 
         playerPos.add(new Vector3d(newPlayerPos.x, newPlayerPos.y, newPlayerPos.z));
+        System.out.println(newPlayerHealth);
         playerHealth.add(newPlayerHealth);
     }
 
@@ -251,7 +247,7 @@ public class SQLiteDiskAccessThread implements Runnable {
                     Vector3d playerPos = deserializeVector3d(resultTest.getString("POS"));
                     byte playerHealth = Byte.parseByte(resultTest.getString("HEALTH"));
 
-                    receiveDataFromSQLiteDiskAccessThread("singleplayer", loadedInventory, loadedCount, playerPos, playerHealth);
+                    passDataFromSQLiteDiskAccessThread("singleplayer", loadedInventory, loadedCount, playerPos, playerHealth);
 
                 }
 
