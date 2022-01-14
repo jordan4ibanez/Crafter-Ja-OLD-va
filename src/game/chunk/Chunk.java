@@ -242,7 +242,6 @@ final public class Chunk {
         //save interval is 16 seconds
         if (saveTimer >= 16f){
             updateWorldsPathToAvoidCrash();
-            savePlayerPos(getPlayerPos());
             for (Vector2i key : chunkKeys.values()){
                 Boolean needsToBeSaved = saveToDisk.get(key);
                 if (needsToBeSaved != null && needsToBeSaved) { //null is also no or false
