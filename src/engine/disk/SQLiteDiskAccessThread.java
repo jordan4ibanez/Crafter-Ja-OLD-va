@@ -364,6 +364,67 @@ public class SQLiteDiskAccessThread implements Runnable {
     }
 
     //deserializers
+
+    private static String[][] stringArrayArrayDeserialize(String serializedArrayArray){
+        //figure out the data structure, width and height
+        int newIndexCount = 1;
+        int newBracketCount = 1;
+        boolean newBracketFound = false;
+        for (char thisChar : serializedArrayArray.toCharArray()){
+            if (!newBracketFound){
+                if (thisChar == ','){
+                    newIndexCount++;
+                }
+            }
+
+            if (thisChar == '?'){
+                newBracketCount++;
+                newBracketFound = true;
+            }
+        }
+
+        String[][] outPutStringArray = new String[newBracketCount][newIndexCount];
+
+        int currentBracket = 0;
+        int currentIndex = 0;
+
+        char[] charArray = serializedArrayArray.toCharArray();
+
+        StringBuilder currentStringBuilder = new StringBuilder();
+
+        //auto-flush indexes
+        for (int i = 0; i <= charArray.length; i++){
+            if (i < charArray.length) {
+                if (charArray[i] == ',') {
+                    //don't put in non-null strings ""
+                    if (!currentStringBuilder.toString().equals("")) {
+                        outPutStringArray[currentBracket][currentIndex] = currentStringBuilder.toString();
+                    }
+                    currentStringBuilder.setLength(0);
+                    currentIndex++;
+                } else if (charArray[i] == '?') {
+                    //don't put in non-null strings ""
+                    if (!currentStringBuilder.toString().equals("")) {
+                        outPutStringArray[currentBracket][currentIndex] = currentStringBuilder.toString();
+                    }
+                    currentStringBuilder.setLength(0);
+                    currentIndex = 0;
+                    currentBracket++;
+                } else {
+                    currentStringBuilder.append(charArray[i]);
+                }
+            } else {
+                //don't put in non-null strings ""
+                if (!currentStringBuilder.toString().equals("")) {
+                    outPutStringArray[currentBracket][currentIndex] = currentStringBuilder.toString();
+                }
+            }
+        }
+
+        return outPutStringArray;
+    }
+
+
     private static byte[] byteDeserialize(String serializedArray){
 
         //turn string into array for easier access
