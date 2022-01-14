@@ -901,7 +901,7 @@ final public class MainMenu {
             {"01/08", "Happy Birthday Stephen Hawking!"},
             {"03/17", "Luck o' the Irish!"},
             {"04/17", "Happy Easter!"},
-            {"04/26", "Happy Anniversary!"},
+            {"08/18", "Happy Birthday to me!"},
             {"09/17", "Happy birthday Linux!"},
             {"10/10", "Happy birthday Minetest!"},
             {"10/14", "Happy birthday KDE!"},
