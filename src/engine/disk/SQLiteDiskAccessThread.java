@@ -364,6 +364,32 @@ public class SQLiteDiskAccessThread implements Runnable {
     }
 
     //deserializers
+    private static Vector3d deserializeVector3d(String serializedVector){
+        //turn string into array for easier access
+        char[] charArray = serializedVector.toCharArray();
+
+        Vector3d outputVector3d = new Vector3d();
+
+        //x = 0, y = 1, z = 2
+        int currentIndex = 0;
+        StringBuilder thisStringBuilder = new StringBuilder();
+
+        for (int i = 0; i <= charArray.length; i++){
+            if (i == (charArray.length) || charArray[i] == ','){
+                switch (currentIndex) {
+                    case 0 -> outputVector3d.x = Double.parseDouble(thisStringBuilder.toString());
+                    case 1 -> outputVector3d.y = Double.parseDouble(thisStringBuilder.toString());
+                    case 2 -> outputVector3d.z = Double.parseDouble(thisStringBuilder.toString());
+                }
+                thisStringBuilder.setLength(0);
+                currentIndex++;
+            } else {
+                thisStringBuilder.append(charArray[i]);
+            }
+        }
+
+        return outputVector3d;
+    }
 
     private static String[][] stringArrayArrayDeserialize(String serializedArrayArray){
         //figure out the data structure, width and height
