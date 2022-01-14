@@ -229,7 +229,6 @@ public class SQLiteDiskAccessThread implements Runnable {
 
     private void tryToLoadPlayer(){
         if (!playersToLoad.isEmpty()) {
-            System.out.println("I AM LOADING A PLAYER BOI AHAHHAHAHAHAH");
             try {
 
                 String poppedPlayer = playersToLoad.pop();
@@ -237,10 +236,8 @@ public class SQLiteDiskAccessThread implements Runnable {
                 Statement statement = connection.createStatement();
                 ResultSet resultTest = statement.executeQuery("SELECT * FROM PLAYER_DATA WHERE ID ='" + poppedPlayer + "';");
 
-                //found a chunk
+                //found a player - send main thread their data
                 if (resultTest.next()) {
-
-                    System.out.println("I HAVE FOUND THIS PLAYER! I AM DOING THE THING :D");
                     //automatically set the player's data
                     String[][] loadedInventory = stringArrayArrayDeserialize((resultTest.getString("INVENTORY")));
                     int[][] loadedCount = intArrayArrayDeserialize(resultTest.getString("AMOUNT"));
@@ -249,6 +246,10 @@ public class SQLiteDiskAccessThread implements Runnable {
 
                     passDataFromSQLiteDiskAccessThread("singleplayer", loadedInventory, loadedCount, playerPos, playerHealth);
 
+                //send main thread a blank player
+                } else {
+                    //players just kind of drop from the sky ¯\_(ツ)_/¯
+                    passDataFromSQLiteDiskAccessThread("singleplayer", new String[4][9], new int[4][9], new Vector3d(0,100,0), (byte) 20);
                 }
 
                 //did not find player

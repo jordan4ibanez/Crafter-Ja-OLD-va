@@ -88,8 +88,6 @@ public class SQLiteDiskHandler {
                     //setInventoryItem("main", x, y, "dirt", 10);
                 }
             }
-
-            newPlayerPos.y = 128;
             setPlayerPos(newPlayerPos);
             setPlayerHealth(newPlayerHealth);
 
