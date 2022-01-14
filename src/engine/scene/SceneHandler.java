@@ -7,6 +7,7 @@ import static engine.Controls.mainMenuInput;
 import static engine.MemorySweeper.cleanMemory;
 import static engine.MouseInput.*;
 import static engine.Window.*;
+import static engine.disk.SQLiteDiskHandler.pollReceivingPlayerDataFromSQLiteThread;
 import static engine.graphics.Camera.*;
 import static engine.gui.GUILogic.calculateHealthBarElements;
 import static engine.gui.GUILogic.pauseMenuOnTick;
@@ -167,8 +168,8 @@ public class SceneHandler {
 
     //main game loop
     private static void gameLoop() throws Exception {
+        pollReceivingPlayerDataFromSQLiteThread();
         calculateDelta();
-
         //indexLight();
         mouseInput();
         tickUpTimeOfDay();
