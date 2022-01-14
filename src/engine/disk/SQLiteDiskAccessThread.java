@@ -566,6 +566,10 @@ public class SQLiteDiskAccessThread implements Runnable {
 
 
     //serializer
+    private static String serializeVector3d(Vector3d inputVec3d){
+        return inputVec3d.x + "," + inputVec3d.y + "," + inputVec3d.z;
+    }
+
     private static String stringArrayArraySerialize(String[][] inputStringArray){
 
         StringBuilder output = new StringBuilder();
