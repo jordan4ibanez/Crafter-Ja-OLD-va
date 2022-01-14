@@ -5,7 +5,6 @@ import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
-import static engine.disk.Disk.loadPlayerPos;
 import static engine.graphics.Camera.*;
 import static engine.gui.GUILogic.calculateHealthBarElements;
 import static engine.gui.GUILogic.makeHeartsJiggle;
@@ -39,7 +38,7 @@ public class Player {
     private static int health = 20;
     private static final float collectionHeight        = 0.7f;
     private static final float eyeHeight               = 1.5f;
-    private static final Vector3d pos = loadPlayerPos();
+    private static final Vector3d pos = new Vector3d(0,0,0);
     private static final Vector3d posWithEyeHeight = new Vector3d().set(pos.x,pos.y + eyeHeight,pos.z);
     private static final Vector3d posWithCollectionHeight = new Vector3d(pos.x, pos.y + collectionHeight, pos.z);
     private static final Vector3d posWithEyeHeightViewBobbing = new Vector3d().set(posWithEyeHeight.x, posWithEyeHeight.y, posWithEyeHeight.z);
@@ -1045,6 +1044,11 @@ public class Player {
 
     public static boolean isPlayerRunning(){
         return (running);
+    }
+
+    public static void setPlayerHealth(int newHealth){
+        health = newHealth;
+        calculateHealthBarElements();
     }
 
     public static void hurtPlayer(int hurt){
