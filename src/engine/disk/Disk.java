@@ -114,47 +114,4 @@ public class Disk {
             e.printStackTrace();
         }
     }
-
-
-    public static void savePlayerPos(Vector3d pos){
-        SpecialSavingVector3d tempPos = new SpecialSavingVector3d();
-        tempPos.x = pos.x;
-        tempPos.y = pos.y;
-        tempPos.z = pos.z;
-        try {
-            objectMapper.writeValue(new File("Worlds/world" + currentActiveWorld + "/playerPos.data"), tempPos);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static Vector3d loadPlayerPos(){
-
-        File test = new File("Worlds/world" + currentActiveWorld + "/playerPos.data");
-
-        Vector3d thisPos = new Vector3d(0,100,0);
-
-        if (!test.canRead()){
-            return thisPos;
-        }
-
-        //this needs a special object class because
-        //vector3f has a 4th variable which jackson cannot
-        //understand
-        SpecialSavingVector3d tempPos = null;
-
-        try {
-            tempPos = objectMapper.readValue(test, SpecialSavingVector3d.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        if (tempPos != null){
-            thisPos.x = tempPos.x;
-            thisPos.y = tempPos.y;
-            thisPos.z = tempPos.z;
-        }
-
-        return thisPos;
-    }
 }
