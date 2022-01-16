@@ -602,12 +602,18 @@ public class GameRenderer {
 
         //render particles
 
-        for (int key : getParticleKeys()){
-            entityShaderProgram.setLightUniform("light", getParticleLight(key));
+        int particleIndex = 0;
+        for (boolean particleExists : getParticleExistence()){
+            if (!particleExists){
+                particleIndex++;
+                continue;
+            }
+            entityShaderProgram.setLightUniform("light", getParticleLight(particleIndex));
 
-            updateParticleViewMatrix(getParticlePosX(key), getParticlePosY(key), getParticlePosZ(key), getCameraRotationX(), getCameraRotationY(), getCameraRotationZ());
+            updateParticleViewMatrix(getParticlePosX(particleIndex), getParticlePosY(particleIndex), getParticlePosZ(particleIndex), getCameraRotationX(), getCameraRotationY(), getCameraRotationZ());
             entityShaderProgram.setUniform("modelViewMatrix", getModelMatrix());
-            renderMesh(getParticleMesh(key));
+            renderMesh(getParticleMesh(particleIndex));
+            particleIndex++;
         }
 
 
