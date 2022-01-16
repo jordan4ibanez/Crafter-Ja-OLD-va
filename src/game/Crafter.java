@@ -29,7 +29,7 @@ import static game.tnt.TNTEntity.createTNTEntityMesh;
 public class Crafter {
 
     //fields
-    private static final String versionName = "Crafter 0.07a";
+    private static final String versionName = "Crafter 0.07b";
 
     public static String getVersionName(){
         return versionName;
