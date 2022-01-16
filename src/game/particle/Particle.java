@@ -4,10 +4,7 @@ import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
 
 import static engine.graphics.Mesh.cleanUpMesh;
 import static engine.graphics.Mesh.createMesh;
@@ -21,42 +18,116 @@ public class Particle {
     //this is an abstraction of particle objects
     //they exist, but only implicitly
     //this list is synced on the main thread
-    private static final HashMap<Integer, Vector3d> position = new HashMap<>();
-    private static final HashMap<Integer, Vector3i> oldFlooredPosition = new HashMap<>();
-    private static final HashMap<Integer, Vector3f> inertia = new HashMap<>();
-    private static final HashMap<Integer, Integer> mesh = new HashMap<>();
+    private static final int initialSize = 10;
+    private static int currentSize = 10;
 
-    private static final HashMap<Integer, Byte> light = new HashMap<>();
-    private static final HashMap<Integer, Float> timer = new HashMap<>();
-    private static final HashMap<Integer, Float> lightUpdateTimer = new HashMap<>();
+    private static boolean[]  exists             = new boolean[initialSize];
+    private static Vector3d[] position           = new Vector3d[initialSize];
+    private static Vector3i[] oldFlooredPosition = new Vector3i[initialSize];
+    private static Vector3f[] inertia            = new Vector3f[initialSize];
+    private static int[]      mesh               = new int[initialSize];
+    private static byte[]     light              = new byte[initialSize];
+    private static float[]    timer              = new float[initialSize];
+    private static float[]    lightUpdateTimer   = new float[initialSize];
 
-    private static int currentID = 0;
+    private static int getFreeSlot(){
+        for (int i = 0; i < currentSize; i++){
+            if (!exists[i]){
+                return i;
+            }
+        }
+
+        //inlined container growth
+        return growContainer();
+    }
+
+    private static int growContainer(){
+        //System.out.println("particle table is growing to: " + (currentSize + 10));
+        //ints are only created if arrays need to expand
+        //can return current size because it is +1 index of the old size
+        int returningSize = currentSize;
+        currentSize += 10;
+
+        //new arrays are only created if arrays need to expand
+        boolean[]  newExists             = new boolean[currentSize];
+        Vector3d[] newPosition           = new Vector3d[currentSize];
+        Vector3i[] newOldFlooredPosition = new Vector3i[currentSize];
+        Vector3f[] newInertia            = new Vector3f[currentSize];
+        int[]      newMesh               = new int[currentSize];
+        byte[]     newLight              = new byte[currentSize];
+        float[]    newTimer              = new float[currentSize];
+        float[]    newLightUpdateTimer   = new float[currentSize];
+
+        //clone data
+        System.arraycopy(exists, 0, newExists, 0, exists.length);
+        for (int i = 0; i < position.length; i++){
+            newPosition[i] = new Vector3d(position[i]);
+        }
+        for (int i = 0; i < oldFlooredPosition.length; i++){
+            newOldFlooredPosition[i] = new Vector3i(oldFlooredPosition[i]);
+        }
+        for (int i = 0; i < inertia.length; i++){
+            newInertia[i] = new Vector3f(inertia[i]);
+        }
+        System.arraycopy(mesh, 0, newMesh, 0, exists.length);
+        System.arraycopy(light, 0, newLight, 0, exists.length);
+        System.arraycopy(timer, 0, newTimer, 0, exists.length);
+        System.arraycopy(lightUpdateTimer, 0, newLightUpdateTimer, 0, exists.length);
+
+        //set data
+        exists = newExists;
+        position = newPosition;
+        oldFlooredPosition = newOldFlooredPosition;
+        inertia = newInertia;
+        mesh = newMesh;
+        light = newLight;
+        timer = newTimer;
+        lightUpdateTimer = newLightUpdateTimer;
+
+        return returningSize;
+    }
 
     public static void createParticle(double posX, double posY, double posZ, float inertiaX, float inertiaY, float inertiaZ, byte blockID){
-        position.put(currentID, new Vector3d(posX,posY,posZ));
-        oldFlooredPosition.put(currentID, new Vector3i(0,-10,0));
-        inertia.put(currentID, new Vector3f(inertiaX,inertiaY,inertiaZ));
-        mesh.put(currentID,createParticleMesh(blockID));
-
-        light.put(currentID, (byte) 15); //this should probably check automagically
-        timer.put(currentID, (float)Math.random()*2f);
-        lightUpdateTimer.put(currentID, 0f);
-
-        currentID++;
+        int thisID = getFreeSlot();
+        exists[thisID] = true;
+        position[thisID] = new Vector3d(posX, posY, posZ);
+        oldFlooredPosition[thisID] = new Vector3i(0,-10,0);
+        inertia[thisID] = new Vector3f(inertiaX,inertiaY,inertiaZ);
+        mesh[thisID] = createParticleMesh(blockID);
+        light[thisID] = (byte) 15; //this should probably check automagically
+        timer[thisID] = (float)Math.random()*2f;
+        lightUpdateTimer[thisID] = 0f;
     }
 
     public static void cleanParticleMemory(){
-        for (int thisMesh : mesh.values()){
+        //System.out.println("particles are now shrinking to: " + initialSize);
+        //reset value
+        currentSize = initialSize;
+
+        //clean up OpenGL memory
+        for (int thisMesh : mesh){
             cleanUpMesh(thisMesh, false);
         }
 
-        position.clear();
-        oldFlooredPosition.clear();
-        inertia.clear();
-        mesh.clear();
-        light.clear();
-        timer.clear();
-        lightUpdateTimer.clear();
+        //clear memory for GC
+        Arrays.fill(exists, false);
+        Arrays.fill(position, null);
+        Arrays.fill(oldFlooredPosition, null);
+        Arrays.fill(inertia, null);
+        Arrays.fill(mesh, 0);
+        Arrays.fill(light, (byte) 0);
+        Arrays.fill(timer, 0);
+        Arrays.fill(lightUpdateTimer, 0);
+
+        //reset memory
+        exists             = new boolean[initialSize];
+        position           = new Vector3d[initialSize];
+        oldFlooredPosition = new Vector3i[initialSize];
+        inertia            = new Vector3f[initialSize];
+        mesh               = new int[initialSize];
+        light              = new byte[initialSize];
+        timer              = new float[initialSize];
+        lightUpdateTimer   = new float[initialSize];
     }
 
     private static final Vector3i currentFlooredPos = new Vector3i();
@@ -67,27 +138,34 @@ public class Particle {
 
         double delta = getDelta();
 
-        for (int i : position.keySet()){
-            applyParticleInertia(position.get(i),inertia.get(i), true,true);
+        int currentID = 0;
 
-            float newTimer = (float) (timer.get(i) + delta);
-            timer.put(i,newTimer);
+        for (boolean particleExists : exists){
+            if (!particleExists){
+                currentID++;
+                continue;
+            }
+            applyParticleInertia(position[currentID], inertia[currentID], true,true);
 
-            currentFlooredPos.set((int)Math.floor(position.get(i).x), (int)Math.floor(position.get(i).y), (int)Math.floor(position.get(i).z));
+            float newTimer = (float) (timer[currentID] + delta);
+            timer[currentID] = newTimer;
+
+            currentFlooredPos.set((int)Math.floor(position[currentID].x), (int)Math.floor(position[currentID].y), (int)Math.floor(position[currentID].z));
 
             //poll local light every quarter second
-            if (lightUpdateTimer.get(i) >= 0.25f || !currentFlooredPos.equals(oldFlooredPosition.get(i))){
+            if (lightUpdateTimer[currentID] >= 0.25f || !currentFlooredPos.equals(oldFlooredPosition[currentID])){
 
-                light.put(i, getLight(currentFlooredPos.x, currentFlooredPos.y, currentFlooredPos.z));
+                light[currentID] = getLight(currentFlooredPos.x, currentFlooredPos.y, currentFlooredPos.z);
 
-                lightUpdateTimer.put(i,0f);
+                lightUpdateTimer[currentID] = 0f;
             }
 
             if (newTimer > 1f){
-                deletionQueue.add(i);
+                deletionQueue.add(currentID);
             }
 
-            oldFlooredPosition.get(i).set(currentFlooredPos.x,currentFlooredPos.y,currentFlooredPos.z);
+            oldFlooredPosition[currentID].set(currentFlooredPos.x,currentFlooredPos.y,currentFlooredPos.z);
+            currentID++;
         }
 
         while (!deletionQueue.isEmpty()) {
@@ -95,39 +173,40 @@ public class Particle {
             int key = deletionQueue.pop();
 
             //this must delete the pointers in the C and OpenGL stack
-            cleanUpMesh(mesh.get(key),false);
+            cleanUpMesh(mesh[key],false);
 
-            position.remove(key);
-            oldFlooredPosition.remove(key);
-            inertia.remove(key);
-            mesh.remove(key);
-            light.remove(key);
-            timer.remove(key);
-            lightUpdateTimer.remove(key);
+            exists[key] = false;
+            position[key] = null;
+            oldFlooredPosition[key] = null;
+            inertia[key] = null;
+            mesh[key] = 0;
+            light[key] = 0;
+            timer[key] = 0;
+            lightUpdateTimer[key] = 0;
         }
 
     }
 
-    public static Set<Integer> getParticleKeys(){
-        return position.keySet();
+    public static boolean[] getParticleExistence(){
+        return exists;
     }
 
     public static byte getParticleLight(int key){
-        return light.get(key);
+        return light[key];
     }
 
     public static double getParticlePosX(int key){
-        return position.get(key).x;
+        return position[key].x;
     }
     public static double getParticlePosY(int key){
-        return position.get(key).y;
+        return position[key].y;
     }
     public static double getParticlePosZ(int key){
-        return position.get(key).z;
+        return position[key].z;
     }
 
     public static int getParticleMesh(int key){
-        return mesh.get(key);
+        return mesh[key];
     }
 
     private static int createParticleMesh(byte blockID) {
