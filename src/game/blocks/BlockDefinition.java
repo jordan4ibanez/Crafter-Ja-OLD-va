@@ -5,7 +5,7 @@ import static engine.sound.SoundAPI.playSound;
 import static game.chunk.Chunk.*;
 import static game.chunk.ChunkMeshGenerator.passChunkMeshThreadData;
 import static game.crafting.InventoryLogic.openCraftingInventory;
-import static game.falling.FallingEntity.addFallingEntity;
+import static game.falling.FallingEntity.createFallingEntity;
 import static game.item.ItemDefinition.registerBlockItemDefinition;
 import static game.item.ItemEntity.throwItem;
 import static game.light.Light.torchFloodFill;
@@ -864,8 +864,9 @@ public class BlockDefinition {
             @Override
             public void onPlace(int posX, int posY, int posZ) {
                 if (getBlock(posX, posY - 1, posZ) == 0) {
-                    digBlock(posX, posY, posZ);
-                    addFallingEntity(posX + 0.5d, posY, posZ + 0.5d,0, 0, 0, (byte)20);
+                    //a beautiful hack - places air
+                    placeBlock(posX, posY, posZ, (byte) 0, (byte) 0);
+                    createFallingEntity(posX + 0.5d, posY, posZ + 0.5d,0, 0, 0, (byte)20);
                 }
             }
         };
