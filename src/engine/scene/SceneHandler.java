@@ -27,6 +27,7 @@ import static game.chunk.ChunkUpdateHandler.chunkUpdater;
 import static game.clouds.Cloud.*;
 import static game.crafting.Inventory.generateRandomInventory;
 import static game.crafting.InventoryLogic.inventoryMenuOnTick;
+import static game.falling.FallingEntity.fallingEntityOnStep;
 import static game.item.ItemEntity.*;
 import static game.mainMenu.MainMenu.*;
 import static game.mob.Mob.mobsOnTick;
@@ -202,7 +203,7 @@ public class SceneHandler {
         processOldChunks();
     }
 
-    private static void gameUpdate() throws Exception {
+    private static void gameUpdate(){
         testPlayerDiggingAnimation();
         playerOnTick();
         itemsOnTick();
@@ -210,7 +211,7 @@ public class SceneHandler {
         pauseMenuOnTick();
         inventoryMenuOnTick();
         particlesOnStep();
-        //fallingEntityOnStep();
+        fallingEntityOnStep();
         //rainDropsOnTick();
         mobsOnTick();
     }
