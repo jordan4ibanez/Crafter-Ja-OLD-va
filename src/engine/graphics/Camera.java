@@ -8,7 +8,7 @@ import static engine.MouseInput.getMouseDisplVecX;
 import static engine.MouseInput.getMouseDisplVecY;
 import static game.player.Player.*;
 import static game.player.ViewBobbing.*;
-import static game.ray.Ray.genericWorldRaycast;
+import static game.ray.Ray.cameraRayCast;
 
 public class Camera {
 
@@ -173,7 +173,7 @@ public class Camera {
         //these must go after camera rotation
         //or weird inertia effect happens
         if (cameraPerspective > 0){
-            setCameraPosition(genericWorldRaycast(getPlayerPosWithEyeHeightX(), getPlayerPosWithEyeHeightY(), getPlayerPosWithEyeHeightZ(), getCameraRotationVectorX() * -1f, getCameraRotationVectorY() * -1f, getCameraRotationVectorZ() * -1f, 3));
+            setCameraPosition(cameraRayCast(getPlayerPosWithEyeHeightX(), getPlayerPosWithEyeHeightY(), getPlayerPosWithEyeHeightZ(), getCameraRotationVectorX() * -1f, getCameraRotationVectorY() * -1f, getCameraRotationVectorZ() * -1f, 3));
         }
     }
 }
