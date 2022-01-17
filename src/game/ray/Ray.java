@@ -3,7 +3,6 @@ package game.ray;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import org.joml.Math;
 import org.joml.Vector3d;
-import org.joml.Vector3i;
 
 import static engine.network.Networking.*;
 import static game.blocks.BlockDefinition.*;
@@ -23,17 +22,17 @@ import static game.player.Player.*;
 
 final public class Ray {
 
-    private static final Vector3i finalPos   = new Vector3i();
-    private static final Vector3d newPos     = new Vector3d();
-    private static final Vector3d realNewPos = new Vector3d();
-    private static final Vector3d lastPos    = new Vector3d();
-    private static final Vector3d cachePos   = new Vector3d();
-    private static final Vector3i pointedThingAbove = new Vector3i();
-    private static final Vector3d mobPosWorker = new Vector3d();
-
+    //this is now stack/cache happy as can be
     public static void playerRayCast(double posX, double posY, double posZ, float dirX, float dirY, float dirZ, float length, boolean mining, boolean placing, boolean hasMined) {
 
-        pointedThingAbove.set(0,0,0);
+        int finalPosX = 0;
+        int finalPosY = 0;
+        int finalPosZ = 0;
+
+
+        int pointedThingAboveX = 0;
+        int pointedThingAboveY = 0;
+        int pointedThingAboveZ = 0;
 
         byte foundBlock = -1;
 
@@ -42,30 +41,38 @@ final public class Ray {
         //get all mobs once
         IntSet mobs = getMobKeys();
 
+        int oldFlooredPosX = 0;
+        int oldFlooredPosY = 0;
+        int oldFlooredPosZ = 0;
+
+        double realNewPosX = 0;
+        double realNewPosY = 0;
+        double realNewPosZ = 0;
+
         for(double step = 0d; step <= length ; step += 0.001d) {
 
-            cachePos.x = dirX * step;
-            cachePos.y = dirY * step;
-            cachePos.z = dirZ * step;
+            double cachedPosX = dirX * step;
+            double cachedPosY = dirY * step;
+            double cachedPosZ = dirZ * step;
 
-            newPos.x = Math.floor(posX + cachePos.x);
-            newPos.y = Math.floor(posY + cachePos.y);
-            newPos.z = Math.floor(posZ + cachePos.z);
+            int newFlooredPosX = (int) Math.floor(posX + cachedPosX);
+            int newFlooredPosY = (int) Math.floor(posY + cachedPosY);
+            int newFlooredPosZ = (int) Math.floor(posZ + cachedPosZ);
 
-            realNewPos.x = posX + cachePos.x;
-            realNewPos.y = posY + cachePos.y;
-            realNewPos.z = posZ + cachePos.z;
-
+            realNewPosX = posX + cachedPosX;
+            realNewPosY = posY + cachedPosY;
+            realNewPosZ = posZ + cachedPosZ;
 
             for (int thisMob : mobs){
+                //reference - not new variable
+                Vector3d mobPos = getMobPos(thisMob);
 
-                mobPosWorker.set(getMobPos(thisMob));
                 byte thisMobHealth = getMobHealth(thisMob);
                 int thisMobDefinitionID = getMobID(thisMob);
 
-                if (mobPosWorker.distance(realNewPos) <= 4.5 && thisMobHealth > 0){
-                    setPointAABB(mobPosWorker.x, mobPosWorker.y, mobPosWorker.z, getMobDefinitionWidth(thisMobDefinitionID),getMobDefinitionHeight(thisMobDefinitionID));
-                    if(pointIsWithin(realNewPos.x, realNewPos.y, realNewPos.z)){
+                if (mobPos.distance(realNewPosX, realNewPosY, realNewPosZ) <= 4.5 && thisMobHealth > 0){
+                    setPointAABB(mobPos.x, mobPos.y, mobPos.z, getMobDefinitionWidth(thisMobDefinitionID),getMobDefinitionHeight(thisMobDefinitionID));
+                    if(pointIsWithin(realNewPosX, realNewPosY, realNewPosZ)){
                         foundMob = thisMob;
                         break;
                     }
@@ -79,19 +86,25 @@ final public class Ray {
 
             //do not get block when the floored (integer) position is the same as the last floored position
             //stop wasting cpu resources
-            if (!newPos.equals(lastPos)) {
-                foundBlock = getBlock((int) newPos.x, (int) newPos.y, (int) newPos.z);
+            if (newFlooredPosX == oldFlooredPosX || newFlooredPosY == oldFlooredPosY || newFlooredPosZ == oldFlooredPosZ) {
+                foundBlock = getBlock( newFlooredPosX, newFlooredPosY, newFlooredPosZ);
 
                 if (foundBlock > 0 && isBlockPointable(foundBlock)) {
 
-                    finalPos.set((int)Math.floor(newPos.x), (int)Math.floor(newPos.y), (int)Math.floor(newPos.z));
+                    finalPosX = newFlooredPosX;
+                    finalPosY = newFlooredPosY;
+                    finalPosZ = newFlooredPosZ;
 
-                    pointedThingAbove.set((int)Math.floor(lastPos.x), (int)Math.floor(lastPos.y), (int)Math.floor(lastPos.z));
+                    pointedThingAboveX = oldFlooredPosX;
+                    pointedThingAboveY = oldFlooredPosY;
+                    pointedThingAboveZ = oldFlooredPosZ;
                     break;
                 }
             }
 
-            lastPos.set(newPos);
+            oldFlooredPosX = newFlooredPosX;
+            oldFlooredPosY = newFlooredPosY;
+            oldFlooredPosZ = newFlooredPosZ;
         }
 
 
@@ -104,9 +117,8 @@ final public class Ray {
         only get if pointing to mob or a block
 
         secondary functions externally call on right click or on leftclick (punch) or on mine (dug)
-
-
          */
+
         if (foundMob != -1){
             //punch mob if pointing to it
             if (mining) {
@@ -116,26 +128,26 @@ final public class Ray {
         } else {
             if (foundBlock > 0 && isBlockPointable(foundBlock)) {
                 if (mining && hasMined) {
-                    destroyBlock();
+                    destroyBlock(finalPosX, finalPosY, finalPosZ);
                 } else if (placing) {
 
                     //todo: make this call on punched
                     if (!isPlayerSneaking() && blockHasOnRightClickCall(foundBlock)) {
-                        getBlockModifier(foundBlock).onRightClick(finalPos.x, finalPos.y, finalPos.z);
+                        getBlockModifier(foundBlock).onRightClick(finalPosX, finalPosY, finalPosZ);
                     } else {
                         String wielding = getItemInInventory("main", getPlayerInventorySelection(), 0);
-                        if (wielding != null && itemIsBlock(wielding) && !wouldCollidePlacing(getPlayerPos(),getPlayerWidth(), getPlayerHeight(), pointedThingAbove, getBlockID(wielding), getPlayerDir())) {
-                            rayPlaceBlock(getBlockID(wielding));
+                        if (wielding != null && itemIsBlock(wielding) && !wouldCollidePlacing(getPlayerPos(),getPlayerWidth(), getPlayerHeight(), pointedThingAboveX, pointedThingAboveY, pointedThingAboveZ, getBlockID(wielding), getPlayerDir())) {
+                            rayPlaceBlock(getBlockID(wielding), pointedThingAboveX, pointedThingAboveY, pointedThingAboveZ);
                         } else if (wielding != null && getIfItem(wielding)) {
                             if (getItemModifier(wielding) != null) {
-                                getItemModifier(wielding).onPlace(finalPos, pointedThingAbove);
+                                getItemModifier(wielding).onPlace(finalPosX, finalPosY, finalPosZ, pointedThingAboveX, pointedThingAboveY, pointedThingAboveZ);
                             }
                         } else {
                             System.out.println("test3: This is a test of last branch of on place call");
                         }
                     }
                 } else {
-                    setPlayerWorldSelectionPos(finalPos);
+                    setPlayerWorldSelectionPos(finalPosX, finalPosY, finalPosZ);
                 }
             } else {
                 setPlayerWorldSelectionPos(null);
@@ -143,58 +155,70 @@ final public class Ray {
         }
     }
 
-    private static void destroyBlock() {
+    private static void destroyBlock(int posX, int posY, int posZ) {
 
-        byte thisBlock = getBlock(finalPos.x, finalPos.y, finalPos.z);
+        byte thisBlock = getBlock(posX, posY, posZ);
 
         if (thisBlock < 0) {
             return;
         }
 
         if (getIfMultiplayer()){
-            sendOutNetworkBlockBreak(finalPos.x, finalPos.y, finalPos.z);
+            sendOutNetworkBlockBreak(posX, posY, posZ);
         } else {
-            digBlock(finalPos.x, finalPos.y, finalPos.z);
+            digBlock(posX, posY, posZ);
         }
         for (int i = 0; i < 40 + (int)(Math.random() * 15); i++) {
-            createParticle(finalPos.x + (Math.random()), finalPos.y + (Math.random()), finalPos.z + (Math.random()), (float)(Math.random()-0.5f) * 2f, 0f, (float)(Math.random()-0.5f) * 2f, thisBlock);
+            createParticle((double)posX + (Math.random()), (double)posY + (Math.random()), (double)posZ + (Math.random()), (float)(Math.random()-0.5f) * 2f, 0f, (float)(Math.random()-0.5f) * 2f, thisBlock);
         }
     }
-    private static void rayPlaceBlock(byte ID) {
+    private static void rayPlaceBlock(byte ID, int pointedThingAboveX, int pointedThingAboveY, int pointedThingAboveZ) {
         if (getIfMultiplayer()){
-            sendOutNetworkBlockPlace((int) lastPos.x, (int) lastPos.y, (int) lastPos.z, ID, getPlayerDir());
+            sendOutNetworkBlockPlace( pointedThingAboveX, pointedThingAboveY, pointedThingAboveZ, ID, getPlayerDir());
         } else {
-            placeBlock((int) lastPos.x, (int) lastPos.y, (int) lastPos.z, ID, getPlayerDir());
+            placeBlock( pointedThingAboveX, pointedThingAboveY, pointedThingAboveZ, ID, getPlayerDir());
         }
 
         removeItemFromInventory("main", getCurrentInventorySelection(), 0);
     }
 
-    public static Vector3d genericWorldRaycast(double posX, double posY, double posZ, float dirX, float dirY, float dirZ, float length){
+    private static final Vector3d cameraWorker = new Vector3d();
+
+    public static Vector3d cameraRayCast(double posX, double posY, double posZ, float dirX, float dirY, float dirZ, float length){
+        double realNewPosX = 0;
+        double realNewPosY = 0;
+        double realNewPosZ = 0;
+
+        int oldFlooredPosX = 0;
+        int oldFlooredPosY = 0;
+        int oldFlooredPosZ = 0;
+
         for(double step = 0d; step <= length ; step += 0.001d) {
 
-            cachePos.x = dirX * step;
-            cachePos.y = dirY * step;
-            cachePos.z = dirZ * step;
+            double cachePosX = dirX * step;
+            double cachePosY = dirY * step;
+            double cachePosZ = dirZ * step;
 
-            newPos.x = Math.floor(posX + cachePos.x);
-            newPos.y = Math.floor(posY + cachePos.y);
-            newPos.z = Math.floor(posZ + cachePos.z);
+            int newFlooredPosX = (int) Math.floor(posX + cachePosX);
+            int newFlooredPosY = (int) Math.floor(posY + cachePosY);
+            int newFlooredPosZ = (int) Math.floor(posZ + cachePosZ);
 
-            realNewPos.x = posX + cachePos.x;
-            realNewPos.y = posY + cachePos.y;
-            realNewPos.z = posZ + cachePos.z;
+            realNewPosX = posX + cachePosX;
+            realNewPosY = posY + cachePosY;
+            realNewPosZ = posZ + cachePosZ;
 
             //stop wasting cpu resources
-            if (!newPos.equals(lastPos)) {
-                byte foundBlock = getBlock((int) newPos.x, (int) newPos.y, (int) newPos.z);
+            if (newFlooredPosX != oldFlooredPosX || newFlooredPosY != oldFlooredPosY || newFlooredPosZ != oldFlooredPosZ) {
+                byte foundBlock = getBlock(newFlooredPosX, newFlooredPosY, newFlooredPosZ);
                 if (foundBlock > 0 && isBlockPointable(foundBlock)) {
                     break;
                 }
             }
-            lastPos.set(newPos);
+            oldFlooredPosX = newFlooredPosX;
+            oldFlooredPosY = newFlooredPosY;
+            oldFlooredPosZ = newFlooredPosZ;
         }
 
-        return realNewPos;
+        return cameraWorker.set(realNewPosX, realNewPosY, realNewPosZ);
     }
 }
