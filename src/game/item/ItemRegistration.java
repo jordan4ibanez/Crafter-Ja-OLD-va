@@ -43,11 +43,11 @@ final public class ItemRegistration {
 
         ItemModifier test = new ItemModifier() {
             @Override
-            public void onPlace(Vector3i pos, Vector3i ignore) {
-                if (isBlockWalkable(getBlock(pos.x, pos.y - 1, pos.z))) {
+            public void onPlace(int posX, int posY, int posZ, int abovePosX, int abovePosY, int abovePosZ) {
+                if (isBlockWalkable(getBlock(posX, posY - 1, posZ))) {
                     byte rot = getPlayerDir();
-                    setBlock(pos.x, pos.y + 1, pos.z, (byte) 23, rot);
-                    setBlock(pos.x, pos.y, pos.z, (byte) 24, rot);
+                    setBlock(posX,posY + 1, posZ, (byte) 23, rot);
+                    setBlock(posX, posY, posZ, (byte) 24, rot);
                     playSound("wood_1");
 
                     removeItemFromInventory("main", getCurrentInventorySelection(), 0);
@@ -63,23 +63,26 @@ final public class ItemRegistration {
 
         ItemModifier torchPlace = new ItemModifier() {
             @Override
-            public void onPlace(Vector3i pos, Vector3i pointedAbove) {
-                Vector3i pointing = pos.sub(pointedAbove);
+            public void onPlace(int posX, int posY, int posZ, int abovePosX, int abovePosY, int abovePosZ) {
+                int pointingX = posX - abovePosX;
+                int pointingY = posY - abovePosY;
+                int pointingZ = posZ - abovePosZ;
 
-                if (pointing.x > 0){
-                    placeBlock(pointedAbove.x, pointedAbove.y, pointedAbove.z, (byte)29, (byte) 0);
+
+                if (pointingX > 0){
+                    placeBlock(abovePosX, abovePosY, abovePosZ, (byte)29, (byte) 0);
                     System.out.println("torch: 0");
-                } else if (pointing.x < 0) {
-                    placeBlock(pointedAbove.x, pointedAbove.y, pointedAbove.z, (byte) 29, (byte) 1);
+                } else if (pointingX < 0) {
+                    placeBlock(abovePosX, abovePosY, abovePosZ, (byte) 29, (byte) 1);
                     System.out.println("torch: 1");
-                } else if (pointing.z > 0) {
-                    placeBlock(pointedAbove.x, pointedAbove.y, pointedAbove.z, (byte) 29, (byte) 2);
+                } else if (pointingZ > 0) {
+                    placeBlock(abovePosX, abovePosY, abovePosZ, (byte) 29, (byte) 2);
                     System.out.println("torch: 2");
-                } else if (pointing.z < 0) {
-                    placeBlock(pointedAbove.x, pointedAbove.y, pointedAbove.z, (byte) 29, (byte) 3);
+                } else if (pointingZ < 0) {
+                    placeBlock(abovePosX, abovePosY, abovePosZ, (byte) 29, (byte) 3);
                     System.out.println("torch: 3");
-                } else if (pointing.y < 0) {
-                    placeBlock(pointedAbove.x, pointedAbove.y, pointedAbove.z, (byte) 29, (byte) 4);
+                } else if (pointingY < 0) {
+                    placeBlock(abovePosX, abovePosY, abovePosZ, (byte) 29, (byte) 4);
                     System.out.println("torch: 4");
                 }
 
