@@ -192,9 +192,26 @@ public class Player {
         return lightLevel;
     }
 
-    //why does this even exist?
     public static void setPlayerWorldSelectionPos(int x, int y, int z){
+        oldWorldSelectionPos.set(worldSelectionPos.x,worldSelectionPos.y,worldSelectionPos.z);
         worldSelectionPos.set(x,y,z);
+
+        //pointing at a block
+        byte block = getBlock(x, y, z);
+        //add in block hardness levels
+        if (block > 0){
+            stoneHardness = getStoneHardness(block);
+            dirtHardness = getDirtHardness(block);
+            woodHardness = getWoodHardness(block);
+            leafHardness = getLeafHardness(block);
+        }
+        //reset when not pointing at any block
+        else {
+            stoneHardness = -1;
+            dirtHardness = -1;
+            woodHardness = -1;
+            leafHardness = -1;
+        }
     }
 
     //mutable - be careful with this
