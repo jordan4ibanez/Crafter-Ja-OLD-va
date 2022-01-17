@@ -26,6 +26,7 @@ import static engine.gui.TextHandling.createTextCenteredWithShadow;
 import static engine.gui.TextHandling.createTextWithShadow;
 import static engine.settings.Settings.*;
 import static engine.time.TimeOfDay.getTimeOfDayLinear;
+import static game.blocks.BlockDefinition.getBlockName;
 import static game.chat.Chat.getCurrentMessageMesh;
 import static game.chat.Chat.getViewableChatMessages;
 import static game.chunk.Chunk.*;
@@ -33,6 +34,7 @@ import static game.clouds.Cloud.*;
 import static game.crafting.Inventory.*;
 import static game.crafting.InventoryLogic.*;
 import static game.crafting.InventoryObject.*;
+import static game.falling.FallingEntity.*;
 import static game.item.ItemDefinition.*;
 import static game.item.ItemEntity.*;
 import static game.light.Light.getCurrentGlobalLightLevel;
@@ -468,14 +470,22 @@ public class GameRenderer {
          */
 
         //render falling entities
-        /*
-        for (FallingEntityObject thisObject : getFallingEntities()){
-            entityShaderProgram.setLightUniform("light", 15); //todo make this work
-            modelViewMatrix.set(getGenericMatrixWithPosRotationScale(thisObject.pos, workerVec3F.set(0,0,0), workerVec3D.set(2.5d,2.5d,2.5d)));
-            entityShaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            thisObject.mesh.render();
+
+        index = 0;
+        for (boolean thisExists : getFallingEntities()){
+            if (!thisExists) {
+                index++;
+                continue;
+            }
+            entityShaderProgram.setLightUniform("light", getFallingEntityLight(index));
+            Vector3d thisPos = getFallingEntityPos(index);
+            updateViewMatrixWithPosRotationScale(thisPos.x, thisPos.y, thisPos.z, 0,0,0, 2.5f, 2.5f, 2.5f);
+
+            entityShaderProgram.setUniform("modelViewMatrix", getModelMatrix());
+            //a function singleton - amazing
+            renderMesh(getItemMesh(getBlockName(getFallingEntityBlockID(index))));
+            index++;
         }
-         */
 
 
         //render mobs
