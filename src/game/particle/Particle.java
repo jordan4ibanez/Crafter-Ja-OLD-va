@@ -69,10 +69,10 @@ public class Particle {
         for (int i = 0; i < inertia.length; i++){
             newInertia[i] = new Vector3f(inertia[i]);
         }
-        System.arraycopy(mesh, 0, newMesh, 0, exists.length);
-        System.arraycopy(light, 0, newLight, 0, exists.length);
-        System.arraycopy(timer, 0, newTimer, 0, exists.length);
-        System.arraycopy(lightUpdateTimer, 0, newLightUpdateTimer, 0, exists.length);
+        System.arraycopy(mesh, 0, newMesh, 0, mesh.length);
+        System.arraycopy(light, 0, newLight, 0, light.length);
+        System.arraycopy(timer, 0, newTimer, 0, timer.length);
+        System.arraycopy(lightUpdateTimer, 0, newLightUpdateTimer, 0, lightUpdateTimer.length);
 
         //set data
         exists = newExists;
