@@ -113,7 +113,12 @@ final public class BiomeGenerator implements Runnable{
                     } else if (generationY < height && generationY >= height - dirtHeight - dirtHeightRandom) {
                         if (gennedSand || gennedWater) {
                             gennedSand = true;
-                            currBlock = 20;
+                            System.out.println(noise.GetSimplex(generationX, generationY, generationZ));
+                            if (noise.GetSimplex(generationX, generationY, generationZ) > 0.25) {
+                                currBlock = 20;
+                            } else {
+                                currBlock = 35;
+                            }
                         } else {
                             currBlock = 1;
                         }
