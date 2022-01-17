@@ -46,6 +46,7 @@ final public class Chunk {
     private static final HashMap<Vector2i, int[]> normalMeshes   = new HashMap<>();
     private static final HashMap<Vector2i, int[]> liquidMeshes   = new HashMap<>();
     private static final HashMap<Vector2i, int[]> allFaceMeshes  = new HashMap<>();
+    private static final ConcurrentHashMap<Vector2i, Float> hover          = new ConcurrentHashMap<>();
 
     private static final Vector2i[] keyArray = new Vector2i[0];
 
@@ -133,7 +134,26 @@ final public class Chunk {
         return allFaceMeshes;
     }
 
+    public static float getChunkHover(Vector2i key){
+        return hover.get(key);
+    }
 
+
+    public static void doChunksHoveringUpThing(){
+        double delta = getDelta();
+
+        for (Vector2i thisValue : hover.keySet()){
+            float thisFloat = hover.get(thisValue);
+
+            if (thisFloat < 0f){
+                thisFloat += (float)delta * 50f;
+                if (thisFloat >= 0f){
+                    thisFloat = 0f;
+                }
+                hover.put(thisValue, thisFloat);
+            }
+        }
+    }
 
     //multiplayer chunk update
     public static void setChunk(int x, int z, byte[] blockData, byte[] rotationData, byte[] lightData, byte[] heightMapData) {
@@ -159,6 +179,8 @@ final public class Chunk {
             normalMeshes.put(key, new int[8]);
             liquidMeshes.put(key, new int[8]);
             allFaceMeshes.put(key, new int[8]);
+            //initial hover
+            hover.put(key, -128.f);
         }
 
         for (int y = 0; y < 8; y++) {
@@ -274,6 +296,7 @@ final public class Chunk {
         blocks.clear();
         lights.clear();
         heightmaps.clear();
+        hover.clear();
         saveToDisk.clear();
     }
 
@@ -837,6 +860,8 @@ final public class Chunk {
                 normalMeshes.remove(key);
                 liquidMeshes.remove(key);
                 allFaceMeshes.remove(key);
+
+                hover.remove(key);
             }
         }
     }
@@ -903,5 +928,7 @@ final public class Chunk {
         normalMeshes.clear();
         liquidMeshes.clear();
         allFaceMeshes.clear();
+
+        hover.clear();
     }
 }

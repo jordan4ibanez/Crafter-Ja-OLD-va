@@ -204,6 +204,7 @@ public class SceneHandler {
     }
 
     private static void gameUpdate(){
+        doChunksHoveringUpThing();
         testPlayerDiggingAnimation();
         playerOnTick();
         itemsOnTick();

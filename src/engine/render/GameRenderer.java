@@ -178,10 +178,10 @@ public class GameRenderer {
         }
     }
 
-    private static final HashMap<Double, int[]> normalDrawTypeHash = new HashMap<>();
-    private static final HashMap<Double, int[]> liquidDrawTypeHash = new HashMap<>();
+    private static final HashMap<Double, int[]> normalDrawTypeHash  = new HashMap<>();
+    private static final HashMap<Double, int[]> liquidDrawTypeHash  = new HashMap<>();
     private static final HashMap<Double, int[]> allFaceDrawTypeHash = new HashMap<>();
-    private static final HashMap<Double, Vector2i> chunkHashKeys = new HashMap<>();
+    private static final HashMap<Double, Vector2i> chunkHashKeys    = new HashMap<>();
 
 
     public static void renderGame(){
@@ -201,11 +201,9 @@ public class GameRenderer {
 
         //todo BEGIN chunk sorting ---------------------------------------------------------------------------------------------
 
-
-        AbstractMap<Vector2i,int[]> normalChunkMeshes = getNormalMeshes();
-        AbstractMap<Vector2i,int[]> liquidChunkMeshes = getLiquidMeshes();
+        AbstractMap<Vector2i,int[]> normalChunkMeshes  = getNormalMeshes();
+        AbstractMap<Vector2i,int[]> liquidChunkMeshes  = getLiquidMeshes();
         AbstractMap<Vector2i,int[]> allFaceChunkMeshes = getAllFaceMeshes();
-
 
         int meshCount = 0;
 
@@ -240,10 +238,10 @@ public class GameRenderer {
         Arrays.sort(keySort);
 
 
-        int[][] normalDrawTypeArray = new int[meshCount][8];
-        int[][] liquidDrawTypeArray = new int[meshCount][8];
+        int[][] normalDrawTypeArray  = new int[meshCount][8];
+        int[][] liquidDrawTypeArray  = new int[meshCount][8];
         int[][] allFaceDrawTypeArray = new int[meshCount][8];
-        Vector2i[] chunkArrayKeys = new Vector2i[meshCount];
+        Vector2i[] chunkArrayKeys    = new Vector2i[meshCount];
 
         int arrayIndex = 0;
 
@@ -257,6 +255,7 @@ public class GameRenderer {
             liquidDrawTypeArray[arrayIndex] = liquidDrawTypeHash.get(key);
             allFaceDrawTypeArray[arrayIndex] = allFaceDrawTypeHash.get(key);
             chunkArrayKeys[arrayIndex] = chunkHashKeys.get(key);
+
 
             arrayIndex++;
 
@@ -283,6 +282,7 @@ public class GameRenderer {
         for (double value : chunkHashKeys.keySet()){
             chunkHashKeys.replace(value, null);
         }
+
 
         normalDrawTypeHash.clear();
         liquidDrawTypeHash.clear();
@@ -394,11 +394,12 @@ public class GameRenderer {
             }
 
             Vector2i thisPos = chunkArrayKeys[i];
+            float thisHover = getChunkHover(thisPos);
 
             //normal
             for (int thisMesh : thisChunk) {
                 if (thisMesh != -1) {
-                    updateViewMatrix(thisPos.x * 16d, 0, thisPos.y * 16d, 0, 0, 0);
+                    updateViewMatrix(thisPos.x * 16d, thisHover, thisPos.y * 16d, 0, 0, 0);
                     if (graphicsMode) {
                         glassLikeShaderProgram.setUniform("modelViewMatrix", getModelMatrix());
                     } else {
@@ -421,11 +422,12 @@ public class GameRenderer {
             }
 
             Vector2i thisPos = chunkArrayKeys[i];
+            float thisHover = getChunkHover(thisPos);
 
             //allFaces
             for (int thisMesh : thisChunk) {
                 if (thisMesh != -1) {
-                    updateViewMatrix(thisPos.x * 16d, 0, thisPos.y * 16d, 0, 0, 0);
+                    updateViewMatrix(thisPos.x * 16d, thisHover, thisPos.y * 16d, 0, 0, 0);
                     if (graphicsMode) {
                         glassLikeShaderProgram.setUniform("modelViewMatrix", getModelMatrix());
                     } else {
@@ -672,12 +674,13 @@ public class GameRenderer {
             }
 
             Vector2i thisPos = chunkArrayKeys[i];
+            float thisHover = getChunkHover(thisPos);
 
             //liquid
 
             for (int thisMesh : thisChunk) {
                 if (thisMesh != -1) {
-                    updateViewMatrix(thisPos.x * 16d, 0, thisPos.y * 16d, 0, 0, 0);
+                    updateViewMatrix(thisPos.x * 16d, thisHover, thisPos.y * 16d, 0, 0, 0);
                     shaderProgram.setUniform("modelViewMatrix", getModelMatrix());
                     renderMesh(thisMesh);
                 }

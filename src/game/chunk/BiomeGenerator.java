@@ -275,20 +275,20 @@ final public class BiomeGenerator implements Runnable{
     }
 
     //only use the current thread's core/thread to calculate
-    public static int posToIndex( int x, int y, int z ) {
+    private static int posToIndex( int x, int y, int z ) {
         return (z * 2048) + (y * 16) + x;
     }
 
     //make the inverse of this eventually
-    public static int posToIndex2D(int x, int z){
+    private static int posToIndex2D(int x, int z){
         return (z * 16) + x;
     }
 
     //Thanks a lot Lars!!
-    public static byte getByteTorchLight(byte input){
+    private static byte getByteTorchLight(byte input){
         return (byte) (input & ((1 << 4) - 1));
     }
-    public static byte getByteNaturalLight(byte input){
+    private static byte getByteNaturalLight(byte input){
         return (byte) (((1 << 4) - 1) & input >> 4);
     }
 
