@@ -14,7 +14,7 @@ import static game.tnt.TNTEntity.createTNT;
 
 public class BlockDefinition {
     //holds BlockDefinition data
-    private static final byte maxIDs = 35;
+    private static final byte maxIDs = 36;
 
     public static byte getMaxIDs(){
         return maxIDs;
@@ -1380,6 +1380,45 @@ public class BlockDefinition {
                 null,
                 "wood_1",
                 "stone_2",
+                false,
+                false,
+                0,
+                true,
+                null
+        );
+
+        //falling sand
+        BlockModifier fallGravel = new BlockModifier() {
+            @Override
+            public void onPlace(int posX, int posY, int posZ) {
+                if (getBlock(posX, posY - 1, posZ) == 0) {
+                    //a beautiful hack - places air
+                    placeBlock(posX, posY, posZ, (byte) 0, (byte) 0);
+                    createFallingEntity(posX + 0.5d, posY, posZ + 0.5d,0, 0, 0, (byte)35);
+                }
+            }
+        };
+        registerBlock(
+                (byte) 35,
+                0,
+                1,
+                0,
+                0,
+                "gravel",
+                true,
+                new byte[]{1,1}, //front
+                new byte[]{1,1}, //back
+                new byte[]{1,1}, //right
+                new byte[]{1,1}, //left
+                new byte[]{1,1}, //top
+                new byte[]{1,1},  //bottom
+                (byte) 1,
+                true,
+                false,
+                false,
+                fallGravel,
+                "sand_1",
+                "sand_2",
                 false,
                 false,
                 0,
