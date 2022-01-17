@@ -559,12 +559,12 @@ final public class Collision {
     }
 
     //precise collision prediction when placing
-    public static boolean wouldCollidePlacing(Vector3d pos, float width, float height, Vector3i blockPos, byte blockID, byte rotation){
+    public static boolean wouldCollidePlacing(Vector3d pos, float width, float height, int blockPosX, int blockPosY, int blockPosZ, byte blockID, byte rotation){
         entity.setMin(pos.x - width, pos.y, pos.z - width)
                 .setMax(pos.x + width, pos.y + height, pos.z + width);
         for (float[] blockBox : getBlockShape(blockID, rotation)) {
-            block.setMin(blockBox[0] + blockPos.x, blockBox[1] + blockPos.y, blockBox[2] + blockPos.z)
-                    .setMax(blockBox[3] + blockPos.x, blockBox[4] + blockPos.y, blockBox[5] + blockPos.z);
+            block.setMin(blockBox[0] + blockPosX, blockBox[1] + blockPosY, blockBox[2] + blockPosZ)
+                    .setMax(blockBox[3] + blockPosY, blockBox[4] + blockPosY, blockBox[5] + blockPosZ);
             if (entity.intersectsAABB(block)){
                 return true;
             }
