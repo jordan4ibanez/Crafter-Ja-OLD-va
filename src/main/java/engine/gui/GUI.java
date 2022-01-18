@@ -1,6 +1,5 @@
 package engine.gui;
 
-import engine.graphics.Mesh;
 import engine.highPerformanceContainers.HyperFloatArray;
 import engine.highPerformanceContainers.HyperIntArray;
 import org.joml.Vector3f;
@@ -13,7 +12,7 @@ import static engine.graphics.Mesh.createMesh;
 import static engine.graphics.Texture.createTexture;
 import static engine.gui.TextHandling.createTextWithShadow;
 import static engine.time.Timer.getFpsCounted;
-import static game.base.Crafter.getVersionName;
+import static game.Crafter.getVersionName;
 
 public class GUI {
 
