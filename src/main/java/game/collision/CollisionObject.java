@@ -25,13 +25,13 @@ final public class CollisionObject {
     */
     
     //autosetter for blockshapes - uses literal position and block shape
-    public static void setAABBBlock(float[] blockShape, int x, int y, int z){
-        blockAABB[0] = blockShape[0] + x; //left
-        blockAABB[1] = blockShape[1] + y; //bottom
-        blockAABB[2] = blockShape[2] + z; //back
-        blockAABB[3] = blockShape[3] + x; //right
-        blockAABB[4] = blockShape[4] + y; //top
-        blockAABB[5] = blockShape[5] + z; //front
+    public static void setAABBBlock(float[] blockBox, int x, int y, int z){
+        blockAABB[0] = blockBox[0] + x; //left
+        blockAABB[1] = blockBox[1] + y; //bottom
+        blockAABB[2] = blockBox[2] + z; //back
+        blockAABB[3] = blockBox[3] + x; //right
+        blockAABB[4] = blockBox[4] + y; //top
+        blockAABB[5] = blockBox[5] + z; //front
     }
     
     
