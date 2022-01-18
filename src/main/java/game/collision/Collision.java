@@ -7,6 +7,9 @@ import static engine.time.Time.getDelta;
 import static game.blocks.BlockDefinition.*;
 import static game.chunk.Chunk.getBlock;
 import static game.chunk.Chunk.getBlockRotation;
+import static game.collision.CollisionObject.intersectsAABB;
+import static game.collision.CollisionObject.setAABBBlock;
+import static game.collision.CollisionObject.setAABBEntity;
 import static game.player.Player.getIfPlayerIsJumping;
 import static game.player.Player.setPlayerInWater;
 
@@ -18,9 +21,6 @@ final public class Collision {
     private static final Vector3i fPos = new Vector3i();
     private static final Vector3d oldPosSneaking = new Vector3d();
     private static final Vector3f clonedInertia = new Vector3f();
-
-    private static final AABBd entity = new AABBd();
-    private static final AABBd block = new AABBd();
 
     //this probably definitely absolutely should not take isPlayer as a value
     public static boolean applyInertia(Vector3d pos, Vector3f inertia, boolean onGround, float width, float height, boolean gravity, boolean sneaking, boolean applyCollision, boolean airFriction, boolean isPlayer){
@@ -203,15 +203,14 @@ final public class Collision {
         return binaryReturn;
     }
 
-    private static boolean sneakCollideYNegative(int blockPosX, int blockPosY, int blockPosz, byte rot, float width, float height, byte blockID){
+    private static boolean sneakCollideYNegative(int blockPosX, int blockPosY, int blockPosZ, byte rot, float width, float height, byte blockID){
         for (float[] blockBox : getBlockShape(blockID, rot)) {
-            entity.setMin(clonedPos.x - width, clonedPos.y, clonedPos.z - width)
-                    .setMax(clonedPos.x + width, clonedPos.y + height, clonedPos.z + width);
+            
+            setAABBEntity(clonedPos.x, clonedPos.y, clonedPos.z, width, height);
+            
+            setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
 
-            block.setMin(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosz)
-                    .setMax(blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosz);
-
-            if (entity.intersectsAABB(block)) {
+            if (intersectsAABB()) {
                 return true;
             }
         }
@@ -269,7 +268,7 @@ final public class Collision {
 
 
 
-        //todo: begin X collision detection -- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        //begin X collision detection -- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
         //add inertia
         pos.x += inertia.x * delta;
@@ -299,7 +298,7 @@ final public class Collision {
         }
 
 
-        //todo: Begin Z collision detection -- ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ
+        //Begin Z collision detection -- ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ
 
         pos.z += inertia.z * delta;
 
@@ -353,12 +352,12 @@ final public class Collision {
     //next to water and get slowed down
     private static void detectIfInWater(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, float width, float height, byte blockID){
         for (float[] blockBox : getBlockShape(blockID, rot)) {
-            entity.setMin(pos.x - width, pos.y, pos.z - width)
-                    .setMax(pos.x + width, pos.y + height, pos.z + width);
+            
+            setAABBEntity(pos.x, pos.y, pos.z, width, height);
 
-            block.setMin(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ)
-                    .setMax(blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
-            if (entity.intersectsAABB(block)) {
+            setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
+            
+            if (intersectsAABB()) {
                 float localViscosity = getBlockViscosity(blockID);
                 if (localViscosity > inWater){
                     inWater = localViscosity;
@@ -369,13 +368,13 @@ final public class Collision {
 
     private static boolean collideYNegative(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, float width, float height, boolean onGround, byte blockID){
         for (float[] blockBox : getBlockShape(blockID, rot)) {
-            entity.setMin(pos.x - width, pos.y, pos.z - width)
-                    .setMax( pos.x + width, pos.y + height, pos.z + width);
+            
+            setAABBEntity(pos.x, pos.y, pos.z, width, height);
 
-            block.setMin(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ)
-                    .setMax(blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
-            if (entity.intersectsAABB(block)) {
-                pos.y = block.maxY + 0.0000000001d;
+            setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
+            
+            if (intersectsAABB()) {
+                pos.y = blockBox[4] + blockPosY + 0.0000000001d;
                 inertia.y = 0;
                 onGround = true;
             }
@@ -386,50 +385,55 @@ final public class Collision {
 
     private static void collideYPositive(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, float width, float height, byte blockID){
         for (float[] blockBox : getBlockShape(blockID, rot)) {
-            entity.setMin(pos.x - width, pos.y, pos.z - width)
-                    .setMax(pos.x + width, pos.y + height, pos.z + width);
+            
+            setAABBEntity(pos.x, pos.y, pos.z, width, height);
 
-            block.setMin(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ)
-                    .setMax(blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
+            setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
 
-            if (entity.intersectsAABB(block)) {
-                pos.y = block.minY - height - 0.0000000001d;
+            if (intersectsAABB()) {
+                pos.y = blockBox[1] - height - 0.0000000001d;
                 inertia.y = 0;
             }
         }
     }
 
-    //TODO ----------------------------------XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
     private static void collideX(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, float width, float height, byte blockID){
-        double blockXCenter;
+                
+        
         //run through X collisions
         for (float[] blockBox : getBlockShape(blockID, rot)) {
-            block.setMin(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ)
-                    .setMax(blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
-            blockXCenter = ((blockBox[0] + blockBox[3])/2d);
+            
+            setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
+            
+            double blockXCenter = ((blockBox[0] + blockBox[3])/2d);
+            
             //collide X negative
             if (blockPosX + blockXCenter <= pos.x) {
-                entity.setMin(pos.x - width, pos.y, pos.z - width)
-                        .setMax(pos.x + width, pos.y + height, pos.z + width);
-                if (entity.intersectsAABB(block)) {
+                
+                setAABBEntity(pos.x, pos.y, pos.z, width, height);
+                
+                if (intersectsAABB()) {
                     if (isSteppable(blockID) && inertia.y == 0) {
-                        pos.y = block.maxY;
+                        pos.y = blockBox[4] + blockPosY;
                     } else {
-                        pos.x = block.maxX + width + 0.0000000001d;
+                        pos.x = blockBox[3] + blockPosX + width + 0.0000000001d;
                         inertia.x= 0f;
                     }
                 }
             }
+            
             //collide X positive
             if (blockPosX + blockXCenter >= pos.x) {
-                entity.setMin(pos.x - width, pos.y, pos.z - width)
-                        .setMax(pos.x + width, pos.y + height, pos.z + width);
-                if (entity.intersectsAABB(block)) {
+                
+                setAABBEntity(pos.x, pos.y, pos.z, width, height);
+                
+                if (intersectsAABB()) {
                     if (isSteppable(blockID) && inertia.y == 0) {
-                        pos.y = block.maxY;
+                        pos.y = blockBox[4] + blockPosY;
                     } else {
-                        pos.x = block.minX - width - 0.0000000001d;
+                        pos.x = blockBox[0] + blockPosX - width - 0.0000000001d;
                         inertia.x= 0f;
                     }
                 }
@@ -443,26 +447,28 @@ final public class Collision {
 
             for (float[] blockBox : getBlockShape(blockID, rot)) {
 
-                block.setMin(blockBox[0] + blockPosX, blockBox[1] + blockPosY, blockBox[2] + blockPosZ)
-                        .setMax(blockBox[3] + blockPosX, blockBox[4] + blockPosY, blockBox[5] + blockPosZ);
-                blockXCenter = ((blockBox[0] + blockBox[3])/2d);
+                setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
+                
+                double blockXCenter = ((blockBox[0] + blockBox[3])/2d);
 
                 //collide X negative
                 if (blockPosX + blockXCenter <= pos.x) {
-                    entity.setMin(pos.x - width, pos.y, pos.z - width)
-                            .setMax(pos.x + width, pos.y + height, pos.z + width);
-                    if (entity.intersectsAABB(block)) {
-                        pos.x = block.maxX + width + 0.0000000001d;
+                    
+                    setAABBEntity(pos.x, pos.y, pos.z, width, height);
+                    
+                    if (intersectsAABB()) {
+                        pos.x = blockBox[3] + blockPosX + width + 0.0000000001d;
                         inertia.x = 0f;
                     }
                 }
 
                 //collide X positive
                 if (blockPosX + blockXCenter >= pos.x) {
-                    entity.setMin(pos.x - width, pos.y, pos.z - width)
-                            .setMax(pos.x + width, pos.y + height, pos.z + width);
-                    if (entity.intersectsAABB(block)) {
-                        pos.x = block.minX - width - 0.0000000001d;
+                    
+                    setAABBEntity(pos.x, pos.y, pos.z, width, height);
+                    
+                    if (intersectsAABB()) {
+                        pos.x = blockBox[0] + blockPosX - width - 0.0000000001d;
                         inertia.x = 0f;
                     }
                 }
@@ -471,27 +477,27 @@ final public class Collision {
     }
 
 
-    //TODO ----------------------------------ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ
+    //ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ
+    
     private static void collideZ(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, float width, float height, byte blockID){
-
-        double blockZCenter;
 
         //run through Z collisions
         for (float[] blockBox : getBlockShape(blockID, rot)) {
-            block.setMin(blockBox[0]+blockPosX, blockBox[1]+blockPosY, blockBox[2]+blockPosZ)
-                    .setMax(blockBox[3]+blockPosX,blockBox[4]+blockPosY,blockBox[5]+blockPosZ);
+            
+            setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
 
-            blockZCenter = ((blockBox[2] + blockBox[5])/2d);
+            double blockZCenter = ((blockBox[2] + blockBox[5])/2d);
 
             //collide Z negative
             if (blockPosZ + blockZCenter <= pos.z) {
-                entity.setMin(pos.x - width, pos.y, pos.z - width)
-                        .setMax(pos.x + width, pos.y + height, pos.z + width);
-                if (entity.intersectsAABB(block)) {
+                
+                setAABBEntity(pos.x, pos.y, pos.z, width, height);
+                
+                if (intersectsAABB()) {
                     if (isSteppable(blockID) && inertia.y == 0) {
-                        pos.y = block.maxY;
+                        pos.y = blockBox[4] + blockPosY;
                     }else {
-                        pos.z = block.maxZ + width + 0.0000000001d;
+                        pos.z = blockBox[5] + blockPosZ + width + 0.0000000001d;
                         inertia.z= 0f;
                     }
                 }
@@ -499,13 +505,14 @@ final public class Collision {
 
             //collide Z positive
             if (blockPosZ + blockZCenter >= pos.z) {
-                entity.setMin(pos.x - width, pos.y, pos.z - width)
-                        .setMax(pos.x + width, pos.y + height, pos.z + width);
-                if (entity.intersectsAABB(block)) {
+                
+                setAABBEntity(pos.x, pos.y, pos.z, width, height);
+                
+                if (intersectsAABB()) {
                     if (isSteppable(blockID) && inertia.y == 0) {
-                        pos.y = block.maxY;
+                        pos.y = blockBox[4] + blockPosY;
                     } else {
-                        pos.z = block.minZ - width - 0.0000000001d;
+                        pos.z = blockBox[2] + blockPosZ - width - 0.0000000001d;
                         inertia.z= 0f;
                     }
                 }
@@ -519,26 +526,29 @@ final public class Collision {
 
 
             for (float[] blockBox : getBlockShape(blockID, rot)) {
-                block.setMin(blockBox[0] + blockPosX, blockBox[1] + blockPosY, blockBox[2] + blockPosZ)
-                        .setMax(blockBox[3] + blockPosX, blockBox[4] + blockPosY, blockBox[5] + blockPosZ);
-                blockZCenter = ((blockBox[2] + blockBox[5])/2d);
+                
+                setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
+                
+                double blockZCenter = ((blockBox[2] + blockBox[5])/2d);
 
                 //collide Z negative
                 if (blockPosZ + blockZCenter <= pos.z) {
-                    entity.setMin(pos.x - width, pos.y, pos.z - width)
-                            .setMax(pos.x + width, pos.y + height, pos.z + width);
-                    if (entity.intersectsAABB(block)) {
-                        pos.z = block.maxZ + width + 0.0000000001d;
+                    
+                    setAABBEntity(pos.x, pos.y, pos.z, width, height);
+                    
+                    if (intersectsAABB()) {
+                        pos.z = blockBox[5] + blockPosZ + width + 0.0000000001d;
                         inertia.z = 0f;
                     }
                 }
 
                 //collide Z positive
                 if (blockPosZ + blockZCenter >= pos.z) {
-                    entity.setMin(pos.x - width, pos.y, pos.z - width)
-                            .setMax( pos.x + width, pos.y + height, pos.z + width);
-                    if (entity.intersectsAABB(block)) {
-                        pos.z = block.minZ - width - 0.0000000001d;
+                    
+                    setAABBEntity(pos.x, pos.y, pos.z, width, height);
+                    
+                    if (intersectsAABB()) {
+                        pos.z = blockBox[2] + blockPosZ - width - 0.0000000001d;
                         inertia.z = 0f;
                     }
                 }
@@ -560,12 +570,13 @@ final public class Collision {
 
     //precise collision prediction when placing
     public static boolean wouldCollidePlacing(Vector3d pos, float width, float height, int blockPosX, int blockPosY, int blockPosZ, byte blockID, byte rotation){
-        entity.setMin(pos.x - width, pos.y, pos.z - width)
-                .setMax(pos.x + width, pos.y + height, pos.z + width);
+        
+        setAABBEntity(pos.x, pos.y, pos.z, width, height);
+        
         for (float[] blockBox : getBlockShape(blockID, rotation)) {
-            block.setMin(blockBox[0] + blockPosX, blockBox[1] + blockPosY, blockBox[2] + blockPosZ)
-                    .setMax(blockBox[3] + blockPosY, blockBox[4] + blockPosY, blockBox[5] + blockPosZ);
-            if (entity.intersectsAABB(block)){
+            setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
+            
+            if (intersectsAABB()) {
                 return true;
             }
         }
