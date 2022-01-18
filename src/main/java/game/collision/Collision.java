@@ -374,7 +374,7 @@ final public class Collision {
             setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
             
             if (intersectsAABB()) {
-                pos.y = blockBox[4] + blockPosY + 0.0000000001d;
+                pos.y = blockBox[4] + (double)blockPosY + 0.0000000001d;
                 inertia.y = 0;
                 onGround = true;
             }
@@ -391,7 +391,7 @@ final public class Collision {
             setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
 
             if (intersectsAABB()) {
-                pos.y = blockBox[1] - height - 0.0000000001d;
+                pos.y = blockBox[1] + (double)blockPosY - height - 0.0000000001d;
                 inertia.y = 0;
             }
         }
@@ -416,9 +416,9 @@ final public class Collision {
                 
                 if (intersectsAABB()) {
                     if (isSteppable(blockID) && inertia.y == 0) {
-                        pos.y = blockBox[4] + blockPosY;
+                        pos.y = blockBox[4] + (double)blockPosY;
                     } else {
-                        pos.x = blockBox[3] + blockPosX + width + 0.0000000001d;
+                        pos.x = blockBox[3] + (double)blockPosX + width + 0.0000000001d;
                         inertia.x= 0f;
                     }
                 }
@@ -431,9 +431,9 @@ final public class Collision {
                 
                 if (intersectsAABB()) {
                     if (isSteppable(blockID) && inertia.y == 0) {
-                        pos.y = blockBox[4] + blockPosY;
+                        pos.y = blockBox[4] + (double)blockPosY;
                     } else {
-                        pos.x = blockBox[0] + blockPosX - width - 0.0000000001d;
+                        pos.x = blockBox[0] + (double)blockPosX - width - 0.0000000001d;
                         inertia.x= 0f;
                     }
                 }
@@ -441,9 +441,9 @@ final public class Collision {
         }
 
         //correction for the sides of stairs
-        if (isSteppable(blockID) && pos.y - Collision.oldPos.y > 0.51d) {
+        if (isSteppable(blockID) && pos.y - oldPos.y > 0.51d) {
 
-            pos.y = Collision.oldPos.y;
+            pos.y = oldPos.y;
 
             for (float[] blockBox : getBlockShape(blockID, rot)) {
 
@@ -457,7 +457,7 @@ final public class Collision {
                     setAABBEntity(pos.x, pos.y, pos.z, width, height);
                     
                     if (intersectsAABB()) {
-                        pos.x = blockBox[3] + blockPosX + width + 0.0000000001d;
+                        pos.x = blockBox[3] + (double)blockPosX + width + 0.0000000001d;
                         inertia.x = 0f;
                     }
                 }
@@ -468,7 +468,7 @@ final public class Collision {
                     setAABBEntity(pos.x, pos.y, pos.z, width, height);
                     
                     if (intersectsAABB()) {
-                        pos.x = blockBox[0] + blockPosX - width - 0.0000000001d;
+                        pos.x = blockBox[0] + (double)blockPosX - width - 0.0000000001d;
                         inertia.x = 0f;
                     }
                 }
@@ -495,9 +495,9 @@ final public class Collision {
                 
                 if (intersectsAABB()) {
                     if (isSteppable(blockID) && inertia.y == 0) {
-                        pos.y = blockBox[4] + blockPosY;
+                        pos.y = blockBox[4] + (double)blockPosY;
                     }else {
-                        pos.z = blockBox[5] + blockPosZ + width + 0.0000000001d;
+                        pos.z = blockBox[5] + (double)blockPosZ + width + 0.0000000001d;
                         inertia.z= 0f;
                     }
                 }
@@ -510,9 +510,9 @@ final public class Collision {
                 
                 if (intersectsAABB()) {
                     if (isSteppable(blockID) && inertia.y == 0) {
-                        pos.y = blockBox[4] + blockPosY;
+                        pos.y = blockBox[4] + (double)blockPosY;
                     } else {
-                        pos.z = blockBox[2] + blockPosZ - width - 0.0000000001d;
+                        pos.z = blockBox[2] + (double)blockPosZ - width - 0.0000000001d;
                         inertia.z= 0f;
                     }
                 }
@@ -520,9 +520,9 @@ final public class Collision {
         }
 
         //correction for the sides of stairs
-        if (pos.y - Collision.oldPos.y > 0.51d) {
+        if (pos.y - oldPos.y > 0.51d) {
 
-            pos.y = Collision.oldPos.y;
+            pos.y = oldPos.y;
 
 
             for (float[] blockBox : getBlockShape(blockID, rot)) {
@@ -537,7 +537,7 @@ final public class Collision {
                     setAABBEntity(pos.x, pos.y, pos.z, width, height);
                     
                     if (intersectsAABB()) {
-                        pos.z = blockBox[5] + blockPosZ + width + 0.0000000001d;
+                        pos.z = blockBox[5] + (double)blockPosZ + width + 0.0000000001d;
                         inertia.z = 0f;
                     }
                 }
@@ -548,7 +548,7 @@ final public class Collision {
                     setAABBEntity(pos.x, pos.y, pos.z, width, height);
                     
                     if (intersectsAABB()) {
-                        pos.z = blockBox[2] + blockPosZ - width - 0.0000000001d;
+                        pos.z = blockBox[2] + (double)blockPosZ - width - 0.0000000001d;
                         inertia.z = 0f;
                     }
                 }
