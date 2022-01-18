@@ -8,8 +8,8 @@ import static engine.network.Networking.*;
 import static game.blocks.BlockDefinition.*;
 import static game.chunk.Chunk.*;
 import static game.collision.Collision.wouldCollidePlacing;
-import static game.collision.CollisionObject.pointIsWithin;
-import static game.collision.CollisionObject.setPointAABB;
+import static game.collision.CollisionObject.pointIsWithinEntity;
+import static game.collision.CollisionObject.setAABBEntity;
 import static game.crafting.InventoryObject.getItemInInventory;
 import static game.crafting.InventoryObject.removeItemFromInventory;
 import static game.item.ItemDefinition.*;
@@ -71,8 +71,10 @@ final public class Ray {
                 int thisMobDefinitionID = getMobID(thisMob);
 
                 if (mobPos.distance(realNewPosX, realNewPosY, realNewPosZ) <= 4.5 && thisMobHealth > 0){
-                    setPointAABB(mobPos.x, mobPos.y, mobPos.z, getMobDefinitionWidth(thisMobDefinitionID),getMobDefinitionHeight(thisMobDefinitionID));
-                    if(pointIsWithin(realNewPosX, realNewPosY, realNewPosZ)){
+                    
+                    setAABBEntity(mobPos.x, mobPos.y, mobPos.z, getMobDefinitionWidth(thisMobDefinitionID),getMobDefinitionHeight(thisMobDefinitionID));
+                    
+                    if(pointIsWithinEntity(realNewPosX, realNewPosY, realNewPosZ)){
                         foundMob = thisMob;
                         break;
                     }
