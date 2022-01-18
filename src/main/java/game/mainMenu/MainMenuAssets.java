@@ -1,7 +1,5 @@
 package game.mainMenu;
 
-import engine.graphics.Mesh;
-
 import java.util.ArrayList;
 
 import static engine.graphics.Mesh.createMesh;

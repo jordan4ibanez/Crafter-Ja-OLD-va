@@ -1,6 +1,5 @@
 package engine.debug;
 
-import engine.graphics.Mesh;
 
 import static engine.time.Time.getDelta;
 

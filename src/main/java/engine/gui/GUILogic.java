@@ -2,9 +2,9 @@ package engine.gui;
 
 import org.joml.Vector2d;
 
-import static engine.base.MouseInput.*;
-import static engine.base.Window.getDumpedKey;
-import static engine.base.Window.getWindowHandle;
+import static engine.MouseInput.*;
+import static engine.Window.getDumpedKey;
+import static engine.Window.getWindowHandle;
 import static engine.disk.SQLiteDiskHandler.closeWorldDataBase;
 import static engine.network.Networking.disconnectClient;
 import static engine.network.Networking.sendChatMessage;

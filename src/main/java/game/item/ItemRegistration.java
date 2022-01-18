@@ -1,7 +1,5 @@
 package game.item;
 
-import org.joml.Vector3i;
-
 import static engine.sound.SoundAPI.playSound;
 import static game.blocks.BlockDefinition.isBlockWalkable;
 import static game.chunk.Chunk.*;

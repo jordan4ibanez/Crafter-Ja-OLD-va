@@ -2,7 +2,6 @@ package engine.disk;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import engine.settings.SettingsObject;
-import org.joml.Vector3d;
 
 import java.io.File;
 import java.io.IOException;

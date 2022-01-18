@@ -1,4 +1,4 @@
-package engine.base;
+package engine;
 
 import static game.chat.Chat.cleanChatMemory;
 import static game.chunk.Chunk.cleanChunkDataMemory;

@@ -2,7 +2,7 @@ package game.tnt;
 
 import org.joml.Vector3d;
 
-import static engine.base.FancyMath.getDistance;
+import static engine.FancyMath.getDistance;
 import static engine.sound.SoundAPI.playSound;
 import static game.blocks.BlockDefinition.getBlockName;
 import static game.chunk.Chunk.getBlock;

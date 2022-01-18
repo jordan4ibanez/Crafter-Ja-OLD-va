@@ -1,6 +1,5 @@
 package game.mob;
 
-import engine.graphics.Mesh;
 import engine.highPerformanceContainers.MicroFloatArray;
 import engine.highPerformanceContainers.MicroIntArray;
 

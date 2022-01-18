@@ -9,7 +9,7 @@ import org.joml.Vector3i;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-import static engine.base.FancyMath.randomForceValue;
+import static engine.FancyMath.randomForceValue;
 import static engine.sound.SoundAPI.playSound;
 import static engine.time.Time.getDelta;
 import static game.chunk.Chunk.getLight;

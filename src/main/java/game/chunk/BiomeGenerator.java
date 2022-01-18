@@ -1,6 +1,6 @@
 package game.chunk;
 
-import engine.base.FastNoise;
+import engine.FastNoise;
 import org.joml.Math;
 import org.joml.Vector2i;
 import org.joml.Vector3i;
@@ -8,7 +8,7 @@ import org.joml.Vector3i;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-import static engine.base.Window.windowShouldClose;
+import static engine.Window.windowShouldClose;
 import static game.chunk.Chunk.*;
 import static game.chunk.ChunkUpdateHandler.chunkUpdate;
 

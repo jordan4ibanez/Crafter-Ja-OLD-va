@@ -10,10 +10,10 @@ import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import static engine.base.FancyMath.getDistance;
-import static engine.base.MouseInput.*;
+import static engine.FancyMath.getDistance;
+import static engine.MouseInput.*;
 import static engine.Utils.loadResource;
-import static engine.base.Window.*;
+import static engine.Window.*;
 import static engine.debug.CheckRuntimeInfo.getRuntimeInfoText;
 import static engine.graphics.Camera.*;
 import static engine.graphics.Camera.getCameraRotation;

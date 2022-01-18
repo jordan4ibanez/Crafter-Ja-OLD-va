@@ -10,8 +10,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Random;
 
-import static engine.base.MouseInput.*;
-import static engine.base.Window.*;
+import static engine.MouseInput.*;
+import static engine.Window.*;
 import static engine.credits.Credits.initializeCredits;
 import static engine.disk.Disk.setCurrentActiveWorld;
 import static engine.disk.Disk.worldSize;

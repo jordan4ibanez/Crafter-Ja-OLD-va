@@ -1,6 +1,5 @@
 package engine.credits;
 
-import engine.graphics.Mesh;
 
 import static engine.gui.GUI.create2DMesh;
 import static engine.gui.TextHandling.createTextCenteredWithShadow;

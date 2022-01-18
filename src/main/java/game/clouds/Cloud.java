@@ -1,7 +1,6 @@
 package game.clouds;
 
-import engine.base.FastNoise;
-import engine.graphics.Mesh;
+import engine.FastNoise;
 import org.joml.Vector2i;
 
 import static engine.time.Time.getDelta;

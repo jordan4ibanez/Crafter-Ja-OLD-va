@@ -1,7 +1,5 @@
 package game.chat;
 
-import engine.graphics.Mesh;
-
 import java.util.ArrayDeque;
 import java.util.concurrent.ConcurrentHashMap;
 
