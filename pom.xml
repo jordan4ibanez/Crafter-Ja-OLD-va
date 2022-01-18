@@ -165,13 +165,16 @@
     </dependencies>
     
     <build>
-            <plugins>
+            <plugins>              
+                
+                    <!-- build jar with dependencies -->
                     <plugin>
                             <groupId>org.apache.maven.plugins</groupId>
                             <artifactId>maven-assembly-plugin</artifactId>
                             <version>3.3.0</version>
                             <executions>
                                     <execution>
+                                            <id>create-jar</id>
                                             <phase>package</phase>
                                             
                                             <goals>
@@ -197,6 +200,7 @@
                             </executions>
                     </plugin>
                     
+                    <!-- ignore regular jar builder -->
                     <plugin>
                             <groupId>org.apache.maven.plugins</groupId>
                             <artifactId>maven-jar-plugin</artifactId>
@@ -206,6 +210,134 @@
                                             <id>default-jar</id>
                                             <!-- put the default-jar in the none phase to skip it from being created -->
                                             <phase>none</phase>
+                                    </execution>
+                            </executions>
+                    </plugin>
+                    
+                    <!-- move jar and all it's resources into it's own folder called BUILD_DIRECTORY in the root of the folder -->
+                    <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-resources-plugin</artifactId>
+                            <version>3.2.0</version>
+                            <executions>
+                                    <execution>
+                                            <id>shaders</id>
+                                            <phase>package</phase>
+                                            <goals>
+                                                    <goal>copy-resources</goal>
+                                            </goals>
+
+                                            <configuration>
+                                                    <outputDirectory>${basedir}/BUILD_OUTPUT/${project.build.finalName}/resources</outputDirectory>
+                                                    <resources>
+                                                            <resource>
+                                                                    <directory>${basedir}/resources</directory>
+                                                                    <includes>
+                                                                            <include>*</include>
+                                                                    </includes>
+                                                            </resource>
+                                                    </resources>
+                                            </configuration>
+                                    </execution>
+                                    
+                                    <execution>
+                                            <id>textures-base</id>
+                                            <phase>package</phase>
+                                            <goals>
+                                                    <goal>copy-resources</goal>
+                                            </goals>
+
+                                            <configuration>
+                                                    <outputDirectory>${basedir}/BUILD_OUTPUT/${project.build.finalName}/textures</outputDirectory>
+                                                    <resources>
+                                                            <resource>
+                                                                    <directory>${basedir}/textures</directory>
+                                                                    <includes>
+                                                                            <include>*</include>
+                                                                    </includes>
+                                                            </resource>
+                                                    </resources>
+                                            </configuration>
+                                    </execution>
+                                    
+                                    <execution>
+                                            <id>textures-tools</id>
+                                            <phase>package</phase>
+                                            <goals>
+                                                    <goal>copy-resources</goal>
+                                            </goals>
+
+                                            <configuration>
+                                                    <outputDirectory>${basedir}/BUILD_OUTPUT/${project.build.finalName}/textures/tools</outputDirectory>
+                                                    <resources>
+                                                            <resource>
+                                                                    <directory>${basedir}/textures/tools</directory>
+                                                                    <includes>
+                                                                            <include>*</include>
+                                                                    </includes>
+                                                            </resource>
+                                                    </resources>
+                                            </configuration>
+                                    </execution>
+                                    
+                                    <execution>
+                                            <id>textures-items</id>
+                                            <phase>package</phase>
+                                            <goals>
+                                                    <goal>copy-resources</goal>
+                                            </goals>
+
+                                            <configuration>
+                                                    <outputDirectory>${basedir}/BUILD_OUTPUT/${project.build.finalName}/textures/items</outputDirectory>
+                                                    <resources>
+                                                            <resource>
+                                                                    <directory>${basedir}/textures/items</directory>
+                                                                    <includes>
+                                                                            <include>*</include>
+                                                                    </includes>
+                                                            </resource>
+                                                    </resources>
+                                            </configuration>
+                                    </execution>
+                                    
+                                    <execution>
+                                            <id>sounds</id>
+                                            <phase>package</phase>
+                                            <goals>
+                                                    <goal>copy-resources</goal>
+                                            </goals>
+
+                                            <configuration>
+                                                    <outputDirectory>${basedir}/BUILD_OUTPUT/${project.build.finalName}/sounds</outputDirectory>
+                                                    <resources>
+                                                            <resource>
+                                                                    <directory>${basedir}/sounds</directory>
+                                                                    <includes>
+                                                                            <include>*</include>
+                                                                    </includes>
+                                                            </resource>
+                                                    </resources>
+                                            </configuration>
+                                    </execution>
+                                    
+                                    <execution>
+                                            <id>jar</id>
+                                            <phase>package</phase>
+                                            <goals>
+                                                    <goal>copy-resources</goal>
+                                            </goals>
+
+                                            <configuration>
+                                                    <outputDirectory>${basedir}/BUILD_OUTPUT/${project.build.finalName}/</outputDirectory>
+                                                    <resources>
+                                                            <resource>
+                                                                    <directory>${basedir}/target</directory>
+                                                                    <includes>
+                                                                            <include>${project.build.finalName}.jar</include>
+                                                                    </includes>
+                                                            </resource>
+                                                    </resources>
+                                            </configuration>
                                     </execution>
                             </executions>
                     </plugin>
