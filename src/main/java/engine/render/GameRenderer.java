@@ -1,6 +1,6 @@
 package engine.render;
 
-import engine.Utils;
+import engine.base.Utils;
 import engine.graphics.ShaderProgram;
 import engine.gui.GUIObject;
 import org.joml.*;
@@ -10,9 +10,9 @@ import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import static engine.FancyMath.getDistance;
-import static engine.MouseInput.*;
-import static engine.Window.*;
+import static engine.base.FancyMath.getDistance;
+import static engine.base.MouseInput.*;
+import static engine.base.Window.*;
 import static engine.debug.CheckRuntimeInfo.getRuntimeInfoText;
 import static engine.graphics.Camera.*;
 import static engine.graphics.Camera.getCameraRotation;

@@ -4,9 +4,9 @@ import it.unimi.dsi.fastutil.objects.ObjectIntImmutablePair;
 import org.joml.Vector2d;
 import org.joml.Vector3f;
 
-import static engine.MouseInput.*;
-import static engine.Window.getWindowHeight;
-import static engine.Window.getWindowWidth;
+import static engine.base.MouseInput.*;
+import static engine.base.Window.getWindowHeight;
+import static engine.base.Window.getWindowWidth;
 import static engine.disk.SQLiteDiskHandler.savePlayerData;
 import static engine.network.Networking.getIfMultiplayer;
 import static engine.render.GameRenderer.*;

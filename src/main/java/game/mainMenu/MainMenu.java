@@ -10,8 +10,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Random;
 
-import static engine.MouseInput.*;
-import static engine.Window.*;
+import static engine.base.MouseInput.*;
+import static engine.base.Window.*;
 import static engine.credits.Credits.initializeCredits;
 import static engine.disk.Disk.setCurrentActiveWorld;
 import static engine.disk.Disk.worldSize;
@@ -847,6 +847,8 @@ final public class MainMenu {
     private static String quickConvertKeyCode(int keyCode){
         char code = (char)keyCode;
 
+        System.out.println(keyCode);
+        /*
         if(code == 'Ŕ'){
             return "SHIFT";
         } else if (code == ' '){
@@ -854,6 +856,7 @@ final public class MainMenu {
         } else if (code == 'Ř'){
             return "SHIFT";
         }
+        */
 
         return code + "";
     }
@@ -873,18 +876,27 @@ final public class MainMenu {
     }
 
     private static String convertChunkLoadText(byte input){
-        if (input == 0){
-            return "SNAIL";
-        } else if (input == 1){
-            return "LAZY";
-        } else if (input == 2){
-            return "NORMAL";
-        } else if (input == 3){
-            return "SPEEDY";
-        } else if (input == 4){
-            return "INSANE";
-        } else if (input == 5){
-            return "FUTURE PC";
+        switch (input) {
+            case 0 -> {
+                return "SNAIL";
+            }
+            case 1 -> {
+                return "LAZY";
+            }
+            case 2 -> {
+                return "NORMAL";
+            }
+            case 3 -> {
+                return "SPEEDY";
+            }
+            case 4 -> {
+                return "INSANE";
+            }
+            case 5 -> {
+                return "FUTURE PC";
+            }
+            default -> {
+            }
         }
 
         return "NULL";
@@ -934,12 +946,10 @@ final public class MainMenu {
             titleScreenText = titleScreenTextList[random.nextInt(titleScreenTextList.length)];
         }
 
-        if (titleScreenText.equals("Look at the window title!")){
-            updateWindowTitle("Got you!");
-        } else if (titleScreenText.equals("Jump scare free!")){
-            updateWindowTitle("BOO!");
-        }else {
-            updateWindowTitle(getVersionName());
+        switch (titleScreenText) {
+            case "Look at the window title!" -> updateWindowTitle("Got you!");
+            case "Jump scare free!" -> updateWindowTitle("BOO!");
+            default -> updateWindowTitle(getVersionName());
         }
 
         titleScreenTextLength = (byte) titleScreenText.length();
@@ -967,8 +977,7 @@ final public class MainMenu {
             int leftLimit = 97; // letter 'a'
             int rightLimit = 122; // letter 'z'
             int targetStringLength = 10;
-            Random random = new Random();
-
+            
             return random.ints(leftLimit, rightLimit + 1)
                     .limit(targetStringLength)
                     .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
@@ -1015,7 +1024,7 @@ final public class MainMenu {
             "Don't look at the bugs!",
             "Taco Tuesday!",
             "Runs on DOS!",
-            "Doesn't ｆｏｒｍａｔ text right!",
+            "Doesn't ｆ�?ｒ�?�?ｔ text right!",
             "Look at the window title!",
             "My spoon is too big!",
             "It's chaos!",

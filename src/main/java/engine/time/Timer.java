@@ -1,6 +1,6 @@
 package engine.time;
 
-import static engine.Window.updateWindowTitle;
+import static engine.base.Window.updateWindowTitle;
 import static engine.gui.GUI.buildFPSMesh;
 import static game.Crafter.getVersionName;
 

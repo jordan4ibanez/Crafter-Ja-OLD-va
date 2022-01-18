@@ -1,4 +1,4 @@
-package engine;
+package engine.base;
 
 import org.lwjgl.BufferUtils;
 

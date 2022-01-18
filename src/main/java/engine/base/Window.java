@@ -1,4 +1,4 @@
-package engine;
+package engine.base;
 
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFWErrorCallback;

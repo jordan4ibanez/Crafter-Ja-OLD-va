@@ -1,6 +1,6 @@
 package engine.time;
 
-import static engine.Window.setWindowClearColorGoal;
+import static engine.base.Window.setWindowClearColorGoal;
 import static engine.time.Time.getDelta;
 import static game.light.Light.setCurrentLightLevel;
 

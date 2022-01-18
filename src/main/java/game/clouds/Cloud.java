@@ -1,6 +1,6 @@
 package game.clouds;
 
-import engine.FastNoise;
+import engine.base.FastNoise;
 import engine.graphics.Mesh;
 import org.joml.Vector2i;
 

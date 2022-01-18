@@ -2,9 +2,9 @@ package engine.gui;
 
 import org.joml.Vector2d;
 
-import static engine.MouseInput.*;
-import static engine.Window.getDumpedKey;
-import static engine.Window.getWindowHandle;
+import static engine.base.MouseInput.*;
+import static engine.base.Window.getDumpedKey;
+import static engine.base.Window.getWindowHandle;
 import static engine.disk.SQLiteDiskHandler.closeWorldDataBase;
 import static engine.network.Networking.disconnectClient;
 import static engine.network.Networking.sendChatMessage;
@@ -80,15 +80,20 @@ public class GUILogic {
 
 
     private static String quickConvertKeyCode(int keyCode){
+        
+        System.out.println("keycode");
+        
         char code = (char)keyCode;
 
-        if(code == 'Ŕ'){
+        /*
+        if (code ==  'Ŕ'){
             return "SHIFT";
         } else if (code == ' '){
             return "SPACE";
         } else if (code == 'Ř'){
             return "SHIFT";
         }
+        */
 
         return code + "";
     }
@@ -109,12 +114,15 @@ public class GUILogic {
 
 
     public static GUIObject[] getGamePauseMenuGUI(){
-        if (menuPage == 0) {
-            return gamePauseMenuGUI;
-        } else if (menuPage == 1){
-            return gameSettingsMenuGUI;
-        } else if (menuPage == 2){
-            return controlsMenuGUI;
+        switch (menuPage) {
+            case 0:
+                return gamePauseMenuGUI;
+            case 1:
+                return gameSettingsMenuGUI;
+            case 2:
+                return controlsMenuGUI;
+            default:
+                break;
         }
 
         //have to return something
@@ -123,18 +131,21 @@ public class GUILogic {
 
 
     private static String convertChunkLoadText(byte input){
-        if (input == 0){
-            return "SNAIL";
-        } else if (input == 1){
-            return "LAZY";
-        } else if (input == 2){
-            return "NORMAL";
-        } else if (input == 3){
-            return "SPEEDY";
-        } else if (input == 4){
-            return "INSANE";
-        } else if (input == 5){
-            return "FUTURE PC";
+        switch (input) {
+            case 0:
+                return "SNAIL";
+            case 1:
+                return "LAZY";
+            case 2:
+                return "NORMAL";
+            case 3:
+                return "SPEEDY";
+            case 4:
+                return "INSANE";
+            case 5:
+                return "FUTURE PC";
+            default:
+                break;
         }
 
         return "NULL";

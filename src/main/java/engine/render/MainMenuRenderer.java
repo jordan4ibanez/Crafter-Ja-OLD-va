@@ -4,8 +4,8 @@ import engine.graphics.Mesh;
 import engine.graphics.ShaderProgram;
 import engine.gui.GUIObject;
 
-import static engine.Window.getWindowHeight;
-import static engine.Window.getWindowWidth;
+import static engine.base.Window.getWindowHeight;
+import static engine.base.Window.getWindowWidth;
 import static engine.credits.Credits.getCreditParts;
 import static engine.graphics.Mesh.cleanUpMesh;
 import static engine.graphics.Mesh.renderMesh;

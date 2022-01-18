@@ -10,7 +10,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static engine.FancyMath.getDistance;
+import static engine.base.FancyMath.getDistance;
 import static engine.disk.Disk.*;
 import static engine.disk.SQLiteDiskHandler.loadChunk;
 import static engine.disk.SQLiteDiskHandler.saveChunk;

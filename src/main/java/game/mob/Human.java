@@ -3,7 +3,7 @@ package game.mob;
 import org.joml.*;
 import org.joml.Math;
 
-import static engine.FancyMath.randomDirFloat;
+import static engine.base.FancyMath.randomDirFloat;
 import static engine.time.Time.getDelta;
 import static game.chunk.Chunk.getBlock;
 import static game.collision.Collision.applyInertia;

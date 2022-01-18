@@ -5,7 +5,7 @@ import org.joml.Vector2f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import static engine.FancyMath.randomDirFloat;
+import static engine.base.FancyMath.randomDirFloat;
 import static engine.time.Time.getDelta;
 import static game.blocks.BlockDefinition.getIfLiquid;
 import static game.chunk.Chunk.getBlock;

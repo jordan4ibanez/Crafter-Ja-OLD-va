@@ -1,9 +1,9 @@
-package engine;
+package engine.base;
 
 import org.joml.Vector2d;
 import org.joml.Vector2f;
 
-import static engine.Window.*;
+import static engine.base.Window.*;
 import static engine.render.GameRenderer.getWindowSizeX;
 import static engine.render.GameRenderer.getWindowSizeY;
 import static org.lwjgl.glfw.GLFW.*;

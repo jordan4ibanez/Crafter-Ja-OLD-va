@@ -1,6 +1,6 @@
 package engine.sound;
 
-import engine.Utils;
+import engine.base.Utils;
 import org.lwjgl.stb.STBVorbisInfo;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;

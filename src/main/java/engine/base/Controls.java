@@ -1,8 +1,8 @@
-package engine;
+package engine.base;
 
-import static engine.MouseInput.*;
-import static engine.Window.isKeyPressed;
-import static engine.Window.toggleFullScreen;
+import static engine.base.MouseInput.*;
+import static engine.base.Window.isKeyPressed;
+import static engine.base.Window.toggleFullScreen;
 import static engine.graphics.Camera.getCameraPerspective;
 import static engine.graphics.Camera.toggleCameraPerspective;
 import static engine.gui.GUILogic.*;

@@ -4,8 +4,8 @@ import org.joml.Math;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import static engine.MouseInput.getMouseDisplVecX;
-import static engine.MouseInput.getMouseDisplVecY;
+import static engine.base.MouseInput.getMouseDisplVecX;
+import static engine.base.MouseInput.getMouseDisplVecY;
 import static game.player.Player.*;
 import static game.player.ViewBobbing.*;
 import static game.ray.Ray.cameraRayCast;

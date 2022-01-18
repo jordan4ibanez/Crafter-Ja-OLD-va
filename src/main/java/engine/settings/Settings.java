@@ -1,6 +1,6 @@
 package engine.settings;
 
-import static engine.Window.setVSync;
+import static engine.base.Window.setVSync;
 import static engine.disk.Disk.loadSettingsFromDisk;
 import static engine.disk.Disk.saveSettingsToDisk;
 import static game.chunk.Chunk.generateNewChunks;

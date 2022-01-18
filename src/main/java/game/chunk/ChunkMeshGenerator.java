@@ -7,7 +7,7 @@ import org.joml.Vector3i;
 
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-import static engine.Window.windowShouldClose;
+import static engine.base.Window.windowShouldClose;
 import static game.blocks.BlockDefinition.getMaxIDs;
 import static game.chunk.Chunk.*;
 import static game.chunk.ChunkMeshGenerationHandler.addToChunkMeshQueue;

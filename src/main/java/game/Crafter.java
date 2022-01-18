@@ -6,8 +6,8 @@ import game.chunk.ChunkMeshGenerator;
 
 import java.awt.*;
 
-import static engine.MouseInput.initMouseInput;
-import static engine.Window.initWindow;
+import static engine.base.MouseInput.initMouseInput;
+import static engine.base.Window.initWindow;
 import static engine.disk.Disk.createWorldsDir;
 import static engine.gui.GUI.createGUI;
 import static engine.gui.GUI.initializeHudAtlas;

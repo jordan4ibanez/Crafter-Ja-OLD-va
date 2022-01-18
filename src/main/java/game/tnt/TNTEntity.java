@@ -6,7 +6,7 @@ import org.joml.Vector3f;
 
 import java.util.ArrayList;
 
-import static engine.FancyMath.randomForceValue;
+import static engine.base.FancyMath.randomForceValue;
 import static engine.graphics.Mesh.createMesh;
 import static engine.graphics.Texture.createTexture;
 import static engine.sound.SoundAPI.playSound;

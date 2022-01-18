@@ -2,11 +2,11 @@ package engine.scene;
 
 import java.io.IOException;
 
-import static engine.Controls.gameInput;
-import static engine.Controls.mainMenuInput;
-import static engine.MemorySweeper.cleanMemory;
-import static engine.MouseInput.*;
-import static engine.Window.*;
+import static engine.base.Controls.gameInput;
+import static engine.base.Controls.mainMenuInput;
+import static engine.base.MemorySweeper.cleanMemory;
+import static engine.base.MouseInput.*;
+import static engine.base.Window.*;
 import static engine.disk.SQLiteDiskHandler.pollReceivingPlayerDataFromSQLiteThread;
 import static engine.graphics.Camera.*;
 import static engine.gui.GUILogic.calculateHealthBarElements;
