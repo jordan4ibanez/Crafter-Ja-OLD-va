@@ -4,7 +4,7 @@ package game.collision;
 final public class CollisionObject {
     //these are two exclusive actors so that you can actually read implemented usage of this class
     //IE, if you only had block, when working with entities you read pointIsWithinBlock it'll make no sense
-    final private static double[] blockAABB = new double[6];
+    final private static double[] blockAABB  = new double[6];
     final private static double[] entityAABB = new double[6];
 
     //sets the REUSED memory object which is a simple double array
@@ -29,12 +29,12 @@ final public class CollisionObject {
     
     //autosetter for blockshapes - uses literal position and block shape
     public static void setAABBBlock(float[] blockBox, int x, int y, int z){
-        blockAABB[0] = blockBox[0] + x; //left
-        blockAABB[1] = blockBox[1] + y; //bottom
-        blockAABB[2] = blockBox[2] + z; //back
-        blockAABB[3] = blockBox[3] + x; //right
-        blockAABB[4] = blockBox[4] + y; //top
-        blockAABB[5] = blockBox[5] + z; //front
+        blockAABB[0] = blockBox[0] + (double)x; //left
+        blockAABB[1] = blockBox[1] + (double)y; //bottom
+        blockAABB[2] = blockBox[2] + (double)z; //back
+        blockAABB[3] = blockBox[3] + (double)x; //right
+        blockAABB[4] = blockBox[4] + (double)y; //top
+        blockAABB[5] = blockBox[5] + (double)z; //front
     }
     
     
@@ -49,12 +49,14 @@ final public class CollisionObject {
     
     //exclusive AABB for block to entity collision detection
     public static boolean intersectsAABB() {
-        return !(entityAABB[0] > blockAABB[3] ||
-                   entityAABB[3] < blockAABB[0] ||
-                   entityAABB[1] > blockAABB[4] ||
-                   entityAABB[4] < blockAABB[1] ||
-                   entityAABB[2] > blockAABB[5] ||
-                   entityAABB[5] < blockAABB[2]); 
+
+        return !( entityAABB[0] > blockAABB[3] ||    
+                    entityAABB[1] > blockAABB[4] ||
+                    entityAABB[2] > blockAABB[5] ||
+                    entityAABB[3] < blockAABB[0] ||
+                    entityAABB[4] < blockAABB[1] ||
+                    entityAABB[5] < blockAABB[2] );
+                    
     }
     
     
