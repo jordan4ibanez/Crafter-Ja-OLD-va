@@ -3,3 +3,4 @@
 *.log
 /Worlds/
 Settings.conf
+/target/
