@@ -1,4 +1,4 @@
-package engine.base;
+package engine;
 
 import org.lwjgl.BufferUtils;
 
@@ -19,20 +19,28 @@ import static org.lwjgl.BufferUtils.createByteBuffer;
 
 public class Utils {
 
+    //load plain text file
     public static String loadResource(String fileName) throws Exception{
-        String result;
-        try(InputStream in = Utils.class.getResourceAsStream(fileName);
-            Scanner scanner = new Scanner(in, StandardCharsets.UTF_8.name())){
-            result = scanner.useDelimiter("\\A").next();
-        }
+        
+        String workingDir = System.getProperty("user.dir");
+        //System.out.println("Working Directory = " + workingDir);
+        
+        File text = new File(workingDir + fileName);
+        
+        Scanner scanner = new Scanner(text, StandardCharsets.UTF_8.name());
+        
+        String result = scanner.useDelimiter("\\A").next();
+        
         return result;
     }
 
     //save string as plain text
     public static void saveResource(String fileName, String data) throws IOException{
-        BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
-        writer.write(data);
-        writer.close();
+        FileWriter writer = new FileWriter(fileName);
+        
+        try (BufferedWriter bufferedWriter = new BufferedWriter(writer)) {
+            bufferedWriter.write(data);
+        }
     }
 
     public static List<String> readAllLines(String fileName) throws Exception {
