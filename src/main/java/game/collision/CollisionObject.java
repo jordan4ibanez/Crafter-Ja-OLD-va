@@ -1,7 +1,7 @@
 package game.collision;
 
 //static collision object
-public class CollisionObject {
+final public class CollisionObject {
     final private static double[] aabb = new double[6];
 
     public static void setAABB(double x, double y, double z, float width, float height){
