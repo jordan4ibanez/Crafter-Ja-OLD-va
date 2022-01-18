@@ -1,6 +1,6 @@
 package game.collision;
 
-public class PointCollision {
+public class CollisionObject {
     final private static double[] aabb = new double[6];
 
     public static void setPointAABB(double x, double y, double z, float width, float height){
