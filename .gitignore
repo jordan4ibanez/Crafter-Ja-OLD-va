@@ -7,3 +7,4 @@ Settings.conf
 nbactions-lwjgl-natives-windows-amd64.xml
 nbactions-lwjgl-natives-linux-amd64.xml
 nbactions.xml
+nb-configuration.xml
