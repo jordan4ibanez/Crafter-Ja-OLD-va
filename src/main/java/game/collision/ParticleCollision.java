@@ -8,7 +8,7 @@ import static game.blocks.BlockDefinition.getBlockShape;
 import static game.blocks.BlockDefinition.isBlockWalkable;
 import static game.chunk.Chunk.getBlock;
 import static game.chunk.Chunk.getBlockRotation;
-import static game.collision.CollisionObject.pointIsWithin;
+import static game.collision.CollisionObject.pointIsWithinBlock;
 import static game.collision.CollisionObject.setAABBBlock;
 
 public class ParticleCollision {
@@ -156,7 +156,7 @@ public class ParticleCollision {
     private static void collideYPositive(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
         for (float[] blockBox : getBlockShape(blockID, rot)) {
             setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
-            if (pointIsWithin(pos.x, pos.y, pos.z)) {
+            if (pointIsWithinBlock(pos.x, pos.y, pos.z)) {
                 pos.y = blockBox[1] + blockPosY - 0.00001d;
                 inertia.y = 0;
             }
@@ -167,7 +167,7 @@ public class ParticleCollision {
         boolean onGround = false;
         for (float[] blockBox : getBlockShape(blockID, rot)) {
             setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
-            if (pointIsWithin(pos.x, pos.y, pos.z)) {
+            if (pointIsWithinBlock(pos.x, pos.y, pos.z)) {
                 onGround = true;
                 pos.y = blockBox[4] + blockPosY + 0.00001d;
                 inertia.y = 0;
@@ -179,7 +179,7 @@ public class ParticleCollision {
     private static void collideXPositive(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
         for (float[] blockBox : getBlockShape(blockID, rot)) {
             setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
-            if (pointIsWithin(pos.x, pos.y, pos.z)) {
+            if (pointIsWithinBlock(pos.x, pos.y, pos.z)) {
                 pos.x = blockBox[0] + blockPosX - 0.00001d;
                 inertia.x = 0;
             }
@@ -189,7 +189,7 @@ public class ParticleCollision {
     private static void collideXNegative(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
         for (float[] blockBox : getBlockShape(blockID, rot)) {
             setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
-            if (pointIsWithin(pos.x, pos.y, pos.z)) {
+            if (pointIsWithinBlock(pos.x, pos.y, pos.z)) {
                 pos.x = blockBox[3] + blockPosX + 0.00001d;
                 inertia.x = 0;
             }
@@ -200,7 +200,7 @@ public class ParticleCollision {
     private static void collideZPositive(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
         for (float[] blockBox : getBlockShape(blockID, rot)) {
             setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
-            if (pointIsWithin(pos.x, pos.y, pos.z)) {
+            if (pointIsWithinBlock(pos.x, pos.y, pos.z)) {
                 pos.z = blockBox[2] + blockPosZ - 0.00001d;
                 inertia.z = 0;
             }
@@ -210,7 +210,7 @@ public class ParticleCollision {
     private static void collideZNegative(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
         for (float[] blockBox : getBlockShape(blockID, rot)) {
             setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
-            if (pointIsWithin(pos.x, pos.y, pos.z)) {
+            if (pointIsWithinBlock(pos.x, pos.y, pos.z)) {
                 pos.z = blockBox[5] + blockPosZ + 0.00001d;
                 inertia.z = 0;
             }
