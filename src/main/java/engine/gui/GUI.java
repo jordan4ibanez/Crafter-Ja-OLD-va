@@ -13,7 +13,7 @@ import static engine.graphics.Mesh.createMesh;
 import static engine.graphics.Texture.createTexture;
 import static engine.gui.TextHandling.createTextWithShadow;
 import static engine.time.Timer.getFpsCounted;
-import static game.Crafter.getVersionName;
+import static game.base.Crafter.getVersionName;
 
 public class GUI {
 

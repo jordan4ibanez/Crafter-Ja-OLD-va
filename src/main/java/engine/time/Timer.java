@@ -2,7 +2,7 @@ package engine.time;
 
 import static engine.base.Window.updateWindowTitle;
 import static engine.gui.GUI.buildFPSMesh;
-import static game.Crafter.getVersionName;
+import static game.base.Crafter.getVersionName;
 
 public class Timer {
 

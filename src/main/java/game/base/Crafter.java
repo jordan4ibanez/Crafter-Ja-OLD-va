@@ -1,4 +1,4 @@
-package game;
+package game.base;
 
 import game.chunk.BiomeGenerator;
 import game.chunk.Chunk;

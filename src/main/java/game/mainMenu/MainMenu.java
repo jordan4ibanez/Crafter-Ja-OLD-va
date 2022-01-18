@@ -24,7 +24,7 @@ import static engine.settings.Settings.*;
 import static engine.sound.SoundAPI.playMusic;
 import static engine.sound.SoundAPI.playSound;
 import static engine.time.Time.getDelta;
-import static game.Crafter.getVersionName;
+import static game.base.Crafter.getVersionName;
 import static game.mainMenu.MainMenuAssets.createMainMenuBackGroundTile;
 import static game.mainMenu.MainMenuAssets.createMenuMenuTitleBlock;
 import static game.player.Player.setPlayerName;
