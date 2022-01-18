@@ -2,6 +2,8 @@ package game.collision;
 
 //static collision object
 final public class CollisionObject {
+    //these are two exclusive actors so that you can actually read implemented usage of this class
+    //IE, if you only had block, when working with entities you read pointIsWithinBlock it'll make no sense
     final private static double[] blockAABB = new double[6];
     final private static double[] entityAABB = new double[6];
 
@@ -14,7 +16,8 @@ final public class CollisionObject {
     //collide entities with blocks
     
     /* reuse this for entity solid collision if ever needed
-    public static void setAABBBlock(double x, double y, double z, float width, float height){
+    //rename the other method EntitySecond or something if this is ever required
+    public static void setAABBEntityFirst(double x, double y, double z, float width, float height){
         blockAABB[0] = x-width; //left
         blockAABB[1] = y; //bottom
         blockAABB[2] = z-width; //back
@@ -55,9 +58,8 @@ final public class CollisionObject {
     }
     
     
-
-    //exclusion AABB for single point in space
-    public static boolean pointIsWithin(double x, double y, double z){
+    //exclusion AABB for single point in space for blocks
+    public static boolean pointIsWithinBlock(double x, double y, double z){
         return !(blockAABB[0] > x ||
                    blockAABB[3] < x ||
                    blockAABB[1] > y ||
@@ -65,4 +67,16 @@ final public class CollisionObject {
                    blockAABB[2] > z ||
                    blockAABB[5] < z);
     }
+    
+    //exlusion AABB for single point in space for entities
+    public static boolean pointIsWithinEntity(double x, double y, double z){
+        return !(entityAABB[0] > x ||
+                   entityAABB[3] < x ||
+                   entityAABB[1] > y ||
+                   entityAABB[4] < y ||
+                   entityAABB[2] > z ||
+                   entityAABB[5] < z);
+    }
+    
+    
 }
