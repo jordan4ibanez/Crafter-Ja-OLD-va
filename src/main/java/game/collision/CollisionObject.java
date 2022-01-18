@@ -1,9 +1,10 @@
 package game.collision;
 
+//static collision object
 public class CollisionObject {
     final private static double[] aabb = new double[6];
 
-    public static void setPointAABB(double x, double y, double z, float width, float height){
+    public static void setAABB(double x, double y, double z, float width, float height){
         aabb[0] = x-width; //left
         aabb[1] = y; //bottom
         aabb[2] = z-width; //back
