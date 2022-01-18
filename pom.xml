@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>groupId</groupId>
+    <groupId>Crafter</groupId>
     <artifactId>Crafter</artifactId>
     <version>0.07c</version>
     
@@ -177,7 +177,6 @@
                                             <goals>
                                                     <goal>single</goal>
                                             </goals>
-                                            
                                             <configuration>
                                                     <archive>
                                                             <manifest>
@@ -190,10 +189,25 @@
                                                     <descriptorRefs>
                                                             <descriptorRef>jar-with-dependencies</descriptorRef>
                                                     </descriptorRefs>
+                                                    
+                                                   <finalName>${project.build.finalName}</finalName>
+                                                   <appendAssemblyId>false</appendAssemblyId>
                                             </configuration>
                                     </execution>
                             </executions>
-                            
+                    </plugin>
+                    
+                    <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-jar-plugin</artifactId>
+                            <version>3.2.2</version>
+                            <executions>
+                                    <execution>
+                                            <id>default-jar</id>
+                                            <!-- put the default-jar in the none phase to skip it from being created -->
+                                            <phase>none</phase>
+                                    </execution>
+                            </executions>
                     </plugin>
             </plugins>
     </build>
