@@ -6,16 +6,39 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
+import static engine.Window.windowShouldClose;
 import static game.chunk.Chunk.*;
 import static game.chunk.ChunkMeshGenerator.setChunkThreadCurrentGlobalLightLevel;
 
-public class Light {
+public class Light implements Runnable {
 
-    private static final byte maxLightLevel = 15;
-    private static final byte maxTorchLightLevel = 12;
-    private static final byte blockIndicator = 127;
-    private static final byte lightDistance = 15;
-    private static final byte max = (lightDistance * 2) + 1;
+    //internal pointer to self reference
+    private static Light thisObject;
+
+    //thread safe containers for light updates
+    private final ConcurrentLinkedDeque<Vector3i> lightQueue = new ConcurrentLinkedDeque<>();
+    private final ConcurrentLinkedDeque<Vector3i> torchQueue = new ConcurrentLinkedDeque<>();
+
+    //point internal pointer to static reference call, only one object shall exist
+    public Light(){
+        thisObject = this;
+    }
+
+    //external call to internal object
+    public static void lightFloodFill(int posX, int posY, int posZ){
+        thisObject.lightQueue.add(new Vector3i(posX, posY, posZ));
+    }
+
+    //external call to internal object
+    public static void torchFloodFill(int posX, int posY, int posZ){
+        thisObject.torchQueue.add(new Vector3i(posX, posY, posZ));
+    }
+
+    //finalized constants
+    private final byte maxLightLevel = 15;
+    private final byte blockIndicator = 127;
+    private final byte lightDistance = 15;
+    private final byte max = (lightDistance * 2) + 1;
 
     private static byte currentLightLevel = 15;
 
@@ -35,8 +58,9 @@ public class Light {
 
     public static byte getImmediateLight(int x, int y, int z){
         int theBlock = getBlock(x, y, z);
+
         if (theBlock == 0 && underSunLight(x, y, z)){
-            return maxLightLevel;
+            return thisObject.maxLightLevel;
         }
 
         byte maxLight = 0;
@@ -81,12 +105,19 @@ public class Light {
         return maxLight;
     }
 
-    public static void lightFloodFill(int posX, int posY, int posZ) {
+    //internal
+    //this needs to calculate the edges of the light as light sources which might be EXTREMELY heavy duty
+    private boolean internalLightFloodFill() {
+        if (lightQueue.isEmpty()){
+            return true;
+        }
+
+        Vector3i thisUpdatePos = lightQueue.pop();
         final Deque<LightUpdate> lightSources = new ArrayDeque<>();
         final byte[][][] memoryMap = new byte[(lightDistance * 2) + 1][(lightDistance * 2) + 1][(lightDistance * 2) + 1];
-        for (int x = posX - lightDistance; x <= posX + lightDistance; x++) {
-            for (int y = posY - lightDistance; y <= posY + lightDistance; y++) {
-                for (int z = posZ - lightDistance; z <= posZ + lightDistance; z++) {
+        for (int x = thisUpdatePos.x - lightDistance; x <= thisUpdatePos.x + lightDistance; x++) {
+            for (int y = thisUpdatePos.y - lightDistance; y <= thisUpdatePos.y + lightDistance; y++) {
+                for (int z = thisUpdatePos.z - lightDistance; z <= thisUpdatePos.z + lightDistance; z++) {
                     int theBlock = getBlock(x, y, z);
                     if (theBlock == 0 && underSunLight(x, y, z)) {
                         int skipCheck = 0;
@@ -109,13 +140,13 @@ public class Light {
                             skipCheck++;
                         }
                         if (skipCheck < 6) {
-                            lightSources.add(new LightUpdate(x - posX + lightDistance, y - posY + lightDistance, z - posZ + lightDistance));
+                            lightSources.add(new LightUpdate(x - thisUpdatePos.x + lightDistance, y - thisUpdatePos.y + lightDistance, z - thisUpdatePos.z + lightDistance));
                         }
-                        memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance] = currentLightLevel;
+                        memoryMap[x - thisUpdatePos.x + lightDistance][y - thisUpdatePos.y + lightDistance][z - thisUpdatePos.z + lightDistance] = currentLightLevel;
                     } else if (theBlock == 0) {
-                        memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance] = 0;
+                        memoryMap[x - thisUpdatePos.x + lightDistance][y - thisUpdatePos.y + lightDistance][z - thisUpdatePos.z + lightDistance] = 0;
                     } else {
-                        memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance] = blockIndicator;
+                        memoryMap[x - thisUpdatePos.x + lightDistance][y - thisUpdatePos.y + lightDistance][z - thisUpdatePos.z + lightDistance] = blockIndicator;
                     }
                 }
             }
@@ -192,45 +223,56 @@ public class Light {
             }
         }
 
-        for (int x = posX - lightDistance; x <= posX + lightDistance; x++) {
-            for (int y = posY - lightDistance; y <= posY + lightDistance; y++) {
-                for (int z = posZ - lightDistance; z <= posZ + lightDistance; z++) {
-                    if (memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance] != blockIndicator) {
-                        setNaturalLight(x, y, z, memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance]);
+        for (int x = thisUpdatePos.x - lightDistance; x <= thisUpdatePos.x + lightDistance; x++) {
+            for (int y = thisUpdatePos.y - lightDistance; y <= thisUpdatePos.y + lightDistance; y++) {
+                for (int z = thisUpdatePos.z - lightDistance; z <= thisUpdatePos.z + lightDistance; z++) {
+                    if (memoryMap[x - thisUpdatePos.x + lightDistance][y - thisUpdatePos.y + lightDistance][z - thisUpdatePos.z + lightDistance] != blockIndicator) {
+                        setNaturalLight(x, y, z, memoryMap[x - thisUpdatePos.x + lightDistance][y - thisUpdatePos.y + lightDistance][z - thisUpdatePos.z + lightDistance]);
                     }
                 }
             }
         }
         lightSources.clear();
+
+        return false;
     }
 
 
 
-    public static void torchFloodFill(int posX, int posY, int posZ) {
+    //this needs to calculate the edges of the light as light sources which might be EXTREMELY heavy duty
+    private boolean internalTorchFloodFill() {
+
+        if (torchQueue.isEmpty()){
+            return true;
+        }
+
+        Vector3i thisTorchUpdate = torchQueue.pop();
+
         final Deque<LightUpdate> lightSources = new ArrayDeque<>();
         final byte[][][] memoryMap = new byte[(lightDistance * 2) + 1][(lightDistance * 2) + 1][(lightDistance * 2) + 1];
 
         //lightSources.add(new LightUpdate(lightDistance, lightDistance, lightDistance, getTorchLight(posX,posY,posZ)));
 
-        int minX = posX - lightDistance;
-        int maxX = posX + lightDistance;
-        int minY = posY - lightDistance;
-        int maxY = posY + lightDistance;
-        int minZ = posZ - lightDistance;
-        int maxZ = posZ + lightDistance;
+        int minX = thisTorchUpdate.x - lightDistance;
+        int maxX = thisTorchUpdate.x + lightDistance;
+        int minY = thisTorchUpdate.y - lightDistance;
+        int maxY = thisTorchUpdate.y + lightDistance;
+        int minZ = thisTorchUpdate.z - lightDistance;
+        int maxZ = thisTorchUpdate.z + lightDistance;
 
-        for (int x = posX - lightDistance; x <= posX + lightDistance; x++) {
-            for (int y = posY - lightDistance; y <= posY + lightDistance; y++) {
-                for (int z = posZ - lightDistance; z <= posZ + lightDistance; z++) {
+        for (int x = thisTorchUpdate.x - lightDistance; x <= thisTorchUpdate.x + lightDistance; x++) {
+            for (int y = thisTorchUpdate.y - lightDistance; y <= thisTorchUpdate.y + lightDistance; y++) {
+                for (int z = thisTorchUpdate.z - lightDistance; z <= thisTorchUpdate.z + lightDistance; z++) {
                     int theBlock = getBlock(x, y, z);
                     if (theBlock == 29){
-                        lightSources.add(new LightUpdate( x - posX + lightDistance, y - posY + lightDistance, z - posZ + lightDistance, maxTorchLightLevel));
+                        byte maxTorchLightLevel = 12;
+                        lightSources.add(new LightUpdate( x - thisTorchUpdate.x + lightDistance, y - thisTorchUpdate.y + lightDistance, z - thisTorchUpdate.z + lightDistance, maxTorchLightLevel));
                     } else if (theBlock == 0 && (x == minX || x == maxX || y == minY || y == maxY || z == minZ || z == maxZ)) {
-                        memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance] = getTorchLight(x, y, z);
+                        memoryMap[x - thisTorchUpdate.x + lightDistance][y - thisTorchUpdate.y + lightDistance][z - thisTorchUpdate.z + lightDistance] = getTorchLight(x, y, z);
                     } else if (theBlock != 0){
-                        memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance] = blockIndicator;
+                        memoryMap[x - thisTorchUpdate.x + lightDistance][y - thisTorchUpdate.y + lightDistance][z - thisTorchUpdate.z + lightDistance] = blockIndicator;
                     } else { //everything else is zeroed out
-                        memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance] = 0;
+                        memoryMap[x - thisTorchUpdate.x + lightDistance][y - thisTorchUpdate.y + lightDistance][z - thisTorchUpdate.z + lightDistance] = 0;
                     }
                 }
             }
@@ -308,14 +350,45 @@ public class Light {
             }
         }
 
-        for (int x = posX - lightDistance; x <= posX + lightDistance; x++) {
-            for (int y = posY - lightDistance; y <= posY + lightDistance; y++) {
-                for (int z = posZ - lightDistance; z <= posZ + lightDistance; z++) {
-                    if (memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance] != blockIndicator) {
-                        setTorchLight(x, y, z, memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance]);
+        for (int x = thisTorchUpdate.x - lightDistance; x <= thisTorchUpdate.x + lightDistance; x++) {
+            for (int y = thisTorchUpdate.y - lightDistance; y <= thisTorchUpdate.y + lightDistance; y++) {
+                for (int z = thisTorchUpdate.z - lightDistance; z <= thisTorchUpdate.z + lightDistance; z++) {
+                    if (memoryMap[x - thisTorchUpdate.x + lightDistance][y - thisTorchUpdate.y + lightDistance][z - thisTorchUpdate.z + lightDistance] != blockIndicator) {
+                        setTorchLight(x, y, z, memoryMap[x - thisTorchUpdate.x + lightDistance][y - thisTorchUpdate.y + lightDistance][z - thisTorchUpdate.z + lightDistance]);
                     }
                 }
             }
+        }
+        return false;
+    }
+
+
+    private boolean sleepLock(boolean current, boolean input){
+        if (!current){
+            return false;
+        }
+
+        return input;
+    }
+
+    @Override
+    public void run() {
+        while (!windowShouldClose()) {
+            boolean needsToSleep = true;
+
+            needsToSleep = sleepLock(needsToSleep, internalLightFloodFill());
+            needsToSleep = sleepLock(needsToSleep, internalTorchFloodFill());
+
+            if (needsToSleep){
+                try {
+                    //System.out.println("sleeping");
+                    Thread.sleep(30);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            } //else {
+                //System.out.println("I'm AWAKE! ");
+            //}
         }
     }
 }
