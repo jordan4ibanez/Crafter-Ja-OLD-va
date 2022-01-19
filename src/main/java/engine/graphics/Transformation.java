@@ -60,19 +60,6 @@ public class Transformation {
                 .translate(-getCameraPositionX(), -getCameraPositionY(), -getCameraPositionZ());
     }
 
-
-    public static Matrix4d getTNTModelViewMatrix(int ID){
-        modelViewMatrix.identity().translate(getTNTPosition(ID)).
-                rotateX(toRadians(0)).
-                rotateY(toRadians(0)).
-                rotateZ(toRadians(0)).
-                scale(getTNTScale(ID));
-        modelMatrix.set(viewMatrix);
-        modelMatrix.mul(modelViewMatrix);
-        return modelMatrix;
-    }
-
-
     public static void updateSunMatrix() {
 
         pos.set(0);
