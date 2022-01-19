@@ -29,7 +29,6 @@ final public class Ray {
         int finalPosY = 0;
         int finalPosZ = 0;
 
-
         int pointedThingAboveX = 0;
         int pointedThingAboveY = 0;
         int pointedThingAboveZ = 0;
@@ -45,10 +44,6 @@ final public class Ray {
         int oldFlooredPosY = 0;
         int oldFlooredPosZ = 0;
 
-        double realNewPosX = 0;
-        double realNewPosY = 0;
-        double realNewPosZ = 0;
-
         for(double step = 0d; step <= length ; step += 0.001d) {
 
             double cachedPosX = dirX * step;
@@ -59,9 +54,9 @@ final public class Ray {
             int newFlooredPosY = (int) Math.floor(posY + cachedPosY);
             int newFlooredPosZ = (int) Math.floor(posZ + cachedPosZ);
 
-            realNewPosX = posX + cachedPosX;
-            realNewPosY = posY + cachedPosY;
-            realNewPosZ = posZ + cachedPosZ;
+            double realNewPosX = posX + cachedPosX;
+            double realNewPosY = posY + cachedPosY;
+            double realNewPosZ = posZ + cachedPosZ;
 
             for (int thisMob : mobs){
                 //reference - not new variable
