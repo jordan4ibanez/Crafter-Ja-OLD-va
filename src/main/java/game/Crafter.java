@@ -54,15 +54,11 @@ public class Crafter {
 
             initMainMenu();
 
-            //this is the chunk mesh generator thread
-            ChunkMeshGenerator chunkMeshGenerator = new ChunkMeshGenerator();
-            Thread chunkThread = new Thread(chunkMeshGenerator);
-            chunkThread.start();
+            //this is the chunk mesh generator thread singleton
+            new Thread(new ChunkMeshGenerator()).start();
 
-            //this is the biome generator thread
-            //TODO: MOVE THIS SOMEWHERE SANE!
-            BiomeGenerator biomeGenerator = new BiomeGenerator();
-            biomeGenerator.start();
+            //this is the biome generator thread singleton
+            new Thread(new BiomeGenerator()).start();
 
             easterEgg();
 
