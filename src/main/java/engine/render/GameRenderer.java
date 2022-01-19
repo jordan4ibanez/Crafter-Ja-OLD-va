@@ -4,7 +4,6 @@ import engine.graphics.ShaderProgram;
 import engine.gui.GUIObject;
 import org.joml.*;
 
-import java.lang.Math;
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -45,13 +44,15 @@ import static game.player.Player.*;
 import static game.player.Player.getPlayerWorldSelectionPos;
 import static game.player.PlayerMesh.*;
 import static game.player.WieldHand.*;
+import static org.joml.Math.max;
+import static org.joml.Math.toRadians;
 import static org.lwjgl.opengl.GL44.*;
 import static org.lwjgl.opengl.GL44C.GL_BLEND;
 import static org.lwjgl.opengl.GL44C.glDisable;
 
 public class GameRenderer {
 
-    private static final float FOV = (float) Math.toRadians(72.0f); //todo: make this a calculator method ala calculateFOV(float);
+    private static final float FOV = toRadians(72.0f); //todo: make this a calculator method ala calculateFOV(float);
 
     private static final float Z_NEAR = 0.1f;
 
@@ -1247,6 +1248,6 @@ public class GameRenderer {
 
     private static double getChunkDistanceFromPlayer(int x, int z){
         Vector3i currentChunk = getPlayerCurrentChunk();
-        return Math.max(getDistance(0,0,currentChunk.z, 0, 0, z), getDistance(currentChunk.x,0,0, x, 0, 0));
+        return max(getDistance(0,0,currentChunk.z, 0, 0, z), getDistance(currentChunk.x,0,0, x, 0, 0));
     }
 }
