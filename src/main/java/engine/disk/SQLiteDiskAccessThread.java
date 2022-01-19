@@ -14,8 +14,6 @@ import static game.chunk.ChunkUpdateHandler.chunkUpdate;
 
 public class SQLiteDiskAccessThread implements Runnable {
 
-    //class fields
-    private String url;
     private Connection connection;
     private DatabaseMetaData meta;
 
@@ -28,7 +26,8 @@ public class SQLiteDiskAccessThread implements Runnable {
         //databases are automatically created with the JBDC driver
 
         //database parameters
-        url = "jdbc:sqlite:" + System.getProperty("user.dir") +  "/Worlds/" + worldName + "/map.db";
+        //class fields
+        String url = "jdbc:sqlite:" + System.getProperty("user.dir") + "/Worlds/" + worldName + "/map.db";
 
         try {
             //database connection, static private
