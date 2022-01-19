@@ -3,6 +3,7 @@ package game;
 import game.chunk.BiomeGenerator;
 import game.chunk.Chunk;
 import game.chunk.ChunkMeshGenerator;
+import game.light.Light;
 
 import java.awt.*;
 
@@ -59,6 +60,9 @@ public class Crafter {
 
             //this is the biome generator thread singleton
             new Thread(new BiomeGenerator()).start();
+
+            //this is the light handling thread singleton
+            new Thread(new Light()).start();
 
             easterEgg();
 
