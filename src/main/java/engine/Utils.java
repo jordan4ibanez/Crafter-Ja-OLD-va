@@ -19,7 +19,7 @@ import static org.lwjgl.BufferUtils.createByteBuffer;
 
 public class Utils {
 
-    //load plain text file
+    //load plain text file - external from JAR
     public static String loadResource(String fileName) throws Exception{
         
         File text = new File(fileName);
@@ -31,7 +31,7 @@ public class Utils {
         return result;
     }
 
-    //save string as plain text
+    //save string as plain text - external from JAR
     public static void saveResource(String fileName, String data) throws IOException{
         FileWriter writer = new FileWriter(fileName);
         
@@ -40,6 +40,7 @@ public class Utils {
         }
     }
 
+    //internal to JAR - needs refactor
     public static List<String> readAllLines(String fileName) throws Exception {
         List<String> list = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(Class.forName(Utils.class.getName()).getResourceAsStream(fileName)))) {
