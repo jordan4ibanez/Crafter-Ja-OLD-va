@@ -34,9 +34,6 @@ public class MainMenuRenderer {
 
         shaderProgram.bind();
 
-        //keep the camera located in the correct location for the 3D block text
-        resetViewMatrix();
-
         //update projection matrix
         resetProjectionMatrix(FOV, getWindowWidth(), getWindowHeight(), getzNear(), 100f);
         shaderProgram.setUniform("projectionMatrix", getProjectionMatrix());

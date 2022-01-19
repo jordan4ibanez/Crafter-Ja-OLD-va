@@ -197,8 +197,6 @@ public class GameRenderer {
 
         //update projection matrix
         resetProjectionMatrix(FOV + getRunningFOVAdder(), getWindowWidth(), getWindowHeight(), Z_NEAR, (renderDistance * 2) * 16f);
-        //update the view matrix
-        resetViewMatrix();
 
         //todo BEGIN chunk sorting ---------------------------------------------------------------------------------------------
 
