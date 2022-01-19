@@ -62,8 +62,7 @@ public class Crafter {
             //this is the biome generator thread
             //TODO: MOVE THIS SOMEWHERE SANE!
             BiomeGenerator biomeGenerator = new BiomeGenerator();
-            Thread biomeThread = new Thread(biomeGenerator);
-            biomeThread.start();
+            biomeGenerator.start();
 
             easterEgg();
 

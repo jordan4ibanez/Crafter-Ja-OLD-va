@@ -13,34 +13,53 @@ import static game.chunk.Chunk.*;
 import static game.chunk.ChunkUpdateHandler.chunkUpdate;
 
 //this class is entirely run on it's own thread, be careful with OpenGL context
-final public class BiomeGenerator implements Runnable{
+public class BiomeGenerator extends Thread {
 
-    private final static ArrayDeque<Vector2i> queue = new ArrayDeque<>();
-    private static int seed = 532_444_432;
-    private final static FastNoise noise = new FastNoise();
+    //static reference to self object
+    private static BiomeGenerator thisThing = null;
 
+    private final ArrayDeque<Vector2i> queue = new ArrayDeque<>();
+    private int seed = 532_444_432;
+    private final FastNoise noise = new FastNoise();
+
+    //self starting thread
+    public BiomeGenerator(){
+        thisThing = this;
+    }
+
+    @Override
     public void run() {
         noise.SetSeed(seed);
         while (!windowShouldClose()) {
-            runBiomeGeneration();
+            boolean needsToSleep = runBiomeGeneration();
+            if (needsToSleep){
+                try {
+                    //System.out.println("sleeping");
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            } //else {
+            //System.out.println("I'm awake");
+            //}
         }
     }
 
-    public static void addChunkToBiomeGeneration(int x, int z){
+    public void internalAddChunkToBiomeGenerator(int x, int z){
         queue.add(new Vector2i(x,z));
     }
 
-    private static final double heightAdder = 70;
-    private static final byte dirtHeight = 4;
-    private static final byte waterHeight = 50;
-    private static final int noiseMultiplier = 50;
-    private static final Vector2i newData = new Vector2i();
-    private static final Deque<Vector3i> treePosQueue = new ArrayDeque<>();
+    public static void addChunkToBiomeGeneration(int x, int z){
+        thisThing.internalAddChunkToBiomeGenerator(x, z);
+    }
 
-    private static void runBiomeGeneration(){
+    private final Vector2i newData = new Vector2i();
+    private final Deque<Vector3i> treePosQueue = new ArrayDeque<>();
+
+    private boolean runBiomeGeneration(){
 
         if (queue.isEmpty()) {
-            return;
+            return true;
         }
 
         newData.set(queue.pop());
@@ -51,7 +70,7 @@ final public class BiomeGenerator implements Runnable{
 
         //don't regen existing chunks
         if (getChunkKey(newData.x, newData.y) != null) {
-            return;
+            return false;
         }
 
         byte[] blockData = new byte[32768];
@@ -63,6 +82,9 @@ final public class BiomeGenerator implements Runnable{
         byte generationX;
         byte generationZ;
         byte height;
+        int noiseMultiplier = 50;
+        byte waterHeight = 50;
+        double heightAdder = 70;
         for (generationX = 0; generationX < 16; generationX++) {
             for (generationZ = 0; generationZ < 16; generationZ++) {
                 boolean gennedSand = false;
@@ -70,8 +92,8 @@ final public class BiomeGenerator implements Runnable{
                 boolean gennedGrass = false;
                 double dirtHeightRandom = Math.floor(Math.random() * 2d);
 
-                float realPosX = (float) ((chunkX * 16d) + (double) generationX);
-                float realPosZ = (float) ((chunkZ * 16d) + (double) generationZ);
+                float realPosX = (float) ((chunkX * 16d) + generationX);
+                float realPosZ = (float) ((chunkZ * 16d) + generationZ);
 
                 height = (byte) (Math.abs(noise.GetPerlin(realPosX, realPosZ) * noiseMultiplier + heightAdder));
 
@@ -88,6 +110,7 @@ final public class BiomeGenerator implements Runnable{
                     byte currBlock = blockData[posToIndex(generationX, generationY, generationZ)];
 
                     //bedrock
+                    byte dirtHeight = 4;
                     if (generationY <= 0 + dirtHeightRandom) {
                         currBlock = 5;
                         //grass gen
@@ -166,8 +189,8 @@ final public class BiomeGenerator implements Runnable{
                 //only check outside
                 if (generationX < 0 || generationX > 15 || generationZ < 0 || generationZ > 15) {
 
-                    float realPosX = (float) ((chunkX * 16d) + (double) generationX);
-                    float realPosZ = (float) ((chunkZ * 16d) + (double) generationZ);
+                    float realPosX = (float) ((chunkX * 16d) + generationX);
+                    float realPosZ = (float) ((chunkZ * 16d) + generationZ);
 
                     height = (byte) (Math.abs(noise.GetPerlin(realPosX, realPosZ) * noiseMultiplier + heightAdder) + (byte) 1);
 
@@ -272,37 +295,39 @@ final public class BiomeGenerator implements Runnable{
         }
 
         treePosQueue.clear();
+        
+        return false;
     }
 
     //only use the current thread's core/thread to calculate
-    private static int posToIndex( int x, int y, int z ) {
+    private int posToIndex( int x, int y, int z ) {
         return (z * 2048) + (y * 16) + x;
     }
 
     //make the inverse of this eventually
-    private static int posToIndex2D(int x, int z){
+    private int posToIndex2D(int x, int z){
         return (z * 16) + x;
     }
 
     //Thanks a lot Lars!!
-    private static byte getByteTorchLight(byte input){
+    private byte getByteTorchLight(byte input){
         return (byte) (input & ((1 << 4) - 1));
     }
-    private static byte getByteNaturalLight(byte input){
+    private byte getByteNaturalLight(byte input){
         return (byte) (((1 << 4) - 1) & input >> 4);
     }
 
-    public static byte setByteTorchLight(byte input, byte newValue){
+    private byte setByteTorchLight(byte input, byte newValue){
         byte naturalLight = getByteNaturalLight(input);
         return (byte) (naturalLight << 4 | newValue);
     }
 
-    public static byte setByteNaturalLight(byte input, byte newValue){
+    private byte setByteNaturalLight(byte input, byte newValue){
         byte torchLight = getByteTorchLight(input);
         return (byte) (newValue << 4 | torchLight);
     }
 
-    public static void setSeed(int newSeed){
+    public void setSeed(int newSeed){
         seed = newSeed;
     }
 }
