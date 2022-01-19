@@ -1,7 +1,10 @@
 package game.light;
 
+import org.joml.Vector3i;
+
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 import static game.chunk.Chunk.*;
 import static game.chunk.ChunkMeshGenerator.setChunkThreadCurrentGlobalLightLevel;
@@ -79,245 +82,240 @@ public class Light {
     }
 
     public static void lightFloodFill(int posX, int posY, int posZ) {
-        new Thread(() -> {
-                final Deque<LightUpdate> lightSources = new ArrayDeque<>();
-                final byte[][][] memoryMap = new byte[(lightDistance * 2) + 1][(lightDistance * 2) + 1][(lightDistance * 2) + 1];
-                for (int x = posX - lightDistance; x <= posX + lightDistance; x++) {
-                    for (int y = posY - lightDistance; y <= posY + lightDistance; y++) {
-                        for (int z = posZ - lightDistance; z <= posZ + lightDistance; z++) {
-                            int theBlock = getBlock(x, y, z);
-                            if (theBlock == 0 && underSunLight(x, y, z)) {
-                                int skipCheck = 0;
-                                if (getBlock(x + 1, y, z) == 0 && underSunLight(x + 1, y, z) && getNaturalLight(x + 1, y, z) == currentLightLevel) {
-                                    skipCheck++;
-                                }
-                                if (getBlock(x - 1, y, z) == 0 && underSunLight(x - 1, y, z) && getNaturalLight(x - 1, y, z) == currentLightLevel) {
-                                    skipCheck++;
-                                }
-                                if (getBlock(x, y + 1, z) == 0 && underSunLight(x, y + 1, z) && getNaturalLight(x, y + 1, z) == currentLightLevel) {
-                                    skipCheck++;
-                                }
-                                if (getBlock(x, y - 1, z) == 0 && underSunLight(x, y - 1, z) && getNaturalLight(x, y - 1, z) == currentLightLevel) {
-                                    skipCheck++;
-                                }
-                                if (getBlock(x, y, z + 1) == 0 && underSunLight(x, y, z + 1) && getNaturalLight(x, y, z + 1) == currentLightLevel) {
-                                    skipCheck++;
-                                }
-                                if (getBlock(x, y, z - 1) == 0 && underSunLight(x, y, z - 1) && getNaturalLight(x, y, z - 1) == currentLightLevel) {
-                                    skipCheck++;
-                                }
-                                if (skipCheck < 6) {
-                                    lightSources.add(new LightUpdate(x - posX + lightDistance, y - posY + lightDistance, z - posZ + lightDistance));
-                                }
-                                memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance] = currentLightLevel;
-                            } else if (theBlock == 0) {
-                                memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance] = 0;
-                            } else {
-                                memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance] = blockIndicator;
-                            }
+        final Deque<LightUpdate> lightSources = new ArrayDeque<>();
+        final byte[][][] memoryMap = new byte[(lightDistance * 2) + 1][(lightDistance * 2) + 1][(lightDistance * 2) + 1];
+        for (int x = posX - lightDistance; x <= posX + lightDistance; x++) {
+            for (int y = posY - lightDistance; y <= posY + lightDistance; y++) {
+                for (int z = posZ - lightDistance; z <= posZ + lightDistance; z++) {
+                    int theBlock = getBlock(x, y, z);
+                    if (theBlock == 0 && underSunLight(x, y, z)) {
+                        int skipCheck = 0;
+                        if (getBlock(x + 1, y, z) == 0 && underSunLight(x + 1, y, z) && getNaturalLight(x + 1, y, z) == currentLightLevel) {
+                            skipCheck++;
                         }
+                        if (getBlock(x - 1, y, z) == 0 && underSunLight(x - 1, y, z) && getNaturalLight(x - 1, y, z) == currentLightLevel) {
+                            skipCheck++;
+                        }
+                        if (getBlock(x, y + 1, z) == 0 && underSunLight(x, y + 1, z) && getNaturalLight(x, y + 1, z) == currentLightLevel) {
+                            skipCheck++;
+                        }
+                        if (getBlock(x, y - 1, z) == 0 && underSunLight(x, y - 1, z) && getNaturalLight(x, y - 1, z) == currentLightLevel) {
+                            skipCheck++;
+                        }
+                        if (getBlock(x, y, z + 1) == 0 && underSunLight(x, y, z + 1) && getNaturalLight(x, y, z + 1) == currentLightLevel) {
+                            skipCheck++;
+                        }
+                        if (getBlock(x, y, z - 1) == 0 && underSunLight(x, y, z - 1) && getNaturalLight(x, y, z - 1) == currentLightLevel) {
+                            skipCheck++;
+                        }
+                        if (skipCheck < 6) {
+                            lightSources.add(new LightUpdate(x - posX + lightDistance, y - posY + lightDistance, z - posZ + lightDistance));
+                        }
+                        memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance] = currentLightLevel;
+                    } else if (theBlock == 0) {
+                        memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance] = 0;
+                    } else {
+                        memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance] = blockIndicator;
+                    }
+                }
+            }
+        }
+
+        int[] crawlerPos;
+
+        while (!lightSources.isEmpty()) {
+            LightUpdate thisUpdate = lightSources.pop();
+
+            Deque<LightUpdate> lightSteps = new ArrayDeque<>();
+
+            lightSteps.push(new LightUpdate(thisUpdate.x, thisUpdate.y, thisUpdate.z, maxLightLevel));
+
+            while (!lightSteps.isEmpty()) {
+                LightUpdate newUpdate = lightSteps.pop();
+
+                if (newUpdate.level <= 1) {
+                    continue;
+                }
+                if (newUpdate.x < 0 || newUpdate.x > max || newUpdate.y < 0 || newUpdate.y > max || newUpdate.z < 0 || newUpdate.z > max) {
+                    continue;
+                }
+
+                crawlerPos = new int[]{newUpdate.x, newUpdate.y, newUpdate.z};
+
+                //+x
+                {
+                    if (crawlerPos[0] + 1 < max && memoryMap[crawlerPos[0] + 1][crawlerPos[1]][crawlerPos[2]] < newUpdate.level - 1) {
+                        memoryMap[crawlerPos[0] + 1][crawlerPos[1]][crawlerPos[2]] = (byte) (newUpdate.level - 1);
+                        lightSteps.add(new LightUpdate(crawlerPos[0] + 1, crawlerPos[1], crawlerPos[2], (byte) (newUpdate.level - 1)));
                     }
                 }
 
-                int[] crawlerPos;
-
-                while (!lightSources.isEmpty()) {
-                    LightUpdate thisUpdate = lightSources.pop();
-
-                    Deque<LightUpdate> lightSteps = new ArrayDeque<>();
-
-                    lightSteps.push(new LightUpdate(thisUpdate.x, thisUpdate.y, thisUpdate.z, maxLightLevel));
-
-                    while (!lightSteps.isEmpty()) {
-                        LightUpdate newUpdate = lightSteps.pop();
-
-                        if (newUpdate.level <= 1) {
-                            continue;
-                        }
-                        if (newUpdate.x < 0 || newUpdate.x > max || newUpdate.y < 0 || newUpdate.y > max || newUpdate.z < 0 || newUpdate.z > max) {
-                            continue;
-                        }
-
-                        crawlerPos = new int[]{newUpdate.x, newUpdate.y, newUpdate.z};
-
-                        //+x
-                        {
-                            if (crawlerPos[0] + 1 < max && memoryMap[crawlerPos[0] + 1][crawlerPos[1]][crawlerPos[2]] < newUpdate.level - 1) {
-                                memoryMap[crawlerPos[0] + 1][crawlerPos[1]][crawlerPos[2]] = (byte) (newUpdate.level - 1);
-                                lightSteps.add(new LightUpdate(crawlerPos[0] + 1, crawlerPos[1], crawlerPos[2], (byte) (newUpdate.level - 1)));
-                            }
-                        }
-
-                        //-x
-                        {
-                            if (crawlerPos[0] - 1 >= 0 && memoryMap[crawlerPos[0] - 1][crawlerPos[1]][crawlerPos[2]] < newUpdate.level - 1) {
-                                memoryMap[crawlerPos[0] - 1][crawlerPos[1]][crawlerPos[2]] = (byte) (newUpdate.level - 1);
-                                lightSteps.add(new LightUpdate(crawlerPos[0] - 1, crawlerPos[1], crawlerPos[2], (byte) (newUpdate.level - 1)));
-                            }
-                        }
-
-                        //+z
-                        {
-                            if (crawlerPos[2] + 1 < max && memoryMap[crawlerPos[0]][crawlerPos[1]][crawlerPos[2] + 1] < newUpdate.level - 1) {
-                                memoryMap[crawlerPos[0]][crawlerPos[1]][crawlerPos[2] + 1] = (byte) (newUpdate.level - 1);
-                                lightSteps.add(new LightUpdate(crawlerPos[0], crawlerPos[1], crawlerPos[2] + 1, (byte) (newUpdate.level - 1)));
-                            }
-                        }
-
-                        //-z
-                        {
-                            if (crawlerPos[2] - 1 >= 0 && memoryMap[crawlerPos[0]][crawlerPos[1]][crawlerPos[2] - 1] < newUpdate.level - 1) {
-                                memoryMap[crawlerPos[0]][crawlerPos[1]][crawlerPos[2] - 1] = (byte) (newUpdate.level - 1);
-                                lightSteps.add(new LightUpdate(crawlerPos[0], crawlerPos[1], crawlerPos[2] - 1, (byte) (newUpdate.level - 1)));
-                            }
-                        }
-
-                        //+y
-                        {
-                            if (crawlerPos[1] + 1 < max && memoryMap[crawlerPos[0]][crawlerPos[1] + 1][crawlerPos[2]] < newUpdate.level - 1) {
-                                memoryMap[crawlerPos[0]][crawlerPos[1] + 1][crawlerPos[2]] = (byte) (newUpdate.level - 1);
-                                lightSteps.add(new LightUpdate(crawlerPos[0], crawlerPos[1] + 1, crawlerPos[2], (byte) (newUpdate.level - 1)));
-                            }
-                        }
-
-                        //-y
-                        {
-                            if (crawlerPos[1] - 1 >= 0 && memoryMap[crawlerPos[0]][crawlerPos[1] - 1][crawlerPos[2]] < newUpdate.level - 1) {
-                                memoryMap[crawlerPos[0]][crawlerPos[1] - 1][crawlerPos[2]] = (byte) (newUpdate.level - 1);
-                                lightSteps.add(new LightUpdate(crawlerPos[0], crawlerPos[1] - 1, crawlerPos[2], (byte) (newUpdate.level - 1)));
-                            }
-                        }
+                //-x
+                {
+                    if (crawlerPos[0] - 1 >= 0 && memoryMap[crawlerPos[0] - 1][crawlerPos[1]][crawlerPos[2]] < newUpdate.level - 1) {
+                        memoryMap[crawlerPos[0] - 1][crawlerPos[1]][crawlerPos[2]] = (byte) (newUpdate.level - 1);
+                        lightSteps.add(new LightUpdate(crawlerPos[0] - 1, crawlerPos[1], crawlerPos[2], (byte) (newUpdate.level - 1)));
                     }
                 }
 
-                for (int x = posX - lightDistance; x <= posX + lightDistance; x++) {
-                    for (int y = posY - lightDistance; y <= posY + lightDistance; y++) {
-                        for (int z = posZ - lightDistance; z <= posZ + lightDistance; z++) {
-                            if (memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance] != blockIndicator) {
-                                setNaturalLight(x, y, z, memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance]);
-                            }
-                        }
+                //+z
+                {
+                    if (crawlerPos[2] + 1 < max && memoryMap[crawlerPos[0]][crawlerPos[1]][crawlerPos[2] + 1] < newUpdate.level - 1) {
+                        memoryMap[crawlerPos[0]][crawlerPos[1]][crawlerPos[2] + 1] = (byte) (newUpdate.level - 1);
+                        lightSteps.add(new LightUpdate(crawlerPos[0], crawlerPos[1], crawlerPos[2] + 1, (byte) (newUpdate.level - 1)));
                     }
                 }
-                lightSources.clear();
-            //}
-        }).start();
+
+                //-z
+                {
+                    if (crawlerPos[2] - 1 >= 0 && memoryMap[crawlerPos[0]][crawlerPos[1]][crawlerPos[2] - 1] < newUpdate.level - 1) {
+                        memoryMap[crawlerPos[0]][crawlerPos[1]][crawlerPos[2] - 1] = (byte) (newUpdate.level - 1);
+                        lightSteps.add(new LightUpdate(crawlerPos[0], crawlerPos[1], crawlerPos[2] - 1, (byte) (newUpdate.level - 1)));
+                    }
+                }
+
+                //+y
+                {
+                    if (crawlerPos[1] + 1 < max && memoryMap[crawlerPos[0]][crawlerPos[1] + 1][crawlerPos[2]] < newUpdate.level - 1) {
+                        memoryMap[crawlerPos[0]][crawlerPos[1] + 1][crawlerPos[2]] = (byte) (newUpdate.level - 1);
+                        lightSteps.add(new LightUpdate(crawlerPos[0], crawlerPos[1] + 1, crawlerPos[2], (byte) (newUpdate.level - 1)));
+                    }
+                }
+
+                //-y
+                {
+                    if (crawlerPos[1] - 1 >= 0 && memoryMap[crawlerPos[0]][crawlerPos[1] - 1][crawlerPos[2]] < newUpdate.level - 1) {
+                        memoryMap[crawlerPos[0]][crawlerPos[1] - 1][crawlerPos[2]] = (byte) (newUpdate.level - 1);
+                        lightSteps.add(new LightUpdate(crawlerPos[0], crawlerPos[1] - 1, crawlerPos[2], (byte) (newUpdate.level - 1)));
+                    }
+                }
+            }
+        }
+
+        for (int x = posX - lightDistance; x <= posX + lightDistance; x++) {
+            for (int y = posY - lightDistance; y <= posY + lightDistance; y++) {
+                for (int z = posZ - lightDistance; z <= posZ + lightDistance; z++) {
+                    if (memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance] != blockIndicator) {
+                        setNaturalLight(x, y, z, memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance]);
+                    }
+                }
+            }
+        }
+        lightSources.clear();
     }
 
 
 
     public static void torchFloodFill(int posX, int posY, int posZ) {
-        new Thread(() -> {
-            final Deque<LightUpdate> lightSources = new ArrayDeque<>();
-            final byte[][][] memoryMap = new byte[(lightDistance * 2) + 1][(lightDistance * 2) + 1][(lightDistance * 2) + 1];
+        final Deque<LightUpdate> lightSources = new ArrayDeque<>();
+        final byte[][][] memoryMap = new byte[(lightDistance * 2) + 1][(lightDistance * 2) + 1][(lightDistance * 2) + 1];
 
-            //lightSources.add(new LightUpdate(lightDistance, lightDistance, lightDistance, getTorchLight(posX,posY,posZ)));
+        //lightSources.add(new LightUpdate(lightDistance, lightDistance, lightDistance, getTorchLight(posX,posY,posZ)));
 
-            int minX = posX - lightDistance;
-            int maxX = posX + lightDistance;
-            int minY = posY - lightDistance;
-            int maxY = posY + lightDistance;
-            int minZ = posZ - lightDistance;
-            int maxZ = posZ + lightDistance;
+        int minX = posX - lightDistance;
+        int maxX = posX + lightDistance;
+        int minY = posY - lightDistance;
+        int maxY = posY + lightDistance;
+        int minZ = posZ - lightDistance;
+        int maxZ = posZ + lightDistance;
 
-            for (int x = posX - lightDistance; x <= posX + lightDistance; x++) {
-                for (int y = posY - lightDistance; y <= posY + lightDistance; y++) {
-                    for (int z = posZ - lightDistance; z <= posZ + lightDistance; z++) {
-                        int theBlock = getBlock(x, y, z);
-                        if (theBlock == 29){
-                            lightSources.add(new LightUpdate( x - posX + lightDistance, y - posY + lightDistance, z - posZ + lightDistance, maxTorchLightLevel));
-                        } else if (theBlock == 0 && (x == minX || x == maxX || y == minY || y == maxY || z == minZ || z == maxZ)) {
-                            memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance] = getTorchLight(x, y, z);
-                        } else if (theBlock != 0){
-                            memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance] = blockIndicator;
-                        } else { //everything else is zeroed out
-                            memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance] = 0;
-                        }
+        for (int x = posX - lightDistance; x <= posX + lightDistance; x++) {
+            for (int y = posY - lightDistance; y <= posY + lightDistance; y++) {
+                for (int z = posZ - lightDistance; z <= posZ + lightDistance; z++) {
+                    int theBlock = getBlock(x, y, z);
+                    if (theBlock == 29){
+                        lightSources.add(new LightUpdate( x - posX + lightDistance, y - posY + lightDistance, z - posZ + lightDistance, maxTorchLightLevel));
+                    } else if (theBlock == 0 && (x == minX || x == maxX || y == minY || y == maxY || z == minZ || z == maxZ)) {
+                        memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance] = getTorchLight(x, y, z);
+                    } else if (theBlock != 0){
+                        memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance] = blockIndicator;
+                    } else { //everything else is zeroed out
+                        memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance] = 0;
                     }
                 }
             }
+        }
 
-            int[] crawlerPos;
+        int[] crawlerPos;
 
-            while (!lightSources.isEmpty()) {
-                LightUpdate thisUpdate = lightSources.pop();
+        while (!lightSources.isEmpty()) {
+            LightUpdate thisUpdate = lightSources.pop();
 
-                Deque<LightUpdate> lightSteps = new ArrayDeque<>();
+            Deque<LightUpdate> lightSteps = new ArrayDeque<>();
 
-                lightSteps.push(new LightUpdate(thisUpdate.x, thisUpdate.y, thisUpdate.z, maxLightLevel));
+            lightSteps.push(new LightUpdate(thisUpdate.x, thisUpdate.y, thisUpdate.z, maxLightLevel));
 
-                while (!lightSteps.isEmpty()) {
+            while (!lightSteps.isEmpty()) {
 
-                    LightUpdate newUpdate = lightSteps.pop();
+                LightUpdate newUpdate = lightSteps.pop();
 
-                    if (newUpdate.level <= 1) {
-                        continue;
+                if (newUpdate.level <= 1) {
+                    continue;
+                }
+                if (newUpdate.x < 0 || newUpdate.x > max || newUpdate.y < 0 || newUpdate.y > max || newUpdate.z < 0 || newUpdate.z > max) {
+                    continue;
+                }
+
+                crawlerPos = new int[]{newUpdate.x, newUpdate.y, newUpdate.z};
+
+                //+x
+                {
+                    if (crawlerPos[0] + 1 < max && memoryMap[crawlerPos[0] + 1][crawlerPos[1]][crawlerPos[2]] < newUpdate.level - 1) {
+                        memoryMap[crawlerPos[0] + 1][crawlerPos[1]][crawlerPos[2]] = (byte) (newUpdate.level - 1);
+                        lightSteps.add(new LightUpdate(crawlerPos[0] + 1, crawlerPos[1], crawlerPos[2], (byte) (newUpdate.level - 1)));
                     }
-                    if (newUpdate.x < 0 || newUpdate.x > max || newUpdate.y < 0 || newUpdate.y > max || newUpdate.z < 0 || newUpdate.z > max) {
-                        continue;
+                }
+
+                //-x
+                {
+                    if (crawlerPos[0] - 1 >= 0 && memoryMap[crawlerPos[0] - 1][crawlerPos[1]][crawlerPos[2]] < newUpdate.level - 1) {
+                        memoryMap[crawlerPos[0] - 1][crawlerPos[1]][crawlerPos[2]] = (byte) (newUpdate.level - 1);
+                        lightSteps.add(new LightUpdate(crawlerPos[0] - 1, crawlerPos[1], crawlerPos[2], (byte) (newUpdate.level - 1)));
                     }
+                }
 
-                    crawlerPos = new int[]{newUpdate.x, newUpdate.y, newUpdate.z};
-
-                    //+x
-                    {
-                        if (crawlerPos[0] + 1 < max && memoryMap[crawlerPos[0] + 1][crawlerPos[1]][crawlerPos[2]] < newUpdate.level - 1) {
-                            memoryMap[crawlerPos[0] + 1][crawlerPos[1]][crawlerPos[2]] = (byte) (newUpdate.level - 1);
-                            lightSteps.add(new LightUpdate(crawlerPos[0] + 1, crawlerPos[1], crawlerPos[2], (byte) (newUpdate.level - 1)));
-                        }
+                //+z
+                {
+                    if (crawlerPos[2] + 1 < max && memoryMap[crawlerPos[0]][crawlerPos[1]][crawlerPos[2] + 1] < newUpdate.level - 1) {
+                        memoryMap[crawlerPos[0]][crawlerPos[1]][crawlerPos[2] + 1] = (byte) (newUpdate.level - 1);
+                        lightSteps.add(new LightUpdate(crawlerPos[0], crawlerPos[1], crawlerPos[2] + 1, (byte) (newUpdate.level - 1)));
                     }
+                }
 
-                    //-x
-                    {
-                        if (crawlerPos[0] - 1 >= 0 && memoryMap[crawlerPos[0] - 1][crawlerPos[1]][crawlerPos[2]] < newUpdate.level - 1) {
-                            memoryMap[crawlerPos[0] - 1][crawlerPos[1]][crawlerPos[2]] = (byte) (newUpdate.level - 1);
-                            lightSteps.add(new LightUpdate(crawlerPos[0] - 1, crawlerPos[1], crawlerPos[2], (byte) (newUpdate.level - 1)));
-                        }
+                //-z
+                {
+                    if (crawlerPos[2] - 1 >= 0 && memoryMap[crawlerPos[0]][crawlerPos[1]][crawlerPos[2] - 1] < newUpdate.level - 1) {
+                        memoryMap[crawlerPos[0]][crawlerPos[1]][crawlerPos[2] - 1] = (byte) (newUpdate.level - 1);
+                        lightSteps.add(new LightUpdate(crawlerPos[0], crawlerPos[1], crawlerPos[2] - 1, (byte) (newUpdate.level - 1)));
                     }
+                }
 
-                    //+z
-                    {
-                        if (crawlerPos[2] + 1 < max && memoryMap[crawlerPos[0]][crawlerPos[1]][crawlerPos[2] + 1] < newUpdate.level - 1) {
-                            memoryMap[crawlerPos[0]][crawlerPos[1]][crawlerPos[2] + 1] = (byte) (newUpdate.level - 1);
-                            lightSteps.add(new LightUpdate(crawlerPos[0], crawlerPos[1], crawlerPos[2] + 1, (byte) (newUpdate.level - 1)));
-                        }
+                //+y
+                {
+                    if (crawlerPos[1] + 1 < max && memoryMap[crawlerPos[0]][crawlerPos[1] + 1][crawlerPos[2]] < newUpdate.level - 1) {
+                        memoryMap[crawlerPos[0]][crawlerPos[1] + 1][crawlerPos[2]] = (byte) (newUpdate.level - 1);
+                        lightSteps.add(new LightUpdate(crawlerPos[0], crawlerPos[1] + 1, crawlerPos[2], (byte) (newUpdate.level - 1)));
                     }
+                }
 
-                    //-z
-                    {
-                        if (crawlerPos[2] - 1 >= 0 && memoryMap[crawlerPos[0]][crawlerPos[1]][crawlerPos[2] - 1] < newUpdate.level - 1) {
-                            memoryMap[crawlerPos[0]][crawlerPos[1]][crawlerPos[2] - 1] = (byte) (newUpdate.level - 1);
-                            lightSteps.add(new LightUpdate(crawlerPos[0], crawlerPos[1], crawlerPos[2] - 1, (byte) (newUpdate.level - 1)));
-                        }
-                    }
-
-                    //+y
-                    {
-                        if (crawlerPos[1] + 1 < max && memoryMap[crawlerPos[0]][crawlerPos[1] + 1][crawlerPos[2]] < newUpdate.level - 1) {
-                            memoryMap[crawlerPos[0]][crawlerPos[1] + 1][crawlerPos[2]] = (byte) (newUpdate.level - 1);
-                            lightSteps.add(new LightUpdate(crawlerPos[0], crawlerPos[1] + 1, crawlerPos[2], (byte) (newUpdate.level - 1)));
-                        }
-                    }
-
-                    //-y
-                    {
-                        if (crawlerPos[1] - 1 >= 0 && memoryMap[crawlerPos[0]][crawlerPos[1] - 1][crawlerPos[2]] < newUpdate.level - 1) {
-                            memoryMap[crawlerPos[0]][crawlerPos[1] - 1][crawlerPos[2]] = (byte) (newUpdate.level - 1);
-                            lightSteps.add(new LightUpdate(crawlerPos[0], crawlerPos[1] - 1, crawlerPos[2], (byte) (newUpdate.level - 1)));
-                        }
+                //-y
+                {
+                    if (crawlerPos[1] - 1 >= 0 && memoryMap[crawlerPos[0]][crawlerPos[1] - 1][crawlerPos[2]] < newUpdate.level - 1) {
+                        memoryMap[crawlerPos[0]][crawlerPos[1] - 1][crawlerPos[2]] = (byte) (newUpdate.level - 1);
+                        lightSteps.add(new LightUpdate(crawlerPos[0], crawlerPos[1] - 1, crawlerPos[2], (byte) (newUpdate.level - 1)));
                     }
                 }
             }
+        }
 
-            for (int x = posX - lightDistance; x <= posX + lightDistance; x++) {
-                for (int y = posY - lightDistance; y <= posY + lightDistance; y++) {
-                    for (int z = posZ - lightDistance; z <= posZ + lightDistance; z++) {
-                        if (memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance] != blockIndicator) {
-                            setTorchLight(x, y, z, memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance]);
-                        }
+        for (int x = posX - lightDistance; x <= posX + lightDistance; x++) {
+            for (int y = posY - lightDistance; y <= posY + lightDistance; y++) {
+                for (int z = posZ - lightDistance; z <= posZ + lightDistance; z++) {
+                    if (memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance] != blockIndicator) {
+                        setTorchLight(x, y, z, memoryMap[x - posX + lightDistance][y - posY + lightDistance][z - posZ + lightDistance]);
                     }
                 }
             }
-        }).start();
+        }
     }
 }
