@@ -151,11 +151,12 @@ final public class Mesh {
         //bind the texture
         glBindTexture(GL_TEXTURE_2D, texture[meshID]);
 
-        //draw the mesh
+        //bind the mesh vertex array
         glBindVertexArray(meshID);
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
 
+        //draw the mesh
         glDrawElements(GL_TRIANGLES, vertexCount[meshID], GL_UNSIGNED_INT, 0);
 
         //restore data
