@@ -22,8 +22,6 @@ public class Utils {
     //load plain text file
     public static String loadResource(String fileName) throws Exception{
         
-        //System.out.println("Working Directory = " + workingDir);
-
         File text = new File(fileName);
         
         Scanner scanner = new Scanner(text, StandardCharsets.UTF_8.name());
@@ -62,6 +60,7 @@ public class Utils {
         return floatArr;
     }
 
+    @SuppressWarnings("empty-statement")
     public static ByteBuffer ioResourceToByteBuffer(String resource, int bufferSize) throws IOException{
         ByteBuffer buffer;
 
