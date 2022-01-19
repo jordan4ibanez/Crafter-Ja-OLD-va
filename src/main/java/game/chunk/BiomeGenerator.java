@@ -13,7 +13,7 @@ import static game.chunk.Chunk.*;
 import static game.chunk.ChunkUpdateHandler.chunkUpdate;
 
 //this class is entirely run on it's own thread, be careful with OpenGL context
-public class BiomeGenerator extends Thread {
+public class BiomeGenerator implements Runnable {
 
     //static reference to self object
     private static BiomeGenerator thisThing = null;
