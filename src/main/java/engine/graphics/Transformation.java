@@ -19,9 +19,6 @@ public class Transformation {
     //the master projection matrix, this is only modified by getProjectionMatrix
     private static final Matrix4d projectionMatrix = new Matrix4d();
 
-    //another master matrix, this is only modified by getViewMatrix
-    private static final Matrix4d modelViewMatrix = new Matrix4d();
-
     //another master matrix, only modified by resetOrthoProjectionMatrix
     private static final Matrix4d orthoMatrix = new Matrix4d();
 
@@ -32,10 +29,6 @@ public class Transformation {
 
     //this is specifically used for openAL
     private static final Matrix4d openALMatrix = new Matrix4d();
-
-    //these are workers for the sun and moon
-    private static final Vector3d pos = new Vector3d();
-    private static final Vector3d basePos = new Vector3d();
 
     public static Matrix4d getProjectionMatrix(){
         return projectionMatrix;
@@ -60,50 +53,18 @@ public class Transformation {
                 .translate(-getCameraPositionX(), -getCameraPositionY(), -getCameraPositionZ());
     }
 
-    public static void updateSunMatrix() {
+    public static void updateCelestialMatrix(double inputTime) {
+        //keep these bois on the stack
+        double x = (Math.sin(inputTime * 2f * Math.PI) * 5d) + getCameraPositionX();
+        double y = (Math.cos(inputTime * 2f * Math.PI) * 5d) + getCameraPositionY();
 
-        pos.set(0);
-        basePos.set(getCameraPositionX(),getCameraPositionY(),getCameraPositionZ());
-
-        double timeLinear = getTimeOfDayLinear() - 0.5d;
-
-        pos.x = Math.sin(timeLinear * 2f * Math.PI);
-        pos.y = Math.cos(timeLinear * 2f * Math.PI);
-        pos.mul(5);
-        pos.add(basePos);
-
-        modelViewMatrix.identity().identity().translate(pos).
+        modelMatrix.set(viewMatrix)
+                .translate(x, y, getCameraPositionZ()).
                 rotateY(toRadians(90)).
                 rotateZ(0).
-                rotateX(toRadians((timeLinear + 0.25d) * 360)).
+                rotateX(toRadians((inputTime + 0.25d) * 360)).
                 scale(1f);
-
-        modelMatrix.set(viewMatrix);
-        modelMatrix.mul(modelViewMatrix);
     }
-
-    public static void updateMoonMatrix() {
-
-        pos.set(0);
-        basePos.set(getCameraPositionX(),getCameraPositionY(),getCameraPositionZ());
-
-        double timeLinear = getTimeOfDayLinear();
-
-        pos.x = Math.sin(timeLinear * 2f * Math.PI);
-        pos.y = Math.cos(timeLinear * 2f * Math.PI);
-        pos.mul(5);
-        pos.add(basePos);
-
-        modelViewMatrix.identity().identity().translate(pos).
-                rotateY(toRadians(90)).
-                rotateZ(0).
-                rotateX(toRadians((timeLinear + 0.25d) * 360)).
-                scale(1f);
-
-        modelMatrix.set(viewMatrix);
-        modelMatrix.mul(modelViewMatrix);
-    }
-
 
     //THIS IS USED BY OPENAL - SOUND MANAGER
     public static void updateOpenALSoundMatrix(double positionX, double positionY, double positionZ, float rotationX, float rotationY) {
