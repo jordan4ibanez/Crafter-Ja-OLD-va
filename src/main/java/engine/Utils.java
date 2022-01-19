@@ -22,10 +22,9 @@ public class Utils {
     //load plain text file
     public static String loadResource(String fileName) throws Exception{
         
-        String workingDir = System.getProperty("user.dir");
         //System.out.println("Working Directory = " + workingDir);
-        
-        File text = new File(workingDir + fileName);
+
+        File text = new File(fileName);
         
         Scanner scanner = new Scanner(text, StandardCharsets.UTF_8.name());
         

@@ -103,8 +103,8 @@ public class GameRenderer {
     public static void initRenderer() throws Exception{
         //normal shader program
         shaderProgram = new ShaderProgram();
-        shaderProgram.createVertexShader(loadResource("/resources/vertex.vs"));
-        shaderProgram.createFragmentShader(loadResource("/resources/fragment.fs"));
+        shaderProgram.createVertexShader(loadResource("resources/vertex.vs"));
+        shaderProgram.createFragmentShader(loadResource("resources/fragment.fs"));
         shaderProgram.link();
 
         //create uniforms for world and projection matrices
@@ -116,8 +116,8 @@ public class GameRenderer {
 
         //ortholinear hud shader program
         hudShaderProgram = new ShaderProgram();
-        hudShaderProgram.createVertexShader(loadResource("/resources/hud_vertex.vs"));
-        hudShaderProgram.createFragmentShader(loadResource("/resources/hud_fragment.fs"));
+        hudShaderProgram.createVertexShader(loadResource("resources/hud_vertex.vs"));
+        hudShaderProgram.createFragmentShader(loadResource("resources/hud_fragment.fs"));
         hudShaderProgram.link();
 
         //create uniforms for model view matrix
@@ -128,8 +128,8 @@ public class GameRenderer {
 
         //glassLike shader program
         glassLikeShaderProgram = new ShaderProgram();
-        glassLikeShaderProgram.createVertexShader(loadResource("/resources/glasslike_vertex.vs"));
-        glassLikeShaderProgram.createFragmentShader(loadResource("/resources/glasslike_fragment.fs"));
+        glassLikeShaderProgram.createVertexShader(loadResource("resources/glasslike_vertex.vs"));
+        glassLikeShaderProgram.createFragmentShader(loadResource("resources/glasslike_fragment.fs"));
         glassLikeShaderProgram.link();
 
         //create uniforms for world and projection matrices
@@ -141,8 +141,8 @@ public class GameRenderer {
 
         //glassLike shader program
         entityShaderProgram = new ShaderProgram();
-        entityShaderProgram.createVertexShader(loadResource("/resources/entity_vertex.vs"));
-        entityShaderProgram.createFragmentShader(loadResource("/resources/entity_fragment.fs"));
+        entityShaderProgram.createVertexShader(loadResource("resources/entity_vertex.vs"));
+        entityShaderProgram.createFragmentShader(loadResource("resources/entity_fragment.fs"));
         entityShaderProgram.link();
 
         //create uniforms for world and projection matrices
