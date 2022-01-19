@@ -85,7 +85,17 @@ public class ChunkMeshGenerator implements Runnable{
     public void run() {
         //run until game is closed - should only be run in game
         while (!windowShouldClose()) {
-            pollQueue();
+            if (pollQueue()) {
+                try {
+                    //thread needs to sleep quicker to avoid lag
+                    //System.out.println("sleeping");
+                    Thread.sleep(30);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            } //else {
+                //System.out.println("I'M AWAKE!");
+            //}
         }
     }
 
@@ -109,147 +119,149 @@ public class ChunkMeshGenerator implements Runnable{
 
 
     //this polls for chunk meshes to update
-    private static void pollQueue() {
-        if (!generationQueue.isEmpty()) {
+    private static boolean pollQueue() {
+        if (generationQueue.isEmpty()) {
+            return true;
+        }
 
-            try {
-                key.set(generationQueue.pop());
-            } catch (Exception ignore) {
-                return; //don't crash basically
-            }
+        try {
+            key.set(generationQueue.pop());
+        } catch (Exception ignore) {
+            return false; //don't crash basically
+        }
 
-            byte[] blockData = getBlockDataClone(key.x, key.z);
-            byte[] rotationData = getRotationDataClone(key.x, key.z);
-            byte[] lightData = getLightDataClone(key.x, key.z);
+        byte[] blockData = getBlockDataClone(key.x, key.z);
+        byte[] rotationData = getRotationDataClone(key.x, key.z);
+        byte[] lightData = getLightDataClone(key.x, key.z);
 
-            //don't bother if the chunk doesn't exist
-            if (blockData == null || rotationData == null || lightData == null) {
-                return;
-            }
+        //don't bother if the chunk doesn't exist
+        if (blockData == null || rotationData == null || lightData == null) {
+            return false;
+        }
 
-            //raw data extracted into stack primitives
-            final int chunkX = key.x;
-            final int chunkZ = key.z;
-            final int yHeight = key.y;
+        //raw data extracted into stack primitives
+        final int chunkX = key.x;
+        final int chunkZ = key.z;
+        final int yHeight = key.y;
 
-            //neighbor chunks
-            byte[] chunkNeighborXPlusBlockData  = getBlockDataClone(key.x + 1, key.z);
-            byte[] chunkNeighborXMinusBlockData = getBlockDataClone(key.x - 1, key.z);
-            byte[] chunkNeighborZPlusBlockData  = getBlockDataClone(key.x, key.z + 1);
-            byte[] chunkNeighborZMinusBlockData = getBlockDataClone(key.x, key.z - 1);
+        //neighbor chunks
+        byte[] chunkNeighborXPlusBlockData  = getBlockDataClone(key.x + 1, key.z);
+        byte[] chunkNeighborXMinusBlockData = getBlockDataClone(key.x - 1, key.z);
+        byte[] chunkNeighborZPlusBlockData  = getBlockDataClone(key.x, key.z + 1);
+        byte[] chunkNeighborZMinusBlockData = getBlockDataClone(key.x, key.z - 1);
 
-            byte[] chunkNeighborXPlusLightData  = getLightDataClone(key.x + 1, key.z);
-            byte[] chunkNeighborXMinusLightData = getLightDataClone(key.x - 1, key.z);
-            byte[] chunkNeighborZPlusLightData  = getLightDataClone(key.x, key.z + 1);
-            byte[] chunkNeighborZMinusLightData = getLightDataClone(key.x, key.z - 1);
+        byte[] chunkNeighborXPlusLightData  = getLightDataClone(key.x + 1, key.z);
+        byte[] chunkNeighborXMinusLightData = getLightDataClone(key.x - 1, key.z);
+        byte[] chunkNeighborZPlusLightData  = getLightDataClone(key.x, key.z + 1);
+        byte[] chunkNeighborZMinusLightData = getLightDataClone(key.x, key.z - 1);
 
-            int indicesCount = 0;
+        int indicesCount = 0;
 
-            int liquidIndicesCount = 0;
+        int liquidIndicesCount = 0;
 
-            int allFacesIndicesCount = 0;
+        int allFacesIndicesCount = 0;
 
-            //current global light level - dumped into the stack
-            byte chunkLightLevel = currentGlobalLightLevel;
+        //current global light level - dumped into the stack
+        byte chunkLightLevel = currentGlobalLightLevel;
 
-            byte thisBlock;
-            byte thisBlockDrawType;
-            byte thisRotation;
+        byte thisBlock;
+        byte thisBlockDrawType;
+        byte thisRotation;
 
-            //loop through ystack
-            for (int x = 0; x < 16; x++) {
-                for (int z = 0; z < 16; z++) {
-                    for (int y = yHeight * 16; y < (yHeight + 1) * 16; y++) {
+        //loop through ystack
+        for (int x = 0; x < 16; x++) {
+            for (int z = 0; z < 16; z++) {
+                for (int y = yHeight * 16; y < (yHeight + 1) * 16; y++) {
 
-                        thisBlock = blockData[posToIndex(x, y, z)];
+                    thisBlock = blockData[posToIndex(x, y, z)];
 
-                        //only if not air
-                        if (thisBlock > 0) {
+                    //only if not air
+                    if (thisBlock > 0) {
 
-                            //only need to look this data up if it's not air
-                            thisBlockDrawType = getBlockDrawType(thisBlock);
-                            thisRotation = rotationData[posToIndex(x, y, z)];
+                        //only need to look this data up if it's not air
+                        thisBlockDrawType = getBlockDrawType(thisBlock);
+                        thisRotation = rotationData[posToIndex(x, y, z)];
 
-                            switch (thisBlockDrawType) {
+                        switch (thisBlockDrawType) {
 
-                                //normal
-                                case 1 -> indicesCount = calculateNormal(x, y, z, thisBlock, thisRotation, indicesCount, blockData, chunkNeighborZPlusBlockData,chunkNeighborZPlusLightData, chunkNeighborZMinusBlockData,chunkNeighborZMinusLightData, chunkNeighborXPlusBlockData,chunkNeighborXPlusLightData, chunkNeighborXMinusBlockData,chunkNeighborXMinusLightData, chunkLightLevel, lightData);
+                            //normal
+                            case 1 -> indicesCount = calculateNormal(x, y, z, thisBlock, thisRotation, indicesCount, blockData, chunkNeighborZPlusBlockData,chunkNeighborZPlusLightData, chunkNeighborZMinusBlockData,chunkNeighborZMinusLightData, chunkNeighborXPlusBlockData,chunkNeighborXPlusLightData, chunkNeighborXMinusBlockData,chunkNeighborXMinusLightData, chunkLightLevel, lightData);
 
-                                //allfaces
-                                case 4 -> allFacesIndicesCount = calculateAllFaces(x, y, z, thisBlock, thisRotation, allFacesIndicesCount, chunkNeighborZPlusLightData, chunkNeighborZMinusLightData, chunkNeighborXPlusLightData, chunkNeighborXMinusLightData, chunkLightLevel, lightData);
+                            //allfaces
+                            case 4 -> allFacesIndicesCount = calculateAllFaces(x, y, z, thisBlock, thisRotation, allFacesIndicesCount, chunkNeighborZPlusLightData, chunkNeighborZMinusLightData, chunkNeighborXPlusLightData, chunkNeighborXMinusLightData, chunkLightLevel, lightData);
 
-                                //torch
-                                case 7 -> indicesCount = calculateTorchLike(x, y, z, thisBlock, thisRotation, indicesCount, chunkNeighborZPlusLightData, chunkNeighborZMinusLightData, chunkNeighborXPlusLightData, chunkNeighborXMinusLightData, chunkLightLevel, lightData);
+                            //torch
+                            case 7 -> indicesCount = calculateTorchLike(x, y, z, thisBlock, thisRotation, indicesCount, chunkNeighborZPlusLightData, chunkNeighborZMinusLightData, chunkNeighborXPlusLightData, chunkNeighborXMinusLightData, chunkLightLevel, lightData);
 
-                                //liquid
-                                case 8 -> liquidIndicesCount = calculateLiquids(x, y, z, thisBlock, thisRotation, liquidIndicesCount, blockData, chunkNeighborZPlusBlockData,chunkNeighborZPlusLightData, chunkNeighborZMinusBlockData,chunkNeighborZMinusLightData, chunkNeighborXPlusBlockData,chunkNeighborXPlusLightData, chunkNeighborXMinusBlockData,chunkNeighborXMinusLightData, chunkLightLevel, lightData);
+                            //liquid
+                            case 8 -> liquidIndicesCount = calculateLiquids(x, y, z, thisBlock, thisRotation, liquidIndicesCount, blockData, chunkNeighborZPlusBlockData,chunkNeighborZPlusLightData, chunkNeighborZMinusBlockData,chunkNeighborZMinusLightData, chunkNeighborXPlusBlockData,chunkNeighborXPlusLightData, chunkNeighborXMinusBlockData,chunkNeighborXMinusLightData, chunkLightLevel, lightData);
 
-                                //blockbox
-                                default -> indicesCount = calculateBlockBox(x, y, z, thisBlock, thisRotation, indicesCount, chunkNeighborZPlusLightData, chunkNeighborZMinusLightData, chunkNeighborXPlusLightData, chunkNeighborXMinusLightData, chunkLightLevel, lightData);
-                            }
+                            //blockbox
+                            default -> indicesCount = calculateBlockBox(x, y, z, thisBlock, thisRotation, indicesCount, chunkNeighborZPlusLightData, chunkNeighborZMinusLightData, chunkNeighborXPlusLightData, chunkNeighborXMinusLightData, chunkLightLevel, lightData);
                         }
                     }
                 }
             }
-
-
-            ChunkMeshDataObject newChunkData = new ChunkMeshDataObject();
-
-            newChunkData.chunkX = chunkX;
-            newChunkData.chunkZ = chunkZ;
-            newChunkData.yHeight = yHeight;
-
-
-            if (positions.size() > 0) {
-                //pass data to container object
-                newChunkData.positionsArray    = positions.values();
-                newChunkData.lightArray        = light.values();
-                newChunkData.indicesArray      = indices.values();
-                newChunkData.textureCoordArray = textureCoord.values();
-            } else {
-                //inform the container object that this chunk is null for this part of it
-                newChunkData.normalMeshIsNull = true;
-            }
-
-            if (liquidPositions.size() > 0){
-                newChunkData.liquidPositionsArray    = liquidPositions.values();
-                newChunkData.liquidLightArray        = liquidLight.values();
-                newChunkData.liquidIndicesArray      = liquidIndices.values();
-                newChunkData.liquidTextureCoordArray = liquidTextureCoord.values();
-            } else {
-                //inform the container object that this chunk is null for this part of it
-                newChunkData.liquidMeshIsNull = true;
-            }
-
-            if (allFacesPositions.size() > 0) {
-                //pass data to container object
-                newChunkData.allFacesPositionsArray = allFacesPositions.values();
-                newChunkData.allFacesLightArray = allFacesLight.values();
-                newChunkData.allFacesIndicesArray = allFacesIndices.values();
-                newChunkData.allFacesTextureCoordArray = allFacesTextureCoord.values();
-            } else {
-                //inform the container object that this chunk is null for this part of it
-                newChunkData.allFacesMeshIsNull = true;
-            }
-
-
-            //reset the data so it can be reused
-            positions.reset();
-            textureCoord.reset();
-            indices.reset();
-            light.reset();
-            liquidPositions.reset();
-            liquidTextureCoord.reset();
-            liquidIndices.reset();
-            liquidLight.reset();
-            allFacesPositions.reset();
-            allFacesTextureCoord.reset();
-            allFacesIndices.reset();
-            allFacesLight.reset();
-
-            //finally add it into the queue to be popped
-            addToChunkMeshQueue(newChunkData);
         }
+
+
+        ChunkMeshDataObject newChunkData = new ChunkMeshDataObject();
+
+        newChunkData.chunkX = chunkX;
+        newChunkData.chunkZ = chunkZ;
+        newChunkData.yHeight = yHeight;
+
+
+        if (positions.size() > 0) {
+            //pass data to container object
+            newChunkData.positionsArray    = positions.values();
+            newChunkData.lightArray        = light.values();
+            newChunkData.indicesArray      = indices.values();
+            newChunkData.textureCoordArray = textureCoord.values();
+        } else {
+            //inform the container object that this chunk is null for this part of it
+            newChunkData.normalMeshIsNull = true;
+        }
+
+        if (liquidPositions.size() > 0){
+            newChunkData.liquidPositionsArray    = liquidPositions.values();
+            newChunkData.liquidLightArray        = liquidLight.values();
+            newChunkData.liquidIndicesArray      = liquidIndices.values();
+            newChunkData.liquidTextureCoordArray = liquidTextureCoord.values();
+        } else {
+            //inform the container object that this chunk is null for this part of it
+            newChunkData.liquidMeshIsNull = true;
+        }
+
+        if (allFacesPositions.size() > 0) {
+            //pass data to container object
+            newChunkData.allFacesPositionsArray = allFacesPositions.values();
+            newChunkData.allFacesLightArray = allFacesLight.values();
+            newChunkData.allFacesIndicesArray = allFacesIndices.values();
+            newChunkData.allFacesTextureCoordArray = allFacesTextureCoord.values();
+        } else {
+            //inform the container object that this chunk is null for this part of it
+            newChunkData.allFacesMeshIsNull = true;
+        }
+
+
+        //reset the data so it can be reused
+        positions.reset();
+        textureCoord.reset();
+        indices.reset();
+        light.reset();
+        liquidPositions.reset();
+        liquidTextureCoord.reset();
+        liquidIndices.reset();
+        liquidLight.reset();
+        allFacesPositions.reset();
+        allFacesTextureCoord.reset();
+        allFacesIndices.reset();
+        allFacesLight.reset();
+
+        //finally add it into the queue to be popped
+        addToChunkMeshQueue(newChunkData);
+        return false;
     }
 
 
