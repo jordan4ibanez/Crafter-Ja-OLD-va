@@ -192,30 +192,33 @@ public class SQLiteDiskAccessThread implements Runnable {
         playerHealth.add(newPlayerHealth);
     }
 
-    private void tryToSavePlayer(){
-        if (!playerToSave.isEmpty() && !playerInventory.isEmpty() && !playerInventoryCount.isEmpty() && !playerPos.isEmpty() && !playerHealth.isEmpty()) {
-            try {
-                String poppedPlayer = playerToSave.pop();
-
-                Statement statement = connection.createStatement();
-
-                String sql = "INSERT OR REPLACE INTO PLAYER_DATA " +
-                        "(ID,INVENTORY,AMOUNT,POS,HEALTH) " +
-                        "VALUES ('" +
-                        poppedPlayer + "','" + //ID
-                        stringArrayArraySerialize(playerInventory.pop()) + "','" +//INVENTORY STRING ARRAY
-                        intArrayArraySerialize(playerInventoryCount.pop()) + "','" +//INVENTORY AMOUNT BYTE ARRAY
-                        serializeVector3d(playerPos.pop()) + "','" +//POS VECTOR DATA
-                        playerHealth.pop() + //PLAYER HEALTH DATA
-                        "');";
-                statement.executeUpdate(sql);
-                statement.close();
-
-
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
+    private boolean tryToSavePlayer(){
+        if (playerToSave.isEmpty() || playerInventory.isEmpty() || playerInventoryCount.isEmpty() || playerPos.isEmpty() || playerHealth.isEmpty()) {
+            return true;
         }
+        try {
+            String poppedPlayer = playerToSave.pop();
+
+            Statement statement = connection.createStatement();
+
+            String sql = "INSERT OR REPLACE INTO PLAYER_DATA " +
+                    "(ID,INVENTORY,AMOUNT,POS,HEALTH) " +
+                    "VALUES ('" +
+                    poppedPlayer + "','" + //ID
+                    stringArrayArraySerialize(playerInventory.pop()) + "','" +//INVENTORY STRING ARRAY
+                    intArrayArraySerialize(playerInventoryCount.pop()) + "','" +//INVENTORY AMOUNT BYTE ARRAY
+                    serializeVector3d(playerPos.pop()) + "','" +//POS VECTOR DATA
+                    playerHealth.pop() + //PLAYER HEALTH DATA
+                    "');";
+            statement.executeUpdate(sql);
+            statement.close();
+
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return false;
     }
 
     //do this so that the main thread does not hang
@@ -227,38 +230,40 @@ public class SQLiteDiskAccessThread implements Runnable {
     }
 
 
-    private void tryToLoadPlayer(){
-        if (!playersToLoad.isEmpty()) {
-            try {
-
-                String poppedPlayer = playersToLoad.pop();
-
-                Statement statement = connection.createStatement();
-                ResultSet resultTest = statement.executeQuery("SELECT * FROM PLAYER_DATA WHERE ID ='" + poppedPlayer + "';");
-
-                //found a player - send main thread their data
-                if (resultTest.next()) {
-                    //automatically set the player's data
-                    String[][] loadedInventory = stringArrayArrayDeserialize((resultTest.getString("INVENTORY")));
-                    int[][] loadedCount = intArrayArrayDeserialize(resultTest.getString("AMOUNT"));
-                    Vector3d playerPos = deserializeVector3d(resultTest.getString("POS"));
-                    byte playerHealth = Byte.parseByte(resultTest.getString("HEALTH"));
-
-                    passDataFromSQLiteDiskAccessThread("singleplayer", loadedInventory, loadedCount, playerPos, playerHealth);
-
-                //send main thread a blank player
-                } else {
-                    //players just kind of drop from the sky ¯\_(ツ)_/¯
-                    passDataFromSQLiteDiskAccessThread("singleplayer", new String[4][9], new int[4][9], new Vector3d(0,100,0), (byte) 20);
-                }
-
-                //did not find player
-
-                statement.close();
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
+    private boolean tryToLoadPlayer(){
+        if (playersToLoad.isEmpty()) {
+            return true;
         }
+        try {
+
+            String poppedPlayer = playersToLoad.pop();
+
+            Statement statement = connection.createStatement();
+            ResultSet resultTest = statement.executeQuery("SELECT * FROM PLAYER_DATA WHERE ID ='" + poppedPlayer + "';");
+
+            //found a player - send main thread their data
+            if (resultTest.next()) {
+                //automatically set the player's data
+                String[][] loadedInventory = stringArrayArrayDeserialize((resultTest.getString("INVENTORY")));
+                int[][] loadedCount = intArrayArrayDeserialize(resultTest.getString("AMOUNT"));
+                Vector3d playerPos = deserializeVector3d(resultTest.getString("POS"));
+                byte playerHealth = Byte.parseByte(resultTest.getString("HEALTH"));
+
+                passDataFromSQLiteDiskAccessThread("singleplayer", loadedInventory, loadedCount, playerPos, playerHealth);
+
+            //send main thread a blank player
+            } else {
+                //players just kind of drop from the sky ¯\_(ツ)_/¯
+                passDataFromSQLiteDiskAccessThread("singleplayer", new String[4][9], new int[4][9], new Vector3d(0,100,0), (byte) 20);
+            }
+
+            //did not find player
+
+            statement.close();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return false;
     }
 
     //begin world data
@@ -280,34 +285,38 @@ public class SQLiteDiskAccessThread implements Runnable {
         chunksToSaveHeightMap.add(heightMap);
     }
 
-    private void tryToSaveChunk(){
+    private boolean tryToSaveChunk(){
 
-        if (!chunksToSaveKey.isEmpty() && !chunksToSaveBlock.isEmpty() && !chunksToSaveRotation.isEmpty() && !chunksToSaveLight.isEmpty() && !chunksToSaveHeightMap.isEmpty()) {
-            try {
-                Vector2i poppedVector = chunksToSaveKey.pop();
-
-                int x = poppedVector.x;
-                int z = poppedVector.y;
-
-                Statement statement = connection.createStatement();
-
-                String sql = "INSERT OR REPLACE INTO WORLD " +
-                        "(ID,BLOCK,ROTATION,LIGHT,HEIGHTMAP) " +
-                        "VALUES ('" +
-                        x + "-" + z + "','" + //ID
-                        byteSerialize(chunksToSaveBlock.pop()) + "','" +//BLOCK ARRAY
-                        byteSerialize(chunksToSaveRotation.pop()) + "','" +//ROTATION DATA
-                        byteSerialize(chunksToSaveLight.pop()) + "','" +//LIGHT DATA
-                        byteSerialize(chunksToSaveHeightMap.pop()) + //HEIGHT DATA
-                        "');";
-                statement.executeUpdate(sql);
-                statement.close();
-
-
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
+        if (chunksToSaveKey.isEmpty() || chunksToSaveBlock.isEmpty() || chunksToSaveRotation.isEmpty() || chunksToSaveLight.isEmpty() || chunksToSaveHeightMap.isEmpty()) {
+            return true;
         }
+
+        try {
+            Vector2i poppedVector = chunksToSaveKey.pop();
+
+            int x = poppedVector.x;
+            int z = poppedVector.y;
+
+            Statement statement = connection.createStatement();
+
+            String sql = "INSERT OR REPLACE INTO WORLD " +
+                    "(ID,BLOCK,ROTATION,LIGHT,HEIGHTMAP) " +
+                    "VALUES ('" +
+                    x + "-" + z + "','" + //ID
+                    byteSerialize(chunksToSaveBlock.pop()) + "','" +//BLOCK ARRAY
+                    byteSerialize(chunksToSaveRotation.pop()) + "','" +//ROTATION DATA
+                    byteSerialize(chunksToSaveLight.pop()) + "','" +//LIGHT DATA
+                    byteSerialize(chunksToSaveHeightMap.pop()) + //HEIGHT DATA
+                    "');";
+            statement.executeUpdate(sql);
+            statement.close();
+
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return false;
     }
 
     //do this so that the main thread does not hang
@@ -319,50 +328,54 @@ public class SQLiteDiskAccessThread implements Runnable {
         }
     }
 
-    public void tryToLoadChunk(){
-        if (!chunksToLoad.isEmpty()) {
-            try {
-
-                Vector2i poppedVector = chunksToLoad.pop();
-
-                int x = poppedVector.x;
-                int z = poppedVector.y;
-
-
-                Statement statement = connection.createStatement();
-                ResultSet resultTest = statement.executeQuery("SELECT * FROM WORLD WHERE ID ='" + x + "-" + z + "';");
-
-                //found a chunk
-                if (resultTest.next()) {
-
-                    //System.out.println("LOADING CHUNK FROM DATABASE!");
-
-                    //automatically set the chunk in memory
-                    setChunk(x, z,
-                            byteDeserialize(resultTest.getString("BLOCK")),
-                            byteDeserialize(resultTest.getString("ROTATION")),
-                            byteDeserialize(resultTest.getString("LIGHT")),
-                            byteDeserialize(resultTest.getString("HEIGHTMAP"))
-                    );
-
-                    //dump everything into the chunk updater
-                    for (int i = 0; i < 8; i++) {
-                        chunkUpdate(x, z, i);
-                    }
-
-                }
-
-                //did not find a chunk - create a new one
-                else {
-                    //System.out.println("generate chunk here");
-                    addChunkToBiomeGeneration(x, z);
-                }
-
-                statement.close();
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
+    private boolean tryToLoadChunk(){
+        if (chunksToLoad.isEmpty()) {
+            return true;
         }
+
+        try {
+
+            Vector2i poppedVector = chunksToLoad.pop();
+
+            int x = poppedVector.x;
+            int z = poppedVector.y;
+
+
+            Statement statement = connection.createStatement();
+            ResultSet resultTest = statement.executeQuery("SELECT * FROM WORLD WHERE ID ='" + x + "-" + z + "';");
+
+            //found a chunk
+            if (resultTest.next()) {
+
+                //System.out.println("LOADING CHUNK FROM DATABASE!");
+
+                //automatically set the chunk in memory
+                setChunk(x, z,
+                        byteDeserialize(resultTest.getString("BLOCK")),
+                        byteDeserialize(resultTest.getString("ROTATION")),
+                        byteDeserialize(resultTest.getString("LIGHT")),
+                        byteDeserialize(resultTest.getString("HEIGHTMAP"))
+                );
+
+                //dump everything into the chunk updater
+                for (int i = 0; i < 8; i++) {
+                    chunkUpdate(x, z, i);
+                }
+
+            }
+
+            //did not find a chunk - create a new one
+            else {
+                //System.out.println("generate chunk here");
+                addChunkToBiomeGeneration(x, z);
+            }
+
+            statement.close();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return false;
     }
 
 
@@ -387,6 +400,14 @@ public class SQLiteDiskAccessThread implements Runnable {
         running.set(false);
     }
 
+    private boolean sleepLock(boolean current, boolean input){
+        if (!current){
+            return false;
+        }
+
+        return input;
+    }
+
 
     @Override
     public void run() {
@@ -394,13 +415,24 @@ public class SQLiteDiskAccessThread implements Runnable {
 
         //do not shut down until all chunks are saved!
         while(running.get() || !chunksToSaveKey.isEmpty() || !playerToSave.isEmpty()) {
-            //System.out.println("NUMBER 5 IS ALIVE");
+            boolean needsToSleep = true;
+
             if (running.get()) {
-                tryToLoadChunk();
-                tryToLoadPlayer();
+                needsToSleep = sleepLock(needsToSleep, tryToLoadChunk());
+                needsToSleep = sleepLock(needsToSleep, tryToLoadPlayer());
             }
-            tryToSaveChunk();
-            tryToSavePlayer();
+            needsToSleep = sleepLock(needsToSleep, tryToSaveChunk());
+            needsToSleep = sleepLock(needsToSleep, tryToSavePlayer());
+            if (needsToSleep){
+                try {
+                    //System.out.println("sleeping");
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            } //else {
+                //System.out.println("I'm AWAKE! ");
+            //}
         }
 
         System.out.println("CLOSING WORLD DATABASE!");
