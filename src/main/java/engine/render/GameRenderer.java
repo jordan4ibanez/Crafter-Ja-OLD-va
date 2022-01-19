@@ -1204,9 +1204,7 @@ public class GameRenderer {
 
     private static void renderGameGUI(){
         for (GUIObject thisButton : getGamePauseMenuGUI()) {
-
-            float windowScale = getWindowScale();
-
+            
             double xPos = thisButton.pos.x * (windowScale / 100d);
             double yPos = thisButton.pos.y * (windowScale / 100d);
 
