@@ -1203,7 +1203,6 @@ public class GameRenderer {
 
     private static void renderGameGUI(){
         for (GUIObject thisButton : getGamePauseMenuGUI()) {
-            ShaderProgram hudShaderProgram = getHudShaderProgram();
 
             float windowScale = getWindowScale();
 
