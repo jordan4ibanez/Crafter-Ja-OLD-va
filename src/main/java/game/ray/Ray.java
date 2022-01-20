@@ -18,10 +18,10 @@ import static game.entity.mob.MobObject.*;
 import static game.entity.particle.Particle.createParticle;
 import static game.player.Player.*;
 
-final public class Ray {
+public class Ray {
 
     //this is now stack/cache happy as can be
-    public static void playerRayCast(double posX, double posY, double posZ, float dirX, float dirY, float dirZ, float length, boolean mining, boolean placing, boolean hasMined) {
+    public void playerRayCast(double posX, double posY, double posZ, float dirX, float dirY, float dirZ, float length, boolean mining, boolean placing, boolean hasMined) {
 
         int finalPosX = 0;
         int finalPosY = 0;
@@ -150,7 +150,7 @@ final public class Ray {
         }
     }
 
-    private static void destroyBlock(int posX, int posY, int posZ) {
+    private void destroyBlock(int posX, int posY, int posZ) {
 
         byte thisBlock = getBlock(posX, posY, posZ);
 
@@ -167,7 +167,7 @@ final public class Ray {
             createParticle((double)posX + (Math.random()), (double)posY + (Math.random()), (double)posZ + (Math.random()), (float)(Math.random()-0.5f) * 2f, 0f, (float)(Math.random()-0.5f) * 2f, thisBlock);
         }
     }
-    private static void rayPlaceBlock(byte ID, int pointedThingAboveX, int pointedThingAboveY, int pointedThingAboveZ) {
+    private void rayPlaceBlock(byte ID, int pointedThingAboveX, int pointedThingAboveY, int pointedThingAboveZ) {
         if (getIfMultiplayer()){
             sendOutNetworkBlockPlace( pointedThingAboveX, pointedThingAboveY, pointedThingAboveZ, ID, getPlayerDir());
         } else {
@@ -177,9 +177,9 @@ final public class Ray {
         removeItemFromInventory("main", getCurrentInventorySelection(), 0);
     }
 
-    private static final Vector3d cameraWorker = new Vector3d();
+    private final Vector3d cameraWorker = new Vector3d();
 
-    public static Vector3d cameraRayCast(double posX, double posY, double posZ, float dirX, float dirY, float dirZ, float length){
+    public Vector3d cameraRayCast(double posX, double posY, double posZ, float dirX, float dirY, float dirZ, float length){
         double realNewPosX = 0;
         double realNewPosY = 0;
         double realNewPosZ = 0;
