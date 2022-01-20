@@ -11,79 +11,66 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static engine.FancyMath.getDistance;
-import static engine.disk.Disk.*;
-import static engine.disk.SQLiteDiskHandler.loadChunk;
-import static engine.disk.SQLiteDiskHandler.saveChunk;
-import static engine.network.Networking.getIfMultiplayer;
-import static engine.network.Networking.sendOutChunkRequest;
-import static engine.settings.Settings.getRenderDistance;
-import static engine.time.Time.getDelta;
-import static game.chunk.ChunkMath.posToIndex;
-import static game.chunk.ChunkMath.posToIndex2D;
-import static game.chunk.ChunkUpdateHandler.chunkUpdate;
-import static game.light.Light.*;
-import static game.player.Player.*;
 
-final public class Chunk {
+public class Chunk {
 
     //this one holds keys for look ups
-    private static final ConcurrentHashMap<Vector2i, Vector2i> chunkKeys    = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Vector2i, Vector2i> chunkKeys    = new ConcurrentHashMap<>();
 
-    private static final ConcurrentHashMap<Vector2i, byte[]> blocks         = new ConcurrentHashMap<>();
-    private static final ConcurrentHashMap<Vector2i, byte[]> rotations      = new ConcurrentHashMap<>();
-    private static final ConcurrentHashMap<Vector2i, byte[]> lights         = new ConcurrentHashMap<>();
-    private static final ConcurrentHashMap<Vector2i, byte[]> heightmaps   = new ConcurrentHashMap<>();
-    private static final ConcurrentHashMap<Vector2i, Boolean> saveToDisk    = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Vector2i, byte[]> blocks         = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Vector2i, byte[]> rotations      = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Vector2i, byte[]> lights         = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Vector2i, byte[]> heightmaps   = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Vector2i, Boolean> saveToDisk    = new ConcurrentHashMap<>();
 
     //mesh data can only be held on the main thread, so it can use faster containers
-    private static final HashMap<Vector2i, Mesh[]> normalMeshes   = new HashMap<>();
-    private static final HashMap<Vector2i, Mesh[]> liquidMeshes   = new HashMap<>();
-    private static final HashMap<Vector2i, Mesh[]> allFaceMeshes  = new HashMap<>();
-    private static final ConcurrentHashMap<Vector2i, Float> hover = new ConcurrentHashMap<>();
+    private final HashMap<Vector2i, Mesh[]> normalMeshes   = new HashMap<>();
+    private final HashMap<Vector2i, Mesh[]> liquidMeshes   = new HashMap<>();
+    private final HashMap<Vector2i, Mesh[]> allFaceMeshes  = new HashMap<>();
+    private final ConcurrentHashMap<Vector2i, Float> hover = new ConcurrentHashMap<>();
 
-    private static final Vector2i[] keyArray = new Vector2i[0];
+    private final Vector2i[] keyArray = new Vector2i[0];
 
-    public static Vector2i[] getChunkKeys(){
+    public Vector2i[] getChunkKeys(){
         return chunkKeys.keySet().toArray(keyArray);
     }
 
-    public static Vector2i getChunkKey(Vector2i key){
+    public Vector2i getChunkKey(Vector2i key){
         return chunkKeys.get(key);
     }
-    public static Vector2i getChunkKey(int x, int z){
+    public Vector2i getChunkKey(int x, int z){
         return chunkKeys.get(new Vector2i(x,z));
     }
 
     //overload part 1
-    public static byte[] getBlockData(int x, int z){
+    public byte[] getBlockData(int x, int z){
         return blocks.get(new Vector2i(x,z));
     }
-    public static byte[] getRotationData(int x, int z){
+    public byte[] getRotationData(int x, int z){
         return rotations.get(new Vector2i(x,z));
     }
-    public static byte[] getLightData(int x, int z){
+    public byte[] getLightData(int x, int z){
         return lights.get(new Vector2i(x,z));
     }
-    public static byte[] getHeightMapData(int x, int z){
+    public byte[] getHeightMapData(int x, int z){
         return heightmaps.get(new Vector2i(x,z));
     }
     //overload part 2
-    public static byte[] getBlockData(Vector2i key){
+    public byte[] getBlockData(Vector2i key){
         return blocks.get(key);
     }
-    public static byte[] getRotationData(Vector2i key){
+    public byte[] getRotationData(Vector2i key){
         return rotations.get(key);
     }
-    public static byte[] getLightData(Vector2i key){
+    public byte[] getLightData(Vector2i key){
         return lights.get(key);
     }
-    public static byte[] getHeightMapData(Vector2i key){
+    public byte[] getHeightMapData(Vector2i key){
         return heightmaps.get(key);
     }
 
     //overload part 3 - immutable clones
-    public static byte[] getBlockDataClone(int x, int z){
+    public byte[] getBlockDataClone(int x, int z){
         // THIS CREATES A NEW OBJECT IN MEMORY!
         byte[] blockData = blocks.get(new Vector2i(x,z));
         if (blockData == null){
@@ -91,7 +78,7 @@ final public class Chunk {
         }
         return blockData.clone();
     }
-    public static byte[] getRotationDataClone(int x, int z){
+    public byte[] getRotationDataClone(int x, int z){
         // THIS CREATES A NEW OBJECT IN MEMORY!
         byte[] rotationData = rotations.get(new Vector2i(x,z));
         if (rotationData == null){
@@ -99,7 +86,7 @@ final public class Chunk {
         }
         return rotationData.clone();
     }
-    public static byte[] getLightDataClone(int x, int z){
+    public byte[] getLightDataClone(int x, int z){
         // THIS CREATES A NEW OBJECT IN MEMORY!
         byte[] lightData =  lights.get(new Vector2i(x,z));
         if (lightData == null){
@@ -107,7 +94,7 @@ final public class Chunk {
         }
         return lightData.clone();
     }
-    public static byte[] getHeightMapDataClone(int x, int z){
+    public byte[] getHeightMapDataClone(int x, int z){
         // THIS CREATES A NEW OBJECT IN MEMORY!
         byte[] heightMapData = heightmaps.get(new Vector2i(x,z));
         if (heightMapData == null){
@@ -117,24 +104,24 @@ final public class Chunk {
     }
 
 
-    public static AbstractMap<Vector2i, Mesh[]> getNormalMeshes(){
+    public AbstractMap<Vector2i, Mesh[]> getNormalMeshes(){
         return normalMeshes;
     }
 
-    public static AbstractMap<Vector2i, Mesh[]> getLiquidMeshes(){
+    public AbstractMap<Vector2i, Mesh[]> getLiquidMeshes(){
         return liquidMeshes;
     }
 
-    public static AbstractMap<Vector2i, Mesh[]> getAllFaceMeshes(){
+    public AbstractMap<Vector2i, Mesh[]> getAllFaceMeshes(){
         return allFaceMeshes;
     }
 
-    public static float getChunkHover(Vector2i key){
+    public float getChunkHover(Vector2i key){
         return hover.get(key);
     }
 
 
-    public static void doChunksHoveringUpThing(){
+    public void doChunksHoveringUpThing(){
         double delta = getDelta();
 
         for (Vector2i thisValue : hover.keySet()){
@@ -151,7 +138,7 @@ final public class Chunk {
     }
 
     //multiplayer chunk update
-    public static void setChunk(int x, int z, byte[] blockData, byte[] rotationData, byte[] lightData, byte[] heightMapData) {
+    public void setChunk(int x, int z, byte[] blockData, byte[] rotationData, byte[] lightData, byte[] heightMapData) {
         // THIS CREATES A NEW OBJECT IN MEMORY! - it is necessary though, this needs a rework :L
         Vector2i key = new Vector2i(x, z);
 
@@ -185,7 +172,7 @@ final public class Chunk {
         fullNeighborUpdate(x, z);
     }
 
-    public static void initialChunkPayload(){
+    public void initialChunkPayload(){
         //create the initial map in memory
         int chunkRenderDistance = getRenderDistance();
         Vector3i currentChunk = getPlayerCurrentChunk();
@@ -201,7 +188,7 @@ final public class Chunk {
         }
     }
 
-    public static void initialChunkPayloadMultiplayer(){
+    public void initialChunkPayloadMultiplayer(){
         //create the initial map in memory
         int chunkRenderDistance = getRenderDistance();
         Vector3i currentChunk = getPlayerCurrentChunk();
@@ -214,12 +201,12 @@ final public class Chunk {
         }
     }
 
-    private static double getChunkDistanceFromPlayer(int x, int z){
+    private double getChunkDistanceFromPlayer(int x, int z){
         Vector3i currentChunk = getPlayerCurrentChunk();
         return Math.max(getDistance(0,0,currentChunk.z, 0, 0, z), getDistance(currentChunk.x,0,0, x, 0, 0));
     }
 
-    public static void setChunkNormalMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
+    public void setChunkNormalMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
         // THIS CREATES A NEW OBJECT IN MEMORY!
         Mesh[] meshArray = normalMeshes.get(new Vector2i(chunkX, chunkZ));
 
@@ -234,7 +221,7 @@ final public class Chunk {
         meshArray[yHeight] = newMesh;
     }
 
-    public static void setChunkLiquidMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
+    public void setChunkLiquidMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
         Mesh[] meshArray = liquidMeshes.get(new Vector2i(chunkX, chunkZ));
         if (meshArray == null){
             newMesh.cleanUp(false);
@@ -246,7 +233,7 @@ final public class Chunk {
         meshArray[yHeight] = newMesh;
     }
 
-    public static void setChunkAllFacesMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
+    public void setChunkAllFacesMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
         Mesh[] meshArray = allFaceMeshes.get(new Vector2i(chunkX, chunkZ));
         if (meshArray == null){
             newMesh.cleanUp(false);
@@ -258,8 +245,8 @@ final public class Chunk {
         meshArray[yHeight] = newMesh;
     }
 
-    private static float saveTimer = 0f;
-    public static void globalChunkSaveToDisk(){
+    private float saveTimer = 0f;
+    public void globalChunkSaveToDisk(){
         saveTimer += getDelta();
         //save interval is 16 seconds
         if (saveTimer >= 16f){
@@ -276,7 +263,7 @@ final public class Chunk {
     }
 
     //this re-generates chunk meshes with the light level
-    public static void floodChunksWithNewLight(){
+    public void floodChunksWithNewLight(){
         for (Vector2i key : chunkKeys.values()){
             for (int y = 0; y < 8; y++) {
                 chunkUpdate(key.x, key.y, y);
@@ -284,7 +271,7 @@ final public class Chunk {
         }
     }
 
-    public static void globalFinalChunkSaveToDisk(){
+    public void globalFinalChunkSaveToDisk(){
         updateWorldsPathToAvoidCrash();
         for (Vector2i thisKey : chunkKeys.values()){
             //instantSave(thisKey);
@@ -300,7 +287,7 @@ final public class Chunk {
         saveToDisk.clear();
     }
 
-    public static boolean chunkStackContainsBlock(int chunkX, int chunkZ, int yHeight){
+    public boolean chunkStackContainsBlock(int chunkX, int chunkZ, int yHeight){
         // THIS CREATES A NEW OBJECT IN MEMORY!
         byte[] blockData = blocks.get(new Vector2i(chunkX, chunkZ));
 
@@ -322,7 +309,7 @@ final public class Chunk {
     }
 
 
-    public static int getHeightMap(int x, int z){
+    public int getHeightMap(int x, int z){
         int chunkX = (int)Math.floor(x/16d);
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
@@ -338,7 +325,7 @@ final public class Chunk {
         return heightMapData[posToIndex2D(blockX,blockZ)];
     }
 
-    public static boolean underSunLight(int x, int y, int z){
+    public boolean underSunLight(int x, int y, int z){
         if (y > 127 || y < 0){
             return false;
         }
@@ -355,7 +342,7 @@ final public class Chunk {
     }
 
     //overloaded block getter
-    public static byte getBlock(int x,int y,int z){
+    public byte getBlock(int x,int y,int z){
         if (y > 127 || y < 0){
             return -1;
         }
@@ -371,7 +358,7 @@ final public class Chunk {
         return blockData[posToIndex(blockX, y, blockZ)];
     }
     //overloaded block getter
-    public static byte getBlock(Vector3i pos){
+    public byte getBlock(Vector3i pos){
         if (pos.y > 127 || pos.y < 0){
             return -1;
         }
@@ -388,7 +375,7 @@ final public class Chunk {
     }
 
     //overloaded getter for rotation
-    public static byte getBlockRotation(int x, int y, int z){
+    public byte getBlockRotation(int x, int y, int z){
         if (y > 127 || y < 0){
             return -1;
         }
@@ -404,7 +391,7 @@ final public class Chunk {
         return rotationData[posToIndex(blockX, y, blockZ)];
     }
     //overloaded getter for rotation
-    public static byte getBlockRotation(Vector3i pos){
+    public byte getBlockRotation(Vector3i pos){
         if (pos.y > 127 || pos.y < 0){
             return -1;
         }
@@ -420,7 +407,7 @@ final public class Chunk {
         return rotationData[posToIndex(blockX, pos.y, blockZ)];
     }
 
-    public static void setBlock(int x,int y,int z, byte newBlock, byte rot){
+    public void setBlock(int x,int y,int z, byte newBlock, byte rot){
         if (y > 127 || y < 0){
             return;
         }
@@ -461,7 +448,7 @@ final public class Chunk {
         updateNeighbor(chunkX, chunkZ,blockX,y,blockZ);
     }
 
-    public static void setNaturalLight(int x, int y, int z, byte newLight){
+    public void setNaturalLight(int x, int y, int z, byte newLight){
         if (y > 127 || y < 0){
             return;
         }
@@ -480,7 +467,7 @@ final public class Chunk {
         updateNeighbor(chunkX, chunkZ,blockX,y,blockZ);
     }
 
-    public static void setTorchLight(int x,int y,int z, byte newLight){
+    public void setTorchLight(int x,int y,int z, byte newLight){
         if (y > 127 || y < 0){
             return;
         }
@@ -500,7 +487,7 @@ final public class Chunk {
     }
 
 
-    public static void digBlock(int x,int y,int z){
+    public void digBlock(int x,int y,int z){
         if (y > 127 || y < 0){
             return;
         }
@@ -549,7 +536,7 @@ final public class Chunk {
         instantUpdateNeighbor(chunkX, chunkZ,blockX,y,blockZ);//instant update
     }
 
-    public static void placeBlock(int x,int y,int z, byte ID, byte rot){
+    public void placeBlock(int x,int y,int z, byte ID, byte rot){
         if (y > 127 || y < 0){
             return;
         }
@@ -592,7 +579,7 @@ final public class Chunk {
         instantUpdateNeighbor(chunkX, chunkZ,blockX,y,blockZ);//instant update
     }
 
-    public static byte getLight(int x,int y,int z){
+    public byte getLight(int x,int y,int z){
         if (y > 127 || y < 0){
             return 0;
         }
@@ -626,7 +613,7 @@ final public class Chunk {
         }
     }
 
-    public static byte getNaturalLight(int x,int y,int z){
+    public byte getNaturalLight(int x,int y,int z){
         if (y > 127 || y < 0){
             return 0;
         }
@@ -644,7 +631,7 @@ final public class Chunk {
         return getByteNaturalLight(lightData[posToIndex(blockX, y, blockZ)]);
     }
 
-    public static byte getTorchLight(int x,int y,int z){
+    public byte getTorchLight(int x,int y,int z){
         if (y > 127 || y < 0){
             return 0;
         }
@@ -664,25 +651,25 @@ final public class Chunk {
 
 
     //Thanks a lot Lars!!
-    public static byte getByteTorchLight(byte input){
+    public byte getByteTorchLight(byte input){
         return (byte) (input & ((1 << 4) - 1));
     }
-    public static byte getByteNaturalLight(byte input){
+    public byte getByteNaturalLight(byte input){
         return (byte) (((1 << 4) - 1) & input >> 4);
     }
 
-    public static byte setByteTorchLight(byte input, byte newValue){
+    public byte setByteTorchLight(byte input, byte newValue){
         byte naturalLight = getByteNaturalLight(input);
         return (byte) (naturalLight << 4 | newValue);
     }
 
-    public static byte setByteNaturalLight(byte input, byte newValue){
+    public byte setByteNaturalLight(byte input, byte newValue){
         byte torchLight = getByteTorchLight(input);
         return (byte) (newValue << 4 | torchLight);
     }
 
 
-    private static void instantUpdateNeighbor(int chunkX, int chunkZ, int x, int y, int z){
+    private void instantUpdateNeighbor(int chunkX, int chunkZ, int x, int y, int z){
         if (y > 127 || y < 0){
             return;
         }
@@ -705,7 +692,7 @@ final public class Chunk {
         }
     }
 
-    private static void updateNeighbor(int chunkX, int chunkZ, int x, int y, int z){
+    private void updateNeighbor(int chunkX, int chunkZ, int x, int y, int z){
         if (y > 127 || y < 0){
             return;
         }
@@ -728,7 +715,7 @@ final public class Chunk {
         }
     }
 
-    private static void fullNeighborUpdate(int chunkX, int chunkZ){
+    private void fullNeighborUpdate(int chunkX, int chunkZ){
         // THIS CREATES A NEW OBJECT IN MEMORY!
         if (chunkKeys.get(new Vector2i(chunkX + 1, chunkZ)) != null){
             for (int y = 0; y < 8; y++){
@@ -758,7 +745,7 @@ final public class Chunk {
         }
     }
 
-    public static void generateNewChunks(){
+    public void generateNewChunks(){
         //create the initial map in memory
         int chunkRenderDistance = getRenderDistance();
         Vector3i currentChunk = getPlayerCurrentChunk();
@@ -786,7 +773,7 @@ final public class Chunk {
         }
     }
 
-    public static void requestNewChunks(){
+    public void requestNewChunks(){
         //create the initial map in memory
         int chunkRenderDistance = getRenderDistance();
         Vector3i currentChunk = getPlayerCurrentChunk();
@@ -803,18 +790,18 @@ final public class Chunk {
         }
     }
 
-    private static final Deque<Vector2i> deletionQueue = new ArrayDeque<>();
+    private final Deque<Vector2i> deletionQueue = new ArrayDeque<>();
 
-    private static void addChunkToDeletionQueue(int chunkX, int chunkZ) {
+    private void addChunkToDeletionQueue(int chunkX, int chunkZ) {
         deletionQueue.add(new Vector2i(chunkX, chunkZ));
     }
 
-    private static final float goalTimer = 0.0001f;//goalTimerArray[getSettingsChunkLoad()];
+    private final float goalTimer = 0.0001f;//goalTimerArray[getSettingsChunkLoad()];
 
-    private static float chunkDeletionTimer = 0f;
+    private float chunkDeletionTimer = 0f;
 
 
-    public static void processOldChunks() {
+    public void processOldChunks() {
 
         chunkDeletionTimer += getDelta();
 
@@ -873,7 +860,7 @@ final public class Chunk {
     }
 
     //returns -1 if fails
-    public static int getMobSpawnYPos(int x, int z){
+    public int getMobSpawnYPos(int x, int z){
         int chunkX = (int)Math.floor(x/16d);
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
@@ -902,11 +889,11 @@ final public class Chunk {
     //this dispatches to the SQLite thread, checks if it exists in the data base
     //then it either deserializes it or it tells the chunk mesh generator thread
     //to create a new one if it doesn't exist
-    public static void genBiome(int chunkX, int chunkZ) {
+    public void genBiome(int chunkX, int chunkZ) {
         loadChunk(chunkX,chunkZ);
     }
 
-    public static void cleanChunkDataMemory(){
+    public void cleanChunkDataMemory(){
 
         for (Mesh[] meshArray : normalMeshes.values()){
             if (meshArray != null) {
