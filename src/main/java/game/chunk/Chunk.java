@@ -15,19 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Chunk {
 
     //this one holds keys for look ups
-    private final ConcurrentHashMap<Vector2i, Vector2i> chunkKeys    = new ConcurrentHashMap<>();
-
-    private final ConcurrentHashMap<Vector2i, byte[]> blocks         = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<Vector2i, byte[]> rotations      = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<Vector2i, byte[]> lights         = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<Vector2i, byte[]> heightmaps   = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<Vector2i, Boolean> saveToDisk    = new ConcurrentHashMap<>();
-
-    //mesh data can only be held on the main thread, so it can use faster containers
-    private final HashMap<Vector2i, Mesh[]> normalMeshes   = new HashMap<>();
-    private final HashMap<Vector2i, Mesh[]> liquidMeshes   = new HashMap<>();
-    private final HashMap<Vector2i, Mesh[]> allFaceMeshes  = new HashMap<>();
-    private final ConcurrentHashMap<Vector2i, Float> hover = new ConcurrentHashMap<>();
+    private final HashMap<Vector2i, ChunkObject> map = new HashMap<>();
 
     private final Vector2i[] keyArray = new Vector2i[0];
 
