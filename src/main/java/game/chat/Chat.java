@@ -6,7 +6,7 @@ import java.util.ArrayDeque;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static engine.gui.TextHandling.createTextWithShadow;
-import static engine.time.Time.getDelta;
+import static engine.time.Delta.getDelta;
 import static game.player.Player.getPlayerName;
 
 final public class Chat {

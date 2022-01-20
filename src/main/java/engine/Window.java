@@ -11,7 +11,7 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.Objects;
 
-import static engine.time.Time.getDelta;
+import static engine.time.Delta.getDelta;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL44.*;
 import static org.lwjgl.stb.STBImage.stbi_image_free;

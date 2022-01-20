@@ -4,7 +4,7 @@ import org.joml.Math;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import static engine.time.Time.getDelta;
+import static engine.time.Delta.getDelta;
 import static game.entity.mob.MobDefinition.getMobDefinitionBodyOffsets;
 import static game.player.Player.getPlayerPosWithEyeHeight;
 import static game.ray.LineOfSight.getLineOfSight;
