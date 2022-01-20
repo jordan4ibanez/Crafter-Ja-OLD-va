@@ -18,7 +18,6 @@ import static engine.scene.SceneHandler.handleSceneLogic;
 import static engine.settings.Settings.getSettingsVsync;
 import static engine.settings.Settings.loadSettings;
 import static engine.sound.SoundManager.*;
-import static game.blocks.BlockDefinition.initializeBlocks;
 import static game.crafting.CraftRecipes.registerCraftRecipes;
 import static game.crafting.Inventory.createInitialInventory;
 import static game.item.ItemRegistration.registerItems;
@@ -29,16 +28,24 @@ import static game.tnt.TNTEntity.createTNTEntityMesh;
 
 public class Crafter {
 
-    //fields
-    private static final String versionName = "Crafter 0.07c";
+    public void main(String[] args) {
+        //the whole game is an object :D
+        Crafter crafter = new Crafter();
+        crafter.runGame();
+    }
 
-    public static String getVersionName(){
+
+    //fields
+    private final String versionName = "Crafter 0.07c";
+
+    public final String getVersionName(){
         return versionName;
     }
 
+
     //core game engine elements
     //load everything
-    public static void main(String[] args){
+    public void runGame(){
         try{
             Toolkit tk = Toolkit.getDefaultToolkit();
             Dimension d = tk.getScreenSize();
@@ -78,7 +85,7 @@ public class Crafter {
     }
 
     //the game engine elements
-    public static void initGame() throws Exception{
+    private void initGame() {
         initializeHudAtlas();
         //this initializes the block definitions
         initializeBlocks();
@@ -95,7 +102,7 @@ public class Crafter {
     }
 
 
-    private static void cleanup(){
+    private void cleanup(){
         Chunk.cleanChunkDataMemory();
         cleanupSoundManager();
         cleanupRenderer();
