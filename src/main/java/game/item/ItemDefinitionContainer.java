@@ -1,5 +1,6 @@
 package game.item;
 
+import engine.graphics.Mesh;
 import game.blocks.BlockDefinitionContainer;
 import org.joml.Vector3i;
 
@@ -14,6 +15,51 @@ import static game.player.Player.getPlayerDir;
 
 public class ItemDefinitionContainer {
     private final HashMap<String, ItemDefinition> definitions = new HashMap<>();
+
+    public Mesh getMesh(String name){
+        return definitions.get(name).getMesh();
+    }
+
+    public ItemModifier getModifier(String name){
+        return definitions.get(name).getModifier();
+    }
+
+    public boolean isItem(String name){
+        return definitions.get(name).isItem();
+    }
+
+    public float getStoneMiningLevel(String name){
+        return definitions.get(name).getStoneMiningLevel();
+    }
+
+    public float getDirtMiningLevel(String name){
+        return definitions.get(name).getDirtMiningLevel();
+    }
+
+    public float getWoodMiningLevel(String name){
+        return definitions.get(name).getWoodMiningLevel();
+    }
+
+    public float getLeafMiningLevel(String name){
+        return definitions.get(name).getLeafMiningLevel();
+    }
+
+    public int blockID(String name){
+        return definitions.get(name).blockID();
+    }
+
+    public boolean isRightClickable(String name){
+        return definitions.get(name).isRightClickable();
+    }
+
+    public boolean isOnPlaced(String name){
+        return definitions.get(name).isOnPlaced();
+    }
+
+    public boolean isTool(String name){
+        return definitions.get(name).isTool();
+    }
+
 
     public ItemDefinitionContainer(){
         final String[] materials = new String[]{
@@ -33,14 +79,14 @@ public class ItemDefinitionContainer {
 
         for (String material : materials) {
 
-            new ItemDefinition(material + "pick", "textures/tools/" + material + "pick.png", null, toolLevel, 0, 0, 0);
+            definitions.put( material + "pick", new ItemDefinition(material + "pick", "textures/tools/" + material + "pick.png", null, toolLevel, 0, 0, 0));
 
-            new ItemDefinition(material + "shovel", "textures/tools/" + material + "shovel.png", null, 0, toolLevel, 0, 0);
+            definitions.put( material + "shovel", new ItemDefinition(material + "shovel", "textures/tools/" + material + "shovel.png", null, 0, toolLevel, 0, 0));
 
-            new ItemDefinition(material + "axe", "textures/tools/" + material + "axe.png", null, 0, 0, toolLevel, 0);
+            definitions.put( material + "axe", new ItemDefinition(material + "axe", "textures/tools/" + material + "axe.png", null, 0, 0, toolLevel, 0));
 
             if (!material.equals("wood") && !material.equals("stone")) {
-                new ItemDefinition(material, "textures/items/" + material + ".png", null);
+                definitions.put( material, new ItemDefinition(material, "textures/items/" + material + ".png", null));
             }
 
             toolLevel++;
@@ -61,11 +107,11 @@ public class ItemDefinitionContainer {
             }
         };
 
-        new ItemDefinition("door", "textures/door.png", test);
+        definitions.put( "door", new ItemDefinition("door", "textures/door.png", test));
 
-        new ItemDefinition("boat", "textures/boatitem.png", null);
+        definitions.put( "boat", new ItemDefinition("boat", "textures/boatitem.png", null));
 
-        new ItemDefinition("stick", "textures/items/stick.png", null);
+        definitions.put( "stick", new ItemDefinition("stick", "textures/items/stick.png", null));
 
         ItemModifier torchPlace = new ItemModifier() {
             @Override
@@ -96,6 +142,6 @@ public class ItemDefinitionContainer {
             }
         };
 
-        new ItemDefinition("torchItem", "textures/torch.png", torchPlace);
+        definitions.put( "torchItem", new ItemDefinition("torchItem", "textures/torch.png", torchPlace));
     }
 }
