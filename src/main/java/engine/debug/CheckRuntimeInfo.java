@@ -3,7 +3,7 @@ package engine.debug;
 
 import engine.graphics.Mesh;
 
-import static engine.time.Time.getDelta;
+import static engine.time.Delta.getDelta;
 
 public class CheckRuntimeInfo {
     private static final Mesh[] runtimeInfoText = new Mesh[6];

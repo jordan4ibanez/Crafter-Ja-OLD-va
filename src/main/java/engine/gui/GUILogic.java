@@ -12,7 +12,7 @@ import static engine.render.GameRenderer.*;
 import static engine.scene.SceneHandler.setScene;
 import static engine.settings.Settings.*;
 import static engine.sound.SoundAPI.playSound;
-import static engine.time.Time.getDelta;
+import static engine.time.Delta.getDelta;
 import static game.chat.Chat.*;
 import static game.mainMenu.MainMenu.resetMainMenu;
 import static game.mainMenu.MainMenu.resetMainMenuPage;

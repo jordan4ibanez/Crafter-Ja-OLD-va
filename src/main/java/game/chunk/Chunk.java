@@ -5,11 +5,11 @@ import engine.network.ChunkRequest;
 import org.joml.Vector2i;
 import org.joml.Vector3i;
 
-import java.util.AbstractMap;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.concurrent.ConcurrentHashMap;
+
+import static engine.time.Delta.getDelta;
 
 
 public class Chunk {
@@ -20,92 +20,34 @@ public class Chunk {
     private final Vector2i[] keyArray = new Vector2i[0];
 
     public Vector2i[] getChunkKeys(){
-        return chunkKeys.keySet().toArray(keyArray);
+        return map.keySet().toArray(keyArray);
     }
 
-    public Vector2i getChunkKey(Vector2i key){
-        return chunkKeys.get(key);
-    }
-    public Vector2i getChunkKey(int x, int z){
-        return chunkKeys.get(new Vector2i(x,z));
-    }
-
-    //overload part 1
-    public byte[] getBlockData(int x, int z){
-        return blocks.get(new Vector2i(x,z));
-    }
-    public byte[] getRotationData(int x, int z){
-        return rotations.get(new Vector2i(x,z));
-    }
-    public byte[] getLightData(int x, int z){
-        return lights.get(new Vector2i(x,z));
-    }
-    public byte[] getHeightMapData(int x, int z){
-        return heightmaps.get(new Vector2i(x,z));
-    }
-    //overload part 2
     public byte[] getBlockData(Vector2i key){
-        return blocks.get(key);
+        return map.get(key).getBlock();
     }
     public byte[] getRotationData(Vector2i key){
-        return rotations.get(key);
+        return map.get(key).getRotation();
     }
     public byte[] getLightData(Vector2i key){
-        return lights.get(key);
+        return map.get(key).getLight();
     }
     public byte[] getHeightMapData(Vector2i key){
-        return heightmaps.get(key);
+        return map.get(key).getHeightMap();
     }
 
-    //overload part 3 - immutable clones
-    public byte[] getBlockDataClone(int x, int z){
-        // THIS CREATES A NEW OBJECT IN MEMORY!
-        byte[] blockData = blocks.get(new Vector2i(x,z));
-        if (blockData == null){
-            return null;
-        }
-        return blockData.clone();
+    public Mesh[] getNormalMeshArray(Vector2i key){
+        return map.get(key).getNormalMeshArray();
     }
-    public byte[] getRotationDataClone(int x, int z){
-        // THIS CREATES A NEW OBJECT IN MEMORY!
-        byte[] rotationData = rotations.get(new Vector2i(x,z));
-        if (rotationData == null){
-            return null;
-        }
-        return rotationData.clone();
+    public Mesh[] getLiquidMeshArray(Vector2i key){
+        return map.get(key).getLiquidMeshArray();
     }
-    public byte[] getLightDataClone(int x, int z){
-        // THIS CREATES A NEW OBJECT IN MEMORY!
-        byte[] lightData =  lights.get(new Vector2i(x,z));
-        if (lightData == null){
-            return null;
-        }
-        return lightData.clone();
-    }
-    public byte[] getHeightMapDataClone(int x, int z){
-        // THIS CREATES A NEW OBJECT IN MEMORY!
-        byte[] heightMapData = heightmaps.get(new Vector2i(x,z));
-        if (heightMapData == null){
-            return null;
-        }
-        return heightMapData.clone();
-    }
-
-
-    public AbstractMap<Vector2i, Mesh[]> getNormalMeshes(){
-        return normalMeshes;
-    }
-
-    public AbstractMap<Vector2i, Mesh[]> getLiquidMeshes(){
-        return liquidMeshes;
-    }
-
-    public AbstractMap<Vector2i, Mesh[]> getAllFaceMeshes(){
-        return allFaceMeshes;
+    public Mesh[] getAllFaceMeshArray(Vector2i key){
+        return map.get(key).getAllFaceMeshArray();
     }
 
     public float getChunkHover(Vector2i key){
-        return hover.get(key);
+        return map.get(key).getHover();
     }
 
 

@@ -1,7 +1,7 @@
 package engine.time;
 
 import static engine.Window.setWindowClearColorGoal;
-import static engine.time.Time.getDelta;
+import static engine.time.Delta.getDelta;
 import static game.light.Light.setCurrentLightLevel;
 
 public class TimeOfDay {

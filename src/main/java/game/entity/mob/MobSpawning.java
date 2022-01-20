@@ -4,7 +4,7 @@ import org.joml.Vector3d;
 
 import static engine.FancyMath.randomByte;
 import static engine.FancyMath.randomIntFromMinToMaxNegativePositive;
-import static engine.time.Time.getDelta;
+import static engine.time.Delta.getDelta;
 import static game.chunk.Chunk.getMobSpawnYPos;
 
 import static game.player.Player.getPlayerPos;

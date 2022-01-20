@@ -2,22 +2,22 @@ package engine.time;
 
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
 
-public class Time {
+public class Delta {
 
-    private static double lastLoopTime = getTime();
-    private static double delta;
+    private double lastLoopTime = getTime();
+    private double delta;
 
-    private static double getTime() {
+    private double getTime() {
         return glfwGetTime();
     }
 
-    public static void calculateDelta() {
+    public void calculateDelta() {
         double time = getTime();
         delta =  (time - lastLoopTime);
         lastLoopTime = time;
     }
 
-    public static double getDelta() {
+    public double getDelta() {
         return(delta);
     }
 }

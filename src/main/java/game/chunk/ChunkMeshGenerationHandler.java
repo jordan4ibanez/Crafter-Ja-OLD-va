@@ -6,8 +6,7 @@ import engine.graphics.Texture;
 import java.util.Deque;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-import static engine.time.Time.getDelta;
-import static game.chunk.Chunk.*;
+import static engine.time.Delta.getDelta;
 
 public class ChunkMeshGenerationHandler {
 

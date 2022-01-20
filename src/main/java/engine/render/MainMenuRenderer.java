@@ -12,7 +12,7 @@ import static engine.graphics.Transformation.*;
 import static engine.gui.GUI.*;
 import static engine.gui.TextHandling.createTextCentered;
 import static engine.render.GameRenderer.*;
-import static engine.time.Time.getDelta;
+import static engine.time.Delta.getDelta;
 import static game.mainMenu.MainMenu.*;
 import static game.mainMenu.MainMenuAssets.getTitleBackGroundMeshTile;
 import static game.mainMenu.MainMenuAssets.getTitleBlockMesh;

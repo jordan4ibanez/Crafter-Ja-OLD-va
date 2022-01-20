@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 import static engine.FancyMath.randomForceValue;
 import static engine.sound.SoundAPI.playSound;
-import static engine.time.Time.getDelta;
+import static engine.time.Delta.getDelta;
 import static game.entity.collision.Collision.applyInertia;
 import static game.tnt.Explosion.boom;
 

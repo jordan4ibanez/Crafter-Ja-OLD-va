@@ -7,7 +7,7 @@ import org.joml.Vector3i;
 
 import java.util.*;
 
-import static engine.time.Time.getDelta;
+import static engine.time.Delta.getDelta;
 import static game.chunk.Chunk.getLight;
 import static game.chunk.ChunkMeshGenerationHandler.getTextureAtlas;
 import static game.entity.collision.ParticleCollision.applyParticleInertia;

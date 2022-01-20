@@ -8,7 +8,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 import static engine.sound.SoundAPI.playSound;
-import static engine.time.Time.getDelta;
+import static engine.time.Delta.getDelta;
 import static game.chunk.Chunk.getLight;
 import static game.entity.collision.MobCollision.mobSoftCollisionDetect;
 import static game.entity.collision.MobCollision.mobSoftPlayerCollisionDetect;

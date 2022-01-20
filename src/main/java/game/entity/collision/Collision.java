@@ -3,7 +3,7 @@ package game.entity.collision;
 import org.joml.Math;
 import org.joml.*;
 
-import static engine.time.Time.getDelta;
+import static engine.time.Delta.getDelta;
 import static game.chunk.Chunk.getBlock;
 import static game.chunk.Chunk.getBlockRotation;
 import static game.entity.collision.CollisionObject.intersectsAABB;

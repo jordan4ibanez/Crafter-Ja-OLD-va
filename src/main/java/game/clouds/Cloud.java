@@ -4,7 +4,7 @@ import engine.FastNoise;
 import engine.graphics.Mesh;
 import org.joml.Vector2i;
 
-import static engine.time.Time.getDelta;
+import static engine.time.Delta.getDelta;
 import static game.clouds.CloudMesh.buildCloud2DMesh;
 import static game.clouds.CloudMesh.buildCloud3DMesh;
 

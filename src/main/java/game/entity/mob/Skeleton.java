@@ -7,7 +7,7 @@ import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import static engine.FancyMath.randomDirFloat;
-import static engine.time.Time.getDelta;
+import static engine.time.Delta.getDelta;
 import static game.chunk.Chunk.getBlock;
 import static game.entity.collision.Collision.applyInertia;
 import static game.entity.mob.MobDefinition.*;

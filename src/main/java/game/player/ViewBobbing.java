@@ -3,7 +3,7 @@ package game.player;
 import org.joml.Vector3f;
 
 import static engine.sound.SoundAPI.playSound;
-import static engine.time.Time.getDelta;
+import static engine.time.Delta.getDelta;
 import static game.player.Player.isPlayerRunning;
 
 public class ViewBobbing {

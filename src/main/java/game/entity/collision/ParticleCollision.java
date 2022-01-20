@@ -3,7 +3,7 @@ package game.entity.collision;
 import org.joml.Math;
 import org.joml.*;
 
-import static engine.time.Time.getDelta;
+import static engine.time.Delta.getDelta;
 import static game.blocks.BlockDefinition.getBlockShape;
 import static game.blocks.BlockDefinition.isBlockWalkable;
 import static game.chunk.Chunk.getBlock;

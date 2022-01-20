@@ -5,7 +5,7 @@ import org.joml.Math;
 
 import static engine.graphics.Camera.getCameraRotation;
 import static engine.sound.SoundAPI.playSound;
-import static engine.time.Time.getDelta;
+import static engine.time.Delta.getDelta;
 import static game.blocks.BlockDefinition.getDigSound;
 import static game.chunk.Chunk.getBlock;
 import static game.crafting.InventoryObject.getItemInInventory;

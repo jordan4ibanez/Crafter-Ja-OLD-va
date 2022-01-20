@@ -4,7 +4,7 @@ import org.joml.Math;
 
 import static engine.graphics.Camera.*;
 import static engine.network.Networking.*;
-import static engine.time.Time.getDelta;
+import static engine.time.Delta.getDelta;
 import static game.crafting.InventoryObject.*;
 import static game.entity.item.ItemEntity.createItem;
 import static game.player.Player.*;
