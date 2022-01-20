@@ -1,5 +1,6 @@
 package game.mob;
 
+import engine.graphics.Mesh;
 import org.joml.Math;
 import org.joml.Vector2f;
 import org.joml.Vector3d;
@@ -152,7 +153,7 @@ public class Chicken {
     }
 
 
-    private static int[] createMesh(){
+    private static Mesh[] createMesh(){
 
         final float modelScale = 0.25f; //lazy way to fix
 

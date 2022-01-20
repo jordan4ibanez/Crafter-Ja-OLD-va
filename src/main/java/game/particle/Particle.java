@@ -1,13 +1,12 @@
 package game.particle;
 
+import engine.graphics.Mesh;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 import java.util.*;
 
-import static engine.graphics.Mesh.cleanUpMesh;
-import static engine.graphics.Mesh.createMesh;
 import static engine.time.Time.getDelta;
 import static game.blocks.BlockDefinition.*;
 import static game.chunk.Chunk.getLight;
@@ -25,7 +24,7 @@ public class Particle {
     private static Vector3d[] position           = new Vector3d[initialSize];
     private static Vector3i[] oldFlooredPosition = new Vector3i[initialSize];
     private static Vector3f[] inertia            = new Vector3f[initialSize];
-    private static int[]      mesh               = new int[initialSize];
+    private static Mesh[]      mesh              = new Mesh[initialSize];
     private static byte[]     light              = new byte[initialSize];
     private static float[]    timer              = new float[initialSize];
     private static float[]    lightUpdateTimer   = new float[initialSize];
@@ -53,7 +52,7 @@ public class Particle {
         Vector3d[] newPosition           = new Vector3d[currentSize];
         Vector3i[] newOldFlooredPosition = new Vector3i[currentSize];
         Vector3f[] newInertia            = new Vector3f[currentSize];
-        int[]      newMesh               = new int[currentSize];
+        Mesh[]      newMesh              = new Mesh[currentSize];
         byte[]     newLight              = new byte[currentSize];
         float[]    newTimer              = new float[currentSize];
         float[]    newLightUpdateTimer   = new float[currentSize];
@@ -105,8 +104,10 @@ public class Particle {
         currentSize = initialSize;
 
         //clean up OpenGL memory
-        for (int thisMesh : mesh){
-            cleanUpMesh(thisMesh, false);
+        for (Mesh thisMesh : mesh){
+            if (thisMesh != null) {
+                thisMesh.cleanUp(false);
+            }
         }
 
         //clear memory for GC
@@ -114,7 +115,7 @@ public class Particle {
         Arrays.fill(position, null);
         Arrays.fill(oldFlooredPosition, null);
         Arrays.fill(inertia, null);
-        Arrays.fill(mesh, 0);
+        Arrays.fill(mesh, null);
         Arrays.fill(light, (byte) 0);
         Arrays.fill(timer, 0);
         Arrays.fill(lightUpdateTimer, 0);
@@ -124,7 +125,7 @@ public class Particle {
         position           = new Vector3d[initialSize];
         oldFlooredPosition = new Vector3i[initialSize];
         inertia            = new Vector3f[initialSize];
-        mesh               = new int[initialSize];
+        mesh               = new Mesh[initialSize];
         light              = new byte[initialSize];
         timer              = new float[initialSize];
         lightUpdateTimer   = new float[initialSize];
@@ -173,13 +174,13 @@ public class Particle {
             int key = deletionQueue.pop();
 
             //this must delete the pointers in the C and OpenGL stack
-            cleanUpMesh(mesh[key],false);
+            mesh[key].cleanUp(false);
 
             exists[key] = false;
             position[key] = null;
             oldFlooredPosition[key] = null;
             inertia[key] = null;
-            mesh[key] = 0;
+            mesh[key] = null;
             light[key] = 0;
             timer[key] = 0;
             lightUpdateTimer[key] = 0;
@@ -205,11 +206,11 @@ public class Particle {
         return position[key].z;
     }
 
-    public static int getParticleMesh(int key){
+    public static Mesh getParticleMesh(int key){
         return mesh[key];
     }
 
-    private static int createParticleMesh(byte blockID) {
+    private static Mesh createParticleMesh(byte blockID) {
 
         final float textureScale = (float)Math.ceil(Math.random() * 3f);
         final float pixelScale = (float)(int)textureScale / 25f;
@@ -277,6 +278,6 @@ public class Particle {
         textureCoord[6] = (texturePoints[0] + pixelXMax);//1
         textureCoord[7] = (texturePoints[2] + pixelYMax);//3
 
-        return createMesh(positions, light, indices, textureCoord, getTextureAtlas());
+        return new Mesh(positions, light, indices, textureCoord, getTextureAtlas());
     }
 }

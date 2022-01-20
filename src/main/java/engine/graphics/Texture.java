@@ -10,35 +10,14 @@ import static org.lwjgl.stb.STBImage.*;
 
 final public class Texture {
 
-    //(4 bytes * currentBufferSize) = bytes of memory per array
-    private static int currentBufferSize = 0;
+    private final int ID;
 
-    private static int[] width = new int[0];
-    private static int[] height = new int[0];
+    private final int width  ;
+    private final int height ;
 
-    //this expands the arrays - keeps them in sync as well
-    private static void expandMemory(){
-        //+10 because memory is cheap on this scale
-        currentBufferSize += 10;
-
-        //debug info
-        //System.out.println("EXPANDING TEXTURE ARRAY TO: " + currentBufferSize);
-
-        int[] width2  = new int[currentBufferSize];
-        int[] height2 = new int[currentBufferSize];
-
-        System.arraycopy(width, 0, width2, 0, width.length);
-        System.arraycopy(height, 0, height2, 0, height.length);
-
-        width  = width2;
-        height = height2;
-    }
-
-    public static int createTexture(String fileName) {
+    public Texture(String fileName) {
 
         final ByteBuffer buf;
-        int thisWidth;
-        int thisHeight;
 
         // Load Texture file
         try (MemoryStack stack = MemoryStack.stackPush()) {
@@ -52,37 +31,21 @@ final public class Texture {
                 //throw new Exception("Image file [" + fileName  + "] not loaded: " + stbi_failure_reason());
             }
 
-            thisWidth = w.get();
-            thisHeight = h.get();
+            this.width = w.get();
+            this.height = h.get();
         }
 
-        int thisID = createGLTexture(buf, thisWidth, thisHeight);
-
-        //this works on the assumption that the OpenGL allocator uses only free slots
-        //IE: 1->2->3->(2 gets freed)->2->4
-        if (thisID >= currentBufferSize){
-            expandMemory();
-        }
-
-        //debug info
-        //System.out.println("NEW TEXTURE: " + thisID);
+        this.ID = createGLTexture(buf, this.width, this.height);
 
         //crash with assertion error instead of throwing exception
         assert buf != null;
 
-        width[thisID]  = thisWidth;
-        height[thisID] = thisHeight;
-
         stbi_image_free(buf);
-
-        return thisID;
     }
 
     //create texture from image buffer
-    public static int createTexture(ByteBuffer imageBuffer) {
+    public Texture(ByteBuffer imageBuffer) {
         final ByteBuffer buf;
-        int thisWidth;
-        int thisHeight;
 
         // Load Texture file
         try (MemoryStack stack = MemoryStack.stackPush()) {
@@ -96,30 +59,16 @@ final public class Texture {
                 //throw new Exception("Image file not loaded: " + stbi_failure_reason());
             }
 
-            thisWidth = w.get();
-            thisHeight = h.get();
+            this.width = w.get();
+            this.height = h.get();
         }
 
-        int thisID = createGLTexture(buf, thisWidth,thisHeight);
-
-        //this works on the assumption that the OpenGL allocator uses only free slots
-        //IE: 1->2->3->(2 gets freed)->2->4
-        if (thisID >= currentBufferSize){
-            expandMemory();
-        }
-
-        //debug info
-        //System.out.println("NEW TEXTURE: " + thisID);
+        this.ID = createGLTexture(buf, this.width,this.height);
 
         //crash with assertion error instead of throwing exception
         assert buf != null;
 
-        width[thisID] = thisWidth;
-        height[thisID] = thisHeight;
-
         stbi_image_free(buf);
-
-        return thisID;
     }
 
     private static int createGLTexture(ByteBuffer buf, int thisWidth, int thisHeight) {
@@ -151,18 +100,19 @@ final public class Texture {
         return textureId;
     }
 
-    public static int getWidth(int gettingID) {
-        return width[gettingID];
+    public int getID(){
+        return this.ID;
     }
 
-    public static int getHeight(int gettingID) {
-        return height[gettingID];
+    public int getWidth() {
+        return this.width;
     }
 
-    public static void cleanUpTexture(int gettingID) {
-        glDeleteTextures(gettingID);
+    public int getHeight() {
+        return this.height;
+    }
 
-        width[gettingID] = 0;
-        height[gettingID] = 0;
+    public void cleanUp() {
+        glDeleteTextures(this.ID);
     }
 }

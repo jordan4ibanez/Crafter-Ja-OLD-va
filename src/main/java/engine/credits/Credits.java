@@ -1,15 +1,17 @@
 package engine.credits;
 
 
+import engine.graphics.Mesh;
+
 import static engine.gui.GUI.create2DMesh;
 import static engine.gui.TextHandling.createTextCenteredWithShadow;
 
 public class Credits {
 
     //all the stuff for the credits are stored here
-    private static final int[] creditParts = new int[19];
+    private static final Mesh[] creditParts = new Mesh[19];
 
-    public static int[] getCreditParts(){
+    public static Mesh[] getCreditParts(){
         return creditParts;
     }
 

@@ -1,6 +1,7 @@
 package game.clouds;
 
 import engine.FastNoise;
+import engine.graphics.Mesh;
 import org.joml.Vector2i;
 
 import static engine.time.Time.getDelta;
@@ -56,14 +57,14 @@ public class Cloud {
         return cloudScale;
     }
 
-    private static final int cloud2DMesh = buildCloud2DMesh();
-    private static final int cloud3DMesh = buildCloud3DMesh();
+    private static final Mesh cloud2DMesh = buildCloud2DMesh();
+    private static final Mesh cloud3DMesh = buildCloud3DMesh();
 
-    public static int getCloud2DMesh(){
+    public static Mesh getCloud2DMesh(){
         return cloud2DMesh;
     }
 
-    public static int getCloud3DMesh(){
+    public static Mesh getCloud3DMesh(){
         return cloud3DMesh;
     }
 

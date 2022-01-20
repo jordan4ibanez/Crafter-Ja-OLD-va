@@ -1,10 +1,12 @@
 package engine.debug;
 
 
+import engine.graphics.Mesh;
+
 import static engine.time.Time.getDelta;
 
 public class CheckRuntimeInfo {
-    private static final int[] runtimeInfoText = new int[6];
+    private static final Mesh[] runtimeInfoText = new Mesh[6];
     private static long heapSize = 0;
     private static long heapMaxSize = 0;
     private static long heapFreeSize = 0;
@@ -12,7 +14,7 @@ public class CheckRuntimeInfo {
     private static int currentAmountOfThreads = 0;
     private static int cpuHealth = 100;
 
-    public static int[] getRuntimeInfoText(){
+    public static Mesh[] getRuntimeInfoText(){
         return runtimeInfoText;
     }
 

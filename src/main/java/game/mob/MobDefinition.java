@@ -1,5 +1,6 @@
 package game.mob;
 
+import engine.graphics.Mesh;
 import org.joml.Vector3f;
 
 import static game.mob.Chicken.registerChickenMob;
@@ -16,7 +17,7 @@ final public class MobDefinition {
     private static final int numberOfMobDefinitions = 9;
     private static int count = 0;
 
-    private static final int[][] bodyMeshes = new int[numberOfMobDefinitions][0];
+    private static final Mesh[][] bodyMeshes = new Mesh[numberOfMobDefinitions][0];
     private static final MobInterface[] mobInterface = new MobInterface[numberOfMobDefinitions];
     private static final String[] mobName = new String[numberOfMobDefinitions];
     private static final Vector3f[][] bodyOffsets = new Vector3f[numberOfMobDefinitions][0];
@@ -28,7 +29,7 @@ final public class MobDefinition {
     private static final boolean[] backFaceCulling = new boolean[numberOfMobDefinitions];
 
 
-    public static void registerMob(String name, String newHurtSound, boolean newBackFaceCulling, byte newBaseHealth, int[] newBodyMeshes,Vector3f[] newBodyOffsets,Vector3f[] newBodyRotations, float newHeight, float newWidth, MobInterface newMobInterface){
+    public static void registerMob(String name, String newHurtSound, boolean newBackFaceCulling, byte newBaseHealth, Mesh[] newBodyMeshes,Vector3f[] newBodyOffsets,Vector3f[] newBodyRotations, float newHeight, float newWidth, MobInterface newMobInterface){
         bodyMeshes[count] = newBodyMeshes;
         mobInterface[count] = newMobInterface;
         mobName[count] = name;
@@ -56,7 +57,7 @@ final public class MobDefinition {
         registerCowMob();
     }
 
-    public static int[] getMobDefinitionBodyMeshes(int ID){
+    public static Mesh[] getMobDefinitionBodyMeshes(int ID){
         return bodyMeshes[ID];
     }
     public static MobInterface getMobDefinitionInterface(int ID){

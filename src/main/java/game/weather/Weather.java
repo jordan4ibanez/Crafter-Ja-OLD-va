@@ -1,18 +1,18 @@
 package game.weather;
 
+import engine.graphics.Mesh;
+import engine.graphics.Texture;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import java.util.*;
 
-import static engine.graphics.Mesh.createMesh;
-import static engine.graphics.Texture.createTexture;
 import static game.collision.ParticleCollision.applyParticleInertia;
 
 public class Weather {
     private final static Map<Integer, RainDropEntity> rainDrops = new HashMap<>();
     private final static Deque<Integer> deletionQueue = new ArrayDeque<>();
-    private static final int rainDropMesh = createRainDropMesh();
+    private static final Mesh rainDropMesh = createRainDropMesh();
     private static int currentID = 0;
 
     public static void rainDropsOnTick(){
@@ -39,11 +39,11 @@ public class Weather {
         return rainDrops.values();
     }
 
-    public static int getRainDropMesh(){
+    public static Mesh getRainDropMesh(){
         return rainDropMesh;
     }
 
-    private static int createRainDropMesh() {
+    private static Mesh createRainDropMesh() {
         float pixelScale = 0.25f;
 
         ArrayList<Float> positions = new ArrayList<>();
@@ -128,8 +128,6 @@ public class Weather {
             textureCoordArray[i] = textureCoord.get(i);
         }
 
-        int rainDropTexture = createTexture("textures/raindrop.png");
-
-        return createMesh(positionsArray, lightArray, indicesArray, textureCoordArray,rainDropTexture);
+        return new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray,new Texture("textures/raindrop.png"));
     }
 }

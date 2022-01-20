@@ -1,5 +1,6 @@
 package game.mob;
 
+import engine.graphics.Mesh;
 import org.joml.*;
 import org.joml.Math;
 
@@ -144,7 +145,7 @@ public class Human {
     }
 
 
-    private static int[] createMesh(){
+    private static Mesh[] createMesh(){
         final float modelScale = 0.25f; //lazy way to fix
 
         final float[][][] modelPieceArray = new float[][][]{

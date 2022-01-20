@@ -1,17 +1,16 @@
 package game.mob;
 
+import engine.graphics.Mesh;
+import engine.graphics.Texture;
 import engine.highPerformanceContainers.MicroFloatArray;
 import engine.highPerformanceContainers.MicroIntArray;
 
-import static engine.graphics.Mesh.createMesh;
-import static engine.graphics.Texture.createTexture;
-
 public class MobMeshBuilder {
 
-    public static int[] createMobMesh(float[][][] modelPieceArray, float[][][] textureArrayArray, String texturePath){
+    public static Mesh[] createMobMesh(float[][][] modelPieceArray, float[][][] textureArrayArray, String texturePath){
 
 
-        int[] bodyMeshes = new int[modelPieceArray.length];
+        Mesh[] bodyMeshes = new Mesh[modelPieceArray.length];
 
         int bodyMeshesIndex = 0; //this is the float[THISPART] which holds the float[THISPART]{x,y,z,x,y,z}
 
@@ -83,9 +82,9 @@ public class MobMeshBuilder {
                 textureCounter++;
             }
 
-            int playerTexture = createTexture(texturePath);
+            Texture playerTexture = new Texture(texturePath);
 
-            bodyMeshes[bodyMeshesIndex] = createMesh(positions.values(), light.values(), indices.values(), textureCoord.values(), playerTexture);
+            bodyMeshes[bodyMeshesIndex] = new Mesh(positions.values(), light.values(), indices.values(), textureCoord.values(), playerTexture);
 
             positions.clear();
 

@@ -1,10 +1,11 @@
 package game.chunk;
 
+import engine.graphics.Mesh;
+import engine.graphics.Texture;
+
 import java.util.Deque;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-import static engine.graphics.Mesh.createMesh;
-import static engine.graphics.Texture.createTexture;
 import static engine.time.Time.getDelta;
 import static game.chunk.Chunk.*;
 
@@ -16,9 +17,9 @@ public class ChunkMeshGenerationHandler {
         queue.add(chunkMeshDataObject);
     }
 
-    private static final int textureAtlas = createTexture("textures/textureAtlas.png");
+    private static final Texture textureAtlas = new Texture("textures/textureAtlas.png");
 
-    public static int getTextureAtlas(){
+    public static Texture getTextureAtlas(){
         return textureAtlas;
     }
 
@@ -46,27 +47,23 @@ public class ChunkMeshGenerationHandler {
                 if (newChunkMeshData != null) {
 
                     if (!newChunkMeshData.normalMeshIsNull) {
-                        setChunkNormalMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, createMesh(newChunkMeshData.positionsArray, newChunkMeshData.lightArray, newChunkMeshData.indicesArray, newChunkMeshData.textureCoordArray, textureAtlas));
+                        setChunkNormalMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, new Mesh(newChunkMeshData.positionsArray, newChunkMeshData.lightArray, newChunkMeshData.indicesArray, newChunkMeshData.textureCoordArray, textureAtlas));
                     } else {
-                        setChunkNormalMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, 0);
+                        setChunkNormalMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, null);
                     }
 
 
                     if (!newChunkMeshData.liquidMeshIsNull) {
-                        setChunkLiquidMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, createMesh(newChunkMeshData.liquidPositionsArray, newChunkMeshData.liquidLightArray, newChunkMeshData.liquidIndicesArray, newChunkMeshData.liquidTextureCoordArray, textureAtlas));
+                        setChunkLiquidMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, new Mesh(newChunkMeshData.liquidPositionsArray, newChunkMeshData.liquidLightArray, newChunkMeshData.liquidIndicesArray, newChunkMeshData.liquidTextureCoordArray, textureAtlas));
                     } else {
-                        setChunkLiquidMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, 0);
+                        setChunkLiquidMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, null);
                     }
 
                     if (!newChunkMeshData.allFacesMeshIsNull) {
-                        setChunkAllFacesMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, createMesh(newChunkMeshData.allFacesPositionsArray, newChunkMeshData.allFacesLightArray, newChunkMeshData.allFacesIndicesArray, newChunkMeshData.allFacesTextureCoordArray, textureAtlas));
+                        setChunkAllFacesMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, new Mesh(newChunkMeshData.allFacesPositionsArray, newChunkMeshData.allFacesLightArray, newChunkMeshData.allFacesIndicesArray, newChunkMeshData.allFacesTextureCoordArray, textureAtlas));
                     } else {
-                        setChunkAllFacesMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, 0);
+                        setChunkAllFacesMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, null);
                     }
-
-
-                    //todo: test if nullifying data then object reduces heap memory gc sweep pause
-
                 }
             } else {
                 return;

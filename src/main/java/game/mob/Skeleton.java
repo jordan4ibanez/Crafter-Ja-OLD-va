@@ -1,5 +1,6 @@
 package game.mob;
 
+import engine.graphics.Mesh;
 import org.joml.Math;
 import org.joml.Vector2f;
 import org.joml.Vector3d;
@@ -151,7 +152,7 @@ public class Skeleton {
         registerMob("skeleton", "hurt",false, (byte) 7, createMesh(), bodyOffsets, bodyRotations,1.9f, 0.25f, mobInterface);
     }
 
-    private static int[] createMesh(){
+    private static Mesh[] createMesh(){
         final float modelScale = 0.25f; //lazy way to fix
 
         final float[][][] modelPieceArray = new float[][][]{

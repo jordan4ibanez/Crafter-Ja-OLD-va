@@ -1,29 +1,29 @@
 package game.mainMenu;
 
-import java.util.ArrayList;
+import engine.graphics.Mesh;
+import engine.graphics.Texture;
 
-import static engine.graphics.Mesh.createMesh;
-import static engine.graphics.Texture.createTexture;
+import java.util.ArrayList;
 
 public class MainMenuAssets {
 
-    private static int titleBlockMesh;
+    private static Mesh titleBlockMesh;
 
-    private static int titleBackGroundMeshTile;
+    private static Mesh titleBackGroundMeshTile;
 
 
-    public static int getTitleBlockMesh(){
+    public static Mesh getTitleBlockMesh(){
         return titleBlockMesh;
     }
 
-    public static int getTitleBackGroundMeshTile(){
+    public static Mesh getTitleBackGroundMeshTile(){
         return titleBackGroundMeshTile;
     }
 
     //this is reused garbage because I'm too busy to turn it into an internal API
-    public static void createMenuMenuTitleBlock() throws Exception {
+    public static void createMenuMenuTitleBlock() {
 
-        int titleScreenBlockTexture = createTexture("textures/title_screen_block.png");
+        Texture titleScreenBlockTexture = new Texture("textures/title_screen_block.png");
 
         float sideLight = 0.6f;
 
@@ -31,10 +31,10 @@ public class MainMenuAssets {
         float max = 1f;
         int indicesCount = 0;
 
-        ArrayList positions = new ArrayList();
-        ArrayList textureCoord = new ArrayList();
-        ArrayList indices = new ArrayList();
-        ArrayList light = new ArrayList();
+        ArrayList<Float> positions = new ArrayList<>();
+        ArrayList<Float> textureCoord = new ArrayList<>();
+        ArrayList<Integer> indices = new ArrayList<>();
+        ArrayList<Float> light = new ArrayList<>();
 
         float textureMin = 0;
         float textureMax = 1;
@@ -64,15 +64,13 @@ public class MainMenuAssets {
             light.add(frontLight);
         }
         //front
-        indices.add(0 + indicesCount);
+        indices.add(    indicesCount);
         indices.add(1 + indicesCount);
         indices.add(2 + indicesCount);
-        indices.add(0 + indicesCount);
+        indices.add(    indicesCount);
         indices.add(2 + indicesCount);
         indices.add(3 + indicesCount);
         indicesCount += 4;
-
-
 
         //-x +x  -y +y
         // 0  1   2  3
@@ -85,9 +83,6 @@ public class MainMenuAssets {
         textureCoord.add(textureMax);//3
         textureCoord.add(1f);//1
         textureCoord.add(textureMax);//3
-
-
-        //todo///////////////////////////////////////////////////////
 
         //back
         positions.add(min);
@@ -112,10 +107,10 @@ public class MainMenuAssets {
             light.add(backLight);
         }
         //back
-        indices.add(0 + indicesCount);
+        indices.add(    indicesCount);
         indices.add(1 + indicesCount);
         indices.add(2 + indicesCount);
-        indices.add(0 + indicesCount);
+        indices.add(    indicesCount);
         indices.add(2 + indicesCount);
         indices.add(3 + indicesCount);
         indicesCount += 4;
@@ -133,9 +128,6 @@ public class MainMenuAssets {
         textureCoord.add(1f);//1
         textureCoord.add(textureMax);//3
 
-
-        //todo///////////////////////////////////////////////////////
-
         //right
         positions.add(max);
         positions.add(max);
@@ -153,17 +145,16 @@ public class MainMenuAssets {
         positions.add(min);
         positions.add(min);
         //right
-        float rightLight = sideLight;
 
         //right
         for (int i = 0; i < 12; i++) {
-            light.add(rightLight);
+            light.add(sideLight);
         }
         //right
-        indices.add(0 + indicesCount);
+        indices.add(    indicesCount);
         indices.add(1 + indicesCount);
         indices.add(2 + indicesCount);
-        indices.add(0 + indicesCount);
+        indices.add(    indicesCount);
         indices.add(2 + indicesCount);
         indices.add(3 + indicesCount);
         indicesCount += 4;
@@ -181,9 +172,6 @@ public class MainMenuAssets {
         textureCoord.add(1f);//1
         textureCoord.add(textureMax);//3
 
-
-        //todo///////////////////////////////////////////////////////
-
         //left
         positions.add(min);
         positions.add(max);
@@ -201,16 +189,15 @@ public class MainMenuAssets {
         positions.add(min);
         positions.add(max);
         //left
-        float leftLight = sideLight;
         //left
         for (int i = 0; i < 12; i++) {
-            light.add(leftLight);
+            light.add(sideLight);
         }
         //left
-        indices.add(0 + indicesCount);
+        indices.add(    indicesCount);
         indices.add(1 + indicesCount);
         indices.add(2 + indicesCount);
-        indices.add(0 + indicesCount);
+        indices.add(    indicesCount);
         indices.add(2 + indicesCount);
         indices.add(3 + indicesCount);
         indicesCount += 4;
@@ -229,8 +216,6 @@ public class MainMenuAssets {
         textureCoord.add(textureMax);//3
 
 
-        //todo///////////////////////////////////////////////////////
-
         //top
         positions.add(min);
         positions.add(max);
@@ -248,16 +233,15 @@ public class MainMenuAssets {
         positions.add(max);
         positions.add(min);
         //top
-        float topLight = sideLight;
         //top
         for (int i = 0; i < 12; i++) {
-            light.add(topLight);
+            light.add(sideLight);
         }
         //top
-        indices.add(0 + indicesCount);
+        indices.add(    indicesCount);
         indices.add(1 + indicesCount);
         indices.add(2 + indicesCount);
-        indices.add(0 + indicesCount);
+        indices.add(    indicesCount);
         indices.add(2 + indicesCount);
         indices.add(3 + indicesCount);
         indicesCount += 4;
@@ -275,9 +259,6 @@ public class MainMenuAssets {
         textureCoord.add(1f);//1
         textureCoord.add(textureMax);//3
 
-
-        //todo///////////////////////////////////////////////////////
-
         //bottom
         positions.add(min);
         positions.add(min);
@@ -294,21 +275,18 @@ public class MainMenuAssets {
         positions.add(max);
         positions.add(min);
         positions.add(max);
-        //bottom
-        float bottomLight = sideLight;
 
         //bottom
         for (int i = 0; i < 12; i++) {
-            light.add(bottomLight);
+            light.add(sideLight);
         }
         //bottom
-        indices.add(0 + indicesCount);
+        indices.add(    indicesCount);
         indices.add(1 + indicesCount);
         indices.add(2 + indicesCount);
-        indices.add(0 + indicesCount);
+        indices.add(    indicesCount);
         indices.add(2 + indicesCount);
         indices.add(3 + indicesCount);
-        indicesCount += 4;
 
 
         //-x +x  -y +y
@@ -326,39 +304,38 @@ public class MainMenuAssets {
         //convert the position objects into usable array
         float[] positionsArray = new float[positions.size()];
         for (int i = 0; i < positions.size(); i++) {
-            positionsArray[i] = (float) positions.get(i);
+            positionsArray[i] = positions.get(i);
         }
 
         //convert the light objects into usable array
         float[] lightArray = new float[light.size()];
         for (int i = 0; i < light.size(); i++) {
-            lightArray[i] = (float) light.get(i);
+            lightArray[i] = light.get(i);
         }
 
         //convert the indices objects into usable array
         int[] indicesArray = new int[indices.size()];
         for (int i = 0; i < indices.size(); i++) {
-            indicesArray[i] = (int) indices.get(i);
+            indicesArray[i] = indices.get(i);
         }
 
         //convert the textureCoord objects into usable array
         float[] textureCoordArray = new float[textureCoord.size()];
         for (int i = 0; i < textureCoord.size(); i++) {
-            textureCoordArray[i] = (float) textureCoord.get(i);
+            textureCoordArray[i] = textureCoord.get(i);
         }
 
-        titleBlockMesh = createMesh(positionsArray, lightArray, indicesArray, textureCoordArray, titleScreenBlockTexture);
+        titleBlockMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, titleScreenBlockTexture);
     }
 
     public static void createMainMenuBackGroundTile() {
-        ArrayList positions = new ArrayList();
-        ArrayList textureCoord = new ArrayList();
-        ArrayList indices = new ArrayList();
-        ArrayList light = new ArrayList();
+        ArrayList<Float> positions = new ArrayList<>();
+        ArrayList<Float> textureCoord = new ArrayList<>();
+        ArrayList<Integer> indices = new ArrayList<>();
+        ArrayList<Float> light = new ArrayList<>();
 
 
         int indicesCount = 0;
-
 
         //front
         positions.add(0.5f);
@@ -384,14 +361,12 @@ public class MainMenuAssets {
             light.add(frontLight);
         }
         //front
-        indices.add(0 + indicesCount);
+        indices.add(    indicesCount);
         indices.add(1 + indicesCount);
         indices.add(2 + indicesCount);
-        indices.add(0 + indicesCount);
+        indices.add(    indicesCount);
         indices.add(2 + indicesCount);
         indices.add(3 + indicesCount);
-
-        indicesCount += 4;
 
         //-x +x   -y +y
         // 0  1    2  3
@@ -410,27 +385,28 @@ public class MainMenuAssets {
         //convert the position objects into usable array
         float[] positionsArray = new float[positions.size()];
         for (int i = 0; i < positions.size(); i++) {
-            positionsArray[i] = (float) positions.get(i);
+            positionsArray[i] = positions.get(i);
         }
 
         //convert the light objects into usable array
         float[] lightArray = new float[light.size()];
         for (int i = 0; i < light.size(); i++) {
-            lightArray[i] = (float) light.get(i);
+            lightArray[i] = light.get(i);
         }
 
         //convert the indices objects into usable array
         int[] indicesArray = new int[indices.size()];
         for (int i = 0; i < indices.size(); i++) {
-            indicesArray[i] = (int) indices.get(i);
+            indicesArray[i] = indices.get(i);
+
         }
 
         //convert the textureCoord objects into usable array
         float[] textureCoordArray = new float[textureCoord.size()];
         for (int i = 0; i < textureCoord.size(); i++) {
-            textureCoordArray[i] = (float) textureCoord.get(i);
+            textureCoordArray[i] = textureCoord.get(i);
         }
 
-        titleBackGroundMeshTile = createMesh(positionsArray, lightArray, indicesArray, textureCoordArray, createTexture("textures/title_screen_background.png"));
+        titleBackGroundMeshTile = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, new Texture("textures/title_screen_background.png"));
     }
 }

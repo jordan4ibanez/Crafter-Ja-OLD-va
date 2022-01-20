@@ -1,5 +1,6 @@
 package game.player;
 
+import engine.graphics.Mesh;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -12,7 +13,7 @@ import static game.player.Player.getPlayerInertiaZ;
 public class PlayerMesh {
 
     //this is auto constructed
-    private final static int[] bodyMeshes = createMesh();
+    private final static Mesh[] bodyMeshes = createMesh();
 
     private static float animationTimer = 0f;
 
@@ -62,7 +63,7 @@ public class PlayerMesh {
         return bodyRotations;
     }
 
-    public static int[] getPlayerMeshes(){
+    public static Mesh[] getPlayerMeshes(){
         return bodyMeshes;
     }
 
@@ -70,7 +71,7 @@ public class PlayerMesh {
         return bodyOffsets;
     }
 
-    private static int[] createMesh(){
+    private static Mesh[] createMesh(){
         final float modelScale = 0.25f; //lazy way to fix
 
         final float[][][] modelPieceArray = new float[][][]{

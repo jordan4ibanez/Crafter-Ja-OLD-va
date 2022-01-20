@@ -1,5 +1,7 @@
 package game.item;
 
+import engine.graphics.Mesh;
+import engine.graphics.Texture;
 import it.unimi.dsi.fastutil.objects.*;
 
 import javax.imageio.ImageIO;
@@ -10,8 +12,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static engine.graphics.Mesh.createMesh;
-import static engine.graphics.Texture.createTexture;
 import static game.blocks.BlockDefinition.*;
 import static game.chunk.ChunkMeshGenerationHandler.getTextureAtlas;
 
@@ -19,7 +19,7 @@ final public class ItemDefinition {
     private static final float itemSize   = 0.4f;
 
     private static final Object2ByteOpenHashMap<String> blockID = new Object2ByteOpenHashMap<>();
-    private static final Object2IntOpenHashMap<String> mesh = new Object2IntOpenHashMap<>();
+    private static final Object2ObjectOpenHashMap<String, Mesh> mesh = new Object2ObjectOpenHashMap<>();
 
     private static final Object2BooleanOpenHashMap<String> isItem = new Object2BooleanOpenHashMap<>();
     private static final Object2ObjectOpenHashMap<String,ItemModifier> itemModifier = new Object2ObjectOpenHashMap<>();
@@ -79,8 +79,8 @@ final public class ItemDefinition {
     }
 
     //immutable
-    public static int getItemMesh(String name){
-        return mesh.getInt(name);
+    public static Mesh getItemMesh(String name){
+        return mesh.get(name);
     }
 
     //mutable - but harder to mutate
@@ -126,7 +126,7 @@ final public class ItemDefinition {
     }
 
     //internal
-    private static int createItemBlockMesh(byte blockID) {
+    private static Mesh createItemBlockMesh(byte blockID) {
         int indicesCount = 0;
 
         List<Float> positions     = new ArrayList<>();
@@ -428,8 +428,6 @@ final public class ItemDefinition {
             textureCoord.add(textureBottom[3] - (thisBlockBox[3] /32f));
 
         }
-        //todo: ------------------------------------------------------------------------------------------------=-=-=-=
-
 
         //convert the position objects into usable array
         float[] positionsArray = new float[positions.size()];
@@ -454,11 +452,11 @@ final public class ItemDefinition {
         for (int i = 0; i < textureCoord.size(); i++) {
             textureCoordArray[i] = textureCoord.get(i);
         }
-       return createMesh(positionsArray, lightArray, indicesArray, textureCoordArray, getTextureAtlas());
+       return new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, getTextureAtlas());
     }
 
     //internal
-    private static int createItemToolMesh(String texturePath){
+    private static Mesh createItemToolMesh(String texturePath){
         int indicesCount = 0;
 
         List<Float> positions     = new ArrayList<>();
@@ -787,7 +785,6 @@ final public class ItemDefinition {
 
 
         }
-        //todo: ------------------------------------------------------------------------------------------------=-=-=-=
 
 
         //convert the position objects into usable array
@@ -814,10 +811,7 @@ final public class ItemDefinition {
             textureCoordArray[i] = textureCoord.get(i);
         }
 
-
-        int thisTexture = createTexture(texturePath);
-
-        return createMesh(positionsArray, lightArray,indicesArray, textureCoordArray, thisTexture);
+        return new Mesh(positionsArray, lightArray,indicesArray, textureCoordArray, new Texture(texturePath));
     }
 
 }

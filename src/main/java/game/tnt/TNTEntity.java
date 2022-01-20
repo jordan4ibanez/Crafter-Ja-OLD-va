@@ -1,13 +1,13 @@
 package game.tnt;
 
+import engine.graphics.Mesh;
+import engine.graphics.Texture;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
 
 import static engine.FancyMath.randomForceValue;
-import static engine.graphics.Mesh.createMesh;
-import static engine.graphics.Texture.createTexture;
 import static engine.sound.SoundAPI.playSound;
 import static engine.time.Time.getDelta;
 import static game.blocks.BlockDefinition.*;
@@ -25,7 +25,7 @@ public class TNTEntity {
     private final static int MAX_ID_AMOUNT = 126_000;
     private static int totalTNT = 0;
     //TODO: pseudo object holder
-    private static int mesh;
+    private static Mesh mesh;
     private static final Vector3d[] tntPos = new Vector3d[MAX_ID_AMOUNT];
     private static final Vector3d[] tntScale = new Vector3d[MAX_ID_AMOUNT];
     private static final float[] tntTimer =    new float[MAX_ID_AMOUNT];
@@ -125,7 +125,7 @@ public class TNTEntity {
         return tntScale[ID];
     }
 
-    public static int getTNTMesh(){
+    public static Mesh getTNTMesh(){
         return mesh;
     }
 
@@ -301,9 +301,7 @@ public class TNTEntity {
             textureCoordArray[i] = textureCoord.get(i);
         }
 
-        int texture = createTexture("textures/textureAtlas.png");
-
-        mesh = createMesh(positionsArray, lightArray, indicesArray, textureCoordArray, texture);
+        mesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, new Texture("textures/textureAtlas.png"));
     }
 
     //public static void cleanTNTUp(){

@@ -1,12 +1,12 @@
 package game.falling;
 
+import engine.graphics.Mesh;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 
 import java.util.Arrays;
 
-import static engine.graphics.Mesh.cleanUpMesh;
 import static game.chunk.Chunk.getLight;
 import static game.chunk.Chunk.placeBlock;
 import static game.collision.Collision.applyInertia;
@@ -20,7 +20,7 @@ public class FallingEntity {
     private static Vector3f[] inertia = new Vector3f[initialSize];
     private static byte[] light = new byte[initialSize];
     private static float[] lightUpdateTimer = new float[initialSize];
-    private static int[] mesh = new int[initialSize];
+    private static Mesh[] mesh = new Mesh[initialSize];
     private static byte[] ID = new byte[initialSize];
 
     private static int getFreeSlot(){
@@ -45,7 +45,7 @@ public class FallingEntity {
         boolean[]  newExists             = new boolean[currentSize];
         Vector3d[] newPosition           = new Vector3d[currentSize];
         Vector3f[] newInertia            = new Vector3f[currentSize];
-        int[]      newMesh               = new int[currentSize];
+        Mesh[]      newMesh              = new Mesh[currentSize];
         byte[]     newLight              = new byte[currentSize];
         float[]    newLightUpdateTimer   = new float[currentSize];
         byte[]      newID                = new byte[currentSize];
@@ -104,14 +104,14 @@ public class FallingEntity {
 
     private static void destroyFallingEntity( int thisIndex){
 
-        cleanUpMesh(mesh[thisIndex],false);
+        mesh[thisIndex].cleanUp(false);
 
         exists[thisIndex] = false;
         position[thisIndex] = null;
         inertia[thisIndex] = null;
         light[thisIndex] = 0;
         lightUpdateTimer[thisIndex] = 0;
-        mesh[thisIndex] = 0;
+        mesh[thisIndex] = null;
         ID[thisIndex] = 0;
     }
 
@@ -123,7 +123,7 @@ public class FallingEntity {
                 index++;
                 continue;
             }
-            cleanUpMesh(mesh[index],false);
+            mesh[index].cleanUp(false);
             index++;
         }
 
@@ -131,7 +131,7 @@ public class FallingEntity {
         Arrays.fill(exists, false);
         Arrays.fill(position, null);
         Arrays.fill(inertia, null);
-        Arrays.fill(mesh, 0);
+        Arrays.fill(mesh, null);
         Arrays.fill(light, (byte) 0);
         Arrays.fill(lightUpdateTimer, 0);
         Arrays.fill(ID, (byte) 0);
@@ -141,7 +141,7 @@ public class FallingEntity {
         exists             = new boolean[initialSize];
         position           = new Vector3d[initialSize];
         inertia            = new Vector3f[initialSize];
-        mesh               = new int[initialSize];
+        mesh               = new Mesh[initialSize];
         light              = new byte[initialSize];
         lightUpdateTimer   = new float[initialSize];
         ID                 = new byte[initialSize];

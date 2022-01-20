@@ -1,13 +1,13 @@
 package engine.render;
 
+import engine.graphics.Mesh;
 import engine.graphics.ShaderProgram;
 import engine.gui.GUIObject;
 
 import static engine.Window.getWindowHeight;
 import static engine.Window.getWindowWidth;
 import static engine.credits.Credits.getCreditParts;
-import static engine.graphics.Mesh.cleanUpMesh;
-import static engine.graphics.Mesh.renderMesh;
+
 import static engine.graphics.Transformation.*;
 import static engine.gui.GUI.*;
 import static engine.gui.TextHandling.createTextCentered;
@@ -54,7 +54,7 @@ public class MainMenuRenderer {
                 //these calculations are done to perfectly center the background in front of the camera (hopefully)
                 updateViewMatrixWithPosRotationScale(x * scale, (y + getBackGroundScroll()) * scale, -18, 0, 0, 0,scale, scale, 0);
                 shaderProgram.setUniform("modelViewMatrix", getModelMatrix());
-                renderMesh(getTitleBackGroundMeshTile());
+                getTitleBackGroundMeshTile().render();
             }
         }
 
@@ -72,7 +72,7 @@ public class MainMenuRenderer {
                         //these calculations are done to perfectly center the title in front of the camera (hopefully)
                         updateViewMatrix(y - (27d / 2d), -x + (5d / 2d), -18 + worldTitleOffsets[x][y], 0, 0, 0);
                         shaderProgram.setUniform("modelViewMatrix", getModelMatrix());
-                        renderMesh(getTitleBlockMesh());
+                        getTitleBlockMesh().render();
                     }
                 }
             }
@@ -88,7 +88,7 @@ public class MainMenuRenderer {
                         //these calculations are done to perfectly center the title in front of the camera (hopefully)
                         updateViewMatrix(y - (27d / 2d), -x + (5d / 2d), -18 + titleBlockOffsets[x][y], 0, 0, 0);
                         shaderProgram.setUniform("modelViewMatrix", getModelMatrix());
-                        renderMesh(getTitleBlockMesh());
+                        getTitleBlockMesh().render();
                     }
                 }
             }
@@ -130,18 +130,18 @@ public class MainMenuRenderer {
                     //gray shadow part
                     updateOrthoModelMatrix(windowScale / 2.27d, windowScale / 3.27f, 0, 0, 0, 20f, scale, scale, scale);
                     hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
-                    final int myMesh = createTextCentered(getTitleScreenText(), 0.2f, 0.2f, 0f);
-                    renderMesh(myMesh);
-                    cleanUpMesh(myMesh,false);
+                    Mesh myMesh = createTextCentered(getTitleScreenText(), 0.2f, 0.2f, 0f);
+                    myMesh.render();
+                    myMesh.cleanUp(false);
 
                     glClear(GL_DEPTH_BUFFER_BIT);
 
                     //yellow part
                     updateOrthoModelMatrix(windowScale / 2.25d, windowScale / 3.25f, 0, 0, 0, 20f, scale, scale, scale);
                     hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
-                    final int myMesh2 = createTextCentered(getTitleScreenText(), 1f, 1f, 0f);
-                    renderMesh(myMesh2);
-                    cleanUpMesh(myMesh2,false);
+                    final Mesh myMesh2 = createTextCentered(getTitleScreenText(), 1f, 1f, 0f);
+                    myMesh2.render();
+                    myMesh2.cleanUp(false);
                 }
                 //constant mesh for text
                 else {
@@ -150,14 +150,14 @@ public class MainMenuRenderer {
                     //gray shadow part
                     updateOrthoModelMatrix(windowScale / 2.27d, windowScale / 3.27f, 0, 0, 0, 20f, scale, scale, scale);
                     hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
-                    renderMesh(getTitleScreenTextMeshBackGround());
+                    getTitleScreenTextMeshBackGround().render();
 
                     glClear(GL_DEPTH_BUFFER_BIT);
 
                     //yellow part
                     updateOrthoModelMatrix(windowScale / 2.25d, windowScale / 3.25f, 0, 0, 0, 20f, scale, scale, scale);
                     hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
-                    renderMesh(getTitleScreenTextMeshForeGround());
+                    getTitleScreenTextMeshForeGround().render();
                 }
             }
 
@@ -166,7 +166,7 @@ public class MainMenuRenderer {
         if (getMainMenuPage() != 4) {
             renderMainMenuGUI();
         } else {
-            int[] creditParts = getCreditParts();
+            Mesh[] creditParts = getCreditParts();
             boolean on = true;
             double trueY = 0;
 
@@ -177,7 +177,9 @@ public class MainMenuRenderer {
                 //if (creditParts[y] != null) {
                 updateOrthoModelMatrix(0, trueY + scroll, 0, 0, 0, 0, scale, scale, scale);
                 hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
-                renderMesh(creditParts[y]);
+                if (creditParts[y] != null) {
+                    creditParts[y].render();
+                }
 
 
                 if (y <= 2){
@@ -225,7 +227,7 @@ public class MainMenuRenderer {
 
                 updateOrthoModelMatrix(xPos, yPos, 0, 0, 0, 0, windowScale / 20d, windowScale / 20d, windowScale / 20d);
                 hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
-                renderMesh(thisGUIObject.textMesh);
+                thisGUIObject.textMesh.render();
 
                 float xAdder = 20 / thisGUIObject.buttonScale.x;
                 float yAdder = 20 / thisGUIObject.buttonScale.y;
@@ -233,9 +235,9 @@ public class MainMenuRenderer {
                 updateOrthoModelMatrix(xPos, yPos, 0, 0, 0, 0, windowScale / xAdder, windowScale / yAdder, windowScale / 20d);
                 hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
                 if (thisGUIObject.selected) {
-                    renderMesh(getButtonSelectedMesh());
+                    getButtonSelectedMesh().render();
                 } else {
-                    renderMesh(getButtonMesh());
+                    getButtonMesh().render();
                 }
             }
             //text input box type
@@ -261,7 +263,7 @@ public class MainMenuRenderer {
 
                 updateOrthoModelMatrix(xPos - textOffset, yPos, 0, 0, 0, 0, windowScale / 20d, windowScale / 20d, windowScale / 20d);
                 hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
-                renderMesh(thisGUIObject.textMesh);
+                thisGUIObject.textMesh.render();
 
                 float xAdder = 20 / thisGUIObject.buttonScale.x;
                 float yAdder = 20 / thisGUIObject.buttonScale.y;
@@ -269,9 +271,9 @@ public class MainMenuRenderer {
                 updateOrthoModelMatrix(xPos, yPos, 0, 0, 0, 0, windowScale / xAdder, windowScale / yAdder, windowScale / 20d);
                 hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
                 if (thisGUIObject.selected) {
-                    renderMesh(getTextInputSelectedMesh());
+                    getTextInputSelectedMesh().render();
                 } else {
-                    renderMesh(getTextInputMesh());
+                    getTextInputMesh().render();
                 }
             }
             //plain text type
@@ -281,7 +283,7 @@ public class MainMenuRenderer {
 
                 updateOrthoModelMatrix(xPos, yPos, 0, 0, 0, 0, windowScale / 20d, windowScale / 20d, windowScale / 20d);
                 hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
-                renderMesh(thisGUIObject.textMesh);
+                thisGUIObject.textMesh.render();
             }
         }
         hudShaderProgram.unbind();

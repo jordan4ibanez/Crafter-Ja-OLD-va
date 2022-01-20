@@ -1,5 +1,6 @@
 package game.mainMenu;
 
+import engine.graphics.Mesh;
 import engine.gui.GUIObject;
 import engine.sound.SoundSource;
 import org.joml.Vector2d;
@@ -15,7 +16,6 @@ import static engine.Window.*;
 import static engine.credits.Credits.initializeCredits;
 import static engine.disk.Disk.setCurrentActiveWorld;
 import static engine.disk.Disk.worldSize;
-import static engine.graphics.Mesh.cleanUpMesh;
 import static engine.gui.GUILogic.doGUIMouseCollisionDetection;
 import static engine.gui.TextHandling.createTextCentered;
 import static engine.network.Networking.*;
@@ -162,7 +162,7 @@ final public class MainMenu {
         return mainMenuGUI;
     }
 
-    public static void initMainMenu() throws Exception {
+    public static void initMainMenu() {
 
         //seed the random generator
         random.setSeed(new Date().getTime());
@@ -902,8 +902,8 @@ final public class MainMenu {
         return "NULL";
     }
 
-    private static int titleScreenTextMeshBackGround = createTextCentered("", 0.2f, 0.2f, 0f);
-    private static int titleScreenTextMeshForeGround = createTextCentered("", 1f, 1f, 0f);
+    private static Mesh titleScreenTextMeshBackGround = createTextCentered("", 0.2f, 0.2f, 0f);
+    private static Mesh titleScreenTextMeshForeGround = createTextCentered("", 1f, 1f, 0f);
 
     private static final DateTimeFormatter dtf =  DateTimeFormatter.ofPattern("MM/dd");
     private static final LocalDateTime now = LocalDateTime.now();
@@ -956,19 +956,19 @@ final public class MainMenu {
 
         //create a new mesh for title screen text
         if (!titleScreenText.equals("R_A_N_D_O_M")){
-            cleanUpMesh(titleScreenTextMeshBackGround, false);
-            cleanUpMesh(titleScreenTextMeshForeGround, false);
+            titleScreenTextMeshBackGround.cleanUp(false);
+            titleScreenTextMeshForeGround.cleanUp(false);
 
             titleScreenTextMeshBackGround = createTextCentered(getTitleScreenText(), 0.2f, 0.2f, 0f);
             titleScreenTextMeshForeGround = createTextCentered(getTitleScreenText(), 1f, 1f, 0f);
         }
     }
 
-    public static int getTitleScreenTextMeshBackGround(){
+    public static Mesh getTitleScreenTextMeshBackGround(){
         return titleScreenTextMeshBackGround;
     }
 
-    public static int getTitleScreenTextMeshForeGround(){
+    public static Mesh getTitleScreenTextMeshForeGround(){
         return titleScreenTextMeshForeGround;
     }
 
@@ -1024,7 +1024,7 @@ final public class MainMenu {
             "Don't look at the bugs!",
             "Taco Tuesday!",
             "Runs on DOS!",
-            "Doesn't ｆ�?ｒ�?�?ｔ text right!",
+            "Doesn't ｆ�?ｒ�?�?ｔ text right!",
             "Look at the window title!",
             "My spoon is too big!",
             "It's chaos!",

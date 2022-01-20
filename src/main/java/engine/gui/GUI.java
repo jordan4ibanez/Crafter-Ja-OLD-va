@@ -1,5 +1,7 @@
 package engine.gui;
 
+import engine.graphics.Mesh;
+import engine.graphics.Texture;
 import engine.highPerformanceContainers.HyperFloatArray;
 import engine.highPerformanceContainers.HyperIntArray;
 import org.joml.Vector3f;
@@ -7,9 +9,6 @@ import org.joml.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
 
-import static engine.graphics.Mesh.cleanUpMesh;
-import static engine.graphics.Mesh.createMesh;
-import static engine.graphics.Texture.createTexture;
 import static engine.gui.TextHandling.createTextWithShadow;
 import static engine.time.Timer.getFpsCounted;
 import static game.Crafter.getVersionName;
@@ -17,41 +16,41 @@ import static game.Crafter.getVersionName;
 public class GUI {
 
     //textures
-    private static int worldSelectionTexture;
-    private static int playerTexture;
-    private static int miningCrack;
+    private static Texture worldSelectionTexture;
+    private static Texture playerTexture;
+    private static Texture miningCrack;
 
     //meshes
-    private static final int[] miningCrackMesh = new int[9];
+    private static final Mesh[] miningCrackMesh = new Mesh[9];
 
-    private static int hotBarMesh;
-    private static int hotBarSelectionMesh;
+    private static Mesh hotBarMesh;
+    private static Mesh hotBarSelectionMesh;
 
-    private static int inventoryMesh;
-    private static int inventoryBackdropMesh;
-    private static int thisWorldSelectionMesh;
-    private static int thisCrossHairMesh;
-    private static int playerMesh;
-    private static int versionInfoText;
-    private static int wieldHandMesh;
-    private static int inventorySlotMesh;
-    private static int inventorySlotSelectedMesh;
-    private static int buttonMesh;
-    private static int buttonSelectedMesh;
-    private static int buttonPushedMesh;
-    private static int textInputMesh;
-    private static int textInputSelectedMesh;
-    private static int menuBgMesh;
-    private static int globalWaterEffectMesh;
-    private static int heartHudMesh;
-    private static int halfHeartHudMesh;
-    private static int heartShadowHudMesh;
-    private static int chatBox;
+    private static Mesh inventoryMesh;
+    private static Mesh inventoryBackdropMesh;
+    private static Mesh thisWorldSelectionMesh;
+    private static Mesh thisCrossHairMesh;
+    private static Mesh playerMesh;
+    private static Mesh versionInfoText;
+    private static Mesh wieldHandMesh;
+    private static Mesh inventorySlotMesh;
+    private static Mesh inventorySlotSelectedMesh;
+    private static Mesh buttonMesh;
+    private static Mesh buttonSelectedMesh;
+    private static Mesh buttonPushedMesh;
+    private static Mesh textInputMesh;
+    private static Mesh textInputSelectedMesh;
+    private static Mesh menuBgMesh;
+    private static Mesh globalWaterEffectMesh;
+    private static Mesh heartHudMesh;
+    private static Mesh halfHeartHudMesh;
+    private static Mesh heartShadowHudMesh;
+    private static Mesh chatBox;
 
-    private static int sun;
-    private static int moon;
+    private static Mesh sun;
+    private static Mesh moon;
 
-    private static int fpsMesh;
+    private static Mesh fpsMesh;
 
     public static void createGUI() {
 
@@ -90,112 +89,112 @@ public class GUI {
 
 
     public static void initializeHudAtlas() {
-        worldSelectionTexture = createTexture("textures/selection.png");
-        playerTexture = createTexture("textures/player.png");
-        miningCrack = createTexture("textures/crack_anylength.png");
+        worldSelectionTexture = new Texture("textures/selection.png");
+        playerTexture = new Texture("textures/player.png");
+        miningCrack = new Texture("textures/crack_anylength.png");
     }
 
-    public static int getSunMesh(){
+    public static Mesh getSunMesh(){
         return sun;
     }
 
-    public static int getMoonMesh(){
+    public static Mesh getMoonMesh(){
         return moon;
     }
 
-    public static int getChatBoxMesh(){
+    public static Mesh getChatBoxMesh(){
         return chatBox;
     }
 
-    public static int getHeartHudMesh(){
+    public static Mesh getHeartHudMesh(){
         return heartHudMesh;
     }
 
-    public static int getHalfHeartHudMesh(){
+    public static Mesh getHalfHeartHudMesh(){
         return halfHeartHudMesh;
     }
 
-    public static int getHeartShadowHudMesh(){
+    public static Mesh getHeartShadowHudMesh(){
         return heartShadowHudMesh;
     }
 
-    public static int getHotBarMesh(){
+    public static Mesh getHotBarMesh(){
         return hotBarMesh;
     }
 
-    public static int getHotBarSelectionMesh(){
+    public static Mesh getHotBarSelectionMesh(){
         return hotBarSelectionMesh;
     }
 
-    public static int getInventoryMesh(){
+    public static Mesh getInventoryMesh(){
         return inventoryMesh;
     }
-    public static int getInventoryBackdropMesh(){
+    public static Mesh getInventoryBackdropMesh(){
         return inventoryBackdropMesh;
     }
 
-    public static int getWorldSelectionMesh(){
+    public static Mesh getWorldSelectionMesh(){
         return thisWorldSelectionMesh;
     }
 
-    public static int getCrossHairMesh(){
+    public static Mesh getCrossHairMesh(){
         return thisCrossHairMesh;
     }
 
-    public static int getPlayerMesh(){
+    public static Mesh getPlayerMesh(){
         return playerMesh;
     }
 
-    public static int getVersionInfoText(){
+    public static Mesh getVersionInfoText(){
         return versionInfoText;
     }
 
-    public static int getWieldHandMesh(){
+    public static Mesh getWieldHandMesh(){
         return wieldHandMesh;
     }
 
-    public static int getButtonMesh(){
+    public static Mesh getButtonMesh(){
         return buttonMesh;
     }
-    public static int getButtonSelectedMesh(){
+    public static Mesh getButtonSelectedMesh(){
         return buttonSelectedMesh;
     }
 
-    public static int getTextInputMesh(){
+    public static Mesh getTextInputMesh(){
         return textInputMesh;
     }
-    public static int getTextInputSelectedMesh(){
+    public static Mesh getTextInputSelectedMesh(){
         return textInputSelectedMesh;
     }
 
-    public static int getButtonPushedMesh(){
+    public static Mesh getButtonPushedMesh(){
         return buttonPushedMesh;
     }
-    public static int getMenuBgMesh(){
+    public static Mesh getMenuBgMesh(){
         return menuBgMesh;
     }
 
-    public static int getInventorySlotMesh(){
+    public static Mesh getInventorySlotMesh(){
         return inventorySlotMesh;
     }
-    public static int getInventorySlotSelectedMesh(){
+    public static Mesh getInventorySlotSelectedMesh(){
         return inventorySlotSelectedMesh;
     }
 
-    public static int getMiningCrackMesh(byte diggingFrame){
+    public static Mesh getMiningCrackMesh(byte diggingFrame){
         return miningCrackMesh[diggingFrame];
     }
 
-    public static int getGlobalWaterEffectMesh(){
+    public static Mesh getGlobalWaterEffectMesh(){
         return globalWaterEffectMesh;
     }
 
     public static void buildFPSMesh() {
-        cleanUpMesh(fpsMesh, false);
+        fpsMesh.cleanUp(false);
         fpsMesh = createTextWithShadow("FPS: " + getFpsCounted(), 1f, 1f, 1f);
     }
 
-    public static int getFPSMesh(){
+    public static Mesh getFPSMesh(){
         return fpsMesh;
     }
 
@@ -252,7 +251,7 @@ public class GUI {
             indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
             textureCoord.pack(1f, textureMin, 0f, textureMin, 0f, textureMax, 1f, textureMax);
 
-            miningCrackMesh[level] = createMesh(positions.values(), light.values(), indices.values(), textureCoord.values(), miningCrack);
+            miningCrackMesh[level] = new Mesh(positions.values(), light.values(), indices.values(), textureCoord.values(), miningCrack);
 
             positions.reset();
             light.reset();
@@ -611,7 +610,7 @@ public class GUI {
             textureCoordArray[i] = textureCoord.get(i);
         }
 
-        thisWorldSelectionMesh = createMesh(positionsArray, lightArray, indicesArray, textureCoordArray, worldSelectionTexture);
+        thisWorldSelectionMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, worldSelectionTexture);
     }
 
 
@@ -974,7 +973,7 @@ public class GUI {
             textureCoordArray[i] = textureCoord.get(i);
         }
 
-        wieldHandMesh = createMesh(positionsArray, lightArray, indicesArray, textureCoordArray, playerTexture);
+        wieldHandMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, playerTexture);
 
         positions.clear();
         light.clear();
@@ -1418,7 +1417,7 @@ public class GUI {
             textureCoordArray[i] = textureCoord.get(i);
         }
 
-        playerMesh = createMesh(positionsArray, lightArray, indicesArray, textureCoordArray, playerTexture);
+        playerMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, playerTexture);
 
         positions.clear();
         light.clear();
@@ -1427,7 +1426,7 @@ public class GUI {
     }
 
 
-    public static int create2DMesh(float width, float height, String texture) {
+    public static Mesh create2DMesh(float width, float height, String texture) {
         float[] positions = new float[12];
         float[] textureCoord = new float[8];
         int[] indices = new int[6];
@@ -1466,10 +1465,10 @@ public class GUI {
         textureCoord[6] = (1f);
         textureCoord[7] = (1f);
 
-        return createMesh(positions, light, indices, textureCoord, createTexture(texture));
+        return new Mesh(positions, light, indices, textureCoord, new Texture(texture));
     }
 
-    public static int create2DMeshOffsetRight(float width, float height, String texture) {
+    public static Mesh create2DMeshOffsetRight(float width, float height, String texture) {
         float[] positions = new float[12];
         float[] textureCoord = new float[8];
         int[] indices = new int[6];
@@ -1511,11 +1510,11 @@ public class GUI {
         textureCoord[6] = (1f);
         textureCoord[7] = (1f);
 
-        return createMesh(positions, light, indices, textureCoord, createTexture(texture));
+        return new Mesh(positions, light, indices, textureCoord, new Texture(texture));
     }
 
     //overloaded for texture width (used for half hearts)
-    public static int create2DMesh(float width, float height, float textureWidth, String texture) {
+    public static Mesh create2DMesh(float width, float height, float textureWidth, String texture) {
         float[] positions = new float[12];
         float[] textureCoord = new float[8];
         int[] indices = new int[6];
@@ -1554,6 +1553,6 @@ public class GUI {
         textureCoord[6] = (textureWidth);
         textureCoord[7] = (1f);
 
-        return createMesh(positions, light, indices, textureCoord, createTexture(texture));
+        return new Mesh(positions, light, indices, textureCoord, new Texture(texture));
     }
 }
