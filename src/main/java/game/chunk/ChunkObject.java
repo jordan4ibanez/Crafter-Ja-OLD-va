@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ChunkObject {
-    private final Vector2i key     = new Vector2i();
     private final byte[] block     = new byte[32768];
     private final byte[] rotation  = new byte[32768];
     private final byte[] light     = new byte[32768];
@@ -19,10 +18,6 @@ public class ChunkObject {
 
     private boolean saveToDisk = false;
     private float hover        = -128;
-
-    public ChunkObject(Vector2i key){
-        this.key.set(key);
-    }
 
     public Mesh getNormalMesh(int yHeight){
         return normalMesh[yHeight];
