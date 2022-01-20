@@ -19,19 +19,13 @@ import static engine.network.Networking.getIfMultiplayer;
 import static engine.network.Networking.sendOutChunkRequest;
 import static engine.settings.Settings.getRenderDistance;
 import static engine.time.Time.getDelta;
-import static game.blocks.BlockDefinition.*;
 import static game.chunk.ChunkMath.posToIndex;
 import static game.chunk.ChunkMath.posToIndex2D;
-import static game.chunk.ChunkMeshGenerator.generateChunkMesh;
-import static game.chunk.ChunkMeshGenerator.instantGeneration;
 import static game.chunk.ChunkUpdateHandler.chunkUpdate;
 import static game.light.Light.*;
 import static game.player.Player.*;
 
 final public class Chunk {
-
-    //DO NOT CHANGE THE DATA CONTAINER
-    //private static final ConcurrentHashMap<Vector2i, ChunkMeshObject> mapMeshes = new ConcurrentHashMap<>();
 
     //this one holds keys for look ups
     private static final ConcurrentHashMap<Vector2i, Vector2i> chunkKeys    = new ConcurrentHashMap<>();
