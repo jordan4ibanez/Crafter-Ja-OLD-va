@@ -2,6 +2,7 @@ package game.chunk;
 
 import engine.graphics.Mesh;
 import engine.network.ChunkRequest;
+import engine.time.Delta;
 import org.joml.Vector2i;
 import org.joml.Vector3i;
 
@@ -49,20 +50,16 @@ public class Chunk {
     public float getChunkHover(Vector2i key){
         return map.get(key).getHover();
     }
-
-
-    public void doChunksHoveringUpThing(){
-        double delta = getDelta();
-
-        for (Vector2i thisValue : hover.keySet()){
-            float thisFloat = hover.get(thisValue);
-
-            if (thisFloat < 0f){
-                thisFloat += (float)delta * 50f;
-                if (thisFloat >= 0f){
-                    thisFloat = 0f;
+    
+    public void doChunksHoveringUpThing(Delta delta){
+        for (ChunkObject thisChunk : map.values()){
+            float thisHover = thisChunk.getHover();
+            if (thisHover < 0f){
+                thisHover += (float)delta.getDelta() * 50f;
+                if (thisHover >= 0f){
+                    thisHover = 0f;
                 }
-                hover.put(thisValue, thisFloat);
+                thisChunk.setHover(thisHover);
             }
         }
     }
