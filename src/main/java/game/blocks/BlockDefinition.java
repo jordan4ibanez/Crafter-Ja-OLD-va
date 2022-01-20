@@ -1,7 +1,5 @@
 package game.blocks;
 
-import static game.item.ItemDefinition.registerBlockItemDefinition;
-
 
 public class BlockDefinition {
 
