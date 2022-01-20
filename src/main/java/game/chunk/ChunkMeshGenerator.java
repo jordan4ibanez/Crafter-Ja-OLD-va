@@ -2,85 +2,44 @@ package game.chunk;
 
 import engine.highPerformanceContainers.HyperFloatArray;
 import engine.highPerformanceContainers.HyperIntArray;
+import game.blocks.BlockDefinitionContainer;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 import static engine.Window.windowShouldClose;
-import static game.blocks.BlockDefinition.getMaxIDs;
 import static game.chunk.Chunk.*;
-import static game.chunk.ChunkMeshGenerationHandler.addToChunkMeshQueue;
 
-//note: this entire class is held on it's own thread, be careful with OpenGL context or switch to Vulkan so it can dump data into the GPU
 public class ChunkMeshGenerator implements Runnable{
-    //DO NOT CHANGE THE DATA CONTAINER
-    private static final ConcurrentLinkedDeque<Vector3i> generationQueue = new ConcurrentLinkedDeque<>();
 
+    //all data held on this thread
+    BlockDefinitionContainer blockDefinitionContainer = new BlockDefinitionContainer();
 
-    private final static Vector3i key = new Vector3i();
+    private final ConcurrentLinkedDeque<Vector3i> generationQueue = new ConcurrentLinkedDeque<>();
 
-    private static final byte maxIDs = getMaxIDs();
+    private final Vector3i key = new Vector3i();
 
-    //holds the blockshape data - on this thread
-    //maybe a dynamic type would be better for this for api usage in the future?
-    private final static float[][][] blockShapeMap = new float[(byte)10][0][0];
-
-    //holds BlockDefinition data - on this thread
-    private static final byte[] drawTypes = new byte[maxIDs];
-    private static final float[][] frontTextures = new float[maxIDs][0];  //front
-    private static final float[][] backTextures = new float[maxIDs][0];   //back
-    private static final float[][] rightTextures = new float[maxIDs][0];  //right
-    private static final float[][] leftTextures = new float[maxIDs][0];   //left
-    private static final float[][] topTextures = new float[maxIDs][0];    //top
-    private static final float[][] bottomTextures = new float[maxIDs][0]; //bottom
-    private static final boolean[] isLiquids = new boolean[maxIDs];
-
-    private static byte currentGlobalLightLevel = 15;
+    private byte currentGlobalLightLevel = 15;
 
     //normal block mesh data
-    private static final HyperFloatArray positions = new HyperFloatArray(24);
-    private static final HyperFloatArray textureCoord = new HyperFloatArray(16);
-    private static final HyperIntArray indices = new HyperIntArray(12);
-    private static final HyperFloatArray light = new HyperFloatArray(24);
+    private final HyperFloatArray positions = new HyperFloatArray(24);
+    private final HyperFloatArray textureCoord = new HyperFloatArray(16);
+    private final HyperIntArray indices = new HyperIntArray(12);
+    private final HyperFloatArray light = new HyperFloatArray(24);
 
     //liquid block mesh data
-    private static final HyperFloatArray liquidPositions = new HyperFloatArray(24);
-    private static final HyperFloatArray liquidTextureCoord = new HyperFloatArray(16);
-    private static final HyperIntArray liquidIndices = new HyperIntArray(12);
-    private static final HyperFloatArray liquidLight = new HyperFloatArray(24);
+    private final HyperFloatArray liquidPositions = new HyperFloatArray(24);
+    private final HyperFloatArray liquidTextureCoord = new HyperFloatArray(16);
+    private final HyperIntArray liquidIndices = new HyperIntArray(12);
+    private final HyperFloatArray liquidLight = new HyperFloatArray(24);
 
     //allFaces block mesh data
-    private static final HyperFloatArray allFacesPositions = new HyperFloatArray(24);
-    private static final HyperFloatArray allFacesTextureCoord = new HyperFloatArray(16);
-    private static final HyperIntArray allFacesIndices = new HyperIntArray(12);
-    private static final HyperFloatArray allFacesLight = new HyperFloatArray(24);
+    private final HyperFloatArray allFacesPositions = new HyperFloatArray(24);
+    private final HyperFloatArray allFacesTextureCoord = new HyperFloatArray(16);
+    private final HyperIntArray allFacesIndices = new HyperIntArray(12);
+    private final HyperFloatArray allFacesLight = new HyperFloatArray(24);
 
-
-
-    public static void passChunkMeshThreadData(byte[] dupeDrawTypes, float[][] dupeFrontTextures, float[][] dupeBackTextures, float[][] dupeRightTextures, float[][] dupeLeftTextures, float[][] dupeTopTextures, float[][] dupeBottomTextures, boolean[] dupeIsLiquids, float[][][]dupeBlockShapeMap){
-        //copy data
-        System.arraycopy(dupeDrawTypes, 0, drawTypes, 0, dupeDrawTypes.length);
-        System.arraycopy(dupeFrontTextures, 0, frontTextures, 0, dupeFrontTextures.length);
-        System.arraycopy(dupeBackTextures, 0, backTextures, 0, dupeBackTextures.length);
-        System.arraycopy(dupeRightTextures, 0, rightTextures, 0, dupeRightTextures.length);
-        System.arraycopy(dupeLeftTextures, 0, leftTextures, 0, dupeLeftTextures.length);
-        System.arraycopy(dupeTopTextures, 0, topTextures, 0, dupeTopTextures.length);
-        System.arraycopy(dupeBottomTextures, 0, bottomTextures, 0, dupeBottomTextures.length);
-        System.arraycopy(dupeIsLiquids, 0, isLiquids, 0, dupeIsLiquids.length);
-
-        //copy block shape map
-        for (int i = 0; i < dupeBlockShapeMap.length; i++){
-            float[][] baseOfShape = dupeBlockShapeMap[i];
-            blockShapeMap[i] = new float[baseOfShape.length][0];
-            for (int q = 0; q < baseOfShape.length; q++){
-                float[] actualShape = baseOfShape[q];
-                blockShapeMap[i][q] = new float[actualShape.length];
-                System.arraycopy(actualShape, 0, blockShapeMap[i][q], 0, actualShape.length);
-            }
-        }
-
-    }
 
     public void run() {
         //run until game is closed - should only be run in game
@@ -99,27 +58,27 @@ public class ChunkMeshGenerator implements Runnable{
         }
     }
 
-    public static void generateChunkMesh(int chunkX, int chunkZ, int yHeight) {
+    public void generateChunkMesh(int chunkX, int chunkZ, int yHeight) {
         //do not add duplicates
         if (!generationQueue.contains(new Vector3i(chunkX,yHeight, chunkZ))) {
             generationQueue.add(new Vector3i(chunkX, yHeight, chunkZ));
         }
     }
 
-    public static void instantGeneration(int chunkX, int chunkZ, int yHeight){
+    public void instantGeneration(int chunkX, int chunkZ, int yHeight){
         //replace the data basically
         generationQueue.remove(new Vector3i(chunkX,yHeight, chunkZ));
         generationQueue.addFirst(new Vector3i(chunkX,yHeight, chunkZ));
     }
 
     //allows main thread to set the local byte of light to this runnable thread
-    public static void setChunkThreadCurrentGlobalLightLevel(byte newLight){
+    public void setChunkThreadCurrentGlobalLightLevel(byte newLight){
         currentGlobalLightLevel = newLight;
     }
 
 
     //this polls for chunk meshes to update
-    private static boolean pollQueue() {
+    private boolean pollQueue() {
         if (generationQueue.isEmpty()) {
             return true;
         }
@@ -179,7 +138,7 @@ public class ChunkMeshGenerator implements Runnable{
                     if (thisBlock > 0) {
 
                         //only need to look this data up if it's not air
-                        thisBlockDrawType = getBlockDrawType(thisBlock);
+                        thisBlockDrawType = blockDefinitionContainer.getDrawType(thisBlock);
                         thisRotation = rotationData[posToIndex(x, y, z)];
 
                         switch (thisBlockDrawType) {
@@ -265,8 +224,8 @@ public class ChunkMeshGenerator implements Runnable{
     }
 
 
-    private static int calculateBlockBox(int x, int y, int z, byte thisBlock, byte thisRotation, int indicesCount, byte[] chunkNeighborZPlusLightData, byte[] chunkNeighborZMinusLightData, byte[] chunkNeighborXPlusLightData, byte[] chunkNeighborXMinusLightData, byte chunkLightLevel, byte[] lightData){
-        for (float[] thisBlockBox : getBlockShape(thisBlock, thisRotation)) {
+    private int calculateBlockBox(int x, int y, int z, byte thisBlock, byte thisRotation, int indicesCount, byte[] chunkNeighborZPlusLightData, byte[] chunkNeighborZMinusLightData, byte[] chunkNeighborXPlusLightData, byte[] chunkNeighborXMinusLightData, byte chunkLightLevel, byte[] lightData){
+        for (float[] thisBlockBox : blockDefinitionContainer.getShape(thisBlock, thisRotation)) {
             //front
             positions.pack(thisBlockBox[3] + x, thisBlockBox[4] + y, thisBlockBox[5] + z, thisBlockBox[0] + x, thisBlockBox[4] + y, thisBlockBox[5] + z, thisBlockBox[0] + x, thisBlockBox[1] + y, thisBlockBox[5] + z, thisBlockBox[3] + x, thisBlockBox[1] + y, thisBlockBox[5] + z);
 
@@ -290,7 +249,7 @@ public class ChunkMeshGenerator implements Runnable{
             indicesCount += 4;
 
 
-            float[] textureWorker = getFrontTexturePoints(thisBlock, thisRotation);
+            float[] textureWorker = blockDefinitionContainer.getFrontTexturePoints(thisBlock, thisRotation);
 
             //front
             textureCoord.pack(textureWorker[1] - ((1 - thisBlockBox[3]) / 32f), textureWorker[2] + ((1 - thisBlockBox[4]) / 32f), textureWorker[0] - ((0 - thisBlockBox[0]) / 32f), textureWorker[2] + ((1 - thisBlockBox[4]) / 32f), textureWorker[0] - ((0 - thisBlockBox[0]) / 32f), textureWorker[3] - (thisBlockBox[1] / 32f), textureWorker[1] - ((1 - thisBlockBox[3]) / 32f), textureWorker[3] - (thisBlockBox[1] / 32f));
@@ -316,7 +275,7 @@ public class ChunkMeshGenerator implements Runnable{
 
             indicesCount += 4;
 
-            textureWorker = getBackTexturePoints(thisBlock, thisRotation);
+            textureWorker = blockDefinitionContainer.getBackTexturePoints(thisBlock, thisRotation);
 
             //back
             textureCoord.pack(textureWorker[1] - ((1 - thisBlockBox[0]) / 32f), textureWorker[2] + ((1 - thisBlockBox[4]) / 32f), textureWorker[0] - ((0 - thisBlockBox[3]) / 32f), textureWorker[2] + ((1 - thisBlockBox[4]) / 32f), textureWorker[0] - ((0 - thisBlockBox[3]) / 32f), textureWorker[3] - (thisBlockBox[1] / 32f), textureWorker[1] - ((1 - thisBlockBox[0]) / 32f), textureWorker[3] - (thisBlockBox[1] / 32f));
@@ -342,7 +301,7 @@ public class ChunkMeshGenerator implements Runnable{
             indicesCount += 4;
 
 
-            textureWorker = getRightTexturePoints(thisBlock, thisRotation);
+            textureWorker = blockDefinitionContainer.getRightTexturePoints(thisBlock, thisRotation);
             //right
             textureCoord.pack(textureWorker[1] - ((1f - thisBlockBox[2]) / 32f), textureWorker[2] + ((1f - thisBlockBox[4]) / 32f), textureWorker[0] - ((0f - thisBlockBox[5]) / 32f), textureWorker[2] + ((1f - thisBlockBox[4]) / 32f), textureWorker[0] - ((0f - thisBlockBox[5]) / 32f), textureWorker[3] - ((thisBlockBox[1]) / 32f), textureWorker[1] - ((1f - thisBlockBox[2]) / 32f), textureWorker[3] - ((thisBlockBox[1]) / 32f));
 
@@ -367,7 +326,7 @@ public class ChunkMeshGenerator implements Runnable{
 
             indicesCount += 4;
 
-            textureWorker = getLeftTexturePoints(thisBlock, thisRotation);
+            textureWorker = blockDefinitionContainer.getLeftTexturePoints(thisBlock, thisRotation);
             //left
             textureCoord.pack(textureWorker[1] - ((1f - thisBlockBox[5]) / 32f), textureWorker[2] + ((1f - thisBlockBox[4]) / 32f), textureWorker[0] - ((0f - thisBlockBox[2]) / 32f), textureWorker[2] + ((1f - thisBlockBox[4]) / 32f), textureWorker[0] - ((0f - thisBlockBox[2]) / 32f), textureWorker[3] - ((thisBlockBox[1]) / 32f), textureWorker[1] - ((1f - thisBlockBox[5]) / 32f), textureWorker[3] - ((thisBlockBox[1]) / 32f));
 
@@ -392,7 +351,7 @@ public class ChunkMeshGenerator implements Runnable{
             indicesCount += 4;
 
 
-            textureWorker = getTopTexturePoints(thisBlock);
+            textureWorker = blockDefinitionContainer.getTopTexturePoints(thisBlock);
             //top
             textureCoord.pack(textureWorker[1] - ((1f - thisBlockBox[5]) / 32f), textureWorker[2] + ((1f - thisBlockBox[0]) / 32f), textureWorker[0] - ((0f - thisBlockBox[2]) / 32f), textureWorker[2] + ((1f - thisBlockBox[0]) / 32f), textureWorker[0] - ((0f - thisBlockBox[2]) / 32f), textureWorker[3] - ((thisBlockBox[3]) / 32f), textureWorker[1] - ((1f - thisBlockBox[5]) / 32f), textureWorker[3] - ((thisBlockBox[3]) / 32f));
 
@@ -417,7 +376,7 @@ public class ChunkMeshGenerator implements Runnable{
             indicesCount += 4;
 
 
-            textureWorker = getBottomTexturePoints(thisBlock);
+            textureWorker = blockDefinitionContainer.getBottomTexturePoints(thisBlock);
             //bottom
             textureCoord.pack(textureWorker[1] - ((1f - thisBlockBox[5]) / 32f), textureWorker[2] + ((1f - thisBlockBox[0]) / 32f), textureWorker[0] - ((0f - thisBlockBox[2]) / 32f), textureWorker[2] + ((1f - thisBlockBox[0]) / 32f), textureWorker[0] - ((0f - thisBlockBox[2]) / 32f), textureWorker[3] - (((thisBlockBox[3]) / 32f)), textureWorker[1] - ((1f - thisBlockBox[5]) / 32f), textureWorker[3] - ((thisBlockBox[3]) / 32f));
         }
@@ -425,7 +384,7 @@ public class ChunkMeshGenerator implements Runnable{
         return indicesCount;
     }
 
-    private static int calculateLiquids(int x, int y, int z, byte thisBlock, byte thisRotation, int liquidIndicesCount, byte[] blockData, byte[] chunkNeighborZPlusBlockData, byte[] chunkNeighborZPlusLightData, byte[] chunkNeighborZMinusBlockData, byte[] chunkNeighborZMinusLightData, byte[] chunkNeighborXPlusBlockData, byte[] chunkNeighborXPlusLightData, byte[] chunkNeighborXMinusBlockData, byte[] chunkNeighborXMinusLightData, byte chunkLightLevel, byte[] lightData){
+    private int calculateLiquids(int x, int y, int z, byte thisBlock, byte thisRotation, int liquidIndicesCount, byte[] blockData, byte[] chunkNeighborZPlusBlockData, byte[] chunkNeighborZPlusLightData, byte[] chunkNeighborZMinusBlockData, byte[] chunkNeighborZMinusLightData, byte[] chunkNeighborXPlusBlockData, byte[] chunkNeighborXPlusLightData, byte[] chunkNeighborXMinusBlockData, byte[] chunkNeighborXMinusLightData, byte chunkLightLevel, byte[] lightData){
         byte neighborBlock;
 
         if (z + 1 > 15) {
@@ -433,7 +392,7 @@ public class ChunkMeshGenerator implements Runnable{
         } else {
             neighborBlock = blockData[posToIndex(x, y, z + 1)];
         }
-        byte neighborDrawtype = getBlockDrawType(neighborBlock);
+        byte neighborDrawtype = blockDefinitionContainer.getDrawType(neighborBlock);
 
         float lightValue;
         byte realLight;
@@ -460,7 +419,7 @@ public class ChunkMeshGenerator implements Runnable{
 
             liquidIndicesCount += 4;
 
-            textureWorker = getFrontTexturePoints(thisBlock, thisRotation);
+            textureWorker = blockDefinitionContainer.getFrontTexturePoints(thisBlock, thisRotation);
             //front
             liquidTextureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]
             );
@@ -472,7 +431,7 @@ public class ChunkMeshGenerator implements Runnable{
         } else {
             neighborBlock = blockData[posToIndex(x, y, z - 1)];
         }
-        neighborDrawtype = getBlockDrawType(neighborBlock);
+        neighborDrawtype = blockDefinitionContainer.getDrawType(neighborBlock);
 
         if ((neighborDrawtype == 0 || neighborDrawtype > 1) && neighborDrawtype != 8) {
             //back
@@ -495,7 +454,7 @@ public class ChunkMeshGenerator implements Runnable{
 
             liquidIndicesCount += 4;
 
-            textureWorker = getBackTexturePoints(thisBlock, thisRotation);
+            textureWorker = blockDefinitionContainer.getBackTexturePoints(thisBlock, thisRotation);
             //back
             liquidTextureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
         }
@@ -505,7 +464,7 @@ public class ChunkMeshGenerator implements Runnable{
         } else {
             neighborBlock = blockData[posToIndex(x + 1, y, z)];
         }
-        neighborDrawtype = getBlockDrawType(neighborBlock);
+        neighborDrawtype = blockDefinitionContainer.getDrawType(neighborBlock);
 
         if ((neighborDrawtype == 0 || neighborDrawtype > 1) && neighborDrawtype != 8) {
             //right
@@ -529,7 +488,7 @@ public class ChunkMeshGenerator implements Runnable{
 
             liquidIndicesCount += 4;
 
-            textureWorker = getRightTexturePoints(thisBlock, thisRotation);
+            textureWorker = blockDefinitionContainer.getRightTexturePoints(thisBlock, thisRotation);
             //right
             liquidTextureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
         }
@@ -539,7 +498,7 @@ public class ChunkMeshGenerator implements Runnable{
         } else {
             neighborBlock = blockData[posToIndex(x - 1, y, z)];
         }
-        neighborDrawtype = getBlockDrawType(neighborBlock);
+        neighborDrawtype = blockDefinitionContainer.getDrawType(neighborBlock);
 
         if ((neighborDrawtype == 0 || neighborDrawtype > 1) && neighborDrawtype != 8) {
             //left
@@ -563,7 +522,7 @@ public class ChunkMeshGenerator implements Runnable{
 
             liquidIndicesCount += 4;
 
-            textureWorker = getLeftTexturePoints(thisBlock, thisRotation);
+            textureWorker = blockDefinitionContainer.getLeftTexturePoints(thisBlock, thisRotation);
             //left
             liquidTextureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
         }
@@ -572,7 +531,7 @@ public class ChunkMeshGenerator implements Runnable{
         if (y + 1 < 128) {
             neighborBlock = blockData[posToIndex(x, y + 1, z)];
         }
-        neighborDrawtype = getBlockDrawType(neighborBlock);
+        neighborDrawtype = blockDefinitionContainer.getDrawType(neighborBlock);
 
         if (y == 127 || ((neighborDrawtype == 0 || neighborDrawtype > 1) && neighborDrawtype != 8)) {
             //top
@@ -597,7 +556,7 @@ public class ChunkMeshGenerator implements Runnable{
 
             liquidIndicesCount += 4;
 
-            textureWorker = getTopTexturePoints(thisBlock);
+            textureWorker =blockDefinitionContainer.getTopTexturePoints(thisBlock);
             //top
             liquidTextureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
         }
@@ -606,7 +565,7 @@ public class ChunkMeshGenerator implements Runnable{
         if (y - 1 > 0) {
             neighborBlock = blockData[posToIndex(x, y - 1, z)];
         }
-        neighborDrawtype = getBlockDrawType(neighborBlock);
+        neighborDrawtype = blockDefinitionContainer.getDrawType(neighborBlock);
 
         //don't render bottom of world
         if (y != 0 && ((neighborDrawtype == 0 || neighborDrawtype > 1) && neighborDrawtype != 8)) {
@@ -632,7 +591,7 @@ public class ChunkMeshGenerator implements Runnable{
 
             liquidIndicesCount += 4;
 
-            textureWorker = getBottomTexturePoints(thisBlock);
+            textureWorker = blockDefinitionContainer.getBottomTexturePoints(thisBlock);
             //bottom
             liquidTextureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
         }
@@ -640,7 +599,7 @@ public class ChunkMeshGenerator implements Runnable{
         return liquidIndicesCount;
     }
 
-    private static int calculateNormal(int x, int y, int z, byte thisBlock, byte thisRotation, int indicesCount, byte[] blockData, byte[] chunkNeighborZPlusBlockData, byte[] chunkNeighborZPlusLightData, byte[] chunkNeighborZMinusBlockData, byte[] chunkNeighborZMinusLightData, byte[] chunkNeighborXPlusBlockData, byte[] chunkNeighborXPlusLightData, byte[] chunkNeighborXMinusBlockData, byte[] chunkNeighborXMinusLightData, byte chunkLightLevel, byte[] lightData){
+    private int calculateNormal(int x, int y, int z, byte thisBlock, byte thisRotation, int indicesCount, byte[] blockData, byte[] chunkNeighborZPlusBlockData, byte[] chunkNeighborZPlusLightData, byte[] chunkNeighborZMinusBlockData, byte[] chunkNeighborZMinusLightData, byte[] chunkNeighborXPlusBlockData, byte[] chunkNeighborXPlusLightData, byte[] chunkNeighborXMinusBlockData, byte[] chunkNeighborXMinusLightData, byte chunkLightLevel, byte[] lightData){
 
         byte neighborBlock;
         if (z + 1 > 15) {
@@ -652,7 +611,7 @@ public class ChunkMeshGenerator implements Runnable{
         float lightValue;
         byte realLight;
         float[] textureWorker;
-        if (neighborBlock >= 0 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
+        if (neighborBlock >= 0 && (blockDefinitionContainer.getDrawType(neighborBlock) != 1 || blockDefinitionContainer.getIfLiquid(neighborBlock))) {
             //front
 
             positions.pack(1f + x, 1f + y, 1f + z, 0f + x, 1f + y, 1f + z, 0f + x, 0f + y, 1f + z, 1f + x, 0f + y, 1f + z);
@@ -675,7 +634,7 @@ public class ChunkMeshGenerator implements Runnable{
 
             indicesCount += 4;
 
-            textureWorker = getFrontTexturePoints(thisBlock, thisRotation);
+            textureWorker = blockDefinitionContainer.getFrontTexturePoints(thisBlock, thisRotation);
             //front
             textureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
         }
@@ -686,7 +645,7 @@ public class ChunkMeshGenerator implements Runnable{
             neighborBlock = blockData[posToIndex(x, y, z - 1)];
         }
 
-        if (neighborBlock >= 0 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
+        if (neighborBlock >= 0 && (blockDefinitionContainer.getDrawType(neighborBlock) != 1 || blockDefinitionContainer.getIfLiquid(neighborBlock))) {
             //back
             positions.pack(0f + x, 1f + y, 0f + z, 1f + x, 1f + y, 0f + z, 1f + x, 0f + y, 0f + z, 0f + x, 0f + y, 0f + z);
 
@@ -706,7 +665,7 @@ public class ChunkMeshGenerator implements Runnable{
 
             indicesCount += 4;
 
-            textureWorker = getBackTexturePoints(thisBlock, thisRotation);
+            textureWorker = blockDefinitionContainer.getBackTexturePoints(thisBlock, thisRotation);
             //back
             textureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
         }
@@ -717,7 +676,7 @@ public class ChunkMeshGenerator implements Runnable{
             neighborBlock = blockData[posToIndex(x + 1, y, z)];
         }
 
-        if (neighborBlock >= 0 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
+        if (neighborBlock >= 0 && (blockDefinitionContainer.getDrawType(neighborBlock) != 1 || blockDefinitionContainer.getIfLiquid(neighborBlock))) {
             //right
             positions.pack(1f + x, 1f + y, 0f + z, 1f + x, 1f + y, 1f + z, 1f + x, 0f + y, 1f + z, 1f + x, 0f + y, 0f + z);
 
@@ -737,7 +696,7 @@ public class ChunkMeshGenerator implements Runnable{
 
             indicesCount += 4;
 
-            textureWorker = getRightTexturePoints(thisBlock, thisRotation);
+            textureWorker = blockDefinitionContainer.getRightTexturePoints(thisBlock, thisRotation);
             //right
             textureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
         }
@@ -748,7 +707,7 @@ public class ChunkMeshGenerator implements Runnable{
             neighborBlock = blockData[posToIndex(x - 1, y, z)];
         }
 
-        if (neighborBlock >= 0 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
+        if (neighborBlock >= 0 && (blockDefinitionContainer.getDrawType(neighborBlock) != 1 || blockDefinitionContainer.getIfLiquid(neighborBlock))) {
             //left
             positions.pack(0f + x, 1f + y, 1f + z, 0f + x, 1f + y, 0f + z, 0f + x, 0f + y, 0f + z, 0f + x, 0f + y, 1f + z);
 
@@ -768,7 +727,7 @@ public class ChunkMeshGenerator implements Runnable{
 
             indicesCount += 4;
 
-            textureWorker = getLeftTexturePoints(thisBlock, thisRotation);
+            textureWorker = blockDefinitionContainer.getLeftTexturePoints(thisBlock, thisRotation);
             //left
             textureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
         }
@@ -777,7 +736,7 @@ public class ChunkMeshGenerator implements Runnable{
             neighborBlock = blockData[posToIndex(x, y + 1, z)];
         }
 
-        if (y == 127 || neighborBlock > -1 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
+        if (y == 127 || neighborBlock > -1 && (blockDefinitionContainer.getDrawType(neighborBlock) != 1 || blockDefinitionContainer.getIfLiquid(neighborBlock))) {
             //top
             positions.pack(0f + x, 1f + y, 0f + z, 0f + x, 1f + y, 1f + z, 1f + x, 1f + y, 1f + z, 1f + x, 1f + y, 0f + z);
 
@@ -798,7 +757,7 @@ public class ChunkMeshGenerator implements Runnable{
 
             indicesCount += 4;
 
-            textureWorker = getTopTexturePoints(thisBlock);
+            textureWorker = blockDefinitionContainer.getTopTexturePoints(thisBlock);
             //top
             textureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
         }
@@ -807,7 +766,7 @@ public class ChunkMeshGenerator implements Runnable{
             neighborBlock = blockData[posToIndex(x, y - 1, z)];
         }
 
-        if (y != 0 && neighborBlock >= 0 && (getBlockDrawType(neighborBlock) != 1 || getIfLiquid(neighborBlock))) {
+        if (y != 0 && neighborBlock >= 0 && (blockDefinitionContainer.getDrawType(neighborBlock) != 1 || blockDefinitionContainer.getIfLiquid(neighborBlock))) {
             //bottom
             positions.pack(0f + x, 0f + y, 1f + z, 0f + x, 0f + y, 0f + z, 1f + x, 0f + y, 0f + z, 1f + x, 0f + y, 1f + z);
 
@@ -827,7 +786,7 @@ public class ChunkMeshGenerator implements Runnable{
 
             indicesCount += 4;
 
-            textureWorker = getBottomTexturePoints(thisBlock);
+            textureWorker = blockDefinitionContainer.getBottomTexturePoints(thisBlock);
             //bottom
             textureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
         }
@@ -835,27 +794,25 @@ public class ChunkMeshGenerator implements Runnable{
         return indicesCount;
     }
 
-    //require 0.125 width
-    private static final float largeXZ = 0.5625f; //large
-    private static final float smallXZ = 0.4375f; //small
+    private final Vector3f trl = new Vector3f(); //top rear left
+    private final Vector3f trr = new Vector3f(); //top rear right
+    private final Vector3f tfl = new Vector3f(); //top front left
+    private final Vector3f tfr = new Vector3f(); //top front right
 
-    private static final float largeY = 0.625f;
-    private static final float smallY = 0.0f;
-
-    private static final Vector3f trl = new Vector3f(); //top rear left
-    private static final Vector3f trr = new Vector3f(); //top rear right
-    private static final Vector3f tfl = new Vector3f(); //top front left
-    private static final Vector3f tfr = new Vector3f(); //top front right
-
-    private static final Vector3f brl = new Vector3f(); //bottom rear left
-    private static final Vector3f brr = new Vector3f(); //bottom rear right - also cold
-    private static final Vector3f bfl = new Vector3f(); //bottom front left
-    private static final Vector3f bfr = new Vector3f(); //bottom front right
-
-    private static final float pixel = (1f / 32f / 16f);
+    private final Vector3f brl = new Vector3f(); //bottom rear left
+    private final Vector3f brr = new Vector3f(); //bottom rear right - also cold
+    private final Vector3f bfl = new Vector3f(); //bottom front left
+    private final Vector3f bfr = new Vector3f(); //bottom front right
 
 
-    private static int calculateTorchLike(int x, int y, int z, byte thisBlock, byte thisRotation, int indicesCount, byte[] chunkNeighborZPlusLightData, byte[] chunkNeighborZMinusLightData, byte[] chunkNeighborXPlusLightData, byte[] chunkNeighborXMinusLightData, byte chunkLightLevel, byte[] lightData){
+    private int calculateTorchLike(int x, int y, int z, byte thisBlock, byte thisRotation, int indicesCount, byte[] chunkNeighborZPlusLightData, byte[] chunkNeighborZMinusLightData, byte[] chunkNeighborXPlusLightData, byte[] chunkNeighborXMinusLightData, byte chunkLightLevel, byte[] lightData){
+        //require 0.125 width
+        //large
+        float largeXZ = 0.5625f;
+        //small
+        float smallXZ = 0.4375f;
+        float largeY = 0.625f;
+        float smallY = 0.0f;
         switch (thisRotation) {
             //+x dir
             case 0 -> {
@@ -1081,10 +1038,11 @@ public class ChunkMeshGenerator implements Runnable{
             }
         }
 
-        float[] textureWorker = getFrontTexturePoints(thisBlock, thisRotation);
+        float[] textureWorker = blockDefinitionContainer.getFrontTexturePoints(thisBlock, thisRotation);
 
 
         //assume 16 pixels wide
+        float pixel = (1f / 32f / 16f);
         float sizeXLow = textureWorker[0] + (pixel * 7f);
         float sizeXHigh = textureWorker[0] + (pixel * 9f); //duplicates to work from same coordinate (it's easier for me this way)
         float sizeYLow = textureWorker[2] + (pixel * 6f);
@@ -1271,7 +1229,7 @@ public class ChunkMeshGenerator implements Runnable{
         return indicesCount;
     }
 
-    private static int calculateAllFaces(int x, int y, int z, byte thisBlock, byte thisRotation, int allFacesIndicesCount, byte[] chunkNeighborZPlusLightData, byte[] chunkNeighborZMinusLightData, byte[] chunkNeighborXPlusLightData, byte[] chunkNeighborXMinusLightData, byte chunkLightLevel, byte[] lightData){
+    private int calculateAllFaces(int x, int y, int z, byte thisBlock, byte thisRotation, int allFacesIndicesCount, byte[] chunkNeighborZPlusLightData, byte[] chunkNeighborZMinusLightData, byte[] chunkNeighborXPlusLightData, byte[] chunkNeighborXMinusLightData, byte chunkLightLevel, byte[] lightData){
 
         float[] textureWorker;
 
@@ -1299,7 +1257,7 @@ public class ChunkMeshGenerator implements Runnable{
 
         allFacesIndicesCount += 4;
 
-        textureWorker = getFrontTexturePoints(thisBlock, thisRotation);
+        textureWorker = blockDefinitionContainer.getFrontTexturePoints(thisBlock, thisRotation);
         //front
         allFacesTextureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
 
@@ -1326,7 +1284,7 @@ public class ChunkMeshGenerator implements Runnable{
 
         allFacesIndicesCount += 4;
 
-        textureWorker = getBackTexturePoints(thisBlock, thisRotation);
+        textureWorker = blockDefinitionContainer.getBackTexturePoints(thisBlock, thisRotation);
         //back
         allFacesTextureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
 
@@ -1352,7 +1310,7 @@ public class ChunkMeshGenerator implements Runnable{
 
         allFacesIndicesCount += 4;
 
-        textureWorker = getRightTexturePoints(thisBlock, thisRotation);
+        textureWorker = blockDefinitionContainer.getRightTexturePoints(thisBlock, thisRotation);
         //right
         allFacesTextureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
 
@@ -1378,7 +1336,7 @@ public class ChunkMeshGenerator implements Runnable{
 
         allFacesIndicesCount += 4;
 
-        textureWorker = getLeftTexturePoints(thisBlock, thisRotation);
+        textureWorker = blockDefinitionContainer.getLeftTexturePoints(thisBlock, thisRotation);
         //left
         allFacesTextureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
 
@@ -1404,7 +1362,7 @@ public class ChunkMeshGenerator implements Runnable{
 
         allFacesIndicesCount += 4;
 
-        textureWorker = getTopTexturePoints(thisBlock);
+        textureWorker = blockDefinitionContainer.getTopTexturePoints(thisBlock);
         //top
         allFacesTextureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
 
@@ -1432,7 +1390,7 @@ public class ChunkMeshGenerator implements Runnable{
 
             allFacesIndicesCount += 4;
 
-            textureWorker = getBottomTexturePoints(thisBlock);
+            textureWorker = blockDefinitionContainer.getBottomTexturePoints(thisBlock);
             //bottom
             allFacesTextureCoord.pack(textureWorker[1], textureWorker[2], textureWorker[0], textureWorker[2], textureWorker[0], textureWorker[3], textureWorker[1], textureWorker[3]);
         }
@@ -1440,7 +1398,7 @@ public class ChunkMeshGenerator implements Runnable{
         return allFacesIndicesCount;
     }
 
-    private static byte calculateBlockLight(byte chunkLightLevel, byte lightData){
+    private byte calculateBlockLight(byte chunkLightLevel, byte lightData){
         byte naturalLightOfBlock = getByteNaturalLight(lightData);
 
         if (naturalLightOfBlock > chunkLightLevel){
@@ -1456,14 +1414,14 @@ public class ChunkMeshGenerator implements Runnable{
         }
     }
 
-    private static byte getNeighborBlock(byte[] neighborChunkBlockData, int x, int y, int z){
+    private byte getNeighborBlock(byte[] neighborChunkBlockData, int x, int y, int z){
         if (neighborChunkBlockData == null){
             return 0;
         }
         return neighborChunkBlockData[posToIndex(x,y,z)];
     }
 
-    private static byte getNeighborLight(byte currentGlobalLightLevel, byte[] neighborChunkLightData, int x, int y, int z){
+    private byte getNeighborLight(byte currentGlobalLightLevel, byte[] neighborChunkLightData, int x, int y, int z){
         if (neighborChunkLightData == null){
             return 0;
         }
@@ -1487,132 +1445,11 @@ public class ChunkMeshGenerator implements Runnable{
 
 
     //this is an internal duplicate specific to this thread
-    private static float convertLight(byte lightValue){
+    private float convertLight(byte lightValue){
         return (float) Math.pow(1.25, lightValue)/28.42171f;
     }
 
-    private static int posToIndex( int x, int y, int z ) {
+    private int posToIndex( int x, int y, int z ) {
         return (z * 2048) + (y * 16) + x;
-    }
-
-
-    private static byte getBlockDrawType(byte ID){
-        return drawTypes[ID];
-    }
-
-    public static float[] getFrontTexturePoints(byte ID, byte rotation){
-        return switch (rotation) {
-            case 1 -> rightTextures[ID];
-            case 2 -> backTextures[ID];
-            case 3 -> leftTextures[ID];
-            default -> frontTextures[ID];
-        };
-    }
-    public static float[] getBackTexturePoints(byte ID, byte rotation){
-        return switch (rotation) {
-            case 1 -> leftTextures[ID];
-            case 2 -> frontTextures[ID];
-            case 3 -> rightTextures[ID];
-            default -> backTextures[ID];
-        };
-
-    }
-    public static float[] getRightTexturePoints(byte ID, byte rotation){
-        return switch (rotation) {
-            case 1 -> backTextures[ID];
-            case 2 -> leftTextures[ID];
-            case 3 -> frontTextures[ID];
-            default -> rightTextures[ID];
-        };
-    }
-    public static float[] getLeftTexturePoints(byte ID, byte rotation){
-        return switch (rotation) {
-            case 1 -> frontTextures[ID];
-            case 2 -> rightTextures[ID];
-            case 3 -> backTextures[ID];
-            default -> leftTextures[ID];
-        };
-    }
-
-    private static float[] getTopTexturePoints(int ID){
-        return topTextures[ID];
-    }
-    private static float[] getBottomTexturePoints(int ID){
-        return bottomTextures[ID];
-    }
-    private static boolean getIfLiquid(int ID){
-        return isLiquids[ID];
-    }
-
-
-    private static float[][] getBlockShape(byte ID, byte rot){
-
-        byte drawType = drawTypes[ID];
-
-        float[][] newBoxes = new float[blockShapeMap[drawType].length][6];
-
-
-        int index = 0;
-
-        //automated as base, since it's the same
-        switch (rot) {
-            case 0 -> {
-                for (float[] thisShape : blockShapeMap[drawType]) {
-                    System.arraycopy(thisShape, 0, newBoxes[index], 0, 6);
-                    index++;
-                }
-            }
-            case 1 -> {
-                for (float[] thisShape : blockShapeMap[drawType]) {
-
-                    float blockDiffZ = 1f - thisShape[5];
-                    float widthZ = thisShape[5] - thisShape[2];
-
-                    newBoxes[index][0] = blockDiffZ;
-                    newBoxes[index][1] = thisShape[1];//-y
-                    newBoxes[index][2] = thisShape[0]; // -z
-
-                    newBoxes[index][3] = blockDiffZ + widthZ;
-                    newBoxes[index][4] = thisShape[4];//+y
-                    newBoxes[index][5] = thisShape[3]; //+z
-                    index++;
-                }
-            }
-            case 2 -> {
-                for (float[] thisShape : blockShapeMap[drawType]) {
-
-                    float blockDiffZ = 1f - thisShape[5];
-                    float widthZ = thisShape[5] - thisShape[2];
-
-                    float blockDiffX = 1f - thisShape[3];
-                    float widthX = thisShape[3] - thisShape[0];
-
-                    newBoxes[index][0] = blockDiffX;
-                    newBoxes[index][1] = thisShape[1];//-y
-                    newBoxes[index][2] = blockDiffZ; // -z
-
-                    newBoxes[index][3] = blockDiffX + widthX;
-                    newBoxes[index][4] = thisShape[4];//+y
-                    newBoxes[index][5] = blockDiffZ + widthZ; //+z
-                    index++;
-                }
-            }
-            case 3 -> {
-                for (float[] thisShape : blockShapeMap[drawType]) {
-                    float blockDiffX = 1f - thisShape[3];
-                    float widthX = thisShape[3] - thisShape[0];
-
-                    newBoxes[index][0] = thisShape[2];
-                    newBoxes[index][1] = thisShape[1];//-y
-                    newBoxes[index][2] = blockDiffX; // -z
-
-                    newBoxes[index][3] = thisShape[5];
-                    newBoxes[index][4] = thisShape[4];//+y
-                    newBoxes[index][5] = blockDiffX + widthX; //+z
-                    index++;
-                }
-            }
-        }
-        return newBoxes;
     }
 }
