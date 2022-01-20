@@ -90,15 +90,15 @@ public class ItemDefinition {
         return this.name;
     }
 
-    public Mesh getItemMesh(){
+    public Mesh getMesh(){
         return this.mesh;
     }
 
-    public ItemModifier getItemModifier(){
+    public ItemModifier getModifier(){
         return this.itemModifier;
     }
 
-    public boolean getIfItem(){
+    public boolean isItem(){
         return this.isItem;
     }
 
@@ -127,11 +127,11 @@ public class ItemDefinition {
     }
      */
 
-    public boolean itemIsBlock(){
+    public boolean isBlock(){
         return this.isBlock;
     }
 
-    public int getBlockID(){
+    public int blockID(){
         return this.blockID;
     }
 
