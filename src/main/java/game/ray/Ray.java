@@ -20,6 +20,10 @@ import static game.player.Player.*;
 
 public class Ray {
 
+    public Ray(){
+        System.out.println("gotta fix this :B");
+    }
+
     //this is now stack/cache happy as can be
     public void playerRayCast(double posX, double posY, double posZ, float dirX, float dirY, float dirZ, float length, boolean mining, boolean placing, boolean hasMined) {
 
