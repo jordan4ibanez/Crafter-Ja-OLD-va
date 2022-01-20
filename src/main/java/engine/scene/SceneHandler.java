@@ -25,14 +25,13 @@ import static game.chunk.Chunk.*;
 import static game.chunk.ChunkMeshGenerationHandler.popChunkMeshQueue;
 import static game.chunk.ChunkUpdateHandler.chunkUpdater;
 import static game.clouds.Cloud.*;
-import static game.crafting.Inventory.generateRandomInventory;
 import static game.crafting.InventoryLogic.inventoryMenuOnTick;
 import static game.falling.FallingEntity.fallingEntityOnStep;
-import static game.item.ItemEntity.*;
+import static game.entity.item.ItemEntity.*;
 import static game.mainMenu.MainMenu.*;
-import static game.mob.Mob.mobsOnTick;
-import static game.mob.MobSpawning.runSpawningAlgorithm;
-import static game.particle.Particle.particlesOnStep;
+import static game.entity.mob.Mob.mobsOnTick;
+import static game.entity.mob.MobSpawning.runSpawningAlgorithm;
+import static game.entity.particle.Particle.particlesOnStep;
 import static game.player.Player.*;
 import static game.player.WieldHand.testPlayerDiggingAnimation;
 

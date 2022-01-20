@@ -5,8 +5,8 @@ import static game.chunk.Chunk.cleanChunkDataMemory;
 import static game.clouds.Cloud.cleanCloudMemory;
 import static game.crafting.Inventory.cleanInventoryMemory;
 import static game.falling.FallingEntity.cleanFallingEntities;
-import static game.item.ItemEntity.cleanItemMemory;
-import static game.particle.Particle.cleanParticleMemory;
+import static game.entity.item.ItemEntity.cleanItemMemory;
+import static game.entity.particle.Particle.cleanParticleMemory;
 import static game.player.OtherPlayers.cleanOtherPLayerMemory;
 
 public class MemorySweeper {

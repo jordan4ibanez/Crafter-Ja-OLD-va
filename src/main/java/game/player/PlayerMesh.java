@@ -5,8 +5,8 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import static engine.time.Time.getDelta;
-import static game.mob.MobMeshBuilder.calculateMobTexture;
-import static game.mob.MobMeshBuilder.createMobMesh;
+import static game.entity.mob.MobMeshBuilder.calculateMobTexture;
+import static game.entity.mob.MobMeshBuilder.createMobMesh;
 import static game.player.Player.getPlayerInertiaX;
 import static game.player.Player.getPlayerInertiaZ;
 

@@ -7,7 +7,7 @@ import org.joml.Vector3f;
 
 import java.util.*;
 
-import static game.collision.ParticleCollision.applyParticleInertia;
+import static game.entity.collision.ParticleCollision.applyParticleInertia;
 
 public class Weather {
     private final static Map<Integer, RainDropEntity> rainDrops = new HashMap<>();

@@ -5,19 +5,17 @@ import org.joml.Math;
 import org.joml.Vector3d;
 
 import static engine.network.Networking.*;
-import static game.blocks.BlockDefinition.*;
 import static game.chunk.Chunk.*;
-import static game.collision.Collision.wouldCollidePlacing;
-import static game.collision.CollisionObject.pointIsWithinEntity;
-import static game.collision.CollisionObject.setAABBEntity;
+import static game.entity.collision.Collision.wouldCollidePlacing;
+import static game.entity.collision.CollisionObject.pointIsWithinEntity;
+import static game.entity.collision.CollisionObject.setAABBEntity;
 import static game.crafting.InventoryObject.getItemInInventory;
 import static game.crafting.InventoryObject.removeItemFromInventory;
-import static game.item.ItemDefinition.*;
-import static game.mob.Mob.punchMob;
-import static game.mob.MobDefinition.getMobDefinitionHeight;
-import static game.mob.MobDefinition.getMobDefinitionWidth;
-import static game.mob.MobObject.*;
-import static game.particle.Particle.createParticle;
+import static game.entity.mob.Mob.punchMob;
+import static game.entity.mob.MobDefinition.getMobDefinitionHeight;
+import static game.entity.mob.MobDefinition.getMobDefinitionWidth;
+import static game.entity.mob.MobObject.*;
+import static game.entity.particle.Particle.createParticle;
 import static game.player.Player.*;
 
 final public class Ray {

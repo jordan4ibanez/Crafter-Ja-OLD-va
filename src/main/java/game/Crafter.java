@@ -23,7 +23,7 @@ import static game.crafting.Inventory.createInitialInventory;
 import static game.item.ItemRegistration.registerItems;
 import static game.mainMenu.MainMenu.easterEgg;
 import static game.mainMenu.MainMenu.initMainMenu;
-import static game.mob.MobDefinition.registerMobs;
+import static game.entity.mob.MobDefinition.registerMobs;
 import static game.tnt.TNTEntity.createTNTEntityMesh;
 
 public class Crafter {

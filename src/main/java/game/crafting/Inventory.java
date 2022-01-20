@@ -6,8 +6,7 @@ import static engine.graphics.Camera.*;
 import static engine.network.Networking.*;
 import static engine.time.Time.getDelta;
 import static game.crafting.InventoryObject.*;
-import static game.item.ItemDefinition.*;
-import static game.item.ItemEntity.createItem;
+import static game.entity.item.ItemEntity.createItem;
 import static game.player.Player.*;
 
 final public class Inventory {

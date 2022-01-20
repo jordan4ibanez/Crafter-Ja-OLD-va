@@ -9,8 +9,8 @@ import static engine.time.Time.getDelta;
 import static game.blocks.BlockDefinition.getDigSound;
 import static game.chunk.Chunk.getBlock;
 import static game.crafting.InventoryObject.getItemInInventory;
-import static game.item.ItemDefinition.getIfItem;
-import static game.item.ItemDefinition.itemIsBlock;
+import static game.entity.item.ItemDefinition.getIfItem;
+import static game.entity.item.ItemDefinition.itemIsBlock;
 import static game.player.Player.*;
 import static game.player.ViewBobbing.getPlayerViewBobbing;
 

@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 import static game.chunk.Chunk.getLight;
 import static game.chunk.Chunk.placeBlock;
-import static game.collision.Collision.applyInertia;
+import static game.entity.collision.Collision.applyInertia;
 
 public class FallingEntity {
     private static final int initialSize = 10;

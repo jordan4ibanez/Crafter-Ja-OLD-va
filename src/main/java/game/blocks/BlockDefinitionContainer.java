@@ -7,7 +7,7 @@ import static game.chunk.Chunk.*;
 import static game.chunk.Chunk.placeBlock;
 import static game.crafting.InventoryLogic.openCraftingInventory;
 import static game.falling.FallingEntity.createFallingEntity;
-import static game.item.ItemEntity.throwItem;
+import static game.entity.item.ItemEntity.throwItem;
 import static game.light.Light.torchFloodFill;
 import static game.tnt.TNTEntity.createTNT;
 

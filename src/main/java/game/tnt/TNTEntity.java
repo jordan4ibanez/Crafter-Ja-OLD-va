@@ -10,8 +10,7 @@ import java.util.ArrayList;
 import static engine.FancyMath.randomForceValue;
 import static engine.sound.SoundAPI.playSound;
 import static engine.time.Time.getDelta;
-import static game.blocks.BlockDefinition.*;
-import static game.collision.Collision.applyInertia;
+import static game.entity.collision.Collision.applyInertia;
 import static game.tnt.Explosion.boom;
 
 public class TNTEntity {
