@@ -11,23 +11,23 @@ import static game.chunk.Chunk.*;
 
 public class ChunkMeshGenerationHandler {
 
-    private static final Deque<ChunkMeshDataObject> queue = new ConcurrentLinkedDeque<>();
+    private final Deque<ChunkMeshDataObject> queue = new ConcurrentLinkedDeque<>();
 
-    public static void addToChunkMeshQueue(ChunkMeshDataObject chunkMeshDataObject){
+    public void addToChunkMeshQueue(ChunkMeshDataObject chunkMeshDataObject){
         queue.add(chunkMeshDataObject);
     }
 
-    private static final Texture textureAtlas = new Texture("textures/textureAtlas.png");
+    private final Texture textureAtlas = new Texture("textures/textureAtlas.png");
 
-    public static Texture getTextureAtlas(){
+    public Texture getTextureAtlas(){
         return textureAtlas;
     }
 
-    private static final float goalTimer = 0.0003f;
+    private final float goalTimer = 0.0003f;
 
-    private static float chunkUpdateTimer = 0;
+    private float chunkUpdateTimer = 0;
 
-    public static void popChunkMeshQueue(){
+    public void popChunkMeshQueue(){
 
         chunkUpdateTimer += getDelta();
         int updateAmount = 0;
