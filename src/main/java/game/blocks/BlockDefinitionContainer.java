@@ -13,106 +13,110 @@ import static game.tnt.TNTEntity.createTNT;
 
 public class BlockDefinitionContainer {
 
-    private final ArrayList<BlockDefinition> blocks = new ArrayList<>();
+    private final ArrayList<BlockDefinition> definitions = new ArrayList<>();
 
     public float getStoneHardness(int ID){
-        return blocks.get(ID).getStoneHardness();
+        return definitions.get(ID).getStoneHardness();
     }
 
     public float getDirtHardness(int ID){
-        return blocks.get(ID).getDirtHardness();
+        return definitions.get(ID).getDirtHardness();
     }
 
     public float getWoodHardness(int ID){
-        return blocks.get(ID).getWoodHardness();
+        return definitions.get(ID).getWoodHardness();
     }
 
     public float getLeafHardness(int ID){
-        return blocks.get(ID).getLeafHardness();
+        return definitions.get(ID).getLeafHardness();
     }
 
     public String getName(int ID){
-        return blocks.get(ID).getBlockName();
+        return definitions.get(ID).getBlockName();
     }
 
     public boolean dropsItem(int ID){
-        return blocks.get(ID).getDropsItem();
+        return definitions.get(ID).getDropsItem();
+    }
+
+    public boolean getIfLiquid(int ID){
+        return definitions.get(ID).getIfLiquid();
     }
 
     public float[] getFrontTexturePoints(int ID, byte rot){
-        return blocks.get(ID).getFrontTexturePoints(rot);
+        return definitions.get(ID).getFrontTexturePoints(rot);
     }
 
     public float[] getBackTexturePoints(int ID, byte rot){
-        return blocks.get(ID).getBackTexturePoints(rot);
+        return definitions.get(ID).getBackTexturePoints(rot);
     }
 
     public float[] getRightTexturePoints(int ID, byte rot){
-        return blocks.get(ID).getRightTexturePoints(rot);
+        return definitions.get(ID).getRightTexturePoints(rot);
     }
 
     public float[] getLeftTexturePoints(int ID, byte rot){
-        return blocks.get(ID).getLeftTexturePoints(rot);
+        return definitions.get(ID).getLeftTexturePoints(rot);
     }
 
     public float[] getTopTexturePoints(int ID){
-        return blocks.get(ID).getTopTexturePoints();
+        return definitions.get(ID).getTopTexturePoints();
     }
 
     public float[] getBottomTexturePoints(int ID){
-        return blocks.get(ID).getBottomTexturePoints();
+        return definitions.get(ID).getBottomTexturePoints();
     }
 
     public float[][] getShape(int ID, byte rot){
-        return blocks.get(ID).getBlockShape(rot);
+        return definitions.get(ID).getBlockShape(rot);
     }
 
     public byte getDrawType(int ID){
-        return blocks.get(ID).getDrawType();
+        return definitions.get(ID).getDrawType();
     }
 
     public boolean getWalkable(int ID){
-        return blocks.get(ID).isBlockWalkable();
+        return definitions.get(ID).isBlockWalkable();
     }
 
     public boolean getSteppable(int ID){
-        return blocks.get(ID).isSteppable();
+        return definitions.get(ID).isSteppable();
     }
 
     public boolean isLiquid(int ID){
-        return blocks.get(ID).isBlockLiquid();
+        return definitions.get(ID).isBlockLiquid();
     }
 
     public String getPlaceSound(int ID){
-        return blocks.get(ID).getPlaceSound();
+        return definitions.get(ID).getPlaceSound();
     }
 
     public String getDigSound(int ID){
-        return blocks.get(ID).getDigSound();
+        return definitions.get(ID).getDigSound();
     }
 
     public boolean isRightClickable(int ID){
-        return blocks.get(ID).getRightClickable();
+        return definitions.get(ID).getRightClickable();
     }
 
     public boolean isOnPlaced(int ID){
-        return blocks.get(ID).getIsOnPlaced();
+        return definitions.get(ID).getIsOnPlaced();
     }
 
     public float getViscosity(int ID){
-        return blocks.get(ID).getBlockViscosity();
+        return definitions.get(ID).getBlockViscosity();
     }
 
     public boolean isPointable(int ID){
-        return blocks.get(ID).isBlockPointable();
+        return definitions.get(ID).isBlockPointable();
     }
 
     public String getDroppedItem(int ID){
-        return blocks.get(ID).getDroppedItem();
+        return definitions.get(ID).getDroppedItem();
     }
 
     public BlockModifier getBlockModifier(int ID){
-        return blocks.get(ID).getBlockModifier();
+        return definitions.get(ID).getBlockModifier();
     }
 
     public BlockDefinitionContainer() {
@@ -142,7 +146,7 @@ public class BlockDefinitionContainer {
                 {0f,0f,0f,1f,1f,0.5f}
         };
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 0,
                 -1f,
@@ -173,7 +177,7 @@ public class BlockDefinitionContainer {
         )
         );
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 1,
                 0f,
@@ -204,7 +208,7 @@ public class BlockDefinitionContainer {
         )
         );
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 2,
                 0,
@@ -235,7 +239,7 @@ public class BlockDefinitionContainer {
         )
         );
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 3,
                 1,
@@ -266,7 +270,7 @@ public class BlockDefinitionContainer {
         )
         );
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 4,
                 1.5f,
@@ -297,7 +301,7 @@ public class BlockDefinitionContainer {
         )
         );
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 5,
                 -1,
@@ -337,7 +341,7 @@ public class BlockDefinitionContainer {
             }
         };
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 6,
                 0,
@@ -368,7 +372,7 @@ public class BlockDefinitionContainer {
         )
         );
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 7,
                 -1,
@@ -399,7 +403,7 @@ public class BlockDefinitionContainer {
         )
         );
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 8,
                 4,
@@ -430,7 +434,7 @@ public class BlockDefinitionContainer {
         )
         );
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 9,
                 6,
@@ -461,7 +465,7 @@ public class BlockDefinitionContainer {
         )
         );
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 10,
                 8,
@@ -492,7 +496,7 @@ public class BlockDefinitionContainer {
         )
         );
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 11,
                 10,
@@ -523,7 +527,7 @@ public class BlockDefinitionContainer {
         )
         );
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 12,
                 12,
@@ -554,7 +558,7 @@ public class BlockDefinitionContainer {
         )
         );
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 13,
                 10,
@@ -585,7 +589,7 @@ public class BlockDefinitionContainer {
         )
         );
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 14,
                 14,
@@ -616,7 +620,7 @@ public class BlockDefinitionContainer {
         )
         );
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 15,
                 16,
@@ -647,7 +651,7 @@ public class BlockDefinitionContainer {
         )
         );
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 16,
                 2,
@@ -679,7 +683,7 @@ public class BlockDefinitionContainer {
         );
 
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 17,
                 0,
@@ -710,7 +714,7 @@ public class BlockDefinitionContainer {
         )
         );
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 18,
                 0,
@@ -741,7 +745,7 @@ public class BlockDefinitionContainer {
         )
         );
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte)19,
                 0,
@@ -784,7 +788,7 @@ public class BlockDefinitionContainer {
             }
         };
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 20,
                 0,
@@ -815,7 +819,7 @@ public class BlockDefinitionContainer {
         )
         );
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 21,
                 0,
@@ -864,7 +868,7 @@ public class BlockDefinitionContainer {
         )
         );
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 22,
                 0,
@@ -914,7 +918,7 @@ public class BlockDefinitionContainer {
         )
         );
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 23,
                 0,
@@ -964,7 +968,7 @@ public class BlockDefinitionContainer {
         )
         );
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 24,
                 0,
@@ -1014,7 +1018,7 @@ public class BlockDefinitionContainer {
         )
         );
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 25,
                 0,
@@ -1045,7 +1049,7 @@ public class BlockDefinitionContainer {
         )
         );
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 26,
                 0,
@@ -1076,7 +1080,7 @@ public class BlockDefinitionContainer {
         )
         );
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 27,
                 0,
@@ -1115,7 +1119,7 @@ public class BlockDefinitionContainer {
             }
         };
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 28,
                 0,
@@ -1159,7 +1163,7 @@ public class BlockDefinitionContainer {
             }
         };
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 29,
                 0,
@@ -1190,7 +1194,7 @@ public class BlockDefinitionContainer {
         )
         );
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 30,
                 0,
@@ -1221,7 +1225,7 @@ public class BlockDefinitionContainer {
         )
         );
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 31,
                 1.5f,
@@ -1252,7 +1256,7 @@ public class BlockDefinitionContainer {
         )
         );
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 32,
                 0,
@@ -1283,7 +1287,7 @@ public class BlockDefinitionContainer {
         )
         );
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 33,
                 1.5f,
@@ -1314,7 +1318,7 @@ public class BlockDefinitionContainer {
         )
         );
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 34,
                 2,
@@ -1357,7 +1361,7 @@ public class BlockDefinitionContainer {
             }
         };
 
-        blocks.add(
+        definitions.add(
         new BlockDefinition(
                 (byte) 35,
                 0,
