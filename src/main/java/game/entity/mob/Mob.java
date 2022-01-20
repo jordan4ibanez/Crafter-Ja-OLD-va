@@ -1,4 +1,4 @@
-package game.mob;
+package game.entity.mob;
 
 
 import org.joml.Vector3d;
@@ -10,10 +10,10 @@ import java.util.Deque;
 import static engine.sound.SoundAPI.playSound;
 import static engine.time.Time.getDelta;
 import static game.chunk.Chunk.getLight;
-import static game.collision.MobCollision.mobSoftCollisionDetect;
-import static game.collision.MobCollision.mobSoftPlayerCollisionDetect;
-import static game.mob.MobDefinition.*;
-import static game.mob.MobObject.*;
+import static game.entity.collision.MobCollision.mobSoftCollisionDetect;
+import static game.entity.collision.MobCollision.mobSoftPlayerCollisionDetect;
+import static game.entity.mob.MobDefinition.*;
+import static game.entity.mob.MobObject.*;
 
 //runs on main thread
 final public class Mob {

@@ -1,11 +1,11 @@
-package game.collision;
+package game.entity.collision;
 
 import it.unimi.dsi.fastutil.ints.IntSet;
 import org.joml.Vector2d;
 import org.joml.Vector3d;
 
-import static game.mob.MobDefinition.*;
-import static game.mob.MobObject.*;
+import static game.entity.mob.MobDefinition.*;
+import static game.entity.mob.MobObject.*;
 import static game.player.Player.*;
 
 //basically cylindrical magnetic 2d collision detection class

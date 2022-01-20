@@ -1,4 +1,4 @@
-package game.particle;
+package game.entity.particle;
 
 import engine.graphics.Mesh;
 import org.joml.Vector3d;
@@ -8,10 +8,9 @@ import org.joml.Vector3i;
 import java.util.*;
 
 import static engine.time.Time.getDelta;
-import static game.blocks.BlockDefinition.*;
 import static game.chunk.Chunk.getLight;
 import static game.chunk.ChunkMeshGenerationHandler.getTextureAtlas;
-import static game.collision.ParticleCollision.applyParticleInertia;
+import static game.entity.collision.ParticleCollision.applyParticleInertia;
 
 public class Particle {
     //this is an abstraction of particle objects

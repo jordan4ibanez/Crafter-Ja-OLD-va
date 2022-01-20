@@ -1,4 +1,4 @@
-package game.item;
+package game.entity.item;
 
 import engine.graphics.Mesh;
 import engine.graphics.Texture;

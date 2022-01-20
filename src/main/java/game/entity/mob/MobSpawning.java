@@ -1,4 +1,4 @@
-package game.mob;
+package game.entity.mob;
 
 import org.joml.Vector3d;
 
@@ -7,8 +7,6 @@ import static engine.FancyMath.randomIntFromMinToMaxNegativePositive;
 import static engine.time.Time.getDelta;
 import static game.chunk.Chunk.getMobSpawnYPos;
 
-import static game.mob.MobObject.getNumberOfMobs;
-import static game.mob.MobObject.spawnMob;
 import static game.player.Player.getPlayerPos;
 
 public class MobSpawning {
@@ -17,7 +15,7 @@ public class MobSpawning {
     private static final float spawnGoal = 3f; //every 3 seconds
 
     public static void runSpawningAlgorithm(){
-        if (getNumberOfMobs() >= spawnLimit){
+        if (MobObject.getNumberOfMobs() >= spawnLimit){
             return;
         }
         //having this not count up allows a minor cool down
@@ -38,7 +36,7 @@ public class MobSpawning {
         int z = (int)pos.z + randomIntFromMinToMaxNegativePositive(24,56);
         int yPos = getMobSpawnYPos(x,z);
         if (yPos > 0){
-            spawnMob(randomByte((byte) 9), x, yPos, z, 0, 0, 0);
+            MobObject.spawnMob(randomByte((byte) 9), x, yPos, z, 0, 0, 0);
         }
     }
 

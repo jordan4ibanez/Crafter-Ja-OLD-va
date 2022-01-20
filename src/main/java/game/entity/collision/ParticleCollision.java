@@ -1,4 +1,4 @@
-package game.collision;
+package game.entity.collision;
 
 import org.joml.Math;
 import org.joml.*;
@@ -8,8 +8,8 @@ import static game.blocks.BlockDefinition.getBlockShape;
 import static game.blocks.BlockDefinition.isBlockWalkable;
 import static game.chunk.Chunk.getBlock;
 import static game.chunk.Chunk.getBlockRotation;
-import static game.collision.CollisionObject.pointIsWithinBlock;
-import static game.collision.CollisionObject.setAABBBlock;
+import static game.entity.collision.CollisionObject.pointIsWithinBlock;
+import static game.entity.collision.CollisionObject.setAABBBlock;
 
 public class ParticleCollision {
 

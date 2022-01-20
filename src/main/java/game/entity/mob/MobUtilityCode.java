@@ -1,12 +1,11 @@
-package game.mob;
+package game.entity.mob;
 
 import org.joml.Math;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 import static engine.time.Time.getDelta;
-import static game.mob.MobDefinition.getMobDefinitionBodyOffsets;
-import static game.mob.MobObject.*;
+import static game.entity.mob.MobDefinition.getMobDefinitionBodyOffsets;
 import static game.player.Player.getPlayerPosWithEyeHeight;
 import static game.ray.LineOfSight.getLineOfSight;
 
@@ -19,15 +18,15 @@ public class MobUtilityCode {
     public static void doHeadCode(int thisMob){
 
         //this is a pointer object
-        Vector3d thisMobPos = getMobPos(thisMob);
+        Vector3d thisMobPos = MobObject.getMobPos(thisMob);
 
         //yet another pointer object
-        Vector3f[] thisMobBodyOffsets = getMobDefinitionBodyOffsets(getMobID(thisMob));
+        Vector3f[] thisMobBodyOffsets = getMobDefinitionBodyOffsets(MobObject.getMobID(thisMob));
 
         //look another pointer object
-        Vector3f[] thisMobBodyRotations = getMobBodyRotations(thisMob);
+        Vector3f[] thisMobBodyRotations = MobObject.getMobBodyRotations(thisMob);
 
-        float thisMobSmoothRotation = getMobSmoothRotation(thisMob);
+        float thisMobSmoothRotation = MobObject.getMobSmoothRotation(thisMob);
 
         float smoothToRad = Math.toRadians(thisMobSmoothRotation + 90f);
 
@@ -73,8 +72,8 @@ public class MobUtilityCode {
     public static void mobSmoothRotation(int thisMob){
         double delta = getDelta();
 
-        float thisMobRotation = getMobRotation(thisMob);
-        float thisMobSmoothRotation = getMobSmoothRotation(thisMob);
+        float thisMobRotation = MobObject.getMobRotation(thisMob);
+        float thisMobSmoothRotation = MobObject.getMobSmoothRotation(thisMob);
 
         float diff = thisMobRotation - thisMobSmoothRotation;
 
@@ -117,6 +116,6 @@ public class MobUtilityCode {
             }
         }
 
-        setMobSmoothRotation(thisMob, thisMobSmoothRotation);
+        MobObject.setMobSmoothRotation(thisMob, thisMobSmoothRotation);
     }
 }

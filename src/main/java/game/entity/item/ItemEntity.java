@@ -1,4 +1,4 @@
-package game.item;
+package game.entity.item;
 
 import it.unimi.dsi.fastutil.ints.*;
 import org.joml.Math;
@@ -13,7 +13,7 @@ import static engine.FancyMath.randomForceValue;
 import static engine.sound.SoundAPI.playSound;
 import static engine.time.Time.getDelta;
 import static game.chunk.Chunk.getLight;
-import static game.collision.Collision.applyInertia;
+import static game.entity.collision.Collision.applyInertia;
 import static game.crafting.InventoryObject.addToInventory;
 import static game.player.Player.getPlayerPosWithCollectionHeight;
 

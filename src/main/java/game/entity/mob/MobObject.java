@@ -1,4 +1,4 @@
-package game.mob;
+package game.entity.mob;
 
 import it.unimi.dsi.fastutil.ints.*;
 import org.joml.Vector3d;
@@ -6,8 +6,8 @@ import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 import static engine.FancyMath.randomDirFloat;
-import static game.mob.MobDefinition.getMobDefinitionBaseHealth;
-import static game.mob.MobDefinition.getMobDefinitionBodyRotations;
+import static game.entity.mob.MobDefinition.getMobDefinitionBaseHealth;
+import static game.entity.mob.MobDefinition.getMobDefinitionBodyRotations;
 
 final public class MobObject {
     //todo: ADD MOBS TO MEMORY SWEEPER

@@ -1,4 +1,4 @@
-package game.mob;
+package game.entity.mob;
 
 import engine.graphics.Mesh;
 import org.joml.Math;
@@ -9,13 +9,13 @@ import org.joml.Vector3f;
 import static engine.FancyMath.randomDirFloat;
 import static engine.time.Time.getDelta;
 import static game.chunk.Chunk.getBlock;
-import static game.collision.Collision.applyInertia;
-import static game.mob.MobDefinition.*;
-import static game.mob.MobMeshBuilder.calculateMobTexture;
-import static game.mob.MobMeshBuilder.createMobMesh;
-import static game.mob.MobObject.*;
-import static game.mob.MobUtilityCode.doHeadCode;
-import static game.mob.MobUtilityCode.mobSmoothRotation;
+import static game.entity.collision.Collision.applyInertia;
+import static game.entity.mob.MobDefinition.*;
+import static game.entity.mob.MobMeshBuilder.calculateMobTexture;
+import static game.entity.mob.MobMeshBuilder.createMobMesh;
+import static game.entity.mob.MobObject.*;
+import static game.entity.mob.MobUtilityCode.doHeadCode;
+import static game.entity.mob.MobUtilityCode.mobSmoothRotation;
 import static game.tnt.Explosion.boom;
 
 public class Exploder {

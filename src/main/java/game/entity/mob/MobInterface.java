@@ -1,4 +1,4 @@
-package game.mob;
+package game.entity.mob;
 
 //this is an Object which holds methods, amazing
 public interface MobInterface {

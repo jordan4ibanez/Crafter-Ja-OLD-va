@@ -1,4 +1,4 @@
-package game.mob;
+package game.entity.mob;
 
 import engine.graphics.Mesh;
 import org.joml.*;
@@ -7,13 +7,8 @@ import org.joml.Math;
 import static engine.FancyMath.randomDirFloat;
 import static engine.time.Time.getDelta;
 import static game.chunk.Chunk.getBlock;
-import static game.collision.Collision.applyInertia;
-import static game.mob.MobDefinition.*;
-import static game.mob.MobMeshBuilder.calculateMobTexture;
-import static game.mob.MobMeshBuilder.createMobMesh;
-import static game.mob.MobObject.*;
-import static game.mob.MobUtilityCode.doHeadCode;
-import static game.mob.MobUtilityCode.mobSmoothRotation;
+import static game.entity.collision.Collision.applyInertia;
+import static game.entity.mob.MobDefinition.*;
 
 public class Human {
     private static final float accelerationMultiplier  = 0.03f;
@@ -28,17 +23,17 @@ public class Human {
             double delta = getDelta();
 
             //primitive
-            int thisMobDefinitionID = getMobID(thisMob);
-            float thisMobTimer = getMobTimer(thisMob);
-            float thisMobAnimationTimer = getMobAnimationTimer(thisMob);
-            float thisMobRotation = getMobRotation(thisMob);
-            byte thisMobHealth = getMobHealth(thisMob);
+            int thisMobDefinitionID = MobObject.getMobID(thisMob);
+            float thisMobTimer = MobObject.getMobTimer(thisMob);
+            float thisMobAnimationTimer = MobObject.getMobAnimationTimer(thisMob);
+            float thisMobRotation = MobObject.getMobRotation(thisMob);
+            byte thisMobHealth = MobObject.getMobHealth(thisMob);
 
             //pointers
-            Vector3d thisMobPos = getMobPos(thisMob);
-            Vector3d thisMobOldPos = getMobOldPos(thisMob);
-            Vector3f[] thisMobBodyRotations = getMobBodyRotations(thisMob);
-            Vector3f thisMobInertia = getMobInertia(thisMob);
+            Vector3d thisMobPos = MobObject.getMobPos(thisMob);
+            Vector3d thisMobOldPos = MobObject.getMobOldPos(thisMob);
+            Vector3f[] thisMobBodyRotations = MobObject.getMobBodyRotations(thisMob);
+            Vector3f thisMobInertia = MobObject.getMobInertia(thisMob);
 
             thisMobTimer += delta;
 
@@ -51,10 +46,10 @@ public class Human {
 
 
             if (thisMobTimer > 1.5f) {
-                boolean thisMobStand = getIfMobStanding(thisMob);
-                setIfMobStanding(thisMob,!thisMobStand);
+                boolean thisMobStand = MobObject.getIfMobStanding(thisMob);
+                MobObject.setIfMobStanding(thisMob,!thisMobStand);
                 thisMobTimer = (float)Math.random() * -2f;
-                setMobRotation(thisMob, (float) (Math.toDegrees(Math.PI * Math.random() * randomDirFloat())));
+                MobObject.setMobRotation(thisMob, (float) (Math.toDegrees(Math.PI * Math.random() * randomDirFloat())));
             }
 
 
@@ -97,7 +92,7 @@ public class Human {
                 thisMobAnimationTimer -= 1f;
             }
 
-            setIfMobOnGround(thisMob, onGround);
+            MobObject.setIfMobOnGround(thisMob, onGround);
 
 
             if (thisMobHealth > 0) {
@@ -112,11 +107,11 @@ public class Human {
                 }
             }
 
-            setMobAnimationTimer(thisMob, thisMobAnimationTimer);
-            setMobTimer(thisMob, thisMobTimer);
+            MobObject.setMobAnimationTimer(thisMob, thisMobAnimationTimer);
+            MobObject.setMobTimer(thisMob, thisMobTimer);
 
-            mobSmoothRotation(thisMob);
-            doHeadCode(thisMob);
+            MobUtilityCode.mobSmoothRotation(thisMob);
+            MobUtilityCode.doHeadCode(thisMob);
         }
     };
 
@@ -170,91 +165,91 @@ public class Human {
         float[][][] modelTextureArray = new float[][][]{
                 //head
                 //back
-                {calculateMobTexture(24, 8, 32, 16, textureWidth, textureHeight),
+                {MobMeshBuilder.calculateMobTexture(24, 8, 32, 16, textureWidth, textureHeight),
                 //front
-                calculateMobTexture(8, 8, 16, 16, textureWidth, textureHeight),
+                MobMeshBuilder.calculateMobTexture(8, 8, 16, 16, textureWidth, textureHeight),
                 //right
-                calculateMobTexture(0, 8, 8, 16, textureWidth, textureHeight),
+                MobMeshBuilder.calculateMobTexture(0, 8, 8, 16, textureWidth, textureHeight),
                 //left
-                calculateMobTexture(16, 8, 24, 16, textureWidth, textureHeight),
+                MobMeshBuilder.calculateMobTexture(16, 8, 24, 16, textureWidth, textureHeight),
                 //top
-                calculateMobTexture(8, 0, 16, 8, textureWidth, textureHeight),
+                MobMeshBuilder.calculateMobTexture(8, 0, 16, 8, textureWidth, textureHeight),
                 //bottom
-                calculateMobTexture(16, 0, 24, 8, textureWidth, textureHeight)},
+                MobMeshBuilder.calculateMobTexture(16, 0, 24, 8, textureWidth, textureHeight)},
 
                 //body
                 //back
-                {calculateMobTexture(32, 20, 40, 30, textureWidth, textureHeight),
+                {MobMeshBuilder.calculateMobTexture(32, 20, 40, 30, textureWidth, textureHeight),
                 //front
-                calculateMobTexture(20, 20, 28, 30, textureWidth, textureHeight),
+                MobMeshBuilder.calculateMobTexture(20, 20, 28, 30, textureWidth, textureHeight),
                 //right
-                calculateMobTexture(28, 20, 32, 30, textureWidth, textureHeight),
+                MobMeshBuilder.calculateMobTexture(28, 20, 32, 30, textureWidth, textureHeight),
                 //left
-                calculateMobTexture(16, 20, 20, 30, textureWidth, textureHeight),
+                MobMeshBuilder.calculateMobTexture(16, 20, 20, 30, textureWidth, textureHeight),
                 //top
-                calculateMobTexture(20, 16, 28, 20, textureWidth, textureHeight),
+                MobMeshBuilder.calculateMobTexture(20, 16, 28, 20, textureWidth, textureHeight),
                 //bottom
-                calculateMobTexture(28, 16, 36, 20, textureWidth, textureHeight)},
+                MobMeshBuilder.calculateMobTexture(28, 16, 36, 20, textureWidth, textureHeight)},
 
 
                 //right arm
                 //back
-                {calculateMobTexture(48, 20, 52, 32, textureWidth, textureHeight), //dark
+                {MobMeshBuilder.calculateMobTexture(48, 20, 52, 32, textureWidth, textureHeight), //dark
                 //front
-                calculateMobTexture(44, 20, 48, 32, textureWidth, textureHeight), //light
+                MobMeshBuilder.calculateMobTexture(44, 20, 48, 32, textureWidth, textureHeight), //light
                 //right
-                calculateMobTexture(48, 20, 52, 32, textureWidth, textureHeight), //dark
+                MobMeshBuilder.calculateMobTexture(48, 20, 52, 32, textureWidth, textureHeight), //dark
                 //left
-                calculateMobTexture(44, 20, 48, 32, textureWidth, textureHeight), //light
+                MobMeshBuilder.calculateMobTexture(44, 20, 48, 32, textureWidth, textureHeight), //light
                 //top
-                calculateMobTexture(44, 16, 48, 20, textureWidth, textureHeight), //shoulder
+                MobMeshBuilder.calculateMobTexture(44, 16, 48, 20, textureWidth, textureHeight), //shoulder
                 //bottom
-                calculateMobTexture(48, 16, 52, 20, textureWidth, textureHeight)}, //palm
+                MobMeshBuilder.calculateMobTexture(48, 16, 52, 20, textureWidth, textureHeight)}, //palm
 
                 //left arm
                 //back
-                {calculateMobTexture(48, 20, 52, 32, textureWidth, textureHeight), //dark
+                {MobMeshBuilder.calculateMobTexture(48, 20, 52, 32, textureWidth, textureHeight), //dark
                 //front
-                calculateMobTexture(44, 20, 48, 32, textureWidth, textureHeight), //light
+                MobMeshBuilder.calculateMobTexture(44, 20, 48, 32, textureWidth, textureHeight), //light
                 //right
-                calculateMobTexture(44, 20, 48, 32, textureWidth, textureHeight), //light
+                MobMeshBuilder.calculateMobTexture(44, 20, 48, 32, textureWidth, textureHeight), //light
                 //left
-                calculateMobTexture(48, 20, 52, 32, textureWidth, textureHeight), //dark
+                MobMeshBuilder.calculateMobTexture(48, 20, 52, 32, textureWidth, textureHeight), //dark
                 //top
-                calculateMobTexture(44, 16, 48, 20, textureWidth, textureHeight), //shoulder
+                MobMeshBuilder.calculateMobTexture(44, 16, 48, 20, textureWidth, textureHeight), //shoulder
                 //bottom
-                calculateMobTexture(48, 16, 52, 20, textureWidth, textureHeight)}, //palm
+                MobMeshBuilder.calculateMobTexture(48, 16, 52, 20, textureWidth, textureHeight)}, //palm
 
 
                 //right leg
                 //back
-                {calculateMobTexture(0, 20, 4, 32, textureWidth, textureHeight), //dark
+                {MobMeshBuilder.calculateMobTexture(0, 20, 4, 32, textureWidth, textureHeight), //dark
                 //front
-                calculateMobTexture(4, 20, 8, 32, textureWidth, textureHeight), //light
+                MobMeshBuilder.calculateMobTexture(4, 20, 8, 32, textureWidth, textureHeight), //light
                 //right
-                calculateMobTexture(8, 20, 12, 32, textureWidth, textureHeight), //dark
+                MobMeshBuilder.calculateMobTexture(8, 20, 12, 32, textureWidth, textureHeight), //dark
                 //left
-                calculateMobTexture(12, 20, 16, 32, textureWidth, textureHeight), //light
+                MobMeshBuilder.calculateMobTexture(12, 20, 16, 32, textureWidth, textureHeight), //light
                 //top
-                calculateMobTexture(4, 16, 8, 20, textureWidth, textureHeight), //top
+                MobMeshBuilder.calculateMobTexture(4, 16, 8, 20, textureWidth, textureHeight), //top
                 //bottom
-                calculateMobTexture(8, 16, 12, 20, textureWidth, textureHeight)}, //bottom
+                MobMeshBuilder.calculateMobTexture(8, 16, 12, 20, textureWidth, textureHeight)}, //bottom
 
                 //left leg
                 //back
-                {calculateMobTexture(0, 20, 4, 32, textureWidth, textureHeight), //dark
+                {MobMeshBuilder.calculateMobTexture(0, 20, 4, 32, textureWidth, textureHeight), //dark
                 //front
-                calculateMobTexture(4, 20, 8, 32, textureWidth, textureHeight), //light
+                MobMeshBuilder.calculateMobTexture(4, 20, 8, 32, textureWidth, textureHeight), //light
                 //right
-                calculateMobTexture(12, 20, 16, 32, textureWidth, textureHeight), //light
+                MobMeshBuilder.calculateMobTexture(12, 20, 16, 32, textureWidth, textureHeight), //light
                 //left
-                calculateMobTexture(8, 20, 12, 32, textureWidth, textureHeight), //dark
+                MobMeshBuilder.calculateMobTexture(8, 20, 12, 32, textureWidth, textureHeight), //dark
                 //top
-                calculateMobTexture(4, 16, 8, 20, textureWidth, textureHeight), //top
+                MobMeshBuilder.calculateMobTexture(4, 16, 8, 20, textureWidth, textureHeight), //top
                 //bottom
-                calculateMobTexture(8, 16, 12, 20, textureWidth, textureHeight)}, //bottom
+                MobMeshBuilder.calculateMobTexture(8, 16, 12, 20, textureWidth, textureHeight)}, //bottom
         };
 
-        return createMobMesh(modelPieceArray,modelTextureArray, "textures/player.png");
+        return MobMeshBuilder.createMobMesh(modelPieceArray,modelTextureArray, "textures/player.png");
     }
 }

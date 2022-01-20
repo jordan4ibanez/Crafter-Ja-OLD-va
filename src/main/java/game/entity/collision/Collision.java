@@ -1,15 +1,14 @@
-package game.collision;
+package game.entity.collision;
 
 import org.joml.Math;
 import org.joml.*;
 
 import static engine.time.Time.getDelta;
-import static game.blocks.BlockDefinition.*;
 import static game.chunk.Chunk.getBlock;
 import static game.chunk.Chunk.getBlockRotation;
-import static game.collision.CollisionObject.intersectsAABB;
-import static game.collision.CollisionObject.setAABBBlock;
-import static game.collision.CollisionObject.setAABBEntity;
+import static game.entity.collision.CollisionObject.intersectsAABB;
+import static game.entity.collision.CollisionObject.setAABBBlock;
+import static game.entity.collision.CollisionObject.setAABBEntity;
 import static game.player.Player.getIfPlayerIsJumping;
 import static game.player.Player.setPlayerInWater;
 

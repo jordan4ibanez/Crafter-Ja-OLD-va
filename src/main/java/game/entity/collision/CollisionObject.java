@@ -1,4 +1,4 @@
-package game.collision;
+package game.entity.collision;
 
 //static collision object
 final public class CollisionObject {
