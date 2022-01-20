@@ -2,6 +2,7 @@ package game.item;
 
 import engine.graphics.Mesh;
 import engine.graphics.Texture;
+import game.blocks.BlockDefinitionContainer;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -33,14 +34,14 @@ public class ItemDefinition {
     private final float leafMiningLevel;
 
     //block item
-    public ItemDefinition(String name, int blockID){
+    public ItemDefinition(String name, int blockID, BlockDefinitionContainer blockDefinitionContainer){
         this.name = name;
         this.blockID = 0;
         this.isItem = false;
         this.isBlock = true;
         this.itemModifier = null;
-        this.isRightClickable = getRightClickable(blockID);
-        this.isOnPlaced = getIsOnPlaced(blockID);
+        this.isRightClickable = blockDefinitionContainer.isRightClickable(blockID);
+        this.isOnPlaced = blockDefinitionContainer.isOnPlaced(blockID);
         this.isTool = false;
         this.stoneMiningLevel = 0f;
         this.dirtMiningLevel = 0f;
