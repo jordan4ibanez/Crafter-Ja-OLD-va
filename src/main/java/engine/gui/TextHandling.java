@@ -7,20 +7,14 @@ final public class TextHandling {
 
     //textures
     private final Texture fontTextureAtlas = new Texture("textures/font.png");
+
     
-    private final float FONT_WIDTH = 216f;
-    private final float LETTER_WIDTH = 6f;
-
-    private final float FONT_HEIGHT = 24f;
-    private final float LETTER_HEIGHT = 8f;
-
-    private final float FONT_PIXEL_WIDTH = 6f;
-
     //yes I know, I could use a TTF font, but where's the fun in that?
     public float[] translateCharToArray(char thisChar){
 
         float[] letterArray = new float[]{0,0,0};
 
+        float FONT_PIXEL_WIDTH = 6f;
         switch (thisChar) {
             case 'a' -> {
                 letterArray[0] = 0;
@@ -507,12 +501,14 @@ final public class TextHandling {
         }
 
         if (letterArray[2] == 1f){
-            letterArray[2] = 5f/FONT_PIXEL_WIDTH;
+            letterArray[2] = 5f/ FONT_PIXEL_WIDTH;
         }
 
         float[] returningArray = new float[5];
 
         //mapping of the texture
+        float LETTER_WIDTH = 6f;
+        float FONT_WIDTH = 216f;
         returningArray[0] = (letterArray[0] * LETTER_WIDTH) / FONT_WIDTH; //-x
 
         //fix subtraction of 1 (or keep it for float imprecision problems causing font bleed)
@@ -520,6 +516,8 @@ final public class TextHandling {
         //returningArray[1] = ((letterArray[0] * LETTER_WIDTH) + LETTER_WIDTH - 1) / FONT_WIDTH; //+x
         returningArray[1] = ((letterArray[0] * LETTER_WIDTH) + (letterArray[2] * LETTER_WIDTH)) / FONT_WIDTH; //+x
 
+        float FONT_HEIGHT = 24f;
+        float LETTER_HEIGHT = 8f;
         returningArray[2] = (letterArray[1] * LETTER_HEIGHT) / FONT_HEIGHT; //-y
         returningArray[3] = ((letterArray[1] * LETTER_HEIGHT) + LETTER_HEIGHT - 1) / FONT_HEIGHT; //+y
 
