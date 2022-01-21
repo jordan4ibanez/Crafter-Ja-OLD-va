@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 
 import static org.lwjgl.BufferUtils.createByteBuffer;
@@ -20,15 +21,16 @@ import static org.lwjgl.BufferUtils.createByteBuffer;
 public class Utils {
 
     //load plain text file - external from JAR
-    public static String loadResource(String fileName) throws Exception{
-        
+    public static String loadResource(String fileName){
         File text = new File(fileName);
-        
-        Scanner scanner = new Scanner(text, StandardCharsets.UTF_8.name());
-        
-        String result = scanner.useDelimiter("\\A").next();
-        
-        return result;
+        Scanner scanner = null;
+        try {
+            scanner = new Scanner(text, StandardCharsets.UTF_8.name());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        assert scanner != null;
+        return scanner.useDelimiter("\\A").next();
     }
 
     //save string as plain text - external from JAR
@@ -43,7 +45,7 @@ public class Utils {
     //internal to JAR - needs refactor
     public static List<String> readAllLines(String fileName) throws Exception {
         List<String> list = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(Class.forName(Utils.class.getName()).getResourceAsStream(fileName)))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(Objects.requireNonNull(Class.forName(Utils.class.getName()).getResourceAsStream(fileName))))) {
             String line;
             while ((line = br.readLine()) != null) {
                 list.add(line);
