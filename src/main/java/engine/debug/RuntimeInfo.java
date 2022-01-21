@@ -1,28 +1,25 @@
 package engine.debug;
 
-
 import engine.graphics.Mesh;
+import engine.time.Delta;
 
-import static engine.time.Delta.getDelta;
+public class RuntimeInfo {
+    private final Mesh[] runtimeInfoText = new Mesh[6];
+    private long heapSize = 0;
+    private long heapMaxSize = 0;
+    private long heapFreeSize = 0;
+    private long availableProcessors = 0;
+    private int currentAmountOfThreads = 0;
+    private int cpuHealth = 100;
 
-public class CheckRuntimeInfo {
-    private static final Mesh[] runtimeInfoText = new Mesh[6];
-    private static long heapSize = 0;
-    private static long heapMaxSize = 0;
-    private static long heapFreeSize = 0;
-    private static long availableProcessors = 0;
-    private static int currentAmountOfThreads = 0;
-    private static int cpuHealth = 100;
-
-    public static Mesh[] getRuntimeInfoText(){
+    public Mesh[] getRuntimeInfoText(){
         return runtimeInfoText;
     }
 
+    private float timer = 0f;
 
-    private static float timer = 0f;
-
-    public static void doRuntimeInfoUpdate(){
-        timer += getDelta();
+    private void doRuntimeInfoUpdate(Delta delta){
+        timer += delta.getDelta();
 
         if (timer >= 0.5){
             timer = 0f;
@@ -42,7 +39,7 @@ public class CheckRuntimeInfo {
          */
     }
 
-    public static void updateRuntimeInfoText(){
+    private void updateRuntimeInfoText(){
         //update the info
         getHeapInfo();
 
@@ -69,7 +66,7 @@ public class CheckRuntimeInfo {
 
     //this is from:
     //https://stackoverflow.com/questions/2015463/how-to-view-the-current-heap-size-that-an-application-is-using
-    public static void getHeapInfo() {
+    private void getHeapInfo() {
         heapSize = Runtime.getRuntime().totalMemory();
         // Get maximum size of heap in bytes. The heap cannot grow beyond this size.// Any attempt will result in an OutOfMemoryException.
         heapMaxSize = Runtime.getRuntime().maxMemory();
@@ -85,7 +82,7 @@ public class CheckRuntimeInfo {
         availableProcessors = Runtime.getRuntime().availableProcessors();
     }
 
-    public static String formatSize(long v) {
+    private String formatSize(long v) {
         if (v < 1024) return v + " B";
         int z = (63 - Long.numberOfLeadingZeros(v)) / 10;
         return String.format("%.1f %sB", (double)v / (1L << (z*10)), " KMGTPE".charAt(z));
