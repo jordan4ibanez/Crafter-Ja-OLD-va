@@ -7,18 +7,13 @@ import java.sql.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static engine.disk.SQLiteDiskHandler.passDataFromSQLiteDiskAccessThread;
-import static game.chunk.BiomeGenerator.addChunkToBiomeGeneration;
-import static game.chunk.Chunk.*;
-import static game.chunk.ChunkUpdateHandler.chunkUpdate;
-
 public class SQLiteDiskAccessThread implements Runnable {
 
     private Connection connection;
     private DatabaseMetaData meta;
 
-    private static final ConcurrentLinkedDeque<Vector2i> chunksToLoad = new ConcurrentLinkedDeque<>();
-    private static final ConcurrentLinkedDeque<String> playersToLoad  = new ConcurrentLinkedDeque<>();
+    private final ConcurrentLinkedDeque<Vector2i> chunksToLoad = new ConcurrentLinkedDeque<>();
+    private final ConcurrentLinkedDeque<String> playersToLoad  = new ConcurrentLinkedDeque<>();
 
     private final AtomicBoolean running = new AtomicBoolean(false);
 
@@ -30,7 +25,7 @@ public class SQLiteDiskAccessThread implements Runnable {
         String url = "jdbc:sqlite:" + System.getProperty("user.dir") + "/Worlds/" + worldName + "/map.db";
 
         try {
-            //database connection, static private
+            //database connection, private
             connection = DriverManager.getConnection(url);
 
             if (connection != null){
@@ -163,11 +158,11 @@ public class SQLiteDiskAccessThread implements Runnable {
     //these shall stay in sync
     //they are bulk added in THIS thread
     //cannot access anything from it until it has run through the next iteration
-    private static final ConcurrentLinkedDeque<String> playerToSave         = new ConcurrentLinkedDeque<>();
-    private static final ConcurrentLinkedDeque<String[][]> playerInventory    = new ConcurrentLinkedDeque<>();
-    private static final ConcurrentLinkedDeque<int[][]> playerInventoryCount = new ConcurrentLinkedDeque<>();
-    private static final ConcurrentLinkedDeque<Vector3d> playerPos          = new ConcurrentLinkedDeque<>();
-    private static final ConcurrentLinkedDeque<Byte> playerHealth           = new ConcurrentLinkedDeque<>();
+    private final ConcurrentLinkedDeque<String> playerToSave         = new ConcurrentLinkedDeque<>();
+    private final ConcurrentLinkedDeque<String[][]> playerInventory    = new ConcurrentLinkedDeque<>();
+    private final ConcurrentLinkedDeque<int[][]> playerInventoryCount = new ConcurrentLinkedDeque<>();
+    private final ConcurrentLinkedDeque<Vector3d> playerPos          = new ConcurrentLinkedDeque<>();
+    private final ConcurrentLinkedDeque<Byte> playerHealth           = new ConcurrentLinkedDeque<>();
 
     public void addPlayerToSave(String playerName, String[][] inventoryToSave, int[][] inventoryCount, Vector3d newPlayerPos, byte newPlayerHealth){
         playerToSave.add(playerName);
@@ -270,11 +265,11 @@ public class SQLiteDiskAccessThread implements Runnable {
     //these shall stay in sync
     //they are bulk added in THIS thread
     //cannot access anything from it until it has run through the next iteration
-    private static final ConcurrentLinkedDeque<Vector2i> chunksToSaveKey     = new ConcurrentLinkedDeque<>();
-    private static final ConcurrentLinkedDeque<byte[]> chunksToSaveBlock     = new ConcurrentLinkedDeque<>();
-    private static final ConcurrentLinkedDeque<byte[]> chunksToSaveRotation  = new ConcurrentLinkedDeque<>();
-    private static final ConcurrentLinkedDeque<byte[]> chunksToSaveLight     = new ConcurrentLinkedDeque<>();
-    private static final ConcurrentLinkedDeque<byte[]> chunksToSaveHeightMap = new ConcurrentLinkedDeque<>();
+    private final ConcurrentLinkedDeque<Vector2i> chunksToSaveKey     = new ConcurrentLinkedDeque<>();
+    private final ConcurrentLinkedDeque<byte[]> chunksToSaveBlock     = new ConcurrentLinkedDeque<>();
+    private final ConcurrentLinkedDeque<byte[]> chunksToSaveRotation  = new ConcurrentLinkedDeque<>();
+    private final ConcurrentLinkedDeque<byte[]> chunksToSaveLight     = new ConcurrentLinkedDeque<>();
+    private final ConcurrentLinkedDeque<byte[]> chunksToSaveHeightMap = new ConcurrentLinkedDeque<>();
 
     public void addSaveChunk(int x, int z, byte[] blockData, byte[] rotationData, byte[] lightData, byte[] heightMap ){
         chunksToSaveKey.add(new Vector2i(x,z));
@@ -439,7 +434,7 @@ public class SQLiteDiskAccessThread implements Runnable {
     }
 
     //deserializers
-    private static Vector3d deserializeVector3d(String serializedVector){
+    private Vector3d deserializeVector3d(String serializedVector){
         //turn string into array for easier access
         char[] charArray = serializedVector.toCharArray();
 
@@ -466,7 +461,7 @@ public class SQLiteDiskAccessThread implements Runnable {
         return outputVector3d;
     }
 
-    private static String[][] stringArrayArrayDeserialize(String serializedArrayArray){
+    private String[][] stringArrayArrayDeserialize(String serializedArrayArray){
         //figure out the data structure, width and height
         int newIndexCount = 1;
         int newBracketCount = 1;
@@ -525,7 +520,7 @@ public class SQLiteDiskAccessThread implements Runnable {
         return outPutStringArray;
     }
 
-    private static int[][] intArrayArrayDeserialize(String serializedArrayArray){
+    private int[][] intArrayArrayDeserialize(String serializedArrayArray){
         //figure out the data structure, width and height
         int newIndexCount = 1;
         int newBracketCount = 1;
@@ -585,7 +580,7 @@ public class SQLiteDiskAccessThread implements Runnable {
     }
 
 
-    private static byte[] byteDeserialize(String serializedArray){
+    private byte[] byteDeserialize(String serializedArray){
 
         //turn string into array for easier access
         char[] charArray = serializedArray.toCharArray();
@@ -625,7 +620,7 @@ public class SQLiteDiskAccessThread implements Runnable {
         return outPut;
     }
 
-    private static int[] intDeserialize(String serializedArray){
+    private int[] intDeserialize(String serializedArray){
 
         //turn string into array for easier access
         char[] charArray = serializedArray.toCharArray();
@@ -667,11 +662,11 @@ public class SQLiteDiskAccessThread implements Runnable {
 
 
     //serializer
-    private static String serializeVector3d(Vector3d inputVec3d){
+    private String serializeVector3d(Vector3d inputVec3d){
         return inputVec3d.x + "," + inputVec3d.y + "," + inputVec3d.z;
     }
 
-    private static String stringArrayArraySerialize(String[][] inputStringArray){
+    private String stringArrayArraySerialize(String[][] inputStringArray){
 
         StringBuilder output = new StringBuilder();
         int outerCount = 0;
@@ -700,7 +695,7 @@ public class SQLiteDiskAccessThread implements Runnable {
         return output.toString();
     }
 
-    private static String intArrayArraySerialize(int[][] inputStringArray){
+    private String intArrayArraySerialize(int[][] inputStringArray){
         StringBuilder output = new StringBuilder();
         int outerCount = 0;
         int outerGoal = inputStringArray.length - 1;
@@ -725,7 +720,7 @@ public class SQLiteDiskAccessThread implements Runnable {
         return output.toString();
     }
 
-    private static String byteSerialize(byte[] bytes){
+    private String byteSerialize(byte[] bytes){
 
         //build a raw custom string type to hold data, data elements only separated by commas
         StringBuilder str = new StringBuilder();
@@ -739,7 +734,7 @@ public class SQLiteDiskAccessThread implements Runnable {
         return str.toString();
     }
 
-    private static String intSerialize(int[] ints){
+    private String intSerialize(int[] ints){
 
         //build a raw custom string type to hold data, data elements only separated by commas
         StringBuilder str = new StringBuilder();
