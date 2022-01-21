@@ -320,8 +320,9 @@ public class SQLiteDiskAccessThread implements Runnable {
     }
 
     //do this so that the main thread does not hang
-    public void addLoadChunk(int x, int z){
-        Vector2i key = new Vector2i(x,z);
+    public void addLoadChunk(Vector2i aNewKey){
+        //break thread memory pointer linkage
+        Vector2i key = new Vector2i(aNewKey);
         //do not allow loading chunks more than once!
         if (!chunksToLoad.contains(key)){
             chunksToLoad.add(key);
@@ -350,18 +351,12 @@ public class SQLiteDiskAccessThread implements Runnable {
                 //System.out.println("LOADING CHUNK FROM DATABASE!");
 
                 //automatically set the chunk in memory
-                setChunk(x, z,
+                sqLiteDiskHandler.setChunk(new PrimitiveChunkObject(new Vector2i(x, z),
                         byteDeserialize(resultTest.getString("BLOCK")),
                         byteDeserialize(resultTest.getString("ROTATION")),
                         byteDeserialize(resultTest.getString("LIGHT")),
                         byteDeserialize(resultTest.getString("HEIGHTMAP"))
-                );
-
-                //dump everything into the chunk updater
-                for (int i = 0; i < 8; i++) {
-                    chunkUpdate(x, z, i);
-                }
-
+                ));
             }
 
             //did not find a chunk - create a new one
