@@ -2,54 +2,37 @@ package engine.gui;
 
 import org.joml.Vector2d;
 
-import static engine.MouseInput.*;
-import static engine.Window.getDumpedKey;
-import static engine.Window.getWindowHandle;
-import static engine.disk.SQLiteDiskHandler.closeWorldDataBase;
-import static engine.network.Networking.disconnectClient;
-import static engine.network.Networking.sendChatMessage;
-import static engine.render.GameRenderer.*;
-import static engine.scene.SceneHandler.setScene;
-import static engine.settings.Settings.*;
-import static engine.sound.SoundAPI.playSound;
-import static engine.time.Delta.getDelta;
-import static game.chat.Chat.*;
-import static game.mainMenu.MainMenu.resetMainMenu;
-import static game.mainMenu.MainMenu.resetMainMenuPage;
-import static game.player.Player.getPlayerHealth;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
-
 public class GUILogic {
 
-    private static boolean paused = false;
-    private static boolean chatOpen = false;
-    private static int chatBoxEntryKey = 84;
+    private boolean paused = false;
+    private boolean chatOpen = false;
+    private int chatBoxEntryKey = 84;
 
-    private static boolean mouseButtonPushed = false;
-    private static boolean mouseButtonWasPushed = false;
-    private static boolean pollingButtonInputs = false;
+    private boolean mouseButtonPushed = false;
+    private boolean mouseButtonWasPushed = false;
+    private boolean pollingButtonInputs = false;
 
-    private static byte lockedOnButtonInput = -1;
+    private byte lockedOnButtonInput = -1;
 
     //health bar elements
     //calculated per half heart
-    private static final byte[] healthHudArray = new byte[10];
-    private static boolean heartUp = true;
-    private static final float[] healthHudFloatArray = new float[10];
+    private final byte[] healthHudArray = new byte[10];
+    private boolean heartUp = true;
+    private final float[] healthHudFloatArray = new float[10];
 
     //0 main
     //1 settings base
     //2 buttons settings
-    private static byte menuPage = 0;
+    private byte menuPage = 0;
 
-    private static final GUIObject[] gamePauseMenuGUI = new GUIObject[]{
+    private final GUIObject[] gamePauseMenuGUI = new GUIObject[]{
             new GUIObject("CONTINUE" , new Vector2d(0, 30), 10, 1),
             new GUIObject("SETTINGS" , new Vector2d(0, 10), 10,1),
             new GUIObject("QUIT TO MAIN MENU" , new Vector2d(0, -10), 10,1),
             new GUIObject("QUIT GAME" , new Vector2d(0, -30), 10,1),
     };
 
-    private static final GUIObject[] gameSettingsMenuGUI = new GUIObject[]{
+    private final GUIObject[] gameSettingsMenuGUI = new GUIObject[]{
             new GUIObject("CONTROLS" ,             new Vector2d(0, 35), 12, 1),
             new GUIObject("VSYNC: " + boolToString(getSettingsVsync()),            new Vector2d(0, 21), 12, 1),
             new GUIObject("GRAPHICS MODE: " + graphicsThing(getGraphicsMode()) , new Vector2d(0, 7), 12,1),
@@ -58,7 +41,7 @@ public class GUILogic {
             new GUIObject("BACK" ,                  new Vector2d(0, -35), 12,1),
     };
 
-    private static final GUIObject[] controlsMenuGUI = new GUIObject[]{
+    private final GUIObject[] controlsMenuGUI = new GUIObject[]{
             new GUIObject("FORWARD: " + quickConvertKeyCode(getKeyForward()) , new Vector2d(-35, 30), 6, 1),
             new GUIObject("BACK: " + quickConvertKeyCode(getKeyBack()), new Vector2d(35, 30), 6, 1),
             new GUIObject("LEFT: " + quickConvertKeyCode(getKeyLeft()), new Vector2d(-35, 15), 6, 1),
@@ -72,14 +55,14 @@ public class GUILogic {
             new GUIObject("BACK" , new Vector2d(0, -30), 5, 1),
     };
 
-    public static void sendAndFlushChatMessage(){
+    public void sendAndFlushChatMessage(){
         sendChatMessage(getCurrentChatMessage());
         clearCurrentChatMessage();
         setChatOpen(false);
     }
 
 
-    private static String quickConvertKeyCode(int keyCode){
+    private String quickConvertKeyCode(int keyCode){
         
         System.out.println("keycode");
         
@@ -98,14 +81,14 @@ public class GUILogic {
         return code + "";
     }
 
-    private static String boolToString(boolean bool){
+    private String boolToString(boolean bool){
         if (bool){
             return "ON";
         }
         return "OFF";
     }
 
-    private static String graphicsThing(boolean bool){
+    private String graphicsThing(boolean bool){
         if (bool){
             return "FANCY";
         }
@@ -113,7 +96,7 @@ public class GUILogic {
     }
 
 
-    public static GUIObject[] getGamePauseMenuGUI(){
+    public GUIObject[] getGamePauseMenuGUI(){
         switch (menuPage) {
             case 0:
                 return gamePauseMenuGUI;
@@ -130,7 +113,7 @@ public class GUILogic {
     }
 
 
-    private static String convertChunkLoadText(byte input){
+    private String convertChunkLoadText(byte input){
         switch (input) {
             case 0:
                 return "SNAIL";
@@ -152,7 +135,7 @@ public class GUILogic {
     }
 
 
-    public static void togglePauseMenu(){
+    public void togglePauseMenu(){
         setPaused(!isPaused());
         if (!isPaused()){
             menuPage = 0;
@@ -166,27 +149,27 @@ public class GUILogic {
         }
     }
 
-    public static boolean isPaused(){
+    public boolean isPaused(){
         return paused;
     }
 
-    public static boolean isChatOpen(){
+    public boolean isChatOpen(){
         return chatOpen;
     }
 
-    public static void setChatOpen(boolean truth){
+    public void setChatOpen(boolean truth){
         chatOpen = truth;
         toggleMouseLock();
         chatBoxEntryKey = 84;
         setCurrentChatMessage("");
     }
 
-    public static void setPaused(boolean truth){
+    public void setPaused(boolean truth){
         paused = truth;
     }
 
 
-    private static void flushControlsMenu(){
+    private void flushControlsMenu(){
         controlsMenuGUI[0].updateTextCenteredFixed("FORWARD: " + quickConvertKeyCode(getKeyForward()));
         controlsMenuGUI[1].updateTextCenteredFixed("BACK: " + quickConvertKeyCode(getKeyBack()));
         controlsMenuGUI[2].updateTextCenteredFixed("LEFT: " + quickConvertKeyCode(getKeyLeft()));
@@ -198,7 +181,7 @@ public class GUILogic {
     }
 
 
-    public static void pauseMenuOnTick(){
+    public void pauseMenuOnTick(){
 
         if (isPaused()){
             //root pause menu
@@ -475,7 +458,7 @@ public class GUILogic {
     }
 
 
-    public static byte doGUIMouseCollisionDetection(GUIObject[] guiElements){
+    public byte doGUIMouseCollisionDetection(GUIObject[] guiElements){
         byte selected = -1;
         float windowScale = getWindowScale();
 
@@ -509,9 +492,9 @@ public class GUILogic {
         return selected;
     }
 
-    private static boolean baseOdd = true;
+    private boolean baseOdd = true;
 
-    public static void makeHeartsJiggle(){
+    public void makeHeartsJiggle(){
 
         double delta = getDelta();
 
@@ -552,7 +535,7 @@ public class GUILogic {
         }
     }
 
-    public static void calculateHealthBarElements(){
+    public void calculateHealthBarElements(){
         int health = getPlayerHealth();
 
         byte z = 1; //this needs to start from 1 like lua
@@ -573,11 +556,11 @@ public class GUILogic {
         //System.out.println(Arrays.toString(healthHudArray));
     }
 
-    public static byte[] getHealthHudArray(){
+    public byte[] getHealthHudArray(){
         return healthHudArray;
     }
 
-    public static float[] getHealthHudFloatArray(){
+    public float[] getHealthHudFloatArray(){
         return healthHudFloatArray;
     }
 }
