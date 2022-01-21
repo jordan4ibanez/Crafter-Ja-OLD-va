@@ -5,15 +5,15 @@ import engine.graphics.Texture;
 import engine.highPerformanceContainers.HyperFloatArray;
 import engine.highPerformanceContainers.HyperIntArray;
 
-import static game.clouds.Cloud.getCloudScale;
+import game.clouds.Cloud.getCloudScale;
 
 public class CloudMesh {
 
-    private static final byte atlasSizeX = 3;
-    private static final byte atlasSizeY = 1;
+    private final byte atlasSizeX = 3;
+    private final byte atlasSizeY = 1;
 
 
-    public static Mesh buildCloud3DMesh(){
+    public Mesh buildCloud3DMesh(){
         final HyperFloatArray positions    = new HyperFloatArray(12);
         final HyperFloatArray textureCoord = new HyperFloatArray(8);
         final HyperIntArray indices        = new HyperIntArray(6);
@@ -135,7 +135,7 @@ public class CloudMesh {
         return cloud3DMesh;
     }
 
-    public static Mesh buildCloud2DMesh() {
+    public Mesh buildCloud2DMesh() {
         float[] positions = new float[12];
         float[] textureCoord = new float[8];
         int[] indices = new int[6];
@@ -184,7 +184,7 @@ public class CloudMesh {
         return new Mesh(positions, light, indices, textureCoord, new Texture("textures/cloud.png"));
     }
 
-    private static float[] calculateTexture(int x){
+    private float[] calculateTexture(int x){
         float[] texturePoints = new float[4];
         texturePoints[0] = (float)x/(float)atlasSizeX;     //min x (-)
         texturePoints[1] = (float)(x+1)/(float)atlasSizeX; //max x (+)

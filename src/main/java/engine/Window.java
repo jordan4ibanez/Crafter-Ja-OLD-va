@@ -22,7 +22,7 @@ public class Window {
     private String title;
     private int width;
     private int height;
-    private long windowHandle;
+    private final long windowHandle;
     private boolean resized;
     private boolean vSync;
     private int dumpedKey = -1;
@@ -240,6 +240,7 @@ public class Window {
     }
 
     public void updateWindowTitle(String newTitle){
+        this.title = newTitle;
         glfwSetWindowTitle(windowHandle, newTitle);
     }
 

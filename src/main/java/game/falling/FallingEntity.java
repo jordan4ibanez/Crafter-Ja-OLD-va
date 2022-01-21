@@ -7,23 +7,23 @@ import org.joml.Vector3f;
 
 import java.util.Arrays;
 
-import static game.chunk.Chunk.getLight;
-import static game.chunk.Chunk.placeBlock;
-import static game.entity.collision.Collision.applyInertia;
+import game.chunk.Chunk.getLight;
+import game.chunk.Chunk.placeBlock;
+import game.entity.collision.Collision.applyInertia;
 
 public class FallingEntity {
-    private static final int initialSize = 10;
-    private static int currentSize = 10;
+    private final int initialSize = 10;
+    private int currentSize = 10;
 
-    private static boolean[] exists = new boolean[initialSize];
-    private static Vector3d[] position = new Vector3d[initialSize];
-    private static Vector3f[] inertia = new Vector3f[initialSize];
-    private static byte[] light = new byte[initialSize];
-    private static float[] lightUpdateTimer = new float[initialSize];
-    private static Mesh[] mesh = new Mesh[initialSize];
-    private static byte[] ID = new byte[initialSize];
+    private boolean[] exists = new boolean[initialSize];
+    private Vector3d[] position = new Vector3d[initialSize];
+    private Vector3f[] inertia = new Vector3f[initialSize];
+    private byte[] light = new byte[initialSize];
+    private float[] lightUpdateTimer = new float[initialSize];
+    private Mesh[] mesh = new Mesh[initialSize];
+    private byte[] ID = new byte[initialSize];
 
-    private static int getFreeSlot(){
+    private int getFreeSlot(){
         for (int i = 0; i < currentSize; i++){
             if (!exists[i]){
                 return i;
@@ -34,7 +34,7 @@ public class FallingEntity {
         return growContainer();
     }
 
-    private static int growContainer(){
+    private int growContainer(){
         //System.out.println("particle table is growing to: " + (currentSize + 10));
         //ints are only created if arrays need to expand
         //can return current size because it is +1 index of the old size
@@ -76,7 +76,7 @@ public class FallingEntity {
         return returningSize;
     }
 
-    public static void createFallingEntity(double posX, double posY, double posZ, float inertiaX, float inertiaY, float inertiaZ, byte newID){
+    public void createFallingEntity(double posX, double posY, double posZ, float inertiaX, float inertiaY, float inertiaZ, byte newID){
         int thisID = getFreeSlot();
         exists[thisID] = true;
         position[thisID] = new Vector3d(posX, posY, posZ);
@@ -86,7 +86,7 @@ public class FallingEntity {
     }
 
 
-    public static void fallingEntityOnStep(){
+    public void fallingEntityOnStep(){
         int index = 0;
         for (boolean thisExists : exists){
             if (!thisExists){
@@ -102,7 +102,7 @@ public class FallingEntity {
         }
     }
 
-    private static void destroyFallingEntity( int thisIndex){
+    private void destroyFallingEntity( int thisIndex){
 
         mesh[thisIndex].cleanUp(false);
 
@@ -115,7 +115,7 @@ public class FallingEntity {
         ID[thisIndex] = 0;
     }
 
-    public static void cleanFallingEntities() {
+    public void cleanFallingEntities() {
         int index = 0;
         //clean openGL memory
         for (boolean thisExists : exists) {
@@ -147,19 +147,19 @@ public class FallingEntity {
         ID                 = new byte[initialSize];
     }
 
-    public static boolean[] getFallingEntities(){
+    public boolean[] getFallingEntities(){
         return exists;
     }
 
-    public static Vector3d getFallingEntityPos(int index){
+    public Vector3d getFallingEntityPos(int index){
         return position[index];
     }
 
-    public static byte getFallingEntityBlockID(int index){
+    public byte getFallingEntityBlockID(int index){
         return ID[index];
     }
 
-    public static byte getFallingEntityLight(int index){
+    public byte getFallingEntityLight(int index){
         return light[index];
     }
 }

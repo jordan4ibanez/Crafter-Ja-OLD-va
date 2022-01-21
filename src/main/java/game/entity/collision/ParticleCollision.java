@@ -3,22 +3,22 @@ package game.entity.collision;
 import org.joml.Math;
 import org.joml.*;
 
-import static engine.time.Delta.getDelta;
-import static game.blocks.BlockDefinition.getBlockShape;
-import static game.blocks.BlockDefinition.isBlockWalkable;
-import static game.chunk.Chunk.getBlock;
-import static game.chunk.Chunk.getBlockRotation;
-import static game.entity.collision.CollisionObject.pointIsWithinBlock;
-import static game.entity.collision.CollisionObject.setAABBBlock;
+import engine.time.Delta.getDelta;
+import game.blocks.BlockDefinition.getBlockShape;
+import game.blocks.BlockDefinition.isBlockWalkable;
+import game.chunk.Chunk.getBlock;
+import game.chunk.Chunk.getBlockRotation;
+import game.entity.collision.CollisionObject.pointIsWithinBlock;
+import game.entity.collision.CollisionObject.setAABBBlock;
 
 public class ParticleCollision {
 
-    private static double adjustedDelta;
+    private double adjustedDelta;
 
-    private static final Vector3d oldPos = new Vector3d();
-    private static final Vector3i fPos = new Vector3i();
+    private final Vector3d oldPos = new Vector3d();
+    private final Vector3i fPos = new Vector3i();
 
-    public static boolean applyParticleInertia(Vector3d pos, Vector3f inertia, boolean gravity, boolean applyCollision){
+    public boolean applyParticleInertia(Vector3d pos, Vector3f inertia, boolean gravity, boolean applyCollision){
 
         double delta = getDelta();
 
@@ -77,7 +77,7 @@ public class ParticleCollision {
 
     //normal collision
 
-    private static boolean collisionDetect(Vector3d pos, Vector3f inertia){
+    private boolean collisionDetect(Vector3d pos, Vector3f inertia){
         boolean onGround = false;
 
         oldPos.set(pos);
@@ -153,7 +153,7 @@ public class ParticleCollision {
     }
 
    
-    private static void collideYPositive(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
+    private void collideYPositive(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
         for (float[] blockBox : getBlockShape(blockID, rot)) {
             setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
             if (pointIsWithinBlock(pos.x, pos.y, pos.z)) {
@@ -163,7 +163,7 @@ public class ParticleCollision {
         }
     }
     
-    private static boolean collideYNegative(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
+    private boolean collideYNegative(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
         boolean onGround = false;
         for (float[] blockBox : getBlockShape(blockID, rot)) {
             setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
@@ -176,7 +176,7 @@ public class ParticleCollision {
         return onGround;
     }
 
-    private static void collideXPositive(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
+    private void collideXPositive(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
         for (float[] blockBox : getBlockShape(blockID, rot)) {
             setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
             if (pointIsWithinBlock(pos.x, pos.y, pos.z)) {
@@ -186,7 +186,7 @@ public class ParticleCollision {
         }
     }
 
-    private static void collideXNegative(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
+    private void collideXNegative(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
         for (float[] blockBox : getBlockShape(blockID, rot)) {
             setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
             if (pointIsWithinBlock(pos.x, pos.y, pos.z)) {
@@ -197,7 +197,7 @@ public class ParticleCollision {
     }
 
 
-    private static void collideZPositive(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
+    private void collideZPositive(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
         for (float[] blockBox : getBlockShape(blockID, rot)) {
             setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
             if (pointIsWithinBlock(pos.x, pos.y, pos.z)) {
@@ -207,7 +207,7 @@ public class ParticleCollision {
         }
     }
 
-    private static void collideZNegative(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
+    private void collideZNegative(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
         for (float[] blockBox : getBlockShape(blockID, rot)) {
             setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
             if (pointIsWithinBlock(pos.x, pos.y, pos.z)) {
@@ -218,7 +218,7 @@ public class ParticleCollision {
     }
 
 
-    private static int inertiaToDir(float thisInertia){
+    private int inertiaToDir(float thisInertia){
         if (thisInertia > 0.0001f){
             return 1;
         } else if (thisInertia < -0.0001f){
@@ -230,7 +230,7 @@ public class ParticleCollision {
 
     //simple type cast bolt on to JOML
     //converts floored Vector3d to Vector3i
-    private static void floorPos(Vector3d input){
+    private void floorPos(Vector3d input){
         fPos.set((int) Math.floor(input.x), (int)Math.floor(input.y),(int)Math.floor(input.z));
     }
 }

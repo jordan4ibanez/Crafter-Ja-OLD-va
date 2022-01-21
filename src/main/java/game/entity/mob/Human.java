@@ -4,19 +4,19 @@ import engine.graphics.Mesh;
 import org.joml.*;
 import org.joml.Math;
 
-import static engine.FancyMath.randomDirFloat;
-import static engine.time.Delta.getDelta;
-import static game.chunk.Chunk.getBlock;
-import static game.entity.collision.Collision.applyInertia;
-import static game.entity.mob.MobDefinition.*;
+import engine.FancyMath.randomDirFloat;
+import engine.time.Delta.getDelta;
+import game.chunk.Chunk.getBlock;
+import game.entity.collision.Collision.applyInertia;
+import game.entity.mob.MobDefinition.*;
 
 public class Human {
-    private static final float accelerationMultiplier  = 0.03f;
-    private static final float maxWalkSpeed = 2.f;
-    private static final float movementAcceleration = 900.f;
-    private static final Vector2f worker2f = new Vector2f();
+    private final float accelerationMultiplier  = 0.03f;
+    private final float maxWalkSpeed = 2.f;
+    private final float movementAcceleration = 900.f;
+    private final Vector2f worker2f = new Vector2f();
 
-    private final static MobInterface mobInterface = new MobInterface() {
+    private final MobInterface mobInterface = new MobInterface() {
         @Override
         public void onTick(int thisMob) {
 
@@ -115,9 +115,9 @@ public class Human {
         }
     };
 
-    private static final float yOffsetCorrection = 0.5f;
+    private final float yOffsetCorrection = 0.5f;
 
-    private static final Vector3f[] bodyOffsets = new Vector3f[]{
+    private final Vector3f[] bodyOffsets = new Vector3f[]{
             new Vector3f(0,0.8f + yOffsetCorrection,0),
             new Vector3f(0,0.8f + yOffsetCorrection,0),
             new Vector3f(-0.28f,0.725f + yOffsetCorrection,0),
@@ -126,7 +126,7 @@ public class Human {
             new Vector3f(0.09f,0.17f + yOffsetCorrection,0),
     };
 
-    private static final Vector3f[] bodyRotations = new Vector3f[]{
+    private final Vector3f[] bodyRotations = new Vector3f[]{
             new Vector3f(0,0,0),
             new Vector3f(0,0,0),
             new Vector3f(0,0,0),
@@ -135,12 +135,12 @@ public class Human {
             new Vector3f(0,0,0),
     };
 
-    public static void registerHumanMob(){
+    public void registerHumanMob(){
         registerMob("human", "hurt",true, (byte) 7, createMesh(), bodyOffsets, bodyRotations,1.9f, 0.25f, mobInterface);
     }
 
 
-    private static Mesh[] createMesh(){
+    private Mesh[] createMesh(){
         final float modelScale = 0.25f; //lazy way to fix
 
         final float[][][] modelPieceArray = new float[][][]{

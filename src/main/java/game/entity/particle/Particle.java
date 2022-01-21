@@ -7,28 +7,28 @@ import org.joml.Vector3i;
 
 import java.util.*;
 
-import static engine.time.Delta.getDelta;
-import static game.chunk.Chunk.getLight;
-import static game.chunk.ChunkMeshGenerationHandler.getTextureAtlas;
-import static game.entity.collision.ParticleCollision.applyParticleInertia;
+import engine.time.Delta.getDelta;
+import game.chunk.Chunk.getLight;
+import game.chunk.ChunkMeshGenerationHandler.getTextureAtlas;
+import game.entity.collision.ParticleCollision.applyParticleInertia;
 
 public class Particle {
     //this is an abstraction of particle objects
     //they exist, but only implicitly
     //this list is synced on the main thread
-    private static final int initialSize = 10;
-    private static int currentSize = 10;
+    private final int initialSize = 10;
+    private int currentSize = 10;
 
-    private static boolean[]  exists             = new boolean[initialSize];
-    private static Vector3d[] position           = new Vector3d[initialSize];
-    private static Vector3i[] oldFlooredPosition = new Vector3i[initialSize];
-    private static Vector3f[] inertia            = new Vector3f[initialSize];
-    private static Mesh[]      mesh              = new Mesh[initialSize];
-    private static byte[]     light              = new byte[initialSize];
-    private static float[]    timer              = new float[initialSize];
-    private static float[]    lightUpdateTimer   = new float[initialSize];
+    private boolean[]  exists             = new boolean[initialSize];
+    private Vector3d[] position           = new Vector3d[initialSize];
+    private Vector3i[] oldFlooredPosition = new Vector3i[initialSize];
+    private Vector3f[] inertia            = new Vector3f[initialSize];
+    private Mesh[]      mesh              = new Mesh[initialSize];
+    private byte[]     light              = new byte[initialSize];
+    private float[]    timer              = new float[initialSize];
+    private float[]    lightUpdateTimer   = new float[initialSize];
 
-    private static int getFreeSlot(){
+    private int getFreeSlot(){
         for (int i = 0; i < currentSize; i++){
             if (!exists[i]){
                 return i;
@@ -39,7 +39,7 @@ public class Particle {
         return growContainer();
     }
 
-    private static int growContainer(){
+    private int growContainer(){
         //System.out.println("particle table is growing to: " + (currentSize + 10));
         //ints are only created if arrays need to expand
         //can return current size because it is +1 index of the old size
@@ -85,7 +85,7 @@ public class Particle {
         return returningSize;
     }
 
-    public static void createParticle(double posX, double posY, double posZ, float inertiaX, float inertiaY, float inertiaZ, byte blockID){
+    public void createParticle(double posX, double posY, double posZ, float inertiaX, float inertiaY, float inertiaZ, byte blockID){
         int thisID = getFreeSlot();
         exists[thisID] = true;
         position[thisID] = new Vector3d(posX, posY, posZ);
@@ -97,7 +97,7 @@ public class Particle {
         lightUpdateTimer[thisID] = 0f;
     }
 
-    public static void cleanParticleMemory(){
+    public void cleanParticleMemory(){
         //System.out.println("particles are now shrinking to: " + initialSize);
         //reset value
         currentSize = initialSize;
@@ -130,11 +130,11 @@ public class Particle {
         lightUpdateTimer   = new float[initialSize];
     }
 
-    private static final Vector3i currentFlooredPos = new Vector3i();
+    private final Vector3i currentFlooredPos = new Vector3i();
 
-    private static final Deque<Integer> deletionQueue = new ArrayDeque<>();
+    private final Deque<Integer> deletionQueue = new ArrayDeque<>();
 
-    public static void particlesOnStep(){
+    public void particlesOnStep(){
 
         double delta = getDelta();
 
@@ -187,29 +187,29 @@ public class Particle {
 
     }
 
-    public static boolean[] getParticleExistence(){
+    public boolean[] getParticleExistence(){
         return exists;
     }
 
-    public static byte getParticleLight(int key){
+    public byte getParticleLight(int key){
         return light[key];
     }
 
-    public static double getParticlePosX(int key){
+    public double getParticlePosX(int key){
         return position[key].x;
     }
-    public static double getParticlePosY(int key){
+    public double getParticlePosY(int key){
         return position[key].y;
     }
-    public static double getParticlePosZ(int key){
+    public double getParticlePosZ(int key){
         return position[key].z;
     }
 
-    public static Mesh getParticleMesh(int key){
+    public Mesh getParticleMesh(int key){
         return mesh[key];
     }
 
-    private static Mesh createParticleMesh(byte blockID) {
+    private Mesh createParticleMesh(byte blockID) {
 
         final float textureScale = (float)Math.ceil(Math.random() * 3f);
         final float pixelScale = (float)(int)textureScale / 25f;

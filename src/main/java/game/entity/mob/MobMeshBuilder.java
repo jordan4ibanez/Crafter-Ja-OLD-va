@@ -7,7 +7,7 @@ import engine.highPerformanceContainers.MicroIntArray;
 
 public class MobMeshBuilder {
 
-    public static Mesh[] createMobMesh(float[][][] modelPieceArray, float[][][] textureArrayArray, String texturePath){
+    public Mesh[] createMobMesh(float[][][] modelPieceArray, float[][][] textureArrayArray, String texturePath){
 
 
         Mesh[] bodyMeshes = new Mesh[modelPieceArray.length];
@@ -94,7 +94,7 @@ public class MobMeshBuilder {
         return bodyMeshes;
     }
 
-    public static float[] calculateMobTexture(int xMin, int yMin, int xMax, int yMax, float textureWidth, float textureHeight){
+    public float[] calculateMobTexture(int xMin, int yMin, int xMax, int yMax, float textureWidth, float textureHeight){
         float[] texturePoints = new float[4];
 
         texturePoints[0] = (float)xMin/textureWidth; //min x (-)

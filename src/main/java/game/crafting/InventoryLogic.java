@@ -4,36 +4,36 @@ import it.unimi.dsi.fastutil.objects.ObjectIntImmutablePair;
 import org.joml.Vector2d;
 import org.joml.Vector3f;
 
-import static engine.MouseInput.*;
-import static engine.Window.getWindowHeight;
-import static engine.Window.getWindowWidth;
-import static engine.disk.SQLiteDiskHandler.savePlayerData;
-import static engine.network.Networking.getIfMultiplayer;
-import static engine.render.GameRenderer.*;
-import static game.crafting.CraftRecipes.recipeScan;
-import static game.crafting.Inventory.*;
-import static game.crafting.InventoryObject.*;
-import static game.player.Player.getCurrentInventorySelection;
-import static game.player.Player.resetPlayerInputs;
-import static game.player.WieldHand.resetWieldHandSetupTrigger;
+import engine.MouseInput.*;
+import engine.Window.getWindowHeight;
+import engine.Window.getWindowWidth;
+import engine.disk.SQLiteDiskHandler.savePlayerData;
+import engine.network.Networking.getIfMultiplayer;
+import engine.render.GameRenderer.*;
+import game.crafting.CraftRecipes.recipeScan;
+import game.crafting.Inventory.*;
+import game.crafting.InventoryObject.*;
+import game.player.Player.getCurrentInventorySelection;
+import game.player.Player.resetPlayerInputs;
+import game.player.WieldHand.resetWieldHandSetupTrigger;
 
 final public class InventoryLogic {
 
-    private static String oldSelection;
+    private String oldSelection;
 
-    private static final Vector3f playerRot = new Vector3f(0,0,0);
+    private final Vector3f playerRot = new Vector3f(0,0,0);
 
-    private static boolean leftMouseButtonPushed = false;
-    private static boolean leftMouseButtonWasPushed = false;
-    private static boolean rightMouseButtonPushed = false;
-    private static boolean rightMouseButtonWasPushed = false;
+    private boolean leftMouseButtonPushed = false;
+    private boolean leftMouseButtonWasPushed = false;
+    private boolean rightMouseButtonPushed = false;
+    private boolean rightMouseButtonWasPushed = false;
 
-    private static final String[] inventoryArray = {
+    private final String[] inventoryArray = {
             "main", "smallCraft", "bigCraft", "output", "armor"
     };
 
 
-    public static void inventoryMenuOnTick(){
+    public void inventoryMenuOnTick(){
 
         String itemWielding = getItemInInventory("main",getCurrentInventorySelection(), 0);
 
@@ -328,7 +328,7 @@ final public class InventoryLogic {
         }
     }
 
-    public static void updateCraftingGrid(){
+    public void updateCraftingGrid(){
 
         ObjectIntImmutablePair<String> newItems;
 
@@ -383,7 +383,7 @@ final public class InventoryLogic {
 
     }
 
-    public static void openCraftingInventory(boolean isCraftingTable) {
+    public void openCraftingInventory(boolean isCraftingTable) {
         //inventory closed, open it
         if (!isPlayerInventoryOpen()){
             setMouseLocked(false);
@@ -395,7 +395,7 @@ final public class InventoryLogic {
 
     }
 
-    public static void closeCraftingInventory(){
+    public void closeCraftingInventory(){
         //inventory open, close it
         if (isPlayerInventoryOpen()){
             setMouseLocked(true);
@@ -409,25 +409,25 @@ final public class InventoryLogic {
     }
 
     //mutable - be careful with this
-    public static Vector3f getPlayerHudRotation(){
+    public Vector3f getPlayerHudRotation(){
         return playerRot;
     }
     //immutable
-    public static float getPlayerHudRotationX(){
+    public float getPlayerHudRotationX(){
         return playerRot.x;
     }
     //immutable
-    public static float getPlayerHudRotationY(){
+    public float getPlayerHudRotationY(){
         return playerRot.y;
     }
     //immutable
-    public static float getPlayerHudRotationZ(){
+    public float getPlayerHudRotationZ(){
         return playerRot.z;
     }
 
 
 
-    public static void collideMouseWithInventory(String inventoryName){
+    public void collideMouseWithInventory(String inventoryName){
         double startingPointX = getInventoryPosX(inventoryName);
         double startingPointY = getInventoryPosY(inventoryName);
 

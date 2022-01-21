@@ -5,30 +5,30 @@ import org.joml.Vector3i;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-import static game.chunk.Chunk.chunkStackContainsBlock;
-import static game.chunk.ChunkMeshGenerator.generateChunkMesh;
+import game.chunk.Chunk.chunkStackContainsBlock;
+import game.chunk.ChunkMeshGenerator.generateChunkMesh;
 
 public class ChunkUpdateHandler {
 
     //!!!WARNING!!! This needs to ALWAYS check if value exists, or freeze can occur !!!WARNING!!!
-    private static final ConcurrentLinkedDeque<Vector3i> queue = new ConcurrentLinkedDeque<>();
+    private final ConcurrentLinkedDeque<Vector3i> queue = new ConcurrentLinkedDeque<>();
 
-    public static void chunkUpdate( int x, int z , int y){
+    public void chunkUpdate( int x, int z , int y){
         if (!queue.contains(new Vector3i(x, y, z))) {
             queue.add(new Vector3i(x, y, z));
         }
     }
 
-    private static final Random random = new Random();
+    private final Random random = new Random();
 
-    //private static final float goalTimer = 0.0003f;
+    //private final float goalTimer = 0.0003f;
 
-    //private static float chunkUpdateTimer = 0f;
+    //private float chunkUpdateTimer = 0f;
 
     //todo: make this interact with the updates button in the menu
-    private static final int MAX_UPDATES_PER_FRAME = 200;
+    private final int MAX_UPDATES_PER_FRAME = 200;
 
-    public static void chunkUpdater() {
+    public void chunkUpdater() {
 
         //chunkUpdateTimer += getDelta();
         //int updateAmount = 0;

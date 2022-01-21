@@ -2,19 +2,19 @@ package game.entity.mob;
 
 import org.joml.Vector3d;
 
-import static engine.FancyMath.randomByte;
-import static engine.FancyMath.randomIntFromMinToMaxNegativePositive;
-import static engine.time.Delta.getDelta;
-import static game.chunk.Chunk.getMobSpawnYPos;
+import engine.FancyMath.randomByte;
+import engine.FancyMath.randomIntFromMinToMaxNegativePositive;
+import engine.time.Delta.getDelta;
+import game.chunk.Chunk.getMobSpawnYPos;
 
-import static game.player.Player.getPlayerPos;
+import game.player.Player.getPlayerPos;
 
 public class MobSpawning {
-    private static final int spawnLimit = 20;
-    private static double spawnTimer = 1f;
-    private static final float spawnGoal = 3f; //every 3 seconds
+    private final int spawnLimit = 20;
+    private double spawnTimer = 1f;
+    private final float spawnGoal = 3f; //every 3 seconds
 
-    public static void runSpawningAlgorithm(){
+    public void runSpawningAlgorithm(){
         if (MobObject.getNumberOfMobs() >= spawnLimit){
             return;
         }
@@ -30,7 +30,7 @@ public class MobSpawning {
 
 
     //this is a square distance, acceptable is 24-56 blocks away from the player
-    private static void trySpawn(Vector3d pos){
+    private void trySpawn(Vector3d pos){
         //a 2d calculation
         int x = (int)pos.x + randomIntFromMinToMaxNegativePositive(24,56);
         int z = (int)pos.z + randomIntFromMinToMaxNegativePositive(24,56);

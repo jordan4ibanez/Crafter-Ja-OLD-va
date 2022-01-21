@@ -7,17 +7,17 @@ import it.unimi.dsi.fastutil.objects.ObjectIntImmutablePair;
 import java.util.Arrays;
 import java.util.Objects;
 
-import static game.crafting.Inventory.isAtCraftingBench;
-import static game.crafting.InventoryObject.getInventoryAsArray;
+import game.crafting.Inventory.isAtCraftingBench;
+import game.crafting.InventoryObject.getInventoryAsArray;
 
 final public class CraftRecipes {
-    private static final Int2ObjectArrayMap<String> output = new Int2ObjectArrayMap<>();
-    private static final Int2ObjectArrayMap<String[][]> recipe = new Int2ObjectArrayMap<>();
-    private static final Int2IntArrayMap amountOutput = new Int2IntArrayMap();
+    private final Int2ObjectArrayMap<String> output = new Int2ObjectArrayMap<>();
+    private final Int2ObjectArrayMap<String[][]> recipe = new Int2ObjectArrayMap<>();
+    private final Int2IntArrayMap amountOutput = new Int2IntArrayMap();
 
-    private static int count = 0;
+    private int count = 0;
 
-    private final static String[] materials = new String[]{
+    private final String[] materials = new String[]{
             "wood",
             "stone",
             "iron",
@@ -30,7 +30,7 @@ final public class CraftRecipes {
     };
 
     //craft recipe initializer
-    public static void registerCraftRecipes(){
+    public void registerCraftRecipes(){
 
         //everything is case-sensitive
 
@@ -179,7 +179,7 @@ final public class CraftRecipes {
     //pre-pattern every recipe because I'm horrible at pattern matching
     //this is absolute brute force, do not use this after alpha unless can't figure out a better way
     //this consumes memory, kb, but still memory
-    private static void generateRecipe(String[][] newRecipe, String newOutput, int newAmount) {
+    private void generateRecipe(String[][] newRecipe, String newOutput, int newAmount) {
         int widthX = 0;
         int widthY = newRecipe.length;
 
@@ -252,7 +252,7 @@ final public class CraftRecipes {
     }
 
     //this is a debug output now
-    private static void printAmountOfRecipes(){
+    private void printAmountOfRecipes(){
         /*
         System.out.println(output + " created " + count + " recipes!");
         System.out.println(Arrays.deepToString(recipe.values().toArray()));
@@ -268,7 +268,7 @@ final public class CraftRecipes {
     }
 
 
-    public static ObjectIntImmutablePair<String> recipeScan(String inventory){
+    public ObjectIntImmutablePair<String> recipeScan(String inventory){
 
         ObjectIntImmutablePair<String> returningRecipe = null;
 

@@ -13,19 +13,19 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Random;
 
-import static engine.MouseInput.*;
-import static engine.Window.*;
-import static engine.disk.Disk.setCurrentActiveWorld;
-import static engine.disk.Disk.worldSize;
-import static engine.gui.GUILogic.doGUIMouseCollisionDetection;
-import static engine.gui.TextHandling.createTextCentered;
-import static engine.network.Networking.*;
-import static engine.scene.SceneHandler.setScene;
-import static engine.settings.Settings.*;
-import static engine.sound.SoundAPI.playMusic;
-import static engine.sound.SoundAPI.playSound;
-import static game.player.Player.setPlayerName;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
+import engine.MouseInput.*;
+import engine.Window.*;
+import engine.disk.Disk.setCurrentActiveWorld;
+import engine.disk.Disk.worldSize;
+import engine.gui.GUILogic.doGUIMouseCollisionDetection;
+import engine.gui.TextHandling.createTextCentered;
+import engine.network.Networking.*;
+import engine.scene.SceneHandler.setScene;
+import engine.settings.Settings.*;
+import engine.sound.SoundAPI.playMusic;
+import engine.sound.SoundAPI.playSound;
+import game.player.Player.setPlayerName;
+import org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
 
 public class MainMenu {

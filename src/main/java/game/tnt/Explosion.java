@@ -2,19 +2,19 @@ package game.tnt;
 
 import org.joml.Vector3d;
 
-import static engine.FancyMath.getDistance;
-import static engine.sound.SoundAPI.playSound;
-import static game.blocks.BlockDefinition.getBlockName;
-import static game.chunk.Chunk.getBlock;
-import static game.chunk.Chunk.setBlock;
-import static game.entity.item.ItemEntity.throwItem;
-import static game.light.Light.lightFloodFill;
-import static game.tnt.TNTEntity.createTNT;
+import engine.FancyMath.getDistance;
+import engine.sound.SoundAPI.playSound;
+import game.blocks.BlockDefinition.getBlockName;
+import game.chunk.Chunk.getBlock;
+import game.chunk.Chunk.setBlock;
+import game.entity.item.ItemEntity.throwItem;
+import game.light.Light.lightFloodFill;
+import game.tnt.TNTEntity.createTNT;
 
 public class Explosion {
 
     //todo: document this better
-    public static void boom(Vector3d pos, int boomDistance) {
+    public void boom(Vector3d pos, int boomDistance) {
         playSound("tnt_explode", pos.x, pos.y, pos.z, false);
         
         for (int x = (int)Math.floor(pos.x) - boomDistance; x < (int)Math.floor(pos.x) + boomDistance; x++) {

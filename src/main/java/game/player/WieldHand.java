@@ -3,16 +3,16 @@ package game.player;
 import org.joml.*;
 import org.joml.Math;
 
-import static engine.graphics.Camera.getCameraRotation;
-import static engine.sound.SoundAPI.playSound;
-import static engine.time.Delta.getDelta;
-import static game.blocks.BlockDefinition.getDigSound;
-import static game.chunk.Chunk.getBlock;
-import static game.crafting.InventoryObject.getItemInInventory;
-import static game.entity.item.ItemDefinition.getIfItem;
-import static game.entity.item.ItemDefinition.itemIsBlock;
-import static game.player.Player.*;
-import static game.player.ViewBobbing.getPlayerViewBobbing;
+import engine.graphics.Camera.getCameraRotation;
+import engine.sound.SoundAPI.playSound;
+import engine.time.Delta.getDelta;
+import game.blocks.BlockDefinition.getDigSound;
+import game.chunk.Chunk.getBlock;
+import game.crafting.InventoryObject.getItemInInventory;
+import game.entity.item.ItemDefinition.getIfItem;
+import game.entity.item.ItemDefinition.itemIsBlock;
+import game.player.Player.*;
+import game.player.ViewBobbing.getPlayerViewBobbing;
 
 final public class WieldHand {
 
@@ -20,45 +20,45 @@ final public class WieldHand {
     //x - horizontal
     //y - vertical
     //These are the base positions of holding different types of items
-    private static final Vector3f wieldHandAnimationPosEmpty = new Vector3f(14, -20, -16f);
-    private static final Vector3f wieldHandAnimationPosBlock = new Vector3f(12, -16, -14f);
-    private static final Vector3f wieldHandAnimationPosItem = new Vector3f(9, -8, -7f);
+    private final Vector3f wieldHandAnimationPosEmpty = new Vector3f(14, -20, -16f);
+    private final Vector3f wieldHandAnimationPosBlock = new Vector3f(12, -16, -14f);
+    private final Vector3f wieldHandAnimationPosItem = new Vector3f(9, -8, -7f);
 
     //this is the animation beginning and ending
-    private static final Vector3f wieldRotationEmptyBegin = radianVector3f(135, 75, 20); //empty
-    private static final Vector3f wieldRotationEmptyEnd = radianVector3f(110, 75, -20);
+    private final Vector3f wieldRotationEmptyBegin = radianVector3f(135, 75, 20); //empty
+    private final Vector3f wieldRotationEmptyEnd = radianVector3f(110, 75, -20);
 
-    private static final Vector3f wieldRotationBlockBegin = radianVector3f(0f, 45f, 0f); //block
-    private static final Vector3f wieldRotationBlockEnd   = radianVector3f(-75f, 45f, 0f);
+    private final Vector3f wieldRotationBlockBegin = radianVector3f(0f, 45f, 0f); //block
+    private final Vector3f wieldRotationBlockEnd   = radianVector3f(-75f, 45f, 0f);
 
-    private static final Vector3f wieldRotationItemBegin = radianVector3f(-30f, -75, 0f); //item/tool
-    private static final Vector3f wieldRotationItemEnd   = radianVector3f(-70, -75, 0f);
+    private final Vector3f wieldRotationItemBegin = radianVector3f(-30f, -75, 0f); //item/tool
+    private final Vector3f wieldRotationItemEnd   = radianVector3f(-70, -75, 0f);
 
     //These are the actual realtime values of where the hand is
-    private static final Vector3f wieldHandAnimationPos = new Vector3f(0, 0, 0);
-    private static final Vector3f wieldHandAnimationRot = new Vector3f(0, 0, 0);
+    private final Vector3f wieldHandAnimationPos = new Vector3f(0, 0, 0);
+    private final Vector3f wieldHandAnimationRot = new Vector3f(0, 0, 0);
 
-    private static final Vector3d doubledHandAnimationPos = new Vector3d();
+    private final Vector3d doubledHandAnimationPos = new Vector3d();
 
-    private static float diggingAnimation = 0f;
+    private float diggingAnimation = 0f;
 
-    private static final Vector3d handInertia = new Vector3d(0,0,0);
+    private final Vector3d handInertia = new Vector3d(0,0,0);
 
 
-    private static boolean diggingAnimationGo = false;
-    private static boolean diggingAnimationBuffer = false;
-    private static boolean handSetUp = false;
+    private boolean diggingAnimationGo = false;
+    private boolean diggingAnimationBuffer = false;
+    private boolean handSetUp = false;
 
-    private static float oldYaw = 0;
+    private float oldYaw = 0;
 
-    private static final float doublePi = (float)Math.PI * 2f;
+    private final float doublePi = (float)Math.PI * 2f;
 
-    public static void resetWieldHandSetupTrigger(){
+    public void resetWieldHandSetupTrigger(){
         handSetUp = false;
     }
-    private static boolean soundTrigger = true;
+    private boolean soundTrigger = true;
 
-    public static void testPlayerDiggingAnimation(){
+    public void testPlayerDiggingAnimation(){
         if (!diggingAnimationGo && handSetUp && diggingAnimation == 0f){
             return;
         }
@@ -120,48 +120,48 @@ final public class WieldHand {
 
 
     //mutable - be careful with this
-    public static Vector3d getWieldHandAnimationPos(){
+    public Vector3d getWieldHandAnimationPos(){
         return doubledHandAnimationPos.set(wieldHandAnimationPos.x + handInertia.x - (getPlayerViewBobbing().x * 10f),wieldHandAnimationPos.y + handInertia.y + (getPlayerViewBobbing().y * 10f),wieldHandAnimationPos.z);
     }
     //immutable
-    public static double getWieldHandAnimationPosX(){
+    public double getWieldHandAnimationPosX(){
         return wieldHandAnimationPos.x + handInertia.x - (getPlayerViewBobbing().x * 10f);
     }
     //immutable
-    public static double getWieldHandAnimationPosY(){
+    public double getWieldHandAnimationPosY(){
         return wieldHandAnimationPos.y + handInertia.y + (getPlayerViewBobbing().y * 10f);
     }
     //immutable
-    public static double getWieldHandAnimationPosZ(){
+    public double getWieldHandAnimationPosZ(){
         return wieldHandAnimationPos.z;
     }
 
     //mutable - be careful with this
-    public static Vector3f getWieldHandAnimationRot(){
+    public Vector3f getWieldHandAnimationRot(){
         return wieldHandAnimationRot;
     }
     //immutable
-    public static float getWieldHandAnimationRotX(){
+    public float getWieldHandAnimationRotX(){
         return wieldHandAnimationRot.x;
     }
     //immutable
-    public static float getWieldHandAnimationRotY(){
+    public float getWieldHandAnimationRotY(){
         return wieldHandAnimationRot.y;
     }
     //immutable
-    public static float getWieldHandAnimationRotZ(){
+    public float getWieldHandAnimationRotZ(){
         return wieldHandAnimationRot.z;
     }
 
 
 
-    public static void startDiggingAnimation(){
+    public void startDiggingAnimation(){
         diggingAnimationGo = true;
         diggingAnimationBuffer = true;
     }
 
 
-    public static void updatePlayerHandInertia(){
+    public void updatePlayerHandInertia(){
 
         double delta = getDelta();
 
@@ -227,7 +227,7 @@ final public class WieldHand {
     }
 
     //a quick auto converter for laziness sake
-    private static Vector3f radianVector3f(float angleX, float angleY, float angleZ){
+    private Vector3f radianVector3f(float angleX, float angleY, float angleZ){
         return new Vector3f(Math.toRadians(angleX), Math.toRadians(angleY), Math.toRadians(angleZ));
     }
 }

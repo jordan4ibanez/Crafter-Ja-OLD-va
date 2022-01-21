@@ -7,11 +7,11 @@ import org.joml.Vector3f;
 
 import java.util.ArrayList;
 
-import static engine.FancyMath.randomForceValue;
-import static engine.sound.SoundAPI.playSound;
-import static engine.time.Delta.getDelta;
-import static game.entity.collision.Collision.applyInertia;
-import static game.tnt.Explosion.boom;
+import engine.FancyMath.randomForceValue;
+import engine.sound.SoundAPI.playSound;
+import engine.time.Delta.getDelta;
+import game.entity.collision.Collision.applyInertia;
+import game.tnt.Explosion.boom;
 
 public class TNTEntity {
 
@@ -20,22 +20,22 @@ public class TNTEntity {
     //TODO: REWRITE THIS IMMEDIATELY FOR 0.07
 
 
-    private final static float tntSize = 0.5f;
-    private final static int MAX_ID_AMOUNT = 126_000;
-    private static int totalTNT = 0;
+    private final float tntSize = 0.5f;
+    private final int MAX_ID_AMOUNT = 126_000;
+    private int totalTNT = 0;
     //TODO: pseudo object holder
-    private static Mesh mesh;
-    private static final Vector3d[] tntPos = new Vector3d[MAX_ID_AMOUNT];
-    private static final Vector3d[] tntScale = new Vector3d[MAX_ID_AMOUNT];
-    private static final float[] tntTimer =    new float[MAX_ID_AMOUNT];
-    private static final boolean[] tntExists =    new boolean[MAX_ID_AMOUNT];
-    private static final Vector3f[] tntInertia = new Vector3f[MAX_ID_AMOUNT];
+    private Mesh mesh;
+    private final Vector3d[] tntPos = new Vector3d[MAX_ID_AMOUNT];
+    private final Vector3d[] tntScale = new Vector3d[MAX_ID_AMOUNT];
+    private final float[] tntTimer =    new float[MAX_ID_AMOUNT];
+    private final boolean[] tntExists =    new boolean[MAX_ID_AMOUNT];
+    private final Vector3f[] tntInertia = new Vector3f[MAX_ID_AMOUNT];
 
-    public static int getTotalTNT(){
+    public int getTotalTNT(){
         return totalTNT;
     }
 
-    public static void createTNT(double posX, double posY, double posZ){
+    public void createTNT(double posX, double posY, double posZ){
         posX += 0.5f;
         //pos.y += 0.5f;
         posZ += 0.5f;
@@ -48,7 +48,7 @@ public class TNTEntity {
         System.out.println("Created new TNT. Total TNT: " + totalTNT);
     }
 
-    public static void createTNT(double posX, double posY, double posZ, float timer, boolean punched) {
+    public void createTNT(double posX, double posY, double posZ, float timer, boolean punched) {
         posX += 0.5f;
         //pos.y += 0.5f;
         posZ += 0.5f;
@@ -67,7 +67,7 @@ public class TNTEntity {
         totalTNT++;
     }
 
-    public static void onTNTStep() {
+    public void onTNTStep() {
         double delta = getDelta();
         for (int i = 0; i < totalTNT; i++){
             tntTimer[i] += delta;
@@ -95,7 +95,7 @@ public class TNTEntity {
     }
 
 
-    private static void deleteTNT(int ID){
+    private void deleteTNT(int ID){
         tntPos[ID] = null;
         tntInertia[ID] = null;
         tntExists[ID] = false;
@@ -120,23 +120,23 @@ public class TNTEntity {
 //        System.out.println("A TNT was Deleted. Remaining: " + totalTNT);
     }
 
-    public static Vector3d getTNTScale(int ID){
+    public Vector3d getTNTScale(int ID){
         return tntScale[ID];
     }
 
-    public static Mesh getTNTMesh(){
+    public Mesh getTNTMesh(){
         return mesh;
     }
 
-    public static boolean tntExists(int ID){
+    public boolean tntExists(int ID){
         return tntExists[ID];
     }
 
-    public static Vector3d getTNTPosition(int ID){
+    public Vector3d getTNTPosition(int ID){
         return tntPos[ID];
     }
 
-    public static void createTNTEntityMesh()  {
+    public void createTNTEntityMesh()  {
 
         int indicesCount = 0;
 
@@ -303,7 +303,7 @@ public class TNTEntity {
         mesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, new Texture("textures/textureAtlas.png"));
     }
 
-    //public static void cleanTNTUp(){
+    //public void cleanTNTUp(){
         //mesh.cleanUp(false);
     //}
 }

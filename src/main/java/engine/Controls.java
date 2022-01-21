@@ -1,32 +1,32 @@
 package engine;
 
-import static engine.MouseInput.*;
-import static engine.Window.isKeyPressed;
-import static engine.Window.toggleFullScreen;
-import static engine.graphics.Camera.getCameraPerspective;
-import static engine.graphics.Camera.toggleCameraPerspective;
-import static engine.gui.GUILogic.*;
-import static engine.network.Networking.getIfMultiplayer;
-import static engine.settings.Settings.*;
-import static game.crafting.Inventory.*;
-import static game.crafting.InventoryLogic.closeCraftingInventory;
-import static game.crafting.InventoryLogic.openCraftingInventory;
-import static game.player.Player.*;
-import static game.player.WieldHand.startDiggingAnimation;
-import static org.lwjgl.glfw.GLFW.*;
+import engine.MouseInput.*;
+import engine.Window.isKeyPressed;
+import engine.Window.toggleFullScreen;
+import engine.graphics.Camera.getCameraPerspective;
+import engine.graphics.Camera.toggleCameraPerspective;
+import engine.gui.GUILogic.*;
+import engine.network.Networking.getIfMultiplayer;
+import engine.settings.Settings.*;
+import game.crafting.Inventory.*;
+import game.crafting.InventoryLogic.closeCraftingInventory;
+import game.crafting.InventoryLogic.openCraftingInventory;
+import game.player.Player.*;
+import game.player.WieldHand.startDiggingAnimation;
+import org.lwjgl.glfw.GLFW.*;
 
 public class Controls {
 
-    private static boolean throwButtonPushed = false;
-    private static boolean inventoryButtonPushed = false;
-    private static boolean F11Pushed           = false;
-    private static boolean escapePushed        = false;
-    private static boolean F3Pushed            = false;
-    private static boolean F5Pushed = false;
-    private static boolean chatButtonPushed = false;
-    private static boolean enterPushed = false;
+    private boolean throwButtonPushed = false;
+    private boolean inventoryButtonPushed = false;
+    private boolean F11Pushed           = false;
+    private boolean escapePushed        = false;
+    private boolean F3Pushed            = false;
+    private boolean F5Pushed = false;
+    private boolean chatButtonPushed = false;
+    private boolean enterPushed = false;
 
-    public static void gameInput() {
+    public void gameInput() {
 
         if (!isPlayerInventoryOpen() && !isPaused() && !isChatOpen()) {
             //normal inputs
@@ -183,7 +183,7 @@ public class Controls {
     }
 
 
-    public static void mainMenuInput(){
+    public void mainMenuInput(){
         if (isKeyPressed(GLFW_KEY_F11)) {
             if (!F11Pushed) {
                 F11Pushed = true;

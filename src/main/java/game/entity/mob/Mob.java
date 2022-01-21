@@ -7,23 +7,23 @@ import org.joml.Vector3i;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-import static engine.sound.SoundAPI.playSound;
-import static engine.time.Delta.getDelta;
-import static game.chunk.Chunk.getLight;
-import static game.entity.collision.MobCollision.mobSoftCollisionDetect;
-import static game.entity.collision.MobCollision.mobSoftPlayerCollisionDetect;
-import static game.entity.mob.MobDefinition.*;
-import static game.entity.mob.MobObject.*;
+import engine.sound.SoundAPI.playSound;
+import engine.time.Delta.getDelta;
+import game.chunk.Chunk.getLight;
+import game.entity.collision.MobCollision.mobSoftCollisionDetect;
+import game.entity.collision.MobCollision.mobSoftPlayerCollisionDetect;
+import game.entity.mob.MobDefinition.*;
+import game.entity.mob.MobObject.*;
 
 //runs on main thread
 final public class Mob {
 
 
-    private static final Deque<Integer> deletionQueue = new ArrayDeque<>();
+    private final Deque<Integer> deletionQueue = new ArrayDeque<>();
 
-    private static final Vector3i currentFlooredPos = new Vector3i();
+    private final Vector3i currentFlooredPos = new Vector3i();
 
-    public static void mobsOnTick(){
+    public void mobsOnTick(){
 
         double delta = getDelta();
 
@@ -121,7 +121,7 @@ final public class Mob {
     }
 
 
-    public static void punchMob(int thisMob){
+    public void punchMob(int thisMob){
 
         float thisMobHurtTimer = getMobHurtTimer(thisMob);
         byte thisMobHealth = getMobHealth(thisMob);

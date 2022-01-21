@@ -6,26 +6,26 @@ import org.joml.Vector2f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import static engine.FancyMath.randomDirFloat;
-import static engine.time.Delta.getDelta;
-import static game.chunk.Chunk.getBlock;
-import static game.entity.collision.Collision.applyInertia;
-import static game.entity.mob.MobDefinition.*;
-import static game.entity.mob.MobMeshBuilder.calculateMobTexture;
-import static game.entity.mob.MobMeshBuilder.createMobMesh;
-import static game.entity.mob.MobObject.*;
-import static game.entity.mob.MobUtilityCode.doHeadCode;
-import static game.entity.mob.MobUtilityCode.mobSmoothRotation;
-import static game.tnt.Explosion.boom;
+import engine.FancyMath.randomDirFloat;
+import engine.time.Delta.getDelta;
+import game.chunk.Chunk.getBlock;
+import game.entity.collision.Collision.applyInertia;
+import game.entity.mob.MobDefinition.*;
+import game.entity.mob.MobMeshBuilder.calculateMobTexture;
+import game.entity.mob.MobMeshBuilder.createMobMesh;
+import game.entity.mob.MobObject.*;
+import game.entity.mob.MobUtilityCode.doHeadCode;
+import game.entity.mob.MobUtilityCode.mobSmoothRotation;
+import game.tnt.Explosion.boom;
 
 public class Exploder {
 
-    private static final float accelerationMultiplier  = 0.03f;
-    final private static float maxWalkSpeed = 2.f;
-    final private static float movementAcceleration = 900.f;
-    private static final Vector2f workerVector2f = new Vector2f();
+    private final float accelerationMultiplier  = 0.03f;
+    final private float maxWalkSpeed = 2.f;
+    final private float movementAcceleration = 900.f;
+    private final Vector2f workerVector2f = new Vector2f();
 
-    private final static MobInterface mobInterface = new MobInterface() {
+    private final MobInterface mobInterface = new MobInterface() {
         @Override
         public void onDeath(int thisMob) {
             Vector3d thisPos = getMobPos(thisMob);
@@ -134,9 +134,9 @@ public class Exploder {
         }
     };
 
-    private static final float yOffsetCorrection = 0.1525f;
+    private final float yOffsetCorrection = 0.1525f;
 
-    private static final Vector3f[] bodyOffsets = new Vector3f[]{
+    private final Vector3f[] bodyOffsets = new Vector3f[]{
             new Vector3f(0,0.985f + yOffsetCorrection,0),
             new Vector3f(0,0.985f + yOffsetCorrection,0),
 
@@ -150,7 +150,7 @@ public class Exploder {
 
     };
 
-    private static final Vector3f[] bodyRotations = new Vector3f[]{
+    private final Vector3f[] bodyRotations = new Vector3f[]{
             new Vector3f(0,0,0), //head
             new Vector3f(0,0,0), //body
 
@@ -161,12 +161,12 @@ public class Exploder {
             new Vector3f(0,0,0), //front left leg
     };
 
-    public static void registerExploderMob(){
+    public void registerExploderMob(){
         registerMob("exploder", "hurt",true, (byte) 7, createMesh(), bodyOffsets, bodyRotations,1.9f, 0.25f, mobInterface);
     }
 
 
-    private static Mesh[] createMesh(){
+    private Mesh[] createMesh(){
         final float modelScale = 0.325f; //lazy way to fix
 
         final float[][][] modelPieceArray = new float[][][]{

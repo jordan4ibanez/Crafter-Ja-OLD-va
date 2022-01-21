@@ -9,25 +9,25 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class OtherPlayers {
 
-    private static final ConcurrentLinkedDeque<PlayerPosObject> playerUpdates = new ConcurrentLinkedDeque<>();
+    private final ConcurrentLinkedDeque<PlayerPosObject> playerUpdates = new ConcurrentLinkedDeque<>();
 
-    private static final Int2ObjectArrayMap<PlayerObject> otherPlayers = new Int2ObjectArrayMap<>();
+    private final Int2ObjectArrayMap<PlayerObject> otherPlayers = new Int2ObjectArrayMap<>();
 
-    public static Object[] getOtherPlayers(){
+    public Object[] getOtherPlayers(){
         return otherPlayers.values().toArray();
     }
 
 
-    public static void cleanOtherPLayerMemory(){
+    public void cleanOtherPLayerMemory(){
         playerUpdates.clear();
         otherPlayers.clear();
     }
 
-    public static void addNewPlayerUpdateData(PlayerPosObject playerPosObject){
+    public void addNewPlayerUpdateData(PlayerPosObject playerPosObject){
         playerUpdates.add(playerPosObject);
     }
 
-    public static void popPlayerUpdateQueue(){
+    public void popPlayerUpdateQueue(){
         while (!playerUpdates.isEmpty()){
             PlayerPosObject update = playerUpdates.pop();
             if (update != null){
@@ -36,7 +36,7 @@ public class OtherPlayers {
         }
     }
 
-    public static void updateOtherPlayer(PlayerPosObject thisPlayerObject){
+    public void updateOtherPlayer(PlayerPosObject thisPlayerObject){
         //create new PlayerObject
         if (otherPlayers.get(thisPlayerObject.ID) == null){
             PlayerObject newPlayer = new PlayerObject();

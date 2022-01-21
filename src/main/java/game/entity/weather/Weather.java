@@ -7,15 +7,15 @@ import org.joml.Vector3f;
 
 import java.util.*;
 
-import static game.entity.collision.ParticleCollision.applyParticleInertia;
+import game.entity.collision.ParticleCollision.applyParticleInertia;
 
 public class Weather {
-    private final static Map<Integer, RainDropEntity> rainDrops = new HashMap<>();
-    private final static Deque<Integer> deletionQueue = new ArrayDeque<>();
-    private static final Mesh rainDropMesh = createRainDropMesh();
-    private static int currentID = 0;
+    private final Map<Integer, RainDropEntity> rainDrops = new HashMap<>();
+    private final Deque<Integer> deletionQueue = new ArrayDeque<>();
+    private final Mesh rainDropMesh = createRainDropMesh();
+    private int currentID = 0;
 
-    public static void rainDropsOnTick(){
+    public void rainDropsOnTick(){
         for (RainDropEntity thisParticle : rainDrops.values()){
             boolean onGround = applyParticleInertia(thisParticle.pos, thisParticle.inertia, true,true);
             thisParticle.timer += 0.01f;
@@ -29,21 +29,21 @@ public class Weather {
         }
     }
 
-    public static void createRainDrop(Vector3d pos, Vector3f inertia){
+    public void createRainDrop(Vector3d pos, Vector3f inertia){
         rainDrops.put(currentID, new RainDropEntity(pos, inertia, currentID));
         currentID++;
     }
 
 
-    public static Collection<RainDropEntity> getRainDrops(){
+    public Collection<RainDropEntity> getRainDrops(){
         return rainDrops.values();
     }
 
-    public static Mesh getRainDropMesh(){
+    public Mesh getRainDropMesh(){
         return rainDropMesh;
     }
 
-    private static Mesh createRainDropMesh() {
+    private Mesh createRainDropMesh() {
         float pixelScale = 0.25f;
 
         ArrayList<Float> positions = new ArrayList<>();

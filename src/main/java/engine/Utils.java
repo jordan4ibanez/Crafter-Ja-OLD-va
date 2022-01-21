@@ -16,12 +16,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
-import static org.lwjgl.BufferUtils.createByteBuffer;
+import org.lwjgl.BufferUtils.createByteBuffer;
 
 public class Utils {
 
     //load plain text file - external from JAR
-    public static String loadResource(String fileName){
+    public String loadResource(String fileName){
         File text = new File(fileName);
         Scanner scanner = null;
         try {
@@ -34,7 +34,7 @@ public class Utils {
     }
 
     //save string as plain text - external from JAR
-    public static void saveResource(String fileName, String data) throws IOException{
+    public void saveResource(String fileName, String data) throws IOException{
         FileWriter writer = new FileWriter(fileName);
         
         try (BufferedWriter bufferedWriter = new BufferedWriter(writer)) {
@@ -43,7 +43,7 @@ public class Utils {
     }
 
     //internal to JAR - needs refactor
-    public static List<String> readAllLines(String fileName) throws Exception {
+    public List<String> readAllLines(String fileName) throws Exception {
         List<String> list = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(Objects.requireNonNull(Class.forName(Utils.class.getName()).getResourceAsStream(fileName))))) {
             String line;
@@ -54,7 +54,7 @@ public class Utils {
         return list;
     }
 
-    public static float[] listToArray(List<Float> list) {
+    public float[] listToArray(List<Float> list) {
         int size = list != null ? list.size() : 0;
         
         assert list != null;
@@ -67,7 +67,7 @@ public class Utils {
     }
 
     @SuppressWarnings("empty-statement")
-    public static ByteBuffer ioResourceToByteBuffer(String resource, int bufferSize) throws IOException{
+    public ByteBuffer ioResourceToByteBuffer(String resource, int bufferSize) throws IOException{
         ByteBuffer buffer;
 
         Path path = Paths.get(resource);
@@ -98,7 +98,7 @@ public class Utils {
         return buffer;
     }
 
-    private static ByteBuffer resizeBuffer(ByteBuffer buffer, int newCapacity){
+    private ByteBuffer resizeBuffer(ByteBuffer buffer, int newCapacity){
         ByteBuffer newBuffer = BufferUtils.createByteBuffer(newCapacity);
         buffer.flip();
         newBuffer.put(buffer);

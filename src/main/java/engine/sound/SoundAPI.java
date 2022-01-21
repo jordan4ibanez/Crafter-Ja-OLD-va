@@ -2,12 +2,11 @@ package engine.sound;
 
 import org.joml.Math;
 
-import static engine.sound.SoundManager.playSoundSource;
 import static org.lwjgl.openal.AL10.AL_PITCH;
 
 public class SoundAPI {
 
-    public static void playSound(String name, float posX, float posY, float posZ, boolean randomPitch) {
+    public void playSound(String name, float posX, float posY, float posZ, boolean randomPitch) {
         SoundBuffer soundBuffer = null;
         try {
             soundBuffer = new SoundBuffer("sounds/" + name + ".ogg");
@@ -31,7 +30,7 @@ public class SoundAPI {
     //overload for ease of use
     //intakes doubles XYZ and casts to float XYZ
     //precision is lost
-    public static void playSound(String name, double posX, double posY, double posZ, boolean randomPitch) {
+    public void playSound(String name, double posX, double posY, double posZ, boolean randomPitch) {
         SoundBuffer soundBuffer = null;
         try {
             soundBuffer = new SoundBuffer("sounds/" + name + ".ogg");
@@ -55,7 +54,7 @@ public class SoundAPI {
 
 
     //locationless sound playing
-    public static SoundSource playSound(String name) {
+    public SoundSource playSound(String name) {
         SoundBuffer soundBuffer = null;
         try {
             soundBuffer = new SoundBuffer("sounds/" + name + ".ogg");
@@ -74,7 +73,7 @@ public class SoundAPI {
     }
 
     //puts music into the music buffer
-    public static SoundSource playMusic(String name) {
+    public SoundSource playMusic(String name) {
         SoundBuffer soundBuffer = null;
         try {
             soundBuffer = new SoundBuffer("sounds/" + name + ".ogg");
@@ -90,7 +89,7 @@ public class SoundAPI {
     }
 
     //play sound locationless with random pitch?
-    public static void playSound(String name, boolean randomPitch) {
+    public void playSound(String name, boolean randomPitch) {
         SoundBuffer soundBuffer = null;
         try {
             soundBuffer = new SoundBuffer("sounds/" + name + ".ogg");

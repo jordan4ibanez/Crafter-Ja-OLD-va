@@ -1,20 +1,18 @@
 package engine.time;
 
-import static engine.Window.setWindowClearColorGoal;
-import static engine.time.Delta.getDelta;
-import static game.light.Light.setCurrentLightLevel;
+import game.light.Light.setCurrentLightLevel;
 
 public class TimeOfDay {
 
-    private static final double dayCompletion = 86_400d;
+    private final double dayCompletion = 86_400d;
     //3600 per hour, this is messed up maybe?
-    private static double timeOfDay = 21_600; //6am 21_600
+    private double timeOfDay = 21_600; //6am 21_600
 
-    private static double timeSpeed = 72d; //following Minetest wiki - 72 times faster (following time_speed in minetest.conf)
+    private double timeSpeed = 72d; //following Minetest wiki - 72 times faster (following time_speed in minetest.conf)
 
 
-    public static void tickUpTimeOfDay(){
-        timeOfDay += getDelta() * timeSpeed; //this calculation was ridiculous to get
+    public void tickUpTimeOfDay(Delta delta){
+        timeOfDay += delta.getDelta() * timeSpeed; //this calculation was ridiculous to get
 
         triggerNextStage();
 
@@ -23,32 +21,32 @@ public class TimeOfDay {
         }
     }
 
-    public static double getTimeOfDay(){
+    public double getTimeOfDay(){
         return timeOfDay;
     }
 
-    public static double getTimeOfDayLinear(){
+    public double getTimeOfDayLinear(){
         return (timeOfDay/dayCompletion);
     }
 
-    public static int getTimeOfDay24H(){
+    public int getTimeOfDay24H(){
         //add in a 00:00 thing eventually
         return (int) ((timeOfDay/dayCompletion) * 2400);
     }
 
-    public static double getTimeSpeed(){
+    public double getTimeSpeed(){
         return timeSpeed;
     }
 
-    public static void setTimeOfDay(double newTime){
+    public void setTimeOfDay(double newTime){
         timeOfDay = newTime;
     }
 
-    public static void pollTimeOfDay(){
+    public void pollTimeOfDay(){
         triggerNextStage();
     }
 
-    public static void setTimeSpeed(double newSpeed){
+    public void setTimeSpeed(double newSpeed){
         timeSpeed = newSpeed;
     }
 
@@ -89,7 +87,7 @@ public class TimeOfDay {
      */
 
 
-    private static final byte[] dayStageLight = new byte[]{
+    private final byte[] dayStageLight = new byte[]{
             5,  // stage 0
             6,  // stage 1
             7,  // stage 2
@@ -118,7 +116,7 @@ public class TimeOfDay {
 
     //can afford float imprecision
     //get locked until the limit - used as a key - currentLinearTime >= dayStageGoal[x] then flips to next
-    private static final float[] dayStageGoal = new float[]{
+    private final float[] dayStageGoal = new float[]{
             0.25f, // stage 0
             0.26f, // stage 1
             0.27f, // stage 2
@@ -143,7 +141,7 @@ public class TimeOfDay {
     };
 
     //I completely winged these colors :T
-    private static final float[][] skyColors = new float[][]{
+    private final float[][] skyColors = new float[][]{
             {0,   0,    0   },
             { 20, 20,   20  }, // night ends - morning begins
             { 45, 55,   50  },
@@ -167,12 +165,12 @@ public class TimeOfDay {
             { 0,   0,   0   } // night begins
     };
 
-    private static byte currentDayStage = calculateCurrentDayStage();
-    private static float currentDayTimeGoal = dayStageGoal[currentDayStage];
-    private static final byte maxStage = 20;
-    private static byte oldStageLight = 0;
+    private byte currentDayStage = calculateCurrentDayStage();
+    private float currentDayTimeGoal = dayStageGoal[currentDayStage];
+    private final byte maxStage = 20;
+    private byte oldStageLight = 0;
 
-    private static byte calculateCurrentDayStage(){
+    private byte calculateCurrentDayStage(){
         double linearTime = getTimeOfDayLinear();
         for (byte i = 0; i < dayStageGoal.length; i++){
             if (linearTime >= dayStageGoal[i]){
@@ -192,7 +190,7 @@ public class TimeOfDay {
         return (0);
     }
 
-    private static void triggerNextStage(){
+    private void triggerNextStage(){
         double linearTime = getTimeOfDayLinear();
 
         if (currentDayStage != maxStage && linearTime >= currentDayTimeGoal){

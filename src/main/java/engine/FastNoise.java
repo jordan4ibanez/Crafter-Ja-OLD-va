@@ -66,7 +66,7 @@ public class FastNoise {
     }
 
     // Returns a 0 float/double
-    public static float GetDecimalType() {
+    public  float GetDecimalType() {
         return 0;
     }
 
@@ -155,7 +155,7 @@ public class FastNoise {
         m_gradientPerturbAmp = gradientPerturbAmp / (float) 0.45;
     }
 
-    private static class Float2 {
+    private  class Float2 {
         public final float x, y;
 
         public Float2(float x, float y) {
@@ -164,7 +164,7 @@ public class FastNoise {
         }
     }
 
-    private static class Float3 {
+    private  class Float3 {
         public final float x, y, z;
 
         public Float3(float x, float y, float z) {
@@ -174,19 +174,19 @@ public class FastNoise {
         }
     }
 
-    private static final Float2[] GRAD_2D = {
+    private  final Float2[] GRAD_2D = {
             new Float2(-1, -1), new Float2(1, -1), new Float2(-1, 1), new Float2(1, 1),
             new Float2(0, -1), new Float2(-1, 0), new Float2(0, 1), new Float2(1, 0),
     };
 
-    private static final Float3[] GRAD_3D = {
+    private  final Float3[] GRAD_3D = {
             new Float3(1, 1, 0), new Float3(-1, 1, 0), new Float3(1, -1, 0), new Float3(-1, -1, 0),
             new Float3(1, 0, 1), new Float3(-1, 0, 1), new Float3(1, 0, -1), new Float3(-1, 0, -1),
             new Float3(0, 1, 1), new Float3(0, -1, 1), new Float3(0, 1, -1), new Float3(0, -1, -1),
             new Float3(1, 1, 0), new Float3(0, -1, 1), new Float3(-1, 1, 0), new Float3(0, -1, -1),
     };
 
-    private static final Float2[] CELL_2D =
+    private  final Float2[] CELL_2D =
             {
                     new Float2(-0.4313539279f, 0.1281943404f), new Float2(-0.1733316799f, 0.415278375f), new Float2(-0.2821957395f, -0.3505218461f), new Float2(-0.2806473808f, 0.3517627718f), new Float2(0.3125508975f, -0.3237467165f), new Float2(0.3383018443f, -0.2967353402f), new Float2(-0.4393982022f, -0.09710417025f), new Float2(-0.4460443703f, -0.05953502905f),
                     new Float2(-0.302223039f, 0.3334085102f), new Float2(-0.212681052f, -0.3965687458f), new Float2(-0.2991156529f, 0.3361990872f), new Float2(0.2293323691f, 0.3871778202f), new Float2(0.4475439151f, -0.04695150755f), new Float2(0.1777518f, 0.41340573f), new Float2(0.1688522499f, -0.4171197882f), new Float2(-0.0976597166f, 0.4392750616f),
@@ -222,7 +222,7 @@ public class FastNoise {
                     new Float2(0.1198188883f, -0.4337550392f), new Float2(-0.243590703f, 0.3783696201f), new Float2(0.2958191174f, -0.3391033025f), new Float2(-0.1164007991f, 0.4346847754f), new Float2(0.1274037151f, -0.4315881062f), new Float2(0.368047306f, 0.2589231171f), new Float2(0.2451436949f, 0.3773652989f), new Float2(-0.4314509715f, 0.12786735f),
             };
 
-    private static final Float3[] CELL_3D =
+    private  final Float3[] CELL_3D =
             {
                     new Float3(0.1453787434f, -0.4149781685f, -0.0956981749f), new Float3(-0.01242829687f, -0.1457918398f, -0.4255470325f), new Float3(0.2877979582f, -0.02606483451f, -0.3449535616f), new Float3(-0.07732986802f, 0.2377094325f, 0.3741848704f), new Float3(0.1107205875f, -0.3552302079f, -0.2530858567f), new Float3(0.2755209141f, 0.2640521179f, -0.238463215f), new Float3(0.294168941f, 0.1526064594f, 0.3044271714f), new Float3(0.4000921098f, -0.2034056362f, 0.03244149937f),
                     new Float3(-0.1697304074f, 0.3970864695f, -0.1265461359f), new Float3(-0.1483224484f, -0.3859694688f, 0.1775613147f), new Float3(0.2623596946f, -0.2354852944f, 0.2796677792f), new Float3(-0.2709003183f, 0.3505271138f, -0.07901746678f), new Float3(-0.03516550699f, 0.3885234328f, 0.2243054374f), new Float3(-0.1267712655f, 0.1920044036f, 0.3867342179f), new Float3(0.02952021915f, 0.4409685861f, 0.08470692262f), new Float3(-0.2806854217f, -0.266996757f, 0.2289725438f),
@@ -259,32 +259,32 @@ public class FastNoise {
             };
 
 
-    private static int FastFloor(float f) {
+    private  int FastFloor(float f) {
         return (f >= 0 ? (int) f : (int) f - 1);
     }
 
 
-    private static int FastRound(float f) {
+    private  int FastRound(float f) {
         return (f >= 0) ? (int) (f + (float) 0.5) : (int) (f - (float) 0.5);
     }
 
 
-    private static float Lerp(float a, float b, float t) {
+    private  float Lerp(float a, float b, float t) {
         return a + t * (b - a);
     }
 
 
-    private static float InterpHermiteFunc(float t) {
+    private  float InterpHermiteFunc(float t) {
         return t * t * (3 - 2 * t);
     }
 
 
-    private static float InterpQuinticFunc(float t) {
+    private  float InterpQuinticFunc(float t) {
         return t * t * t * (t * (t * 6 - 15) + 10);
     }
 
 
-    private static float CubicLerp(float a, float b, float c, float d, float t) {
+    private  float CubicLerp(float a, float b, float c, float d, float t) {
         float p = (d - c) - (a - b);
         return t * t * t * p + t * t * ((a - b) - p) + t * (c - a) + b;
     }
@@ -300,12 +300,12 @@ public class FastNoise {
     }
 
     // Hashing
-    private final static int X_PRIME = 1619;
-    private final static int Y_PRIME = 31337;
-    private final static int Z_PRIME = 6971;
-    private final static int W_PRIME = 1013;
+    private final  int X_PRIME = 1619;
+    private final  int Y_PRIME = 31337;
+    private final  int Z_PRIME = 6971;
+    private final  int W_PRIME = 1013;
 
-    private static int Hash2D(int seed, int x, int y) {
+    private  int Hash2D(int seed, int x, int y) {
         int hash = seed;
         hash ^= X_PRIME * x;
         hash ^= Y_PRIME * y;
@@ -316,7 +316,7 @@ public class FastNoise {
         return hash;
     }
 
-    private static int Hash3D(int seed, int x, int y, int z) {
+    private  int Hash3D(int seed, int x, int y, int z) {
         int hash = seed;
         hash ^= X_PRIME * x;
         hash ^= Y_PRIME * y;
@@ -328,7 +328,7 @@ public class FastNoise {
         return hash;
     }
 
-    private static int Hash4D(int seed, int x, int y, int z, int w) {
+    private  int Hash4D(int seed, int x, int y, int z, int w) {
         int hash = seed;
         hash ^= X_PRIME * x;
         hash ^= Y_PRIME * y;
@@ -341,7 +341,7 @@ public class FastNoise {
         return hash;
     }
 
-    private static float ValCoord2D(int seed, int x, int y) {
+    private  float ValCoord2D(int seed, int x, int y) {
         int n = seed;
         n ^= X_PRIME * x;
         n ^= Y_PRIME * y;
@@ -349,7 +349,7 @@ public class FastNoise {
         return (n * n * n * 60493) / (float) 2147483648.0;
     }
 
-    private static float ValCoord3D(int seed, int x, int y, int z) {
+    private  float ValCoord3D(int seed, int x, int y, int z) {
         int n = seed;
         n ^= X_PRIME * x;
         n ^= Y_PRIME * y;
@@ -358,7 +358,7 @@ public class FastNoise {
         return (n * n * n * 60493) / (float) 2147483648.0;
     }
 
-    private static float ValCoord4D(int seed, int x, int y, int z, int w) {
+    private  float ValCoord4D(int seed, int x, int y, int z, int w) {
         int n = seed;
         n ^= X_PRIME * x;
         n ^= Y_PRIME * y;
@@ -368,7 +368,7 @@ public class FastNoise {
         return (n * n * n * 60493) / (float) 2147483648.0;
     }
 
-    private static float GradCoord2D(int seed, int x, int y, float xd, float yd) {
+    private  float GradCoord2D(int seed, int x, int y, float xd, float yd) {
         int hash = seed;
         hash ^= X_PRIME * x;
         hash ^= Y_PRIME * y;
@@ -381,7 +381,7 @@ public class FastNoise {
         return xd * g.x + yd * g.y;
     }
 
-    private static float GradCoord3D(int seed, int x, int y, int z, float xd, float yd, float zd) {
+    private  float GradCoord3D(int seed, int x, int y, int z, float xd, float yd, float zd) {
         int hash = seed;
         hash ^= X_PRIME * x;
         hash ^= Y_PRIME * y;
@@ -395,7 +395,7 @@ public class FastNoise {
         return xd * g.x + yd * g.y + zd * g.z;
     }
 
-    private static float GradCoord4D(int seed, int x, int y, int z, int w, float xd, float yd, float zd, float wd) {
+    private  float GradCoord4D(int seed, int x, int y, int z, int w, float xd, float yd, float zd, float wd) {
         int hash = seed;
         hash ^= X_PRIME * x;
         hash ^= Y_PRIME * y;
@@ -1013,9 +1013,9 @@ public class FastNoise {
         return SingleSimplex(m_seed, x * m_frequency, y * m_frequency, z * m_frequency);
     }
 
-    private final static float F3 = (float) (1.0 / 3.0);
-    private final static float G3 = (float) (1.0 / 6.0);
-    private final static float G33 = G3 * 3 - 1;
+    private final  float F3 = (float) (1.0 / 3.0);
+    private final  float G3 = (float) (1.0 / 6.0);
+    private final  float G33 = G3 * 3 - 1;
 
     private float SingleSimplex(int seed, float x, float y, float z) {
         float t = (x + y + z) * F3;
@@ -1188,12 +1188,12 @@ public class FastNoise {
         return SingleSimplex(m_seed, x * m_frequency, y * m_frequency);
     }
 
-    //private final static float F2 = (float) (1.0 / 2.0);
-    //private final static float G2 = (float) (1.0 / 4.0);
+    //private final  float F2 = (float) (1.0 / 2.0);
+    //private final  float G2 = (float) (1.0 / 4.0);
 
-    private final static float SQRT3 = (float) 1.7320508075688772935274463415059;
-    private final static float F2 = 0.5f * (SQRT3 - 1.0f);
-    private final static float G2 = (3.0f - SQRT3) / 6.0f;
+    private final  float SQRT3 = (float) 1.7320508075688772935274463415059;
+    private final  float F2 = 0.5f * (SQRT3 - 1.0f);
+    private final  float G2 = (3.0f - SQRT3) / 6.0f;
 
     private float SingleSimplex(int seed, float x, float y) {
         float t = (x + y) * F2;
@@ -1251,7 +1251,7 @@ public class FastNoise {
         return SingleSimplex(m_seed, x * m_frequency, y * m_frequency, z * m_frequency, w * m_frequency);
     }
 
-    private static final byte[] SIMPLEX_4D =
+    private  final byte[] SIMPLEX_4D =
             {
                     0, 1, 2, 3, 0, 1, 3, 2, 0, 0, 0, 0, 0, 2, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 0,
                     0, 2, 1, 3, 0, 0, 0, 0, 0, 3, 1, 2, 0, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 2, 0,
@@ -1263,8 +1263,8 @@ public class FastNoise {
                     2, 1, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 1, 0, 2, 0, 0, 0, 0, 3, 2, 0, 1, 3, 2, 1, 0
             };
 
-    private final static float F4 = (float) ((2.23606797 - 1.0) / 4.0);
-    private final static float G4 = (float) ((5.0 - 2.23606797) / 20.0);
+    private final  float F4 = (float) ((2.23606797 - 1.0) / 4.0);
+    private final  float G4 = (float) ((5.0 - 2.23606797) / 20.0);
 
     private float SingleSimplex(int seed, float x, float y, float z, float w) {
         float n0, n1, n2, n3, n4;
@@ -1426,7 +1426,7 @@ public class FastNoise {
         return SingleCubic(m_seed, x * m_frequency, y * m_frequency, z * m_frequency);
     }
 
-    private final static float CUBIC_3D_BOUNDING = 1 / (float) (1.5 * 1.5 * 1.5);
+    private final  float CUBIC_3D_BOUNDING = 1 / (float) (1.5 * 1.5 * 1.5);
 
     private float SingleCubic(int seed, float x, float y, float z) {
         int x1 = FastFloor(x);
@@ -1545,7 +1545,7 @@ public class FastNoise {
         return SingleCubic(0, x, y);
     }
 
-    private final static float CUBIC_2D_BOUNDING = 1 / (float) (1.5 * 1.5);
+    private final  float CUBIC_2D_BOUNDING = 1 / (float) (1.5 * 1.5);
 
     private float SingleCubic(int seed, float x, float y) {
         int x1 = FastFloor(x);

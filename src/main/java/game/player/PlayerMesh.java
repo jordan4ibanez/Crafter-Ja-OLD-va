@@ -4,24 +4,24 @@ import engine.graphics.Mesh;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-import static engine.time.Delta.getDelta;
-import static game.entity.mob.MobMeshBuilder.calculateMobTexture;
-import static game.entity.mob.MobMeshBuilder.createMobMesh;
-import static game.player.Player.getPlayerInertiaX;
-import static game.player.Player.getPlayerInertiaZ;
+import engine.time.Delta.getDelta;
+import game.entity.mob.MobMeshBuilder.calculateMobTexture;
+import game.entity.mob.MobMeshBuilder.createMobMesh;
+import game.player.Player.getPlayerInertiaX;
+import game.player.Player.getPlayerInertiaZ;
 
 public class PlayerMesh {
 
     //this is auto constructed
-    private final static Mesh[] bodyMeshes = createMesh();
+    private final Mesh[] bodyMeshes = createMesh();
 
-    private static float animationTimer = 0f;
+    private float animationTimer = 0f;
 
-    final private static float maxWalkSpeed = 2.f;
+    final private float maxWalkSpeed = 2.f;
 
-    private static final float yOffsetCorrection = 0.5f;
+    private final float yOffsetCorrection = 0.5f;
 
-    private static final Vector3f[] bodyOffsets = new Vector3f[]{
+    private final Vector3f[] bodyOffsets = new Vector3f[]{
             new Vector3f(0,0.8f + yOffsetCorrection,0),
             new Vector3f(0,0.8f + yOffsetCorrection,0),
             new Vector3f(-0.28f,0.725f + yOffsetCorrection,0),
@@ -30,7 +30,7 @@ public class PlayerMesh {
             new Vector3f(0.09f,0.17f + yOffsetCorrection,0),
     };
 
-    private static final Vector3f[] bodyRotations = new Vector3f[]{
+    private final Vector3f[] bodyRotations = new Vector3f[]{
             new Vector3f(0,0,0),
             new Vector3f(0,0,0),
             new Vector3f(0,0,0),
@@ -40,8 +40,8 @@ public class PlayerMesh {
     };
 
     //body animation scope
-    private static final Vector2f inertiaWorker = new Vector2f();
-    public static void applyPlayerBodyAnimation(){
+    private final Vector2f inertiaWorker = new Vector2f();
+    public void applyPlayerBodyAnimation(){
 
         double delta = getDelta();
 
@@ -59,19 +59,19 @@ public class PlayerMesh {
         bodyRotations[5].set((float) java.lang.Math.toDegrees(java.lang.Math.sin(animationTimer * Math.PI * 2f)), 0, 0);
     };
 
-    public static Vector3f[] getPlayerBodyRotations(){
+    public Vector3f[] getPlayerBodyRotations(){
         return bodyRotations;
     }
 
-    public static Mesh[] getPlayerMeshes(){
+    public Mesh[] getPlayerMeshes(){
         return bodyMeshes;
     }
 
-    public static Vector3f[]getPlayerBodyOffsets(){
+    public Vector3f[]getPlayerBodyOffsets(){
         return bodyOffsets;
     }
 
-    private static Mesh[] createMesh(){
+    private Mesh[] createMesh(){
         final float modelScale = 0.25f; //lazy way to fix
 
         final float[][][] modelPieceArray = new float[][][]{

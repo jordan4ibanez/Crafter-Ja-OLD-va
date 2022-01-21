@@ -4,18 +4,18 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 import org.joml.Vector2d;
 import org.joml.Vector3d;
 
-import static game.entity.mob.MobDefinition.*;
-import static game.entity.mob.MobObject.*;
-import static game.player.Player.*;
+import game.entity.mob.MobDefinition.*;
+import game.entity.mob.MobObject.*;
+import game.player.Player.*;
 
 //basically cylindrical magnetic 2d collision detection class
 public class MobCollision {
 
-    private static final Vector2d workerVec2D = new Vector2d();
-    private static final Vector2d workerVec2D2 = new Vector2d();
-    private static final Vector2d normalizedPos = new Vector2d();
+    private final Vector2d workerVec2D = new Vector2d();
+    private final Vector2d workerVec2D2 = new Vector2d();
+    private final Vector2d normalizedPos = new Vector2d();
 
-    public static void mobSoftCollisionDetect(int thisMob, Vector3d thisMobPos, float thisMobHeight, float thisMobWidth){
+    public void mobSoftCollisionDetect(int thisMob, Vector3d thisMobPos, float thisMobHeight, float thisMobWidth){
         //get this mob's info
         workerVec2D.set(thisMobPos.x, thisMobPos.z);
         double thisBottom  = thisMobPos.y;
@@ -58,7 +58,7 @@ public class MobCollision {
         }
     }
 
-    public static void mobSoftPlayerCollisionDetect(int thisMob, Vector3d thisMobPos, float thisMobHeight, float thisMobWidth){
+    public void mobSoftPlayerCollisionDetect(int thisMob, Vector3d thisMobPos, float thisMobHeight, float thisMobWidth){
         //get this mob's info
         workerVec2D.set(thisMobPos.x, thisMobPos.z);
         double thisBottom  = thisMobPos.y;

@@ -4,19 +4,19 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 import org.joml.Math;
 import org.joml.Vector3d;
 
-import static engine.network.Networking.*;
-import static game.chunk.Chunk.*;
-import static game.entity.collision.Collision.wouldCollidePlacing;
-import static game.entity.collision.CollisionObject.pointIsWithinEntity;
-import static game.entity.collision.CollisionObject.setAABBEntity;
-import static game.crafting.InventoryObject.getItemInInventory;
-import static game.crafting.InventoryObject.removeItemFromInventory;
-import static game.entity.mob.Mob.punchMob;
-import static game.entity.mob.MobDefinition.getMobDefinitionHeight;
-import static game.entity.mob.MobDefinition.getMobDefinitionWidth;
-import static game.entity.mob.MobObject.*;
-import static game.entity.particle.Particle.createParticle;
-import static game.player.Player.*;
+import engine.network.Networking.*;
+import game.chunk.Chunk.*;
+import game.entity.collision.Collision.wouldCollidePlacing;
+import game.entity.collision.CollisionObject.pointIsWithinEntity;
+import game.entity.collision.CollisionObject.setAABBEntity;
+import game.crafting.InventoryObject.getItemInInventory;
+import game.crafting.InventoryObject.removeItemFromInventory;
+import game.entity.mob.Mob.punchMob;
+import game.entity.mob.MobDefinition.getMobDefinitionHeight;
+import game.entity.mob.MobDefinition.getMobDefinitionWidth;
+import game.entity.mob.MobObject.*;
+import game.entity.particle.Particle.createParticle;
+import game.player.Player.*;
 
 public class Ray {
 

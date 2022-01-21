@@ -1,29 +1,29 @@
 package engine;
 
-import static engine.Window.*;
-import static engine.render.GameRenderer.getWindowSizeX;
-import static engine.render.GameRenderer.getWindowSizeY;
-import static org.lwjgl.glfw.GLFW.*;
+import engine.Window.*;
+import engine.render.GameRenderer.getWindowSizeX;
+import engine.render.GameRenderer.getWindowSizeY;
+import org.lwjgl.glfw.GLFW.*;
 
 final public class MouseInput {
 
-    private static double previousPosX = -1;
-    private static double previousPosY = -1;
+    private double previousPosX = -1;
+    private double previousPosY = -1;
 
-    private static double currentPosX = 0;
-    private static double currentPosY = 0;
+    private double currentPosX = 0;
+    private double currentPosY = 0;
 
-    private static float displVecX = 0;
-    private static float displVecY = 0;
+    private float displVecX = 0;
+    private float displVecY = 0;
 
 
-    private static boolean  inWindow    = false;
-    private static boolean  leftButtonPressed  = false;
-    private static boolean  rightButtonPressed = false;
-    private static boolean  mouseLocked = true;
-    private static float    scroll      = 0;
+    private boolean  inWindow    = false;
+    private boolean  leftButtonPressed  = false;
+    private boolean  rightButtonPressed = false;
+    private boolean  mouseLocked = true;
+    private float    scroll      = 0;
 
-    public static void resetMousePosVector(){
+    public void resetMousePosVector(){
         glfwSetCursorPos(getWindowHandle(),getWindowWidth() / 2f,getWindowHeight() / 2f );
 
         double[] testx = new double[1];
@@ -39,7 +39,7 @@ final public class MouseInput {
         previousPosY = currentPosY;
     }
 
-    public static void initMouseInput(){
+    public void initMouseInput(){
 
         glfwSetCursorPosCallback(getWindowHandle(), (windowHandle, xpos, ypos) -> {
             currentPosX = xpos;
@@ -57,18 +57,18 @@ final public class MouseInput {
     }
 
 
-    public static float getMouseDisplVecX(){
+    public float getMouseDisplVecX(){
         return displVecX;
     }
 
-    public static float getMouseDisplVecY(){
+    public float getMouseDisplVecY(){
         return displVecY;
     }
 
-    private static final double[] testX = new double[1];
-    private static final double[] testY = new double[1];
+    private final double[] testX = new double[1];
+    private final double[] testY = new double[1];
 
-    public static void mouseInput(){
+    public void mouseInput(){
 
 
         glfwGetCursorPos(getWindowHandle(), testX, testY);
@@ -102,15 +102,15 @@ final public class MouseInput {
         }
     }
 
-    public static boolean isLeftButtonPressed(){
+    public boolean isLeftButtonPressed(){
         return leftButtonPressed;
     }
 
-    public static boolean isRightButtonPressed(){
+    public boolean isRightButtonPressed(){
         return rightButtonPressed;
     }
 
-    public static void setMouseLocked(boolean lock){
+    public void setMouseLocked(boolean lock){
         if(!lock) {
             glfwSetInputMode(getWindowHandle(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         } else{
@@ -120,35 +120,35 @@ final public class MouseInput {
         resetMousePosVector();
     }
 
-    public static boolean isMouseLocked(){
+    public boolean isMouseLocked(){
         return mouseLocked;
     }
 
 
-    public static float getMouseScroll(){
+    public float getMouseScroll(){
         float thisScroll = scroll;
         scroll = 0.0f;
         return thisScroll;
     }
 
     //immutable
-    public static double getMousePosX(){
+    public double getMousePosX(){
         return currentPosX;
     }
     //immutable
-    public static double getMousePosY(){
+    public double getMousePosY(){
         return currentPosY;
     }
 
     //SPECIAL gui management tool for mouse position
-    public static double getMousePosCenteredX(){
+    public double getMousePosCenteredX(){
         return currentPosX - (getWindowSizeX() / 2f);
     }
-    public static double getMousePosCenteredY(){
+    public double getMousePosCenteredY(){
         return (currentPosY - (getWindowSizeY() / 2f)) * -1;
     }
 
-    public static void toggleMouseLock(){
+    public void toggleMouseLock(){
         mouseLocked = !mouseLocked;
         if(!isMouseLocked()) {
             glfwSetInputMode(getWindowHandle(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);

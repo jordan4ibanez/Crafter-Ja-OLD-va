@@ -2,18 +2,18 @@ package game.player;
 
 import org.joml.Vector3f;
 
-import static engine.sound.SoundAPI.playSound;
-import static engine.time.Delta.getDelta;
-import static game.player.Player.isPlayerRunning;
+import engine.sound.SoundAPI.playSound;
+import engine.time.Delta.getDelta;
+import game.player.Player.isPlayerRunning;
 
 public class ViewBobbing {
 
-    private static final Vector3f viewBobbing = new Vector3f(0,0,0);
-    private static boolean xPositive = true;
-    private static float xBobPos = 0;
-    private static float yBobPos = 0;
+    private final Vector3f viewBobbing = new Vector3f(0,0,0);
+    private boolean xPositive = true;
+    private float xBobPos = 0;
+    private float yBobPos = 0;
 
-    public static void applyViewBobbing() {
+    public void applyViewBobbing() {
 
         double delta = getDelta();
 
@@ -47,7 +47,7 @@ public class ViewBobbing {
         viewBobbing.y = yBobPos/800f;
     }
 
-    public static void returnPlayerViewBobbing(){
+    public void returnPlayerViewBobbing(){
 
         double delta = getDelta();
 
@@ -68,19 +68,19 @@ public class ViewBobbing {
     }
 
     //mutable, be careful with this
-    public static Vector3f getPlayerViewBobbing(){
+    public Vector3f getPlayerViewBobbing(){
         return viewBobbing;
     }
     //immutable
-    public static float getPlayerViewBobbingX(){
+    public float getPlayerViewBobbingX(){
         return viewBobbing.x;
     }
     //immutable
-    public static float getPlayerViewBobbingY(){
+    public float getPlayerViewBobbingY(){
         return viewBobbing.y;
     }
     //immutable
-    public static float getPlayerViewBobbingZ(){
+    public float getPlayerViewBobbingZ(){
         return viewBobbing.z;
     }
 }

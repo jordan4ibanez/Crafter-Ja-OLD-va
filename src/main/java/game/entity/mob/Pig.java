@@ -6,23 +6,23 @@ import org.joml.Vector2f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import static engine.FancyMath.randomDirFloat;
-import static engine.time.Delta.getDelta;
-import static game.blocks.BlockDefinition.getIfLiquid;
-import static game.chunk.Chunk.getBlock;
-import static game.entity.collision.Collision.applyInertia;
-import static game.entity.mob.MobDefinition.*;
-import static game.entity.mob.MobObject.*;
-import static game.entity.mob.MobUtilityCode.doHeadCode;
-import static game.entity.mob.MobUtilityCode.mobSmoothRotation;
+import engine.FancyMath.randomDirFloat;
+import engine.time.Delta.getDelta;
+import game.blocks.BlockDefinition.getIfLiquid;
+import game.chunk.Chunk.getBlock;
+import game.entity.collision.Collision.applyInertia;
+import game.entity.mob.MobDefinition.*;
+import game.entity.mob.MobObject.*;
+import game.entity.mob.MobUtilityCode.doHeadCode;
+import game.entity.mob.MobUtilityCode.mobSmoothRotation;
 
 public class Pig {
-    private static final float accelerationMultiplier  = 0.04f;
-    final private static float maxWalkSpeed = 2.f;
-    final private static float movementAcceleration = 900.f;
-    private static final Vector2f workerVector2f = new Vector2f();
+    private final float accelerationMultiplier  = 0.04f;
+    final private float maxWalkSpeed = 2.f;
+    final private float movementAcceleration = 900.f;
+    private final Vector2f workerVector2f = new Vector2f();
 
-    private final static MobInterface mobInterface = new MobInterface() {
+    private final MobInterface mobInterface = new MobInterface() {
         @Override
         public void onTick(int thisMob) {
 
@@ -116,7 +116,7 @@ public class Pig {
         }
     };
 
-    private static final Vector3f[] bodyOffsets = new Vector3f[]{
+    private final Vector3f[] bodyOffsets = new Vector3f[]{
             //head
             new Vector3f(0,0.7f,-0.635f),
             //body
@@ -135,7 +135,7 @@ public class Pig {
             new Vector3f(0.15f,0.3f,0.32f),
     };
 
-    private static final Vector3f[] bodyRotations = new Vector3f[]{
+    private final Vector3f[] bodyRotations = new Vector3f[]{
             new Vector3f(0,0,0),
             new Vector3f(0,0,0),
             new Vector3f(0,0,0),
@@ -144,12 +144,12 @@ public class Pig {
             new Vector3f(0,0,0),
     };
 
-    public static void registerPigMob(){
+    public void registerPigMob(){
         registerMob("pig", "oink",true, (byte) 6, createMesh(), bodyOffsets, bodyRotations,0.9f, 0.45f, mobInterface);
     }
 
 
-    private static Mesh[] createMesh(){
+    private Mesh[] createMesh(){
 
         float size = 0.25f; //lazy way to fix
 

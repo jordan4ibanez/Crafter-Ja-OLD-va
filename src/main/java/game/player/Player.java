@@ -5,21 +5,21 @@ import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
-import static engine.graphics.Camera.*;
-import static engine.gui.GUILogic.calculateHealthBarElements;
-import static engine.gui.GUILogic.makeHeartsJiggle;
-import static engine.network.Networking.getIfMultiplayer;
-import static engine.network.Networking.sendInventorySlot;
-import static engine.sound.SoundAPI.playSound;
-import static engine.time.Delta.getDelta;
-import static game.clouds.Cloud.setCloudPos;
-import static game.entity.collision.Collision.applyInertia;
-import static game.crafting.Inventory.updateWieldInventory;
-import static game.entity.particle.Particle.createParticle;
-import static game.player.PlayerMesh.applyPlayerBodyAnimation;
-import static game.player.ViewBobbing.*;
-import static game.player.WieldHand.updatePlayerHandInertia;
-import static game.ray.Ray.playerRayCast;
+import engine.graphics.Camera.*;
+import engine.gui.GUILogic.calculateHealthBarElements;
+import engine.gui.GUILogic.makeHeartsJiggle;
+import engine.network.Networking.getIfMultiplayer;
+import engine.network.Networking.sendInventorySlot;
+import engine.sound.SoundAPI.playSound;
+import engine.time.Delta.getDelta;
+import game.clouds.Cloud.setCloudPos;
+import game.entity.collision.Collision.applyInertia;
+import game.crafting.Inventory.updateWieldInventory;
+import game.entity.particle.Particle.createParticle;
+import game.player.PlayerMesh.applyPlayerBodyAnimation;
+import game.player.ViewBobbing.*;
+import game.player.WieldHand.updatePlayerHandInertia;
+import game.ray.Ray.playerRayCast;
 
 
 /*
@@ -30,81 +30,81 @@ TODO: BREAK THIS INTO INDIVIDUAL CLASSES, IT'S A MESS
 public class Player {
 
     //this is a final Vector3i which indicates that the player is not pointing at anything
-    private static final Vector3i notPointingAtAnything = new Vector3i(0,-555,0);
+    private final Vector3i notPointingAtAnything = new Vector3i(0,-555,0);
 
-    private static float runningFOVAdder = 0f;
-    private static int health = 20;
-    private static final float collectionHeight        = 0.7f;
-    private static final float eyeHeight               = 1.5f;
-    private static final Vector3d pos = new Vector3d(0,0,0);
-    private static final Vector3d posWithEyeHeight = new Vector3d().set(pos.x,pos.y + eyeHeight,pos.z);
-    private static final Vector3d posWithCollectionHeight = new Vector3d(pos.x, pos.y + collectionHeight, pos.z);
-    private static final Vector3d posWithEyeHeightViewBobbing = new Vector3d().set(posWithEyeHeight.x, posWithEyeHeight.y, posWithEyeHeight.z);
-    private static final Vector3i newFlooredPos = new Vector3i();
-    private static final Vector3f inertia              = new Vector3f(0,0,0);
-    private static final float height                  = 1.9f;
-    private static final float width                   = 0.3f;
-    private static boolean onGround              =  false;
-    private static boolean wasOnGround           = false;
-    private static boolean mining                = false;
-    private static boolean placing               = false;
-    private static float placeTimer              = 0;
-    private static final Vector2f animationInertiaWorker = new Vector2f();
-    private static final float accelerationMultiplier  = 0.07f;
-    private static String name                   = "";
-    private static int currentInventorySelection = 0;
-    private static int oldInventorySelection = 0;
-    private static final Vector3i oldWorldSelectionPos = new Vector3i();
-    private static final Vector3i worldSelectionPos    = new Vector3i();
-    private static float sneakOffset = 0;
-    private static boolean playerIsJumping = false;
-    private static final Vector3d particlePos = new Vector3d(worldSelectionPos);
-    private static final Vector3f particleInertia = new Vector3f();
+    private float runningFOVAdder = 0f;
+    private int health = 20;
+    private final float collectionHeight        = 0.7f;
+    private final float eyeHeight               = 1.5f;
+    private final Vector3d pos = new Vector3d(0,0,0);
+    private final Vector3d posWithEyeHeight = new Vector3d().set(pos.x,pos.y + eyeHeight,pos.z);
+    private final Vector3d posWithCollectionHeight = new Vector3d(pos.x, pos.y + collectionHeight, pos.z);
+    private final Vector3d posWithEyeHeightViewBobbing = new Vector3d().set(posWithEyeHeight.x, posWithEyeHeight.y, posWithEyeHeight.z);
+    private final Vector3i newFlooredPos = new Vector3i();
+    private final Vector3f inertia              = new Vector3f(0,0,0);
+    private final float height                  = 1.9f;
+    private final float width                   = 0.3f;
+    private boolean onGround              =  false;
+    private boolean wasOnGround           = false;
+    private boolean mining                = false;
+    private boolean placing               = false;
+    private float placeTimer              = 0;
+    private final Vector2f animationInertiaWorker = new Vector2f();
+    private final float accelerationMultiplier  = 0.07f;
+    private String name                   = "";
+    private int currentInventorySelection = 0;
+    private int oldInventorySelection = 0;
+    private final Vector3i oldWorldSelectionPos = new Vector3i();
+    private final Vector3i worldSelectionPos    = new Vector3i();
+    private float sneakOffset = 0;
+    private boolean playerIsJumping = false;
+    private final Vector3d particlePos = new Vector3d(worldSelectionPos);
+    private final Vector3f particleInertia = new Vector3f();
     //this is like this because working with x and z is easier than x and y
-    private static final Vector3i currentChunk = new Vector3i((int)Math.floor(pos.x / 16f),0,(int)Math.floor(pos.z / 16f));
-    public static int oldY = 0;
+    private final Vector3i currentChunk = new Vector3i((int)Math.floor(pos.x / 16f),0,(int)Math.floor(pos.z / 16f));
+    public int oldY = 0;
 
-    private static final float reach = 3.575f;
+    private final float reach = 3.575f;
 
-    private static boolean sneaking              = false;
-    private static boolean running               = false;
+    private boolean sneaking              = false;
+    private boolean running               = false;
 
-    private static float lightCheckTimer = 0f;
-    private static byte lightLevel = 0;
-    private static final Vector3i oldFlooredPos = new Vector3i(0,0,0);
-    private static final Vector3d oldRealPos = new Vector3d(0,0,0);
+    private float lightCheckTimer = 0f;
+    private byte lightLevel = 0;
+    private final Vector3i oldFlooredPos = new Vector3i(0,0,0);
+    private final Vector3d oldRealPos = new Vector3d(0,0,0);
 
-    private static float hurtCameraRotation = 0;
-    private static boolean doHurtRotation = false;
-    private static boolean hurtRotationUp = true;
+    private float hurtCameraRotation = 0;
+    private boolean doHurtRotation = false;
+    private boolean hurtRotationUp = true;
 
     //block hardness cache
-    private static float stoneHardness = 0f;
-    private static float dirtHardness = 0f;
-    private static float woodHardness = 0f;
-    private static float leafHardness = 0f;
+    private float stoneHardness = 0f;
+    private float dirtHardness = 0f;
+    private float woodHardness = 0f;
+    private float leafHardness = 0f;
 
     //tool mining level cache
-    private static float stoneMiningLevel = 0.3f;
-    private static float dirtMiningLevel = 1f;
-    private static float woodMiningLevel = 1f;
-    private static float leafMiningLevel = 1f;
+    private float stoneMiningLevel = 0.3f;
+    private float dirtMiningLevel = 1f;
+    private float woodMiningLevel = 1f;
+    private float leafMiningLevel = 1f;
 
 
-    public static Vector3d getOldRealPos(){
+    public Vector3d getOldRealPos(){
         return oldRealPos;
     }
 
 
-    public static String getName(){
+    public String getName(){
         return name;
     }
 
-    public static void setPlayerName(String newName){
+    public void setPlayerName(String newName){
         name = newName;
     }
 
-    public static void updatePlayerMiningLevelCache(float newStoneMiningLevel, float newDirtMiningLevel, float newWoodMiningLevel, float newLeafMiningLevel){
+    public void updatePlayerMiningLevelCache(float newStoneMiningLevel, float newDirtMiningLevel, float newWoodMiningLevel, float newLeafMiningLevel){
         //System.out.println("New levels: " + newStoneMiningLevel + " " + newDirtMiningLevel + " " + newWoodMiningLevel + " " + newLeafMiningLevel);
         stoneMiningLevel = newStoneMiningLevel;
         dirtMiningLevel = newDirtMiningLevel;
@@ -112,17 +112,17 @@ public class Player {
         leafMiningLevel = newLeafMiningLevel;
     }
 
-    public static void addPlayerInertia(float x, float y, float z){
+    public void addPlayerInertia(float x, float y, float z){
         inertia.add(x,y,z);
     }
 
 
 
-    public static float getHurtCameraRotation(){
+    public float getHurtCameraRotation(){
         return hurtCameraRotation;
     }
 
-    public static void resetPlayerInputs(){
+    public void resetPlayerInputs(){
         setPlayerForward(false);
         setPlayerBackward(false);
         setPlayerLeft(false);
@@ -134,30 +134,30 @@ public class Player {
     }
 
 
-    public static boolean getIfPlayerIsJumping(){
+    public boolean getIfPlayerIsJumping(){
         return(playerIsJumping);
     }
 
     //todo make this 2D
-    public static Vector3i getPlayerCurrentChunk(){
+    public Vector3i getPlayerCurrentChunk(){
         return currentChunk;
     }
 
-    public static int getPlayerCurrentChunkX(){
+    public int getPlayerCurrentChunkX(){
         return currentChunk.x;
     }
 
-    public static int getPlayerCurrentChunkZ(){
+    public int getPlayerCurrentChunkZ(){
         return currentChunk.z;
     }
 
 
 
-    public static float getSneakOffset(){
+    public float getSneakOffset(){
         return sneakOffset / 900f;
     }
 
-    public static void setPlayerWorldSelectionPos(Vector3i thePos){
+    public void setPlayerWorldSelectionPos(Vector3i thePos){
 
         oldWorldSelectionPos.set(worldSelectionPos.x,worldSelectionPos.y,worldSelectionPos.z);
 
@@ -186,11 +186,11 @@ public class Player {
     }
 
 
-    public static byte getPlayerLightLevel(){
+    public byte getPlayerLightLevel(){
         return lightLevel;
     }
 
-    public static void setPlayerWorldSelectionPos(int x, int y, int z){
+    public void setPlayerWorldSelectionPos(int x, int y, int z){
         oldWorldSelectionPos.set(worldSelectionPos.x,worldSelectionPos.y,worldSelectionPos.z);
         worldSelectionPos.set(x,y,z);
 
@@ -213,41 +213,41 @@ public class Player {
     }
 
     //mutable - be careful with this
-    public static Vector3i getPlayerWorldSelectionPos(){
+    public Vector3i getPlayerWorldSelectionPos(){
         return worldSelectionPos;
     }
     //immutable
-    public static int getPlayerWorldSelectionPosX(){
+    public int getPlayerWorldSelectionPosX(){
         return worldSelectionPos.x;
     }
     //immutable
-    public static int getPlayerWorldSelectionPosY(){
+    public int getPlayerWorldSelectionPosY(){
         return worldSelectionPos.y;
     }
     //immutable
-    public static int getPlayerWorldSelectionPosZ(){
+    public int getPlayerWorldSelectionPosZ(){
         return worldSelectionPos.z;
     }
 
 
-    public static String getPlayerName(){
+    public String getPlayerName(){
         return name;
     }
 
-    public static int getPlayerInventorySelection(){
+    public int getPlayerInventorySelection(){
         return currentInventorySelection;
     }
 
-    public static void setPlayerMining( boolean isMining){
+    public void setPlayerMining( boolean isMining){
         mining = isMining;
     }
 
-    public static boolean getPlayerMining(){
+    public boolean getPlayerMining(){
         return mining;
     }
 
 
-    public static void setPlayerPlacing( boolean isPlacing) {
+    public void setPlayerPlacing( boolean isPlacing) {
         boolean wasPlacing = placing;
         placing = isPlacing;
 
@@ -257,94 +257,94 @@ public class Player {
         }
     }
 
-    public static boolean isCameraSubmerged(){
+    public boolean isCameraSubmerged(){
         return cameraSubmerged;
     }
 
-    private static boolean cameraSubmerged = false;
+    private boolean cameraSubmerged = false;
 
 
-    public static float getPlayerHeight(){
+    public float getPlayerHeight(){
         return height;
     }
-    public static float getPlayerWidth(){
+    public float getPlayerWidth(){
         return width;
     }
 
-    public static boolean getPlayerPlacing() {
+    public boolean getPlayerPlacing() {
         return placing;
     }
 
     //this is mutable, be careful with this
-    public static Vector3d getPlayerPos() {
+    public Vector3d getPlayerPos() {
         return pos;
     }
     //immutable
-    public static double getPlayerPosX(){
+    public double getPlayerPosX(){
         return pos.x;
     }
     //immutable
-    public static double getPlayerPosY(){
+    public double getPlayerPosY(){
         return pos.y;
     }
     //immutable
-    public static double getPlayerPosZ(){
+    public double getPlayerPosZ(){
         return pos.z;
     }
 
     //this is mutable, be careful with this
-    public static Vector3d getPlayerPosWithEyeHeight(){
+    public Vector3d getPlayerPosWithEyeHeight(){
         return posWithEyeHeight;
     }
     //immutable
-    public static double getPlayerPosWithEyeHeightX(){
+    public double getPlayerPosWithEyeHeightX(){
         return posWithEyeHeight.x;
     }
     //immutable
-    public static double getPlayerPosWithEyeHeightY(){
+    public double getPlayerPosWithEyeHeightY(){
         return posWithEyeHeight.y;
     }
     //immutable
-    public static double getPlayerPosWithEyeHeightZ(){
+    public double getPlayerPosWithEyeHeightZ(){
         return posWithEyeHeight.z;
     }
 
     //this is mutable, be careful with this
-    public static Vector3d getPlayerPosWithViewBobbing(){
+    public Vector3d getPlayerPosWithViewBobbing(){
         return posWithEyeHeightViewBobbing;
     }
     //immutable
-    public static double getPlayerPosWithViewBobbingX(){
+    public double getPlayerPosWithViewBobbingX(){
         return posWithEyeHeightViewBobbing.x;
     }
     //immutable
-    public static double getPlayerPosWithViewBobbingY(){
+    public double getPlayerPosWithViewBobbingY(){
         return posWithEyeHeightViewBobbing.y;
     }
     //immutable
-    public static double getPlayerPosWithViewBobbingZ(){
+    public double getPlayerPosWithViewBobbingZ(){
         return posWithEyeHeightViewBobbing.z;
     }
 
     //this is mutable, be careful with this
-    public static Vector3d getPlayerPosWithCollectionHeight(){
+    public Vector3d getPlayerPosWithCollectionHeight(){
         return posWithCollectionHeight;
     }
     //immutable
-    public static double getPlayerPosWithCollectionHeightX(){
+    public double getPlayerPosWithCollectionHeightX(){
         return posWithCollectionHeight.x;
     }
     //immutable
-    public static double getPlayerPosWithCollectionHeightY(){
+    public double getPlayerPosWithCollectionHeightY(){
         return posWithCollectionHeight.y;
     }
     //immutable
-    public static double getPlayerPosWithCollectionHeightZ(){
+    public double getPlayerPosWithCollectionHeightZ(){
         return posWithCollectionHeight.z;
     }
 
 
-    private static void applyCameraViewBobbingOffset(){
+    private void applyCameraViewBobbingOffset(){
         posWithEyeHeightViewBobbing.set(posWithEyeHeight.x, posWithEyeHeight.y,posWithEyeHeight.z);
 
         if (getCameraPerspective() == 0) {
@@ -371,80 +371,80 @@ public class Player {
     }
 
 
-    public static void setPlayerPos(Vector3d newPos) {
+    public void setPlayerPos(Vector3d newPos) {
         pos.set(newPos.x,newPos.y, newPos.z);
     }
 
     //mutable, be careful with this
-    public static Vector3f getPlayerInertia(){
+    public Vector3f getPlayerInertia(){
         return inertia;
     }
     //immutable
-    public static float getPlayerInertiaX(){
+    public float getPlayerInertiaX(){
         return inertia.x;
     }
     //immutable
-    public static float getPlayerInertiaY(){
+    public float getPlayerInertiaY(){
         return inertia.y;
     }
     //immutable
-    public static float getPlayerInertiaZ(){
+    public float getPlayerInertiaZ(){
         return inertia.z;
     }
 
-    public static void setPlayerInertia(float x,float y,float z){
+    public void setPlayerInertia(float x,float y,float z){
         inertia.x = x;
         inertia.y = y;
         inertia.z = z;
     }
 
-    private static final Vector3f inertiaBuffer = new Vector3f(0,0,0);
+    private final Vector3f inertiaBuffer = new Vector3f(0,0,0);
 
-    private static boolean forward = false;
-    private static boolean backward = false;
-    private static boolean left = false;
-    private static boolean right = false;
-    private static boolean jump = false;
+    private boolean forward = false;
+    private boolean backward = false;
+    private boolean left = false;
+    private boolean right = false;
+    private boolean jump = false;
 
-    public static boolean getPlayerForward(){
+    public boolean getPlayerForward(){
         return forward;
     }
-    public static boolean getPlayerBackward(){
+    public boolean getPlayerBackward(){
         return backward;
     }
-    public static boolean getPlayerLeft(){
+    public boolean getPlayerLeft(){
         return left;
     }
-    public static boolean getPlayerRight(){
+    public boolean getPlayerRight(){
         return right;
     }
-    public static boolean getPlayerJump(){
+    public boolean getPlayerJump(){
         return jump;
     }
-    public static boolean isPlayerSneaking(){
+    public boolean isPlayerSneaking(){
         return sneaking;
     }
 
-    public static void setPlayerForward(boolean isForward){
+    public void setPlayerForward(boolean isForward){
         forward = isForward;
     }
-    public static void setPlayerBackward(boolean isBackward){
+    public void setPlayerBackward(boolean isBackward){
         backward = isBackward;
     }
-    public static void setPlayerLeft(boolean isLeft){
+    public void setPlayerLeft(boolean isLeft){
         left = isLeft;
     }
-    public static void setPlayerRight(boolean isRight){
+    public void setPlayerRight(boolean isRight){
         right = isRight;
     }
-    public static void setPlayerJump(boolean isJump){
+    public void setPlayerJump(boolean isJump){
         jump = isJump;
     }
-    public static void setPlayerSneaking(boolean isSneaking){
+    public void setPlayerSneaking(boolean isSneaking){
         sneaking = isSneaking;
     }
 
-    public static void setPlayerRunning(boolean isRunning){
+    public void setPlayerRunning(boolean isRunning){
         if (!sneaking && isRunning) {
             running = isRunning;
         }
@@ -453,35 +453,35 @@ public class Player {
         }
     }
 
-    private static boolean playerIsMoving(){
+    private boolean playerIsMoving(){
         return forward || backward || left || right;
     }
 
-    final private static float movementAcceleration = 1000.f;
+    final private float movementAcceleration = 1000.f;
 
-    final private static float maxWalkSpeed = 4.f;
+    final private float maxWalkSpeed = 4.f;
 
-    final private static float maxRunSpeed = 6.f;
+    final private float maxRunSpeed = 6.f;
 
-    final private static float maxSneakSpeed = 1.f;
+    final private float maxSneakSpeed = 1.f;
 
-    private static boolean inWater = false;
+    private boolean inWater = false;
 
-    private static boolean wasInWater = false;
+    private boolean wasInWater = false;
 
-    private static float wasInWaterTimer = 0f;
-    private static boolean waterLockout = false;
+    private float wasInWaterTimer = 0f;
+    private boolean waterLockout = false;
 
 
 
-    public static void setPlayerInWater(boolean theTruth){
+    public void setPlayerInWater(boolean theTruth){
         inWater = theTruth;
         if (theTruth && playerIsJumping){
             playerIsJumping = false; //reset jumping mechanic
         }
     }
 
-    public static void setPlayerInertiaBuffer(){
+    public void setPlayerInertiaBuffer(){
 
         double delta = getDelta();
 
@@ -526,9 +526,9 @@ public class Player {
     }
 
 
-    private static final Vector2f inertiaWorker = new Vector2f();
+    private final Vector2f inertiaWorker = new Vector2f();
 
-    private static void applyPlayerInertiaBuffer(){
+    private void applyPlayerInertiaBuffer(){
         setPlayerInertiaBuffer();
 
         inertia.x += inertiaBuffer.x;
@@ -563,33 +563,33 @@ public class Player {
 
 
 
-    public static Boolean isPlayerOnGround(){
+    public Boolean isPlayerOnGround(){
         return onGround;
     }
 
-    private static float diggingProgress = 0f;
-    private static byte diggingFrame = -1;
-    private static boolean hasDug = false;
+    private float diggingProgress = 0f;
+    private byte diggingFrame = -1;
+    private boolean hasDug = false;
 
-    public static boolean playerHasDug(){
+    public boolean playerHasDug(){
         return hasDug;
     }
 
-    public static byte getDiggingFrame(){
+    public byte getDiggingFrame(){
         return diggingFrame;
     }
 
-    private static float particleBufferTimer = 0f;
+    private float particleBufferTimer = 0f;
 
-    private static float rainBuffer = 0f;
+    private float rainBuffer = 0f;
 
-    private static byte currentRotDir = 0;
+    private byte currentRotDir = 0;
 
-    public static byte getPlayerDir(){
+    public byte getPlayerDir(){
         return currentRotDir;
     }
 
-    public static void playerOnTick() {
+    public void playerOnTick() {
 
         double delta = getDelta();
 
@@ -962,7 +962,7 @@ public class Player {
         oldInventorySelection = currentInventorySelection;
     }
 
-    public static void updateWorldChunkLoader(){
+    public void updateWorldChunkLoader(){
         int newChunkX = (int)Math.floor(pos.x / 16f);
         int newChunkZ = (int)Math.floor(pos.z / 16f);
 
@@ -974,7 +974,7 @@ public class Player {
         }
     }
 
-    public static void updateMultiplayerWorldChunkLoader(){
+    public void updateMultiplayerWorldChunkLoader(){
         int newChunkX = (int)Math.floor(pos.x / 16f);
         int newChunkZ = (int)Math.floor(pos.z / 16f);
 
@@ -987,7 +987,7 @@ public class Player {
     }
 
 
-    public static void changeScrollSelection(int i){
+    public void changeScrollSelection(int i){
         currentInventorySelection += i;
         if (currentInventorySelection < 0) {
             currentInventorySelection = 8;
@@ -1003,11 +1003,11 @@ public class Player {
     }
 
 
-    public static float getRunningFOVAdder(){
+    public float getRunningFOVAdder(){
         return runningFOVAdder;
     }
 
-    private static void calculateRunningFOV(){
+    private void calculateRunningFOV(){
         double delta = getDelta();
         if (playerIsMoving() && running){
             if (runningFOVAdder < 0.3f){
@@ -1028,17 +1028,17 @@ public class Player {
         }
     }
 
-    public static int getCurrentInventorySelection(){
+    public int getCurrentInventorySelection(){
         return currentInventorySelection;
     }
 
-    public static int getPlayerHealth(){
+    public int getPlayerHealth(){
         return health;
     }
 
-    private static float healthTimer = 0;
+    private float healthTimer = 0;
 
-    private static void doHealthTest(){
+    private void doHealthTest(){
         double delta = getDelta();
 
         healthTimer += delta;
@@ -1057,16 +1057,16 @@ public class Player {
         }
     }
 
-    public static boolean isPlayerRunning(){
+    public boolean isPlayerRunning(){
         return (running);
     }
 
-    public static void setPlayerHealth(int newHealth){
+    public void setPlayerHealth(int newHealth){
         health = newHealth;
         calculateHealthBarElements();
     }
 
-    public static void hurtPlayer(int hurt){
+    public void hurtPlayer(int hurt){
         health -= hurt;
         playSound("hurt", true);
         calculateHealthBarElements();

@@ -4,18 +4,18 @@ import org.joml.Math;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import static engine.time.Delta.getDelta;
-import static game.entity.mob.MobDefinition.getMobDefinitionBodyOffsets;
-import static game.player.Player.getPlayerPosWithEyeHeight;
-import static game.ray.LineOfSight.getLineOfSight;
+import engine.time.Delta.getDelta;
+import game.entity.mob.MobDefinition.getMobDefinitionBodyOffsets;
+import game.player.Player.getPlayerPosWithEyeHeight;
+import game.ray.LineOfSight.getLineOfSight;
 
 public class MobUtilityCode {
 
-    private final static Vector3d headPos = new Vector3d();
-    private final static Vector3d headTurn = new Vector3d();
-    private final static Vector3d adjustedHeadPos = new Vector3d();
+    private final Vector3d headPos = new Vector3d();
+    private final Vector3d headTurn = new Vector3d();
+    private final Vector3d adjustedHeadPos = new Vector3d();
 
-    public static void doHeadCode(int thisMob){
+    public void doHeadCode(int thisMob){
 
         //this is a pointer object
         Vector3d thisMobPos = MobObject.getMobPos(thisMob);
@@ -69,7 +69,7 @@ public class MobUtilityCode {
 
 
     //todo: shortest distance
-    public static void mobSmoothRotation(int thisMob){
+    public void mobSmoothRotation(int thisMob){
         double delta = getDelta();
 
         float thisMobRotation = MobObject.getMobRotation(thisMob);

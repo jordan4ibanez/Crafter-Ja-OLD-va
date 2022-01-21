@@ -6,31 +6,31 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-import static engine.Window.windowShouldClose;
-import static game.chunk.Chunk.*;
-import static game.chunk.ChunkMeshGenerator.setChunkThreadCurrentGlobalLightLevel;
+import engine.Window.windowShouldClose;
+import game.chunk.Chunk.*;
+import game.chunk.ChunkMeshGenerator.setChunkThreadCurrentGlobalLightLevel;
 
 public class Light implements Runnable {
 
     //internal pointer to self reference
-    private static Light thisObject;
+    private Light thisObject;
 
     //thread safe containers for light updates
     private final ConcurrentLinkedDeque<Vector3i> lightQueue = new ConcurrentLinkedDeque<>();
     private final ConcurrentLinkedDeque<Vector3i> torchQueue = new ConcurrentLinkedDeque<>();
 
-    //point internal pointer to static reference call, only one object shall exist
+    //point internal pointer to reference call, only one object shall exist
     public Light(){
         thisObject = this;
     }
 
     //external call to internal object
-    public static void lightFloodFill(int posX, int posY, int posZ){
+    public void lightFloodFill(int posX, int posY, int posZ){
         thisObject.lightQueue.add(new Vector3i(posX, posY, posZ));
     }
 
     //external call to internal object
-    public static void torchFloodFill(int posX, int posY, int posZ){
+    public void torchFloodFill(int posX, int posY, int posZ){
         thisObject.torchQueue.add(new Vector3i(posX, posY, posZ));
     }
 
@@ -40,23 +40,23 @@ public class Light implements Runnable {
     private final byte lightDistance = 15;
     private final byte max = (lightDistance * 2) + 1;
 
-    private static byte currentLightLevel = 15;
+    private byte currentLightLevel = 15;
 
-    public static byte getCurrentGlobalLightLevel(){
+    public byte getCurrentGlobalLightLevel(){
         return currentLightLevel;
     }
 
-    public static void setCurrentLightLevel(byte newLightLevel) {
+    public void setCurrentLightLevel(byte newLightLevel) {
         currentLightLevel = newLightLevel;
         setChunkThreadCurrentGlobalLightLevel(currentLightLevel);
         updateChunksWithNewLightLevel();
     }
 
-    private static void updateChunksWithNewLightLevel(){
+    private void updateChunksWithNewLightLevel(){
         floodChunksWithNewLight();
     }
 
-    public static byte getImmediateLight(int x, int y, int z){
+    public byte getImmediateLight(int x, int y, int z){
         int theBlock = getBlock(x, y, z);
 
         if (theBlock == 0 && underSunLight(x, y, z)){

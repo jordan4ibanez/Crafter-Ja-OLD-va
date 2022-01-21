@@ -1,27 +1,27 @@
 package engine.time;
 
-import static engine.Window.updateWindowTitle;
-import static engine.gui.GUI.buildFPSMesh;
-import static game.Crafter.getVersionName;
+import engine.Window.updateWindowTitle;
+import engine.gui.GUI.buildFPSMesh;
+import game.Crafter.getVersionName;
 
 public class Timer {
 
-    public static double timerGetTime(){
+    public double timerGetTime(){
         return System.nanoTime();
     }
 
 
-    private static double lastFPSTime = System.nanoTime();
-    private static double elapsedTime = 0;
-    private static int framesPerSecond = 0;
+    private double lastFPSTime = System.nanoTime();
+    private double elapsedTime = 0;
+    private int framesPerSecond = 0;
 
-    private static int currentFpsCount = 0;
+    private int currentFpsCount = 0;
 
-    public static int getFpsCounted(){
+    public int getFpsCounted(){
         return (currentFpsCount);
     }
 
-    public static void countFPS() {
+    public void countFPS() {
         double time = timerGetTime();
         double currentElapsedTime = time - lastFPSTime;
         lastFPSTime = time;

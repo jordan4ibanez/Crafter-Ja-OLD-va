@@ -6,23 +6,23 @@ import org.joml.Vector2f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import static engine.FancyMath.randomDirFloat;
-import static engine.time.Delta.getDelta;
-import static game.blocks.BlockDefinition.getIfLiquid;
-import static game.chunk.Chunk.getBlock;
-import static game.entity.collision.Collision.applyInertia;
-import static game.entity.item.ItemEntity.throwItem;
-import static game.entity.mob.MobDefinition.*;
-import static game.entity.mob.MobUtilityCode.doHeadCode;
-import static game.entity.mob.MobUtilityCode.mobSmoothRotation;
+import engine.FancyMath.randomDirFloat;
+import engine.time.Delta.getDelta;
+import game.blocks.BlockDefinition.getIfLiquid;
+import game.chunk.Chunk.getBlock;
+import game.entity.collision.Collision.applyInertia;
+import game.entity.item.ItemEntity.throwItem;
+import game.entity.mob.MobDefinition.*;
+import game.entity.mob.MobUtilityCode.doHeadCode;
+import game.entity.mob.MobUtilityCode.mobSmoothRotation;
 
 public class Sheep {
-    private static final float accelerationMultiplier  = 0.04f;
-    final private static float maxWalkSpeed = 2.f;
-    final private static float movementAcceleration = 900.f;
-    private static final Vector2f workerVector2f = new Vector2f();
+    private final float accelerationMultiplier  = 0.04f;
+    final private float maxWalkSpeed = 2.f;
+    final private float movementAcceleration = 900.f;
+    private final Vector2f workerVector2f = new Vector2f();
 
-    private final static MobInterface woolInterface = new MobInterface() {
+    private final MobInterface woolInterface = new MobInterface() {
 
         @Override
         public void onPunch(int thisMob){
@@ -131,7 +131,7 @@ public class Sheep {
 
 
     //this is a method pointer
-    private final static MobInterface shavedInterface = new MobInterface() {
+    private final MobInterface shavedInterface = new MobInterface() {
         @Override
         public void onTick(int thisMob) {
             //link them together to prevent boilerplate
@@ -140,8 +140,8 @@ public class Sheep {
     };
 
 
-    private static final float yPosCorrection = 0.25f;
-    private static final Vector3f[] bodyOffsets = new Vector3f[]{
+    private final float yPosCorrection = 0.25f;
+    private final Vector3f[] bodyOffsets = new Vector3f[]{
             //head
             new Vector3f(0,0.75f + yPosCorrection,-0.5f),
             //body
@@ -160,7 +160,7 @@ public class Sheep {
             new Vector3f(0.15f,0.45f + yPosCorrection,0.32f),
     };
 
-    private static final Vector3f[] bodyRotations = new Vector3f[]{
+    private final Vector3f[] bodyRotations = new Vector3f[]{
             new Vector3f(0,0,0),
             new Vector3f(0,0,0),
             new Vector3f(0,0,0),
@@ -169,13 +169,13 @@ public class Sheep {
             new Vector3f(0,0,0),
     };
 
-    public static void registerSheepMob(){
+    public void registerSheepMob(){
         registerMob("sheep_wool", "sheep_1",true, (byte) 6, createWoolMesh(), bodyOffsets, bodyRotations,0.9f, 0.45f, woolInterface);
         registerMob("sheep_shaved", "sheep_2",true, (byte) 6, createShavedMesh(), bodyOffsets, bodyRotations,0.9f, 0.45f, shavedInterface);
     }
 
 
-    private static Mesh[] createWoolMesh(){
+    private Mesh[] createWoolMesh(){
 
         float size = 0.25f; //lazy way to fix
         float woolSize = 1.25f; //ultra lazy way to fix
@@ -289,7 +289,7 @@ public class Sheep {
         return MobMeshBuilder.createMobMesh(modelPieceArray,modelTextureArray, "textures/sheep_wool.png");
     }
 
-    private static Mesh[] createShavedMesh(){
+    private Mesh[] createShavedMesh(){
 
         float size = 0.25f; //lazy way to fix
         float bodySize = 0.9f;
