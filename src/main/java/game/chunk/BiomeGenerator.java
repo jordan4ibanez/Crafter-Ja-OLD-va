@@ -1,26 +1,34 @@
 package game.chunk;
 
 import engine.FastNoise;
+import engine.Window;
 import org.joml.Math;
 import org.joml.Vector2i;
 import org.joml.Vector3i;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-
-import static game.chunk.ChunkUpdateHandler.chunkUpdate;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 //this class is entirely run on it's own thread, be careful with OpenGL context
 public class BiomeGenerator implements Runnable {
 
-    private final ArrayDeque<Vector2i> queue = new ArrayDeque<>();
+    private final Window window;
+    private final Chunk chunk;
+    private final ConcurrentLinkedDeque<Vector2i> queue = new ConcurrentLinkedDeque<>();
+
     private int seed = 532_444_432;
     private final FastNoise noise = new FastNoise();
+
+    public BiomeGenerator(Window window, Chunk chunk){
+        this.window = window;
+        this.chunk = chunk;
+    }
 
     @Override
     public void run() {
         noise.SetSeed(seed);
-        while (!windowShouldClose()) {
+        while (!window.windowShouldClose()) {
             boolean needsToSleep = runBiomeGeneration();
             if (needsToSleep){
                 try {
@@ -35,16 +43,14 @@ public class BiomeGenerator implements Runnable {
         }
     }
 
-    public void internalAddChunkToBiomeGenerator(int x, int z){
-        queue.add(new Vector2i(x,z));
+    public void addChunkToBiomeGeneration(Vector2i pos){
+        internalAddChunkToBiomeGenerator(new Vector2i(pos));
     }
 
-    public void addChunkToBiomeGeneration(int x, int z){
-        thisThing.internalAddChunkToBiomeGenerator(x, z);
+    public void internalAddChunkToBiomeGenerator(Vector2i pos){
+        queue.add(pos);
     }
 
-    private final Vector2i newData = new Vector2i();
-    private final Deque<Vector3i> treePosQueue = new ArrayDeque<>();
 
     private boolean runBiomeGeneration(){
 
@@ -52,16 +58,14 @@ public class BiomeGenerator implements Runnable {
             return true;
         }
 
-        newData.set(queue.pop());
-
-        int chunkX = newData.x;
-        int chunkZ = newData.y;
-
+        Vector2i newData = queue.pop();
 
         //don't regen existing chunks
-        if (getChunkKey(newData.x, newData.y) != null) {
+        if (chunk.chunkExists(new Vector2i(newData)) != null) {
             return false;
         }
+
+        Deque<Vector3i> treePosQueue = new ArrayDeque<>();
 
         byte[] blockData = new byte[32768];
         byte[] rotationData = new byte[32768];
@@ -82,8 +86,8 @@ public class BiomeGenerator implements Runnable {
                 boolean gennedGrass = false;
                 double dirtHeightRandom = Math.floor(Math.random() * 2d);
 
-                float realPosX = (float) ((chunkX * 16d) + generationX);
-                float realPosZ = (float) ((chunkZ * 16d) + generationZ);
+                float realPosX = (float) ((newData.x * 16d) + generationX);
+                float realPosZ = (float) ((newData.y * 16d) + generationZ);
 
                 height = (byte) (Math.abs(noise.GetPerlin(realPosX, realPosZ) * noiseMultiplier + heightAdder));
 
@@ -277,12 +281,7 @@ public class BiomeGenerator implements Runnable {
             }
         }
 
-        setChunk(chunkX,chunkZ,blockData,rotationData,lightData,heightMapData);
-
-        //dump everything into the chunk updater
-        for (int i = 0; i < 8; i++) {
-            chunkUpdate(chunkX, chunkZ, i);
-        }
+        chunk.setChunk(chunkX,chunkZ,blockData,rotationData,lightData,heightMapData);
 
         treePosQueue.clear();
         
