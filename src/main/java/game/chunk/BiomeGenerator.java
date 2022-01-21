@@ -8,24 +8,14 @@ import org.joml.Vector3i;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-import static engine.Window.windowShouldClose;
-import static game.chunk.Chunk.*;
 import static game.chunk.ChunkUpdateHandler.chunkUpdate;
 
 //this class is entirely run on it's own thread, be careful with OpenGL context
 public class BiomeGenerator implements Runnable {
 
-    //static reference to self object
-    private static BiomeGenerator thisThing = null;
-
     private final ArrayDeque<Vector2i> queue = new ArrayDeque<>();
     private int seed = 532_444_432;
     private final FastNoise noise = new FastNoise();
-
-    //self starting thread
-    public BiomeGenerator(){
-        thisThing = this;
-    }
 
     @Override
     public void run() {
@@ -49,7 +39,7 @@ public class BiomeGenerator implements Runnable {
         queue.add(new Vector2i(x,z));
     }
 
-    public static void addChunkToBiomeGeneration(int x, int z){
+    public void addChunkToBiomeGeneration(int x, int z){
         thisThing.internalAddChunkToBiomeGenerator(x, z);
     }
 
