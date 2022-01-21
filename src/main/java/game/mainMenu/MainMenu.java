@@ -3,6 +3,8 @@ package game.mainMenu;
 import engine.graphics.Mesh;
 import engine.gui.GUIObject;
 import engine.sound.SoundSource;
+import engine.time.Delta;
+import game.Crafter;
 import org.joml.Vector2d;
 
 import java.time.LocalDateTime;
@@ -13,7 +15,6 @@ import java.util.Random;
 
 import static engine.MouseInput.*;
 import static engine.Window.*;
-import static engine.credits.Credits.initializeCredits;
 import static engine.disk.Disk.setCurrentActiveWorld;
 import static engine.disk.Disk.worldSize;
 import static engine.gui.GUILogic.doGUIMouseCollisionDetection;
@@ -23,47 +24,49 @@ import static engine.scene.SceneHandler.setScene;
 import static engine.settings.Settings.*;
 import static engine.sound.SoundAPI.playMusic;
 import static engine.sound.SoundAPI.playSound;
-import static engine.time.Delta.getDelta;
-import static game.Crafter.getVersionName;
-import static game.mainMenu.MainMenuAssets.createMainMenuBackGroundTile;
-import static game.mainMenu.MainMenuAssets.createMenuMenuTitleBlock;
 import static game.player.Player.setPlayerName;
 import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
-final public class MainMenu {
 
-    private static byte[][] titleBlocks;
-    private static double[][] titleOffsets;
-    private static boolean haltBlockFlyIn = false;
+public class MainMenu {
 
-    private static byte[][] worldTitleBlocks;
-    private static double[][] worldTitleOffsets;
-    private static boolean haltWorldBlockFlyIn = false;
+    //assets and credits are objects
+    private final Crafter crafter;
+    private final MainMenuAssets mainMenuAssets = new MainMenuAssets();
+    private final Credits credits = new Credits();
+
+    private final byte[][] titleBlocks;
+    private final double[][] titleOffsets;
+    private boolean haltBlockFlyIn = false;
+
+    private final byte[][] worldTitleBlocks;
+    private final double[][] worldTitleOffsets;
+    private boolean haltWorldBlockFlyIn = false;
 
 
-    private static String titleScreenText = "";
-    private static byte titleScreenTextLength = 0;
-    private static final float blockOffsetInitial = 15f;
-    private static float titleBounce = 10f;
-    private static float bounceAnimation = 0.75f;
-    private static float backGroundScroll = 0f;
+    private String titleScreenText = "";
+    private byte titleScreenTextLength = 0;
+    private final float blockOffsetInitial = 15f;
+    private float titleBounce = 10f;
+    private float bounceAnimation = 0.75f;
+    private float backGroundScroll = 0f;
 
-    private static float creditsScroll = -6f;
+    private float creditsScroll = -6f;
 
-    private static SoundSource titleMusic;
-    private static SoundSource creditsMusic;
+    private final SoundSource titleMusic;
+    private final SoundSource creditsMusic;
 
-    private static final Random random = new Random();
-    private static boolean mouseButtonPushed = false;
-    private static boolean mouseButtonWasPushed = false;
-    private static boolean pollingButtonInputs = false;
-    private static byte lockedOnButtonInput = -1;
+    private final Random random = new Random();
+    private boolean mouseButtonPushed = false;
+    private boolean mouseButtonWasPushed = false;
+    private boolean pollingButtonInputs = false;
+    private byte lockedOnButtonInput = -1;
 
-    private static int multiplayerScreenTextInput = -1;
+    private int multiplayerScreenTextInput = -1;
 
-    private static boolean serverConnected = false;
+    private boolean serverConnected = false;
 
-    public static void setMenuPage(byte page){
+    public void setMenuPage(byte page){
         menuPage = page;
         System.out.println("menu page is now " + menuPage);
     }
@@ -76,9 +79,9 @@ final public class MainMenu {
     //5 multiplayer
     //6 connecting to server
     //7 could not connect to server
-    private static byte menuPage = 0;
+    private byte menuPage = 0;
 
-    private static final GUIObject[] mainMenuGUI = new GUIObject[]{
+    private final GUIObject[] mainMenuGUI = new GUIObject[]{
             new GUIObject("SINGLEPLAYER" , new Vector2d(0, 10), 10, 1),
             new GUIObject("MULTIPLAYER" , new Vector2d(0, -3), 10,1),
             new GUIObject("SETTINGS" , new Vector2d(0, -16), 10,1),
@@ -86,7 +89,7 @@ final public class MainMenu {
             new GUIObject("QUIT" , new Vector2d(0, -42), 10,1),
     };
 
-    private static final GUIObject[] mainMenuSettingsMenuGUI = new GUIObject[]{
+    private final GUIObject[] mainMenuSettingsMenuGUI = new GUIObject[]{
             new GUIObject("CONTROLS" ,             new Vector2d(0, 35), 12, 1),
             new GUIObject("VSYNC: " + boolToString(getSettingsVsync()),            new Vector2d(0, 21), 12, 1),
             new GUIObject("GRAPHICS MODE: " + graphicsThing(getGraphicsMode()) , new Vector2d(0, 7), 12,1),
@@ -95,7 +98,7 @@ final public class MainMenu {
             new GUIObject("BACK" ,                  new Vector2d(0, -35), 12,1),
     };
 
-    private static final GUIObject[] controlsMenuGUI = new GUIObject[]{
+    private final GUIObject[] controlsMenuGUI = new GUIObject[]{
             new GUIObject("FORWARD: " + quickConvertKeyCode(getKeyForward()) ,     new Vector2d(-35, 30), 6, 1),
             new GUIObject("BACK: " + quickConvertKeyCode(getKeyBack()),            new Vector2d(35, 30), 6, 1),
             new GUIObject("LEFT: " + quickConvertKeyCode(getKeyLeft()),            new Vector2d(-35, 15), 6, 1),
@@ -107,7 +110,7 @@ final public class MainMenu {
             new GUIObject("BACK" , new Vector2d(0, -30), 5, 1),
     };
 
-    private static final GUIObject[] worldSelectionGUI = new GUIObject[]{
+    private final GUIObject[] worldSelectionGUI = new GUIObject[]{
             new GUIObject("WORLD 1" + worldSize((byte)1) , new Vector2d(0, 10), 10, 1),
             new GUIObject("WORLD 2" + worldSize((byte)2) , new Vector2d(0, -3), 10,1),
             new GUIObject("WORLD 3" + worldSize((byte)3) , new Vector2d(0, -16), 10,1),
@@ -115,7 +118,7 @@ final public class MainMenu {
             new GUIObject("BACK" , new Vector2d(0, -42), 10,1),
     };
 
-    private static final GUIObject[] multiPlayerGUI = new GUIObject[]{
+    private final GUIObject[] multiPlayerGUI = new GUIObject[]{
             new GUIObject("Name:" , true, new Vector2d(0, 40)),
             new GUIObject(new Vector2d(0, 30), 10, 1),
 
@@ -127,21 +130,21 @@ final public class MainMenu {
             new GUIObject("BACK" , new Vector2d(0, -40), 10,1),
     };
 
-    private static final GUIObject[] multiPlayerLoadingGUI = new GUIObject[]{
+    private final GUIObject[] multiPlayerLoadingGUI = new GUIObject[]{
             new GUIObject("CONNECTING TO SERVER..." , true, new Vector2d(0, 5)),
             new GUIObject("BACK" , new Vector2d(0, -5), 10,1),
     };
 
-    private static final GUIObject[] multiplayerFailureGUI = new GUIObject[]{
+    private final GUIObject[] multiplayerFailureGUI = new GUIObject[]{
             new GUIObject("COULD NOT CONNECT TO SERVER" , true, new Vector2d(0, 5)),
             new GUIObject("BACK" , new Vector2d(0, -5), 10,1),
     };
 
-    public static byte getMainMenuPage(){
+    public byte getMainMenuPage(){
         return menuPage;
     }
 
-    public static GUIObject[] getMainMenuGUI(){
+    public GUIObject[] getMainMenuGUI(){
         if (menuPage == 0) {
             return mainMenuGUI;
         } else if (menuPage == 1){
@@ -162,12 +165,12 @@ final public class MainMenu {
         return mainMenuGUI;
     }
 
-    public static void initMainMenu() {
+    public MainMenu(Crafter crafter) {
+
+        this.crafter = crafter;
 
         //seed the random generator
         random.setSeed(new Date().getTime());
-
-        initializeCredits();
 
         //in intellij, search for 1 and you'll be able to read it
         if (Math.random() > 0.025) {
@@ -228,8 +231,6 @@ final public class MainMenu {
             }
         }
 
-        createMenuMenuTitleBlock();
-        createMainMenuBackGroundTile();
         selectTitleScreenText();
 
         titleMusic = playMusic("main_menu");
@@ -238,11 +239,11 @@ final public class MainMenu {
     }
 
 
-    public static void resetMainMenuPage(){
+    public void resetMainMenuPage(){
         menuPage = 0;
     }
 
-    public static void resetMainMenu(){
+    public void resetMainMenu(){
         //set initial random float variables
         for (int x = 0; x < 5; x++){
             //assume equal lengths
@@ -267,29 +268,29 @@ final public class MainMenu {
         selectTitleScreenText();
     }
 
-    public static byte[][] getTitleBlocks(){
+    public byte[][] getTitleBlocks(){
         return titleBlocks;
     }
 
-    public static double[][] getTitleBlockOffsets(){
+    public double[][] getTitleBlockOffsets(){
         return titleOffsets;
     }
 
-    public static byte[][] getWorldTitleBlocks(){
+    public byte[][] getWorldTitleBlocks(){
         return worldTitleBlocks;
     }
 
-    public static double[][] getWorldTitleOffsets(){
+    public double[][] getWorldTitleOffsets(){
         return worldTitleOffsets;
     }
 
-    private static boolean connectionFailure = false;
+    private boolean connectionFailure = false;
 
-    public static void setConnectionFailure(){
+    public void setConnectionFailure(){
         connectionFailure = true;
     }
 
-    public static void doMainMenuLogic() {
+    public void doMainMenuLogic(Delta delta) {
 
         if(connectionFailure){
             connectionFailure = false;
@@ -302,12 +303,13 @@ final public class MainMenu {
             toggleMouseLock();
         }
 
-        makeBackGroundScroll();
+
+        makeBackGroundScroll(delta);
 
         //title screen
         if (menuPage == 0) {
-            makeBlocksFlyIn();
-            makeTitleBounce();
+            makeBlocksFlyIn(delta);
+            makeTitleBounce(delta);
 
             if (!titleMusic.isPlaying()) {
                 titleMusic.play();
@@ -542,7 +544,7 @@ final public class MainMenu {
                 mouseButtonPushed = false;
             }
         } else if (menuPage == 3){
-            makeWorldBlocksFlyIn();
+            makeWorldBlocksFlyIn(delta);
 
             byte selection = doGUIMouseCollisionDetection(worldSelectionGUI);
 
@@ -567,7 +569,7 @@ final public class MainMenu {
                 mouseButtonPushed = false;
             }
         } else if (menuPage == 4){
-            makeCreditsScroll();
+            makeCreditsScroll(delta);
             if (getDumpedKey() > -1){
                 creditsMusic.stop();
                 titleMusic.play();
@@ -718,38 +720,35 @@ final public class MainMenu {
     }
 
 
-    public static void setServerConnected(boolean truth){
+    public void setServerConnected(boolean truth){
         serverConnected = truth;
     }
 
-    public static float getTitleBounce(){
+    public float getTitleBounce(){
         return titleBounce;
     }
 
-    public static float getBackGroundScroll(){
+    public float getBackGroundScroll(){
         return backGroundScroll;
     }
 
     //infinitely scrolling background
-    private static void makeBackGroundScroll(){
+    private void makeBackGroundScroll(Delta delta){
 
-        double delta = getDelta();
-
-        backGroundScroll += delta / 2f;
+        backGroundScroll += delta.getDelta() / 2f;
 
         if (backGroundScroll > 1f){
             backGroundScroll -= 1f;
         }
     }
 
-    private final static float lockScroll = 62.5f;
     //scrolling credits
-    private static void makeCreditsScroll(){
+    private void makeCreditsScroll(Delta delta){
 
-        double delta = getDelta();
+        float lockScroll = 62.5f;
 
         if (creditsScroll < lockScroll) {
-            creditsScroll += delta / 1.3501f;
+            creditsScroll += delta.getDelta() / 1.3501f;
 
             if (creditsScroll >= lockScroll){
                 creditsScroll = lockScroll;
@@ -758,13 +757,11 @@ final public class MainMenu {
 
     }
 
-    public static float getCreditsScroll(){
+    public float getCreditsScroll(){
         return creditsScroll;
     }
 
-    private static void makeTitleBounce(){
-        double delta = getDelta();
-
+    private void makeTitleBounce(Delta delta){
         /*
         if (initialBounce){
             float adder = delta * 30f;
@@ -779,7 +776,7 @@ final public class MainMenu {
 
          */
 
-        bounceAnimation += delta / 2f;
+        bounceAnimation += delta.getDelta() / 2f;
 
         if (bounceAnimation > 1f){
             bounceAnimation -= 1f;
@@ -790,21 +787,20 @@ final public class MainMenu {
         //}
     }
 
-    private static void makeBlocksFlyIn(){
+    private void makeBlocksFlyIn(Delta delta){
         if (haltBlockFlyIn){
             return;
         }
 
         boolean found = false;
 
-        double delta = getDelta();
         //set initial random float variables
         for (int x = 0; x < 5; x++){
             //assume equal lengths
             for (int y = 0; y < 27; y++){
                 if (titleBlocks[x][y] == 1 && titleOffsets[x][y] > 0){
                     found = true;
-                    titleOffsets[x][y] -= delta * 30f;
+                    titleOffsets[x][y] -= delta.getDelta() * 30f;
                     if (titleOffsets[x][y] <= 0){
                         titleOffsets[x][y] = 0;
                     }
@@ -817,21 +813,20 @@ final public class MainMenu {
         }
     }
 
-    private static void makeWorldBlocksFlyIn(){
+    private void makeWorldBlocksFlyIn(Delta delta){
         if (haltWorldBlockFlyIn){
             return;
         }
 
         boolean found = false;
 
-        double delta = getDelta();
         //set initial random float variables
         for (int x = 0; x < 5; x++){
             //assume equal lengths
             for (int y = 0; y < 27; y++){
                 if (worldTitleBlocks[x][y] == 1 && worldTitleOffsets[x][y] > 0){
                     found = true;
-                    worldTitleOffsets[x][y] -= delta * 30f;
+                    worldTitleOffsets[x][y] -= delta.getDelta() * 30f;
                     if (worldTitleOffsets[x][y] <= 0){
                         worldTitleOffsets[x][y] = 0;
                     }
@@ -844,7 +839,7 @@ final public class MainMenu {
         }
     }
 
-    private static String quickConvertKeyCode(int keyCode){
+    private String quickConvertKeyCode(int keyCode){
         char code = (char)keyCode;
 
         System.out.println(keyCode);
@@ -861,21 +856,21 @@ final public class MainMenu {
         return code + "";
     }
 
-    private static String boolToString(boolean bool){
+    private String boolToString(boolean bool){
         if (bool){
             return "ON";
         }
         return "OFF";
     }
 
-    private static String graphicsThing(boolean bool){
+    private String graphicsThing(boolean bool){
         if (bool){
             return "FANCY";
         }
         return "FAST";
     }
 
-    private static String convertChunkLoadText(byte input){
+    private String convertChunkLoadText(byte input){
         switch (input) {
             case 0 -> {
                 return "SNAIL";
@@ -902,13 +897,13 @@ final public class MainMenu {
         return "NULL";
     }
 
-    private static Mesh titleScreenTextMeshBackGround = createTextCentered("", 0.2f, 0.2f, 0f);
-    private static Mesh titleScreenTextMeshForeGround = createTextCentered("", 1f, 1f, 0f);
+    private Mesh titleScreenTextMeshBackGround = createTextCentered("", 0.2f, 0.2f, 0f);
+    private Mesh titleScreenTextMeshForeGround = createTextCentered("", 1f, 1f, 0f);
 
-    private static final DateTimeFormatter dtf =  DateTimeFormatter.ofPattern("MM/dd");
-    private static final LocalDateTime now = LocalDateTime.now();
-    private static final String date = dtf.format(now);
-    private static final String[][] specialDates = {
+    private final DateTimeFormatter dtf =  DateTimeFormatter.ofPattern("MM/dd");
+    private final LocalDateTime now = LocalDateTime.now();
+    private final String date = dtf.format(now);
+    private final String[][] specialDates = {
             {"01/01", "Happy new year!"},
             {"01/08", "Happy Birthday Stephen Hawking!"},
             {"03/17", "Luck o' the Irish!"},
@@ -924,14 +919,14 @@ final public class MainMenu {
             {"12/31", "Happy new year's eve!"}
     };
 
-    public static void easterEgg(){
+    public void easterEgg(){
         if (date.equals("01/08")) {
             playSound("easter_egg_1");
         }
     }
 
 
-    public static void selectTitleScreenText(){
+    public void selectTitleScreenText(){
         boolean dateFound = false;
 
         for (String[] dateArray : specialDates){
@@ -949,7 +944,7 @@ final public class MainMenu {
         switch (titleScreenText) {
             case "Look at the window title!" -> updateWindowTitle("Got you!");
             case "Jump scare free!" -> updateWindowTitle("BOO!");
-            default -> updateWindowTitle(getVersionName());
+            default -> updateWindowTitle(crafter.getVersionName());
         }
 
         titleScreenTextLength = (byte) titleScreenText.length();
@@ -964,15 +959,15 @@ final public class MainMenu {
         }
     }
 
-    public static Mesh getTitleScreenTextMeshBackGround(){
+    public Mesh getTitleScreenTextMeshBackGround(){
         return titleScreenTextMeshBackGround;
     }
 
-    public static Mesh getTitleScreenTextMeshForeGround(){
+    public Mesh getTitleScreenTextMeshForeGround(){
         return titleScreenTextMeshForeGround;
     }
 
-    public static String getTitleScreenText(){
+    public String getTitleScreenText(){
         if (titleScreenText.equals("R_A_N_D_O_M")){
             int leftLimit = 97; // letter 'a'
             int rightLimit = 122; // letter 'z'
@@ -985,16 +980,16 @@ final public class MainMenu {
         }
         return titleScreenText;
     }
-    public static boolean titleScreenIsRandom(){
+    public boolean titleScreenIsRandom(){
         return titleScreenText.equals("R_A_N_D_O_M");
     }
 
-    public static byte getTitleScreenTextLength(){
+    public byte getTitleScreenTextLength(){
         return titleScreenTextLength;
     }
 
     //please keep this on the bottom
-    private static final String[] titleScreenTextList = new String[]{
+    private final String[] titleScreenTextList = new String[]{
             "R_A_N_D_O_M",
             "aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ!",
             "Made in America!",
@@ -1127,8 +1122,8 @@ final public class MainMenu {
             "Do a barrel roll!",
             "Fish on!",
             "Puts pixels on your screen!",
-            "Final public static!",
-            "Public static final!",
+            "Final public!",
+            "Public final!",
             "Made with no artificial ingredients!",
             "MIT Licensed!",
             "Can be used as a floatation device!",
@@ -1149,7 +1144,7 @@ final public class MainMenu {
             "Luultavasti kaannetty oikein!",
             "Found in the Arctic!",
             "New build now!",
-            "Now with static water!",
+            "Now with water!",
             "Wooden tools!",
             "Massages your CPU!",
             "Rated H for human!",
@@ -1159,9 +1154,10 @@ final public class MainMenu {
             "Moving clouds!",
             "3 2 1 Let's sausage!",
             "It's an anomaly!",
-            "Data oriented!",
             "Bleep bloop!",
             "Robotic!",
+            "Verbose!",
+            "Verbose!",
             "Verbose!",
             "Also try Open Miner!",
             "Rubenwardy is cool!",
@@ -1173,5 +1169,11 @@ final public class MainMenu {
             "It's magic, Joel!",
             "Error!",
             "Hello there!",
+            "A strange game!",
+            "It's always a tie!",
+            "The only winning move is not to play!",
+            "How about a nice game of chess?",
+            "Open gate, walk through gate, close gate!",
+            "Everything's an object!"
     };
 }
