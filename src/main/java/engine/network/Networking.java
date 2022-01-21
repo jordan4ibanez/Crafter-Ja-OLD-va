@@ -11,7 +11,6 @@ import org.joml.Vector3i;
 
 import java.io.IOException;
 
-import static engine.compression.Compression.decompressByteArrayToChunkObject;
 import static engine.graphics.Camera.getCameraRotation;
 import static engine.time.TimeOfDay.setTimeOfDay;
 import static game.chat.Chat.addToChatMessageBuffer;

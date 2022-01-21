@@ -6,14 +6,13 @@ import engine.gui.GUIObject;
 
 import static engine.Window.getWindowHeight;
 import static engine.Window.getWindowWidth;
-import static engine.credits.Credits.getCreditParts;
+import static game.mainMenu.Credits.getCreditParts;
 
 import static engine.graphics.Transformation.*;
 import static engine.gui.GUI.*;
 import static engine.gui.TextHandling.createTextCentered;
 import static engine.render.GameRenderer.*;
 import static engine.time.Delta.getDelta;
-import static game.mainMenu.MainMenu.*;
 import static game.mainMenu.MainMenuAssets.getTitleBackGroundMeshTile;
 import static game.mainMenu.MainMenuAssets.getTitleBlockMesh;
 import static org.lwjgl.opengl.GL44.GL_DEPTH_BUFFER_BIT;

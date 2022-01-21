@@ -11,7 +11,6 @@ import java.util.List;
 
 import static engine.gui.TextHandling.createTextWithShadow;
 import static engine.time.Timer.getFpsCounted;
-import static game.Crafter.getVersionName;
 
 public class GUI {
 
