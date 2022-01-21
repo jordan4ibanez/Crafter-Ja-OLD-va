@@ -71,7 +71,7 @@ final public class Texture {
         stbi_image_free(buf);
     }
 
-    private static int createGLTexture(ByteBuffer buf, int thisWidth, int thisHeight) {
+    private int createGLTexture(ByteBuffer buf, int thisWidth, int thisHeight) {
         // Create a new OpenGL texture
         int textureId = glGenTextures();
         // Bind the texture
