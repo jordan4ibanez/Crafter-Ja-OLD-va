@@ -84,6 +84,7 @@ public class Chunk {
         }
     }
 
+    /*
     public void initialChunkPayloadMultiplayer(){
         //create the initial map in memory
         int chunkRenderDistance = settings.getRenderDistance();
@@ -96,6 +97,7 @@ public class Chunk {
             }
         }
     }
+     */
 
     private double getChunkDistanceFromPlayer(int x, int z){
         Vector3i currentChunk = getPlayerCurrentChunk();
