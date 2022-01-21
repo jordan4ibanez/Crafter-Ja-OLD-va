@@ -39,7 +39,11 @@ public class Crafter {
     }
 
     public String getVersionName(){
-        return versionName;
+        return this.versionName;
+    }
+
+    public Window getWindow(){
+        return this.window;
     }
 
     public MainMenu getMainMenu(){
