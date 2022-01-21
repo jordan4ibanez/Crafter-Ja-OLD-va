@@ -1,4 +1,4 @@
-package game.weather;
+package game.entity.weather;
 
 import engine.graphics.Mesh;
 import engine.graphics.Texture;

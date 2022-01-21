@@ -50,7 +50,7 @@ public class Chunk {
     public float getChunkHover(Vector2i key){
         return map.get(key).getHover();
     }
-    
+
     public void doChunksHoveringUpThing(Delta delta){
         for (ChunkObject thisChunk : map.values()){
             float thisHover = thisChunk.getHover();
@@ -64,6 +64,7 @@ public class Chunk {
         }
     }
 
+    /*
     //multiplayer chunk update
     public void setChunk(int x, int z, byte[] blockData, byte[] rotationData, byte[] lightData, byte[] heightMapData) {
         // THIS CREATES A NEW OBJECT IN MEMORY! - it is necessary though, this needs a rework :L
@@ -98,6 +99,7 @@ public class Chunk {
 
         fullNeighborUpdate(x, z);
     }
+     */
 
     public void initialChunkPayload(){
         //create the initial map in memory

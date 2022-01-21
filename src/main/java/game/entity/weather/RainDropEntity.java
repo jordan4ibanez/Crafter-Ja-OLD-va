@@ -1,4 +1,4 @@
-package game.weather;
+package game.entity.weather;
 
 import org.joml.Vector3d;
 import org.joml.Vector3f;
