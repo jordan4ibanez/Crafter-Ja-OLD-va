@@ -11,41 +11,32 @@ import org.joml.Vector3i;
 
 import java.io.IOException;
 
-import static engine.graphics.Camera.getCameraRotation;
-import static engine.time.TimeOfDay.setTimeOfDay;
-import static game.chat.Chat.addToChatMessageBuffer;
-import static game.chunk.Chunk.*;
-import static game.entity.item.ItemEntity.*;
-import static game.mainMenu.MainMenu.*;
-import static game.player.OtherPlayers.updateOtherPlayer;
-import static game.player.Player.*;
+public class Networking {
 
-final public class Networking {
+    private int port = 30_150;
 
-    private static int port = 30_150;
+    private final Client client = new Client(50_000,50_000);
 
-    private static final Client client = new Client(50_000,50_000);
-
-    public static void setPort(int newPort){
+    public void setPort(int newPort){
         port = newPort;
     }
 
-    public static int getPort(){
+    public int getPort(){
         return port;
     }
 
-    public static void disconnectClient(){
+    public void disconnectClient(){
         client.stop();
         client.close();
         System.out.println("disconnected");
     }
 
-    public static boolean getIfMultiplayer(){
+    public boolean getIfMultiplayer(){
         return client.isConnected();
     }
 
 
-    public static void sendOutHandshake(String host) {
+    public void sendOutHandshake(String host) {
 
         client.start();
 
@@ -147,7 +138,7 @@ final public class Networking {
         });
     }
 
-    private static void decodeNetChunk(NetChunk netChunk){
+    private void decodeNetChunk(NetChunk netChunk){
         //decode compressed network packet
         ChunkData chunkData;
 
@@ -167,17 +158,17 @@ final public class Networking {
         setChunk(chunkData.x,chunkData.z,chunkData.block,chunkData.rotation,chunkData.light,chunkData.heightMap);
     }
 
-    public static void sendOutNetworkBlockBreak(int x, int y, int z){
+    public void sendOutNetworkBlockBreak(int x, int y, int z){
         client.sendTCP(new BlockBreakUpdate( new Vector3i(x,y,z)));
     }
 
-    public static void sendOutNetworkBlockPlace(int x, int y, int z, byte ID, byte rotation){
+    public void sendOutNetworkBlockPlace(int x, int y, int z, byte ID, byte rotation){
         client.sendTCP(new BlockPlaceUpdate(new Vector3i(x,y,z), ID, rotation));
     }
 
 
     //send position data to server
-    public static void sendPositionData() {
+    public void sendPositionData() {
         PlayerPosObject myPosition = new PlayerPosObject();
         myPosition.pos = getPlayerPos();
         myPosition.name = getPlayerName();
@@ -186,7 +177,7 @@ final public class Networking {
     }
 
     /*
-    public static void sendServerUpdatedInventory(){
+    public void sendServerUpdatedInventory(){
         InventoryObject mainInv = getMainInventory();
 
         assert mainInv != null;
@@ -206,20 +197,20 @@ final public class Networking {
     }
      */
 
-    public static void sendInventorySlot(int slot){
+    public void sendInventorySlot(int slot){
         client.sendTCP(new HotBarSlotUpdate(slot));
     }
 
-    public static void sendOutThrowItemUpdate(){
+    public void sendOutThrowItemUpdate(){
         client.sendTCP(new ThrowItemUpdate());
     }
 
     //request chunk data from server
-    public static void sendOutChunkRequest(ChunkRequest chunkRequest) {
+    public void sendOutChunkRequest(ChunkRequest chunkRequest) {
         client.sendTCP(chunkRequest);
     }
 
-    public static void sendChatMessage(String message){
+    public void sendChatMessage(String message){
         //stop spam, kind of
         if (message == null || message.equals("")){
             return;
@@ -228,7 +219,7 @@ final public class Networking {
     }
 
     //allow main loop to send player back to multiplayer page
-    public static boolean getIfConnected(){
+    public boolean getIfConnected(){
         return client.isConnected();
     }
 }

@@ -8,7 +8,7 @@ final public class TextHandling {
     //textures
     private final Texture fontTextureAtlas = new Texture("textures/font.png");
 
-    
+
     //yes I know, I could use a TTF font, but where's the fun in that?
     public float[] translateCharToArray(char thisChar){
 
