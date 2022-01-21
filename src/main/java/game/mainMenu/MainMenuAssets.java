@@ -7,23 +7,26 @@ import java.util.ArrayList;
 
 public class MainMenuAssets {
 
-    private static Mesh titleBlockMesh;
+    private final Mesh titleBlockMesh;
 
-    private static Mesh titleBackGroundMeshTile;
+    private final Mesh titleBackGroundMeshTile;
+
+    public MainMenuAssets(){
+        this.titleBlockMesh = createMenuMenuTitleBlock();
+        this.titleBackGroundMeshTile = createMainMenuBackGroundTile();
+    }
 
 
-    public static Mesh getTitleBlockMesh(){
+    public Mesh getTitleBlockMesh(){
         return titleBlockMesh;
     }
 
-    public static Mesh getTitleBackGroundMeshTile(){
+    public Mesh getTitleBackGroundMeshTile(){
         return titleBackGroundMeshTile;
     }
 
     //this is reused garbage because I'm too busy to turn it into an internal API
-    public static void createMenuMenuTitleBlock() {
-
-        Texture titleScreenBlockTexture = new Texture("textures/title_screen_block.png");
+    private Mesh createMenuMenuTitleBlock() {
 
         float sideLight = 0.6f;
 
@@ -325,10 +328,10 @@ public class MainMenuAssets {
             textureCoordArray[i] = textureCoord.get(i);
         }
 
-        titleBlockMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, titleScreenBlockTexture);
+        return new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, new Texture("textures/title_screen_block.png"));
     }
 
-    public static void createMainMenuBackGroundTile() {
+    private Mesh createMainMenuBackGroundTile() {
         ArrayList<Float> positions = new ArrayList<>();
         ArrayList<Float> textureCoord = new ArrayList<>();
         ArrayList<Integer> indices = new ArrayList<>();
@@ -407,6 +410,6 @@ public class MainMenuAssets {
             textureCoordArray[i] = textureCoord.get(i);
         }
 
-        titleBackGroundMeshTile = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, new Texture("textures/title_screen_background.png"));
+        return new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, new Texture("textures/title_screen_background.png"));
     }
 }
