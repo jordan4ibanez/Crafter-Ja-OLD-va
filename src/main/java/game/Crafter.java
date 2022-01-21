@@ -32,15 +32,15 @@ public class Crafter {
     }
 
     private final String versionName = "Crafter 0.08a";
+    private final Window window;
     private final RuntimeInfo runtimeInfo;
     private final Disk disk;
-    private final Window window;
     private final MainMenu mainMenu;
 
     public Crafter(){
+        this.window = new Window(this.versionName, getSettingsVsync());
         this.runtimeInfo = new RuntimeInfo();
         this.disk = new Disk();
-        this.window = new Window(this.versionName, getSettingsVsync());
         this.mainMenu = new MainMenu(this);
     }
 

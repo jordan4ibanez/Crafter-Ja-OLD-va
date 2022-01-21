@@ -4,50 +4,26 @@ import org.joml.Math;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import static engine.MouseInput.getMouseDisplVecX;
-import static engine.MouseInput.getMouseDisplVecY;
-import static game.player.Player.*;
-import static game.player.ViewBobbing.*;
-import static game.ray.Ray.cameraRayCast;
-
 public class Camera {
 
-    private static final Vector3d position = new Vector3d();
-    private static final Vector3f rotation = new Vector3f();
-    private static final Vector3f rotationVector = new Vector3f();
+    private final Vector3d position = new Vector3d();
+    private final Vector3f rotation = new Vector3f();
+    private final Vector3f rotationVector = new Vector3f();
 
     //make this adjustable 0.2 to 1.0 maybe - implement slider in menu system!
-    private static final float MOUSE_SENSITIVITY   = 0.09f;
+    private final float MOUSE_SENSITIVITY   = 0.09f;
 
-    private static byte cameraPerspective = 0;
+    private byte cameraPerspective = 0;
 
-    //this is mutable, be careful with this
-    public static Vector3d getCameraPosition(){
+    public Vector3d getCameraPosition(){
         return position;
     }
 
-    //immutable
-    public static double getCameraPositionX(){
-        return position.x;
-    }
-    //immutable
-    public static double getCameraPositionY(){
-        return position.y;
-    }
-    //immutable
-    public static double getCameraPositionZ(){
-        return position.z;
-    }
-
-    public static void setCameraPosition(double x, double y, double z){
-        position.set(x,y,z);
-    }
-
-    public static void setCameraPosition(Vector3d newPos){
+    public void setCameraPosition(Vector3d newPos){
         position.set(newPos);
     }
 
-    public static void moveCameraPosition(float offsetX, float offsetY, float offsetZ){
+    public void moveCameraPosition(float offsetX, float offsetY, float offsetZ){
         if ( offsetZ != 0){
             position.x += Math.sin(Math.toRadians(rotation.y)) * -1.0f * offsetZ;
             position.z += Math.cos(Math.toRadians(rotation.y)) * offsetZ;
@@ -63,7 +39,7 @@ public class Camera {
         }
     }
 
-    public static void toggleCameraPerspective(){
+    public void toggleCameraPerspective(){
         cameraPerspective++;
 
         //flip camera
@@ -81,44 +57,28 @@ public class Camera {
         }
     }
 
-    public static void setCameraPerspective(byte perspective){
+    public void setCameraPerspective(byte perspective){
         cameraPerspective = perspective;
     }
 
-    public static byte getCameraPerspective(){
+    public byte getCameraPerspective(){
         return cameraPerspective;
     }
 
-    //this is mutable, be careful with this
-    public static Vector3f getCameraRotation(){
+    public Vector3f getCameraRotation(){
         return rotation;
     }
-    //immutable
-    public static float getCameraRotationX(){
-        return rotation.x;
-    }
-    //immutable
-    public static float getCameraRotationY(){
-        return rotation.y;
-    }
-    //immutable
-    public static float getCameraRotationZ(){
-        return rotation.z;
+
+    public void setCameraRotation(Vector3f rotation){
+        rotation.set(rotation);
     }
 
-
-    public static void setCameraRotation(float x, float y, float z){
-        rotation.set(x,y,z);
-    }
-
-    public static void moveCameraRotation(float offsetX, float offsetY, float offsetZ){
-        rotation.x += offsetX;
-        rotation.y += offsetY;
-        rotation.z += offsetZ;
+    public void moveCameraRotation(Vector3f offset){
+        rotation.add(offset);
     }
 
     //mutable - be careful with this
-    public static Vector3f getCameraRotationVector(){
+    public Vector3f getCameraRotationVector(){
         float xzLen = Math.cos(Math.toRadians(rotation.x + 180f));
         rotationVector.z = xzLen * Math.cos(Math.toRadians(rotation.y));
         rotationVector.y = Math.sin(Math.toRadians(rotation.x + 180f));
@@ -126,16 +86,16 @@ public class Camera {
         return rotationVector;
     }
     //immutable
-    public static float getCameraRotationVectorX(){
+    public float getCameraRotationVectorX(){
         float xzLen = Math.cos(Math.toRadians(rotation.x + 180f));
         return xzLen * Math.sin(Math.toRadians(-rotation.y));
     }
     //immutable
-    public static float getCameraRotationVectorY(){
+    public float getCameraRotationVectorY(){
         return Math.sin(Math.toRadians(rotation.x + 180f));
     }
     //immutable
-    public static float getCameraRotationVectorZ(){
+    public float getCameraRotationVectorZ(){
         float xzLen = Math.cos(Math.toRadians(rotation.x + 180f));
         return xzLen * Math.cos(Math.toRadians(rotation.y));
     }
@@ -144,11 +104,11 @@ public class Camera {
 
 
 
-    public static void updateCamera(){
+    public void updateCamera(){
 
         if (cameraPerspective == 0) {
-            setCameraPosition(getPlayerPosWithEyeHeight().x, getPlayerPosWithEyeHeight().y + getSneakOffset(), getPlayerPosWithEyeHeight().z);
-            moveCameraPosition(getPlayerViewBobbingX(), getPlayerViewBobbingY(), getPlayerViewBobbingZ());
+            setCameraPosition(getPlayerPosWithEyeHeight());
+            moveCameraPosition(getPlayerViewBobbing());
         }
 
         //update camera based on mouse
