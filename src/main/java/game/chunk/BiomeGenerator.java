@@ -10,7 +10,6 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-//this class is entirely run on it's own thread, be careful with OpenGL context
 public class BiomeGenerator implements Runnable {
 
     private final Window window;
