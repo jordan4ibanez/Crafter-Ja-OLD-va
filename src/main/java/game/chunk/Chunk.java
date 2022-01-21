@@ -70,7 +70,7 @@ public class Chunk {
 
     public void initialChunkPayload(){
         //create the initial map in memory
-        int chunkRenderDistance = getRenderDistance();
+        int chunkRenderDistance = settings.getRenderDistance();
         Vector3i currentChunk = getPlayerCurrentChunk();
         for (int x = -chunkRenderDistance + currentChunk.x; x < chunkRenderDistance + currentChunk.x; x++){
             for (int z = -chunkRenderDistance + currentChunk.z; z< chunkRenderDistance + currentChunk.z; z++){
@@ -86,7 +86,7 @@ public class Chunk {
 
     public void initialChunkPayloadMultiplayer(){
         //create the initial map in memory
-        int chunkRenderDistance = getRenderDistance();
+        int chunkRenderDistance = settings.getRenderDistance();
         Vector3i currentChunk = getPlayerCurrentChunk();
         for (int x = -chunkRenderDistance + currentChunk.x; x < chunkRenderDistance + currentChunk.x; x++){
             for (int z = -chunkRenderDistance + currentChunk.z; z< chunkRenderDistance + currentChunk.z; z++){
@@ -831,5 +831,18 @@ public class Chunk {
         allFaceMeshes.clear();
 
         hover.clear();
+    }
+
+    //chunk math
+    //private final static int xMax = 16;
+    //private final static int yMax = 128;
+    //private final static int length = xMax * yMax; // 2048
+    private int posToIndex( int x, int y, int z ) {
+        return (z * 2048) + (y * 16) + x;
+    }
+
+    //make the inverse of this eventually
+    private int posToIndex2D(int x, int z){
+        return (z * 16) + x;
     }
 }
