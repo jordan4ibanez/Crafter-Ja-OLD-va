@@ -11,8 +11,6 @@ import java.nio.file.Paths;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
 
-import static engine.disk.SQLiteDiskHandler.connectWorldDataBase;
-
 public class Disk {
 
     private byte currentActiveWorld = 1; //failsafe
