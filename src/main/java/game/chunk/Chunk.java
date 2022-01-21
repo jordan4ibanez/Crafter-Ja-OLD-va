@@ -61,43 +61,6 @@ public class Chunk {
         }
     }
 
-    /*
-    //multiplayer chunk update
-    public void setChunk(int x, int z, byte[] blockData, byte[] rotationData, byte[] lightData, byte[] heightMapData) {
-        // THIS CREATES A NEW OBJECT IN MEMORY! - it is necessary though, this needs a rework :L
-        Vector2i key = new Vector2i(x, z);
-
-        //don't allow old vertex data to leak - instead clone primitives
-        Vector2i gottenChunk = chunkKeys.get(key);
-
-        if (gottenChunk != null) {
-            //todo: see if not doing .clone() causes memory leak - would reduce memory lookups
-            blocks.replace(key, blockData.clone());
-            rotations.replace(key, rotationData.clone());
-            lights.replace(key, lightData.clone());
-            heightmaps.replace(key,heightMapData.clone());
-        } else {
-            chunkKeys.put(key,key);
-            blocks.put(key, blockData.clone());
-            rotations.put(key, rotationData.clone());
-            lights.put(key, lightData.clone());
-            heightmaps.put(key,heightMapData.clone());
-            //null meshes
-            normalMeshes.put(key, new Mesh[8]);
-            liquidMeshes.put(key, new Mesh[8]);
-            allFaceMeshes.put(key, new Mesh[8]);
-            //initial hover
-            hover.put(key, -128.f);
-        }
-
-        for (int y = 0; y < 8; y++) {
-            chunkUpdate(x, z, y);
-        }
-
-        fullNeighborUpdate(x, z);
-    }
-     */
-
     public void initialChunkPayload(){
         //create the initial map in memory
         int chunkRenderDistance = getRenderDistance();
