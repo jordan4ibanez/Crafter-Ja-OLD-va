@@ -18,7 +18,6 @@ import static engine.render.GameRenderer.initRenderer;
 public class Crafter {
 
     public void main(String[] args) {
-        //the whole game is an object :D
         Crafter crafter = new Crafter();
         crafter.runGame();
     }
