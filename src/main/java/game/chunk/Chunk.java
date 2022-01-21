@@ -845,4 +845,8 @@ public class Chunk {
     private int posToIndex2D(int x, int z){
         return (z * 16) + x;
     }
+
+    private double getDistance(double x1, double y1, double z1, double x2, double y2, double z2){
+        return Math.hypot((x1 - x2), Math.hypot((y1 - y2),(z1 - z2)));
+    }
 }
