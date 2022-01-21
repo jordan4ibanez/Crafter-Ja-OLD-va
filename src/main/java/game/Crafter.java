@@ -5,6 +5,7 @@ import engine.debug.RuntimeInfo;
 import engine.disk.Disk;
 import engine.graphics.Transformation;
 import engine.gui.GUI;
+import engine.settings.Settings;
 import game.chunk.BiomeGenerator;
 import game.chunk.Chunk;
 import game.chunk.ChunkMeshGenerator;
@@ -28,14 +29,16 @@ public class Crafter {
     private final MainMenu mainMenu;
     private final Transformation transformation;
     private final GUI gui;
+    private final Settings settings;
 
     public Crafter(){
-        this.window = new Window(this.versionName, getSettingsVsync());
+        this.window = new Window(this.versionName, true); //vsync is on by default - save cpu resources I guess
         this.runtimeInfo = new RuntimeInfo();
         this.disk = new Disk();
         this.mainMenu = new MainMenu(this);
         this.transformation = new Transformation();
         this.gui = new GUI();
+        this.settings = new Settings(disk, window);
     }
 
     public String getVersionName(){
