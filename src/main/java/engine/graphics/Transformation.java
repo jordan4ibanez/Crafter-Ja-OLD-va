@@ -5,44 +5,44 @@ import org.joml.Matrix4d;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import static engine.graphics.Camera.*;
-import static engine.render.GameRenderer.getWindowSizeX;
-import static engine.render.GameRenderer.getWindowSizeY;
-import static engine.time.TimeOfDay.getTimeOfDayLinear;
-import static game.tnt.TNTEntity.getTNTPosition;
-import static game.tnt.TNTEntity.getTNTScale;
-import static org.joml.Math.toRadians;
+import engine.graphics.Camera.*;
+import engine.render.GameRenderer.getWindowSizeX;
+import engine.render.GameRenderer.getWindowSizeY;
+import engine.time.TimeOfDay.getTimeOfDayLinear;
+import game.tnt.TNTEntity.getTNTPosition;
+import game.tnt.TNTEntity.getTNTScale;
+import org.joml.Math.toRadians;
 
 //so much math
 public class Transformation {
 
     //the master projection matrix, this is only modified by getProjectionMatrix
-    private static final Matrix4d projectionMatrix = new Matrix4d();
+    private final Matrix4d projectionMatrix = new Matrix4d();
 
     //another master matrix, only modified by resetOrthoProjectionMatrix
-    private static final Matrix4d orthoMatrix = new Matrix4d();
+    private final Matrix4d orthoMatrix = new Matrix4d();
 
     //these are worker matrices, they can be modified freely
-    private static final Matrix4d modelMatrix = new Matrix4d();
-    private static final Matrix4d viewMatrix = new Matrix4d();
-    private static final Matrix4d orthoModelMatrix = new Matrix4d();
+    private final Matrix4d modelMatrix = new Matrix4d();
+    private final Matrix4d viewMatrix = new Matrix4d();
+    private final Matrix4d orthoModelMatrix = new Matrix4d();
 
     //this is specifically used for openAL
-    private static final Matrix4d openALMatrix = new Matrix4d();
+    private final Matrix4d openALMatrix = new Matrix4d();
 
-    public static Matrix4d getProjectionMatrix(){
+    public Matrix4d getProjectionMatrix(){
         return projectionMatrix;
     }
 
-    public static Matrix4d getModelMatrix(){
+    public Matrix4d getModelMatrix(){
         return modelMatrix;
     }
 
-    public static Matrix4d getOrthoModelMatrix(){
+    public Matrix4d getOrthoModelMatrix(){
         return orthoModelMatrix;
     }
 
-    public static void resetProjectionMatrix(float fov, float width, float height, float zNear, float zFar){
+    public void resetProjectionMatrix(float fov, float width, float height, float zNear, float zFar){
         projectionMatrix.setPerspective(fov, width / height, zNear, zFar);
 
         //right-handed coordinate system
@@ -53,7 +53,7 @@ public class Transformation {
                 .translate(-getCameraPositionX(), -getCameraPositionY(), -getCameraPositionZ());
     }
 
-    public static void updateCelestialMatrix(double inputTime) {
+    public void updateCelestialMatrix(double inputTime) {
         //keep these bois on the stack
         double x = (Math.sin(inputTime * 2f * Math.PI) * 5d) + getCameraPositionX();
         double y = (Math.cos(inputTime * 2f * Math.PI) * 5d) + getCameraPositionY();
@@ -67,20 +67,20 @@ public class Transformation {
     }
 
     //THIS IS USED BY OPENAL - SOUND MANAGER
-    public static void updateOpenALSoundMatrix(double positionX, double positionY, double positionZ, float rotationX, float rotationY) {
+    public void updateOpenALSoundMatrix(double positionX, double positionY, double positionZ, float rotationX, float rotationY) {
         // First do the rotation so camera rotates over its position
         openALMatrix.rotationX(toRadians(rotationX))
                 .rotateY(toRadians(rotationY))
                 .translate(-positionX, -positionY, -positionZ);
     }
 
-    public static Matrix4d getOpenALMatrix(){
+    public Matrix4d getOpenALMatrix(){
         return openALMatrix;
     }
 
 
 
-    public static void updateViewMatrix(double posX, double posY, double posZ, float rotX, float rotY, float rotZ) {
+    public void updateViewMatrix(double posX, double posY, double posZ, float rotX, float rotY, float rotZ) {
         // First do the rotation so camera rotates over its position
         modelMatrix.set(viewMatrix).translate(posX, posY, posZ).
                 rotateY(toRadians(-rotY)).
@@ -90,7 +90,7 @@ public class Transformation {
     }
 
     //a silly addon method to modify the item size
-    public static void updateItemViewMatrix(double posX, double posY, double posZ, float rotX, float rotY, float rotZ) {
+    public void updateItemViewMatrix(double posX, double posY, double posZ, float rotX, float rotY, float rotZ) {
         // First do the rotation so camera rotates over its position
         modelMatrix.set(viewMatrix).translate(posX, posY, posZ).
                 rotateY(toRadians(-rotY)).
@@ -100,7 +100,7 @@ public class Transformation {
     }
 
 
-    public static void updateParticleViewMatrix(double positionX, double positionY, double positionZ, float rotationX, float rotationY, float rotationZ) {
+    public void updateParticleViewMatrix(double positionX, double positionY, double positionZ, float rotationX, float rotationY, float rotationZ) {
         // First do the rotation so camera rotates over its position
         modelMatrix.set(viewMatrix).translate(positionX, positionY, positionZ).
                 rotateY(toRadians(-rotationY)).
@@ -109,7 +109,7 @@ public class Transformation {
                 scale(1f);
     }
 
-    public static void updateTextIn3DSpaceViewMatrix(Vector3d position, Vector3f rotation, Vector3d scale) {
+    public void updateTextIn3DSpaceViewMatrix(Vector3d position, Vector3f rotation, Vector3d scale) {
         // First do the rotation so camera rotates over its position
         modelMatrix.set(viewMatrix).translate(position).
                 rotateY(toRadians(-rotation.y)).
@@ -119,7 +119,7 @@ public class Transformation {
     }
 
 
-    public static void updateViewMatrixWithPosRotationScale(double posX, double posY, double posZ, float rotX, float rotY, float rotZ,float scaleX, float scaleY, float scaleZ){
+    public void updateViewMatrixWithPosRotationScale(double posX, double posY, double posZ, float rotX, float rotY, float rotZ,float scaleX, float scaleY, float scaleZ){
         modelMatrix.set(viewMatrix).translate(posX, posY, posZ).
                 rotateX(toRadians(-rotX)).
                 rotateY(toRadians(-rotY)).
@@ -128,7 +128,7 @@ public class Transformation {
     }
 
 
-    public static void updateMobMatrix(
+    public void updateMobMatrix(
             double basePosX, double basePosY, double basePosZ,
             float offsetPosX, float offsetPosY, float offsetPosZ,
             float bodyYawX, float bodyYawY, float bodyYawZ,
@@ -148,7 +148,7 @@ public class Transformation {
                 rotateZ(toRadians(-bodyPartRotationZ));
     }
 
-    public static void setWieldHandMatrix(
+    public void setWieldHandMatrix(
             double basePosX, double basePosY, double basePosZ,
             double offsetPosX, double offsetPosY, double offsetPosZ,
             float cameraRotationX, float cameraRotationY, float cameraRotationZ,
@@ -174,11 +174,11 @@ public class Transformation {
 
     //ortholinear
 
-    public static void resetOrthoProjectionMatrix() {
+    public void resetOrthoProjectionMatrix() {
         orthoMatrix.setOrtho(-getWindowSizeX()/2f, getWindowSizeX()/2f, -getWindowSizeY()/2f, getWindowSizeY()/2f, -1000f, 1000f);
     }
 
-    public static void updateOrthoModelMatrix(double posX, double posY, double posZ, float rotX, float rotY, float rotZ, double scaleX, double scaleY, double scaleZ) {
+    public void updateOrthoModelMatrix(double posX, double posY, double posZ, float rotX, float rotY, float rotZ, double scaleX, double scaleY, double scaleZ) {
         orthoModelMatrix.set(orthoMatrix).translate(posX, posY, posZ).
                 rotateX( toRadians(rotX)).
                 rotateY( toRadians(rotY)).

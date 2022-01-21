@@ -3,6 +3,7 @@ package game;
 import engine.Window;
 import engine.debug.RuntimeInfo;
 import engine.disk.Disk;
+import engine.graphics.Transformation;
 import game.chunk.BiomeGenerator;
 import game.chunk.Chunk;
 import game.chunk.ChunkMeshGenerator;
@@ -36,12 +37,14 @@ public class Crafter {
     private final RuntimeInfo runtimeInfo;
     private final Disk disk;
     private final MainMenu mainMenu;
+    private final Transformation transformation;
 
     public Crafter(){
         this.window = new Window(this.versionName, getSettingsVsync());
         this.runtimeInfo = new RuntimeInfo();
         this.disk = new Disk();
         this.mainMenu = new MainMenu(this);
+        this.transformation = new Transformation();
     }
 
     public String getVersionName(){
