@@ -15,18 +15,18 @@ import static engine.disk.SQLiteDiskHandler.connectWorldDataBase;
 
 public class Disk {
 
-    private static byte currentActiveWorld = 1; //failsafe
+    private byte currentActiveWorld = 1; //failsafe
 
-    public static void updateSaveQueueCurrentActiveWorld(byte newWorld){
+    public void updateSaveQueueCurrentActiveWorld(byte newWorld){
         currentActiveWorld = newWorld;
     }
 
-    public static byte getCurrentActiveWorld(){
+    public byte getCurrentActiveWorld(){
         return currentActiveWorld;
     }
 
     //this is the main entry point for disk access to the world from the main menu
-    public static void setCurrentActiveWorld(byte newWorld){
+    public void setCurrentActiveWorld(byte newWorld){
         currentActiveWorld = newWorld;
         updateSaveQueueCurrentActiveWorld(newWorld);
         createAlphaWorldFolder();
@@ -37,7 +37,7 @@ public class Disk {
 
     //https://stackoverflow.com/a/24734290
     //https://stackoverflow.com/a/3758880
-    public static String worldSize(byte world) {
+    public String worldSize(byte world) {
         long bytes = 0;
 
         Path thisWorld = Paths.get("Worlds/world" + world);
@@ -63,7 +63,7 @@ public class Disk {
         return " (" + String.format("%.1f %cB", bytes / 1000.0, ci.current()) + ")";
     }
 
-    public static void createWorldsDir(){
+    public void createWorldsDir(){
         try {
             Files.createDirectories(Paths.get("Worlds"));
         } catch (IOException e) {
@@ -71,7 +71,7 @@ public class Disk {
         }
     }
 
-    private static void createAlphaWorldFolder(){
+    private void createAlphaWorldFolder(){
         try {
             Files.createDirectories(Paths.get("Worlds/world" + currentActiveWorld));
         } catch (IOException e) {
@@ -79,16 +79,16 @@ public class Disk {
         }
     }
 
-    public static void updateWorldsPathToAvoidCrash(){
+    public void updateWorldsPathToAvoidCrash(){
         createWorldsDir();
         createAlphaWorldFolder();
     }
 
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
 
-    public static SettingsObject loadSettingsFromDisk(){
+    public SettingsObject loadSettingsFromDisk(){
         File file = new File("Settings.conf");
 
         if (!file.canRead()){
@@ -106,7 +106,7 @@ public class Disk {
         return settings;
     }
 
-    public static void saveSettingsToDisk(SettingsObject settingsObject){
+    public void saveSettingsToDisk(SettingsObject settingsObject){
         try {
             objectMapper.writeValue(new File("Settings.conf"), settingsObject);
         } catch (IOException e) {
