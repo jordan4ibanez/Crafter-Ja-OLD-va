@@ -10,11 +10,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class SQLiteDiskAccessThread implements Runnable {
     private final SQLiteDiskHandler sqLiteDiskHandler;
 
-    //external pointer to other thread's object held internal
-    public SQLiteDiskAccessThread(SQLiteDiskHandler sqLiteDiskHandler){
-        this.sqLiteDiskHandler = sqLiteDiskHandler;
-    }
-
     private Connection connection;
     private DatabaseMetaData meta;
 
@@ -22,6 +17,11 @@ public class SQLiteDiskAccessThread implements Runnable {
     private final ConcurrentLinkedDeque<String> playersToLoad  = new ConcurrentLinkedDeque<>();
 
     private final AtomicBoolean running = new AtomicBoolean(false);
+
+    //external pointer to other thread's object held internal
+    public SQLiteDiskAccessThread(SQLiteDiskHandler sqLiteDiskHandler){
+        this.sqLiteDiskHandler = sqLiteDiskHandler;
+    }
 
     public void createWorldDataBase(String worldName){
         //databases are automatically created with the JBDC driver

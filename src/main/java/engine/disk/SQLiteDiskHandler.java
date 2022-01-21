@@ -1,40 +1,43 @@
 package engine.disk;
 
+import game.chunk.BiomeGenerator;
 import game.chunk.Chunk;
 import org.joml.Vector2i;
 
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class SQLiteDiskHandler {
-
     private final SQLiteDiskAccessThread sqLiteDiskAccessThread;
+    private final BiomeGenerator biomeGenerator;
     private final Chunk chunk;
 
     private boolean hasPolledLoadingPlayer = false;
     private final ConcurrentLinkedDeque<PlayerDataObject> playerData = new ConcurrentLinkedDeque<>();
     private final ConcurrentLinkedDeque<PrimitiveChunkObject> loadingChunkData = new ConcurrentLinkedDeque<>();
+    private final ConcurrentLinkedDeque<Vector2i> generatingChunks = new ConcurrentLinkedDeque<>();
 
-    public SQLiteDiskHandler(Chunk chunk){
+    public SQLiteDiskHandler(Chunk chunk, BiomeGenerator biomeGenerator){
         this.chunk = chunk;
         //threads directly share pointers with each other
         this.sqLiteDiskAccessThread = new SQLiteDiskAccessThread(this);
+        this.biomeGenerator = biomeGenerator;
     }
 
     //this mirrors the object's call
     public void connectWorldDataBase(String worldName){
         //this is needed to create the WORLD table
-        sqLiteDiskAccessThread.createWorldDataBase(worldName);
-        sqLiteDiskAccessThread.addPlayerToLoad("singleplayer");
-        sqLiteDiskAccessThread.start();
+        this.sqLiteDiskAccessThread.createWorldDataBase(worldName);
+        this.sqLiteDiskAccessThread.addPlayerToLoad("singleplayer");
+        this.sqLiteDiskAccessThread.start();
     }
 
     //closes the world's database, kills the thread, removes the object pointer
     public void closeWorldDataBase(){
         //dump it all in to SQLite thread boi
-        chunk.globalFinalChunkSaveToDisk();
-        savePlayerData("singleplayer");
-        sqLiteDiskAccessThread.stop();
-        hasPolledLoadingPlayer = false;
+        this.chunk.globalFinalChunkSaveToDisk();
+        this.savePlayerData("singleplayer");
+        this.sqLiteDiskAccessThread.stop();
+        this.hasPolledLoadingPlayer = false;
     }
 
     public void sendPlayerData(PlayerDataObject player){
@@ -44,17 +47,22 @@ public class SQLiteDiskHandler {
     public void poll(){
 
         //chunk data
-        if (!loadingChunkData.isEmpty()){
+        if (!this.loadingChunkData.isEmpty()){
             PrimitiveChunkObject chunkObject = loadingChunkData.pop();
-            chunk.setChunk(chunkObject);
+            this.chunk.setChunk(chunkObject);
+        }
+
+        if (!this.generatingChunks.isEmpty()){
+            Vector2i pos = generatingChunks.pop();
+            this.biomeGenerator.addChunkToBiomeGeneration(pos);
         }
 
 
         //player data
-        if (hasPolledLoadingPlayer){
+        if (this.hasPolledLoadingPlayer){
             return;
         }
-        if (playerData.isEmpty()) {
+        if (this.playerData.isEmpty()) {
             return;
         }
 
@@ -70,24 +78,28 @@ public class SQLiteDiskHandler {
         setPlayerPos(newPlayerPos);
         setPlayerHealth(newPlayerHealth);
 
-        hasPolledLoadingPlayer = true;
+        this.hasPolledLoadingPlayer = true;
 
     }
 
     public void savePlayerData(String name){
-        sqLiteDiskAccessThread.addPlayerToSave(name, getInventoryAsArray("main"), getInventoryCountAsArray("main"), getPlayerPos(), (byte) getPlayerHealth());
+        this.sqLiteDiskAccessThread.addPlayerToSave(name, getInventoryAsArray("main"), getInventoryCountAsArray("main"), getPlayerPos(), (byte) getPlayerHealth());
     }
 
     public void loadChunk(Vector2i key){
-        sqLiteDiskAccessThread.addLoadChunk(key);
+        this.sqLiteDiskAccessThread.addLoadChunk(key);
     }
 
     public void saveChunk(int x, int z, byte[] blockData, byte[] rotationData, byte[] lightData, byte[] heightMap){
-        sqLiteDiskAccessThread.addSaveChunk(x,z,blockData,rotationData,lightData,heightMap);
+        this.sqLiteDiskAccessThread.addSaveChunk(x,z,blockData,rotationData,lightData,heightMap);
     }
 
     public void setChunk(PrimitiveChunkObject primitiveChunkObject){
-        loadingChunkData.add(primitiveChunkObject);
+        this.loadingChunkData.add(primitiveChunkObject);
+    }
+
+    public void addChunkToBiomeGenerator(Vector2i pos){
+        this.generatingChunks.add(new Vector2i(pos));
     }
 
 
