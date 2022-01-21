@@ -1,7 +1,7 @@
 package engine.compression;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import engine.disk.ChunkSavingObject;
+import engine.disk.PrimitiveChunkObject;
 import game.chunk.ChunkData;
 
 import java.io.ByteArrayInputStream;
@@ -15,7 +15,7 @@ public class Compression {
     private final ObjectMapper mapper = new ObjectMapper();
 
     public byte[] convertChunkToCompressedByteArray(ChunkData thisChunk) throws IOException {
-        ChunkSavingObject savingObject = new ChunkSavingObject();
+        PrimitiveChunkObject savingObject = new PrimitiveChunkObject();
 
         savingObject.x = thisChunk.x;
         savingObject.z = thisChunk.z;
@@ -78,11 +78,11 @@ public class Compression {
         byteArrayOutputStream.close();
 
         //create new generic chunk saving object
-        ChunkSavingObject thisChunkLoaded;
+        PrimitiveChunkObject thisChunkLoaded;
 
         //attempt to convert it from the decompressed string using Jackson
         try {
-            thisChunkLoaded = this.mapper.readValue(byteArrayOutputStream.toString(), ChunkSavingObject.class);
+            thisChunkLoaded = this.mapper.readValue(byteArrayOutputStream.toString(), PrimitiveChunkObject.class);
         } catch (IOException e) {
             //silently return null
             return null;

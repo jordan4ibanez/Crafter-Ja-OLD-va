@@ -64,8 +64,6 @@ public class Crafter {
     //load everything
     public void runGame(){
         try{
-
-
             loadSettings();
 
             initWindow(versionName, getSettingsVsync());
@@ -113,7 +111,6 @@ public class Crafter {
         registerItems();
         registerCraftRecipes();
     }
-
 
     private void cleanup(){
         Chunk.cleanChunkDataMemory();
