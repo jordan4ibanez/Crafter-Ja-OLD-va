@@ -6,7 +6,7 @@
 
     <groupId>Crafter</groupId>
     <artifactId>Crafter</artifactId>
-    <version>0.07c</version>
+    <version>0.08a</version>
     
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

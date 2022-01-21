@@ -1,4 +1,4 @@
-# Crafter 0.07b
+# Crafter 0.08a
 
 A blocky game written in java with LWJGL 3
 
