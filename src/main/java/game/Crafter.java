@@ -1,14 +1,13 @@
 package game;
 
+import engine.Window;
 import game.chunk.BiomeGenerator;
 import game.chunk.Chunk;
 import game.chunk.ChunkMeshGenerator;
 import game.light.Light;
-
-import java.awt.*;
+import game.mainMenu.MainMenu;
 
 import static engine.MouseInput.initMouseInput;
-import static engine.Window.initWindow;
 import static engine.disk.Disk.createWorldsDir;
 import static engine.gui.GUI.createGUI;
 import static engine.gui.GUI.initializeHudAtlas;
@@ -20,26 +19,31 @@ import static engine.settings.Settings.loadSettings;
 import static engine.sound.SoundManager.*;
 import static game.crafting.CraftRecipes.registerCraftRecipes;
 import static game.crafting.Inventory.createInitialInventory;
-import static game.item.ItemRegistration.registerItems;
-import static game.mainMenu.MainMenu.easterEgg;
-import static game.mainMenu.MainMenu.initMainMenu;
 import static game.entity.mob.MobDefinition.registerMobs;
 import static game.tnt.TNTEntity.createTNTEntityMesh;
 
 public class Crafter {
-
     public void main(String[] args) {
         //the whole game is an object :D
         Crafter crafter = new Crafter();
         crafter.runGame();
     }
 
+    private final String versionName = "Crafter 0.08a";
+    private final Window window;
+    private final MainMenu mainMenu;
 
-    //fields
-    private final String versionName = "Crafter 0.07c";
+    public Crafter(){
+        this.window = new Window(this.versionName, getSettingsVsync());
+        this.mainMenu = new MainMenu(this);
+    }
 
-    public final String getVersionName(){
+    public String getVersionName(){
         return versionName;
+    }
+
+    public MainMenu getMainMenu(){
+        return this.mainMenu;
     }
 
 
@@ -47,12 +51,11 @@ public class Crafter {
     //load everything
     public void runGame(){
         try{
-            Toolkit tk = Toolkit.getDefaultToolkit();
-            Dimension d = tk.getScreenSize();
+
 
             loadSettings();
 
-            initWindow(versionName, d.width/2,d.height/2,getSettingsVsync());
+            initWindow(versionName, getSettingsVsync());
 
             initRenderer();
             initMouseInput();
@@ -60,16 +63,13 @@ public class Crafter {
             initGame();
             createWorldsDir();
 
-            initMainMenu();
-
             //this is the chunk mesh generator thread singleton
             new Thread(new ChunkMeshGenerator()).start();
-
             //this is the biome generator thread singleton
             new Thread(new BiomeGenerator()).start();
-
             //this is the light handling thread singleton
             new Thread(new Light()).start();
+
 
             easterEgg();
 
