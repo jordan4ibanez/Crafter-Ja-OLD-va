@@ -9,26 +9,26 @@ import org.lwjgl.openal.ALCCapabilities;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
-import static engine.graphics.Camera.*;
-import static engine.graphics.Transformation.*;
-import static engine.sound.SoundListener.*;
-import static org.lwjgl.openal.AL10.alDistanceModel;
-import static org.lwjgl.openal.ALC10.*;
-import static org.lwjgl.system.MemoryUtil.NULL;
+import engine.graphics.Camera.*;
+import engine.graphics.Transformation.*;
+import engine.sound.SoundListener.*;
+import org.lwjgl.openal.AL10.alDistanceModel;
+import org.lwjgl.openal.ALC10.*;
+import org.lwjgl.system.MemoryUtil.NULL;
 
 public class SoundManager {
-    private static long device;
-    private static long context;
-    private static int currentIndex = 0;
-    private static final int maxSounds = 64;
+    private long device;
+    private long context;
+    private int currentIndex = 0;
+    private final int maxSounds = 64;
 
-    private static SoundBuffer[] soundBufferList = new SoundBuffer[maxSounds];
-    private static SoundSource[] soundSourceArray = new SoundSource[maxSounds];
+    private SoundBuffer[] soundBufferList = new SoundBuffer[maxSounds];
+    private SoundSource[] soundSourceArray = new SoundSource[maxSounds];
 
-    private static final Vector3d at = new Vector3d();
-    private static final Vector3d up = new Vector3d();
+    private final Vector3d at = new Vector3d();
+    private final Vector3d up = new Vector3d();
 
-    public static void initSoundManager() {
+    public void initSoundManager() {
         device = alcOpenDevice((ByteBuffer) null);
 
         if(device == NULL){
@@ -52,7 +52,7 @@ public class SoundManager {
         createSoundListener();
     }
 
-    public static void playSoundSource(SoundBuffer soundBuffer, SoundSource soundSource) {
+    public void playSoundSource(SoundBuffer soundBuffer, SoundSource soundSource) {
         //THIS IS PRETTY HORRIBLE AND CAN CAUSE A FREEZE IF YOU PLAY 64 MUSIC TRACKS somehow
         //todo: make this better somehow
         boolean found = false;
@@ -85,7 +85,7 @@ public class SoundManager {
         }
     }
 
-    public static void updateListenerPosition() {
+    public void updateListenerPosition() {
 
         // Update camera matrix with camera data
         updateOpenALSoundMatrix(getCameraPositionX(),getCameraPositionY(),getCameraPositionZ(), getCameraRotationX(), getCameraRotationY());
@@ -95,11 +95,11 @@ public class SoundManager {
         setSoundOrientation(at.x, at.y, at.z, up.x, up.y, up.z);
     }
 
-    public static void setAttenuationModel(int model) {
+    public void setAttenuationModel(int model) {
         alDistanceModel(model);
     }
 
-    public static void cleanupSoundManager() {
+    public void cleanupSoundManager() {
         for (SoundSource soundSource : soundSourceArray) {
             if (soundSource != null) {
                 soundSource.cleanUp();
