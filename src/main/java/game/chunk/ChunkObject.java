@@ -44,10 +44,6 @@ public class ChunkObject {
         return allFaceMesh;
     }
 
-    public Vector2i getKey() {
-        return this.key;
-    }
-
     public byte[] getBlock() {
         return this.block;
     }
@@ -78,6 +74,31 @@ public class ChunkObject {
 
     public void setHover(float hover){
         this.hover = hover;
+    }
+
+    public void replaceOrSetNormalMesh(int yHeight, Mesh newMesh){
+        Mesh currentMesh = normalMesh[yHeight];
+        if (currentMesh != null){
+            currentMesh.cleanUp(false);
+        }
+        normalMesh[yHeight] = newMesh;
+
+    }
+
+    public void replaceOrSetLiquidMesh(int yHeight, Mesh newMesh){
+        Mesh currentMesh = liquidMesh[yHeight];
+        if (currentMesh != null){
+            currentMesh.cleanUp(false);
+        }
+        liquidMesh[yHeight] = newMesh;
+    }
+
+    public void replaceOrSetAllFaceMesh(int yHeight, Mesh newMesh){
+        Mesh currentMesh = allFaceMesh[yHeight];
+        if (currentMesh != null){
+            currentMesh.cleanUp(false);
+        }
+        allFaceMesh[yHeight] = newMesh;
     }
 
     //internal 3D/2D to 1D calculations
