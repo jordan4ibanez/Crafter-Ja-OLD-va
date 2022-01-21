@@ -1,4 +1,4 @@
-package engine.credits;
+package game.mainMenu;
 
 
 import engine.graphics.Mesh;
