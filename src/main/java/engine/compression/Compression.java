@@ -12,9 +12,9 @@ import java.util.zip.GZIPOutputStream;
 
 public class Compression {
 
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
-    public static byte[] convertChunkToCompressedByteArray(ChunkData thisChunk) throws IOException {
+    public byte[] convertChunkToCompressedByteArray(ChunkData thisChunk) throws IOException {
         ChunkSavingObject savingObject = new ChunkSavingObject();
 
         savingObject.x = thisChunk.x;
@@ -52,7 +52,7 @@ public class Compression {
         return byteArrayOutputStream.toByteArray();
     }
 
-    public static ChunkData decompressByteArrayToChunkObject(byte[] bytes) throws IOException {
+    public ChunkData decompressByteArrayToChunkObject(byte[] bytes) throws IOException {
 
         //decoded output stream
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -82,7 +82,7 @@ public class Compression {
 
         //attempt to convert it from the decompressed string using Jackson
         try {
-            thisChunkLoaded = mapper.readValue(byteArrayOutputStream.toString(), ChunkSavingObject.class);
+            thisChunkLoaded = this.mapper.readValue(byteArrayOutputStream.toString(), ChunkSavingObject.class);
         } catch (IOException e) {
             //silently return null
             return null;
