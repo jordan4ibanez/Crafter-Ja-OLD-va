@@ -2,47 +2,15 @@ package engine.scene;
 
 import java.io.IOException;
 
-import static engine.Controls.gameInput;
-import static engine.Controls.mainMenuInput;
-import static engine.MemorySweeper.cleanMemory;
-import static engine.MouseInput.*;
-import static engine.Window.*;
-import static engine.disk.SQLiteDiskHandler.pollReceivingPlayerDataFromSQLiteThread;
-import static engine.graphics.Camera.*;
-import static engine.gui.GUILogic.calculateHealthBarElements;
-import static engine.gui.GUILogic.pauseMenuOnTick;
-import static engine.network.Networking.getIfConnected;
-import static engine.network.Networking.sendPositionData;
-import static engine.render.GameRenderer.renderGame;
-import static engine.render.MainMenuRenderer.renderMainMenu;
-import static engine.sound.SoundManager.updateListenerPosition;
-import static engine.time.Delta.calculateDelta;
-import static engine.time.TimeOfDay.pollTimeOfDay;
-import static engine.time.TimeOfDay.tickUpTimeOfDay;
-import static engine.time.Timer.countFPS;
-import static game.chat.Chat.*;
-import static game.chunk.ChunkMeshGenerationHandler.popChunkMeshQueue;
-import static game.chunk.ChunkUpdateHandler.chunkUpdater;
-import static game.clouds.Cloud.*;
-import static game.crafting.InventoryLogic.inventoryMenuOnTick;
-import static game.falling.FallingEntity.fallingEntityOnStep;
-import static game.entity.item.ItemEntity.*;
-import static game.mainMenu.MainMenu.*;
-import static game.entity.mob.Mob.mobsOnTick;
-import static game.entity.mob.MobSpawning.runSpawningAlgorithm;
-import static game.entity.particle.Particle.particlesOnStep;
-import static game.player.Player.*;
-import static game.player.WieldHand.testPlayerDiggingAnimation;
-
 public class SceneHandler {
     //0 main menu
     //1 gameplay
     //2 was debug - now reserved for something else in the future if needed
     //3 multiplayer
 
-    private static byte currentScene = 0;
+    private byte currentScene = 0;
 
-    public static void setScene(byte newScene){
+    public void setScene(byte newScene){
 
         //move the camera into position for the main menu
         if (newScene == 0){
@@ -91,7 +59,7 @@ public class SceneHandler {
 
     }
 
-    public static void handleSceneLogic() throws Exception {
+    public void handleSceneLogic() throws Exception {
 
         //move the camera into position for the main menu
         if (currentScene == 0){
@@ -114,7 +82,7 @@ public class SceneHandler {
 
     }
 
-    private static void multiPlayerLoop() throws Exception {
+    private void multiPlayerLoop() throws Exception {
         if (!getIfConnected()){
             setScene((byte)0);
             setMenuPage((byte)7);
@@ -144,7 +112,7 @@ public class SceneHandler {
     }
 
 
-    private static void multiPlayerUpdate() {
+    private void multiPlayerUpdate() {
         testPlayerDiggingAnimation();
         playerOnTick();
         pauseMenuOnTick();
@@ -155,7 +123,7 @@ public class SceneHandler {
     }
 
 
-    private static void mainMenuLoop() throws IOException {
+    private void mainMenuLoop() throws IOException {
         setCameraPosition(0,-8,0);
         setCameraRotation(0,0,0);
         windowUpdate();
@@ -166,7 +134,7 @@ public class SceneHandler {
     }
 
     //main game loop
-    private static void gameLoop() throws Exception {
+    private void gameLoop() throws Exception {
         pollReceivingPlayerDataFromSQLiteThread();
         calculateDelta();
         //indexLight();
@@ -201,7 +169,7 @@ public class SceneHandler {
         processOldChunks();
     }
 
-    private static void gameUpdate(){
+    private void gameUpdate(){
         doChunksHoveringUpThing();
         testPlayerDiggingAnimation();
         playerOnTick();
