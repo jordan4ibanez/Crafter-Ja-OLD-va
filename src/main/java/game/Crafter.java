@@ -11,19 +11,10 @@ import game.chunk.ChunkMeshGenerator;
 import game.light.Light;
 import game.mainMenu.MainMenu;
 
-import static engine.MouseInput.initMouseInput;
 import static engine.render.GameRenderer.cleanupRenderer;
 import static engine.render.GameRenderer.initRenderer;
-import static engine.scene.SceneHandler.handleSceneLogic;
-import static engine.settings.Settings.getSettingsVsync;
-import static engine.settings.Settings.loadSettings;
-import static engine.sound.SoundManager.*;
-import static game.crafting.CraftRecipes.registerCraftRecipes;
-import static game.crafting.Inventory.createInitialInventory;
-import static game.entity.mob.MobDefinition.registerMobs;
-import static game.tnt.TNTEntity.createTNTEntityMesh;
-
 public class Crafter {
+
     public void main(String[] args) {
         //the whole game is an object :D
         Crafter crafter = new Crafter();

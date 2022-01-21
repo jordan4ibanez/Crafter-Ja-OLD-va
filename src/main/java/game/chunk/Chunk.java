@@ -12,6 +12,8 @@ import java.util.HashMap;
 
 public class Chunk {
 
+
+
     //this one holds keys for look ups
     private final HashMap<Vector2i, ChunkObject> map = new HashMap<>();
 
