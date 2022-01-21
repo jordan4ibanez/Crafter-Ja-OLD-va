@@ -6,19 +6,18 @@ import engine.graphics.Texture;
 final public class TextHandling {
 
     //textures
-    private static final Texture fontTextureAtlas = new Texture("textures/font.png");
+    private final Texture fontTextureAtlas = new Texture("textures/font.png");
+    
+    private final float FONT_WIDTH = 216f;
+    private final float LETTER_WIDTH = 6f;
 
+    private final float FONT_HEIGHT = 24f;
+    private final float LETTER_HEIGHT = 8f;
 
-    private static final float FONT_WIDTH = 216f;
-    private static final float LETTER_WIDTH = 6f;
-
-    private static final float FONT_HEIGHT = 24f;
-    private static final float LETTER_HEIGHT = 8f;
-
-    private static final float FONT_PIXEL_WIDTH = 6f;
+    private final float FONT_PIXEL_WIDTH = 6f;
 
     //yes I know, I could use a TTF font, but where's the fun in that?
-    public static float[] translateCharToArray(char thisChar){
+    public float[] translateCharToArray(char thisChar){
 
         float[] letterArray = new float[]{0,0,0};
 
@@ -531,7 +530,7 @@ final public class TextHandling {
     }
 
 
-    public static Mesh createTextCentered(String text, float r, float g, float b){
+    public Mesh createTextCentered(String text, float r, float g, float b){
 
         //calculate the length for the entire string
         float totalLengthReal = 0;
@@ -625,7 +624,7 @@ final public class TextHandling {
         return new Mesh(positions, light, indices, textureCoord, fontTextureAtlas);
     }
 
-    public static Mesh createTextCenteredWithShadow(String text, float r, float g, float b){
+    public Mesh createTextCenteredWithShadow(String text, float r, float g, float b){
 
         //calculate the length for the entire string
         float totalLengthReal = 0;
@@ -787,7 +786,7 @@ final public class TextHandling {
 
 
     //this one is not centered (goes from the center to the right)
-    public static Mesh createText(String text, float r, float g, float b){
+    public Mesh createText(String text, float r, float g, float b){
 
         //x is the actual position in the mesh creation of the letter
         float x = 0;
@@ -869,7 +868,7 @@ final public class TextHandling {
         return new Mesh(positions, light, indices, textureCoord, fontTextureAtlas);
     }
 
-    public static Mesh createTextWithShadow(String text, float r, float g, float b){
+    public Mesh createTextWithShadow(String text, float r, float g, float b){
 
         //x is the actual position in the mesh creation of the letter
         //divide the actual length before it's created, start the typewriter
