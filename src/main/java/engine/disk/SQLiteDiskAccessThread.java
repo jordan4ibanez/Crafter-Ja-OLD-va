@@ -8,6 +8,12 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SQLiteDiskAccessThread implements Runnable {
+    private final SQLiteDiskHandler sqLiteDiskHandler;
+
+    //external pointer to other thread's object held internal
+    public SQLiteDiskAccessThread(SQLiteDiskHandler sqLiteDiskHandler){
+        this.sqLiteDiskHandler = sqLiteDiskHandler;
+    }
 
     private Connection connection;
     private DatabaseMetaData meta;
@@ -243,12 +249,12 @@ public class SQLiteDiskAccessThread implements Runnable {
                 Vector3d playerPos = deserializeVector3d(resultTest.getString("POS"));
                 byte playerHealth = Byte.parseByte(resultTest.getString("HEALTH"));
 
-                passDataFromSQLiteDiskAccessThread("singleplayer", loadedInventory, loadedCount, playerPos, playerHealth);
+                sqLiteDiskHandler.passDataFromSQLiteDiskAccessThread("singleplayer", loadedInventory, loadedCount, playerPos, playerHealth);
 
             //send main thread a blank player
             } else {
                 //players just kind of drop from the sky ¯\_(ツ)_/¯
-                passDataFromSQLiteDiskAccessThread("singleplayer", new String[4][9], new int[4][9], new Vector3d(0,100,0), (byte) 20);
+                sqLiteDiskHandler.passDataFromSQLiteDiskAccessThread("singleplayer", new String[4][9], new int[4][9], new Vector3d(0,100,0), (byte) 20);
             }
 
             //did not find player
