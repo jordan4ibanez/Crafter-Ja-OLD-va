@@ -9,56 +9,52 @@ import org.joml.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
 
-import static engine.gui.TextHandling.createTextWithShadow;
-import static engine.time.Timer.getFpsCounted;
-
 public class GUI {
 
     //textures
-    private static Texture worldSelectionTexture;
-    private static Texture playerTexture;
-    private static Texture miningCrack;
+    private final Texture worldSelectionTexture;
+    private final Texture playerTexture;
+    private final Texture miningCrack;
 
     //meshes
-    private static final Mesh[] miningCrackMesh = new Mesh[9];
+    private final Mesh[] miningCrackMesh;
 
-    private static Mesh hotBarMesh;
-    private static Mesh hotBarSelectionMesh;
+    private final Mesh hotBarMesh;
+    private final Mesh hotBarSelectionMesh;
 
-    private static Mesh inventoryMesh;
-    private static Mesh inventoryBackdropMesh;
-    private static Mesh thisWorldSelectionMesh;
-    private static Mesh thisCrossHairMesh;
-    private static Mesh playerMesh;
-    private static Mesh versionInfoText;
-    private static Mesh wieldHandMesh;
-    private static Mesh inventorySlotMesh;
-    private static Mesh inventorySlotSelectedMesh;
-    private static Mesh buttonMesh;
-    private static Mesh buttonSelectedMesh;
-    private static Mesh buttonPushedMesh;
-    private static Mesh textInputMesh;
-    private static Mesh textInputSelectedMesh;
-    private static Mesh menuBgMesh;
-    private static Mesh globalWaterEffectMesh;
-    private static Mesh heartHudMesh;
-    private static Mesh halfHeartHudMesh;
-    private static Mesh heartShadowHudMesh;
-    private static Mesh chatBox;
+    private final Mesh inventoryMesh;
+    private final Mesh inventoryBackdropMesh;
+    private final Mesh worldSelectionMesh;
+    private final Mesh crossHairMesh;
+    private final Mesh playerMesh;
+    private final Mesh versionInfoText;
+    private final Mesh wieldHandMesh;
+    private final Mesh inventorySlotMesh;
+    private final Mesh inventorySlotSelectedMesh;
+    private final Mesh buttonMesh;
+    private final Mesh buttonSelectedMesh;
+    private final Mesh buttonPushedMesh;
+    private final Mesh textInputMesh;
+    private final Mesh textInputSelectedMesh;
+    private final Mesh menuBgMesh;
+    private final Mesh globalWaterEffectMesh;
+    private final Mesh heartHudMesh;
+    private final Mesh halfHeartHudMesh;
+    private final Mesh heartShadowHudMesh;
+    private final Mesh chatBox;
 
-    private static Mesh sun;
-    private static Mesh moon;
+    private final Mesh sun;
+    private final Mesh moon;
 
-    private static Mesh fpsMesh;
+    private Mesh fpsMesh;
 
-    public static void createGUI() {
-
+    public GUI(){
         //2D mesh creations
         hotBarMesh = create2DMesh(0.5f,0.06043956043f, "textures/hotbar.png");
         inventoryMesh = create2DMesh(0.5f,0.46335697399f,  "textures/inventory.png");
         inventoryBackdropMesh = create2DMesh(0.5f,0.46335697399f,  "textures/inventory_backdrop.png");
         hotBarSelectionMesh = create2DMesh(0.5f, 0.5f, "textures/hotbar_selected.png");
-        thisCrossHairMesh = create2DMesh(0.5f, 0.5f, "textures/crosshair.png");
+        crossHairMesh = create2DMesh(0.5f, 0.5f, "textures/crosshair.png");
         inventorySlotMesh = create2DMesh(0.5f,0.5f,"textures/inventory_slot.png");
         inventorySlotSelectedMesh = create2DMesh(0.5f,0.5f, "textures/inventory_slot_selected.png");
         menuBgMesh = create2DMesh(0.5f,0.5f, "textures/menu_bg.png");
@@ -69,9 +65,9 @@ public class GUI {
         textInputSelectedMesh = create2DMesh(0.5f,0.5f,"textures/text_box_selected.png");
         globalWaterEffectMesh = create2DMesh(0.5f,0.5f, "textures/water_overlay.png");
         heartHudMesh = create2DMesh(0.5f, 0.5f, "textures/heart.png");
-        halfHeartHudMesh = create2DMesh(0.5f, 0.5f, 0.5f, "textures/heart.png");
+        halfHeartHudMesh = createHalf2DMesh(0.5f, 0.5f, 0.5f, "textures/heart.png");
         heartShadowHudMesh = create2DMesh(0.5f, 0.5f, "textures/heart_shadow.png");
-        chatBox = create2DMeshOffsetRight(0.5f, 0.5f, "textures/chat_box.png");
+        chatBox = create2DMeshOffsetRight();
         sun = create2DMesh(0.5f, 0.5f, "textures/sun.png");
         moon = create2DMesh(0.5f, 0.5f, "textures/moon.png");
 
@@ -79,192 +75,188 @@ public class GUI {
         fpsMesh = createTextWithShadow("FPS: " + getFpsCounted(), 1f, 1f, 1f);
         versionInfoText = createTextWithShadow(getVersionName(), 1,1,1);
 
-        //3D mesh creations
-        buildHandMesh();
-        buildMiningMesh();
-        createWorldSelectionMesh();
-        createPlayerMesh(); //todo REBUILD THIS JUNK, THIS IS HORRIBLE
-    }
 
-
-    public static void initializeHudAtlas() {
         worldSelectionTexture = new Texture("textures/selection.png");
         playerTexture = new Texture("textures/player.png");
         miningCrack = new Texture("textures/crack_anylength.png");
+
+        //3D mesh creations
+        wieldHandMesh = buildHandMesh();
+
+        miningCrackMesh = new Mesh[9];
+        for (int i = 0; i < 9; i++){
+            miningCrackMesh[i] = buildMiningMesh(i);
+        }
+
+        worldSelectionMesh = createWorldSelectionMesh();
+        playerMesh = createPlayerMesh();
     }
 
-    public static Mesh getSunMesh(){
+    public Mesh getSunMesh(){
         return sun;
     }
 
-    public static Mesh getMoonMesh(){
+    public Mesh getMoonMesh(){
         return moon;
     }
 
-    public static Mesh getChatBoxMesh(){
+    public Mesh getChatBoxMesh(){
         return chatBox;
     }
 
-    public static Mesh getHeartHudMesh(){
+    public Mesh getHeartHudMesh(){
         return heartHudMesh;
     }
 
-    public static Mesh getHalfHeartHudMesh(){
+    public Mesh getHalfHeartHudMesh(){
         return halfHeartHudMesh;
     }
 
-    public static Mesh getHeartShadowHudMesh(){
+    public Mesh getHeartShadowHudMesh(){
         return heartShadowHudMesh;
     }
 
-    public static Mesh getHotBarMesh(){
+    public Mesh getHotBarMesh(){
         return hotBarMesh;
     }
 
-    public static Mesh getHotBarSelectionMesh(){
+    public Mesh getHotBarSelectionMesh(){
         return hotBarSelectionMesh;
     }
 
-    public static Mesh getInventoryMesh(){
+    public Mesh getInventoryMesh(){
         return inventoryMesh;
     }
-    public static Mesh getInventoryBackdropMesh(){
+    public Mesh getInventoryBackdropMesh(){
         return inventoryBackdropMesh;
     }
 
-    public static Mesh getWorldSelectionMesh(){
-        return thisWorldSelectionMesh;
+    public Mesh getWorldSelectionMesh(){
+        return worldSelectionMesh;
     }
 
-    public static Mesh getCrossHairMesh(){
-        return thisCrossHairMesh;
+    public Mesh getCrossHairMesh(){
+        return crossHairMesh;
     }
 
-    public static Mesh getPlayerMesh(){
+    public Mesh getPlayerMesh(){
         return playerMesh;
     }
 
-    public static Mesh getVersionInfoText(){
+    public Mesh getVersionInfoText(){
         return versionInfoText;
     }
 
-    public static Mesh getWieldHandMesh(){
+    public Mesh getWieldHandMesh(){
         return wieldHandMesh;
     }
 
-    public static Mesh getButtonMesh(){
+    public Mesh getButtonMesh(){
         return buttonMesh;
     }
-    public static Mesh getButtonSelectedMesh(){
+    public Mesh getButtonSelectedMesh(){
         return buttonSelectedMesh;
     }
 
-    public static Mesh getTextInputMesh(){
+    public Mesh getTextInputMesh(){
         return textInputMesh;
     }
-    public static Mesh getTextInputSelectedMesh(){
+    public Mesh getTextInputSelectedMesh(){
         return textInputSelectedMesh;
     }
 
-    public static Mesh getButtonPushedMesh(){
+    public Mesh getButtonPushedMesh(){
         return buttonPushedMesh;
     }
-    public static Mesh getMenuBgMesh(){
+    public Mesh getMenuBgMesh(){
         return menuBgMesh;
     }
 
-    public static Mesh getInventorySlotMesh(){
+    public Mesh getInventorySlotMesh(){
         return inventorySlotMesh;
     }
-    public static Mesh getInventorySlotSelectedMesh(){
+    public Mesh getInventorySlotSelectedMesh(){
         return inventorySlotSelectedMesh;
     }
 
-    public static Mesh getMiningCrackMesh(byte diggingFrame){
+    public Mesh getMiningCrackMesh(byte diggingFrame){
         return miningCrackMesh[diggingFrame];
     }
 
-    public static Mesh getGlobalWaterEffectMesh(){
+    public Mesh getGlobalWaterEffectMesh(){
         return globalWaterEffectMesh;
     }
 
-    public static void buildFPSMesh() {
+    public void buildFPSMesh() {
         fpsMesh.cleanUp(false);
         fpsMesh = createTextWithShadow("FPS: " + getFpsCounted(), 1f, 1f, 1f);
     }
 
-    public static Mesh getFPSMesh(){
+    public Mesh getFPSMesh(){
         return fpsMesh;
     }
 
-    public static void buildMiningMesh() {
+    public Mesh buildMiningMesh(int level) {
         HyperFloatArray positions = new HyperFloatArray(12);
         HyperFloatArray textureCoord = new HyperFloatArray(6);
         HyperIntArray indices = new HyperIntArray(4);
         HyperFloatArray light = new HyperFloatArray(12);
 
-        for (byte level = 0; level < 9; level++) {
-            final float min = -0.0001f;
-            final float max = 1.0001f;
+        final float min = -0.0001f;
+        final float max = 1.0001f;
 
-            int indicesCount = 0;
+        int indicesCount = 0;
 
-            final float maxLevels = 9;
+        final float maxLevels = 9;
 
-            float textureMin = (float) level / maxLevels;
-            float textureMax = (float) (level + 1) / maxLevels;
+        float textureMin = (float) level / maxLevels;
+        float textureMax = (float) (level + 1) / maxLevels;
 
-            positions.pack(max, max, max, min, max, max, min, min, max, max, min, max);
-            light.pack(1);
-            indices.pack(0, 1 + indicesCount, 2 + indicesCount, 0, 2 + indicesCount, 3 + indicesCount);
-            indicesCount += 4;
-            textureCoord.pack(1f, textureMin, 0f, textureMin, 0f, textureMax, 1f, textureMax);
+        positions.pack(max, max, max, min, max, max, min, min, max, max, min, max);
+        light.pack(1);
+        indices.pack(0, 1 + indicesCount, 2 + indicesCount, 0, 2 + indicesCount, 3 + indicesCount);
+        indicesCount += 4;
+        textureCoord.pack(1f, textureMin, 0f, textureMin, 0f, textureMax, 1f, textureMax);
 
-            positions.pack(min, max, min, max, max, min, max, min, min, min, min, min);
-            light.pack(1);
-            indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
-            indicesCount += 4;
-            textureCoord.pack(1f, textureMin, 0f, textureMin, 0f, textureMax, 1f, textureMax);
+        positions.pack(min, max, min, max, max, min, max, min, min, min, min, min);
+        light.pack(1);
+        indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
+        indicesCount += 4;
+        textureCoord.pack(1f, textureMin, 0f, textureMin, 0f, textureMax, 1f, textureMax);
 
-            positions.pack(max, max, min, max, max, max, max, min, max, max, min, min);
-            light.pack(1);
-            indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
-            indicesCount += 4;
-            textureCoord.pack(1f, textureMin, 0f, textureMin, 0f, textureMax, 1f, textureMax);
+        positions.pack(max, max, min, max, max, max, max, min, max, max, min, min);
+        light.pack(1);
+        indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
+        indicesCount += 4;
+        textureCoord.pack(1f, textureMin, 0f, textureMin, 0f, textureMax, 1f, textureMax);
 
-            positions.pack(min, max, max, min, max, min, min, min, min, min, min, max);
-            light.pack(1);
-            indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
-            indicesCount += 4;
-            textureCoord.pack(1f, textureMin, 0f, textureMin, 0f, textureMax, 1f, textureMax);
+        positions.pack(min, max, max, min, max, min, min, min, min, min, min, max);
+        light.pack(1);
+        indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
+        indicesCount += 4;
+        textureCoord.pack(1f, textureMin, 0f, textureMin, 0f, textureMax, 1f, textureMax);
 
-            positions.pack(min, max, min, min, max, max, max, max, max, max, max, min);
-            light.pack(1);
-            indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
-            indicesCount += 4;
-            textureCoord.pack(1f, textureMin, 0f, textureMin, 0f, textureMax, 1f, textureMax);
+        positions.pack(min, max, min, min, max, max, max, max, max, max, max, min);
+        light.pack(1);
+        indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
+        indicesCount += 4;
+        textureCoord.pack(1f, textureMin, 0f, textureMin, 0f, textureMax, 1f, textureMax);
 
 
-            positions.pack(min, min, max, min, min, min, max, min, min, max, min, max);
-            light.pack(1);
-            indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
-            textureCoord.pack(1f, textureMin, 0f, textureMin, 0f, textureMax, 1f, textureMax);
-
-            miningCrackMesh[level] = new Mesh(positions.values(), light.values(), indices.values(), textureCoord.values(), miningCrack);
-
-            positions.reset();
-            light.reset();
-            indices.reset();
-            textureCoord.reset();
-        }
+        positions.pack(min, min, max, min, min, min, max, min, min, max, min, max);
+        light.pack(1);
+        indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
+        textureCoord.pack(1f, textureMin, 0f, textureMin, 0f, textureMax, 1f, textureMax);
 
         positions.clear();
         light.clear();
         indices.clear();
         textureCoord.clear();
+
+        return new Mesh(positions.values(), light.values(), indices.values(), textureCoord.values(), miningCrack);
     }
 
-    private static void createWorldSelectionMesh() {
+    private Mesh createWorldSelectionMesh() {
 
         List<Float> positions = new ArrayList<>();
         List<Float> textureCoord = new ArrayList<>();
@@ -609,25 +601,10 @@ public class GUI {
             textureCoordArray[i] = textureCoord.get(i);
         }
 
-        thisWorldSelectionMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, worldSelectionTexture);
+        return new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, worldSelectionTexture);
     }
 
-
-    private static final float PLAYER_WIDTH = 64f;
-    private static final float PLAYER_HEIGHT = 32f;
-
-    private static float[] calculateTexture(int xMin, int yMin, int xMax, int yMax){
-        float[] texturePoints = new float[4];
-
-        texturePoints[0] = (float)xMin/PLAYER_WIDTH; //min x (-)
-        texturePoints[1] = (float)xMax/PLAYER_WIDTH; //max x (+)
-
-        texturePoints[2] = (float)yMin/PLAYER_HEIGHT; //min y (-)
-        texturePoints[3] = (float)yMax/PLAYER_HEIGHT; //max y (+)
-        return texturePoints;
-    }
-
-    private static void buildHandMesh(){
+    private Mesh buildHandMesh(){
 
         float floatedLight = 1f;
 
@@ -972,16 +949,16 @@ public class GUI {
             textureCoordArray[i] = textureCoord.get(i);
         }
 
-        wieldHandMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, playerTexture);
-
         positions.clear();
         light.clear();
         indices.clear();
         textureCoord.clear();
+
+        return new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, playerTexture);
     }
 
 
-    private static void createPlayerMesh(){
+    private Mesh createPlayerMesh(){
         float[][] playerModelBoxes = new float[][]{
                 //head
                 {-0.75f,-0.5f,-0.75f,0.75f,1.0f,0.75f},
@@ -1416,16 +1393,16 @@ public class GUI {
             textureCoordArray[i] = textureCoord.get(i);
         }
 
-        playerMesh = new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, playerTexture);
-
         positions.clear();
         light.clear();
         indices.clear();
         textureCoord.clear();
+
+        return new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray, playerTexture);
     }
 
 
-    public static Mesh create2DMesh(float width, float height, String texture) {
+    private Mesh create2DMesh(float width, float height, String texture) {
         float[] positions = new float[12];
         float[] textureCoord = new float[8];
         int[] indices = new int[6];
@@ -1467,26 +1444,26 @@ public class GUI {
         return new Mesh(positions, light, indices, textureCoord, new Texture(texture));
     }
 
-    public static Mesh create2DMeshOffsetRight(float width, float height, String texture) {
+    private Mesh create2DMeshOffsetRight() {
         float[] positions = new float[12];
         float[] textureCoord = new float[8];
         int[] indices = new int[6];
         float[] light = new float[12];
 
-        positions[0] = (width*2f);
-        positions[1] = (height);
+        positions[0] = ((float) 0.5 *2f);
+        positions[1] = ((float) 0.5);
         positions[2] = (0f);
 
         positions[3] = (0);
-        positions[4] = (height);
+        positions[4] = ((float) 0.5);
         positions[5] = (0f);
 
         positions[6] = (0);
-        positions[7] = (-height);
+        positions[7] = (-(float) 0.5);
         positions[8] = (0f);
 
-        positions[9] = (width*2f);
-        positions[10] = (-height);
+        positions[9] = ((float) 0.5 *2f);
+        positions[10] = (-(float) 0.5);
         positions[11] = (0f);
 
         for (int i = 0; i < 12; i++) {
@@ -1509,11 +1486,11 @@ public class GUI {
         textureCoord[6] = (1f);
         textureCoord[7] = (1f);
 
-        return new Mesh(positions, light, indices, textureCoord, new Texture(texture));
+        return new Mesh(positions, light, indices, textureCoord, new Texture("textures/chat_box.png"));
     }
 
     //overloaded for texture width (used for half hearts)
-    public static Mesh create2DMesh(float width, float height, float textureWidth, String texture) {
+    private Mesh createHalf2DMesh(float width, float height, float textureWidth, String texture) {
         float[] positions = new float[12];
         float[] textureCoord = new float[8];
         int[] indices = new int[6];
@@ -1553,5 +1530,19 @@ public class GUI {
         textureCoord[7] = (1f);
 
         return new Mesh(positions, light, indices, textureCoord, new Texture(texture));
+    }
+
+
+    private float[] calculateTexture(int xMin, int yMin, int xMax, int yMax){
+        float[] texturePoints = new float[4];
+
+        float PLAYER_WIDTH = 64f;
+        texturePoints[0] = (float)xMin/ PLAYER_WIDTH; //min x (-)
+        texturePoints[1] = (float)xMax/ PLAYER_WIDTH; //max x (+)
+
+        float PLAYER_HEIGHT = 32f;
+        texturePoints[2] = (float)yMin/ PLAYER_HEIGHT; //min y (-)
+        texturePoints[3] = (float)yMax/ PLAYER_HEIGHT; //max y (+)
+        return texturePoints;
     }
 }
