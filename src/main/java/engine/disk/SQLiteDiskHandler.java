@@ -4,30 +4,25 @@ import org.joml.Vector3d;
 
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-import static game.chunk.Chunk.globalFinalChunkSaveToDisk;
-import static game.crafting.InventoryObject.*;
-import static game.player.Player.*;
-import static game.player.Player.setPlayerHealth;
-
 //this handles the thread object and tells it what to do
 public class SQLiteDiskHandler {
 
-    private static boolean hasPolledLoadingPlayer = false;
+    private boolean hasPolledLoadingPlayer = false;
 
     //null, asleep, non-existent, etc
-    private static SQLiteDiskAccessThread sqLiteDiskAccessThread;
+    private SQLiteDiskAccessThread sqLiteDiskAccessThread;
 
     //these shall stay in sync
     //received from the SQLiteDataAccess thread
     //cannot access anything from it until it has run through the next iteration
-    private static final ConcurrentLinkedDeque<String> playerData           = new ConcurrentLinkedDeque<>();
-    private static final ConcurrentLinkedDeque<String[][]> playerInventory    = new ConcurrentLinkedDeque<>();
-    private static final ConcurrentLinkedDeque<int[][]> playerInventoryCount  = new ConcurrentLinkedDeque<>();
-    private static final ConcurrentLinkedDeque<Vector3d> playerPos            = new ConcurrentLinkedDeque<>();
-    private static final ConcurrentLinkedDeque<Byte> playerHealth             = new ConcurrentLinkedDeque<>();
+    private final ConcurrentLinkedDeque<String> playerData           = new ConcurrentLinkedDeque<>();
+    private final ConcurrentLinkedDeque<String[][]> playerInventory    = new ConcurrentLinkedDeque<>();
+    private final ConcurrentLinkedDeque<int[][]> playerInventoryCount  = new ConcurrentLinkedDeque<>();
+    private final ConcurrentLinkedDeque<Vector3d> playerPos            = new ConcurrentLinkedDeque<>();
+    private final ConcurrentLinkedDeque<Byte> playerHealth             = new ConcurrentLinkedDeque<>();
 
     //this mirrors the object's call
-    public static void connectWorldDataBase(String worldName){
+    public void connectWorldDataBase(String worldName){
         sqLiteDiskAccessThread = new SQLiteDiskAccessThread();
         //this is needed to create the WORLD table
         sqLiteDiskAccessThread.createWorldDataBase(worldName);
@@ -36,7 +31,7 @@ public class SQLiteDiskHandler {
     }
 
     //closes the world's database, kills the thread, removes the object pointer
-    public static void closeWorldDataBase(){
+    public void closeWorldDataBase(){
         //DUMP EVERYTHING IN!
         globalFinalChunkSaveToDisk();
         savePlayerData("singleplayer");
@@ -44,7 +39,7 @@ public class SQLiteDiskHandler {
         hasPolledLoadingPlayer = false;
     }
 
-    public static void passDataFromSQLiteDiskAccessThread(String playerName, String[][] thisPlayerInventory, int[][] thisPlayerCount, Vector3d thisPlayerPos, byte thisPlayerHealth){
+    public void passDataFromSQLiteDiskAccessThread(String playerName, String[][] thisPlayerInventory, int[][] thisPlayerCount, Vector3d thisPlayerPos, byte thisPlayerHealth){
         playerData.add(playerName);
 
         //deep clone - remove pointer
@@ -68,7 +63,7 @@ public class SQLiteDiskHandler {
         playerHealth.add(thisPlayerHealth);
     }
 
-    public static void pollReceivingPlayerDataFromSQLiteThread(){
+    public void pollReceivingPlayerDataFromSQLiteThread(){
         if (hasPolledLoadingPlayer){
             return;
         }
@@ -95,15 +90,15 @@ public class SQLiteDiskHandler {
         }
     }
 
-    public static void savePlayerData(String name){
+    public void savePlayerData(String name){
         sqLiteDiskAccessThread.addPlayerToSave(name, getInventoryAsArray("main").clone(), getInventoryCountAsArray("main").clone(), getPlayerPos(), (byte) getPlayerHealth());
     }
 
-    public static void loadChunk(int x, int z){
+    public void loadChunk(int x, int z){
         sqLiteDiskAccessThread.addLoadChunk(x,z);
     }
 
-    public static void saveChunk(int x, int z, byte[] blockData, byte[] rotationData, byte[] lightData, byte[] heightMap){
+    public void saveChunk(int x, int z, byte[] blockData, byte[] rotationData, byte[] lightData, byte[] heightMap){
         sqLiteDiskAccessThread.addSaveChunk(x,z,blockData,rotationData,lightData,heightMap);
     }
 
