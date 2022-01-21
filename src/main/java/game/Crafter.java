@@ -4,6 +4,7 @@ import engine.Window;
 import engine.debug.RuntimeInfo;
 import engine.disk.Disk;
 import engine.graphics.Transformation;
+import engine.gui.GUI;
 import game.chunk.BiomeGenerator;
 import game.chunk.Chunk;
 import game.chunk.ChunkMeshGenerator;
@@ -11,9 +12,6 @@ import game.light.Light;
 import game.mainMenu.MainMenu;
 
 import static engine.MouseInput.initMouseInput;
-import static engine.disk.Disk.createWorldsDir;
-import static engine.gui.GUI.createGUI;
-import static engine.gui.GUI.initializeHudAtlas;
 import static engine.render.GameRenderer.cleanupRenderer;
 import static engine.render.GameRenderer.initRenderer;
 import static engine.scene.SceneHandler.handleSceneLogic;
@@ -38,6 +36,7 @@ public class Crafter {
     private final Disk disk;
     private final MainMenu mainMenu;
     private final Transformation transformation;
+    private final GUI gui;
 
     public Crafter(){
         this.window = new Window(this.versionName, getSettingsVsync());
@@ -45,6 +44,7 @@ public class Crafter {
         this.disk = new Disk();
         this.mainMenu = new MainMenu(this);
         this.transformation = new Transformation();
+        this.gui = new GUI();
     }
 
     public String getVersionName(){
