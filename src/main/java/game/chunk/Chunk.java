@@ -2,6 +2,7 @@ package game.chunk;
 
 import engine.graphics.Mesh;
 import engine.network.ChunkRequest;
+import engine.settings.Settings;
 import engine.time.Delta;
 import org.joml.Vector2i;
 import org.joml.Vector3i;
@@ -12,7 +13,11 @@ import java.util.HashMap;
 
 public class Chunk {
 
+    private final Settings settings;
 
+    public Chunk(Settings settings){
+        this.settings = settings;
+    }
 
     //this one holds keys for look ups
     private final HashMap<Vector2i, ChunkObject> map = new HashMap<>();

@@ -30,6 +30,7 @@ public class Crafter {
     private final Transformation transformation;
     private final GUI gui;
     private final Settings settings;
+    private final Chunk chunk;
 
     public Crafter(){
         this.window = new Window(this.versionName, true); //vsync is on by default - save cpu resources I guess
@@ -39,6 +40,7 @@ public class Crafter {
         this.transformation = new Transformation();
         this.gui = new GUI();
         this.settings = new Settings(disk, window);
+        this.chunk = new Chunk(settings);
     }
 
     public String getVersionName(){
