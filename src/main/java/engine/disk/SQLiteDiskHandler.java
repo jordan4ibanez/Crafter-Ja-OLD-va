@@ -1,9 +1,6 @@
 package engine.disk;
 
 import game.chunk.Chunk;
-import game.chunk.ChunkMeshGenerator;
-import game.player.Player;
-import org.joml.Vector3d;
 
 import java.util.concurrent.ConcurrentLinkedDeque;
 
@@ -39,7 +36,7 @@ public class SQLiteDiskHandler {
         hasPolledLoadingPlayer = false;
     }
 
-    public void sendMePlayerData(PlayerDataObject player){
+    public void sendPlayerData(PlayerDataObject player){
         playerData.add(player);
     }
 

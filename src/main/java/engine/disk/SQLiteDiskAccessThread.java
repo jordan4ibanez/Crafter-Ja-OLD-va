@@ -249,12 +249,12 @@ public class SQLiteDiskAccessThread implements Runnable {
                 Vector3d playerPos = deserializeVector3d(resultTest.getString("POS"));
                 byte playerHealth = Byte.parseByte(resultTest.getString("HEALTH"));
 
-                sqLiteDiskHandler.passDataFromSQLiteDiskAccessThread("singleplayer", loadedInventory, loadedCount, playerPos, playerHealth);
+                sqLiteDiskHandler.sendPlayerData(new PlayerDataObject("singleplayer", loadedInventory, loadedCount, playerPos, playerHealth));
 
             //send main thread a blank player
             } else {
                 //players just kind of drop from the sky ¯\_(ツ)_/¯
-                sqLiteDiskHandler.passDataFromSQLiteDiskAccessThread("singleplayer", new String[4][9], new int[4][9], new Vector3d(0,100,0), (byte) 20);
+                sqLiteDiskHandler.sendPlayerData(new PlayerDataObject("singleplayer", new String[4][9], new int[4][9], new Vector3d(0,100,0), (byte) 20));
             }
 
             //did not find player
