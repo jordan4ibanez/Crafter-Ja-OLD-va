@@ -33,6 +33,7 @@ public class Crafter {
     private final Settings settings;
     private final Delta delta;
     private final Chunk chunk;
+    private final BiomeGenerator biomeGenerator;
 
 
     public Crafter(){
@@ -45,6 +46,10 @@ public class Crafter {
         this.settings = new Settings(disk, window);
         this.delta = new Delta();
         this.chunk = new Chunk(settings, delta);
+        this.biomeGenerator = new BiomeGenerator(window, chunk);
+        new Thread(biomeGenerator).start();
+
+
     }
 
     public String getVersionName(){
@@ -77,7 +82,6 @@ public class Crafter {
             //this is the chunk mesh generator thread singleton
             new Thread(new ChunkMeshGenerator()).start();
             //this is the biome generator thread singleton
-            new Thread(new BiomeGenerator()).start();
             //this is the light handling thread singleton
             new Thread(new Light()).start();
 
