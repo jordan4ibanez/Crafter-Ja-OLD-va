@@ -4,28 +4,14 @@ import engine.graphics.Mesh;
 import engine.graphics.ShaderProgram;
 import engine.gui.GUIObject;
 
-import static engine.Window.getWindowHeight;
-import static engine.Window.getWindowWidth;
-import static game.mainMenu.Credits.getCreditParts;
-
-import static engine.graphics.Transformation.*;
-import static engine.gui.GUI.*;
-import static engine.gui.TextHandling.createTextCentered;
-import static engine.render.GameRenderer.*;
-import static engine.time.Delta.getDelta;
-import static game.mainMenu.MainMenuAssets.getTitleBackGroundMeshTile;
-import static game.mainMenu.MainMenuAssets.getTitleBlockMesh;
-import static org.lwjgl.opengl.GL44.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL44.glClear;
 
 public class MainMenuRenderer {
 
+    private final float FOV = (float) Math.toRadians(72.0f);
+    private final ShaderProgram shaderProgram = getShaderProgram();
+    private final ShaderProgram hudShaderProgram = getHudShaderProgram();
 
-    private static final float FOV = (float) Math.toRadians(72.0f);
-    private static final ShaderProgram shaderProgram = getShaderProgram();
-    private static final ShaderProgram hudShaderProgram = getHudShaderProgram();
-
-    public static void renderMainMenu(){
+    public void renderMainMenu(){
 
         clearScreen();
 
@@ -212,7 +198,7 @@ public class MainMenuRenderer {
         hudShaderProgram.unbind();
     }
 
-    private static void renderMainMenuGUI(){
+    private void renderMainMenuGUI(){
         ShaderProgram hudShaderProgram = getHudShaderProgram();
         hudShaderProgram.bind();
         float windowScale = getWindowScale();
