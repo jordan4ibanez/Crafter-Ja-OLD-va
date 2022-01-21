@@ -5,6 +5,9 @@ import org.joml.Vector2i;
 import org.joml.Vector3i;
 
 public class ChunkObject {
+
+    private final Vector2i pos     = new Vector2i();
+
     private final byte[] block     = new byte[32768];
     private final byte[] rotation  = new byte[32768];
     private final byte[] light     = new byte[32768];
@@ -16,6 +19,14 @@ public class ChunkObject {
 
     private boolean saveToDisk = false;
     private float hover        = -128;
+
+    public ChunkObject(Vector2i pos){
+        this.pos.set(pos);
+    }
+
+    public Vector2i getPos(){
+        return this.pos;
+    }
 
     public Mesh getNormalMesh(int yHeight){
         return normalMesh[yHeight];
