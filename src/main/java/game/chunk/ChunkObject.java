@@ -4,9 +4,6 @@ import engine.graphics.Mesh;
 import org.joml.Vector2i;
 import org.joml.Vector3i;
 
-import java.util.HashMap;
-import java.util.concurrent.ConcurrentHashMap;
-
 public class ChunkObject {
     private final byte[] block     = new byte[32768];
     private final byte[] rotation  = new byte[32768];
@@ -60,7 +57,7 @@ public class ChunkObject {
         return this.heightMap;
     }
 
-    public boolean isSaveToDisk() {
+    public boolean getSaveToDisk() {
         return this.saveToDisk;
     }
 
