@@ -1,5 +1,6 @@
 package engine;
 
+import engine.time.Delta;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWImage;
@@ -11,28 +12,33 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.Objects;
 
-import static engine.time.Delta.getDelta;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL44.*;
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.stb.STBImage.stbi_image_free;
 import static org.lwjgl.stb.STBImage.stbi_load;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window {
-    private static String title;
-    private static int width;
-    private static int height;
-    private static long windowHandle;
-    private static boolean resized;
-    private static boolean vSync;
-    private static int dumpedKey = -1;
+    private String title;
+    private int width;
+    private int height;
+    private long windowHandle;
+    private boolean resized;
+    private boolean vSync;
+    private int dumpedKey = -1;
+    private final Vector3f currentClearColor = new Vector3f();
+    private final Vector3f clearColorGoal  = new Vector3f();
+    private boolean fullScreen = false;
 
-    public static void initWindow(String newTitle, int newWidth, int newHeight, boolean newVSync) {
-        title   = newTitle;
-        width   = newWidth;
-        height  = newHeight;
-        vSync   = newVSync;
-        resized = false;
+    public Window(String title, boolean vSync){
+        Toolkit tk = Toolkit.getDefaultToolkit();
+        Dimension d = tk.getScreenSize();
+
+        this.title   = title;
+        this.width   = d.width/2;
+        this.height  = d.height/2;
+        this.vSync   = vSync;
+        this.resized = false;
 
         // set up an error callback. The default implementation
         // will print the error message in System.err.
@@ -48,8 +54,8 @@ public class Window {
         glfwWindowHint(GLFW_RESIZABLE, GL_TRUE); //the window will be resizable
 
         //openGL version 4.4
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); //allow auto driver optimizations
@@ -88,8 +94,6 @@ public class Window {
         }
 
         //center window
-        Toolkit tk = Toolkit.getDefaultToolkit();
-        Dimension d = tk.getScreenSize();
         glfwSetWindowPos(windowHandle, (d.width - width) / 2, (d.height - height) / 2);
 
         //make the window visible
@@ -139,52 +143,48 @@ public class Window {
     }
 
 
-    public static int getDumpedKey(){
+    public int getDumpedKey(){
         return dumpedKey;
     }
 
-    public static long getWindowHandle(){
+    public long getWindowHandle(){
         return windowHandle;
     }
 
-    private static final Vector3f currentClearColor = new Vector3f();
-    private static final Vector3f clearColorGoal  = new Vector3f();
 
-    public static void setWindowClearColor(float r, float g, float b, float alpha){
+
+    public void setWindowClearColor(float r, float g, float b, float alpha){
         glClearColor(r, g, b, alpha);
         currentClearColor.set(r,g,b);
         clearColorGoal.set(r,g,b);
     }
 
-    public static void setWindowClearColorGoal(float r, float g, float b, float alpha){
+    public void setWindowClearColorGoal(float r, float g, float b, float alpha){
         clearColorGoal.set(r,g,b);
     }
 
-    public static void processClearColorInterpolation(){
-        currentClearColor.lerp(clearColorGoal, (float) getDelta() * 2f);
+    public void processClearColorInterpolation(Delta delta){
+        currentClearColor.lerp(clearColorGoal, (float) delta.getDelta() * 2f);
         glClearColor(currentClearColor.x, currentClearColor.y, currentClearColor.z,1f);
     }
 
-    public static boolean isKeyPressed(int keyCode){
+    public boolean isKeyPressed(int keyCode){
         return glfwGetKey(windowHandle, keyCode) == GLFW_PRESS;
     }
 
-    public static boolean windowShouldClose(){
+    public boolean windowShouldClose(){
         return glfwWindowShouldClose(windowHandle);
     }
 
-    public static String getTitle(){
+    public String getTitle(){
         return title;
     }
 
-
-    private static boolean fullScreen = false;
-
-    public static boolean isFullScreen(){
+    public boolean isFullScreen(){
         return fullScreen;
     }
 
-    public static void toggleFullScreen(){
+    public void toggleFullScreen(){
         Toolkit tk = Toolkit.getDefaultToolkit();
         Dimension d = tk.getScreenSize();
         if (!fullScreen) {
@@ -202,27 +202,27 @@ public class Window {
         fullScreen = !fullScreen;
     }
 
-    public static int getWindowWidth(){
+    public int getWindowWidth(){
         return width;
     }
 
-    public static int getWindowHeight(){
+    public int getWindowHeight(){
         return height;
     }
 
-    public static boolean isWindowResized(){
+    public boolean isWindowResized(){
         return resized;
     }
 
-    public static void setWindowResized(boolean newResized){
+    public void setWindowResized(boolean newResized){
         resized = newResized;
     }
 
-    public static boolean isvSync(){
+    public boolean isvSync(){
         return vSync;
     }
 
-    public static void setVSync(boolean newVSync){
+    public void setVSync(boolean newVSync){
         vSync = newVSync;
         if (vSync){
             glfwSwapInterval(1);
@@ -231,7 +231,7 @@ public class Window {
         }
     }
 
-    public static void updateVSync(){
+    public void updateVSync(){
         if (vSync){
             glfwSwapInterval(1);
         } else {
@@ -239,11 +239,11 @@ public class Window {
         }
     }
 
-    public static void updateWindowTitle(String newTitle){
+    public void updateWindowTitle(String newTitle){
         glfwSetWindowTitle(windowHandle, newTitle);
     }
 
-    public static void windowUpdate(){
+    public void windowUpdate(){
         glfwSwapBuffers(windowHandle);
         glfwPollEvents();
     }
