@@ -15,6 +15,7 @@ import java.util.HashMap;
 
 public class Chunk {
     private SQLiteDiskHandler sqLiteDiskHandler;
+    private ChunkUpdateHandler chunkUpdateHandler;
     private final Settings settings;
     private final Delta delta;
     private float saveTimer = 0f;
@@ -28,6 +29,12 @@ public class Chunk {
     public void setSqLiteDiskHandler(SQLiteDiskHandler sqLiteDiskHandler){
         if (this.sqLiteDiskHandler == null) {
             this.sqLiteDiskHandler = sqLiteDiskHandler;
+        }
+    }
+
+    public void setChunkUpdateHandler(ChunkUpdateHandler chunkUpdateHandler){
+        if (this.chunkUpdateHandler == null){
+            this.chunkUpdateHandler = chunkUpdateHandler;
         }
     }
 
@@ -80,7 +87,7 @@ public class Chunk {
                 if (getChunkDistanceFromPlayer(x,z) <= chunkRenderDistance){
                     genBiome(x,z);
                     for (int y = 0; y < 8; y++){
-                        chunkUpdate(x,z,y);
+                        this.chunkUpdateHandler.chunkUpdate(x,z,y);
                     }
                 }
             }
@@ -150,7 +157,7 @@ public class Chunk {
         for (ChunkObject thisChunk : map.values()){
             for (int y = 0; y < 8; y++) {
                 Vector2i pos = thisChunk.getPos();
-                chunkUpdate(pos.x, pos.y);
+                this.chunkUpdateHandler.chunkUpdate(pos.x, pos.y, y);
             }
         }
     }
@@ -284,7 +291,7 @@ public class Chunk {
             }
         }
         map.get(key).setSaveToDisk(true);
-        chunkUpdate(chunkX,chunkZ,yPillar);
+        this.chunkUpdateHandler.chunkUpdate(chunkX,chunkZ,yPillar);
         updateNeighbor(chunkX, chunkZ,blockX,pos.y,blockZ);
     }
 
@@ -303,7 +310,7 @@ public class Chunk {
             return;
         }
         lightData[posToIndex(blockX, pos.y, blockZ)] = setByteNaturalLight(lightData[posToIndex(blockX, pos.y, blockZ)],newLight);
-        chunkUpdate(chunkX,chunkZ,yPillar);
+        this.chunkUpdateHandler.chunkUpdate(chunkX,chunkZ,yPillar);
         updateNeighbor(chunkX, chunkZ,blockX,pos.y,blockZ);
     }
 
@@ -322,7 +329,7 @@ public class Chunk {
             return;
         }
         lightData[posToIndex(blockX, y, blockZ)] = setByteTorchLight(lightData[posToIndex(blockX, y, blockZ)], newLight);
-        chunkUpdate(chunkX,chunkZ,yPillar);
+        this.chunkUpdateHandler.chunkUpdate(chunkX,chunkZ,yPillar);
         updateNeighbor(chunkX, chunkZ,blockX,y,blockZ);
     }
 
@@ -490,26 +497,6 @@ public class Chunk {
         return getByteTorchLight(lightData[posToIndex(blockX, y, blockZ)]);
     }
 
-
-    //Thanks a lot Lars!!
-    public byte getByteTorchLight(byte input){
-        return (byte) (input & ((1 << 4) - 1));
-    }
-    public byte getByteNaturalLight(byte input){
-        return (byte) (((1 << 4) - 1) & input >> 4);
-    }
-
-    public byte setByteTorchLight(byte input, byte newValue){
-        byte naturalLight = getByteNaturalLight(input);
-        return (byte) (naturalLight << 4 | newValue);
-    }
-
-    public byte setByteNaturalLight(byte input, byte newValue){
-        byte torchLight = getByteTorchLight(input);
-        return (byte) (newValue << 4 | torchLight);
-    }
-
-
     private void instantUpdateNeighbor(int chunkX, int chunkZ, int x, int y, int z){
         if (y > 127 || y < 0){
             return;
@@ -539,20 +526,20 @@ public class Chunk {
         }
         int yPillar = (int)Math.floor(y/16d);
         switch (y) {
-            case 112, 96, 80, 64, 48, 32, 16 -> chunkUpdate(chunkX, chunkZ, yPillar - 1);
-            case 111, 95, 79, 63, 47, 31, 15 -> chunkUpdate(chunkX, chunkZ, yPillar + 1);
+            case 112, 96, 80, 64, 48, 32, 16 -> this.chunkUpdateHandler.chunkUpdate(chunkX, chunkZ, yPillar - 1);
+            case 111, 95, 79, 63, 47, 31, 15 -> this.chunkUpdateHandler.chunkUpdate(chunkX, chunkZ, yPillar + 1);
         }
         if (x == 15){ //update neighbor
-            chunkUpdate(chunkX+1, chunkZ, yPillar);
+            this.chunkUpdateHandler.chunkUpdate(chunkX+1, chunkZ, yPillar);
         }
         if (x == 0){
-            chunkUpdate(chunkX-1, chunkZ, yPillar);
+            this.chunkUpdateHandler.chunkUpdate(chunkX-1, chunkZ, yPillar);
         }
         if (z == 15){
-            chunkUpdate(chunkX, chunkZ+1, yPillar);
+            this.chunkUpdateHandler.chunkUpdate(chunkX, chunkZ+1, yPillar);
         }
         if (z == 0){
-            chunkUpdate(chunkX, chunkZ-1, yPillar);
+            this.chunkUpdateHandler.chunkUpdate(chunkX, chunkZ-1, yPillar);
         }
     }
 
@@ -560,25 +547,25 @@ public class Chunk {
 
         if (map.get(new Vector2i(chunkX + 1, chunkZ)) != null){
             for (int y = 0; y < 8; y++){
-                chunkUpdate(chunkX+1, chunkZ, y);
+                this.chunkUpdateHandler.chunkUpdate(chunkX+1, chunkZ, y);
             }
         }
 
         if (map.get(new Vector2i(chunkX-1, chunkZ)) != null){
             for (int y = 0; y < 8; y++){
-                chunkUpdate(chunkX-1, chunkZ, y);
+                this.chunkUpdateHandler.chunkUpdate(chunkX-1, chunkZ, y);
             }
         }
 
         if (map.get(new Vector2i(chunkX, chunkZ+1)) != null){
             for (int y = 0; y < 8; y++){
-                chunkUpdate(chunkX, chunkZ+1, y);
+                this.chunkUpdateHandler.chunkUpdate(chunkX, chunkZ+1, y);
             }
         }
 
-        if (chunkKeys.get(new Vector2i(chunkX, chunkZ-1)) != null){
+        if (map.get(new Vector2i(chunkX, chunkZ-1)) != null){
             for (int y = 0; y < 8; y++){
-                chunkUpdate(chunkX, chunkZ-1, y);
+                this.chunkUpdateHandler.chunkUpdate(chunkX, chunkZ-1, y);
             }
         }
     }
@@ -595,7 +582,7 @@ public class Chunk {
                     if (map.get(new Vector2i(x,z)) == null){
                         genBiome(x,z);
                         for (int y = 0; y < 8; y++) {
-                            chunkUpdate(x, z, y);
+                            this.chunkUpdateHandler.chunkUpdate(x, z, y);
                         }
                         fullNeighborUpdate(x, z);
                     }
@@ -611,6 +598,7 @@ public class Chunk {
         }
     }
 
+    /*
     public void requestNewChunks(){
         //create the initial map in memory
         int chunkRenderDistance = settings.getRenderDistance();
@@ -627,6 +615,7 @@ public class Chunk {
             }
         }
     }
+     */
 
     private final Deque<Vector2i> deletionQueue = new ArrayDeque<>();
 
@@ -757,5 +746,22 @@ public class Chunk {
 
     private double getDistance(double x1, double y1, double z1, double x2, double y2, double z2){
         return Math.hypot((x1 - x2), Math.hypot((y1 - y2),(z1 - z2)));
+    }
+
+    private byte getByteTorchLight(byte input){
+        return (byte) (input & ((1 << 4) - 1));
+    }
+    private byte getByteNaturalLight(byte input){
+        return (byte) (((1 << 4) - 1) & input >> 4);
+    }
+
+    private byte setByteTorchLight(byte input, byte newValue){
+        byte naturalLight = getByteNaturalLight(input);
+        return (byte) (naturalLight << 4 | newValue);
+    }
+
+    private byte setByteNaturalLight(byte input, byte newValue){
+        byte torchLight = getByteTorchLight(input);
+        return (byte) (newValue << 4 | torchLight);
     }
 }
