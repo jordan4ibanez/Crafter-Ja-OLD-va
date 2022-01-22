@@ -277,8 +277,8 @@ public class SQLiteDiskAccessThread implements Runnable {
     private final ConcurrentLinkedDeque<byte[]> chunksToSaveLight     = new ConcurrentLinkedDeque<>();
     private final ConcurrentLinkedDeque<byte[]> chunksToSaveHeightMap = new ConcurrentLinkedDeque<>();
 
-    public void addSaveChunk(int x, int z, byte[] blockData, byte[] rotationData, byte[] lightData, byte[] heightMap ){
-        chunksToSaveKey.add(new Vector2i(x,z));
+    public void addSaveChunk(Vector2i pos, byte[] blockData, byte[] rotationData, byte[] lightData, byte[] heightMap ){
+        chunksToSaveKey.add(new Vector2i(pos));
         chunksToSaveBlock.add(blockData);
         chunksToSaveRotation.add(rotationData);
         chunksToSaveLight.add(lightData);
