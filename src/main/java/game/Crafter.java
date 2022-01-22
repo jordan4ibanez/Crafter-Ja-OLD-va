@@ -10,6 +10,7 @@ import engine.settings.Settings;
 import engine.time.Delta;
 import game.chunk.BiomeGenerator;
 import game.chunk.Chunk;
+import game.chunk.ChunkUpdateHandler;
 import game.chunk.ChunkMeshGenerator;
 import game.light.Light;
 import game.mainMenu.MainMenu;
@@ -35,6 +36,8 @@ public class Crafter {
     private final Chunk chunk;
     private final BiomeGenerator biomeGenerator;
     private final SQLiteDiskHandler sqLiteDiskHandler;
+    private final ChunkUpdateHandler chunkUpdateHandler;
+    private final ChunkMeshGenerator chunkMeshGenerator;
 
 
     public Crafter(){
@@ -50,11 +53,16 @@ public class Crafter {
         this.chunk = new Chunk(settings, delta); //chunk now needs 2 more objects to function, called later
 
         this.biomeGenerator = new BiomeGenerator(window, chunk);
-        new Thread(biomeGenerator).start();
-
+        new Thread(this.biomeGenerator).start();
         this.sqLiteDiskHandler = new SQLiteDiskHandler(chunk, biomeGenerator);
+        this.chunkUpdateHandler = new ChunkUpdateHandler(chunk, delta);
+
         this.chunk.setSqLiteDiskHandler(sqLiteDiskHandler);
 
+        this.chunkMeshGenerator = new ChunkMeshGenerator(window,chunkUpdateHandler, chunk);
+        new Thread(this.chunkMeshGenerator).start();
+
+        this.chunk.setChunkUpdateHandler(this.chunkUpdateHandler);
     }
 
     public String getVersionName(){
@@ -84,8 +92,6 @@ public class Crafter {
             initGame();
             createWorldsDir();
 
-            //this is the chunk mesh generator thread singleton
-            new Thread(new ChunkMeshGenerator()).start();
             //this is the biome generator thread singleton
             //this is the light handling thread singleton
             new Thread(new Light()).start();
