@@ -4,7 +4,10 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import engine.disk.PrimitiveChunkObject;
+import game.chunk.Chunk;
 import game.chunk.ChunkData;
+import org.joml.Vector2i;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
@@ -15,7 +18,14 @@ public class Networking {
 
     private int port = 30_150;
 
-    private final Client client = new Client(50_000,50_000);
+    private final Client client;
+
+    private final Chunk chunk;
+
+    public Networking(Chunk chunk){
+        this.client = new Client(50_000,50_000);
+        this.chunk = chunk;
+    }
 
     public void setPort(int newPort){
         port = newPort;
@@ -155,7 +165,7 @@ public class Networking {
             return;
         }
 
-        setChunk(chunkData.x,chunkData.z,chunkData.block,chunkData.rotation,chunkData.light,chunkData.heightMap);
+        chunk.addNewChunk(new PrimitiveChunkObject(new Vector2i(chunkData.x,chunkData.z),chunkData.block,chunkData.rotation,chunkData.light,chunkData.heightMap));
     }
 
     public void sendOutNetworkBlockBreak(int x, int y, int z){
