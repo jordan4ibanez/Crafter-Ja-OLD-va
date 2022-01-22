@@ -8,6 +8,7 @@ import engine.graphics.Transformation;
 import engine.gui.GUI;
 import engine.settings.Settings;
 import engine.time.Delta;
+import engine.time.Timer;
 import game.chunk.BiomeGenerator;
 import game.chunk.Chunk;
 import game.chunk.ChunkUpdateHandler;
@@ -26,6 +27,7 @@ public class Crafter {
 
     private final String versionName = "Crafter 0.08a";
     private final Window window;
+    private final Timer timer;
     private final RuntimeInfo runtimeInfo;
     private final Disk disk;
     private final MainMenu mainMenu;
@@ -42,6 +44,7 @@ public class Crafter {
 
     public Crafter(){
         this.window = new Window(this.versionName, true); //vsync is on by default - save cpu resources I guess
+        this.timer = new Timer(versionName, window);
         this.runtimeInfo = new RuntimeInfo();
         this.disk = new Disk();
         this.mainMenu = new MainMenu(this);
