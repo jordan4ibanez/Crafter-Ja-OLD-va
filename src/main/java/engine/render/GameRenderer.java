@@ -1,5 +1,7 @@
 package engine.render;
 
+import engine.Utils;
+import engine.Window;
 import engine.graphics.Mesh;
 import engine.graphics.ShaderProgram;
 import engine.gui.GUIObject;
@@ -10,27 +12,25 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 import static org.joml.Math.toRadians;
+import static org.lwjgl.opengl.GL11C.*;
 
 public class GameRenderer {
+
+    private final Window window;
+    private final Utils utils = new Utils();
+
+    public GameRenderer(Window window){
+        this.window = window;
+    }
 
     private final float FOV = toRadians(72.0f); //todo: make this a calculator method ala calculateFOV(float);
     private final float Z_NEAR = 0.1f;
     private float windowScale = 0f;
-    private double windowSizeX = 0;
-    private double windowSizeY = 0;
     private ShaderProgram shaderProgram;
     private ShaderProgram hudShaderProgram;
     private ShaderProgram glassLikeShaderProgram;
     private ShaderProgram entityShaderProgram;
-
-
-    public double getWindowSizeX(){
-        return windowSizeX;
-    }
-
-    public double getWindowSizeY(){
-        return windowSizeY;
-    }
+    
 
     private void resetWindowScale(){
         if (windowSizeX <= windowSizeY){
@@ -60,8 +60,8 @@ public class GameRenderer {
     public void initRenderer() throws Exception{
         //normal shader program
         shaderProgram = new ShaderProgram();
-        shaderProgram.createVertexShader(loadResource("resources/vertex.vs"));
-        shaderProgram.createFragmentShader(loadResource("resources/fragment.fs"));
+        shaderProgram.createVertexShader(utils.loadResource("resources/vertex.vs"));
+        shaderProgram.createFragmentShader(utils.loadResource("resources/fragment.fs"));
         shaderProgram.link();
 
         //create uniforms for world and projection matrices
@@ -73,8 +73,8 @@ public class GameRenderer {
 
         //ortholinear hud shader program
         hudShaderProgram = new ShaderProgram();
-        hudShaderProgram.createVertexShader(loadResource("resources/hud_vertex.vs"));
-        hudShaderProgram.createFragmentShader(loadResource("resources/hud_fragment.fs"));
+        hudShaderProgram.createVertexShader(utils.loadResource("resources/hud_vertex.vs"));
+        hudShaderProgram.createFragmentShader(utils.loadResource("resources/hud_fragment.fs"));
         hudShaderProgram.link();
 
         //create uniforms for model view matrix
@@ -85,8 +85,8 @@ public class GameRenderer {
 
         //glassLike shader program
         glassLikeShaderProgram = new ShaderProgram();
-        glassLikeShaderProgram.createVertexShader(loadResource("resources/glasslike_vertex.vs"));
-        glassLikeShaderProgram.createFragmentShader(loadResource("resources/glasslike_fragment.fs"));
+        glassLikeShaderProgram.createVertexShader(utils.loadResource("resources/glasslike_vertex.vs"));
+        glassLikeShaderProgram.createFragmentShader(utils.loadResource("resources/glasslike_fragment.fs"));
         glassLikeShaderProgram.link();
 
         //create uniforms for world and projection matrices
@@ -98,8 +98,8 @@ public class GameRenderer {
 
         //glassLike shader program
         entityShaderProgram = new ShaderProgram();
-        entityShaderProgram.createVertexShader(loadResource("resources/entity_vertex.vs"));
-        entityShaderProgram.createFragmentShader(loadResource("resources/entity_fragment.fs"));
+        entityShaderProgram.createVertexShader(utils.loadResource("resources/entity_vertex.vs"));
+        entityShaderProgram.createFragmentShader(utils.loadResource("resources/entity_fragment.fs"));
         entityShaderProgram.link();
 
         //create uniforms for world and projection matrices
@@ -113,10 +113,10 @@ public class GameRenderer {
 
 
         //setWindowClearColor(0.f,0.f,0.f,0.f);
-        setWindowClearColor(0.53f,0.81f,0.92f,0.f);
+        window.setWindowClearColor(0.53f,0.81f,0.92f,0.f);
 
-        windowSizeX = getWindowWidth();
-        windowSizeY = getWindowHeight();
+        windowSizeX = window.getWindowWidth();
+        windowSizeY = window.getWindowHeight();
 
         resetWindowScale();
     }
