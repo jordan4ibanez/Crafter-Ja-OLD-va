@@ -1,6 +1,6 @@
 package game.chunk;
 
-public class ChunkMeshDataObject {
+public class ChunkMeshData {
 
     int chunkX;
     int chunkZ;
