@@ -29,7 +29,7 @@ public class ChunkMeshGenerator implements Runnable{
 
     private final Vector3i key = new Vector3i();
 
-    private byte currentGlobalLightLevel = 15;
+    private byte currentLightLevel = 15;
 
     //normal block mesh data
     private final HyperFloatArray positions = new HyperFloatArray(24);
@@ -81,8 +81,8 @@ public class ChunkMeshGenerator implements Runnable{
     }
 
     //allows main thread to set the local byte of light to this runnable thread
-    public void setChunkThreadCurrentGlobalLightLevel(byte newLight){
-        currentGlobalLightLevel = newLight;
+    public void setLightLevel(byte newLight){
+        currentLightLevel = newLight;
     }
 
 
@@ -132,7 +132,7 @@ public class ChunkMeshGenerator implements Runnable{
         int allFacesIndicesCount = 0;
 
         //current global light level - dumped into the stack
-        byte chunkLightLevel = currentGlobalLightLevel;
+        byte chunkLightLevel = currentLightLevel;
 
         byte thisBlock;
         byte thisBlockDrawType;

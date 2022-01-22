@@ -6,9 +6,11 @@ import engine.graphics.Mesh;
 import engine.graphics.ShaderProgram;
 import engine.graphics.Transformation;
 import engine.gui.GUIObject;
+import engine.settings.Settings;
 import engine.time.Delta;
 import game.chunk.Chunk;
 import game.chunk.ChunkObject;
+import game.player.Player;
 import org.joml.*;
 
 import java.util.AbstractMap;
@@ -23,6 +25,9 @@ public class GameRenderer {
     private final Chunk chunk;
     private final Window window;
     private final Delta delta;
+    private final Settings settings;
+    private final Player player;
+
     private final Transformation transformation = new Transformation();
 
     private final float FOV = toRadians(72.0f);
@@ -36,9 +41,11 @@ public class GameRenderer {
     private final HashMap<Double, Mesh[]> allFaceDrawTypeHash = new HashMap<>();
     private final HashMap<Double, Vector2i> chunkHashKeys    = new HashMap<>();
 
-    public GameRenderer(Window window, Delta delta, Chunk chunk){
+    public GameRenderer(Window window, Delta delta, Chunk chunk, Settings settings, Player player){
         this.chunk = chunk;
         this.window = window;
+        this.settings = settings;
+        this.player = player;
 
         //normal shader program
         Utils utils = new Utils();
@@ -109,17 +116,14 @@ public class GameRenderer {
         window.processClearColorInterpolation();
         clearScreen();
 
-        int renderDistance = getRenderDistance();
+        int renderDistance = settings.getRenderDistance();
 
         //update projection matrix
-        transformation.resetProjectionMatrix(FOV + getRunningFOVAdder(), window.getWidth(), window.getHeight(), Z_NEAR, (renderDistance * 2) * 16f);
+        transformation.resetProjectionMatrix(FOV + player.getRunningFOVAdder(), window.getWidth(), window.getHeight(), Z_NEAR, (renderDistance * 2) * 16f);
 
         //todo BEGIN chunk sorting ---------------------------------------------------------------------------------------------
 
-        AbstractMap<Vector2i,Mesh[]> normalChunkMeshes  = getNormalMeshes();
-        AbstractMap<Vector2i,Mesh[]> liquidChunkMeshes  = getLiquidMeshes();
-        AbstractMap<Vector2i,Mesh[]> allFaceChunkMeshes = getAllFaceMeshes();
-
+        /*
         int meshCount = 0;
 
         double flickerFixer = 0d;
@@ -204,20 +208,20 @@ public class GameRenderer {
         liquidDrawTypeHash.clear();
         allFaceDrawTypeHash.clear();
         chunkHashKeys.clear();
-
+         */
         //todo END chunk sorting ---------------------------------------------------------------------------------------------
 
 
         //get fast or fancy
-        boolean graphicsMode = getGraphicsMode();
+        boolean graphicsMode = settings.getGraphicsMode();
 
         if (graphicsMode) {
             glassLikeShaderProgram.bind();
-            glassLikeShaderProgram.setUniform("projectionMatrix", getProjectionMatrix());
+            glassLikeShaderProgram.setUniform("projectionMatrix", transformation.getProjectionMatrix());
             glassLikeShaderProgram.setUniform("texture_sampler", 0);
         } else {
             shaderProgram.bind();
-            shaderProgram.setUniform("projectionMatrix", getProjectionMatrix());
+            shaderProgram.setUniform("projectionMatrix", transformation.getProjectionMatrix());
             shaderProgram.setUniform("texture_sampler", 0);
         }
 

@@ -2,6 +2,7 @@ package engine.settings;
 
 import engine.Window;
 import engine.disk.Disk;
+import game.chunk.Chunk;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -10,6 +11,7 @@ public class Settings {
     private final Window window;
     private final Disk disk;
     private final SettingsObject settingsObject;
+    private Chunk chunk;
     private boolean debugInfo; //assigned false
 
     public Settings(Disk disk, Window window){
@@ -43,6 +45,12 @@ public class Settings {
         }
     }
 
+    public void setChunk(Chunk chunk){
+        if (this.chunk == null) {
+            this.chunk = chunk;
+        }
+    }
+
     //debug info
     public boolean getDebugInfo(){
         return this.debugInfo;
@@ -60,7 +68,7 @@ public class Settings {
     public void setRenderDistance(int newRenderDistance, boolean inGame){
         this.settingsObject.renderDistance = newRenderDistance;
         if (inGame) {
-            generateNewChunks();
+            chunk.generateNewChunks();
         }
     }
 

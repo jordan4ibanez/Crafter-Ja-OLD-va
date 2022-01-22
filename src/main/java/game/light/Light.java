@@ -1,5 +1,8 @@
 package game.light;
 
+import engine.Window;
+import game.chunk.Chunk;
+import game.chunk.ChunkMeshGenerator;
 import org.joml.Vector3i;
 
 import java.util.ArrayDeque;
@@ -8,26 +11,29 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class Light implements Runnable {
 
-    //internal pointer to self reference
-    private Light thisObject;
+    private final Chunk chunk;
+    private final ChunkMeshGenerator chunkMeshGenerator;
+    private final Window window;
 
     //thread safe containers for light updates
     private final ConcurrentLinkedDeque<Vector3i> lightQueue = new ConcurrentLinkedDeque<>();
     private final ConcurrentLinkedDeque<Vector3i> torchQueue = new ConcurrentLinkedDeque<>();
 
     //point internal pointer to reference call, only one object shall exist
-    public Light(){
-        thisObject = this;
+    public Light(Chunk chunk, ChunkMeshGenerator chunkMeshGenerator, Window window){
+        this.chunk = chunk;
+        this.chunkMeshGenerator = chunkMeshGenerator;
+        this.window = window;
     }
 
     //external call to internal object
     public void lightFloodFill(int posX, int posY, int posZ){
-        thisObject.lightQueue.add(new Vector3i(posX, posY, posZ));
+        lightQueue.add(new Vector3i(posX, posY, posZ));
     }
 
     //external call to internal object
     public void torchFloodFill(int posX, int posY, int posZ){
-        thisObject.torchQueue.add(new Vector3i(posX, posY, posZ));
+        torchQueue.add(new Vector3i(posX, posY, posZ));
     }
 
     //finalized constants
@@ -44,55 +50,55 @@ public class Light implements Runnable {
 
     public void setCurrentLightLevel(byte newLightLevel) {
         currentLightLevel = newLightLevel;
-        setChunkThreadCurrentGlobalLightLevel(currentLightLevel);
+        chunkMeshGenerator.setLightLevel(currentLightLevel);
         updateChunksWithNewLightLevel();
     }
 
     private void updateChunksWithNewLightLevel(){
-        floodChunksWithNewLight();
+        chunk.floodChunksWithNewLight();
     }
 
     public byte getImmediateLight(int x, int y, int z){
-        int theBlock = getBlock(x, y, z);
+        int theBlock = chunk.getBlock(new Vector3i(x, y, z));
 
-        if (theBlock == 0 && underSunLight(x, y, z)){
-            return thisObject.maxLightLevel;
+        if (theBlock == 0 && chunk.underSunLight(new Vector3i(x, y, z))){
+            return maxLightLevel;
         }
 
         byte maxLight = 0;
 
-        if (getBlock(x + 1, y, z) == 0) {
-            byte gottenLight = getNaturalLight(x + 1, y, z);
+        if (chunk.getBlock(new Vector3i(x + 1, y, z)) == 0) {
+            byte gottenLight = chunk.getNaturalLight(x + 1, y, z);
             if (gottenLight > maxLight + 1){
                 maxLight = (byte)(gottenLight - 1);
             }
         }
-        if (getBlock(x - 1, y, z) == 0) {
-            byte gottenLight = getNaturalLight(x - 1, y, z);
+        if (chunk.getBlock(new Vector3i(x - 1, y, z)) == 0) {
+            byte gottenLight = chunk.getNaturalLight(x - 1, y, z);
             if (gottenLight > maxLight + 1){
                 maxLight = (byte)(gottenLight - 1);
             }
         }
-        if (getBlock(x, y + 1, z) == 0) {
-            byte gottenLight = getNaturalLight(x, y + 1, z);
+        if (chunk.getBlock(new Vector3i(x, y + 1, z)) == 0) {
+            byte gottenLight = chunk.getNaturalLight(x, y + 1, z);
             if (gottenLight > maxLight + 1){
                 maxLight = (byte)(gottenLight - 1);
             }
         }
-        if (getBlock(x, y - 1, z) == 0) {
-            byte gottenLight = getNaturalLight(x, y - 1, z);
+        if (chunk.getBlock(new Vector3i(x, y - 1, z)) == 0) {
+            byte gottenLight = chunk.getNaturalLight(x, y - 1, z);
             if (gottenLight > maxLight + 1){
                 maxLight = (byte)(gottenLight - 1);
             }
         }
-        if (getBlock(x, y, z + 1) == 0) {
-            byte gottenLight = getNaturalLight(x, y, z + 1);
+        if (chunk.getBlock(new Vector3i(x, y, z + 1)) == 0) {
+            byte gottenLight = chunk.getNaturalLight(x, y, z + 1);
             if (gottenLight > maxLight + 1){
                 maxLight = (byte)(gottenLight - 1);
             }
         }
-        if (getBlock(x, y, z - 1) == 0) {
-            byte gottenLight = getNaturalLight(x, y, z - 1);
+        if (chunk.getBlock(new Vector3i(x, y, z - 1)) == 0) {
+            byte gottenLight = chunk.getNaturalLight(x, y, z - 1);
             if (gottenLight > maxLight + 1){
                 maxLight = (byte)(gottenLight - 1);
             }
@@ -114,25 +120,25 @@ public class Light implements Runnable {
         for (int x = thisUpdatePos.x - lightDistance; x <= thisUpdatePos.x + lightDistance; x++) {
             for (int y = thisUpdatePos.y - lightDistance; y <= thisUpdatePos.y + lightDistance; y++) {
                 for (int z = thisUpdatePos.z - lightDistance; z <= thisUpdatePos.z + lightDistance; z++) {
-                    int theBlock = getBlock(x, y, z);
-                    if (theBlock == 0 && underSunLight(x, y, z)) {
+                    int theBlock = chunk.getBlock(new Vector3i(x, y, z));
+                    if (theBlock == 0 && chunk.underSunLight(new Vector3i(x, y, z))) {
                         int skipCheck = 0;
-                        if (getBlock(x + 1, y, z) == 0 && underSunLight(x + 1, y, z) && getNaturalLight(x + 1, y, z) == currentLightLevel) {
+                        if (chunk.getBlock(new Vector3i(x + 1, y, z)) == 0 && chunk.underSunLight(new Vector3i(x + 1, y, z)) && chunk.getNaturalLight(x + 1, y, z) == currentLightLevel) {
                             skipCheck++;
                         }
-                        if (getBlock(x - 1, y, z) == 0 && underSunLight(x - 1, y, z) && getNaturalLight(x - 1, y, z) == currentLightLevel) {
+                        if (chunk.getBlock(new Vector3i(x - 1, y, z)) == 0 && chunk.underSunLight(new Vector3i(x - 1, y, z)) && chunk.getNaturalLight(x - 1, y, z) == currentLightLevel) {
                             skipCheck++;
                         }
-                        if (getBlock(x, y + 1, z) == 0 && underSunLight(x, y + 1, z) && getNaturalLight(x, y + 1, z) == currentLightLevel) {
+                        if (chunk.getBlock(new Vector3i(x, y + 1, z)) == 0 && chunk.underSunLight(new Vector3i(x, y + 1, z)) && chunk.getNaturalLight(x, y + 1, z) == currentLightLevel) {
                             skipCheck++;
                         }
-                        if (getBlock(x, y - 1, z) == 0 && underSunLight(x, y - 1, z) && getNaturalLight(x, y - 1, z) == currentLightLevel) {
+                        if (chunk.getBlock(new Vector3i(x, y - 1, z)) == 0 && chunk.underSunLight(new Vector3i(x, y - 1, z)) && chunk.getNaturalLight(x, y - 1, z) == currentLightLevel) {
                             skipCheck++;
                         }
-                        if (getBlock(x, y, z + 1) == 0 && underSunLight(x, y, z + 1) && getNaturalLight(x, y, z + 1) == currentLightLevel) {
+                        if (chunk.getBlock(new Vector3i(x, y, z + 1)) == 0 && chunk.underSunLight(new Vector3i(x, y, z + 1)) && chunk.getNaturalLight(x, y, z + 1) == currentLightLevel) {
                             skipCheck++;
                         }
-                        if (getBlock(x, y, z - 1) == 0 && underSunLight(x, y, z - 1) && getNaturalLight(x, y, z - 1) == currentLightLevel) {
+                        if (chunk.getBlock(new Vector3i(x, y, z - 1)) == 0 && chunk.underSunLight(new Vector3i(x, y, z - 1)) && chunk.getNaturalLight(x, y, z - 1) == currentLightLevel) {
                             skipCheck++;
                         }
                         if (skipCheck < 6) {
@@ -223,7 +229,7 @@ public class Light implements Runnable {
             for (int y = thisUpdatePos.y - lightDistance; y <= thisUpdatePos.y + lightDistance; y++) {
                 for (int z = thisUpdatePos.z - lightDistance; z <= thisUpdatePos.z + lightDistance; z++) {
                     if (memoryMap[x - thisUpdatePos.x + lightDistance][y - thisUpdatePos.y + lightDistance][z - thisUpdatePos.z + lightDistance] != blockIndicator) {
-                        setNaturalLight(x, y, z, memoryMap[x - thisUpdatePos.x + lightDistance][y - thisUpdatePos.y + lightDistance][z - thisUpdatePos.z + lightDistance]);
+                        chunk.setNaturalLight(new Vector3i(x, y, z), memoryMap[x - thisUpdatePos.x + lightDistance][y - thisUpdatePos.y + lightDistance][z - thisUpdatePos.z + lightDistance]);
                     }
                 }
             }
@@ -259,12 +265,12 @@ public class Light implements Runnable {
         for (int x = thisTorchUpdate.x - lightDistance; x <= thisTorchUpdate.x + lightDistance; x++) {
             for (int y = thisTorchUpdate.y - lightDistance; y <= thisTorchUpdate.y + lightDistance; y++) {
                 for (int z = thisTorchUpdate.z - lightDistance; z <= thisTorchUpdate.z + lightDistance; z++) {
-                    int theBlock = getBlock(x, y, z);
+                    int theBlock = chunk.getBlock(new Vector3i(x, y, z));
                     if (theBlock == 29){
                         byte maxTorchLightLevel = 12;
                         lightSources.add(new LightUpdate( x - thisTorchUpdate.x + lightDistance, y - thisTorchUpdate.y + lightDistance, z - thisTorchUpdate.z + lightDistance, maxTorchLightLevel));
                     } else if (theBlock == 0 && (x == minX || x == maxX || y == minY || y == maxY || z == minZ || z == maxZ)) {
-                        memoryMap[x - thisTorchUpdate.x + lightDistance][y - thisTorchUpdate.y + lightDistance][z - thisTorchUpdate.z + lightDistance] = getTorchLight(x, y, z);
+                        memoryMap[x - thisTorchUpdate.x + lightDistance][y - thisTorchUpdate.y + lightDistance][z - thisTorchUpdate.z + lightDistance] = chunk.getTorchLight(x, y, z);
                     } else if (theBlock != 0){
                         memoryMap[x - thisTorchUpdate.x + lightDistance][y - thisTorchUpdate.y + lightDistance][z - thisTorchUpdate.z + lightDistance] = blockIndicator;
                     } else { //everything else is zeroed out
@@ -350,7 +356,7 @@ public class Light implements Runnable {
             for (int y = thisTorchUpdate.y - lightDistance; y <= thisTorchUpdate.y + lightDistance; y++) {
                 for (int z = thisTorchUpdate.z - lightDistance; z <= thisTorchUpdate.z + lightDistance; z++) {
                     if (memoryMap[x - thisTorchUpdate.x + lightDistance][y - thisTorchUpdate.y + lightDistance][z - thisTorchUpdate.z + lightDistance] != blockIndicator) {
-                        setTorchLight(x, y, z, memoryMap[x - thisTorchUpdate.x + lightDistance][y - thisTorchUpdate.y + lightDistance][z - thisTorchUpdate.z + lightDistance]);
+                        chunk.setTorchLight(x, y, z, memoryMap[x - thisTorchUpdate.x + lightDistance][y - thisTorchUpdate.y + lightDistance][z - thisTorchUpdate.z + lightDistance]);
                     }
                 }
             }
@@ -369,7 +375,7 @@ public class Light implements Runnable {
 
     @Override
     public void run() {
-        while (!windowShouldClose()) {
+        while (!window.shouldClose()) {
             boolean needsToSleep = true;
 
             needsToSleep = sleepLock(needsToSleep, internalLightFloodFill());

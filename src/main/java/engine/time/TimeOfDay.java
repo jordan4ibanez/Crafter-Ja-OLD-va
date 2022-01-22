@@ -1,8 +1,12 @@
 package engine.time;
 
-import game.light.Light.setCurrentLightLevel;
+import engine.Window;
+import game.light.Light;
 
 public class TimeOfDay {
+
+    private final Window window;
+    private final Light light;
 
     private final double dayCompletion = 86_400d;
     //3600 per hour, this is messed up maybe?
@@ -10,6 +14,11 @@ public class TimeOfDay {
 
     private double timeSpeed = 72d; //following Minetest wiki - 72 times faster (following time_speed in minetest.conf)
 
+
+    public TimeOfDay(Window window, Light light){
+        this.window = window;
+        this.light = light;
+    }
 
     public void tickUpTimeOfDay(Delta delta){
         timeOfDay += delta.getDelta() * timeSpeed; //this calculation was ridiculous to get
@@ -178,8 +187,8 @@ public class TimeOfDay {
                 currentDayTimeGoal = dayStageGoal[currentDayStage];
 
                 if (dayStageLight[currentDayStage] != oldStageLight){
-                    setCurrentLightLevel(dayStageLight[currentDayStage]);
-                    setWindowClearColorGoal(skyColors[currentDayStage][0]/255f,skyColors[currentDayStage][1]/255f, skyColors[currentDayStage][2]/255f, 1f);
+                    light.setCurrentLightLevel(dayStageLight[currentDayStage]);
+                    window.setWindowClearColorGoal(skyColors[currentDayStage][0]/255f,skyColors[currentDayStage][1]/255f, skyColors[currentDayStage][2]/255f, 1f);
                 }
                 oldStageLight = dayStageLight[currentDayStage];
 
@@ -198,8 +207,8 @@ public class TimeOfDay {
             currentDayTimeGoal = dayStageGoal[currentDayStage];
 
             if (dayStageLight[currentDayStage] != oldStageLight){
-                setCurrentLightLevel(dayStageLight[currentDayStage]);
-                setWindowClearColorGoal(skyColors[currentDayStage][0]/255f,skyColors[currentDayStage][1]/255f, skyColors[currentDayStage][2]/255f, 1f);
+                light.setCurrentLightLevel(dayStageLight[currentDayStage]);
+                window.setWindowClearColorGoal(skyColors[currentDayStage][0]/255f,skyColors[currentDayStage][1]/255f, skyColors[currentDayStage][2]/255f, 1f);
             }
             oldStageLight = dayStageLight[currentDayStage];
 
@@ -212,9 +221,9 @@ public class TimeOfDay {
             System.out.println("new day, stage: 0");
 
             if (dayStageLight[currentDayStage] != oldStageLight){
-                setCurrentLightLevel(dayStageLight[currentDayStage]);
+                light.setCurrentLightLevel(dayStageLight[currentDayStage]);
             }
-            setWindowClearColorGoal(skyColors[currentDayStage][0]/255f,skyColors[currentDayStage][1]/255f, skyColors[currentDayStage][2]/255f, 1f);
+            window.setWindowClearColorGoal(skyColors[currentDayStage][0]/255f,skyColors[currentDayStage][1]/255f, skyColors[currentDayStage][2]/255f, 1f);
 
             oldStageLight = dayStageLight[currentDayStage];
         }

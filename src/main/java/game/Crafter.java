@@ -8,6 +8,7 @@ import engine.graphics.Transformation;
 import engine.gui.GUI;
 import engine.settings.Settings;
 import engine.time.Delta;
+import engine.time.TimeOfDay;
 import engine.time.Timer;
 import game.chunk.BiomeGenerator;
 import game.chunk.Chunk;
@@ -16,8 +17,6 @@ import game.chunk.ChunkMeshGenerator;
 import game.light.Light;
 import game.mainMenu.MainMenu;
 
-import static engine.render.GameRenderer.cleanupRenderer;
-import static engine.render.GameRenderer.initRenderer;
 public class Crafter {
 
     public void main(String[] args) {
@@ -29,6 +28,7 @@ public class Crafter {
     private final Delta delta;
     private final Window window;
     private final Timer timer;
+    private final Light light;
     private final RuntimeInfo runtimeInfo;
     private final Disk disk;
     private final MainMenu mainMenu;
@@ -40,9 +40,11 @@ public class Crafter {
     private final SQLiteDiskHandler sqLiteDiskHandler;
     private final ChunkUpdateHandler chunkUpdateHandler;
     private final ChunkMeshGenerator chunkMeshGenerator;
+    private final TimeOfDay timeOfDay;
 
 
     public Crafter(){
+
         this.delta = new Delta();
         this.window = new Window(this.versionName, true, delta); //vsync is on by default - save cpu resources I guess
         this.timer = new Timer(versionName, window);
@@ -55,6 +57,8 @@ public class Crafter {
 
         this.chunk = new Chunk(settings, delta); //chunk now needs 2 more objects to function, called later
 
+        settings.setChunk(this.chunk);
+
         this.biomeGenerator = new BiomeGenerator(window, chunk);
         new Thread(this.biomeGenerator).start();
         this.sqLiteDiskHandler = new SQLiteDiskHandler(chunk, biomeGenerator);
@@ -66,6 +70,7 @@ public class Crafter {
         new Thread(this.chunkMeshGenerator).start();
 
         this.chunk.setChunkUpdateHandler(this.chunkUpdateHandler);
+        this.timeOfDay = new TimeOfDay(window, light);
     }
 
     public String getVersionName(){
