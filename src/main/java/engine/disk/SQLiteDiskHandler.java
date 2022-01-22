@@ -49,7 +49,7 @@ public class SQLiteDiskHandler {
         //chunk data
         if (!this.loadingChunkData.isEmpty()){
             PrimitiveChunkObject chunkObject = loadingChunkData.pop();
-            this.chunk.setChunk(chunkObject);
+            this.chunk.addNewChunk(chunkObject);
         }
 
         if (!this.generatingChunks.isEmpty()){
@@ -90,8 +90,8 @@ public class SQLiteDiskHandler {
         this.sqLiteDiskAccessThread.addLoadChunk(key);
     }
 
-    public void saveChunk(int x, int z, byte[] blockData, byte[] rotationData, byte[] lightData, byte[] heightMap){
-        this.sqLiteDiskAccessThread.addSaveChunk(x,z,blockData,rotationData,lightData,heightMap);
+    public void saveChunk(Vector2i pos, byte[] blockData, byte[] rotationData, byte[] lightData, byte[] heightMap){
+        this.sqLiteDiskAccessThread.addSaveChunk(pos, blockData,rotationData,lightData,heightMap);
     }
 
     public void setChunk(PrimitiveChunkObject primitiveChunkObject){
