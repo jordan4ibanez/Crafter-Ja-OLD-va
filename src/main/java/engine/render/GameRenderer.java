@@ -71,22 +71,9 @@ public class GameRenderer {
         entityShaderProgram.createUniform("light");
 
 
-        //setWindowClearColor(0.f,0.f,0.f,0.f);
         window.setWindowClearColor(0.53f,0.81f,0.92f,0.f);
 
-        windowSizeX = window.getWidth();
-        windowSizeY = window.getHeight();
-
-        resetWindowScale();
-    }
-
-    private void resetWindowScale(){
-        if (windowSizeX <= windowSizeY){
-            windowScale = (float)windowSizeX;
-        } else {
-            windowScale = (float) windowSizeY;
-        }
-        System.out.println("Window scale is now: " + windowScale);
+        window.updateScale();
     }
 
     public float getzNear(){

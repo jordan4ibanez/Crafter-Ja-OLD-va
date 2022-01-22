@@ -23,6 +23,7 @@ public class Window {
     private String title;
     private int width;
     private int height;
+    private float scale;
     private final long windowHandle;
     private boolean resized;
     private boolean vSync;
@@ -145,6 +146,8 @@ public class Window {
 
         //set window state
         this.shouldClose = new AtomicBoolean(false);
+
+        this.updateScale();
     }
 
 
@@ -245,6 +248,15 @@ public class Window {
     public void windowUpdate(){
         glfwSwapBuffers(windowHandle);
         glfwPollEvents();
+    }
+
+    public void updateScale(){
+        if (width <= height){
+            scale = (float)width;
+        } else {
+            scale = (float)height;
+        }
+        System.out.println("Window scale is now: " + scale);
     }
 
 }
