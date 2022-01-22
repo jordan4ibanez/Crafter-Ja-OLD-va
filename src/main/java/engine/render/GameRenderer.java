@@ -20,11 +20,14 @@ public class GameRenderer {
 
     private final float FOV = toRadians(72.0f);
     private final float Z_NEAR = 0.1f;
-    private float windowScale = 0f;
     private final ShaderProgram shaderProgram;
     private final ShaderProgram hudShaderProgram;
     private final ShaderProgram glassLikeShaderProgram;
     private final ShaderProgram entityShaderProgram;
+    private final HashMap<Double, Mesh[]> normalDrawTypeHash  = new HashMap<>();
+    private final HashMap<Double, Mesh[]> liquidDrawTypeHash  = new HashMap<>();
+    private final HashMap<Double, Mesh[]> allFaceDrawTypeHash = new HashMap<>();
+    private final HashMap<Double, Vector2i> chunkHashKeys    = new HashMap<>();
 
     public GameRenderer(Window window){
         this.window = window;
@@ -96,18 +99,11 @@ public class GameRenderer {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    private final HashMap<Double, Mesh[]> normalDrawTypeHash  = new HashMap<>();
-    private final HashMap<Double, Mesh[]> liquidDrawTypeHash  = new HashMap<>();
-    private final HashMap<Double, Mesh[]> allFaceDrawTypeHash = new HashMap<>();
-    private final HashMap<Double, Vector2i> chunkHashKeys    = new HashMap<>();
-
 
     public void renderGame(){
         processClearColorInterpolation();
         clearScreen();
         rescaleWindow();
-
-
 
 
         int renderDistance = getRenderDistance();
