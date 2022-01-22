@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11C.glViewport;
 import static org.lwjgl.stb.STBImage.stbi_image_free;
 import static org.lwjgl.stb.STBImage.stbi_load;
 import static org.lwjgl.system.MemoryUtil.NULL;
@@ -72,6 +73,7 @@ public class Window {
             width = thisWidth;
             height = thisHeight;
             updateScale();
+            glViewport(0,0, width, height);
         });
 
         // set up a key callback. it will be called every time a key is pressed, repeated or released.

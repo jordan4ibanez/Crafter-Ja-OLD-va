@@ -96,17 +96,6 @@ public class GameRenderer {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-
-    public void rescaleWindow(){
-        if (isWindowResized()){
-            windowSizeX = getWindowWidth();
-            windowSizeY = getWindowHeight();
-            glViewport(0,0, getWindowWidth(), getWindowHeight());
-            setResized(false);
-            resetWindowScale();
-        }
-    }
-
     private final HashMap<Double, Mesh[]> normalDrawTypeHash  = new HashMap<>();
     private final HashMap<Double, Mesh[]> liquidDrawTypeHash  = new HashMap<>();
     private final HashMap<Double, Mesh[]> allFaceDrawTypeHash = new HashMap<>();
