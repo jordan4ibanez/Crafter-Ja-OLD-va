@@ -30,7 +30,7 @@ public class Window {
     private final Vector3f currentClearColor = new Vector3f();
     private final Vector3f clearColorGoal  = new Vector3f();
     private boolean fullScreen = false;
-    private final AtomicBoolean windowShouldClose;
+    private final AtomicBoolean shouldClose;
 
     public Window(String title, boolean vSync){
         Toolkit tk = Toolkit.getDefaultToolkit();
@@ -144,7 +144,7 @@ public class Window {
         stbi_image_free(buf);
 
         //set window state
-        this.windowShouldClose = new AtomicBoolean(false);
+        this.shouldClose = new AtomicBoolean(false);
     }
 
 
@@ -177,8 +177,8 @@ public class Window {
         return glfwGetKey(windowHandle, keyCode) == GLFW_PRESS;
     }
 
-    public boolean windowShouldClose(){
-        return this.windowShouldClose.get();
+    public boolean shouldClose(){
+        return this.shouldClose.get();
     }
 
     public String getTitle(){
@@ -219,16 +219,16 @@ public class Window {
         return resized;
     }
 
-    public void setWindowResized(boolean newResized){
+    public void setResized(boolean newResized){
         resized = newResized;
     }
 
-    public boolean isvSync(){
+    public boolean getVSync(){
         return vSync;
     }
 
-    public void setVSync(boolean newVSync){
-        vSync = newVSync;
+    public void setVSync(boolean vSync){
+        this.vSync = vSync;
         if (vSync){
             glfwSwapInterval(1);
         } else {
@@ -236,15 +236,7 @@ public class Window {
         }
     }
 
-    public void updateVSync(){
-        if (vSync){
-            glfwSwapInterval(1);
-        } else {
-            glfwSwapInterval(0);
-        }
-    }
-
-    public void updateWindowTitle(String newTitle){
+    public void updateTitle(String newTitle){
         this.title = newTitle;
         glfwSetWindowTitle(windowHandle, newTitle);
     }
