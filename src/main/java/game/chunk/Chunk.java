@@ -5,6 +5,9 @@ import engine.disk.SQLiteDiskHandler;
 import engine.graphics.Mesh;
 import engine.settings.Settings;
 import engine.time.Delta;
+import game.blocks.BlockDefinitionContainer;
+import game.light.Light;
+import game.player.Player;
 import org.joml.Vector2i;
 import org.joml.Vector3i;
 
@@ -16,14 +19,20 @@ import java.util.HashMap;
 public class Chunk {
     private SQLiteDiskHandler sqLiteDiskHandler;
     private ChunkUpdateHandler chunkUpdateHandler;
+    private final Player player;
+    private final BlockDefinitionContainer blockDefinitionContainer = new BlockDefinitionContainer();
+    private Light light;
+    private ChunkMeshGenerator chunkMeshGenerator;
+
     private final Settings settings;
     private final Delta delta;
     private float saveTimer = 0f;
     private final HashMap<Vector2i, ChunkObject> map = new HashMap<>();
 
-    public Chunk(Settings settings, Delta delta){
+    public Chunk(Settings settings, Delta delta, Player player){
         this.delta = delta;
         this.settings = settings;
+        this.player = player;
     }
 
     public void setSqLiteDiskHandler(SQLiteDiskHandler sqLiteDiskHandler){
@@ -35,6 +44,18 @@ public class Chunk {
     public void setChunkUpdateHandler(ChunkUpdateHandler chunkUpdateHandler){
         if (this.chunkUpdateHandler == null){
             this.chunkUpdateHandler = chunkUpdateHandler;
+        }
+    }
+
+    public void setLight(Light light){
+        if (this.light == null){
+            this.light = light;
+        }
+    }
+
+    public void setChunkMeshGenerator(ChunkMeshGenerator chunkMeshGenerator){
+        if (this.chunkMeshGenerator == null){
+            this.chunkMeshGenerator = chunkMeshGenerator;
         }
     }
 
@@ -85,9 +106,9 @@ public class Chunk {
     public void initialChunkPayload(){
         //create the initial map in memory
         int chunkRenderDistance = settings.getRenderDistance();
-        Vector3i currentChunk = getPlayerCurrentChunk();
+        Vector2i currentChunk = player.getPlayerCurrentChunk();
         for (int x = -chunkRenderDistance + currentChunk.x; x < chunkRenderDistance + currentChunk.x; x++){
-            for (int z = -chunkRenderDistance + currentChunk.z; z< chunkRenderDistance + currentChunk.z; z++){
+            for (int z = -chunkRenderDistance + currentChunk.y; z< chunkRenderDistance + currentChunk.y; z++){
                 if (getChunkDistanceFromPlayer(x,z) <= chunkRenderDistance){
                     genBiome(x,z);
                     for (int y = 0; y < 8; y++){
@@ -114,7 +135,7 @@ public class Chunk {
      */
 
     private double getChunkDistanceFromPlayer(int x, int z){
-        Vector2i currentChunk = getPlayerCurrentChunk();
+        Vector2i currentChunk = player.getPlayerCurrentChunk();
         return Math.max(getDistance(0,0,currentChunk.y, 0, 0, z), getDistance(currentChunk.x,0,0, x, 0, 0));
     }
 
@@ -371,12 +392,12 @@ public class Chunk {
             }
         }
 
-        lightFloodFill(x, y, z);
-        torchFloodFill(x,y,z);
+        light.lightFloodFill(pos.x, pos.y, pos.z);
+        light.torchFloodFill(pos.x, pos.y, pos.z);
 
         map.get(key).setSaveToDisk(true);
 
-        lightData[posToIndex(blockX, pos.y, blockZ)] = setByteNaturalLight(lightData[posToIndex(blockX, pos.y, blockZ)], getImmediateLight(x,y,z));
+        lightData[posToIndex(blockX, pos.y, blockZ)] = setByteNaturalLight(lightData[posToIndex(blockX, pos.y, blockZ)], light.getImmediateLight(pos.x,pos.y,pos.z));
 
         /*
         if (!getIfMultiplayer()) {
@@ -384,8 +405,8 @@ public class Chunk {
         }
          */
 
-        instantGeneration(chunkX,chunkZ,yPillar);
-        instantUpdateNeighbor(chunkX, chunkZ,blockX,y,blockZ);//instant update
+        chunkMeshGenerator.instantGeneration(chunkX,chunkZ,yPillar);
+        instantUpdateNeighbor(chunkX, chunkZ,blockX,pos.y,blockZ);//instant update
     }
 
     public void placeBlock(Vector3i pos, byte ID, byte rot){
@@ -413,22 +434,24 @@ public class Chunk {
 
         System.out.println("ADD A LIGHT PROPAGATES OR TRANSLUCENT THING TO PLACE BLOCK!");
 
-        if (isBlockWalkable(ID) && heightMapData[posToIndex2D(blockX,blockZ)] < pos.y){
+        if (blockDefinitionContainer.getWalkable(ID) && heightMapData[posToIndex2D(blockX,blockZ)] < pos.y){
             heightMapData[posToIndex2D(blockX,blockZ)] = (byte) pos.y;
         }
 
-        lightFloodFill(x, y, z);
-        torchFloodFill(x,y,z);
+        light.lightFloodFill(pos.x, pos.y, pos.z);
+        light.torchFloodFill(pos.x, pos.y, pos.z);
 
         map.get(key).setSaveToDisk(true);
 
+        /*
         if (!getIfMultiplayer()) {
             // THIS CREATES A NEW OBJECT IN MEMORY!
             onPlaceCall(ID, x, y, z);
         }
+         */
 
-        instantGeneration(chunkX,chunkZ,yPillar);
-        instantUpdateNeighbor(chunkX, chunkZ,blockX,y,blockZ);//instant update
+        chunkMeshGenerator.instantGeneration(chunkX,chunkZ,yPillar);
+        instantUpdateNeighbor(chunkX, chunkZ,blockX,pos.y,blockZ);//instant update
     }
 
     public byte getLight(int x,int y,int z){
@@ -450,7 +473,7 @@ public class Chunk {
 
         byte naturalLightOfBlock = getByteNaturalLight(lightData[index]);
 
-        byte currentGlobalLightLevel = getCurrentGlobalLightLevel();
+        byte currentGlobalLightLevel = light.getCurrentGlobalLightLevel();
 
         if (naturalLightOfBlock > currentGlobalLightLevel){
             naturalLightOfBlock = currentGlobalLightLevel;
@@ -507,20 +530,20 @@ public class Chunk {
         }
         int yPillar = (int)Math.floor(y/16d);
         switch (y) {
-            case 112, 96, 80, 64, 48, 32, 16 -> generateChunkMesh(chunkX, chunkZ, yPillar - 1);
-            case 111, 95, 79, 63, 47, 31, 15 -> generateChunkMesh(chunkX, chunkZ, yPillar + 1);
+            case 112, 96, 80, 64, 48, 32, 16 -> chunkMeshGenerator.generateChunkMesh(chunkX, chunkZ, yPillar - 1);
+            case 111, 95, 79, 63, 47, 31, 15 -> chunkMeshGenerator.generateChunkMesh(chunkX, chunkZ, yPillar + 1);
         }
         if (x == 15){ //update neighbor
-            instantGeneration(chunkX+1, chunkZ, yPillar);
+            chunkMeshGenerator.instantGeneration(chunkX+1, chunkZ, yPillar);
         }
         if (x == 0){
-            instantGeneration(chunkX-1, chunkZ, yPillar);
+            chunkMeshGenerator.instantGeneration(chunkX-1, chunkZ, yPillar);
         }
         if (z == 15){
-            instantGeneration(chunkX, chunkZ+1, yPillar);
+            chunkMeshGenerator.instantGeneration(chunkX, chunkZ+1, yPillar);
         }
         if (z == 0){
-            instantGeneration(chunkX, chunkZ-1, yPillar);
+            chunkMeshGenerator.instantGeneration(chunkX, chunkZ-1, yPillar);
         }
     }
 
@@ -577,10 +600,10 @@ public class Chunk {
     public void generateNewChunks(){
         //create the initial map in memory
         int chunkRenderDistance = settings.getRenderDistance();
-        Vector3i currentChunk = getPlayerCurrentChunk();
+        Vector2i currentChunk = player.getPlayerCurrentChunk();
         //scan for not-generated/loaded chunks
         for (int x = -chunkRenderDistance + currentChunk.x; x < chunkRenderDistance + currentChunk.x; x++){
-            for (int z = -chunkRenderDistance + currentChunk.z; z< chunkRenderDistance + currentChunk.z; z++){
+            for (int z = -chunkRenderDistance + currentChunk.y; z< chunkRenderDistance + currentChunk.y; z++){
                 if (getChunkDistanceFromPlayer(x,z) <= chunkRenderDistance){
                     // THIS CREATES A NEW OBJECT IN MEMORY!
                     if (map.get(new Vector2i(x,z)) == null){

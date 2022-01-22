@@ -11,15 +11,25 @@ import java.lang.Math;
 public class Player {
 
     private final Delta delta;
-    private final Chunk chunk;
-    private final Ray ray;
+    private Chunk chunk;
+    private Ray ray;
 
     BlockDefinitionContainer blockDefinitionContainer = new BlockDefinitionContainer();
 
-    public Player(Delta delta, Chunk chunk, Ray ray){
+    public Player(Delta delta){
         this.delta = delta;
-        this.chunk = chunk;
-        this.ray = ray;
+    }
+
+    public void setChunk(Chunk chunk){
+        if (this.chunk == null){
+            this.chunk = chunk;
+        }
+    }
+
+    public void setRay(Ray ray) {
+        if (this.ray == null) {
+            this.ray = ray;
+        }
     }
 
     private float runningFOVAdder = 0f;

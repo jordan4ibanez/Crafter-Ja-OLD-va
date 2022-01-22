@@ -16,6 +16,8 @@ import game.chunk.ChunkUpdateHandler;
 import game.chunk.ChunkMeshGenerator;
 import game.light.Light;
 import game.mainMenu.MainMenu;
+import game.player.Player;
+import game.ray.Ray;
 
 public class Crafter {
 
@@ -35,15 +37,18 @@ public class Crafter {
     private final Transformation transformation;
     private final GUI gui;
     private final Settings settings;
+    private final Player player;
     private final Chunk chunk;
     private final BiomeGenerator biomeGenerator;
     private final SQLiteDiskHandler sqLiteDiskHandler;
     private final ChunkUpdateHandler chunkUpdateHandler;
     private final ChunkMeshGenerator chunkMeshGenerator;
     private final TimeOfDay timeOfDay;
+    private final Ray ray;
 
 
     public Crafter(){
+        //spaghetti starts here
 
         this.delta = new Delta();
         this.window = new Window(this.versionName, true, delta); //vsync is on by default - save cpu resources I guess
@@ -55,7 +60,9 @@ public class Crafter {
         this.gui = new GUI();
         this.settings = new Settings(disk, window);
 
-        this.chunk = new Chunk(settings, delta); //chunk now needs 2 more objects to function, called later
+        this.player = new Player(delta);
+
+        this.chunk = new Chunk(settings, delta, player); //chunk now needs 2 more objects to function, called later
 
         settings.setChunk(this.chunk);
 
@@ -71,6 +78,14 @@ public class Crafter {
         this.light = new Light(chunk, chunkMeshGenerator, window);
         this.chunk.setChunkUpdateHandler(this.chunkUpdateHandler);
         this.timeOfDay = new TimeOfDay(window, light);
+
+        this.chunk.setLight(light);
+        this.chunk.setChunkMeshGenerator(chunkMeshGenerator);
+
+        this.ray = new Ray(chunk);
+
+        this.player.setChunk(chunk);
+        this.player.setRay(ray);
     }
 
     public String getVersionName(){
