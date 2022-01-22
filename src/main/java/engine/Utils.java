@@ -1,7 +1,5 @@
 package engine;
 
-import org.lwjgl.BufferUtils;
-
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
@@ -16,7 +14,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
-import org.lwjgl.BufferUtils.createByteBuffer;
+import static org.lwjgl.BufferUtils.createByteBuffer;
 
 public class Utils {
 
@@ -99,7 +97,7 @@ public class Utils {
     }
 
     private ByteBuffer resizeBuffer(ByteBuffer buffer, int newCapacity){
-        ByteBuffer newBuffer = BufferUtils.createByteBuffer(newCapacity);
+        ByteBuffer newBuffer = createByteBuffer(newCapacity);
         buffer.flip();
         newBuffer.put(buffer);
         return newBuffer;
