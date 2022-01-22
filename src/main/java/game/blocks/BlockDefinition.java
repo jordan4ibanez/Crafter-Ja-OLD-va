@@ -4,6 +4,7 @@ package game.blocks;
 public class BlockDefinition {
 
     //actual block object fields
+    private final int ID;
     private final String name;
     private final Boolean dropsItem;
     private final float[][] shape;
@@ -59,6 +60,7 @@ public class BlockDefinition {
             String droppedItem,
             BlockModifier blockModifier
     ){
+        this.ID = ID;
         this.stoneHardness = stoneHardness;
         this.dirtHardness = dirtHardness;
         this.woodHardness = woodHardness;
@@ -84,8 +86,6 @@ public class BlockDefinition {
         this.pointable = pointable;
         this.droppedItem = droppedItem;
         this.blockModifier = blockModifier;
-
-        registerBlockItemDefinition(name, ID);
     }
 
 
@@ -140,6 +140,10 @@ public class BlockDefinition {
         texturePoints[2] = (float)y/(float)atlasSizeY;     //min y (-)
         texturePoints[3] = (float)(y+1)/(float)atlasSizeY; //max y (+)
         return texturePoints;
+    }
+
+    public int getID(){
+        return this.ID;
     }
 
     public String getBlockName(){
