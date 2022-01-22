@@ -21,6 +21,9 @@ import static org.lwjgl.stb.STBImage.stbi_load;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window {
+
+    private final Delta delta;
+
     private String title;
     private int width;
     private int height;
@@ -33,7 +36,8 @@ public class Window {
     private boolean fullScreen = false;
     private final AtomicBoolean shouldClose;
 
-    public Window(String title, boolean vSync){
+    public Window(String title, boolean vSync, Delta delta){
+        this.delta = delta;
         Toolkit tk = Toolkit.getDefaultToolkit();
         Dimension d = tk.getScreenSize();
 
@@ -171,7 +175,7 @@ public class Window {
         clearColorGoal.set(r,g,b);
     }
 
-    public void processClearColorInterpolation(Delta delta){
+    public void processClearColorInterpolation(){
         currentClearColor.lerp(clearColorGoal, (float) delta.getDelta() * 2f);
         glClearColor(currentClearColor.x, currentClearColor.y, currentClearColor.z,1f);
     }

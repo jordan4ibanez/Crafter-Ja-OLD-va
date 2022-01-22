@@ -5,6 +5,7 @@ import engine.Window;
 import engine.graphics.Mesh;
 import engine.graphics.ShaderProgram;
 import engine.gui.GUIObject;
+import engine.time.Delta;
 import org.joml.*;
 
 import java.util.AbstractMap;
@@ -17,6 +18,7 @@ import static org.lwjgl.opengl.GL11C.*;
 public class GameRenderer {
 
     private final Window window;
+    private final Delta delta;
 
     private final float FOV = toRadians(72.0f);
     private final float Z_NEAR = 0.1f;
@@ -29,7 +31,7 @@ public class GameRenderer {
     private final HashMap<Double, Mesh[]> allFaceDrawTypeHash = new HashMap<>();
     private final HashMap<Double, Vector2i> chunkHashKeys    = new HashMap<>();
 
-    public GameRenderer(Window window){
+    public GameRenderer(Window window, Delta delta){
         this.window = window;
 
         //normal shader program
@@ -73,6 +75,7 @@ public class GameRenderer {
         //create uniform for light value
         entityShaderProgram.createUniform("light");
 
+        this.delta = delta;
 
         window.setWindowClearColor(0.53f,0.81f,0.92f,0.f);
 
@@ -91,17 +94,13 @@ public class GameRenderer {
         return hudShaderProgram;
     }
 
-    public float getWindowScale(){
-        return windowScale;
-    }
-
     public void clearScreen(){
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
 
     public void renderGame(){
-        processClearColorInterpolation();
+        window.processClearColorInterpolation();
         clearScreen();
         rescaleWindow();
 

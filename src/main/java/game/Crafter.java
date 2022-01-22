@@ -26,6 +26,7 @@ public class Crafter {
     }
 
     private final String versionName = "Crafter 0.08a";
+    private final Delta delta;
     private final Window window;
     private final Timer timer;
     private final RuntimeInfo runtimeInfo;
@@ -34,7 +35,6 @@ public class Crafter {
     private final Transformation transformation;
     private final GUI gui;
     private final Settings settings;
-    private final Delta delta;
     private final Chunk chunk;
     private final BiomeGenerator biomeGenerator;
     private final SQLiteDiskHandler sqLiteDiskHandler;
@@ -43,7 +43,8 @@ public class Crafter {
 
 
     public Crafter(){
-        this.window = new Window(this.versionName, true); //vsync is on by default - save cpu resources I guess
+        this.delta = new Delta();
+        this.window = new Window(this.versionName, true, delta); //vsync is on by default - save cpu resources I guess
         this.timer = new Timer(versionName, window);
         this.runtimeInfo = new RuntimeInfo();
         this.disk = new Disk();
@@ -51,7 +52,6 @@ public class Crafter {
         this.transformation = new Transformation();
         this.gui = new GUI();
         this.settings = new Settings(disk, window);
-        this.delta = new Delta();
 
         this.chunk = new Chunk(settings, delta); //chunk now needs 2 more objects to function, called later
 
