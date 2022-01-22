@@ -259,4 +259,7 @@ public class Window {
         System.out.println("Window scale is now: " + scale);
     }
 
+    public float getScale(){
+        return this.scale;
+    }
 }
