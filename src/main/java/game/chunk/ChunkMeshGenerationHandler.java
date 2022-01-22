@@ -2,35 +2,34 @@ package game.chunk;
 
 import engine.graphics.Mesh;
 import engine.graphics.Texture;
+import engine.time.Delta;
 
 import java.util.Deque;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-import static engine.time.Delta.getDelta;
-
 public class ChunkMeshGenerationHandler {
-
+    private final Chunk chunk;
+    private final Delta delta;
     private final Deque<ChunkMeshDataObject> queue = new ConcurrentLinkedDeque<>();
+    private final Texture textureAtlas = new Texture("textures/textureAtlas.png");
+    private float chunkUpdateTimer = 0;
+
+    public ChunkMeshGenerationHandler(Chunk chunk, Delta delta){
+        this.chunk = chunk;
+        this.delta = delta;
+    }
 
     public void addToChunkMeshQueue(ChunkMeshDataObject chunkMeshDataObject){
         queue.add(chunkMeshDataObject);
     }
 
-    private final Texture textureAtlas = new Texture("textures/textureAtlas.png");
-
-    public Texture getTextureAtlas(){
-        return textureAtlas;
-    }
-
-    private final float goalTimer = 0.0003f;
-
-    private float chunkUpdateTimer = 0;
 
     public void popChunkMeshQueue(){
 
-        chunkUpdateTimer += getDelta();
+        chunkUpdateTimer += delta.getDelta();
         int updateAmount = 0;
 
+        float goalTimer = 0.0003f;
         if (chunkUpdateTimer >= goalTimer){
             updateAmount = (int)(Math.ceil(chunkUpdateTimer / goalTimer));
             chunkUpdateTimer = 0;
@@ -46,22 +45,22 @@ public class ChunkMeshGenerationHandler {
                 if (newChunkMeshData != null) {
 
                     if (!newChunkMeshData.normalMeshIsNull) {
-                        setChunkNormalMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, new Mesh(newChunkMeshData.positionsArray, newChunkMeshData.lightArray, newChunkMeshData.indicesArray, newChunkMeshData.textureCoordArray, textureAtlas));
+                        chunk.setChunkNormalMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, new Mesh(newChunkMeshData.positionsArray, newChunkMeshData.lightArray, newChunkMeshData.indicesArray, newChunkMeshData.textureCoordArray, textureAtlas));
                     } else {
-                        setChunkNormalMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, null);
+                        chunk.setChunkNormalMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, null);
                     }
 
 
                     if (!newChunkMeshData.liquidMeshIsNull) {
-                        setChunkLiquidMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, new Mesh(newChunkMeshData.liquidPositionsArray, newChunkMeshData.liquidLightArray, newChunkMeshData.liquidIndicesArray, newChunkMeshData.liquidTextureCoordArray, textureAtlas));
+                        chunk.setChunkLiquidMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, new Mesh(newChunkMeshData.liquidPositionsArray, newChunkMeshData.liquidLightArray, newChunkMeshData.liquidIndicesArray, newChunkMeshData.liquidTextureCoordArray, textureAtlas));
                     } else {
-                        setChunkLiquidMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, null);
+                        chunk.setChunkLiquidMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, null);
                     }
 
                     if (!newChunkMeshData.allFacesMeshIsNull) {
-                        setChunkAllFacesMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, new Mesh(newChunkMeshData.allFacesPositionsArray, newChunkMeshData.allFacesLightArray, newChunkMeshData.allFacesIndicesArray, newChunkMeshData.allFacesTextureCoordArray, textureAtlas));
+                        chunk.setChunkAllFacesMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, new Mesh(newChunkMeshData.allFacesPositionsArray, newChunkMeshData.allFacesLightArray, newChunkMeshData.allFacesIndicesArray, newChunkMeshData.allFacesTextureCoordArray, textureAtlas));
                     } else {
-                        setChunkAllFacesMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, null);
+                        chunk.setChunkAllFacesMesh(newChunkMeshData.chunkX, newChunkMeshData.chunkZ, newChunkMeshData.yHeight, null);
                     }
                 }
             } else {
