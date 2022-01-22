@@ -52,7 +52,7 @@ public class ChunkMeshGenerator implements Runnable{
 
     public void run() {
         //run until game is closed - should only be run in game
-        while (!window.windowShouldClose()) {
+        while (!window.shouldClose()) {
             if (pollQueue()) {
                 try {
                     //thread needs to sleep quicker to avoid lag
