@@ -82,25 +82,25 @@ public class Crafter {
     //load everything
     public void runGame(){
         try{
-            loadSettings();
+            //loadSettings();
 
-            initWindow(versionName, getSettingsVsync());
+            //initWindow(versionName, getSettingsVsync());
 
-            initRenderer();
-            initMouseInput();
-            initSoundManager();
-            initGame();
-            createWorldsDir();
+            //initRenderer();
+            //initMouseInput();
+            //initSoundManager();
+            //initGame();
+            //createWorldsDir();
 
             //this is the biome generator thread singleton
             //this is the light handling thread singleton
-            new Thread(new Light()).start();
+            //new Thread(new Light()).start();
 
 
-            easterEgg();
+            //easterEgg();
 
             //this is the scene controller
-            handleSceneLogic();
+            //handleSceneLogic();
 
         } catch ( Exception e ){
             System.out.println(e.getMessage());
@@ -112,24 +112,24 @@ public class Crafter {
 
     //the game engine elements
     private void initGame() {
-        initializeHudAtlas();
+        //initializeHudAtlas();
         //this initializes the block definitions
-        initializeBlocks();
+        //initializeBlocks();
         //this creates a TNT mesh (here for now)
-        createTNTEntityMesh();
+        //createTNTEntityMesh();
 
-        createInitialInventory();
+        //createInitialInventory();
 
-        registerMobs();
+        //registerMobs();
 
-        createGUI();
-        registerItems();
-        registerCraftRecipes();
+        //createGUI();
+        //registerItems();
+        //registerCraftRecipes();
     }
 
     private void cleanup(){
-        Chunk.cleanChunkDataMemory();
-        cleanupSoundManager();
-        cleanupRenderer();
+        chunk.cleanChunkDataMemory();
+        //cleanupSoundManager();
+        //cleanupRenderer();
     }
 }
