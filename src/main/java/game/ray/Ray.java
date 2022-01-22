@@ -122,7 +122,7 @@ public class Ray {
             //setPlayerWorldSelectionPos(null);
         } else if (foundBlock > 0) {
             if (mining && hasMined) {
-                destroyBlock(finalPosX, finalPosY, finalPosZ);
+                //destroyBlock(finalPosX, finalPosY, finalPosZ);
             } else if (placing) {
 
                 /*
@@ -182,7 +182,7 @@ public class Ray {
 
     private final Vector3d cameraWorker = new Vector3d();
 
-    public Vector3d cameraRayCast(double posX, double posY, double posZ, float dirX, float dirY, float dirZ, float length){
+    public Vector3d cameraRayCast(Vector3d pos, Vector3f dir, float length){
         double realNewPosX = 0;
         double realNewPosY = 0;
         double realNewPosZ = 0;
@@ -193,17 +193,17 @@ public class Ray {
 
         for(double step = 0d; step <= length ; step += 0.001d) {
 
-            double cachePosX = dirX * step;
-            double cachePosY = dirY * step;
-            double cachePosZ = dirZ * step;
+            double cachePosX = dir.x * step;
+            double cachePosY = dir.y * step;
+            double cachePosZ = dir.z * step;
 
-            int newFlooredPosX = (int) Math.floor(posX + cachePosX);
-            int newFlooredPosY = (int) Math.floor(posY + cachePosY);
-            int newFlooredPosZ = (int) Math.floor(posZ + cachePosZ);
+            int newFlooredPosX = (int) Math.floor(pos.x + cachePosX);
+            int newFlooredPosY = (int) Math.floor(pos.y + cachePosY);
+            int newFlooredPosZ = (int) Math.floor(pos.z + cachePosZ);
 
-            realNewPosX = posX + cachePosX;
-            realNewPosY = posY + cachePosY;
-            realNewPosZ = posZ + cachePosZ;
+            realNewPosX = pos.x + cachePosX;
+            realNewPosY = pos.y + cachePosY;
+            realNewPosZ = pos.z + cachePosZ;
 
             //stop wasting cpu resources
             if (newFlooredPosX != oldFlooredPosX || newFlooredPosY != oldFlooredPosY || newFlooredPosZ != oldFlooredPosZ) {

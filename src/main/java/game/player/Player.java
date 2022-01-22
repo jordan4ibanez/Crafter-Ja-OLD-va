@@ -254,6 +254,10 @@ public class Player {
         return posWithEyeHeightViewBobbing;
     }
 
+    public Vector3f getPlayerViewBobbing(){
+        return viewBobbing;
+    }
+
     //this is mutable, be careful with this
     public Vector3d getPlayerPosWithCollectionHeight(){
         return posWithCollectionHeight;

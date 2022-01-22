@@ -5,8 +5,16 @@ import org.joml.Matrix4d;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
+import static org.joml.Math.toRadians;
+
 //so much math
 public class Transformation {
+
+    private final Camera camera;
+
+    public Transformation(Camera camera){
+        this.camera = camera;
+    }
 
     //the master projection matrix, this is only modified by getProjectionMatrix
     private final Matrix4d projectionMatrix = new Matrix4d();
