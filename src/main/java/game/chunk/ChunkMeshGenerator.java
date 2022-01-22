@@ -1,20 +1,29 @@
 package game.chunk;
 
+import engine.Window;
 import engine.highPerformanceContainers.HyperFloatArray;
 import engine.highPerformanceContainers.HyperIntArray;
 import game.blocks.BlockDefinitionContainer;
+import org.joml.Vector2i;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-import static engine.Window.windowShouldClose;
-import static game.chunk.Chunk.*;
-
 public class ChunkMeshGenerator implements Runnable{
+    private final Window window;
+    private final ChunkUpdateHandler chunkUpdateHandler;
+    private final BlockDefinitionContainer blockDefinitionContainer;
+    private final Chunk chunk;
+
+    public ChunkMeshGenerator(Window window, ChunkUpdateHandler chunkUpdateHandler, Chunk chunk){
+        this.window = window;
+        this.chunkUpdateHandler = chunkUpdateHandler;
+        this.chunk = chunk;
+        this.blockDefinitionContainer = new BlockDefinitionContainer();
+    }
 
     //all data held on this thread
-    BlockDefinitionContainer blockDefinitionContainer = new BlockDefinitionContainer();
 
     private final ConcurrentLinkedDeque<Vector3i> generationQueue = new ConcurrentLinkedDeque<>();
 
@@ -43,7 +52,7 @@ public class ChunkMeshGenerator implements Runnable{
 
     public void run() {
         //run until game is closed - should only be run in game
-        while (!windowShouldClose()) {
+        while (!window.windowShouldClose()) {
             if (pollQueue()) {
                 try {
                     //thread needs to sleep quicker to avoid lag
@@ -89,9 +98,11 @@ public class ChunkMeshGenerator implements Runnable{
             return false; //don't crash basically
         }
 
-        byte[] blockData = getBlockDataClone(key.x, key.z);
-        byte[] rotationData = getRotationDataClone(key.x, key.z);
-        byte[] lightData = getLightDataClone(key.x, key.z);
+        Vector2i key2D = new Vector2i(key.x, key.z);
+
+        byte[] blockData    = chunk.getBlockData(key2D);
+        byte[] rotationData = chunk.getRotationData(key2D);
+        byte[] lightData    = chunk.getLightData(key2D);
 
         //don't bother if the chunk doesn't exist
         if (blockData == null || rotationData == null || lightData == null) {
@@ -104,15 +115,15 @@ public class ChunkMeshGenerator implements Runnable{
         final int yHeight = key.y;
 
         //neighbor chunks
-        byte[] chunkNeighborXPlusBlockData  = getBlockDataClone(key.x + 1, key.z);
-        byte[] chunkNeighborXMinusBlockData = getBlockDataClone(key.x - 1, key.z);
-        byte[] chunkNeighborZPlusBlockData  = getBlockDataClone(key.x, key.z + 1);
-        byte[] chunkNeighborZMinusBlockData = getBlockDataClone(key.x, key.z - 1);
+        byte[] chunkNeighborXPlusBlockData  = chunk.getBlockData(new Vector2i(key.x + 1, key.z));
+        byte[] chunkNeighborXMinusBlockData = chunk.getBlockData(new Vector2i(key.x - 1, key.z));
+        byte[] chunkNeighborZPlusBlockData  = chunk.getBlockData(new Vector2i(key.x, key.z + 1));
+        byte[] chunkNeighborZMinusBlockData = chunk.getBlockData(new Vector2i(key.x, key.z - 1));
 
-        byte[] chunkNeighborXPlusLightData  = getLightDataClone(key.x + 1, key.z);
-        byte[] chunkNeighborXMinusLightData = getLightDataClone(key.x - 1, key.z);
-        byte[] chunkNeighborZPlusLightData  = getLightDataClone(key.x, key.z + 1);
-        byte[] chunkNeighborZMinusLightData = getLightDataClone(key.x, key.z - 1);
+        byte[] chunkNeighborXPlusLightData  = chunk.getLightData(new Vector2i(key.x + 1, key.z));
+        byte[] chunkNeighborXMinusLightData = chunk.getLightData(new Vector2i(key.x - 1, key.z));
+        byte[] chunkNeighborZPlusLightData  = chunk.getLightData(new Vector2i(key.x, key.z + 1));
+        byte[] chunkNeighborZMinusLightData = chunk.getLightData(new Vector2i(key.x, key.z - 1));
 
         int indicesCount = 0;
 
@@ -135,36 +146,37 @@ public class ChunkMeshGenerator implements Runnable{
                     thisBlock = blockData[posToIndex(x, y, z)];
 
                     //only if not air
-                    if (thisBlock > 0) {
+                    if (thisBlock <= 0) {
+                        continue;
+                    }
 
-                        //only need to look this data up if it's not air
-                        thisBlockDrawType = blockDefinitionContainer.getDrawType(thisBlock);
-                        thisRotation = rotationData[posToIndex(x, y, z)];
+                    //only need to look this data up if it's not air
+                    thisBlockDrawType = blockDefinitionContainer.getDrawType(thisBlock);
+                    thisRotation = rotationData[posToIndex(x, y, z)];
 
-                        switch (thisBlockDrawType) {
+                    switch (thisBlockDrawType) {
 
-                            //normal
-                            case 1 -> indicesCount = calculateNormal(x, y, z, thisBlock, thisRotation, indicesCount, blockData, chunkNeighborZPlusBlockData,chunkNeighborZPlusLightData, chunkNeighborZMinusBlockData,chunkNeighborZMinusLightData, chunkNeighborXPlusBlockData,chunkNeighborXPlusLightData, chunkNeighborXMinusBlockData,chunkNeighborXMinusLightData, chunkLightLevel, lightData);
+                        //normal
+                        case 1 -> indicesCount = calculateNormal(x, y, z, thisBlock, thisRotation, indicesCount, blockData, chunkNeighborZPlusBlockData,chunkNeighborZPlusLightData, chunkNeighborZMinusBlockData,chunkNeighborZMinusLightData, chunkNeighborXPlusBlockData,chunkNeighborXPlusLightData, chunkNeighborXMinusBlockData,chunkNeighborXMinusLightData, chunkLightLevel, lightData);
 
-                            //allfaces
-                            case 4 -> allFacesIndicesCount = calculateAllFaces(x, y, z, thisBlock, thisRotation, allFacesIndicesCount, chunkNeighborZPlusLightData, chunkNeighborZMinusLightData, chunkNeighborXPlusLightData, chunkNeighborXMinusLightData, chunkLightLevel, lightData);
+                        //allfaces
+                        case 4 -> allFacesIndicesCount = calculateAllFaces(x, y, z, thisBlock, thisRotation, allFacesIndicesCount, chunkNeighborZPlusLightData, chunkNeighborZMinusLightData, chunkNeighborXPlusLightData, chunkNeighborXMinusLightData, chunkLightLevel, lightData);
 
-                            //torch
-                            case 7 -> indicesCount = calculateTorchLike(x, y, z, thisBlock, thisRotation, indicesCount, chunkNeighborZPlusLightData, chunkNeighborZMinusLightData, chunkNeighborXPlusLightData, chunkNeighborXMinusLightData, chunkLightLevel, lightData);
+                        //torch
+                        case 7 -> indicesCount = calculateTorchLike(x, y, z, thisBlock, thisRotation, indicesCount, chunkNeighborZPlusLightData, chunkNeighborZMinusLightData, chunkNeighborXPlusLightData, chunkNeighborXMinusLightData, chunkLightLevel, lightData);
 
-                            //liquid
-                            case 8 -> liquidIndicesCount = calculateLiquids(x, y, z, thisBlock, thisRotation, liquidIndicesCount, blockData, chunkNeighborZPlusBlockData,chunkNeighborZPlusLightData, chunkNeighborZMinusBlockData,chunkNeighborZMinusLightData, chunkNeighborXPlusBlockData,chunkNeighborXPlusLightData, chunkNeighborXMinusBlockData,chunkNeighborXMinusLightData, chunkLightLevel, lightData);
+                        //liquid
+                        case 8 -> liquidIndicesCount = calculateLiquids(x, y, z, thisBlock, thisRotation, liquidIndicesCount, blockData, chunkNeighborZPlusBlockData,chunkNeighborZPlusLightData, chunkNeighborZMinusBlockData,chunkNeighborZMinusLightData, chunkNeighborXPlusBlockData,chunkNeighborXPlusLightData, chunkNeighborXMinusBlockData,chunkNeighborXMinusLightData, chunkLightLevel, lightData);
 
-                            //blockbox
-                            default -> indicesCount = calculateBlockBox(x, y, z, thisBlock, thisRotation, indicesCount, chunkNeighborZPlusLightData, chunkNeighborZMinusLightData, chunkNeighborXPlusLightData, chunkNeighborXMinusLightData, chunkLightLevel, lightData);
-                        }
+                        //blockbox
+                        default -> indicesCount = calculateBlockBox(x, y, z, thisBlock, thisRotation, indicesCount, chunkNeighborZPlusLightData, chunkNeighborZMinusLightData, chunkNeighborXPlusLightData, chunkNeighborXMinusLightData, chunkLightLevel, lightData);
                     }
                 }
             }
         }
 
 
-        ChunkMeshDataObject newChunkData = new ChunkMeshDataObject();
+        ChunkMeshData newChunkData = new ChunkMeshData();
 
         newChunkData.chunkX = chunkX;
         newChunkData.chunkZ = chunkZ;
@@ -219,7 +231,7 @@ public class ChunkMeshGenerator implements Runnable{
         allFacesLight.reset();
 
         //finally add it into the queue to be popped
-        addToChunkMeshQueue(newChunkData);
+        chunkUpdateHandler.addToChunkMeshQueue(newChunkData);
         return false;
     }
 
@@ -1451,5 +1463,12 @@ public class ChunkMeshGenerator implements Runnable{
 
     private int posToIndex( int x, int y, int z ) {
         return (z * 2048) + (y * 16) + x;
+    }
+
+    private byte getByteTorchLight(byte input){
+        return (byte) (input & ((1 << 4) - 1));
+    }
+    private byte getByteNaturalLight(byte input){
+        return (byte) (((1 << 4) - 1) & input >> 4);
     }
 }
