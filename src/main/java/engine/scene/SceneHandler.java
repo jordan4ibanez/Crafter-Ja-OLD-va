@@ -102,7 +102,6 @@ public class SceneHandler {
         popItemsAddingQueue();
         popChunkMeshQueue(); //this actually transmits the data from the other threads into main thread
         updateListenerPosition();
-        chunkUpdater();
         gameInput();
         multiPlayerUpdate();
         updateMultiplayerWorldChunkLoader();
@@ -152,7 +151,7 @@ public class SceneHandler {
 
         updateListenerPosition();
 
-        chunkUpdater();
+        //chunkUpdater();
 
         globalChunkSaveToDisk();
 
