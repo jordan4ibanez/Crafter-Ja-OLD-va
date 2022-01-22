@@ -2,6 +2,7 @@ package game.chunk;
 
 import engine.FastNoise;
 import engine.Window;
+import engine.disk.PrimitiveChunkObject;
 import org.joml.Math;
 import org.joml.Vector2i;
 import org.joml.Vector3i;
@@ -60,7 +61,7 @@ public class BiomeGenerator implements Runnable {
         Vector2i newData = queue.pop();
 
         //don't regen existing chunks
-        if (chunk.chunkExists(new Vector2i(newData)) != null) {
+        if (chunk.chunkExists(new Vector2i(newData))) {
             return false;
         }
 
@@ -169,7 +170,7 @@ public class BiomeGenerator implements Runnable {
                     if (gennedSand || gennedGrass) {
                         lightData[posToIndex(generationX, generationY, generationZ)] = 0;
                     } else {
-                        lightData[posToIndex(generationX, generationY, generationZ)] = setByteNaturalLight((byte)0,(byte)15);
+                        lightData[posToIndex(generationX, generationY, generationZ)] = setByteNaturalLight((byte)15);
                     }
                 }
             }
@@ -182,8 +183,8 @@ public class BiomeGenerator implements Runnable {
                 //only check outside
                 if (generationX < 0 || generationX > 15 || generationZ < 0 || generationZ > 15) {
 
-                    float realPosX = (float) ((chunkX * 16d) + generationX);
-                    float realPosZ = (float) ((chunkZ * 16d) + generationZ);
+                    float realPosX = (float) ((newData.x * 16d) + generationX);
+                    float realPosZ = (float) ((newData.y * 16d) + generationZ);
 
                     height = (byte) (Math.abs(noise.GetPerlin(realPosX, realPosZ) * noiseMultiplier + heightAdder) + (byte) 1);
 
@@ -253,7 +254,7 @@ public class BiomeGenerator implements Runnable {
                         while (!solved) {
                             if (basePos.x + x >= 0 && basePos.x + x <= 15 && y >= 0 && basePos.z + z >= 0 && basePos.z + z <= 15) {
                                 if (blockData[posToIndex(basePos.x + x, y, basePos.z + z)] == 0) {
-                                    lightData[posToIndex(basePos.x + x, y, basePos.z + z)] = setByteNaturalLight((byte) 0, (byte) 14);
+                                    lightData[posToIndex(basePos.x + x, y, basePos.z + z)] = setByteNaturalLight((byte) 14);
                                 } else {
                                     solved = true;
                                 }
@@ -266,7 +267,7 @@ public class BiomeGenerator implements Runnable {
                         while (!solved) {
                             if (basePos.x + x >= 0 && basePos.x + x <= 15 && y >= 0 && basePos.z + z >= 0 && basePos.z + z <= 15) {
                                 if (blockData[posToIndex(basePos.x + x, y, basePos.z + z)] == 0) {
-                                    lightData[posToIndex(basePos.x + x, y, basePos.z + z)] = setByteNaturalLight((byte) 0, (byte) 13);
+                                    lightData[posToIndex(basePos.x + x, y, basePos.z + z)] = setByteNaturalLight((byte) 13);
                                 } else {
                                     solved = true;
                                 }
@@ -280,7 +281,7 @@ public class BiomeGenerator implements Runnable {
             }
         }
 
-        chunk.setChunk(chunkX,chunkZ,blockData,rotationData,lightData,heightMapData);
+        chunk.addNewChunk(new PrimitiveChunkObject(new Vector2i(newData.x, newData.y),blockData,rotationData,lightData,heightMapData));
 
         treePosQueue.clear();
         
@@ -298,20 +299,12 @@ public class BiomeGenerator implements Runnable {
     }
 
     //Thanks a lot Lars!!
-    private byte getByteTorchLight(byte input){
-        return (byte) (input & ((1 << 4) - 1));
-    }
-    private byte getByteNaturalLight(byte input){
-        return (byte) (((1 << 4) - 1) & input >> 4);
+    private byte getByteTorchLight(){
+        return (byte) ((byte) 0 & ((1 << 4) - 1));
     }
 
-    private byte setByteTorchLight(byte input, byte newValue){
-        byte naturalLight = getByteNaturalLight(input);
-        return (byte) (naturalLight << 4 | newValue);
-    }
-
-    private byte setByteNaturalLight(byte input, byte newValue){
-        byte torchLight = getByteTorchLight(input);
+    private byte setByteNaturalLight(byte newValue){
+        byte torchLight = getByteTorchLight();
         return (byte) (newValue << 4 | torchLight);
     }
 
