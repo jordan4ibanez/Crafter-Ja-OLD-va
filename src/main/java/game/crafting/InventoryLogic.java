@@ -4,15 +4,11 @@ import it.unimi.dsi.fastutil.objects.ObjectIntImmutablePair;
 import org.joml.Vector2d;
 import org.joml.Vector3f;
 
-import engine.MouseInput.*;
 import engine.Window.getWindowHeight;
 import engine.Window.getWindowWidth;
 import engine.disk.SQLiteDiskHandler.savePlayerData;
 import engine.network.Networking.getIfMultiplayer;
-import engine.render.GameRenderer.*;
 import game.crafting.CraftRecipes.recipeScan;
-import game.crafting.Inventory.*;
-import game.crafting.InventoryObject.*;
 import game.player.Player.getCurrentInventorySelection;
 import game.player.Player.resetPlayerInputs;
 import game.player.WieldHand.resetWieldHandSetupTrigger;

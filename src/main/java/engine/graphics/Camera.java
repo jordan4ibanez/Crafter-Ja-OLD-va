@@ -1,10 +1,16 @@
 package engine.graphics;
 
+import game.player.Player;
+import game.ray.Ray;
 import org.joml.Math;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 public class Camera {
+
+    private final Ray ray;
+    private final Player player;
+    private final Mouse mouse;
 
     private final Vector3d position = new Vector3d();
     private final Vector3f rotation = new Vector3f();

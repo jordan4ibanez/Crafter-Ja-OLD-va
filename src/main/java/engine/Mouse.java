@@ -1,11 +1,9 @@
 package engine;
 
-import engine.Window.*;
 import engine.render.GameRenderer.getWindowSizeX;
 import engine.render.GameRenderer.getWindowSizeY;
-import org.lwjgl.glfw.GLFW.*;
 
-final public class MouseInput {
+final public class Mouse {
 
     private double previousPosX = -1;
     private double previousPosY = -1;

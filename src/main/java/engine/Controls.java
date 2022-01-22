@@ -1,19 +1,13 @@
 package engine;
 
-import engine.MouseInput.*;
 import engine.Window.isKeyPressed;
 import engine.Window.toggleFullScreen;
 import engine.graphics.Camera.getCameraPerspective;
 import engine.graphics.Camera.toggleCameraPerspective;
-import engine.gui.GUILogic.*;
 import engine.network.Networking.getIfMultiplayer;
-import engine.settings.Settings.*;
-import game.crafting.Inventory.*;
 import game.crafting.InventoryLogic.closeCraftingInventory;
 import game.crafting.InventoryLogic.openCraftingInventory;
-import game.player.Player.*;
 import game.player.WieldHand.startDiggingAnimation;
-import org.lwjgl.glfw.GLFW.*;
 
 public class Controls {
 

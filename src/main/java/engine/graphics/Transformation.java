@@ -5,13 +5,6 @@ import org.joml.Matrix4d;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import engine.render.GameRenderer.getWindowSizeX;
-import engine.render.GameRenderer.getWindowSizeY;
-import engine.time.TimeOfDay.getTimeOfDayLinear;
-import game.entity.tnt.TNTEntity.getTNTPosition;
-import game.entity.tnt.TNTEntity.getTNTScale;
-import org.joml.Math.toRadians;
-
 //so much math
 public class Transformation {
 
