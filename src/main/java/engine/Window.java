@@ -11,6 +11,7 @@ import java.awt.*;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -29,6 +30,7 @@ public class Window {
     private final Vector3f currentClearColor = new Vector3f();
     private final Vector3f clearColorGoal  = new Vector3f();
     private boolean fullScreen = false;
+    private final AtomicBoolean windowShouldClose;
 
     public Window(String title, boolean vSync){
         Toolkit tk = Toolkit.getDefaultToolkit();
@@ -140,6 +142,9 @@ public class Window {
 
         //free memory
         stbi_image_free(buf);
+
+        //set window state
+        this.windowShouldClose = new AtomicBoolean(false);
     }
 
 
@@ -173,7 +178,7 @@ public class Window {
     }
 
     public boolean windowShouldClose(){
-        return glfwWindowShouldClose(windowHandle);
+        return this.windowShouldClose.get();
     }
 
     public String getTitle(){
