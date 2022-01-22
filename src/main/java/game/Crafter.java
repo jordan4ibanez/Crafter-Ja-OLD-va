@@ -3,6 +3,7 @@ package game;
 import engine.Window;
 import engine.debug.RuntimeInfo;
 import engine.disk.Disk;
+import engine.disk.SQLiteDiskHandler;
 import engine.graphics.Transformation;
 import engine.gui.GUI;
 import engine.settings.Settings;
@@ -33,6 +34,7 @@ public class Crafter {
     private final Delta delta;
     private final Chunk chunk;
     private final BiomeGenerator biomeGenerator;
+    private final SQLiteDiskHandler sqLiteDiskHandler;
 
 
     public Crafter(){
@@ -44,10 +46,14 @@ public class Crafter {
         this.gui = new GUI();
         this.settings = new Settings(disk, window);
         this.delta = new Delta();
-        this.chunk = new Chunk(settings, delta);
+
+        this.chunk = new Chunk(settings, delta); //chunk now needs 2 more objects to function, called later
+
         this.biomeGenerator = new BiomeGenerator(window, chunk);
         new Thread(biomeGenerator).start();
 
+        this.sqLiteDiskHandler = new SQLiteDiskHandler(chunk, biomeGenerator);
+        this.chunk.setSqLiteDiskHandler(sqLiteDiskHandler);
 
     }
 
