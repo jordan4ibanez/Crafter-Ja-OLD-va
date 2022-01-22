@@ -25,7 +25,6 @@ public class Window {
     private int height;
     private float scale;
     private final long windowHandle;
-    private boolean resized;
     private boolean vSync;
     private int dumpedKey = -1;
     private final Vector3f currentClearColor = new Vector3f();
@@ -41,7 +40,6 @@ public class Window {
         this.width   = d.width/2;
         this.height  = d.height/2;
         this.vSync   = vSync;
-        this.resized = false;
 
         // set up an error callback. The default implementation
         // will print the error message in System.err.
@@ -73,7 +71,7 @@ public class Window {
         glfwSetFramebufferSizeCallback(windowHandle, (thisWindow, thisWidth, thisHeight) -> {
             width = thisWidth;
             height = thisHeight;
-            resized = true;
+            updateScale();
         });
 
         // set up a key callback. it will be called every time a key is pressed, repeated or released.
@@ -217,14 +215,6 @@ public class Window {
 
     public int getHeight(){
         return height;
-    }
-
-    public boolean isWindowResized(){
-        return resized;
-    }
-
-    public void setResized(boolean newResized){
-        resized = newResized;
     }
 
     public boolean getVSync(){
