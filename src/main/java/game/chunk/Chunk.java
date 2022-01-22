@@ -3,7 +3,6 @@ package game.chunk;
 import engine.disk.PrimitiveChunkObject;
 import engine.disk.SQLiteDiskHandler;
 import engine.graphics.Mesh;
-import engine.network.ChunkRequest;
 import engine.settings.Settings;
 import engine.time.Delta;
 import org.joml.Vector2i;

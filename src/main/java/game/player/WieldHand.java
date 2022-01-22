@@ -3,17 +3,6 @@ package game.player;
 import org.joml.*;
 import org.joml.Math;
 
-import engine.graphics.Camera.getCameraRotation;
-import engine.sound.SoundAPI.playSound;
-import engine.time.Delta.getDelta;
-import game.blocks.BlockDefinition.getDigSound;
-import game.chunk.Chunk.getBlock;
-import game.crafting.InventoryObject.getItemInInventory;
-import game.entity.item.ItemDefinition.getIfItem;
-import game.entity.item.ItemDefinition.itemIsBlock;
-import game.player.Player.*;
-import game.player.ViewBobbing.getPlayerViewBobbing;
-
 final public class WieldHand {
 
     //z is distance from camera - negative is further

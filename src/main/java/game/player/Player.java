@@ -1,14 +1,26 @@
 package game.player;
 
-import org.joml.Vector2f;
-import org.joml.Vector3d;
-import org.joml.Vector3f;
-import org.joml.Vector3i;
+import engine.time.Delta;
+import game.blocks.BlockDefinitionContainer;
+import game.chunk.Chunk;
+import game.ray.Ray;
+import org.joml.*;
+
+import java.lang.Math;
 
 public class Player {
 
-    //this is a final Vector3i which indicates that the player is not pointing at anything
-    private final Vector3i notPointingAtAnything = new Vector3i(0,-555,0);
+    private final Delta delta;
+    private final Chunk chunk;
+    private final Ray ray;
+
+    BlockDefinitionContainer blockDefinitionContainer = new BlockDefinitionContainer();
+
+    public Player(Delta delta, Chunk chunk, Ray ray){
+        this.delta = delta;
+        this.chunk = chunk;
+        this.ray = ray;
+    }
 
     private float runningFOVAdder = 0f;
     private int health = 20;
@@ -20,6 +32,7 @@ public class Player {
     private final Vector3d posWithEyeHeightViewBobbing = new Vector3d().set(posWithEyeHeight.x, posWithEyeHeight.y, posWithEyeHeight.z);
     private final Vector3i newFlooredPos = new Vector3i();
     private final Vector3f inertia              = new Vector3f(0,0,0);
+    private final Vector3f inertiaBuffer = new Vector3f(0,0,0);
     private final float height                  = 1.9f;
     private final float width                   = 0.3f;
     private boolean onGround              =  false;
@@ -27,8 +40,6 @@ public class Player {
     private boolean mining                = false;
     private boolean placing               = false;
     private float placeTimer              = 0;
-    private final Vector2f animationInertiaWorker = new Vector2f();
-    private final float accelerationMultiplier  = 0.07f;
     private String name                   = "";
     private int currentInventorySelection = 0;
     private int oldInventorySelection = 0;
@@ -38,12 +49,12 @@ public class Player {
     private boolean playerIsJumping = false;
     private final Vector3d particlePos = new Vector3d(worldSelectionPos);
     private final Vector3f particleInertia = new Vector3f();
+    private boolean cameraSubmerged = false;
+
     //this is like this because working with x and z is easier than x and y
-    private final Vector3i currentChunk = new Vector3i((int)Math.floor(pos.x / 16f),0,(int)Math.floor(pos.z / 16f));
-    public int oldY = 0;
+    private final Vector2i currentChunk = new Vector2i((int)Math.floor(pos.x / 16f),(int)Math.floor(pos.z / 16f));
 
-    private final float reach = 3.575f;
-
+    private int oldY = 0;
     private boolean sneaking              = false;
     private boolean running               = false;
 
@@ -52,22 +63,33 @@ public class Player {
     private final Vector3i oldFlooredPos = new Vector3i(0,0,0);
     private final Vector3d oldRealPos = new Vector3d(0,0,0);
 
-    private float hurtCameraRotation = 0;
-    private boolean doHurtRotation = false;
-    private boolean hurtRotationUp = true;
-
-    //block hardness cache
+    //block hardness
     private float stoneHardness = 0f;
     private float dirtHardness = 0f;
     private float woodHardness = 0f;
     private float leafHardness = 0f;
 
-    //tool mining level cache
+    //tool mining level
     private float stoneMiningLevel = 0.3f;
     private float dirtMiningLevel = 1f;
     private float woodMiningLevel = 1f;
     private float leafMiningLevel = 1f;
 
+    //water stuff
+    private boolean inWater = false;
+    private boolean wasInWater = false;
+    private float wasInWaterTimer = 0f;
+    private boolean waterLockout = false;
+
+    //digging stuff
+    private float diggingProgress = 0f;
+    private byte diggingFrame = -1;
+    private boolean hasDug = false;
+    private float particleBufferTimer = 0f;
+    private byte currentRotDir = 0;
+
+    private final Vector2f inertiaWorker = new Vector2f();
+    private float healthTimer = 0;
 
     public Vector3d getOldRealPos(){
         return oldRealPos;
@@ -94,21 +116,8 @@ public class Player {
         inertia.add(x,y,z);
     }
 
-
-
     public float getHurtCameraRotation(){
-        return hurtCameraRotation;
-    }
-
-    public void resetPlayerInputs(){
-        setPlayerForward(false);
-        setPlayerBackward(false);
-        setPlayerLeft(false);
-        setPlayerRight(false);
-        setPlayerSneaking(false);
-        setPlayerJump(false);
-        mining = false;
-        placing = false;
+        return (float) 0;
     }
 
 
@@ -116,20 +125,9 @@ public class Player {
         return(playerIsJumping);
     }
 
-    //todo make this 2D
-    public Vector3i getPlayerCurrentChunk(){
+    public Vector2i getPlayerCurrentChunk(){
         return currentChunk;
     }
-
-    public int getPlayerCurrentChunkX(){
-        return currentChunk.x;
-    }
-
-    public int getPlayerCurrentChunkZ(){
-        return currentChunk.z;
-    }
-
-
 
     public float getSneakOffset(){
         return sneakOffset / 900f;
@@ -141,25 +139,25 @@ public class Player {
 
         //pointing at a block
         if (thePos != null){
-            byte block = getBlock(thePos.x, thePos.y,thePos.z);
+            byte block = chunk.getBlock(new Vector3i(thePos.x, thePos.y,thePos.z));
             //add in block hardness levels
             if (block > 0){
-                stoneHardness = getStoneHardness(block);
-                dirtHardness = getDirtHardness(block);
-                woodHardness = getWoodHardness(block);
-                leafHardness = getLeafHardness(block);
+                stoneHardness = blockDefinitionContainer.getStoneHardness(block);
+                dirtHardness  = blockDefinitionContainer.getDirtHardness(block);
+                woodHardness  = blockDefinitionContainer.getWoodHardness(block);
+                leafHardness  = blockDefinitionContainer.getLeafHardness(block);
             }
             //reset when not pointing at any block
             else {
                 stoneHardness = -1;
-                dirtHardness = -1;
-                woodHardness = -1;
-                leafHardness = -1;
+                dirtHardness  = -1;
+                woodHardness  = -1;
+                leafHardness  = -1;
             }
 
             worldSelectionPos.set(thePos.x, thePos.y,thePos.z);
         } else {
-            worldSelectionPos.set(notPointingAtAnything.x, notPointingAtAnything.y, notPointingAtAnything.z);
+            worldSelectionPos.set(0,-1,0);
         }
     }
 
@@ -173,13 +171,13 @@ public class Player {
         worldSelectionPos.set(x,y,z);
 
         //pointing at a block
-        byte block = getBlock(x, y, z);
+        byte block = chunk.getBlock(new Vector3i(x, y, z));
         //add in block hardness levels
         if (block > 0){
-            stoneHardness = getStoneHardness(block);
-            dirtHardness = getDirtHardness(block);
-            woodHardness = getWoodHardness(block);
-            leafHardness = getLeafHardness(block);
+            stoneHardness = blockDefinitionContainer.getStoneHardness(block);
+            dirtHardness  = blockDefinitionContainer.getDirtHardness(block);
+            woodHardness  = blockDefinitionContainer.getWoodHardness(block);
+            leafHardness  = blockDefinitionContainer.getLeafHardness(block);
         }
         //reset when not pointing at any block
         else {
@@ -190,26 +188,8 @@ public class Player {
         }
     }
 
-    //mutable - be careful with this
     public Vector3i getPlayerWorldSelectionPos(){
         return worldSelectionPos;
-    }
-    //immutable
-    public int getPlayerWorldSelectionPosX(){
-        return worldSelectionPos.x;
-    }
-    //immutable
-    public int getPlayerWorldSelectionPosY(){
-        return worldSelectionPos.y;
-    }
-    //immutable
-    public int getPlayerWorldSelectionPosZ(){
-        return worldSelectionPos.z;
-    }
-
-
-    public String getPlayerName(){
-        return name;
     }
 
     public int getPlayerInventorySelection(){
@@ -239,13 +219,12 @@ public class Player {
         return cameraSubmerged;
     }
 
-    private boolean cameraSubmerged = false;
 
 
-    public float getPlayerHeight(){
+    public float getHeight(){
         return height;
     }
-    public float getPlayerWidth(){
+    public float getWidth(){
         return width;
     }
 
@@ -253,74 +232,22 @@ public class Player {
         return placing;
     }
 
-    //this is mutable, be careful with this
     public Vector3d getPlayerPos() {
         return pos;
     }
-    //immutable
-    public double getPlayerPosX(){
-        return pos.x;
-    }
-    //immutable
-    public double getPlayerPosY(){
-        return pos.y;
-    }
-    //immutable
-    public double getPlayerPosZ(){
-        return pos.z;
-    }
 
-    //this is mutable, be careful with this
     public Vector3d getPlayerPosWithEyeHeight(){
         return posWithEyeHeight;
     }
-    //immutable
-    public double getPlayerPosWithEyeHeightX(){
-        return posWithEyeHeight.x;
-    }
-    //immutable
-    public double getPlayerPosWithEyeHeightY(){
-        return posWithEyeHeight.y;
-    }
-    //immutable
-    public double getPlayerPosWithEyeHeightZ(){
-        return posWithEyeHeight.z;
-    }
 
-    //this is mutable, be careful with this
     public Vector3d getPlayerPosWithViewBobbing(){
         return posWithEyeHeightViewBobbing;
-    }
-    //immutable
-    public double getPlayerPosWithViewBobbingX(){
-        return posWithEyeHeightViewBobbing.x;
-    }
-    //immutable
-    public double getPlayerPosWithViewBobbingY(){
-        return posWithEyeHeightViewBobbing.y;
-    }
-    //immutable
-    public double getPlayerPosWithViewBobbingZ(){
-        return posWithEyeHeightViewBobbing.z;
     }
 
     //this is mutable, be careful with this
     public Vector3d getPlayerPosWithCollectionHeight(){
         return posWithCollectionHeight;
     }
-    //immutable
-    public double getPlayerPosWithCollectionHeightX(){
-        return posWithCollectionHeight.x;
-    }
-    //immutable
-    public double getPlayerPosWithCollectionHeightY(){
-        return posWithCollectionHeight.y;
-    }
-    //immutable
-    public double getPlayerPosWithCollectionHeightZ(){
-        return posWithCollectionHeight.z;
-    }
-
 
     private void applyCameraViewBobbingOffset(){
         posWithEyeHeightViewBobbing.set(posWithEyeHeight.x, posWithEyeHeight.y,posWithEyeHeight.z);
@@ -349,77 +276,16 @@ public class Player {
     }
 
 
-    public void setPlayerPos(Vector3d newPos) {
+    public void setPos(Vector3d newPos) {
         pos.set(newPos.x,newPos.y, newPos.z);
     }
 
-    //mutable, be careful with this
-    public Vector3f getPlayerInertia(){
+    public Vector3f getInertia(){
         return inertia;
     }
-    //immutable
-    public float getPlayerInertiaX(){
-        return inertia.x;
-    }
-    //immutable
-    public float getPlayerInertiaY(){
-        return inertia.y;
-    }
-    //immutable
-    public float getPlayerInertiaZ(){
-        return inertia.z;
-    }
 
-    public void setPlayerInertia(float x,float y,float z){
-        inertia.x = x;
-        inertia.y = y;
-        inertia.z = z;
-    }
-
-    private final Vector3f inertiaBuffer = new Vector3f(0,0,0);
-
-    private boolean forward = false;
-    private boolean backward = false;
-    private boolean left = false;
-    private boolean right = false;
-    private boolean jump = false;
-
-    public boolean getPlayerForward(){
-        return forward;
-    }
-    public boolean getPlayerBackward(){
-        return backward;
-    }
-    public boolean getPlayerLeft(){
-        return left;
-    }
-    public boolean getPlayerRight(){
-        return right;
-    }
-    public boolean getPlayerJump(){
-        return jump;
-    }
-    public boolean isPlayerSneaking(){
-        return sneaking;
-    }
-
-    public void setPlayerForward(boolean isForward){
-        forward = isForward;
-    }
-    public void setPlayerBackward(boolean isBackward){
-        backward = isBackward;
-    }
-    public void setPlayerLeft(boolean isLeft){
-        left = isLeft;
-    }
-    public void setPlayerRight(boolean isRight){
-        right = isRight;
-    }
-    public void setPlayerJump(boolean isJump){
-        jump = isJump;
-    }
-    public void setPlayerSneaking(boolean isSneaking){
-        sneaking = isSneaking;
+    public void setInertia(Vector3f inertia){
+        this.inertia.set(inertia);
     }
 
     public void setPlayerRunning(boolean isRunning){
@@ -431,26 +297,6 @@ public class Player {
         }
     }
 
-    private boolean playerIsMoving(){
-        return forward || backward || left || right;
-    }
-
-    final private float movementAcceleration = 1000.f;
-
-    final private float maxWalkSpeed = 4.f;
-
-    final private float maxRunSpeed = 6.f;
-
-    final private float maxSneakSpeed = 1.f;
-
-    private boolean inWater = false;
-
-    private boolean wasInWater = false;
-
-    private float wasInWaterTimer = 0f;
-    private boolean waterLockout = false;
-
-
 
     public void setPlayerInWater(boolean theTruth){
         inWater = theTruth;
@@ -461,7 +307,10 @@ public class Player {
 
     public void setPlayerInertiaBuffer(){
 
-        double delta = getDelta();
+        double delta = this.delta.getDelta();
+
+        float accelerationMultiplier = 0.07f;
+        float movementAcceleration = 1000.f;
 
         if (forward){
             float yaw = (float)Math.toRadians(getCameraRotation().y) + (float)Math.PI;
@@ -504,8 +353,6 @@ public class Player {
     }
 
 
-    private final Vector2f inertiaWorker = new Vector2f();
-
     private void applyPlayerInertiaBuffer(){
         setPlayerInertiaBuffer();
 
@@ -519,11 +366,11 @@ public class Player {
         float maxSpeed;
 
         if (sneaking) {
-            maxSpeed = maxSneakSpeed;
+            maxSpeed = 1.f;
         } else if (running) {
-            maxSpeed = maxRunSpeed;
+            maxSpeed = 6.f;
         } else {
-            maxSpeed = maxWalkSpeed;
+            maxSpeed = 4.f;
         }
 
         //speed limit the player's movement
@@ -545,9 +392,6 @@ public class Player {
         return onGround;
     }
 
-    private float diggingProgress = 0f;
-    private byte diggingFrame = -1;
-    private boolean hasDug = false;
 
     public boolean playerHasDug(){
         return hasDug;
@@ -557,11 +401,7 @@ public class Player {
         return diggingFrame;
     }
 
-    private float particleBufferTimer = 0f;
 
-    private float rainBuffer = 0f;
-
-    private byte currentRotDir = 0;
 
     public byte getPlayerDir(){
         return currentRotDir;
@@ -694,7 +534,7 @@ public class Player {
         //stop players from falling forever
         //this only applies their inertia if they are within a loaded chunk, IE
         //if the server doesn't load up something in time, they freeze in place
-        if (getChunkKey(currentChunk.x, currentChunk.z) != null) {
+        if (chunk.chunkExists(currentChunk)) {
             onGround = applyInertia(pos, inertia, true, width, height, true, sneaking, true, true, true);
         }
 
@@ -707,7 +547,7 @@ public class Player {
 
         //play sound when player lands on the ground
         if (onGround && !wasOnGround){
-            playSound("dirt_" + (int)(Math.ceil(Math.random()*3)));
+            //playSound("dirt_" + (int)(Math.ceil(Math.random()*3)));
         }
 
 
@@ -725,17 +565,20 @@ public class Player {
         }
 
         //apply player's body animation
-        applyPlayerBodyAnimation();
+        //applyPlayerBodyAnimation();
 
-        updatePlayerHandInertia();
+        //updatePlayerHandInertia();
 
         //this creates the view bobbing internal calculation offset in the ViewBobbing class
         //this is only creating the offsets that will be applied
-        if(onGround && playerIsMoving() && !sneaking && !inWater){
+
+        /*
+        if(onGround && !sneaking && !inWater){
             applyViewBobbing();
         } else {
             returnPlayerViewBobbing();
         }
+         */
 
         //apply view bobbing offset to camera position literal form (Vector3D)
         applyCameraViewBobbingOffset();
@@ -764,10 +607,10 @@ public class Player {
             if (particleBufferTimer > 0.01f){
                 int randomDir = (int)Math.floor(Math.random()*6f);
                 int block;
-                byte miningBlock = getBlock(worldSelectionPos.x, worldSelectionPos.y, worldSelectionPos.z);
+                byte miningBlock = chunk.getBlock(worldSelectionPos);
                 switch (randomDir) {
                     case 0 -> {
-                        block = getBlock(worldSelectionPos.x + 1, worldSelectionPos.y, worldSelectionPos.z);
+                        block = chunk.getBlock(new Vector3i(worldSelectionPos.x + 1, worldSelectionPos.y, worldSelectionPos.z));
                         if (block == 0) {
                             particlePos.set(worldSelectionPos.x,worldSelectionPos.y,worldSelectionPos.z);
                             particlePos.x += 1.1f;
@@ -779,11 +622,11 @@ public class Player {
                             particleInertia.y = (float) Math.random() * 2f;
                             particleInertia.z = (float) (Math.random() - 0.5f) * 2f;
 
-                            createParticle(particlePos.x, particlePos.y ,particlePos.z, particleInertia.x, particleInertia.y, particleInertia.z, miningBlock);
+                            //createParticle(particlePos.x, particlePos.y ,particlePos.z, particleInertia.x, particleInertia.y, particleInertia.z, miningBlock);
                         }
                     }
                     case 1 -> {
-                        block = getBlock(worldSelectionPos.x - 1, worldSelectionPos.y, worldSelectionPos.z);
+                        block = chunk.getBlock(new Vector3i(worldSelectionPos.x - 1, worldSelectionPos.y, worldSelectionPos.z));
                         if (block == 0) {
                             particlePos.set(worldSelectionPos.x,worldSelectionPos.y,worldSelectionPos.z);
                             particlePos.x -= 0.1f;
@@ -795,11 +638,11 @@ public class Player {
                             particleInertia.y = (float) Math.random() * 2f;
                             particleInertia.z = (float) (Math.random() - 0.5f) * 2f;
 
-                            createParticle(particlePos.x, particlePos.y ,particlePos.z, particleInertia.x, particleInertia.y, particleInertia.z, miningBlock);
+                            //createParticle(particlePos.x, particlePos.y ,particlePos.z, particleInertia.x, particleInertia.y, particleInertia.z, miningBlock);
                         }
                     }
                     case 2 -> {
-                        block = getBlock(worldSelectionPos.x, worldSelectionPos.y + 1, worldSelectionPos.z);
+                        block = chunk.getBlock(new Vector3i(worldSelectionPos.x, worldSelectionPos.y + 1, worldSelectionPos.z));
                         if (block == 0) {
                             particlePos.set(worldSelectionPos.x,worldSelectionPos.y,worldSelectionPos.z);
                             particlePos.y += 1.1f;
@@ -811,11 +654,11 @@ public class Player {
                             particleInertia.y = (float) Math.random() * 2f;
                             particleInertia.z = (float) (Math.random() - 0.5f) * 2f;
 
-                            createParticle(particlePos.x, particlePos.y ,particlePos.z, particleInertia.x, particleInertia.y, particleInertia.z, miningBlock);
+                            //createParticle(particlePos.x, particlePos.y ,particlePos.z, particleInertia.x, particleInertia.y, particleInertia.z, miningBlock);
                         }
                     }
                     case 3 -> {
-                        block = getBlock(worldSelectionPos.x, worldSelectionPos.y - 1, worldSelectionPos.z);
+                        block = chunk.getBlock(new Vector3i(worldSelectionPos.x, worldSelectionPos.y - 1, worldSelectionPos.z));
                         if (block == 0) {
                             particlePos.set(worldSelectionPos.x,worldSelectionPos.y,worldSelectionPos.z);
                             particlePos.y -= 0.1f;
@@ -827,11 +670,11 @@ public class Player {
                             particleInertia.y = (float) Math.random() * -1f;
                             particleInertia.z = (float) (Math.random() - 0.5f) * 2f;
 
-                            createParticle(particlePos.x, particlePos.y ,particlePos.z, particleInertia.x, particleInertia.y, particleInertia.z, miningBlock);
+                            //createParticle(particlePos.x, particlePos.y ,particlePos.z, particleInertia.x, particleInertia.y, particleInertia.z, miningBlock);
                         }
                     }
                     case 4 -> {
-                        block = getBlock(worldSelectionPos.x, worldSelectionPos.y, worldSelectionPos.z + 1);
+                        block = chunk.getBlock(new Vector3i(worldSelectionPos.x, worldSelectionPos.y, worldSelectionPos.z + 1));
                         if (block == 0) {
                             particlePos.set(worldSelectionPos.x,worldSelectionPos.y,worldSelectionPos.z);
                             particlePos.z += 1.1f;
@@ -843,11 +686,11 @@ public class Player {
                             particleInertia.y = (float) Math.random() * 2f;
                             particleInertia.x = (float) (Math.random() - 0.5f) * 2f;
 
-                            createParticle(particlePos.x, particlePos.y ,particlePos.z, particleInertia.x, particleInertia.y, particleInertia.z, miningBlock);
+                            //createParticle(particlePos.x, particlePos.y ,particlePos.z, particleInertia.x, particleInertia.y, particleInertia.z, miningBlock);
                         }
                     }
                     case 5 -> {
-                        block = getBlock(worldSelectionPos.x, worldSelectionPos.y, worldSelectionPos.z - 1);
+                        block = chunk.getBlock(new Vector3i(worldSelectionPos.x, worldSelectionPos.y, worldSelectionPos.z - 1));
                         if (block == 0) {
                             particlePos.set(worldSelectionPos.x,worldSelectionPos.y,worldSelectionPos.z);
                             particlePos.z -= 0.1f;
@@ -859,7 +702,7 @@ public class Player {
                             particleInertia.y = (float) Math.random() * 2f;
                             particleInertia.x = (float) (Math.random() - 0.5f) * 2f;
 
-                            createParticle(particlePos.x, particlePos.y ,particlePos.z, particleInertia.x, particleInertia.y, particleInertia.z, miningBlock);
+                            //createParticle(particlePos.x, particlePos.y ,particlePos.z, particleInertia.x, particleInertia.y, particleInertia.z, miningBlock);
                         }
                     }
                 }
@@ -869,33 +712,36 @@ public class Player {
 
         calculateRunningFOV();
 
+        float reach = 3.575f;
         if (getCameraPerspective() < 2) {
             if (mining && hasDug) {
-                playerRayCast(getPlayerPosWithViewBobbingX(),getPlayerPosWithViewBobbingY(),getPlayerPosWithViewBobbingZ(), getCameraRotationVectorX(),getCameraRotationVectorY(),getCameraRotationVectorZ(), reach, true, false, true);
+                ray.playerRayCast(posWithEyeHeightViewBobbing, getCameraRotationVectorX(),getCameraRotationVectorY(),getCameraRotationVectorZ(), reach, true, false, true);
             } else if (mining) {
-                playerRayCast(getPlayerPosWithViewBobbingX(),getPlayerPosWithViewBobbingY(),getPlayerPosWithViewBobbingZ(), getCameraRotationVectorX(),getCameraRotationVectorY(),getCameraRotationVectorZ(), reach, true, false, false);
+                ray.playerRayCast(posWithEyeHeightViewBobbing, getCameraRotationVectorX(),getCameraRotationVectorY(),getCameraRotationVectorZ(), reach, true, false, false);
             } else if (placing && placeTimer <= 0) {
-                playerRayCast(getPlayerPosWithViewBobbingX(),getPlayerPosWithViewBobbingY(),getPlayerPosWithViewBobbingZ(), getCameraRotationVectorX(),getCameraRotationVectorY(),getCameraRotationVectorZ(), reach, false, true, false);
+                ray.playerRayCast(posWithEyeHeightViewBobbing, getCameraRotationVectorX(),getCameraRotationVectorY(),getCameraRotationVectorZ(), reach, false, true, false);
                 placeTimer = 0.25f; // every quarter second you can place
             } else {
-                playerRayCast(getPlayerPosWithViewBobbingX(),getPlayerPosWithViewBobbingY(),getPlayerPosWithViewBobbingZ(), getCameraRotationVectorX(),getCameraRotationVectorY(),getCameraRotationVectorZ(), reach, false, false, false);
+                ray.playerRayCast(posWithEyeHeightViewBobbing, getCameraRotationVectorX(),getCameraRotationVectorY(),getCameraRotationVectorZ(), reach, false, false, false);
             }
         } else {
             if (mining && hasDug) {
-                playerRayCast(getPlayerPosWithViewBobbingX(),getPlayerPosWithViewBobbingY(),getPlayerPosWithViewBobbingZ(), getCameraRotationVectorX()*-1f,getCameraRotationVectorY()*-1f,getCameraRotationVectorZ()*-1f, reach, true, false, true);
+                ray.playerRayCast(posWithEyeHeightViewBobbing, getCameraRotationVectorX()*-1f,getCameraRotationVectorY()*-1f,getCameraRotationVectorZ()*-1f, reach, true, false, true);
             } else if (mining) {
-                playerRayCast(getPlayerPosWithViewBobbingX(),getPlayerPosWithViewBobbingY(),getPlayerPosWithViewBobbingZ(), getCameraRotationVectorX()*-1f,getCameraRotationVectorY()*-1f,getCameraRotationVectorZ()*-1f, reach, true, false, false);
+                ray.playerRayCast(posWithEyeHeightViewBobbing, getCameraRotationVectorX()*-1f,getCameraRotationVectorY()*-1f,getCameraRotationVectorZ()*-1f, reach, true, false, false);
             } else if (placing && placeTimer <= 0) {
-                playerRayCast(getPlayerPosWithViewBobbingX(),getPlayerPosWithViewBobbingY(),getPlayerPosWithViewBobbingZ(), getCameraRotationVectorX()*-1f,getCameraRotationVectorY()*-1f,getCameraRotationVectorZ()*-1f, reach, false, true, false);
+                ray.playerRayCast(posWithEyeHeightViewBobbing, getCameraRotationVectorX()*-1f,getCameraRotationVectorY()*-1f,getCameraRotationVectorZ()*-1f, reach, false, true, false);
                 placeTimer = 0.25f; // every quarter second you can place
             } else {
-                playerRayCast(getPlayerPosWithViewBobbingX(),getPlayerPosWithViewBobbingY(),getPlayerPosWithViewBobbingZ(), getCameraRotationVectorX()*-1f,getCameraRotationVectorY()*-1f,getCameraRotationVectorZ()*-1f, reach, false, false, false);
+                ray.playerRayCast(posWithEyeHeightViewBobbing, getCameraRotationVectorX()*-1f,getCameraRotationVectorY()*-1f,getCameraRotationVectorZ()*-1f, reach, false, false, false);
             }
         }
 
+        /*
         if (health <= 6) {
             makeHeartsJiggle();
         }
+         */
 
         //camera z axis hurt rotation thing
 
@@ -1014,7 +860,6 @@ public class Player {
         return health;
     }
 
-    private float healthTimer = 0;
 
     private void doHealthTest(){
         double delta = getDelta();
@@ -1041,13 +886,13 @@ public class Player {
 
     public void setPlayerHealth(int newHealth){
         health = newHealth;
-        calculateHealthBarElements();
+        //calculateHealthBarElements();
     }
 
     public void hurtPlayer(int hurt){
         health -= hurt;
-        playSound("hurt", true);
-        calculateHealthBarElements();
+        //playSound("hurt", true);
+        //calculateHealthBarElements();
         //doHurtRotation = true;
     }
 }
