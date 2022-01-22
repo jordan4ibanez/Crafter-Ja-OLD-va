@@ -6,10 +6,6 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-import engine.Window.windowShouldClose;
-import game.chunk.Chunk.*;
-import game.chunk.ChunkMeshGenerator.setChunkThreadCurrentGlobalLightLevel;
-
 public class Light implements Runnable {
 
     //internal pointer to self reference
@@ -391,4 +387,22 @@ public class Light implements Runnable {
             //}
         }
     }
+
+    private byte getByteTorchLight(byte input){
+        return (byte) (input & ((1 << 4) - 1));
+    }
+    private byte getByteNaturalLight(byte input){
+        return (byte) (((1 << 4) - 1) & input >> 4);
+    }
+
+    private byte setByteTorchLight(byte input, byte newValue){
+        byte naturalLight = getByteNaturalLight(input);
+        return (byte) (naturalLight << 4 | newValue);
+    }
+
+    private byte setByteNaturalLight(byte input, byte newValue){
+        byte torchLight = getByteTorchLight(input);
+        return (byte) (newValue << 4 | torchLight);
+    }
+
 }
