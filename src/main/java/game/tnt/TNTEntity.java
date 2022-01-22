@@ -7,18 +7,7 @@ import org.joml.Vector3f;
 
 import java.util.ArrayList;
 
-import engine.FancyMath.randomForceValue;
-import engine.sound.SoundAPI.playSound;
-import engine.time.Delta.getDelta;
-import game.entity.collision.Collision.applyInertia;
-import game.tnt.Explosion.boom;
-
 public class TNTEntity {
-
-    //todo: this is crap and confusing - rewrite this
-
-    //TODO: REWRITE THIS IMMEDIATELY FOR 0.07
-
 
     private final float tntSize = 0.5f;
     private final int MAX_ID_AMOUNT = 126_000;
