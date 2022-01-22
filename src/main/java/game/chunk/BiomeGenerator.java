@@ -28,7 +28,7 @@ public class BiomeGenerator implements Runnable {
     @Override
     public void run() {
         noise.SetSeed(seed);
-        while (!window.windowShouldClose()) {
+        while (!window.shouldClose()) {
             boolean needsToSleep = runBiomeGeneration();
             if (needsToSleep){
                 try {

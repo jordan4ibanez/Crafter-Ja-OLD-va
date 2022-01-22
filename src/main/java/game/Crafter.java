@@ -68,7 +68,7 @@ public class Crafter {
 
         this.chunkMeshGenerator = new ChunkMeshGenerator(window,chunkUpdateHandler, chunk);
         new Thread(this.chunkMeshGenerator).start();
-
+        this.light = new Light(chunk, chunkMeshGenerator, window);
         this.chunk.setChunkUpdateHandler(this.chunkUpdateHandler);
         this.timeOfDay = new TimeOfDay(window, light);
     }
