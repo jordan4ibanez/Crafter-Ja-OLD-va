@@ -73,7 +73,7 @@ public class Window {
         glfwSetFramebufferSizeCallback(windowHandle, (thisWindow, thisWidth, thisHeight) -> {
             width = thisWidth;
             height = thisHeight;
-            setWindowResized(true);
+            resized = true;
         });
 
         // set up a key callback. it will be called every time a key is pressed, repeated or released.
@@ -89,7 +89,7 @@ public class Window {
         // make the OpenGL context current
         glfwMakeContextCurrent(windowHandle);
 
-        if (isvSync()){
+        if (vSync){
             //enable v-sync
             glfwSwapInterval(1);
         }else {
