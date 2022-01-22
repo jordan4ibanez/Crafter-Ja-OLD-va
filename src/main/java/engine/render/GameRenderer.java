@@ -9,67 +9,30 @@ import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import static engine.FancyMath.getDistance;
-import static engine.MouseInput.*;
-import static engine.Utils.loadResource;
-import static engine.graphics.Camera.*;
-import static engine.graphics.Camera.getCameraRotation;
-import static engine.graphics.Transformation.*;
-import static engine.graphics.Transformation.getOrthoModelMatrix;
-import static engine.gui.GUI.*;
-import static engine.gui.GUILogic.*;
-import static engine.gui.TextHandling.createTextCenteredWithShadow;
-import static engine.gui.TextHandling.createTextWithShadow;
-import static engine.settings.Settings.*;
-import static engine.time.TimeOfDay.getTimeOfDayLinear;
-import static game.chat.Chat.getCurrentMessageMesh;
-import static game.chat.Chat.getViewableChatMessages;
-import static game.clouds.Cloud.*;
-import static game.crafting.Inventory.*;
-import static game.crafting.InventoryLogic.*;
-import static game.crafting.InventoryObject.*;
-import static game.falling.FallingEntity.*;
-import static game.entity.item.ItemEntity.*;
-import static game.light.Light.getCurrentGlobalLightLevel;
-import static game.entity.mob.MobDefinition.*;
-import static game.entity.mob.MobObject.*;
-import static game.entity.particle.Particle.*;
-import static game.player.Player.*;
-import static game.player.Player.getPlayerWorldSelectionPos;
-import static game.player.PlayerMesh.*;
-import static game.player.WieldHand.*;
-import static org.joml.Math.max;
 import static org.joml.Math.toRadians;
-import static org.lwjgl.opengl.GL44.*;
-import static org.lwjgl.opengl.GL44C.GL_BLEND;
-import static org.lwjgl.opengl.GL44C.glDisable;
 
 public class GameRenderer {
 
-    private static final float FOV = toRadians(72.0f); //todo: make this a calculator method ala calculateFOV(float);
-
-    private static final float Z_NEAR = 0.1f;
-
-    private static float windowScale = 0f;
-
-    private static double windowSizeX = 0;
-    private static double windowSizeY = 0;
-
-    private static ShaderProgram shaderProgram;
-    private static ShaderProgram hudShaderProgram;
-    private static ShaderProgram glassLikeShaderProgram;
-    private static ShaderProgram entityShaderProgram;
+    private final float FOV = toRadians(72.0f); //todo: make this a calculator method ala calculateFOV(float);
+    private final float Z_NEAR = 0.1f;
+    private float windowScale = 0f;
+    private double windowSizeX = 0;
+    private double windowSizeY = 0;
+    private ShaderProgram shaderProgram;
+    private ShaderProgram hudShaderProgram;
+    private ShaderProgram glassLikeShaderProgram;
+    private ShaderProgram entityShaderProgram;
 
 
-    public static double getWindowSizeX(){
+    public double getWindowSizeX(){
         return windowSizeX;
     }
 
-    public static double getWindowSizeY(){
+    public double getWindowSizeY(){
         return windowSizeY;
     }
 
-    private static void resetWindowScale(){
+    private void resetWindowScale(){
         if (windowSizeX <= windowSizeY){
             windowScale = (float)windowSizeX;
         } else {
@@ -78,23 +41,23 @@ public class GameRenderer {
         System.out.println("Window scale is now: " + windowScale);
     }
 
-    public static float getzNear(){
+    public float getzNear(){
         return Z_NEAR;
     }
 
-    public static ShaderProgram getShaderProgram(){
+    public ShaderProgram getShaderProgram(){
         return shaderProgram;
     }
 
-    public static ShaderProgram getHudShaderProgram(){
+    public ShaderProgram getHudShaderProgram(){
         return hudShaderProgram;
     }
 
-    public static float getWindowScale(){
+    public float getWindowScale(){
         return windowScale;
     }
 
-    public static void initRenderer() throws Exception{
+    public void initRenderer() throws Exception{
         //normal shader program
         shaderProgram = new ShaderProgram();
         shaderProgram.createVertexShader(loadResource("resources/vertex.vs"));
@@ -158,28 +121,28 @@ public class GameRenderer {
         resetWindowScale();
     }
 
-    public static void clearScreen(){
+    public void clearScreen(){
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
 
-    public static void rescaleWindow(){
+    public void rescaleWindow(){
         if (isWindowResized()){
             windowSizeX = getWindowWidth();
             windowSizeY = getWindowHeight();
             glViewport(0,0, getWindowWidth(), getWindowHeight());
-            setWindowResized(false);
+            setResized(false);
             resetWindowScale();
         }
     }
 
-    private static final HashMap<Double, Mesh[]> normalDrawTypeHash  = new HashMap<>();
-    private static final HashMap<Double, Mesh[]> liquidDrawTypeHash  = new HashMap<>();
-    private static final HashMap<Double, Mesh[]> allFaceDrawTypeHash = new HashMap<>();
-    private static final HashMap<Double, Vector2i> chunkHashKeys    = new HashMap<>();
+    private final HashMap<Double, Mesh[]> normalDrawTypeHash  = new HashMap<>();
+    private final HashMap<Double, Mesh[]> liquidDrawTypeHash  = new HashMap<>();
+    private final HashMap<Double, Mesh[]> allFaceDrawTypeHash = new HashMap<>();
+    private final HashMap<Double, Vector2i> chunkHashKeys    = new HashMap<>();
 
 
-    public static void renderGame(){
+    public void renderGame(){
         processClearColorInterpolation();
         clearScreen();
         rescaleWindow();
@@ -1062,7 +1025,7 @@ public class GameRenderer {
     }
 
 
-    private static void renderInventoryGUI(String inventoryName){
+    private void renderInventoryGUI(String inventoryName){
 
         double startingPointX = getInventoryPosX(inventoryName);
         double startingPointY = getInventoryPosY(inventoryName);
@@ -1198,7 +1161,7 @@ public class GameRenderer {
 
     }
 
-    private static void renderGameGUI(){
+    private void renderGameGUI(){
         for (GUIObject thisButton : getGamePauseMenuGUI()) {
             
             double xPos = thisButton.pos.x * (windowScale / 100d);
@@ -1221,7 +1184,7 @@ public class GameRenderer {
             }
         }
     }
-    public static void cleanupRenderer(){
+    public void cleanupRenderer(){
         if (shaderProgram != null){
             shaderProgram.cleanup();
         }
@@ -1240,7 +1203,7 @@ public class GameRenderer {
         }
     }
 
-    private static double getChunkDistanceFromPlayer(int x, int z){
+    private double getChunkDistanceFromPlayer(int x, int z){
         Vector3i currentChunk = getPlayerCurrentChunk();
         return max(getDistance(0,0,currentChunk.z, 0, 0, z), getDistance(currentChunk.x,0,0, x, 0, 0));
     }
