@@ -10,26 +10,35 @@ import static org.lwjgl.opengl.GL44.*;
 
 public class ShaderProgram {
     private final int programId;
-
-    private int vertexShaderId;
-
-    private int fragmentShaderId;
-
+    private final int vertexShaderId;
+    private final int fragmentShaderId;
     private final Map<String, Integer> uniforms;
 
-    public ShaderProgram() throws Exception{
+    public ShaderProgram(String vertexCode, String fragmentCode){
         programId = glCreateProgram();
         uniforms = new HashMap<>();
         if (programId == 0){
-            throw new Exception("Could not create shader!");
+            try {
+                throw new Exception("Could not create shader!");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+        vertexShaderId = createVertexShader(vertexCode);
+        fragmentShaderId = createFragmentShader(fragmentCode);
+
+        this.link();
     }
 
-    public void createUniform(String uniformName) throws Exception{
+    public void createUniform(String uniformName){
         int uniformLocation = glGetUniformLocation(programId, uniformName);
 
         if (uniformLocation < 0) {
-            throw new Exception("Could not find uniform: " + uniformName);
+            try {
+                throw new Exception("Could not find uniform: " + uniformName);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         uniforms.put(uniformName, uniformLocation);
     }
@@ -51,25 +60,33 @@ public class ShaderProgram {
         glUniform1i(uniforms.get(uniformName), value);
     }
 
-    public void createVertexShader(String shaderCode) throws Exception{
-        vertexShaderId = createShader(shaderCode, GL_VERTEX_SHADER);
+    private int createVertexShader(String shaderCode){
+        return createShader(shaderCode, GL_VERTEX_SHADER);
     }
 
-    public void createFragmentShader(String shaderCode) throws Exception{
-        fragmentShaderId = createShader(shaderCode, GL_FRAGMENT_SHADER);
+    private int createFragmentShader(String shaderCode){
+        return createShader(shaderCode, GL_FRAGMENT_SHADER);
     }
 
-    protected int createShader(String shaderCode, int shaderType) throws Exception{
+    protected int createShader(String shaderCode, int shaderType){
         int shaderId = glCreateShader(shaderType);
         if (shaderId == 0){
-            throw new Exception("Error creating shader. Type: " + shaderType);
+            try {
+                throw new Exception("Error creating shader. Type: " + shaderType);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         glShaderSource(shaderId, shaderCode);
         glCompileShader(shaderId);
 
         if (glGetShaderi(shaderId, GL_COMPILE_STATUS) == 0){
-            throw new Exception("Error compiling shader code: " + glGetShaderInfoLog(shaderId, 1024));
+            try {
+                throw new Exception("Error compiling shader code: " + glGetShaderInfoLog(shaderId, 1024));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         glAttachShader(programId, shaderId);
@@ -77,10 +94,14 @@ public class ShaderProgram {
         return shaderId;
     }
 
-    public void link() throws Exception{
+    private void link(){
         glLinkProgram(programId);
         if (glGetProgrami(programId, GL_LINK_STATUS) == 0){
-            throw new Exception("Error linking shader code: " + glGetProgramInfoLog(programId, 1024));
+            try {
+                throw new Exception("Error linking shader code: " + glGetProgramInfoLog(programId, 1024));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         if(vertexShaderId != 0){

@@ -17,20 +17,68 @@ import static org.lwjgl.opengl.GL11C.*;
 public class GameRenderer {
 
     private final Window window;
-    private final Utils utils = new Utils();
+
+    private final float FOV = toRadians(72.0f);
+    private final float Z_NEAR = 0.1f;
+    private float windowScale = 0f;
+    private final ShaderProgram shaderProgram;
+    private final ShaderProgram hudShaderProgram;
+    private final ShaderProgram glassLikeShaderProgram;
+    private final ShaderProgram entityShaderProgram;
 
     public GameRenderer(Window window){
         this.window = window;
+
+        //normal shader program
+        Utils utils = new Utils();
+        shaderProgram = new ShaderProgram(utils.loadResource("resources/vertex.vs"), utils.loadResource("resources/fragment.fs"));
+
+        //create uniforms for world and projection matrices
+        shaderProgram.createUniform("projectionMatrix");
+        //create uniforms for model view matrix
+        shaderProgram.createUniform("modelViewMatrix");
+        //create uniforms for texture sampler
+        shaderProgram.createUniform("texture_sampler");
+
+        //ortholinear hud shader program
+        hudShaderProgram = new ShaderProgram(utils.loadResource("resources/hud_vertex.vs"), utils.loadResource("resources/hud_fragment.fs"));
+
+        //create uniforms for model view matrix
+        hudShaderProgram.createUniform("modelViewMatrix");
+        //create uniforms for texture sampler
+        hudShaderProgram.createUniform("texture_sampler");
+
+        //glassLike shader program
+        glassLikeShaderProgram = new ShaderProgram(utils.loadResource("resources/glasslike_vertex.vs"), utils.loadResource("resources/glasslike_fragment.fs"));
+
+        //create uniforms for world and projection matrices
+        glassLikeShaderProgram.createUniform("projectionMatrix");
+        //create uniforms for model view matrix
+        glassLikeShaderProgram.createUniform("modelViewMatrix");
+        //create uniforms for texture sampler
+        glassLikeShaderProgram.createUniform("texture_sampler");
+
+        //glassLike shader program
+        entityShaderProgram = new ShaderProgram(utils.loadResource("resources/entity_vertex.vs"), utils.loadResource("resources/entity_fragment.fs"));
+
+        //create uniforms for world and projection matrices
+        entityShaderProgram.createUniform("projectionMatrix");
+        //create uniforms for model view matrix
+        entityShaderProgram.createUniform("modelViewMatrix");
+        //create uniforms for texture sampler
+        entityShaderProgram.createUniform("texture_sampler");
+        //create uniform for light value
+        entityShaderProgram.createUniform("light");
+
+
+        //setWindowClearColor(0.f,0.f,0.f,0.f);
+        window.setWindowClearColor(0.53f,0.81f,0.92f,0.f);
+
+        windowSizeX = window.getWidth();
+        windowSizeY = window.getHeight();
+
+        resetWindowScale();
     }
-
-    private final float FOV = toRadians(72.0f); //todo: make this a calculator method ala calculateFOV(float);
-    private final float Z_NEAR = 0.1f;
-    private float windowScale = 0f;
-    private ShaderProgram shaderProgram;
-    private ShaderProgram hudShaderProgram;
-    private ShaderProgram glassLikeShaderProgram;
-    private ShaderProgram entityShaderProgram;
-
 
     private void resetWindowScale(){
         if (windowSizeX <= windowSizeY){
@@ -55,70 +103,6 @@ public class GameRenderer {
 
     public float getWindowScale(){
         return windowScale;
-    }
-
-    public void initRenderer() throws Exception{
-        //normal shader program
-        shaderProgram = new ShaderProgram();
-        shaderProgram.createVertexShader(utils.loadResource("resources/vertex.vs"));
-        shaderProgram.createFragmentShader(utils.loadResource("resources/fragment.fs"));
-        shaderProgram.link();
-
-        //create uniforms for world and projection matrices
-        shaderProgram.createUniform("projectionMatrix");
-        //create uniforms for model view matrix
-        shaderProgram.createUniform("modelViewMatrix");
-        //create uniforms for texture sampler
-        shaderProgram.createUniform("texture_sampler");
-
-        //ortholinear hud shader program
-        hudShaderProgram = new ShaderProgram();
-        hudShaderProgram.createVertexShader(utils.loadResource("resources/hud_vertex.vs"));
-        hudShaderProgram.createFragmentShader(utils.loadResource("resources/hud_fragment.fs"));
-        hudShaderProgram.link();
-
-        //create uniforms for model view matrix
-        hudShaderProgram.createUniform("modelViewMatrix");
-        //create uniforms for texture sampler
-        hudShaderProgram.createUniform("texture_sampler");
-
-
-        //glassLike shader program
-        glassLikeShaderProgram = new ShaderProgram();
-        glassLikeShaderProgram.createVertexShader(utils.loadResource("resources/glasslike_vertex.vs"));
-        glassLikeShaderProgram.createFragmentShader(utils.loadResource("resources/glasslike_fragment.fs"));
-        glassLikeShaderProgram.link();
-
-        //create uniforms for world and projection matrices
-        glassLikeShaderProgram.createUniform("projectionMatrix");
-        //create uniforms for model view matrix
-        glassLikeShaderProgram.createUniform("modelViewMatrix");
-        //create uniforms for texture sampler
-        glassLikeShaderProgram.createUniform("texture_sampler");
-
-        //glassLike shader program
-        entityShaderProgram = new ShaderProgram();
-        entityShaderProgram.createVertexShader(utils.loadResource("resources/entity_vertex.vs"));
-        entityShaderProgram.createFragmentShader(utils.loadResource("resources/entity_fragment.fs"));
-        entityShaderProgram.link();
-
-        //create uniforms for world and projection matrices
-        entityShaderProgram.createUniform("projectionMatrix");
-        //create uniforms for model view matrix
-        entityShaderProgram.createUniform("modelViewMatrix");
-        //create uniforms for texture sampler
-        entityShaderProgram.createUniform("texture_sampler");
-        //create uniform for light value
-        entityShaderProgram.createUniform("light");
-
-
-        //setWindowClearColor(0.f,0.f,0.f,0.f);
-        window.setWindowClearColor(0.53f,0.81f,0.92f,0.f);
-
-        windowSizeX = window.getWidth();
-        windowSizeY = window.getHeight();
-
-        resetWindowScale();
     }
 
     public void clearScreen(){
