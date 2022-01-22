@@ -2,17 +2,22 @@ package engine;
 
 public class Controls {
 
-    private boolean throwButtonPushed = false;
-    private boolean inventoryButtonPushed = false;
-    private boolean F11Pushed           = false;
-    private boolean escapePushed        = false;
-    private boolean F3Pushed            = false;
-    private boolean F5Pushed = false;
-    private boolean chatButtonPushed = false;
-    private boolean enterPushed = false;
+    private boolean drop        = false;
+    private boolean inventory   = false;
+    private boolean fullScreen  = false;
+    private boolean escape      = false;
+    private boolean debug       = false;
+    private boolean perspective = false;
+    private boolean chat        = false;
+    private boolean enter       = false;
+    private boolean forward     = false;
+    private boolean backward    = false;
+    private boolean left        = false;
+    private boolean right       = false;
+    private boolean sneak       = false;
+    private boolean jump        = false;
 
     public void gameInput() {
-
         if (!isPlayerInventoryOpen() && !isPaused() && !isChatOpen()) {
             //normal inputs
             if (getCameraPerspective() < 2) {
@@ -35,53 +40,53 @@ public class Controls {
 
             //drop
             if (isKeyPressed(getKeyDrop())) {
-                if (!throwButtonPushed) {
-                    throwButtonPushed = true;
+                if (!drop) {
+                    drop = true;
                     throwItem();
                 }
             } else if (!isKeyPressed(getKeyDrop())){
-                throwButtonPushed = false;
+                drop = false;
             }
         }
 
 
         //send chat message
         if (isKeyPressed(GLFW_KEY_ENTER)){
-            if (!enterPushed){
+            if (!enter){
                 if (isChatOpen()){
                     sendAndFlushChatMessage();
-                    enterPushed = true;
+                    enter = true;
                 }
             }
         } else if (!isKeyPressed(GLFW_KEY_ENTER)){
-            enterPushed = false;
+            enter = false;
         }
 
         //debug info
         if (isKeyPressed(GLFW_KEY_F3)) {
-            if (!F3Pushed) {
-                F3Pushed = true;
+            if (!debug) {
+                debug = true;
                 invertDebugInfoBoolean();
             }
         } else if (!isKeyPressed(GLFW_KEY_F3)){
-            F3Pushed = false;
+            debug = false;
         }
 
 
         //fullscreen
         if (isKeyPressed(GLFW_KEY_F11)) {
-            if (!F11Pushed) {
-                F11Pushed = true;
+            if (!fullScreen) {
+                fullScreen = true;
                 toggleFullScreen();
             }
         } else if (!isKeyPressed(GLFW_KEY_F11)){
-            F11Pushed = false;
+            fullScreen = false;
         }
 
         //chat
         if (isKeyPressed(GLFW_KEY_T)){
-            if (!chatButtonPushed){
-                chatButtonPushed = true;
+            if (!chat){
+                chat = true;
                 if (getIfMultiplayer()) { //only allow in multiplayer
                     if (!isChatOpen() && !isPlayerInventoryOpen() && !isPaused()) {
                         setChatOpen(true);
@@ -89,14 +94,14 @@ public class Controls {
                 }
             }
         } else if (!isKeyPressed(GLFW_KEY_T)){
-            chatButtonPushed = false;
+            chat = false;
         }
 
 
         //escape
         if (isKeyPressed(GLFW_KEY_ESCAPE)) {
-            if (!escapePushed) {
-                escapePushed = true;
+            if (!escape) {
+                escape = true;
                 //close inventory
                 if(isPlayerInventoryOpen()) {
                     closeCraftingInventory();
@@ -112,14 +117,14 @@ public class Controls {
                 resetPlayerInputs();
             }
         } else if (!isKeyPressed(GLFW_KEY_ESCAPE)){
-            escapePushed = false;
+            escape = false;
         }
 
 
         //inventory
         if (isKeyPressed(getKeyInventory()) && !isPaused() && !isChatOpen()) {
-            if (!inventoryButtonPushed) {
-                inventoryButtonPushed = true;
+            if (!inventory) {
+                inventory = true;
                 if (isPlayerInventoryOpen()){
                     closeCraftingInventory();
                 } else {
@@ -127,7 +132,7 @@ public class Controls {
                 }
             }
         } else if (!isKeyPressed(getKeyInventory())){
-            inventoryButtonPushed = false;
+            inventory = false;
         }
 
 
@@ -158,24 +163,24 @@ public class Controls {
 
         //toggle camera
         if (isKeyPressed(GLFW_KEY_F5)) {
-            if (!F5Pushed) {
-                F5Pushed = true;
+            if (!perspective) {
+                perspective = true;
                 toggleCameraPerspective();
             }
         } else if (!isKeyPressed(GLFW_KEY_F5)){
-            F5Pushed = false;
+            perspective = false;
         }
     }
 
 
     public void mainMenuInput(){
         if (isKeyPressed(GLFW_KEY_F11)) {
-            if (!F11Pushed) {
-                F11Pushed = true;
+            if (!fullScreen) {
+                fullScreen = true;
                 toggleFullScreen();
             }
         } else if (!isKeyPressed(GLFW_KEY_F11)){
-            F11Pushed = false;
+            fullScreen = false;
         }
     }
 }
