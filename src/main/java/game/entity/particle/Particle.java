@@ -7,11 +7,6 @@ import org.joml.Vector3i;
 
 import java.util.*;
 
-import engine.time.Delta.getDelta;
-import game.chunk.Chunk.getLight;
-import game.chunk.ChunkMeshGenerationHandler.getTextureAtlas;
-import game.entity.collision.ParticleCollision.applyParticleInertia;
-
 public class Particle {
     //this is an abstraction of particle objects
     //they exist, but only implicitly
