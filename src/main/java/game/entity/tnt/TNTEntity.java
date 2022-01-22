@@ -1,4 +1,4 @@
-package game.tnt;
+package game.entity.tnt;
 
 import engine.graphics.Mesh;
 import engine.graphics.Texture;

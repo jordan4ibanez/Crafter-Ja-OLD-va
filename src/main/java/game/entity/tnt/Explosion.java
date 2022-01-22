@@ -1,4 +1,4 @@
-package game.tnt;
+package game.entity.tnt;
 
 import game.chunk.Chunk;
 import org.joml.Vector3d;
