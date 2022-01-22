@@ -1,15 +1,9 @@
 package game.blocks;
 
-import java.util.ArrayList;
+import game.chunk.Chunk;
+import org.joml.Vector3i;
 
-import static engine.sound.SoundAPI.playSound;
-import static game.chunk.Chunk.*;
-import static game.chunk.Chunk.placeBlock;
-import static game.crafting.InventoryLogic.openCraftingInventory;
-import static game.falling.FallingEntity.createFallingEntity;
-import static game.entity.item.ItemEntity.throwItem;
-import static game.light.Light.torchFloodFill;
-import static game.tnt.TNTEntity.createTNT;
+import java.util.ArrayList;
 
 public class BlockDefinitionContainer {
 
@@ -120,6 +114,7 @@ public class BlockDefinitionContainer {
     }
 
     public BlockDefinitionContainer() {
+
         //stair
         float[][] stairShape = new float[][]{
                 {0f,0f,0f,1f,0.5f,1f},
@@ -336,8 +331,8 @@ public class BlockDefinitionContainer {
         //tnt explosion
         BlockModifier kaboom = new BlockModifier() {
             @Override
-            public void onDig(double posX, double posY, double posZ) {
-                createTNT(posX, posY, posZ, 0, true);
+            public void onDig(double posX, double posY, double posZ, Chunk chunk) {
+                //createTNT(posX, posY, posZ, 0, true);
             }
         };
 
@@ -779,11 +774,11 @@ public class BlockDefinitionContainer {
         //falling sand
         BlockModifier fallSand = new BlockModifier() {
             @Override
-            public void onPlace(int posX, int posY, int posZ) {
-                if (getBlock(posX, posY - 1, posZ) == 0) {
+            public void onPlace(int posX, int posY, int posZ, Chunk chunk) {
+                if (chunk.getBlock(new Vector3i(posX, posY - 1, posZ)) == 0) {
                     //a beautiful hack - places air
-                    placeBlock(posX, posY, posZ, (byte) 0, (byte) 0);
-                    createFallingEntity(posX + 0.5d, posY, posZ + 0.5d,0, 0, 0, (byte)20);
+                    chunk.placeBlock(new Vector3i(posX, posY, posZ), (byte) 0, (byte) 0);
+                    //createFallingEntity(posX + 0.5d, posY, posZ + 0.5d,0, 0, 0, (byte)20);
                 }
             }
         };
@@ -848,20 +843,20 @@ public class BlockDefinitionContainer {
                 null,
                 new BlockModifier() {
                     @Override
-                    public void onDig(double posX, double posY, double posZ) {
-                        if (getBlock((int)posX, (int)posY - 1, (int)posZ) == 22) {
-                            setBlock((int)posX, (int)posY - 1, (int)posZ, (byte) 0, (byte) 0);
-                            throwItem("door", posX + 0.5d, posY + 0.5d, posZ + 0.5d,1, 0);
+                    public void onDig(double posX, double posY, double posZ, Chunk chunk) {
+                        if (chunk.getBlock(new Vector3i((int)posX, (int)posY - 1, (int)posZ)) == 22) {
+                            chunk.setBlock(new Vector3i((int)posX, (int)posY - 1, (int)posZ), (byte) 0, (byte) 0);
+                            //throwItem("door", posX + 0.5d, posY + 0.5d, posZ + 0.5d,1, 0);
                         }
                     }
 
                     @Override
-                    public void onRightClick(int posX, int posY, int posZ) {
-                        if (getBlock(posX, posY - 1, posZ) == 22) {
-                            byte rot = getBlockRotation(posX, posY, posZ);
-                            setBlock(posX, posY, posZ, (byte) 23,rot);
-                            setBlock(posX, posY - 1, posZ, (byte) 24,rot);
-                            playSound("door_close", posX + 0.5d, posX + 0.5d, posZ + 0.5d, false);
+                    public void onRightClick(int posX, int posY, int posZ, Chunk chunk) {
+                        if (chunk.getBlock(new Vector3i(posX, posY - 1, posZ)) == 22) {
+                            byte rot = chunk.getBlockRotation(new Vector3i(posX, posY, posZ));
+                            chunk.setBlock(new Vector3i(posX, posY, posZ), (byte) 23, rot);
+                            chunk.setBlock(new Vector3i(posX, posY - 1, posZ), (byte) 24, rot);
+                            //playSound("door_close", posX + 0.5d, posX + 0.5d, posZ + 0.5d, false);
                         }
                     }
                 }
@@ -898,20 +893,20 @@ public class BlockDefinitionContainer {
                 new BlockModifier() {
 
                     @Override
-                    public void onDig(double posX, double posY, double posZ) {
-                        if (getBlock((int)posX, (int)posY + 1, (int)posZ) == 21) {
-                            setBlock((int)posX, (int)posY + 1, (int)posZ, (byte) 0, (byte) 0);
-                            throwItem("door", posX + 0.5d, posY + 0.5d, posZ + 0.5d, 1, 0);
+                    public void onDig(double posX, double posY, double posZ, Chunk chunk) {
+                        if (chunk.getBlock(new Vector3i((int)posX, (int)posY + 1, (int)posZ)) == 21) {
+                            chunk.setBlock(new Vector3i((int)posX, (int)posY + 1, (int)posZ), (byte) 0, (byte) 0);
+                            //throwItem("door", posX + 0.5d, posY + 0.5d, posZ + 0.5d, 1, 0);
                         }
                     }
 
                     @Override
-                    public void onRightClick(int posX, int posY, int posZ) {
-                        if (getBlock(posX, posY + 1, posZ) == 21) {
-                            byte rot = getBlockRotation(posX, posY, posZ);
-                            setBlock(posX, posY + 1, posZ, (byte) 23,rot);
-                            setBlock(posX, posY, posZ, (byte) 24,rot);
-                            playSound("door_close", posX + 0.5d, posY + 0.5d, posZ + 0.5d, true);
+                    public void onRightClick(int posX, int posY, int posZ, Chunk chunk) {
+                        if (chunk.getBlock(new Vector3i(posX, posY + 1, posZ)) == 21) {
+                            byte rot = chunk.getBlockRotation(new Vector3i(posX, posY, posZ));
+                            chunk.setBlock(new Vector3i(posX, posY + 1, posZ), (byte) 23,rot);
+                            chunk.setBlock(new Vector3i(posX, posY, posZ), (byte) 24,rot);
+                            //playSound("door_close", posX + 0.5d, posY + 0.5d, posZ + 0.5d, true);
                         }
                     }
                 }
@@ -948,20 +943,20 @@ public class BlockDefinitionContainer {
                 new BlockModifier() {
 
                     @Override
-                    public void onDig(double posX, double posY, double posZ) {
-                        if (getBlock((int)posX, (int)posY - 1, (int)posZ) == 24) {
-                            setBlock((int)posX, (int)posY - 1, (int)posZ, (byte) 0, (byte) 0);
-                            throwItem("door", posX + 0.5d, posY + 0.5d, posZ + 0.5d, 1, 0);
+                    public void onDig(double posX, double posY, double posZ, Chunk chunk) {
+                        if (chunk.getBlock(new Vector3i((int)posX, (int)posY - 1, (int)posZ)) == 24) {
+                            chunk.setBlock(new Vector3i((int)posX, (int)posY - 1, (int)posZ), (byte) 0, (byte) 0);
+                            //throwItem("door", posX + 0.5d, posY + 0.5d, posZ + 0.5d, 1, 0);
                         }
                     }
 
                     @Override
-                    public void onRightClick(int posX, int posY, int posZ) {
-                        if (getBlock(posX, posY - 1, posZ) == 24) {
-                            byte rot = getBlockRotation(posX, posY, posZ);
-                            setBlock(posX, posY, posZ, (byte) 21,rot);
-                            setBlock(posX, posY - 1, posZ, (byte) 22,rot);
-                            playSound("door_open", posX + 0.5d, posY + 0.5d, posZ + 0.5d, true);
+                    public void onRightClick(int posX, int posY, int posZ, Chunk chunk) {
+                        if (chunk.getBlock(new Vector3i(posX, posY - 1, posZ)) == 24) {
+                            byte rot = chunk.getBlockRotation(new Vector3i(posX, posY, posZ));
+                            chunk.setBlock(new Vector3i(posX, posY, posZ), (byte) 21,rot);
+                            chunk.setBlock(new Vector3i(posX, posY - 1, posZ), (byte) 22,rot);
+                            //playSound("door_open", posX + 0.5d, posY + 0.5d, posZ + 0.5d, true);
                         }
                     }
                 }
@@ -998,20 +993,20 @@ public class BlockDefinitionContainer {
                 new BlockModifier() {
 
                     @Override
-                    public void onDig(double posX, double posY, double posZ) {
-                        if (getBlock((int)posX, (int)posY + 1, (int)posZ) == 23) {
-                            setBlock((int)posX, (int)posY + 1, (int)posZ, (byte) 0, (byte) 0);
-                            throwItem("door", posX + 0.5d, posY + 0.5d, posZ + 0.5d,1,0);
+                    public void onDig(double posX, double posY, double posZ, Chunk chunk) {
+                        if (chunk.getBlock(new Vector3i((int)posX, (int)posY + 1, (int)posZ)) == 23) {
+                            chunk.setBlock(new Vector3i((int)posX, (int)posY + 1, (int)posZ), (byte) 0, (byte) 0);
+                            //throwItem("door", posX + 0.5d, posY + 0.5d, posZ + 0.5d,1,0);
                         }
                     }
 
                     @Override
-                    public void onRightClick(int posX, int posY, int posZ) {
-                        if (getBlock(posX, posY + 1, posZ) == 23) {
-                            byte rot = getBlockRotation(posX, posY, posZ);
-                            setBlock(posX, posY + 1, posZ, (byte) 21,rot);
-                            setBlock(posX, posY, posZ, (byte) 22,rot);
-                            playSound("door_open", posX + 0.5d, posY + 0.5d, posZ + 0.5d, true);
+                    public void onRightClick(int posX, int posY, int posZ, Chunk chunk) {
+                        if (chunk.getBlock(new Vector3i(posX, posY + 1, posZ)) == 23) {
+                            byte rot = chunk.getBlockRotation(new Vector3i(posX, posY, posZ));
+                            chunk.setBlock(new Vector3i(posX, posY + 1, posZ), (byte) 21,rot);
+                            chunk.setBlock(new Vector3i(posX, posY, posZ), (byte) 22,rot);
+                            //playSound("door_open", posX + 0.5d, posY + 0.5d, posZ + 0.5d, true);
                         }
                     }
                 }
@@ -1113,9 +1108,9 @@ public class BlockDefinitionContainer {
 
         BlockModifier workBench = new BlockModifier() {
             @Override
-            public void onRightClick(int posX, int posY, int posZ) {
+            public void onRightClick(int posX, int posY, int posZ, Chunk chunk) {
                 //BlockModifier.super.onRightClick(pos);
-                openCraftingInventory(true);
+                //openCraftingInventory(true);
             }
         };
 
@@ -1153,13 +1148,13 @@ public class BlockDefinitionContainer {
 
         BlockModifier torchPlace = new BlockModifier() {
             @Override
-            public void onPlace(int posX, int posY, int posZ) {
-                torchFloodFill(posX, posY, posZ);
+            public void onPlace(int posX, int posY, int posZ, Chunk chunk) {
+                //torchFloodFill(posX, posY, posZ);
             }
 
             @Override
-            public void onDig(double posX, double posY, double posZ){
-                torchFloodFill((int)posX, (int)posY, (int)posZ);
+            public void onDig(double posX, double posY, double posZ, Chunk chunk){
+                //torchFloodFill((int)posX, (int)posY, (int)posZ);
             }
         };
 
@@ -1352,11 +1347,11 @@ public class BlockDefinitionContainer {
         //falling sand
         BlockModifier fallGravel = new BlockModifier() {
             @Override
-            public void onPlace(int posX, int posY, int posZ) {
-                if (getBlock(posX, posY - 1, posZ) == 0) {
+            public void onPlace(int posX, int posY, int posZ, Chunk chunk) {
+                if (chunk.getBlock(new Vector3i(posX, posY - 1, posZ)) == 0) {
                     //a beautiful hack - places air
-                    placeBlock(posX, posY, posZ, (byte) 0, (byte) 0);
-                    createFallingEntity(posX + 0.5d, posY, posZ + 0.5d,0, 0, 0, (byte)35);
+                    chunk.placeBlock(new Vector3i(posX, posY, posZ), (byte) 0, (byte) 0);
+                    //createFallingEntity(posX + 0.5d, posY, posZ + 0.5d,0, 0, 0, (byte)35);
                 }
             }
         };
