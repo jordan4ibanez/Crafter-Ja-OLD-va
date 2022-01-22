@@ -9,6 +9,7 @@ import org.joml.Vector2i;
 import org.joml.Vector3i;
 
 import java.util.ArrayDeque;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
 
@@ -35,6 +36,10 @@ public class Chunk {
         if (this.chunkUpdateHandler == null){
             this.chunkUpdateHandler = chunkUpdateHandler;
         }
+    }
+
+    public Collection<ChunkObject> getAllChunks(){
+        return map.values();
     }
 
     public byte[] getBlockData(Vector2i key){
