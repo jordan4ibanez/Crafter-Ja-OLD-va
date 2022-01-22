@@ -1,14 +1,5 @@
 package engine;
 
-import engine.Window.isKeyPressed;
-import engine.Window.toggleFullScreen;
-import engine.graphics.Camera.getCameraPerspective;
-import engine.graphics.Camera.toggleCameraPerspective;
-import engine.network.Networking.getIfMultiplayer;
-import game.crafting.InventoryLogic.closeCraftingInventory;
-import game.crafting.InventoryLogic.openCraftingInventory;
-import game.player.WieldHand.startDiggingAnimation;
-
 public class Controls {
 
     private boolean throwButtonPushed = false;

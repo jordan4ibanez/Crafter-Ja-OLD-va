@@ -5,6 +5,7 @@ import engine.Window;
 import engine.debug.RuntimeInfo;
 import engine.disk.Disk;
 import engine.disk.SQLiteDiskHandler;
+import engine.graphics.Camera;
 import engine.graphics.Transformation;
 import engine.gui.GUI;
 import engine.settings.Settings;
@@ -35,6 +36,7 @@ public class Crafter {
     private final Light light;
     private final RuntimeInfo runtimeInfo;
     private final Disk disk;
+    private final Camera camera;
     private final MainMenu mainMenu;
     private final Transformation transformation;
     private final GUI gui;
@@ -59,7 +61,8 @@ public class Crafter {
         this.runtimeInfo = new RuntimeInfo();
         this.disk = new Disk();
         this.mainMenu = new MainMenu(this);
-        this.transformation = new Transformation();
+        this.camera = new Camera();
+        this.transformation = new Transformation(camera);
         this.gui = new GUI();
         this.settings = new Settings(disk, window);
 
@@ -89,6 +92,12 @@ public class Crafter {
 
         this.player.setChunk(chunk);
         this.player.setRay(ray);
+
+        this.camera.setMouse(mouse);
+        this.camera.setPlayer(player);
+        this.camera.setRay(ray);
+
+
     }
 
     public String getVersionName(){

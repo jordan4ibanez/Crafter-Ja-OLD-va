@@ -9,14 +9,30 @@ import org.joml.Vector3f;
 
 public class Camera {
 
-    private final Ray ray;
-    private final Player player;
-    private final Mouse mouse;
+    private Ray ray;
+    private Player player;
+    private Mouse mouse;
 
-    public Camera(Ray ray, Player player, Mouse mouse){
-        this.ray = ray;
-        this.player = player;
-        this.mouse = mouse;
+    public Camera(){
+
+    }
+
+    public void setRay(Ray ray){
+        if (this.ray == null){
+            this.ray = ray;
+        }
+    }
+
+    public void setPlayer(Player player){
+        if (this.player == null){
+            this.player = player;
+        }
+    }
+
+    public void setMouse(Mouse mouse){
+        if (this.mouse == null){
+            this.mouse = mouse;
+        }
     }
 
 
