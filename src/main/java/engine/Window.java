@@ -202,16 +202,17 @@ public class Window {
             width = d.width / 2;
             height = d.height / 2;
         }
-        updateVSync();
+
+        setVSync(this.vSync);
 
         fullScreen = !fullScreen;
     }
 
-    public int getWindowWidth(){
+    public int getWidth(){
         return width;
     }
 
-    public int getWindowHeight(){
+    public int getHeight(){
         return height;
     }
 

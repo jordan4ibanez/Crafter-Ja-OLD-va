@@ -30,7 +30,7 @@ public class GameRenderer {
     private ShaderProgram hudShaderProgram;
     private ShaderProgram glassLikeShaderProgram;
     private ShaderProgram entityShaderProgram;
-    
+
 
     private void resetWindowScale(){
         if (windowSizeX <= windowSizeY){
@@ -115,8 +115,8 @@ public class GameRenderer {
         //setWindowClearColor(0.f,0.f,0.f,0.f);
         window.setWindowClearColor(0.53f,0.81f,0.92f,0.f);
 
-        windowSizeX = window.getWindowWidth();
-        windowSizeY = window.getWindowHeight();
+        windowSizeX = window.getWidth();
+        windowSizeY = window.getHeight();
 
         resetWindowScale();
     }
