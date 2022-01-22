@@ -5,28 +5,6 @@ import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
-import engine.graphics.Camera.*;
-import engine.gui.GUILogic.calculateHealthBarElements;
-import engine.gui.GUILogic.makeHeartsJiggle;
-import engine.network.Networking.getIfMultiplayer;
-import engine.network.Networking.sendInventorySlot;
-import engine.sound.SoundAPI.playSound;
-import engine.time.Delta.getDelta;
-import game.clouds.Cloud.setCloudPos;
-import game.entity.collision.Collision.applyInertia;
-import game.crafting.Inventory.updateWieldInventory;
-import game.entity.particle.Particle.createParticle;
-import game.player.PlayerMesh.applyPlayerBodyAnimation;
-import game.player.ViewBobbing.*;
-import game.player.WieldHand.updatePlayerHandInertia;
-import game.ray.Ray.playerRayCast;
-
-
-/*
-TODO: REORGANIZE THIS AND MAKE THIS CLEANER
-TODO: BREAK THIS INTO INDIVIDUAL CLASSES, IT'S A MESS
- */
-
 public class Player {
 
     //this is a final Vector3i which indicates that the player is not pointing at anything

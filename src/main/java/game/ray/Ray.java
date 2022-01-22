@@ -1,31 +1,24 @@
 package game.ray;
 
+import game.blocks.BlockDefinitionContainer;
+import game.chunk.Chunk;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import org.joml.Math;
 import org.joml.Vector3d;
-
-import engine.network.Networking.*;
-import game.chunk.Chunk.*;
-import game.entity.collision.Collision.wouldCollidePlacing;
-import game.entity.collision.CollisionObject.pointIsWithinEntity;
-import game.entity.collision.CollisionObject.setAABBEntity;
-import game.crafting.InventoryObject.getItemInInventory;
-import game.crafting.InventoryObject.removeItemFromInventory;
-import game.entity.mob.Mob.punchMob;
-import game.entity.mob.MobDefinition.getMobDefinitionHeight;
-import game.entity.mob.MobDefinition.getMobDefinitionWidth;
-import game.entity.mob.MobObject.*;
-import game.entity.particle.Particle.createParticle;
-import game.player.Player.*;
+import org.joml.Vector3f;
+import org.joml.Vector3i;
 
 public class Ray {
 
-    public Ray(){
-        System.out.println("gotta fix this :B");
+    private final Chunk chunk;
+    private final BlockDefinitionContainer blockDefinitionContainer = new BlockDefinitionContainer();
+
+    public Ray(Chunk chunk){
+        this.chunk = chunk;
     }
 
     //this is now stack/cache happy as can be
-    public void playerRayCast(double posX, double posY, double posZ, float dirX, float dirY, float dirZ, float length, boolean mining, boolean placing, boolean hasMined) {
+    public void playerRayCast(Vector3d pos, Vector3f dir, float length, boolean mining, boolean placing, boolean hasMined) {
 
         int finalPosX = 0;
         int finalPosY = 0;
@@ -40,7 +33,7 @@ public class Ray {
         int foundMob = -1;
 
         //get all mobs once
-        IntSet mobs = getMobKeys();
+        //IntSet mobs = getMobKeys();
 
         int oldFlooredPosX = 0;
         int oldFlooredPosY = 0;
@@ -48,18 +41,19 @@ public class Ray {
 
         for(double step = 0d; step <= length ; step += 0.001d) {
 
-            double cachedPosX = dirX * step;
-            double cachedPosY = dirY * step;
-            double cachedPosZ = dirZ * step;
+            double cachedPosX = dir.x * step;
+            double cachedPosY = dir.y * step;
+            double cachedPosZ = dir.z * step;
 
-            int newFlooredPosX = (int) Math.floor(posX + cachedPosX);
-            int newFlooredPosY = (int) Math.floor(posY + cachedPosY);
-            int newFlooredPosZ = (int) Math.floor(posZ + cachedPosZ);
+            int newFlooredPosX = (int) Math.floor(pos.x + cachedPosX);
+            int newFlooredPosY = (int) Math.floor(pos.y + cachedPosY);
+            int newFlooredPosZ = (int) Math.floor(pos.z + cachedPosZ);
 
-            double realNewPosX = posX + cachedPosX;
-            double realNewPosY = posY + cachedPosY;
-            double realNewPosZ = posZ + cachedPosZ;
+            double realNewPosX = pos.x + cachedPosX;
+            double realNewPosY = pos.y + cachedPosY;
+            double realNewPosZ = pos.z + cachedPosZ;
 
+            /*
             for (int thisMob : mobs){
                 //reference - not new variable
                 Vector3d mobPos = getMobPos(thisMob);
@@ -78,17 +72,19 @@ public class Ray {
                 }
             }
 
+
             //pointing to a mob, break mob detection loop
             if (foundMob != -1){
                 break;
             }
+             */
 
             //do not get block when the floored (integer) position is the same as the last floored position
             //stop wasting cpu resources
             if (newFlooredPosX == oldFlooredPosX || newFlooredPosY == oldFlooredPosY || newFlooredPosZ == oldFlooredPosZ) {
-                foundBlock = getBlock( newFlooredPosX, newFlooredPosY, newFlooredPosZ);
+                foundBlock = chunk.getBlock( new Vector3i(newFlooredPosX, newFlooredPosY, newFlooredPosZ));
 
-                if (foundBlock > 0 && isBlockPointable(foundBlock)) {
+                if (foundBlock > 0 && blockDefinitionContainer.isPointable(foundBlock)) {
 
                     finalPosX = newFlooredPosX;
                     finalPosY = newFlooredPosY;
@@ -121,64 +117,67 @@ public class Ray {
         if (foundMob != -1){
             //punch mob if pointing to it
             if (mining) {
-                punchMob(foundMob);
+                //punchMob(foundMob);
             }
-            setPlayerWorldSelectionPos(null);
-        } else {
-            if (foundBlock > 0 && isBlockPointable(foundBlock)) {
-                if (mining && hasMined) {
-                    destroyBlock(finalPosX, finalPosY, finalPosZ);
-                } else if (placing) {
+            //setPlayerWorldSelectionPos(null);
+        } else if (foundBlock > 0) {
+            if (mining && hasMined) {
+                destroyBlock(finalPosX, finalPosY, finalPosZ);
+            } else if (placing) {
 
-                    //todo: make this call on punched
-                    if (!isPlayerSneaking() && blockHasOnRightClickCall(foundBlock)) {
-                        getBlockModifier(foundBlock).onRightClick(finalPosX, finalPosY, finalPosZ);
-                    } else {
-                        String wielding = getItemInInventory("main", getPlayerInventorySelection(), 0);
-                        if (wielding != null && itemIsBlock(wielding) && !wouldCollidePlacing(getPlayerPos(),getPlayerWidth(), getPlayerHeight(), pointedThingAboveX, pointedThingAboveY, pointedThingAboveZ, getBlockID(wielding), getPlayerDir())) {
-                            rayPlaceBlock(getBlockID(wielding), pointedThingAboveX, pointedThingAboveY, pointedThingAboveZ);
-                        } else if (wielding != null && getIfItem(wielding)) {
-                            if (getItemModifier(wielding) != null) {
-                                getItemModifier(wielding).onPlace(finalPosX, finalPosY, finalPosZ, pointedThingAboveX, pointedThingAboveY, pointedThingAboveZ);
-                            }
-                        } else {
-                            System.out.println("test3: This is a test of last branch of on place call");
-                        }
-                    }
+                /*
+                //todo: make this call on punched
+                if (!isPlayerSneaking() && blockHasOnRightClickCall(foundBlock)) {
+                    getBlockModifier(foundBlock).onRightClick(finalPosX, finalPosY, finalPosZ);
                 } else {
-                    setPlayerWorldSelectionPos(finalPosX, finalPosY, finalPosZ);
+                    String wielding = getItemInInventory("main", getPlayerInventorySelection(), 0);
+                    if (wielding != null && itemIsBlock(wielding) && !wouldCollidePlacing(getPlayerPos(),getPlayerWidth(), getPlayerHeight(), pointedThingAboveX, pointedThingAboveY, pointedThingAboveZ, getBlockID(wielding), getPlayerDir())) {
+                        rayPlaceBlock(getBlockID(wielding), pointedThingAboveX, pointedThingAboveY, pointedThingAboveZ);
+                    } else if (wielding != null && getIfItem(wielding)) {
+
+                        if (getItemModifier(wielding) != null) {
+                            getItemModifier(wielding).onPlace(finalPosX, finalPosY, finalPosZ, pointedThingAboveX, pointedThingAboveY, pointedThingAboveZ);
+                        }
+                    } else {
+                        System.out.println("test3: This is a test of last branch of on place call");
+                    }
                 }
+                */
             } else {
-                setPlayerWorldSelectionPos(null);
+                //setPlayerWorldSelectionPos(finalPosX, finalPosY, finalPosZ);
             }
+        } else {
+            //setPlayerWorldSelectionPos(null);
         }
     }
 
-    private void destroyBlock(int posX, int posY, int posZ) {
+    private void destroyBlock(Vector3i pos) {
 
-        byte thisBlock = getBlock(posX, posY, posZ);
+        byte thisBlock = chunk.getBlock(pos);
 
         if (thisBlock < 0) {
             return;
         }
 
+        /*
         if (getIfMultiplayer()){
             sendOutNetworkBlockBreak(posX, posY, posZ);
-        } else {
-            digBlock(posX, posY, posZ);
-        }
+        } else {*/
+            chunk.digBlock(pos);
+        //}
         for (int i = 0; i < 40 + (int)(Math.random() * 15); i++) {
-            createParticle((double)posX + (Math.random()), (double)posY + (Math.random()), (double)posZ + (Math.random()), (float)(Math.random()-0.5f) * 2f, 0f, (float)(Math.random()-0.5f) * 2f, thisBlock);
+            //createParticle((double)posX + (Math.random()), (double)posY + (Math.random()), (double)posZ + (Math.random()), (float)(Math.random()-0.5f) * 2f, 0f, (float)(Math.random()-0.5f) * 2f, thisBlock);
         }
     }
     private void rayPlaceBlock(byte ID, int pointedThingAboveX, int pointedThingAboveY, int pointedThingAboveZ) {
-        if (getIfMultiplayer()){
+        /*if (getIfMultiplayer()){
             sendOutNetworkBlockPlace( pointedThingAboveX, pointedThingAboveY, pointedThingAboveZ, ID, getPlayerDir());
         } else {
-            placeBlock( pointedThingAboveX, pointedThingAboveY, pointedThingAboveZ, ID, getPlayerDir());
-        }
+         */
+            //chunk.placeBlock( pointedThingAboveX, pointedThingAboveY, pointedThingAboveZ, ID, getPlayerDir());
+        //}
 
-        removeItemFromInventory("main", getCurrentInventorySelection(), 0);
+        //removeItemFromInventory("main", getCurrentInventorySelection(), 0);
     }
 
     private final Vector3d cameraWorker = new Vector3d();
@@ -208,8 +207,8 @@ public class Ray {
 
             //stop wasting cpu resources
             if (newFlooredPosX != oldFlooredPosX || newFlooredPosY != oldFlooredPosY || newFlooredPosZ != oldFlooredPosZ) {
-                byte foundBlock = getBlock(newFlooredPosX, newFlooredPosY, newFlooredPosZ);
-                if (foundBlock > 0 && isBlockPointable(foundBlock)) {
+                byte foundBlock = chunk.getBlock(new Vector3i(newFlooredPosX, newFlooredPosY, newFlooredPosZ));
+                if (foundBlock > 0 && blockDefinitionContainer.isPointable(foundBlock)) {
                     break;
                 }
             }
