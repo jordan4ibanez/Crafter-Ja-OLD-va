@@ -7,10 +7,7 @@ import it.unimi.dsi.fastutil.objects.ObjectIntImmutablePair;
 import java.util.Arrays;
 import java.util.Objects;
 
-import game.crafting.Inventory.isAtCraftingBench;
-import game.crafting.InventoryObject.getInventoryAsArray;
-
-final public class CraftRecipes {
+public class CraftRecipes {
     private final Int2ObjectArrayMap<String> output = new Int2ObjectArrayMap<>();
     private final Int2ObjectArrayMap<String[][]> recipe = new Int2ObjectArrayMap<>();
     private final Int2IntArrayMap amountOutput = new Int2IntArrayMap();
