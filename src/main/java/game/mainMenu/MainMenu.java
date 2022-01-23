@@ -13,17 +13,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Random;
 
-import engine.disk.Disk.setCurrentActiveWorld;
-import engine.disk.Disk.worldSize;
-import engine.gui.GUILogic.doGUIMouseCollisionDetection;
-import engine.gui.TextHandling.createTextCentered;
-import engine.scene.SceneHandler.setScene;
-import engine.sound.SoundAPI.playMusic;
-import engine.sound.SoundAPI.playSound;
-import game.player.Player.setPlayerName;
-import org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
-
-
 public class MainMenu {
 
     //assets and credits are objects
