@@ -30,32 +30,32 @@ final public class InventoryObject {
         count[y][x] = newCount;
     }
 
-    public String getItem(String name, int x, int y){
+    public String getItem(int x, int y){
         return inventory[y][x];
     }
 
-    public int getCount(String name, int x, int y){
+    public int getCount(int x, int y){
         return count[y][x];
     }
 
-    public void setCount(String name, int x, int y, int newCount){
+    public void setCount(int x, int y, int newCount){
         count[y][x] = newCount;
     }
 
-    public String[][] getInventoryAsArray(String name){
+    public String[][] getInventoryAsArray(){
         return inventory;
     }
 
-    public int[][] getCountAsArray(String name){
+    public int[][] getCountAsArray(){
         return count;
     }
 
-    public void deleteItem(String name, int x, int y){
+    public void deleteItem(int x, int y){
         inventory[y][x] = null;
         count[y][x] = 0;
     }
 
-    public void clear(String name){
+    public void clear(){
         for (int y = 0; y < size.y; y++) {
             for (int x = 0; x < size.x; x++) {
                 inventory[y][x] = null;
@@ -64,7 +64,7 @@ final public class InventoryObject {
         }
     }
 
-    public void setSelection(String name, int x, int y){
+    public void setSelection(int x, int y){
         selection.set(x,y);
     }
 
@@ -81,12 +81,12 @@ final public class InventoryObject {
         return name;
     }
 
-    public boolean addItem(String name, String item){
+    public boolean addItem(String item){
         //check whole inventory
         for (int y = 0; y < size.y; y++) {
             for (int x = 0; x < size.x; x++) {
                 if (inventory[y][x] != null && inventory[y][x].equals(item) && count[y][x] < 64){
-                    tickUpStack(name, x,y);
+                    tickUpStack(x,y);
                     /*
                     if (getIfMultiplayer()){
                         System.out.println("oh nuuuu gotta fix this");
@@ -116,7 +116,7 @@ final public class InventoryObject {
         return false;
     }
 
-    public void removeItem(String name, int x, int y){
+    public void removeItem(int x, int y){
         if (count[y][x] > 0) {
             count[y][x]--;
             if (count[y][x] <= 0) {
@@ -129,7 +129,7 @@ final public class InventoryObject {
     }
 
     //internal
-    private void tickUpStack(String name, int x, int y){
+    private void tickUpStack(int x, int y){
         count[y][x]++;
     }
 
