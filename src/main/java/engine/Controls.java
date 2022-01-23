@@ -1,6 +1,26 @@
 package engine;
 
+import engine.graphics.Camera;
+import engine.gui.GUI;
+import engine.gui.GUILogic;
+import engine.settings.Settings;
+import game.chat.Chat;
+import game.crafting.InventoryLogic;
+import game.player.Player;
+
+import static org.lwjgl.glfw.GLFW.*;
+
 public class Controls {
+
+    private final Player player;
+    private final Camera camera;
+    private final GUILogic guiLogic;
+    private final Controls controls;
+    private final Settings settings;
+    private final Chat chat;
+    private final Window window;
+    private final InventoryLogic inventoryLogic;
+    private final Mouse mouse;
 
     private boolean drop        = false;
     private boolean inventory   = false;
@@ -8,7 +28,7 @@ public class Controls {
     private boolean escape      = false;
     private boolean debug       = false;
     private boolean perspective = false;
-    private boolean chat        = false;
+    private boolean chatb       = false;
     private boolean enter       = false;
     private boolean forward     = false;
     private boolean backward    = false;
@@ -17,170 +37,201 @@ public class Controls {
     private boolean sneak       = false;
     private boolean jump        = false;
 
+    public Controls(Player player, Camera camera, GUILogic guiLogic, Controls controls, Settings settings, Chat chat, Window window, InventoryLogic inventoryLogic, Mouse mouse){
+        this.player = player;
+        this.camera = camera;
+        this.guiLogic = guiLogic;
+        this.controls = controls;
+        this.settings = settings;
+        this.chat = chat;
+        this.window = window;
+        this.inventoryLogic = inventoryLogic;
+        this.mouse = mouse;
+    }
+
     public void gameInput() {
-        if (!isPlayerInventoryOpen() && !isPaused() && !isChatOpen()) {
+        if (!player.isInventoryOpen() && !guiLogic.isPaused() && !guiLogic.isChatOpen()) {
             //normal inputs
-            if (getCameraPerspective() < 2) {
-                setPlayerForward(isKeyPressed(getKeyForward()));
-                setPlayerBackward(isKeyPressed(getKeyBack()));
-                setPlayerLeft(isKeyPressed(getKeyLeft()));
-                setPlayerRight(isKeyPressed(getKeyRight()));
+            if (camera.getCameraPerspective() < 2) {
+                forward = window.isKeyPressed(settings.getKeyForward());
+                backward = window.isKeyPressed(settings.getKeyBack());
+                left = window.isKeyPressed(settings.getKeyLeft());
+                right = window.isKeyPressed(settings.getKeyRight());
             }
             //reversed inputs
             else {
-                setPlayerForward(isKeyPressed(getKeyBack()));
-                setPlayerBackward(isKeyPressed(getKeyForward()));
-                setPlayerLeft(isKeyPressed(getKeyRight()));
-                setPlayerRight(isKeyPressed(getKeyLeft()));
+                forward = window.isKeyPressed(settings.getKeyBack());
+                backward = window.isKeyPressed(settings.getKeyForward());
+                left = window.isKeyPressed(settings.getKeyRight());
+                right = window.isKeyPressed(settings.getKeyLeft());
             }
 
             //sneaking
-            setPlayerSneaking(isKeyPressed(getKeySneak()));
-            setPlayerJump(isKeyPressed(getKeyJump()));
+            sneak = window.isKeyPressed(settings.getKeySneak());
+            jump = window.isKeyPressed(settings.getKeyJump());
 
             //drop
-            if (isKeyPressed(getKeyDrop())) {
+            if (window.isKeyPressed(settings.getKeyDrop())) {
                 if (!drop) {
                     drop = true;
-                    throwItem();
+                    //throwItem();
                 }
-            } else if (!isKeyPressed(getKeyDrop())){
+            } else if (!window.isKeyPressed(settings.getKeyDrop())){
                 drop = false;
             }
         }
 
 
         //send chat message
-        if (isKeyPressed(GLFW_KEY_ENTER)){
+        if (window.isKeyPressed(GLFW_KEY_ENTER)){
             if (!enter){
-                if (isChatOpen()){
-                    sendAndFlushChatMessage();
+                if (guiLogic.isChatOpen()){
+                    guiLogic.sendAndFlushChatMessage();
                     enter = true;
                 }
             }
-        } else if (!isKeyPressed(GLFW_KEY_ENTER)){
+        } else if (!window.isKeyPressed(GLFW_KEY_ENTER)){
             enter = false;
         }
 
         //debug info
-        if (isKeyPressed(GLFW_KEY_F3)) {
+        if (window.isKeyPressed(GLFW_KEY_F3)) {
             if (!debug) {
                 debug = true;
-                invertDebugInfoBoolean();
+                settings.invertDebugInfoBoolean();
             }
-        } else if (!isKeyPressed(GLFW_KEY_F3)){
+        } else if (!window.isKeyPressed(GLFW_KEY_F3)){
             debug = false;
         }
 
 
         //fullscreen
-        if (isKeyPressed(GLFW_KEY_F11)) {
+        if (window.isKeyPressed(GLFW_KEY_F11)) {
             if (!fullScreen) {
                 fullScreen = true;
-                toggleFullScreen();
+                window.toggleFullScreen();
             }
-        } else if (!isKeyPressed(GLFW_KEY_F11)){
+        } else if (!window.isKeyPressed(GLFW_KEY_F11)){
             fullScreen = false;
         }
 
         //chat
-        if (isKeyPressed(GLFW_KEY_T)){
-            if (!chat){
-                chat = true;
+        if (window.isKeyPressed(GLFW_KEY_T)){
+            if (!chatb){
+                chatb = true;
+                /*
                 if (getIfMultiplayer()) { //only allow in multiplayer
-                    if (!isChatOpen() && !isPlayerInventoryOpen() && !isPaused()) {
+                    if (!guiLogic.isChatOpen() && !isPlayerInventoryOpen() && !guiLogic.isPaused()) {
                         setChatOpen(true);
                     }
                 }
+                 */
             }
-        } else if (!isKeyPressed(GLFW_KEY_T)){
-            chat = false;
+        } else if (!window.isKeyPressed(GLFW_KEY_T)){
+            chatb = false;
         }
 
 
         //escape
-        if (isKeyPressed(GLFW_KEY_ESCAPE)) {
+        if (window.isKeyPressed(GLFW_KEY_ESCAPE)) {
             if (!escape) {
                 escape = true;
                 //close inventory
-                if(isPlayerInventoryOpen()) {
-                    closeCraftingInventory();
+                if(player.isInventoryOpen()) {
+                    inventoryLogic.closeCraftingInventory();
                 //close chat box
-                }else if (isChatOpen()){
-                    setChatOpen(false);
+                }else if (guiLogic.isChatOpen()){
+                    guiLogic.setChatOpen(false);
                 //pause game
                 } else {
-                    toggleMouseLock();
-                    togglePauseMenu();
-                    emptyMouseInventory();
+                    mouse.toggleMouseLock();
+                    guiLogic.togglePauseMenu();
+                    inventoryLogic.getInventory().emptyMouseInventory();
                 }
-                resetPlayerInputs();
+                resetInputs();
             }
-        } else if (!isKeyPressed(GLFW_KEY_ESCAPE)){
+        } else if (!window.isKeyPressed(GLFW_KEY_ESCAPE)){
             escape = false;
         }
 
 
         //inventory
-        if (isKeyPressed(getKeyInventory()) && !isPaused() && !isChatOpen()) {
+        if (window.isKeyPressed(settings.getKeyInventory()) && !guiLogic.isPaused() && !guiLogic.isChatOpen()) {
             if (!inventory) {
                 inventory = true;
-                if (isPlayerInventoryOpen()){
-                    closeCraftingInventory();
+                if (player.isInventoryOpen()){
+                    inventoryLogic.closeCraftingInventory();
                 } else {
-                    openCraftingInventory(false);
+                    inventoryLogic.openCraftingInventory(false);
                 }
             }
-        } else if (!isKeyPressed(getKeyInventory())){
+        } else if (!window.isKeyPressed(settings.getKeyInventory())){
             inventory = false;
         }
 
 
-        if (!isPlayerInventoryOpen() && !isPaused()) {
+        if (!player.isInventoryOpen() && !guiLogic.isPaused()) {
             //mouse left button input
-            if (isLeftButtonPressed()) {
-                setPlayerMining(true);
-                startDiggingAnimation();
+            if (mouse.isLeftButtonPressed()) {
+                player.setPlayerMining(true);
+                player.startDiggingAnimation();
             } else {
-                setPlayerMining(false);
+                player.setPlayerMining(false);
             }
 
             //mouse right button input
-            if (isRightButtonPressed()) {
-                setPlayerPlacing(true);
-                startDiggingAnimation();
+            if (mouse.isRightButtonPressed()) {
+                player.setPlayerPlacing(true);
+                player.startDiggingAnimation();
             } else {
-                setPlayerPlacing(false);
+                player.setPlayerPlacing(false);
             }
 
-            float scroll = getMouseScroll();
+            float scroll = mouse.getMouseScroll();
             if (scroll < 0) {
-                changeScrollSelection(1);
+                player.changeScrollSelection(1);
             } else if (scroll > 0) {
-                changeScrollSelection(-1);
+                player.changeScrollSelection(-1);
             }
         }
 
         //toggle camera
-        if (isKeyPressed(GLFW_KEY_F5)) {
+        if (window.isKeyPressed(GLFW_KEY_F5)) {
             if (!perspective) {
                 perspective = true;
-                toggleCameraPerspective();
+                camera.toggleCameraPerspective();
             }
-        } else if (!isKeyPressed(GLFW_KEY_F5)){
+        } else if (!window.isKeyPressed(GLFW_KEY_F5)){
             perspective = false;
         }
     }
 
 
     public void mainMenuInput(){
-        if (isKeyPressed(GLFW_KEY_F11)) {
+        if (window.isKeyPressed(GLFW_KEY_F11)) {
             if (!fullScreen) {
                 fullScreen = true;
-                toggleFullScreen();
+                window.toggleFullScreen();
             }
-        } else if (!isKeyPressed(GLFW_KEY_F11)){
+        } else if (!window.isKeyPressed(GLFW_KEY_F11)){
             fullScreen = false;
         }
+    }
+
+    public void resetInputs(){
+        drop        = false;
+        inventory   = false;
+        fullScreen  = false;
+        escape      = false;
+        debug       = false;
+        perspective = false;
+        chatb        = false;
+        enter       = false;
+        forward     = false;
+        backward    = false;
+        left        = false;
+        right       = false;
+        sneak       = false;
+        jump        = false;
     }
 }
