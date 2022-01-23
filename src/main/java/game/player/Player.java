@@ -125,6 +125,10 @@ public class Player {
         leafMiningLevel = newLeafMiningLevel;
     }
 
+    public void startDiggingAnimation(){
+        System.out.println("flarp");
+    }
+
     public void addPlayerInertia(float x, float y, float z){
         inertia.add(x,y,z);
     }
