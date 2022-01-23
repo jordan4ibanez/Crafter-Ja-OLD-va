@@ -29,15 +29,28 @@ public class Inventory {
     private final InventoryObject bigCraft   ;
     private final InventoryObject main       ;
 
-
-
     public Inventory(){
-
         armor      = new InventoryObject("armor", new Vector2i(1,4), new Vector2d( -3.9875,2.15), false);
         output     = new InventoryObject("output", new Vector2i(1,1), new Vector2d(3.25,2.23), false);
         smallCraft = new InventoryObject("smallCraft", new Vector2i(2,2), new Vector2d(0.25,2.23), false);
         bigCraft   = new InventoryObject("bigCraft", new Vector2i(3,3), new Vector2d(0.1,2.23), false);
         main       = new InventoryObject("main", new Vector2i(9,4), new Vector2d(0,-2.15), true);
+    }
+
+    public InventoryObject getArmor() {
+        return armor;
+    }
+    public InventoryObject getOutput() {
+        return output;
+    }
+    public InventoryObject getSmallCraft() {
+        return smallCraft;
+    }
+    public InventoryObject getBigCraft() {
+        return bigCraft;
+    }
+    public InventoryObject getMain(){
+        return main;
     }
 
     public boolean isAtCraftingBench(){
