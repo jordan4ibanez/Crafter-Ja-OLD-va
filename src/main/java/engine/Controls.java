@@ -213,7 +213,7 @@ public class Controls {
             fullScreen = false;
         }
     }
-    
+
     public boolean getForward(){
         return forward;
     }

@@ -77,19 +77,20 @@ public class SQLiteDiskHandler {
         //set inventory
         for (int y = 0; y < player.inventory.length; y++){
             for (int x = 0; x < player.inventory[0].length; x++){
-                setInventoryItem("main", x, y, newPlayerInventory[y][x], newPlayerInventoryCount[y][x]);
+                inventory.getMain().setItem(x, y, player.inventory[y][x], player.count[y][x]);
                 //setInventoryItem("main", x, y, "dirt", 10);
             }
         }
-        player.setPos(newPlayerPos);
-        setPlayerHealth(newPlayerHealth);
+
+        this.player.setPos(player.pos);
+        this.player.setPlayerHealth(player.health);
 
         this.hasPolledLoadingPlayer = true;
 
     }
 
     public void savePlayerData(String name){
-        this.sqLiteDiskAccessThread.addPlayerToSave(name, getInventoryAsArray("main"), getInventoryCountAsArray("main"), getPlayerPos(), (byte) getPlayerHealth());
+        this.sqLiteDiskAccessThread.addPlayerToSave(name, inventory.getMain().getInventoryAsArray(), inventory.getMain().getCountAsArray(), player.getPlayerPos(), (byte) player.getPlayerHealth());
     }
 
     public void loadChunk(Vector2i key){
