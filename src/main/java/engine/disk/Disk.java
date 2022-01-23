@@ -13,6 +13,12 @@ import java.text.StringCharacterIterator;
 
 public class Disk {
 
+    private final SQLiteDiskHandler sqLiteDiskHandler;
+
+    public Disk(SQLiteDiskHandler sqLiteDiskHandler){
+        this.sqLiteDiskHandler = sqLiteDiskHandler;
+    }
+
     private byte currentActiveWorld = 1; //failsafe
 
     public void updateSaveQueueCurrentActiveWorld(byte newWorld){
@@ -29,7 +35,7 @@ public class Disk {
         updateSaveQueueCurrentActiveWorld(newWorld);
         createAlphaWorldFolder();
         //eh no where to really put this so just gonna stick it here
-        connectWorldDataBase("world" + currentActiveWorld);
+        sqLiteDiskHandler.connectWorldDataBase("world" + currentActiveWorld);
         System.out.println("CURRENT WORLD IS: " + newWorld);
     }
 
