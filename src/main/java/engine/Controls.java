@@ -1,10 +1,8 @@
 package engine;
 
 import engine.graphics.Camera;
-import engine.gui.GUI;
 import engine.gui.GUILogic;
 import engine.settings.Settings;
-import game.chat.Chat;
 import game.crafting.InventoryLogic;
 import game.player.Player;
 
@@ -94,7 +92,7 @@ public class Controls {
         if (window.isKeyPressed(GLFW_KEY_F3)) {
             if (!debug) {
                 debug = true;
-                settings.invertDebugInfoBoolean();
+                //settings.invertDebugInfoBoolean();
             }
         } else if (!window.isKeyPressed(GLFW_KEY_F3)){
             debug = false;
