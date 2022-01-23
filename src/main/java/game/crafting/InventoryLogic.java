@@ -1,9 +1,9 @@
 package game.crafting;
 
+import engine.Controls;
 import engine.Mouse;
 import engine.Window;
 import game.player.Player;
-import it.unimi.dsi.fastutil.objects.ObjectIntImmutablePair;
 import org.joml.Vector2d;
 import org.joml.Vector2i;
 import org.joml.Vector3f;
@@ -13,6 +13,8 @@ public class InventoryLogic {
     private final Player player;
     private final Mouse mouse;
     private final Window window;
+    private final CraftRecipes craftRecipes;
+    private final Controls controls;
 
     private String oldSelection;
 
@@ -26,15 +28,21 @@ public class InventoryLogic {
 
     private final Inventory inventory = new Inventory();
 
-    public InventoryLogic(Player player, Mouse mouse, Window window){
+    public InventoryLogic(Player player, Mouse mouse, Window window, Controls controls){
         this.player = player;
         this.mouse = mouse;
         this.window = window;
+        this.craftRecipes = new CraftRecipes(player);
+        this.controls = controls;
     }
 
     private final InventoryObject[] inventoryArray = {
             inventory.getMain(), inventory.getSmallCraft(), inventory.getBigCraft(), inventory.getOutput(), inventory.getArmor()
     };
+
+    public Inventory getInventory() {
+        return inventory;
+    }
 
     public void inventoryOnTick(){
 
@@ -45,7 +53,7 @@ public class InventoryLogic {
             oldSelection = itemWielding;
         }
 
-        if (player.isPlayerInventoryOpen()) {
+        if (player.isInventoryOpen()) {
 
             //begin player in inventory thing
             //new scope because lazy
@@ -55,8 +63,8 @@ public class InventoryLogic {
                 double basePlayerPosX = -(windowScale / 3.75d);
                 double basePlayerPosY = (windowScale / 2.8d);
 
-                double mousePosX = mouse.getMousePosX();
-                double mousePosY = mouse.getMousePosY();
+                double mousePosX = mouse.getPos().x;
+                double mousePosY = mouse.getPos().y;
 
                 double windowSizeX = window.getWidth();
                 double windowSizeY = window.getHeight();
@@ -84,16 +92,16 @@ public class InventoryLogic {
                 playerRot.x = rotationX;
             }
 
-            collideMouseWithInventory("main");
+            collideMouseWithInventory(this.inventory.getMain());
 
             if (player.isAtCraftingBench()){
-                collideMouseWithInventory("bigCraft");
+                collideMouseWithInventory(this.inventory.getBigCraft());
             } else {
-                collideMouseWithInventory("smallCraft");
+                collideMouseWithInventory(this.inventory.getSmallCraft());
             }
 
-            collideMouseWithInventory("output");
-            collideMouseWithInventory("armor");
+            collideMouseWithInventory(this.inventory.getOutput());
+            collideMouseWithInventory(this.inventory.getOutput());
 
             String foundInventory = null;
 
@@ -294,18 +302,18 @@ public class InventoryLogic {
             if (foundInventory != null){
                 if (foundInventory.equals("smallCraft") || foundInventory.equals("bigCraft")){
 
-                    ObjectIntImmutablePair<String> newItems;
+                    CraftRecipeObject newItems;
                     //small craft recipe scan
                     if (foundInventory.equals("smallCraft")){
-                        newItems = recipeScan("smallCraft");
+                        newItems = this.craftRecipes.recipeScan(this.inventory.getSmallCraft());
                         //large craft recipe scan
                     } else {
-                        newItems = recipeScan("bigCraft");
+                        newItems = this.craftRecipes.recipeScan(this.inventory.getBigCraft());
                     }
 
                     if (newItems != null){
                         //addItemToInventory(newItems.output);
-                        this.inventory.getOutput().setItem(0,0, newItems.left(), newItems.rightInt());
+                        this.inventory.getOutput().setItem(0,0, newItems.getOutput(), newItems.getAmount());
                     //clear output inventory
                     } else {
                         this.inventory.getOutput().setItem(0, 0, null, 0);
@@ -336,12 +344,9 @@ public class InventoryLogic {
 
     public void updateCraftingGrid(){
 
-        ObjectIntImmutablePair<String> newItems;
+        CraftRecipeObject newItems;
 
         if (player.isAtCraftingBench()){
-            //String[][] thisInventory = getInventoryAsArray("bigCraft");
-            //int[][] thisCount = getInventoryCountAsArray("bigCraft");
-
             for (int x = 0; x < this.inventory.getBigCraft().getSize().x; x++){
                 for (int y = 0; y < this.inventory.getBigCraft().getSize().y; y++){
                     if (this.inventory.getBigCraft().getItem(x,y) != null){
@@ -357,98 +362,78 @@ public class InventoryLogic {
                 }
             }
 
-            newItems = recipeScan("bigCraft");
+            newItems = this.craftRecipes.recipeScan(this.inventory.getBigCraft());
         } else {
-
-            String[][] thisInventory = getInventoryAsArray("smallCraft");
-            int[][] thisCount = getInventoryCountAsArray("smallCraft");
-
-
-            for (int x = 0; x < thisInventory.length; x++){
-                for (int y = 0; y < thisInventory[0].length; y++){
-                    if (thisInventory[y][x] != null){
-                        int count = thisCount[y][x];
+            for (int x = 0; x < this.inventory.getSmallCraft().getSize().x; x++){
+                for (int y = 0; y < this.inventory.getSmallCraft().getSize().y; y++){
+                    if (this.inventory.getSmallCraft().getItem(x,y) != null){
+                        int count = this.inventory.getSmallCraft().getCount(x,y);
                         count--;
+                        this.inventory.getSmallCraft().setCount(x,y, count);
                         if (count <= 0){
-                            setInventoryItem("smallCraft", x, y,null, 0);
+                            this.inventory.getSmallCraft().setItem(x, y,null, 0);
                         } else {
-                            setInventoryCount("smallCraft", x, y, count);
+                            this.inventory.getSmallCraft().setCount(x, y, count);
                         }
                     }
                 }
             }
-            newItems = recipeScan("smallCraft");
+            newItems = this.craftRecipes.recipeScan(this.inventory.getSmallCraft());
         }
 
         if (newItems != null){
             //addItemToInventory(newItems.output);
-            setInventoryItem("output", 0,0, newItems.left(), newItems.rightInt());
+            this.inventory.getOutput().setItem(0,0, newItems.getOutput(), newItems.getAmount());
             //clear output inventory
         } else {
-            setInventoryItem("output", 0, 0, null, 0);
+            this.inventory.getOutput().setItem(0, 0, null, 0);
         }
 
     }
 
     public void openCraftingInventory(boolean isCraftingTable) {
         //inventory closed, open it
-        if (!isPlayerInventoryOpen()){
-            setMouseLocked(false);
-            resetPlayerInputs();
-            setIsAtCraftingBench(isCraftingTable);
-            setPlayerInventoryIsOpen(true);
-            resetPlayerInputs();
+        if (!player.isInventoryOpen()){
+            mouse.setLocked(false);
+            controls.resetInputs();
+            player.setAtCraftingBench(isCraftingTable);
+            player.setInventoryOpen(true);
         }
 
     }
 
     public void closeCraftingInventory(){
         //inventory open, close it
-        if (isPlayerInventoryOpen()){
-            setMouseLocked(true);
-            resetPlayerInputs();
-            setPlayerInventoryIsOpen(false);
-            clearOutCraftInventories();
-            emptyMouseInventory();
+        if (player.isInventoryOpen()){
+            mouse.setLocked(true);
+            controls.resetInputs();
+            player.setInventoryOpen(false);
+            this.inventory.clearOutCraft();
+            player.setAtCraftingBench(false);
+            this.inventory.emptyMouseInventory();
             updateCraftingGrid();
-            resetPlayerInputs();
         }
     }
 
-    //mutable - be careful with this
     public Vector3f getPlayerHudRotation(){
         return playerRot;
     }
-    //immutable
-    public float getPlayerHudRotationX(){
-        return playerRot.x;
-    }
-    //immutable
-    public float getPlayerHudRotationY(){
-        return playerRot.y;
-    }
-    //immutable
-    public float getPlayerHudRotationZ(){
-        return playerRot.z;
-    }
 
 
 
-    public void collideMouseWithInventory(String inventoryName){
-        double startingPointX = getInventoryPosX(inventoryName);
-        double startingPointY = getInventoryPosY(inventoryName);
+    public void collideMouseWithInventory(InventoryObject inventory){
+        Vector2d startingPoint = inventory.getPos();
 
-        float windowScale = getWindowScale();
+        float windowScale = window.getScale();
 
-        double mousePosX = getMousePosX();
-        double mousePosY = getMousePosY();
+        Vector2d mousePos = mouse.getPos();
 
         //work from the center
-        mousePosX -= (getWindowSizeX()/2f);
-        mousePosY -= (getWindowSizeY()/2f);
+        mousePos.x -= (window.getWidth() / 2f);
+        mousePos.y -= (window.getHeight() / 2f);
 
         //invert mouse
-        mousePosY *= -1;
+        mousePos.y *= -1;
 
         //this is the size of the actual slots
         //it also makes the default spacing of (0)
@@ -458,19 +443,15 @@ public class InventoryLogic {
         //this is the spacing between the slots
         double spacing = windowScale / 75d;
 
-        int inventorySizeX = getInventorySizeX(inventoryName);
-        int inventorySizeY = getInventorySizeY(inventoryName);
-
-
-        Vector2d offset = new Vector2d((double)inventorySizeX/2d,(double)inventorySizeY/2d);
+        Vector2d offset = new Vector2d((double) inventory.getSize().x / 2d,(double) inventory.getSize().y / 2d);
 
 
         double yProgram;
 
-        if (inventoryName.equals("main")) {
+        if (inventory.getName().equals("main")) {
 
-            for (int x = 0; x < inventorySizeX; x++) {
-                for (int y = 0; y < inventorySizeY; y++) {
+            for (int x = 0; x < inventory.getSize().x; x++) {
+                for (int y = 0; y < inventory.getSize().y; y++) {
 
                     //this is a quick and dirty hack to implement
                     //the space between the hotbar and rest of inventory
@@ -481,27 +462,27 @@ public class InventoryLogic {
                         yProgram = 0;
                     }
 
-                    Vector2d slotPosition = new Vector2d(((double) x + 0.5d - offset.x + startingPointX) * (scale + spacing), ((y * -1d) - 0.5d + startingPointY + offset.y + yProgram) * (scale + spacing));
+                    Vector2d slotPosition = new Vector2d(((double) x + 0.5d - offset.x + startingPoint.x) * (scale + spacing), ((y * -1d) - 0.5d + startingPoint.y + offset.y + yProgram) * (scale + spacing));
                     //scale is the size
 
                     //found selection break out of loop
-                    if (mousePosX >= slotPosition.x - (scale / 2) && mousePosX <= slotPosition.x + (scale / 2) && mousePosY >= slotPosition.y - (scale / 2) && mousePosY <= slotPosition.y + (scale / 2)) {
-                        setInventorySelection(inventoryName, x, y);
+                    if (mousePos.x >= slotPosition.x - (scale / 2) && mousePos.x <= slotPosition.x + (scale / 2) && mousePos.y >= slotPosition.y - (scale / 2) && mousePos.y <= slotPosition.y + (scale / 2)) {
+                        inventory.setSelection(x,y);
                         return;
                     }
                 }
             }
         } else {
-            for (int x = 0; x < inventorySizeX; x++) {
-                for (int y = 0; y < inventorySizeY; y++) {
+            for (int x = 0; x < inventory.getSize().x; x++) {
+                for (int y = 0; y < inventory.getSize().y; y++) {
 
                     //scale is the size
-                    double slotPosX = ((double) x + 0.5d - offset.x + startingPointX) * (scale + spacing);
-                    double slotPosY = ((y * -1d) - 0.5d + startingPointY + offset.y) * (scale + spacing);
+                    double slotPosX = ((double) x + 0.5d - offset.x + startingPoint.x) * (scale + spacing);
+                    double slotPosY = ((y * -1d) - 0.5d + startingPoint.y + offset.y) * (scale + spacing);
 
                     //found selection break out of loop
-                    if (mousePosX >= slotPosX - (scale / 2) && mousePosX <= slotPosX + (scale / 2) && mousePosY >= slotPosY - (scale / 2) && mousePosY <= slotPosY + (scale / 2)) {
-                        setInventorySelection(inventoryName, x, y);
+                    if (mousePos.x >= slotPosX - (scale / 2) && mousePos.x <= slotPosX + (scale / 2) && mousePos.y >= slotPosY - (scale / 2) && mousePos.y <= slotPosY + (scale / 2)) {
+                        inventory.setSelection(x, y);
                         return;
                     }
                 }
@@ -509,7 +490,7 @@ public class InventoryLogic {
         }
 
         //fail state
-        setInventorySelection(inventoryName, -1, -1);
+        inventory.setSelection(-1, -1);
     }
 
 }
