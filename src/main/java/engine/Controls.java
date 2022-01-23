@@ -15,9 +15,7 @@ public class Controls {
     private final Player player;
     private final Camera camera;
     private final GUILogic guiLogic;
-    private final Controls controls;
     private final Settings settings;
-    private final Chat chat;
     private final Window window;
     private final InventoryLogic inventoryLogic;
     private final Mouse mouse;
@@ -37,13 +35,11 @@ public class Controls {
     private boolean sneak       = false;
     private boolean jump        = false;
 
-    public Controls(Player player, Camera camera, GUILogic guiLogic, Controls controls, Settings settings, Chat chat, Window window, InventoryLogic inventoryLogic, Mouse mouse){
+    public Controls(Player player, Camera camera, GUILogic guiLogic, Settings settings, Window window, InventoryLogic inventoryLogic, Mouse mouse){
         this.player = player;
         this.camera = camera;
         this.guiLogic = guiLogic;
-        this.controls = controls;
         this.settings = settings;
-        this.chat = chat;
         this.window = window;
         this.inventoryLogic = inventoryLogic;
         this.mouse = mouse;
