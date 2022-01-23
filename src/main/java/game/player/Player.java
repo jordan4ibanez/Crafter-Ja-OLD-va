@@ -1,8 +1,10 @@
 package game.player;
 
+import engine.graphics.Camera;
 import engine.time.Delta;
 import game.blocks.BlockDefinitionContainer;
 import game.chunk.Chunk;
+import game.crafting.Inventory;
 import game.ray.Ray;
 import org.joml.*;
 
@@ -10,19 +12,24 @@ import java.lang.Math;
 
 public class Player {
 
+    BlockDefinitionContainer blockDefinitionContainer = new BlockDefinitionContainer();
+
     private final Delta delta;
     private Chunk chunk;
     private Ray ray;
+    private final WieldHand wieldHand;
+    private final ViewBobbing viewBobbing;
 
-    BlockDefinitionContainer blockDefinitionContainer = new BlockDefinitionContainer();
 
-
-    public Player(Delta delta){
+    public Player(Delta delta, Inventory inventory, Camera camera){
         this.delta = delta;
+        this.wieldHand = new WieldHand(this,delta,inventory,camera);
+        this.viewBobbing = new ViewBobbing(this, delta);
     }
 
     public void setChunk(Chunk chunk){
         if (this.chunk == null){
+            this.wieldHand.setChunk(chunk);
             this.chunk = chunk;
         }
     }
@@ -225,7 +232,7 @@ public class Player {
         return this.atCraftingBench;
     }
 
-    public boolean setAtCraftingBench(boolean isAtCraft){
+    public void setAtCraftingBench(boolean isAtCraft){
         this.atCraftingBench = isAtCraft;
     }
 

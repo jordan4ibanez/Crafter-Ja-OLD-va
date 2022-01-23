@@ -1,9 +1,32 @@
 package game.player;
 
+import engine.graphics.Camera;
+import engine.time.Delta;
+import game.chunk.Chunk;
+import game.crafting.Inventory;
 import org.joml.*;
 import org.joml.Math;
 
-final public class WieldHand {
+public class WieldHand {
+
+    private final Player player;
+    private Chunk chunk;
+    private final Delta delta;
+    private final Inventory inventory;
+    private final Camera camera;
+
+    public WieldHand(Player player, Delta delta, Inventory inventory, Camera camera){
+        this.player = player;
+        this.delta = delta;
+        this.inventory = inventory;
+        this.camera = camera;
+    }
+
+    public void setChunk(Chunk chunk){
+        if (this.chunk == null){
+            this.chunk = chunk;
+        }
+    }
 
     //z is distance from camera - negative is further
     //x - horizontal
@@ -53,19 +76,21 @@ final public class WieldHand {
         }
 
         //this is the sound trigger that makes the mining noise
-        if (getPlayerWorldSelectionPos() != null && soundTrigger && getPlayerMining()){
-            byte block = getBlock(getPlayerWorldSelectionPos().x, getPlayerWorldSelectionPos().y, getPlayerWorldSelectionPos().z);
+        if (player.getPlayerWorldSelectionPos() != null && soundTrigger && player.getPlayerMining()){
+            byte block = chunk.getBlock(player.getPlayerWorldSelectionPos());
             if (block > 0){
+                /*
                 String digSound = getDigSound(block);
                 if (!digSound.equals("")) {
                     playSound(digSound);
                     soundTrigger = false;
                 }
+                 */
             }
         }
 
         if (handSetUp) {
-            diggingAnimation += getDelta() * 3.75f;
+            diggingAnimation += delta.getDelta() * 3.75f;
         }
 
         if ((!diggingAnimationBuffer || diggingAnimation >= 1f) && handSetUp){
@@ -79,7 +104,7 @@ final public class WieldHand {
         }
 
         //hand
-        if (getItemInInventory("main", getPlayerInventorySelection(),0) == null) {
+        if (inventory.getMain().getItem(player.getPlayerInventorySelection(),0) == null) {
             //set position
             wieldHandAnimationPos.set((float) (-5f * Math.sin(java.lang.Math.pow(diggingAnimation, 0.8f) * Math.PI)) + wieldHandAnimationPosEmpty.x, (float) (7f * Math.sin(diggingAnimation * 2f * Math.PI)) + wieldHandAnimationPosEmpty.y, wieldHandAnimationPosEmpty.z);
             //set rotation
@@ -88,7 +113,7 @@ final public class WieldHand {
             wieldHandAnimationRot.lerp(wieldRotationEmptyEnd, (float) Math.sin(diggingAnimation * Math.PI));
         }
         //block
-        else if (itemIsBlock(getItemInInventory("main", getPlayerInventorySelection(),0))) {
+        else if (itemIsBlock(inventory.getMain().getItem(player.getPlayerInventorySelection(),0))) {
             //set position
             wieldHandAnimationPos.set((float) (-5f * Math.sin(java.lang.Math.pow(diggingAnimation, 0.8f) * Math.PI)) + wieldHandAnimationPosBlock.x, (float) (2f * Math.sin(diggingAnimation * 2f * Math.PI)) + wieldHandAnimationPosBlock.y, wieldHandAnimationPosBlock.z);
             //set rotation
@@ -97,7 +122,7 @@ final public class WieldHand {
             wieldHandAnimationRot.lerp(wieldRotationBlockEnd, (float) Math.sin(diggingAnimation * Math.PI));
 
             //item/tool
-        } else if (getIfItem(getItemInInventory("main", getPlayerInventorySelection(),0))){
+        } else if (getIfItem(inventory.getMain().getItem(player.getPlayerInventorySelection(),0))){
             //set position
             wieldHandAnimationPos.set((float) (-6f * Math.sin(java.lang.Math.pow(diggingAnimation, 0.8f) * Math.PI)) + wieldHandAnimationPosItem.x, (float) (4f * Math.sin(diggingAnimation * 2f * Math.PI)) + wieldHandAnimationPosItem.y, wieldHandAnimationPosItem.z);
             //set rotation
@@ -110,38 +135,24 @@ final public class WieldHand {
 
     //mutable - be careful with this
     public Vector3d getWieldHandAnimationPos(){
-        return doubledHandAnimationPos.set(wieldHandAnimationPos.x + handInertia.x - (getPlayerViewBobbing().x * 10f),wieldHandAnimationPos.y + handInertia.y + (getPlayerViewBobbing().y * 10f),wieldHandAnimationPos.z);
+        return doubledHandAnimationPos.set(wieldHandAnimationPos.x + handInertia.x - (player.getPlayerViewBobbing().x * 10f),wieldHandAnimationPos.y + handInertia.y + (player.getPlayerViewBobbing().y * 10f),wieldHandAnimationPos.z);
     }
     //immutable
     public double getWieldHandAnimationPosX(){
-        return wieldHandAnimationPos.x + handInertia.x - (getPlayerViewBobbing().x * 10f);
+        return wieldHandAnimationPos.x + handInertia.x - (player.getPlayerViewBobbing().x * 10f);
     }
     //immutable
     public double getWieldHandAnimationPosY(){
-        return wieldHandAnimationPos.y + handInertia.y + (getPlayerViewBobbing().y * 10f);
+        return wieldHandAnimationPos.y + handInertia.y + (player.getPlayerViewBobbing().y * 10f);
     }
     //immutable
     public double getWieldHandAnimationPosZ(){
         return wieldHandAnimationPos.z;
     }
 
-    //mutable - be careful with this
     public Vector3f getWieldHandAnimationRot(){
         return wieldHandAnimationRot;
     }
-    //immutable
-    public float getWieldHandAnimationRotX(){
-        return wieldHandAnimationRot.x;
-    }
-    //immutable
-    public float getWieldHandAnimationRotY(){
-        return wieldHandAnimationRot.y;
-    }
-    //immutable
-    public float getWieldHandAnimationRotZ(){
-        return wieldHandAnimationRot.z;
-    }
-
 
 
     public void startDiggingAnimation(){
@@ -152,9 +163,9 @@ final public class WieldHand {
 
     public void updatePlayerHandInertia(){
 
-        double delta = getDelta();
+        double delta = this.delta.getDelta();
 
-        float yaw = Math.toRadians(getCameraRotation().y) + (float)Math.PI;
+        float yaw = Math.toRadians(camera.getCameraRotation().y) + (float)Math.PI;
 
         float diff = yaw - oldYaw;
 
@@ -188,7 +199,7 @@ final public class WieldHand {
             }
         }
 
-        float yDiff = (float)(getOldRealPos().y - getPlayerPos().y) * 10f;
+        float yDiff = (float)(player.getOldRealPos().y - player.getPlayerPos().y) * 10f;
 
         handInertia.y += yDiff;
 

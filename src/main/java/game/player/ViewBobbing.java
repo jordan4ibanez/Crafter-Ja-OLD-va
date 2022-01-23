@@ -1,12 +1,18 @@
 package game.player;
 
+import engine.time.Delta;
 import org.joml.Vector3f;
 
-import engine.sound.SoundAPI.playSound;
-import engine.time.Delta.getDelta;
-import game.player.Player.isPlayerRunning;
 
 public class ViewBobbing {
+
+    private final Player player;
+    private final Delta delta;
+
+    public ViewBobbing(Player player, Delta delta){
+        this.player = player;
+        this.delta = delta;
+    }
 
     private final Vector3f viewBobbing = new Vector3f(0,0,0);
     private boolean xPositive = true;
@@ -15,13 +21,13 @@ public class ViewBobbing {
 
     public void applyViewBobbing() {
 
-        double delta = getDelta();
+        double delta = this.delta.getDelta();
 
         double viewBobbingAddition = delta  * 250f;
 
         //System.out.println(viewBobbingAddition);
 
-        if (isPlayerRunning()){
+        if (player.isPlayerRunning()){
             viewBobbingAddition = delta * 290f;
         }
 
@@ -30,14 +36,14 @@ public class ViewBobbing {
             if (xBobPos >= 50f){
                 xBobPos = 50f;
                 xPositive = false;
-                playSound("dirt_" + (int)(Math.ceil(Math.random()*3)));
+                //playSound("dirt_" + (int)(Math.ceil(Math.random()*3)));
             }
         } else {
             xBobPos -= viewBobbingAddition;
             if (xBobPos <= -50f){
                 xBobPos = -50f;
                 xPositive = true;
-                playSound("dirt_"  + (int)(Math.ceil(Math.random()*3)));
+                //playSound("dirt_"  + (int)(Math.ceil(Math.random()*3)));
             }
         }
 
@@ -49,7 +55,7 @@ public class ViewBobbing {
 
     public void returnPlayerViewBobbing(){
 
-        double delta = getDelta();
+        double delta = this.delta.getDelta();
 
         if ((Math.abs(xBobPos)) <= 300 * delta){
             xBobPos = 0;
@@ -67,20 +73,7 @@ public class ViewBobbing {
         viewBobbing.y = yBobPos/800f;
     }
 
-    //mutable, be careful with this
     public Vector3f getPlayerViewBobbing(){
         return viewBobbing;
-    }
-    //immutable
-    public float getPlayerViewBobbingX(){
-        return viewBobbing.x;
-    }
-    //immutable
-    public float getPlayerViewBobbingY(){
-        return viewBobbing.y;
-    }
-    //immutable
-    public float getPlayerViewBobbingZ(){
-        return viewBobbing.z;
     }
 }
