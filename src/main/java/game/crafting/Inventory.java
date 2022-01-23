@@ -1,22 +1,23 @@
 package game.crafting;
 
+import engine.time.Delta;
 import org.joml.Math;
+import org.joml.Vector2d;
+import org.joml.Vector2i;
 
-import engine.graphics.Camera.*;
-import engine.network.Networking.*;
-import engine.time.Delta.getDelta;
-import game.crafting.InventoryObject.*;
-import game.entity.item.ItemEntity.createItem;
-import game.player.Player.*;
+public class Inventory {
+    private final Delta delta;
 
-final public class Inventory {
 
-    public void createInitialInventory(){
-        createInventory("armor", 1,4, -3.9875,2.15, false);
-        createInventory("output", 1,1, 3.25,2.23, false);
-        createInventory("smallCraft", 2,2, 0.25,2.23, false);
-        createInventory("bigCraft", 3,3, 0.1,2.23, false);
-        createInventory("main", 9,4, 0,-2.15, true);
+    public Inventory(Delta delta){
+
+        this.delta = delta;
+
+        new InventoryObject("armor", new Vector2i(1,4), new Vector2d( -3.9875,2.15), false);
+        new InventoryObject("output", new Vector2i(1,1), new Vector2d(3.25,2.23), false);
+        new InventoryObject("smallCraft", new Vector2i(2,2), new Vector2d(0.25,2.23), false);
+        new InventoryObject("bigCraft", new Vector2i(3,3), new Vector2d(0.1,2.23), false);
+        new InventoryObject("main", new Vector2i(9,4), new Vector2d(0,-2.15), true);
     }
 
     private boolean inventoryOpen = false;
@@ -48,8 +49,6 @@ final public class Inventory {
 
     public void updateWieldInventory(byte light){
 
-        double delta = getDelta();
-
         int newSelectionPos = getCurrentInventorySelection();
 
         String newItem = getItemInInventory("main", newSelectionPos, 0);
@@ -61,7 +60,7 @@ final public class Inventory {
             return;
         }
 
-        updateTimer += delta;
+        updateTimer += delta.getDelta();
 
         if (oldLight != light || newSelectionPos != oldSelectionPos || !newItem.equals(oldItemName) || updateTimer > 0.5f){
             //update item
