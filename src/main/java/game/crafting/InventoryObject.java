@@ -64,6 +64,10 @@ public class InventoryObject {
         }
     }
 
+
+    public Vector2i getSelection(){
+        return selection;
+    }
     public void setSelection(int x, int y){
         selection.set(x,y);
     }
