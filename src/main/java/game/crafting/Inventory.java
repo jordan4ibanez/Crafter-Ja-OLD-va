@@ -1,52 +1,66 @@
 package game.crafting;
 
 import engine.time.Delta;
-import org.joml.Math;
+import game.player.Player;
 import org.joml.Vector2d;
 import org.joml.Vector2i;
 
 public class Inventory {
     private final Delta delta;
-
-
-    public Inventory(Delta delta){
-
-        this.delta = delta;
-
-        new InventoryObject("armor", new Vector2i(1,4), new Vector2d( -3.9875,2.15), false);
-        new InventoryObject("output", new Vector2i(1,1), new Vector2d(3.25,2.23), false);
-        new InventoryObject("smallCraft", new Vector2i(2,2), new Vector2d(0.25,2.23), false);
-        new InventoryObject("bigCraft", new Vector2i(3,3), new Vector2d(0.1,2.23), false);
-        new InventoryObject("main", new Vector2i(9,4), new Vector2d(0,-2.15), true);
-    }
+    private final Player player;
 
     private boolean inventoryOpen = false;
-
     private boolean atCraftingBench = false;
 
     //inventory when you're moving items around
     private String mouseInventory;
     private int mouseInventoryCount;
-    //special pseudo inventory for wielding item
+
+    //FIXME: special pseudo inventory for wielding item
+    //FIXME: this is mainly used for the hud and is a massive oversight
+    //FIXME: DEPRECATED!
     private String wieldInventory;
 
+    //FIXME: WHY IS THE HUD GETTING INFORMATION FROM THE INVENTORY ON LIGHT DATA???
     private int oldSelectionPos = 0;
     private String oldItemName = "";
     private float updateTimer = 0f;
     private byte oldLight = 15;
 
+    private final InventoryObject armor      ;
+    private final InventoryObject output     ;
+    private final InventoryObject smallCraft ;
+    private final InventoryObject bigCraft   ;
+    private final InventoryObject main       ;
+
+
+
+    public Inventory(Delta delta, Player player){
+
+        this.delta = delta;
+        this.player = player;
+
+        armor      = new InventoryObject("armor", new Vector2i(1,4), new Vector2d( -3.9875,2.15), false);
+        output     = new InventoryObject("output", new Vector2i(1,1), new Vector2d(3.25,2.23), false);
+        smallCraft = new InventoryObject("smallCraft", new Vector2i(2,2), new Vector2d(0.25,2.23), false);
+        bigCraft   = new InventoryObject("bigCraft", new Vector2i(3,3), new Vector2d(0.1,2.23), false);
+        main       = new InventoryObject("main", new Vector2i(9,4), new Vector2d(0,-2.15), true);
+    }
+
     public boolean isAtCraftingBench(){
         return atCraftingBench;
     }
 
-    public void setIsAtCraftingBench(boolean isCurrentlyAtCraftingBench){
-        atCraftingBench = isCurrentlyAtCraftingBench;
+    public void setAtCraftingBench(boolean atCraftingBench){
+        this.atCraftingBench = atCraftingBench;
     }
 
     public String getWieldInventory() {
         return wieldInventory;
     }
 
+    //FIXME: THIS SHOULD NOT BE IN HERE OH MY GOD
+    /*
     public void updateWieldInventory(byte light){
 
         int newSelectionPos = getCurrentInventorySelection();
@@ -103,87 +117,83 @@ public class Inventory {
             }
         }
     }
-
+     */
 
     //could be used for when a player dies
     public void resetInventory(){
         for (int x = 0; x < 9; x++){
             for (int y = 0; y < 4; y++){
-                deleteInventoryItem("main", x,y);
+                main.deleteItem(x,y);
             }
         }
     }
 
     public void throwItem(){
-        String thisItem = getItemInInventory("main", getPlayerInventorySelection(), 0);
+        String thisItem = main.getItem(player.getPlayerInventorySelection(), 0);
 
-        int count = getInventoryCount("main", getPlayerInventorySelection(), 0);
+        int count = main.getCount(player.getPlayerInventorySelection(), 0);
 
         if (thisItem != null) {
-            if (getIfMultiplayer()){
+            /*if (getIfMultiplayer()){
                 System.out.println("this gotta be fixed boi");
                 //sendOutThrowItemUpdate();
             } else {
-                createItem(thisItem,
-                        getPlayerPosWithEyeHeightX(),getPlayerPosWithEyeHeightY(),getPlayerPosWithEyeHeightZ(),
-                        (getCameraRotationVectorX()*10f) + getPlayerInertiaX(),(getCameraRotationVectorY()*10f) + getPlayerInertiaY(), (getCameraRotationVectorZ()*10f) + getPlayerInertiaZ()
-                        , count, 0);
-            }
-            removeItemFromInventory("main", getPlayerInventorySelection(), 0);
+            createItem(thisItem,
+                    getPlayerPosWithEyeHeightX(),getPlayerPosWithEyeHeightY(),getPlayerPosWithEyeHeightZ(),
+                    (getCameraRotationVectorX()*10f) + getPlayerInertiaX(),(getCameraRotationVectorY()*10f) + getPlayerInertiaY(), (getCameraRotationVectorZ()*10f) + getPlayerInertiaZ()
+                    , count, 0);
+            //}
+             */
+            main.removeItem(player.getPlayerInventorySelection(), 0);
         }
     }
 
-    public void clearOutCraftInventories(){
-        String[][] bigCraftInventory = getInventoryAsArray("bigCraft");
-        int[][] bigCraftCount = getInventoryCountAsArray("bigCraft");
 
-        for (int x = 0; x < bigCraftInventory.length; x++) {
-            for (int y = 0; y < bigCraftInventory[0].length; y++) {
-
-                String thisItem = bigCraftInventory[y][x];
-                int count = bigCraftCount[y][x];
+    public void clearOutCraft(){
+        for (int x = 0; x < bigCraft.getSize().x; x++) {
+            for (int y = 0; y < bigCraft.getSize().y; y++) {
+                String thisItem = bigCraft.getItem(x,y);
+                int count = bigCraft.getCount(x,y);
 
                 if (thisItem != null) {
                     for (int i = 0; i < count; i++) {
+                        /*
                         createItem(thisItem,
                                 getPlayerPosWithEyeHeightX(),getPlayerPosWithEyeHeightY(),getPlayerPosWithEyeHeightZ(),
                                 (getCameraRotationVectorX()*10f) + getPlayerInertiaX(),(getCameraRotationVectorY()*10f) + getPlayerInertiaY(), (getCameraRotationVectorZ()*10f) + getPlayerInertiaZ()
                                 , 1, 0);
+                         */
                     }
                 }
             }
         }
 
-        clearOutInventory("bigCraft");
+        bigCraft.clear();
 
-        String[][] smallCraftInventory = getInventoryAsArray("smallCraft");
-        int[][] smallCraftCount = getInventoryCountAsArray("smallCraft");
+        for (int x = 0; x < smallCraft.getSize().x; x++) {
+            for (int y = 0; y < smallCraft.getSize().y; y++) {
 
-        for (int x = 0; x < smallCraftInventory.length; x++) {
-            for (int y = 0; y < smallCraftInventory[0].length; y++) {
-
-                String thisItem = smallCraftInventory[y][x];
-                int count = smallCraftCount[y][x];
+                String thisItem = smallCraft.getItem(x,y);
+                int count = smallCraft.getCount(x,y);
                 if (thisItem != null) {
                     for (int i = 0; i < count; i++) {
+                        /*
                         createItem(thisItem,
                                 getPlayerPosWithEyeHeightX(),getPlayerPosWithEyeHeightY(),getPlayerPosWithEyeHeightZ(),
                                 (getCameraRotationVectorX()*10f) + getPlayerInertiaX(),(getCameraRotationVectorY()*10f) + getPlayerInertiaY(), (getCameraRotationVectorZ()*10f) + getPlayerInertiaZ()
                                 , 1, 0);
+                         */
                     }
                 }
             }
         }
-
-        clearOutInventory("smallCraft");
+        smallCraft.clear();
     }
-
-
 
     public String getMouseInventory(){
         return mouseInventory;
     }
-    public int getMouseInventoryCount(){
+    public int getMouseCount(){
         return mouseInventoryCount;
     }
 
@@ -199,10 +209,12 @@ public class Inventory {
     public void emptyMouseInventory(){
         if (mouseInventory != null) {
             for (int i = 0; i < mouseInventoryCount; i++) {
+                /*
                 createItem(mouseInventory,
                         getPlayerPosWithEyeHeightX(),getPlayerPosWithEyeHeightY(),getPlayerPosWithEyeHeightZ(),
                         (getCameraRotationVectorX()*10f) + getPlayerInertiaX(),(getCameraRotationVectorY()*10f) + getPlayerInertiaY(), (getCameraRotationVectorZ()*10f) + getPlayerInertiaZ()
                         , 1, 0);
+                 */
             }
             setMouseInventory(null, 0);
         }
@@ -216,11 +228,11 @@ public class Inventory {
         return inventoryOpen;
     }
 
-    public void cleanInventoryMemory(){
-        clearOutInventory("armor");
-        clearOutInventory("output");
-        clearOutInventory("smallCraft");
-        clearOutInventory("bigCraft");
-        clearOutInventory("main");
+    public void clearMemory(){
+        armor.clear();
+        output.clear();
+        smallCraft.clear();
+        bigCraft.clear();
+        main.clear();
     }
 }
