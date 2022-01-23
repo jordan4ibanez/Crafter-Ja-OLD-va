@@ -4,7 +4,7 @@ import it.unimi.dsi.fastutil.objects.ObjectIntImmutablePair;
 import org.joml.Vector2d;
 import org.joml.Vector3f;
 
-final public class InventoryLogic {
+public class InventoryLogic {
 
     private String oldSelection;
 

@@ -3,7 +3,7 @@ package game.crafting;
 import org.joml.Vector2d;
 import org.joml.Vector2i;
 
-final public class InventoryObject {
+public class InventoryObject {
 
     private final String name;
 
