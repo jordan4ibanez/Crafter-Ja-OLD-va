@@ -246,7 +246,7 @@ public class GUILogic {
                         disconnectClient();
                         glfwSetWindowShouldClose(window.getWindowHandle(), true);
                     }
-                } else if (!isLeftButtonPressed()) {
+                } else if (!mouse.isLeftButtonPressed()) {
                     mouseButtonPushed = false;
                 }
             //settings menu
