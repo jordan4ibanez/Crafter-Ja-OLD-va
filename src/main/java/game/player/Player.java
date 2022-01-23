@@ -16,6 +16,7 @@ public class Player {
 
     BlockDefinitionContainer blockDefinitionContainer = new BlockDefinitionContainer();
 
+
     public Player(Delta delta){
         this.delta = delta;
     }
@@ -32,6 +33,8 @@ public class Player {
         }
     }
 
+    private boolean atCraftingBench;
+    private boolean inventoryOpen;
     private float runningFOVAdder = 0f;
     private int health = 20;
     private final float collectionHeight        = 0.7f;
@@ -214,6 +217,21 @@ public class Player {
         return mining;
     }
 
+    public boolean isAtCraftingBench(){
+        return this.atCraftingBench;
+    }
+
+    public boolean setAtCraftingBench(boolean isAtCraft){
+        this.atCraftingBench = isAtCraft;
+    }
+
+    public boolean isInventoryOpen(){
+        return this.inventoryOpen;
+    }
+
+    public void setInventoryOpen(boolean open){
+        this.inventoryOpen = open;
+    }
 
     public void setPlayerPlacing( boolean isPlacing) {
         boolean wasPlacing = placing;
