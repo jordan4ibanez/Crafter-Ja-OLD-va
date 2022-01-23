@@ -4,15 +4,6 @@ import it.unimi.dsi.fastutil.objects.ObjectIntImmutablePair;
 import org.joml.Vector2d;
 import org.joml.Vector3f;
 
-import engine.Window.getWindowHeight;
-import engine.Window.getWindowWidth;
-import engine.disk.SQLiteDiskHandler.savePlayerData;
-import engine.network.Networking.getIfMultiplayer;
-import game.crafting.CraftRecipes.recipeScan;
-import game.player.Player.getCurrentInventorySelection;
-import game.player.Player.resetPlayerInputs;
-import game.player.WieldHand.resetWieldHandSetupTrigger;
-
 final public class InventoryLogic {
 
     private String oldSelection;
