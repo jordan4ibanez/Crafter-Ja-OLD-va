@@ -1,36 +1,34 @@
 package game.crafting;
 
-import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
-import it.unimi.dsi.fastutil.objects.ObjectIntImmutablePair;
+import game.player.Player;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
 public class CraftRecipes {
-    private final Int2ObjectArrayMap<String> output = new Int2ObjectArrayMap<>();
-    private final Int2ObjectArrayMap<String[][]> recipe = new Int2ObjectArrayMap<>();
-    private final Int2IntArrayMap amountOutput = new Int2IntArrayMap();
 
-    private int count = 0;
+    private final Player player;
 
-    private final String[] materials = new String[]{
-            "wood",
-            "stone",
-            "iron",
-            "gold",
-            "lapis",
-            "diamond",
-            "emerald",
-            "sapphire",
-            "ruby",
-    };
+    ArrayList<CraftRecipeObject> recipes = new ArrayList<>();
 
-    //craft recipe initializer
-    public void registerCraftRecipes(){
+    public CraftRecipes(Player player){
+
+        this.player = player;
 
         //everything is case-sensitive
 
+        String[] materials = new String[]{
+                "wood",
+                "stone",
+                "iron",
+                "gold",
+                "lapis",
+                "diamond",
+                "emerald",
+                "sapphire",
+                "ruby",
+        };
         for (String material : materials) {
             String recipeItem = material;
             if (recipeItem.equals("stone")){
@@ -41,14 +39,14 @@ public class CraftRecipes {
                     {"",         "stick",    ""},
                     {"",         "stick",    ""}
             };
-            generateRecipe(pick, material + "pick", 1);
+            registerRecipe(pick, material + "pick", 1);
 
             String[][] shovel = {
                     {recipeItem},
                     {"stick"   },
                     {"stick"   }
             };
-            generateRecipe(shovel, material + "shovel", 1);
+            registerRecipe(shovel, material + "shovel", 1);
 
             //create symmetrical axes
             String[][] axeLeft = {
@@ -56,34 +54,34 @@ public class CraftRecipes {
                     {recipeItem, "stick"},
                     {"",         "stick"}
             };
-            generateRecipe(axeLeft, material + "axe", 1);
+            registerRecipe(axeLeft, material + "axe", 1);
 
             String[][] axeRight = {
                     {recipeItem, recipeItem},
                     {"stick",    recipeItem},
                     {"stick",    ""        }
             };
-            generateRecipe(axeRight, material + "axe", 1);
+            registerRecipe(axeRight, material + "axe", 1);
         }
 
         String[][] wood = {
                 {"tree"}
         };
-        generateRecipe(wood, "wood", 4);
+        registerRecipe(wood, "wood", 4);
 
 
         String[][] workbench = {
                 {"wood","wood",},
                 {"wood","wood"}
         };
-        generateRecipe(workbench, "workbench", 1);
+        registerRecipe(workbench, "workbench", 1);
 
 
         String[][] boat = {
                 {"wood",""    , "wood" ,},
                 {"wood","wood", "wood" ,}
         };
-        generateRecipe(boat, "boat", 1);
+        registerRecipe(boat, "boat", 1);
 
 
         String[][] door = {
@@ -91,20 +89,20 @@ public class CraftRecipes {
                 {"wood", "wood",},
                 {"wood", "wood"}
         };
-        generateRecipe(door, "door", 1);
+        registerRecipe(door, "door", 1);
 
         String[][] stick = {
                 {"wood"},
                 {"wood"}
         };
-        generateRecipe(stick, "stick", 4);
+        registerRecipe(stick, "stick", 4);
 
 
         String[][] torch = {
                 {"coal"},
                 {"stick"}
         };
-        generateRecipe(torch, "torchItem", 4);
+        registerRecipe(torch, "torchItem", 4);
 
 
         String[][] cobbleStairRight = {
@@ -112,7 +110,7 @@ public class CraftRecipes {
                 {"cobble", "cobble", ""},
                 {"cobble", "cobble", "cobble"},
         };
-        generateRecipe(cobbleStairRight, "cobble stair", 4);
+        registerRecipe(cobbleStairRight, "cobble stair", 4);
 
 
         String[][] cobbleStairLeft = {
@@ -121,7 +119,7 @@ public class CraftRecipes {
                 {"cobble", "cobble", "cobble"},
         };
 
-        generateRecipe(cobbleStairLeft, "cobble stair", 4);
+        registerRecipe(cobbleStairLeft, "cobble stair", 4);
 
 
 
@@ -130,7 +128,7 @@ public class CraftRecipes {
                 {"wood", "wood", ""},
                 {"wood", "wood", "wood"},
         };
-        generateRecipe(woodStairRight, "wood stair", 4);
+        registerRecipe(woodStairRight, "wood stair", 4);
 
 
         String[][] woodStairLeft = {
@@ -139,19 +137,19 @@ public class CraftRecipes {
                 {"wood", "wood", "wood"},
         };
 
-        generateRecipe(woodStairLeft, "wood stair", 4);
+        registerRecipe(woodStairLeft, "wood stair", 4);
 
         String[][] cobbleSlab = {
                 {"cobble", "cobble", "cobble"},
         };
 
-        generateRecipe(cobbleSlab, "cobble slab", 3);
+        registerRecipe(cobbleSlab, "cobble slab", 3);
 
         String[][] woodSlab = {
                 {"wood", "wood", "wood"},
         };
 
-        generateRecipe(woodSlab, "wood slab", 3);
+        registerRecipe(woodSlab, "wood slab", 3);
 
         String[][] cobbleVerticalSlab = {
                 {"cobble"},
@@ -159,7 +157,7 @@ public class CraftRecipes {
                 {"cobble"},
         };
 
-        generateRecipe(cobbleVerticalSlab, "cobble vertical slab", 3);
+        registerRecipe(cobbleVerticalSlab, "cobble vertical slab", 3);
 
         String[][] woodVerticalSlab = {
                 {"wood"},
@@ -167,7 +165,7 @@ public class CraftRecipes {
                 {"wood"},
         };
 
-        generateRecipe(woodVerticalSlab, "wood vertical slab", 3);
+        registerRecipe(woodVerticalSlab, "wood vertical slab", 3);
 
         printAmountOfRecipes();
     }
@@ -176,7 +174,7 @@ public class CraftRecipes {
     //pre-pattern every recipe because I'm horrible at pattern matching
     //this is absolute brute force, do not use this after alpha unless can't figure out a better way
     //this consumes memory, kb, but still memory
-    private void generateRecipe(String[][] newRecipe, String newOutput, int newAmount) {
+    private void registerRecipe(String[][] newRecipe, String newOutput, int newAmount) {
         int widthX = 0;
         int widthY = newRecipe.length;
 
@@ -208,12 +206,7 @@ public class CraftRecipes {
                 }
 
                 //System.out.println(Arrays.deepToString(workerRecipeArray));
-
-                output.put(count, newOutput);
-                recipe.put(count, workerRecipeArray);
-                amountOutput.put(count, newAmount);
-
-                count++;
+                recipes.add(new CraftRecipeObject(workerRecipeArray, newOutput, newAmount));
             }
         }
 
@@ -237,11 +230,8 @@ public class CraftRecipes {
 
                     //System.out.println(Arrays.deepToString(workerRecipeArray));
 
-                    output.put(count, newOutput);
-                    recipe.put(count, workerRecipeArray);
-                    amountOutput.put(count, newAmount);
+                    recipes.add(new CraftRecipeObject(workerRecipeArray, newOutput, newAmount));
 
-                    count++;
                 }
             }
         }
@@ -261,19 +251,17 @@ public class CraftRecipes {
             microCount++;
         }
          */
-        System.out.println("TOTAL RECIPES: " + (recipe.keySet().size() - 1));
+        System.out.println("TOTAL RECIPES: " + recipes.size());
     }
 
 
-    public ObjectIntImmutablePair<String> recipeScan(String inventory){
-
-        ObjectIntImmutablePair<String> returningRecipe = null;
+    public CraftRecipeObject recipeScan(InventoryObject inventory){
 
         String[][] inventoryToStringArray;
 
         //create basic 2d string array
         //3x3
-        if (isAtCraftingBench()){
+        if (player.isAtCraftingBench()){
             inventoryToStringArray = new String[][]{
                     {"", "", ""},
                     {"", "", ""},
@@ -288,22 +276,20 @@ public class CraftRecipes {
             };
         }
 
-        String[][] thisInventory = getInventoryAsArray(inventory);
-
         //dump item strings into array
-        for (int x = 0; x < thisInventory.length; x++) {
-            for (int y = 0; y < thisInventory[0].length; y++) {
-                String thisItem = thisInventory[y][x];
+        for (int x = 0; x < inventory.getSize().x; x++) {
+            for (int y = 0; y < inventory.getSize().y; y++) {
+                String thisItem = inventory.getItem(x,y);
                 inventoryToStringArray[y][x] = Objects.requireNonNullElse(thisItem, "");
             }
         }
 
-        for (int thisIndex : recipe.keySet()) {
-            if (Arrays.deepEquals(recipe.get(thisIndex), inventoryToStringArray)){
-                returningRecipe = new ObjectIntImmutablePair<String>(output.get(thisIndex), amountOutput.get(thisIndex));
+        for (CraftRecipeObject aRecipe : recipes) {
+            if (Arrays.deepEquals(aRecipe.getRecipe(), inventoryToStringArray)){
+                return aRecipe;
             }
         }
 
-        return returningRecipe;
+        return null;
     }
 }
