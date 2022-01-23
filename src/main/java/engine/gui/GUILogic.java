@@ -2,6 +2,8 @@ package engine.gui;
 
 import engine.Mouse;
 import engine.Window;
+import engine.disk.SQLiteDiskHandler;
+import engine.scene.SceneHandler;
 import engine.settings.Settings;
 import engine.time.Delta;
 import game.chat.Chat;
@@ -20,6 +22,8 @@ public class GUILogic {
     private final Player player;
     private final Delta delta;
     private final MainMenu mainMenu;
+    private final SQLiteDiskHandler sqLiteDiskHandler;
+    private final SceneHandler sceneHandler;
 
 
     private boolean paused = false;
@@ -49,7 +53,7 @@ public class GUILogic {
 
     private final GUIObject[] controlsMenuGUI;
 
-    public GUILogic(Settings settings, Mouse mouse, Window window, Chat chat, Player player, Delta delta, MainMenu mainMenu){
+    public GUILogic(Settings settings, Mouse mouse, Window window, Chat chat, Player player, Delta delta, MainMenu mainMenu, SQLiteDiskHandler sqLiteDiskHandler, SceneHandler sceneHandler){
         this.settings = settings;
         this.mouse = mouse;
         this.window = window;
@@ -57,6 +61,8 @@ public class GUILogic {
         this.player = player;
         this.delta = delta;
         this.mainMenu = mainMenu;
+        this.sqLiteDiskHandler = sqLiteDiskHandler;
+        this.sceneHandler = sceneHandler;
 
         gamePauseMenuGUI = new GUIObject[]{
                 new GUIObject("CONTINUE" , new Vector2d(0, 30), 10, 1),
@@ -235,15 +241,15 @@ public class GUILogic {
                     } else if (selection == 1) {
                         menuPage = 1;
                     } else if (selection == 2) {
-                        closeWorldDataBase();
+                        sqLiteDiskHandler.closeWorldDataBase();
                         mainMenu.resetMainMenuPage();
                         mainMenu.resetMainMenu();
-                        setScene((byte) 0);
+                        sceneHandler.setScene((byte) 0);
                         //disconnectClient();
                         setPaused(false);
                     } else if (selection == 3) {
-                        closeWorldDataBase();
-                        disconnectClient();
+                        sqLiteDiskHandler.closeWorldDataBase();
+                        //disconnectClient();
                         glfwSetWindowShouldClose(window.getWindowHandle(), true);
                     }
                 } else if (!mouse.isLeftButtonPressed()) {
