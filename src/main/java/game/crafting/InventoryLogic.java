@@ -6,6 +6,7 @@ import org.joml.Vector3f;
 
 public class InventoryLogic {
 
+
     private String oldSelection;
 
     private final Vector3f playerRot = new Vector3f(0,0,0);
@@ -15,14 +16,19 @@ public class InventoryLogic {
     private boolean rightMouseButtonPushed = false;
     private boolean rightMouseButtonWasPushed = false;
 
-    private final String[] inventoryArray = {
-            "main", "smallCraft", "bigCraft", "output", "armor"
-    };
+    private final Inventory inventory = new Inventory();
 
+    public InventoryLogic(){
+
+    }
+
+    private final InventoryObject[] inventoryArray = {
+            inventory.getMain(), inventory.getSmallCraft(), inventory.getBigCraft(), inventory.getOutput(), inventory.getArmor()
+    };
 
     public void inventoryMenuOnTick(){
 
-        String itemWielding = getItemInInventory("main",getCurrentInventorySelection(), 0);
+        String itemWielding = inventory.getMain().getItem(getCurrentInventorySelection(), 0);
 
         if ((itemWielding != null && oldSelection == null) || (itemWielding == null && oldSelection != null) || (itemWielding != null && oldSelection != null && !itemWielding.equals(oldSelection))) {
             resetWieldHandSetupTrigger();
