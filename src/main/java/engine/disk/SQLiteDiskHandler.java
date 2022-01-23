@@ -2,6 +2,8 @@ package engine.disk;
 
 import game.chunk.BiomeGenerator;
 import game.chunk.Chunk;
+import game.crafting.Inventory;
+import game.player.Player;
 import org.joml.Vector2i;
 
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -10,17 +12,21 @@ public class SQLiteDiskHandler {
     private final SQLiteDiskAccessThread sqLiteDiskAccessThread;
     private final BiomeGenerator biomeGenerator;
     private final Chunk chunk;
+    private final Player player;
+    private final Inventory inventory;
 
     private boolean hasPolledLoadingPlayer = false;
     private final ConcurrentLinkedDeque<PlayerDataObject> playerData = new ConcurrentLinkedDeque<>();
     private final ConcurrentLinkedDeque<PrimitiveChunkObject> loadingChunkData = new ConcurrentLinkedDeque<>();
     private final ConcurrentLinkedDeque<Vector2i> generatingChunks = new ConcurrentLinkedDeque<>();
 
-    public SQLiteDiskHandler(Chunk chunk, BiomeGenerator biomeGenerator){
+    public SQLiteDiskHandler(Chunk chunk, BiomeGenerator biomeGenerator, Player player, Inventory inventory){
         this.chunk = chunk;
         //threads directly share pointers with each other
         this.sqLiteDiskAccessThread = new SQLiteDiskAccessThread(this);
         this.biomeGenerator = biomeGenerator;
+        this.player = player;
+        this.inventory = inventory;
     }
 
     //this mirrors the object's call
@@ -75,7 +81,7 @@ public class SQLiteDiskHandler {
                 //setInventoryItem("main", x, y, "dirt", 10);
             }
         }
-        setPlayerPos(newPlayerPos);
+        player.setPos(newPlayerPos);
         setPlayerHealth(newPlayerHealth);
 
         this.hasPolledLoadingPlayer = true;
