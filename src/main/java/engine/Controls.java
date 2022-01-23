@@ -213,6 +213,25 @@ public class Controls {
             fullScreen = false;
         }
     }
+    
+    public boolean getForward(){
+        return forward;
+    }
+    public boolean getBackward(){
+        return backward;
+    }
+    public boolean getLeft(){
+        return left;
+    }
+    public boolean getRight(){
+        return right;
+    }
+    public boolean getSneak(){
+        return sneak;
+    }
+    public boolean getJump(){
+        return jump;
+    }
 
     public void resetInputs(){
         drop        = false;
