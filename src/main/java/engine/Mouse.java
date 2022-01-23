@@ -1,6 +1,10 @@
 package engine;
 
+import org.joml.Vector2d;
+import org.joml.Vector2f;
+
 import static org.lwjgl.glfw.GLFW.*;
+
 
 final public class Mouse {
 
@@ -8,45 +12,40 @@ final public class Mouse {
 
     public Mouse(Window window){
         this.window = window;
+        pos = new Vector2d(0);
+        oldPos = new Vector2d(-1);
+        displVec = new Vector2f(0);
     }
 
-    private double previousPosX = -1;
-    private double previousPosY = -1;
-
-    private double currentPosX = 0;
-    private double currentPosY = 0;
-
-    private float displVecX = 0;
-    private float displVecY = 0;
+    private final Vector2d oldPos;
+    private final Vector2d pos;
+    private final Vector2f displVec;
 
 
-    private boolean  inWindow    = false;
-    private boolean  leftButtonPressed  = false;
-    private boolean  rightButtonPressed = false;
-    private boolean  mouseLocked = true;
-    private float    scroll      = 0;
+    private boolean inWindow    = false;
+    private boolean leftButtonPressed  = false;
+    private boolean rightButtonPressed = false;
+    private boolean locked = true;
+    private float   scroll      = 0;
 
     public void resetMousePosVector(){
         glfwSetCursorPos(window.getWindowHandle(),window.getWidth() / 2f,window.getHeight() / 2f );
 
         double[] testx = new double[1];
         double[] testy = new double[1];
+
         glfwGetCursorPos(window.getWindowHandle(), testx, testy);
-        currentPosX = (float)testx[0];
-        currentPosY = (float)testy[0];
 
-        currentPosX = window.getWidth() / 2f;
-        currentPosY = window.getHeight() / 2f;
+        pos.set(window.getWidth() / 2f, window.getHeight() / 2f);
 
-        previousPosX = currentPosX;
-        previousPosY = currentPosY;
+        oldPos.set(pos);
     }
 
     public void initMouseInput(){
 
         glfwSetCursorPosCallback(window.getWindowHandle(), (windowHandle, xPos, yPos) -> {
-            currentPosX = xPos;
-            currentPosY = yPos;
+            this.pos.x = xPos;
+            this.pos.y = yPos;
         });
 
         glfwSetCursorEnterCallback(window.getWindowHandle(), (windowHandle, entered) -> inWindow = entered);
@@ -59,13 +58,8 @@ final public class Mouse {
         glfwSetScrollCallback(window.getWindowHandle(), (windowHandle, xOffset, yOffset) -> scroll = (float)yOffset);
     }
 
-
-    public float getMouseDisplVecX(){
-        return displVecX;
-    }
-
-    public float getMouseDisplVecY(){
-        return displVecY;
+    public Vector2f getDisplVec(){
+        return displVec;
     }
 
     private final double[] testX = new double[1];
@@ -74,33 +68,31 @@ final public class Mouse {
     public void mouseInput(){
 
         glfwGetCursorPos(window.getWindowHandle(), testX, testY);
-        currentPosX = (float)testX[0];
-        currentPosY = (float)testY[0];
 
-        if (mouseLocked) {
-            displVecX = 0;
-            displVecY = 0;
+        pos.set(testX[0], testY[0]);
+
+        if (locked) {
+            displVec.set(0);
             glfwSetCursorPos(window.getWindowHandle(), window.getWidth() / 2d, window.getHeight() / 2d);
-            if (previousPosX > 0 && previousPosY > 0 && inWindow) {
-                double deltaX = currentPosX - window.getWidth() / 2f;
-                double deltaY = currentPosY - window.getHeight() / 2f;
+            if (oldPos.x > 0 && oldPos.y > 0 && inWindow) {
+                double deltaX = pos.x - window.getWidth() / 2f;
+                double deltaY = pos.y - window.getHeight() / 2f;
 
                 boolean rotateX = deltaX != 0;
                 boolean rotateY = deltaY != 0;
 
                 if (rotateX) {
-                    displVecY = (float) deltaX;
+                    displVec.y = (float) deltaX;
                 }
 
                 if (rotateY) {
-                    displVecX = (float) deltaY;
+                    displVec.x = (float) deltaY;
                 }
             }
-            previousPosX = currentPosX;
-            previousPosY = currentPosY;
+
+            oldPos.set(pos);
         } else {
-            displVecX = 0;
-            displVecY = 0;
+            displVec.set(0);
         }
     }
 
@@ -112,20 +104,19 @@ final public class Mouse {
         return rightButtonPressed;
     }
 
-    public void setMouseLocked(boolean lock){
+    public void setLocked(boolean lock){
         if(!lock) {
             glfwSetInputMode(window.getWindowHandle(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         } else{
             glfwSetInputMode(window.getWindowHandle(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         }
-        mouseLocked = lock;
+        locked = lock;
         resetMousePosVector();
     }
 
-    public boolean isMouseLocked(){
-        return mouseLocked;
+    public boolean isLocked(){
+        return locked;
     }
-
 
     public float getMouseScroll(){
         float thisScroll = scroll;
@@ -133,26 +124,21 @@ final public class Mouse {
         return thisScroll;
     }
 
-    //immutable
-    public double getMousePosX(){
-        return currentPosX;
-    }
-    //immutable
-    public double getMousePosY(){
-        return currentPosY;
+    public Vector2d getPos(){
+        return this.pos;
     }
 
     //SPECIAL gui management tool for mouse position
     public double getMousePosCenteredX(){
-        return currentPosX - (window.getWidth() / 2f);
+        return pos.x - (window.getWidth() / 2f);
     }
     public double getMousePosCenteredY(){
-        return (currentPosY - (window.getHeight() / 2f)) * -1;
+        return (pos.y - (window.getHeight() / 2f)) * -1;
     }
 
     public void toggleMouseLock(){
-        mouseLocked = !mouseLocked;
-        if(!isMouseLocked()) {
+        locked = !locked;
+        if(!isLocked()) {
             glfwSetInputMode(window.getWindowHandle(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         } else{
             glfwSetInputMode(window.getWindowHandle(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
