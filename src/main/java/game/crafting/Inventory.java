@@ -1,13 +1,9 @@
 package game.crafting;
 
-import engine.time.Delta;
-import game.player.Player;
 import org.joml.Vector2d;
 import org.joml.Vector2i;
 
 public class Inventory {
-    private final Delta delta;
-    private final Player player;
 
     private boolean inventoryOpen = false;
     private boolean atCraftingBench = false;
@@ -35,10 +31,7 @@ public class Inventory {
 
 
 
-    public Inventory(Delta delta, Player player){
-
-        this.delta = delta;
-        this.player = player;
+    public Inventory(){
 
         armor      = new InventoryObject("armor", new Vector2i(1,4), new Vector2d( -3.9875,2.15), false);
         output     = new InventoryObject("output", new Vector2i(1,1), new Vector2d(3.25,2.23), false);
@@ -128,10 +121,10 @@ public class Inventory {
         }
     }
 
-    public void throwItem(){
-        String thisItem = main.getItem(player.getPlayerInventorySelection(), 0);
+    public void throwItem(int hotBarSelection){
+        String thisItem = main.getItem(hotBarSelection, 0);
 
-        int count = main.getCount(player.getPlayerInventorySelection(), 0);
+        int count = main.getCount(hotBarSelection, 0);
 
         if (thisItem != null) {
             /*if (getIfMultiplayer()){
@@ -144,7 +137,7 @@ public class Inventory {
                     , count, 0);
             //}
              */
-            main.removeItem(player.getPlayerInventorySelection(), 0);
+            main.removeItem(hotBarSelection, 0);
         }
     }
 
