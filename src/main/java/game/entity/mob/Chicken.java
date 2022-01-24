@@ -6,14 +6,6 @@ import org.joml.Vector2f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import engine.FancyMath.randomDirFloat;
-import engine.time.Delta.getDelta;
-import game.chunk.Chunk.getBlock;
-import game.entity.collision.Collision.applyInertia;
-import game.entity.mob.MobDefinition.*;
-import game.entity.mob.MobUtilityCode.doHeadCode;
-import game.entity.mob.MobUtilityCode.mobSmoothRotation;
-
 public class Chicken {
     private final float accelerationMultiplier  = 0.03f;
     private final float maxWalkSpeed = 2.f;
