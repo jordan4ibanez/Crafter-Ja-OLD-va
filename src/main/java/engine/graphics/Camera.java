@@ -140,7 +140,7 @@ public class Camera {
         //update camera based on mouse
         //make this adjustable 0.2 to 1.0 maybe - implement slider in menu system!
         float MOUSE_SENSITIVITY = 0.09f;
-        moveCameraRotation(new Vector3f(mouse.getMouseDisplVecX() * MOUSE_SENSITIVITY, mouse.getMouseDisplVecY() * MOUSE_SENSITIVITY, (float)0));
+        moveCameraRotation(new Vector3f(mouse.getDisplVec().x * MOUSE_SENSITIVITY, mouse.getDisplVec().y * MOUSE_SENSITIVITY, (float)0));
 
         //limit camera pitch
         if (getCameraRotation().x < -90f) {
