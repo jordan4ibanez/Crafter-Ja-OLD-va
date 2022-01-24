@@ -28,6 +28,7 @@ import game.chunk.ChunkMeshGenerator;
 import game.clouds.Cloud;
 import game.crafting.Inventory;
 import game.crafting.InventoryLogic;
+import game.entity.collision.Collision;
 import game.light.Light;
 import game.mainMenu.MainMenu;
 import game.player.Player;
@@ -76,6 +77,7 @@ public class Crafter {
     private final ChunkUpdateHandler chunkUpdateHandler;
     private final Cloud cloud;
     private final InventoryLogic inventoryLogic;
+    private final Collision collision;
     private final MainMenu mainMenu;
     private final Light light;
     private final Player player;
@@ -115,6 +117,7 @@ public class Crafter {
         this.chunkUpdateHandler  = new ChunkUpdateHandler();
         this.cloud               = new Cloud();
         this.inventoryLogic      = new InventoryLogic();
+        this.collision           = new Collision();
         this.mainMenu            = new MainMenu();
         this.light               = new Light();
         this.player              = new Player();
@@ -220,6 +223,11 @@ public class Crafter {
         inventoryLogic.setMouse(this.mouse);
         inventoryLogic.setWindow(this.window);
         inventoryLogic.setControls(this.controls);
+
+        //collision
+        collision.setDelta(this.delta);
+        collision.setChunk(this.chunk);
+        collision.setPlayer(this.player);
 
         //main menu
         mainMenu.setSettings(this.settings);

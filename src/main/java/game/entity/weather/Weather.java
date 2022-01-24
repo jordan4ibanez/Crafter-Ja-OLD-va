@@ -1,15 +1,9 @@
 package game.entity.weather;
 
-import engine.graphics.Mesh;
-import engine.graphics.Texture;
-import org.joml.Vector3d;
-import org.joml.Vector3f;
-
-import java.util.*;
-
-import game.entity.collision.ParticleCollision.applyParticleInertia;
-
 public class Weather {
+
+    /*
+
     private final Map<Integer, RainDropEntity> rainDrops = new HashMap<>();
     private final Deque<Integer> deletionQueue = new ArrayDeque<>();
     private final Mesh rainDropMesh = createRainDropMesh();
@@ -130,4 +124,5 @@ public class Weather {
 
         return new Mesh(positionsArray, lightArray, indicesArray, textureCoordArray,new Texture("textures/raindrop.png"));
     }
+     */
 }

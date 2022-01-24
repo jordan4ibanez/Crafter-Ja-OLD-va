@@ -1,17 +1,13 @@
 package game.entity.collision;
 
+import engine.time.Delta;
 import org.joml.Math;
 import org.joml.*;
 
-import engine.time.Delta.getDelta;
-import game.blocks.BlockDefinition.getBlockShape;
-import game.blocks.BlockDefinition.isBlockWalkable;
-import game.chunk.Chunk.getBlock;
-import game.chunk.Chunk.getBlockRotation;
-import game.entity.collision.CollisionObject.pointIsWithinBlock;
-import game.entity.collision.CollisionObject.setAABBBlock;
 
 public class ParticleCollision {
+
+    private Delta delta;
 
     private double adjustedDelta;
 
