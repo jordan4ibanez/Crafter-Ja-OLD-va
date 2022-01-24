@@ -50,6 +50,7 @@ public class Crafter {
     private final Disk disk;
     private final SQLiteDiskHandler sqLiteDiskHandler;
     private final Camera camera;
+    private final GUI gui;
     private final GUILogic guiLogic;
     private final Networking networking;
     private final GameRenderer gameRenderer;
@@ -88,6 +89,7 @@ public class Crafter {
         this.disk                = new Disk();
         this.sqLiteDiskHandler   = new SQLiteDiskHandler();
         this.camera              = new Camera();
+        this.gui                 = new GUI(this.versionName);
         this.guiLogic            = new GUILogic();
         this.networking          = new Networking();
         this.gameRenderer        = new GameRenderer();

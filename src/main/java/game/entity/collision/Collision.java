@@ -3,15 +3,6 @@ package game.entity.collision;
 import org.joml.Math;
 import org.joml.*;
 
-import engine.time.Delta.getDelta;
-import game.chunk.Chunk.getBlock;
-import game.chunk.Chunk.getBlockRotation;
-import game.entity.collision.CollisionObject.intersectsAABB;
-import game.entity.collision.CollisionObject.setAABBBlock;
-import game.entity.collision.CollisionObject.setAABBEntity;
-import game.player.Player.getIfPlayerIsJumping;
-import game.player.Player.setPlayerInWater;
-
 final public class Collision {
     private float inWater = 0;
     private final Vector3d clonedPos = new Vector3d();
