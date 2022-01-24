@@ -8,46 +8,57 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class Settings {
 
-    private final Window window;
-    private final Disk disk;
-    private final SettingsObject settingsObject;
+    private Window window;
+    private Disk disk;
+
+    private SettingsObject settingsObject;
+
     private Chunk chunk;
     private boolean debugInfo; //assigned false
 
-    public Settings(Disk disk, Window window){
-        this.disk = disk;
-        this.window = window;
-
-        SettingsObject loadedSettings = disk.loadSettingsFromDisk();
-
-        if (loadedSettings == null) {
-            this.settingsObject = new SettingsObject();
-            this.settingsObject.vSync = true;
-            this.settingsObject.graphicsMode = true;
-            this.settingsObject.renderDistance = 5;
-            this.settingsObject.keyForward = GLFW_KEY_W;
-            this.settingsObject.keyBack = GLFW_KEY_S;
-            this.settingsObject.keyLeft = GLFW_KEY_A;
-            this.settingsObject.keyRight = GLFW_KEY_D;
-            this.settingsObject.keySneak = GLFW_KEY_LEFT_SHIFT;
-            this.settingsObject.keyDrop = GLFW_KEY_Q;
-            this.settingsObject.keyJump = GLFW_KEY_SPACE;
-            this.settingsObject.keyInventory = GLFW_KEY_E;
-
-            //save default values
-            disk.saveSettingsToDisk(settingsObject);
-
-        } else {
-            //dump new settings in
-            this.settingsObject = loadedSettings;
-            //manually update vsync as it's loaded in
-            window.setVSync(this.settingsObject.vSync);
-        }
+    public Settings(){
     }
 
     public void setChunk(Chunk chunk){
         if (this.chunk == null) {
             this.chunk = chunk;
+        }
+    }
+
+    public void setWindow(Window window){
+        if (this.window == null){
+            this.window = window;
+        }
+    }
+    public void setDisk(Disk disk){
+        if (this.disk == null){
+            this.disk = disk;
+
+            SettingsObject loadedSettings = disk.loadSettingsFromDisk();
+
+            if (loadedSettings == null) {
+                this.settingsObject = new SettingsObject();
+                this.settingsObject.vSync = true;
+                this.settingsObject.graphicsMode = true;
+                this.settingsObject.renderDistance = 5;
+                this.settingsObject.keyForward = GLFW_KEY_W;
+                this.settingsObject.keyBack = GLFW_KEY_S;
+                this.settingsObject.keyLeft = GLFW_KEY_A;
+                this.settingsObject.keyRight = GLFW_KEY_D;
+                this.settingsObject.keySneak = GLFW_KEY_LEFT_SHIFT;
+                this.settingsObject.keyDrop = GLFW_KEY_Q;
+                this.settingsObject.keyJump = GLFW_KEY_SPACE;
+                this.settingsObject.keyInventory = GLFW_KEY_E;
+
+                //save default values
+                disk.saveSettingsToDisk(settingsObject);
+
+            } else {
+                //dump new settings in
+                this.settingsObject = loadedSettings;
+                //manually update vsync as it's loaded in
+                window.setVSync(this.settingsObject.vSync);
+            }
         }
     }
 
