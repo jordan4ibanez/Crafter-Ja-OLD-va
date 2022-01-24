@@ -1,24 +1,36 @@
 package game.player;
 
+import engine.Controls;
 import engine.graphics.Camera;
+import engine.gui.GUILogic;
 import engine.time.Delta;
 import game.blocks.BlockDefinitionContainer;
 import game.chunk.Chunk;
+import game.clouds.Cloud;
 import game.crafting.Inventory;
+import game.crafting.InventoryLogic;
+import game.entity.collision.Collision;
 import game.ray.Ray;
 import org.joml.*;
 
 import java.lang.Math;
 
+import static org.joml.Math.floor;
+
 public class Player {
 
     BlockDefinitionContainer blockDefinitionContainer = new BlockDefinitionContainer();
-
+    private GUILogic guiLogic;
+    private InventoryLogic inventoryLogic;
+    private Collision collision;
+    private Controls controls;
+    private Camera camera;
     private Delta delta;
     private Chunk chunk;
     private Ray ray;
     private WieldHand wieldHand;
     private ViewBobbing viewBobbing;
+    private Cloud cloud;
 
     public void setDelta(Delta delta){
         if (this.delta == null){
@@ -35,6 +47,36 @@ public class Player {
     public void setRay(Ray ray) {
         if (this.ray == null) {
             this.ray = ray;
+        }
+    }
+    public void setCamera(Camera camera){
+        if (this.camera == null){
+            this.camera = camera;
+        }
+    }
+    public void setControls(Controls controls){
+        if (this.controls == null){
+            this.controls = controls;
+        }
+    }
+    public void setCollision(Collision collision){
+        if (this.collision == null){
+            this.collision = collision;
+        }
+    }
+    public void setInventoryLogic(InventoryLogic inventoryLogic){
+        if (this.inventoryLogic == null){
+            this.inventoryLogic = inventoryLogic;
+        }
+    }
+    public void setCloud(Cloud cloud){
+        if (this.cloud == null){
+            this.cloud = cloud;
+        }
+    }
+    public void setGuiLogic(GUILogic guiLogic){
+        if (this.guiLogic == null){
+            this.guiLogic = guiLogic;
         }
     }
 
@@ -295,7 +337,7 @@ public class Player {
     }
 
     public Vector3f getPlayerViewBobbing(){
-        return viewBobbing;
+        return viewBobbing.getPlayerViewBobbing();
     }
 
     //this is mutable, be careful with this
@@ -306,23 +348,23 @@ public class Player {
     private void applyCameraViewBobbingOffset(){
         posWithEyeHeightViewBobbing.set(posWithEyeHeight.x, posWithEyeHeight.y,posWithEyeHeight.z);
 
-        if (getCameraPerspective() == 0) {
-            float cameraRotationY = getCameraRotationY();
+        if (camera.getCameraPerspective() == 0) {
+            float cameraRotationY = camera.getCameraRotation().y;
 
-            float viewBobbingZ = getPlayerViewBobbingZ();
+            float viewBobbingZ = viewBobbing.getPlayerViewBobbing().z;
             if (viewBobbingZ != 0) {
                 //direct object modification
                 posWithEyeHeightViewBobbing.x += (float) Math.sin(Math.toRadians(cameraRotationY)) * -1.0f * viewBobbingZ;
                 posWithEyeHeightViewBobbing.z += (float) Math.cos(Math.toRadians(cameraRotationY)) * viewBobbingZ;
             }
 
-            float viewBobbingX = getPlayerViewBobbingX();
+            float viewBobbingX = viewBobbing.getPlayerViewBobbing().x;
             if (viewBobbingX != 0) {
                 posWithEyeHeightViewBobbing.x += (float) Math.sin(Math.toRadians(cameraRotationY - 90f)) * -1.0f * viewBobbingX;
                 posWithEyeHeightViewBobbing.z += (float) Math.cos(Math.toRadians(cameraRotationY - 90f)) * viewBobbingX;
             }
 
-            float viewBobbingY = getPlayerViewBobbingY();
+            float viewBobbingY = viewBobbing.getPlayerViewBobbing().y;
             if (viewBobbingY != 0) {
                 posWithEyeHeightViewBobbing.y += viewBobbingY;
             }
@@ -366,39 +408,39 @@ public class Player {
         float accelerationMultiplier = 0.07f;
         float movementAcceleration = 1000.f;
 
-        if (forward){
-            float yaw = (float)Math.toRadians(getCameraRotation().y) + (float)Math.PI;
+        if (controls.getForward()){
+            float yaw = (float)Math.toRadians(camera.getCameraRotation().y) + (float)Math.PI;
             inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementAcceleration * delta;
             inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementAcceleration * delta;
         }
-        if (backward){
+        if (controls.getBackward()){
             //no mod needed
-            float yaw = (float)Math.toRadians(getCameraRotation().y);
+            float yaw = (float)Math.toRadians(camera.getCameraRotation().y);
             inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementAcceleration * delta;
             inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementAcceleration * delta;
         }
 
-        if (right){
-            float yaw = (float)Math.toRadians(getCameraRotation().y) - (float)(Math.PI /2);
+        if (controls.getRight()){
+            float yaw = (float)Math.toRadians(camera.getCameraRotation().y) - (float)(Math.PI /2);
             inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementAcceleration * delta;
             inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementAcceleration * delta;
         }
 
-        if (left){
-            float yaw = (float)Math.toRadians(getCameraRotation().y) + (float)(Math.PI /2);
+        if (controls.getLeft()){
+            float yaw = (float)Math.toRadians(camera.getCameraRotation().y) + (float)(Math.PI /2);
             inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementAcceleration * delta;
             inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementAcceleration * delta;
         }
 
-        if (!inWater && jump && isPlayerOnGround()){
+        if (!inWater && controls.getJump() && isPlayerOnGround()){
             inertia.y += 8.75f; //do not get delta for this
             playerIsJumping = true;
         //the player comes to equilibrium with the water's surface
         // if this is not implemented like this
-        } else if (jump && inWater && !waterLockout){
+        } else if (controls.getJump() && inWater && !waterLockout){
             wasInWater = true;
             if(inertia.y <= 4.f){
-                inertia.y += 100.f * getDelta();
+                inertia.y += 100.f * delta;
             }
         }
         if (wasInWater && !inWater){
@@ -463,12 +505,12 @@ public class Player {
 
     public void playerOnTick() {
 
-        double delta = getDelta();
+        double delta = this.delta.getDelta();
 
         //camera underwater effect trigger
-        byte cameraCheckBlock = getBlock((int)Math.floor(getCameraPositionX()),(int)Math.floor(getCameraPositionY() - 0.02d), (int)Math.floor(getCameraPositionZ()));
+        byte cameraCheckBlock = chunk.getBlock(new Vector3i((int)floor(camera.getCameraPosition().x),(int)floor(camera.getCameraPosition().y - 0.02d), (int)floor(camera.getCameraPosition().z)));
 
-        cameraSubmerged = cameraCheckBlock > 0 && isBlockLiquid(cameraCheckBlock);
+        cameraSubmerged = cameraCheckBlock > 0 && blockDefinitionContainer.isLiquid(cameraCheckBlock);
 
         //the player comes to equilibrium with the water's surface
         //if this is not implemented like this
@@ -486,7 +528,7 @@ public class Player {
             playerIsJumping = false;
         }
 
-        float camRot = getCameraRotation().y + 180f;
+        float camRot = camera.getCameraRotation().y + 180f;
 
         if(camRot >= 315f || camRot < 45f){
 //            System.out.println(2);
@@ -589,7 +631,7 @@ public class Player {
         //this only applies their inertia if they are within a loaded chunk, IE
         //if the server doesn't load up something in time, they freeze in place
         if (chunk.chunkExists(currentChunk)) {
-            onGround = applyInertia(pos, inertia, true, width, height, true, sneaking, true, true, true);
+            onGround = collision.applyInertia(pos, inertia, true, width, height, true, sneaking, true, true, true);
         }
 
         //apply the eyeHeight offset to the eyeHeight position
@@ -767,27 +809,27 @@ public class Player {
         calculateRunningFOV();
 
         float reach = 3.575f;
-        if (getCameraPerspective() < 2) {
+        if (camera.getCameraPerspective() < 2) {
             if (mining && hasDug) {
-                ray.playerRayCast(posWithEyeHeightViewBobbing, getCameraRotationVectorX(),getCameraRotationVectorY(),getCameraRotationVectorZ(), reach, true, false, true);
+                ray.playerRayCast(posWithEyeHeightViewBobbing, camera.getCameraRotationVector(), reach, true, false, true);
             } else if (mining) {
-                ray.playerRayCast(posWithEyeHeightViewBobbing, getCameraRotationVectorX(),getCameraRotationVectorY(),getCameraRotationVectorZ(), reach, true, false, false);
+                ray.playerRayCast(posWithEyeHeightViewBobbing, camera.getCameraRotationVector(), reach, true, false, false);
             } else if (placing && placeTimer <= 0) {
-                ray.playerRayCast(posWithEyeHeightViewBobbing, getCameraRotationVectorX(),getCameraRotationVectorY(),getCameraRotationVectorZ(), reach, false, true, false);
+                ray.playerRayCast(posWithEyeHeightViewBobbing, camera.getCameraRotationVector(), reach, false, true, false);
                 placeTimer = 0.25f; // every quarter second you can place
             } else {
-                ray.playerRayCast(posWithEyeHeightViewBobbing, getCameraRotationVectorX(),getCameraRotationVectorY(),getCameraRotationVectorZ(), reach, false, false, false);
+                ray.playerRayCast(posWithEyeHeightViewBobbing, camera.getCameraRotationVector(), reach, false, false, false);
             }
         } else {
             if (mining && hasDug) {
-                ray.playerRayCast(posWithEyeHeightViewBobbing, getCameraRotationVectorX()*-1f,getCameraRotationVectorY()*-1f,getCameraRotationVectorZ()*-1f, reach, true, false, true);
+                ray.playerRayCast(posWithEyeHeightViewBobbing, camera.getInvertedCameraRotationVector(), reach, true, false, true);
             } else if (mining) {
-                ray.playerRayCast(posWithEyeHeightViewBobbing, getCameraRotationVectorX()*-1f,getCameraRotationVectorY()*-1f,getCameraRotationVectorZ()*-1f, reach, true, false, false);
+                ray.playerRayCast(posWithEyeHeightViewBobbing, camera.getInvertedCameraRotationVector(), reach, true, false, false);
             } else if (placing && placeTimer <= 0) {
-                ray.playerRayCast(posWithEyeHeightViewBobbing, getCameraRotationVectorX()*-1f,getCameraRotationVectorY()*-1f,getCameraRotationVectorZ()*-1f, reach, false, true, false);
+                ray.playerRayCast(posWithEyeHeightViewBobbing, camera.getInvertedCameraRotationVector(), reach, false, true, false);
                 placeTimer = 0.25f; // every quarter second you can place
             } else {
-                ray.playerRayCast(posWithEyeHeightViewBobbing, getCameraRotationVectorX()*-1f,getCameraRotationVectorY()*-1f,getCameraRotationVectorZ()*-1f, reach, false, false, false);
+                ray.playerRayCast(posWithEyeHeightViewBobbing, camera.getInvertedCameraRotationVector(), reach, false, false, false);
             }
         }
 
@@ -823,16 +865,16 @@ public class Player {
         //update light level for the wield item
         lightCheckTimer += delta;
 
-        newFlooredPos.set((int)Math.floor(getCameraPositionX()), (int)Math.floor(getCameraPositionY()), (int)Math.floor(getCameraPositionZ()));
+        newFlooredPos.set((int)floor(camera.getCameraPosition().x), (int)floor(camera.getCameraPosition().y), (int)floor(camera.getCameraPosition().z));
 
         //System.out.println(lightCheckTimer);
         if (lightCheckTimer >= 0.25f || !newFlooredPos.equals(oldFlooredPos)){
             lightCheckTimer = 0f;
-            lightLevel = getLight(newFlooredPos.x, newFlooredPos.y, newFlooredPos.z);
+            lightLevel = chunk.getLight(newFlooredPos.x, newFlooredPos.y, newFlooredPos.z);
         }
 
         //do the same for the literal wield inventory
-        updateWieldInventory(lightLevel);
+        //this.inventoryLogic.getInventory().updateWieldInventory(lightLevel);
 
         oldFlooredPos.set(newFlooredPos);
         oldRealPos.set(pos);
@@ -844,25 +886,27 @@ public class Player {
         int newChunkX = (int)Math.floor(pos.x / 16f);
         int newChunkZ = (int)Math.floor(pos.z / 16f);
 
-        if (newChunkX != currentChunk.x || newChunkZ != currentChunk.z) {
+        if (newChunkX != currentChunk.x || newChunkZ != currentChunk.y) {
             currentChunk.x = newChunkX;
-            currentChunk.z = newChunkZ;
-            generateNewChunks();
-            setCloudPos(newChunkX,newChunkZ);
+            currentChunk.y = newChunkZ;
+            chunk.generateNewChunks();
+            cloud.setCloudPos(newChunkX,newChunkZ);
         }
     }
 
+    /*
     public void updateMultiplayerWorldChunkLoader(){
         int newChunkX = (int)Math.floor(pos.x / 16f);
         int newChunkZ = (int)Math.floor(pos.z / 16f);
 
         if (newChunkX != currentChunk.x || newChunkZ != currentChunk.z) {
             currentChunk.x = newChunkX;
-            currentChunk.z = newChunkZ;
-            requestNewChunks();
-            setCloudPos(newChunkX,newChunkZ);
+            currentChunk.y = newChunkZ;
+            //chunk.requestNewChunks();
+            cloud.setCloudPos(newChunkX,newChunkZ);
         }
     }
+     */
 
 
     public void changeScrollSelection(int i){
@@ -875,9 +919,11 @@ public class Player {
         }
 
         //send out data if playing in multiplayer
+        /*
         if (getIfMultiplayer()){
             sendInventorySlot(currentInventorySelection);
         }
+         */
     }
 
 
@@ -886,7 +932,8 @@ public class Player {
     }
 
     private void calculateRunningFOV(){
-        double delta = getDelta();
+        double delta = this.delta.getDelta();
+
         if (playerIsMoving() && running){
             if (runningFOVAdder < 0.3f){
                 runningFOVAdder += delta;
@@ -914,9 +961,13 @@ public class Player {
         return health;
     }
 
+    private boolean playerIsMoving(){
+        return controls.getBackward() || controls.getForward() || controls.getLeft() || controls.getRight();
+    }
+
 
     private void doHealthTest(){
-        double delta = getDelta();
+        double delta = this.delta.getDelta();
 
         healthTimer += delta;
 
@@ -930,7 +981,7 @@ public class Player {
             }
 
             //System.out.println("The player's health is: " + health);
-            calculateHealthBarElements();
+            guiLogic.calculateHealthBarElements();
         }
     }
 

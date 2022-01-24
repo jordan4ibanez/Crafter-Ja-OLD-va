@@ -64,7 +64,7 @@ public class ItemEntity extends Entity {
 
     @Override
     public void onTick(Entity entity, SoundAPI soundAPI, InventoryLogic inventoryLogic, Player player, Delta delta) {
-        
+
     }
 
     @Override

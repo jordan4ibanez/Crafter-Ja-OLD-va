@@ -32,10 +32,13 @@ import game.entity.EntityContainer;
 import game.entity.collision.Collision;
 import game.entity.item.ItemDefinition;
 import game.entity.item.ItemDefinitionContainer;
+import game.entity.item.ItemEntity;
 import game.light.Light;
 import game.mainMenu.MainMenu;
 import game.player.Player;
 import game.ray.Ray;
+import org.joml.Vector3d;
+import org.joml.Vector3f;
 
 import java.util.Set;
 
@@ -241,7 +244,7 @@ public class Crafter {
         itemDefinitionContainer.setPlayer(this.player);
         itemDefinitionContainer.setSoundAPI(this.soundAPI);
         itemDefinitionContainer.setInventoryLogic(this.inventoryLogic);
-        
+
         //main menu
         mainMenu.setSettings(this.settings);
         mainMenu.setDisk(this.disk);
@@ -264,11 +267,17 @@ public class Crafter {
         player.setDelta(this.delta);
         player.setChunk(this.chunk);
         player.setRay(this.ray);
+        player.setCamera(this.camera);
+        player.setControls(this.controls);
+        player.setCollision(this.collision);
+        player.setInventoryLogic(this.inventoryLogic);
+        player.setCloud(this.cloud);
+        player.setGuiLogic(this.guiLogic);
         player.initialize(this.inventoryLogic.getInventory(), this.camera);
 
         //ray
         ray.setChunk(this.chunk);
-
+        
 
     }
 
