@@ -12,6 +12,10 @@ public interface EntityInterface {
         System.out.println("tick tock!");
     }
 
+    default void hurt(Entity entity, int damage){
+        System.out.println("That hurt " + damage + " amount!");
+    }
+
     default void onHeal(Entity entity){
         System.out.println("I'm feeling a bit better!");
     }
