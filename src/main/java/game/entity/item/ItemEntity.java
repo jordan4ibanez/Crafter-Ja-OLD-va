@@ -53,6 +53,31 @@ public class ItemEntity extends Entity {
 
 
     @Override
+    public float getWidth() {
+        return 0.2f;
+    }
+
+    @Override
+    public float getHeight() {
+        return 0.2f;
+    }
+
+    @Override
+    public int getHealth() {
+        return 0;
+    }
+
+    @Override
+    public int getHurtAdder() {
+        return 0;
+    }
+
+    @Override
+    public void hurt(int damage) {
+
+    }
+
+    @Override
     public void onTick(Entity entity, Player player, Delta delta) {
 
     }
@@ -128,11 +153,10 @@ public class ItemEntity extends Entity {
             collecting = true;
         }
 
-        float itemCollisionWidth = 0.2f;
         if (thisCollecting) {
-            collision.applyInertia(this.getPos(), this.getInertia(), false, itemCollisionWidth, itemCollisionWidth, false, false, false, false, false);
+            collision.applyInertia(this.getPos(), this.getInertia(), false, this.getWidth(), this.getHeight(), false, false, false, false, false);
         } else {
-            collision.applyInertia(this.getPos(), this.getInertia(), false, itemCollisionWidth, itemCollisionWidth, true, false, true, false, false);
+            collision.applyInertia(this.getPos(), this.getInertia(), false,  this.getWidth(), this.getHeight(), true, false, true, false, false);
         }
 
 
