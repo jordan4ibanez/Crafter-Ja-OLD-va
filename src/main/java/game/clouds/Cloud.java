@@ -2,9 +2,18 @@ package game.clouds;
 
 import engine.FastNoise;
 import engine.graphics.Mesh;
+import engine.time.Delta;
 import org.joml.Vector2i;
 
 public class Cloud {
+
+    private Delta delta;
+
+    public void setDelta(Delta delta){
+        if (this.delta == null){
+            this.delta = delta;
+        }
+    }
 
     private final CloudMesh cloudMesh = new CloudMesh(this);
 
@@ -24,7 +33,7 @@ public class Cloud {
     }
 
     public void makeCloudsMove(){
-        cloudScroll += getDelta();
+        cloudScroll += delta.getDelta();
 
         if (cloudScroll >= cloudScale){
 
@@ -55,8 +64,8 @@ public class Cloud {
         return cloudScale;
     }
 
-    private final Mesh cloud2DMesh = buildCloud2DMesh();
-    private final Mesh cloud3DMesh = buildCloud3DMesh();
+    private final Mesh cloud2DMesh = this.cloudMesh.buildCloud2DMesh();
+    private final Mesh cloud3DMesh = this.cloudMesh.buildCloud3DMesh();
 
     public Mesh getCloud2DMesh(){
         return cloud2DMesh;
