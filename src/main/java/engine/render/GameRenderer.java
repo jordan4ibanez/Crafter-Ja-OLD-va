@@ -2,6 +2,7 @@ package engine.render;
 
 import engine.Utils;
 import engine.Window;
+import engine.graphics.Camera;
 import engine.graphics.Mesh;
 import engine.graphics.ShaderProgram;
 import engine.graphics.Transformation;
@@ -20,13 +21,45 @@ import static org.lwjgl.opengl.GL11C.*;
 
 public class GameRenderer {
 
-    private final Chunk chunk;
-    private final Window window;
-    private final Delta delta;
-    private final Settings settings;
-    private final Player player;
+    private Camera camera;
+    private Chunk chunk;
+    private Window window;
+    private Delta delta;
+    private Settings settings;
+    private Player player;
+    private Transformation transformation;
 
-    private final Transformation transformation = new Transformation();
+    public void setCamera(Camera camera){
+        if (this.camera == null){
+            this.camera = camera;
+            this.transformation = new Transformation(this.camera);
+        }
+    }
+    public void setChunk(Chunk chunk){
+        if (this.chunk == null){
+            this.chunk = chunk;
+        }
+    }
+    public void setWindow(Window window){
+        if (this.window == null){
+            this.window = window;
+        }
+    }
+    public void setDelta(Delta delta){
+        if (this.delta == null){
+            this.delta = delta;
+        }
+    }
+    public void setSettings(Settings settings){
+        if (this.settings == null){
+            this.settings = settings;
+        }
+    }
+    public void setPlayer(Player player){
+        if (this.player == null){
+            this.player = player;
+        }
+    }
 
     private final float FOV = toRadians(72.0f);
     private final float Z_NEAR = 0.1f;
@@ -39,12 +72,7 @@ public class GameRenderer {
     private final HashMap<Double, Mesh[]> allFaceDrawTypeHash = new HashMap<>();
     private final HashMap<Double, Vector2i> chunkHashKeys    = new HashMap<>();
 
-    public GameRenderer(Window window, Delta delta, Chunk chunk, Settings settings, Player player){
-        this.chunk = chunk;
-        this.window = window;
-        this.settings = settings;
-        this.player = player;
-
+    public GameRenderer(){
         //normal shader program
         Utils utils = new Utils();
         shaderProgram = new ShaderProgram(utils.loadResource("resources/vertex.vs"), utils.loadResource("resources/fragment.fs"));
@@ -85,8 +113,6 @@ public class GameRenderer {
         entityShaderProgram.createUniform("texture_sampler");
         //create uniform for light value
         entityShaderProgram.createUniform("light");
-
-        this.delta = delta;
 
         window.setWindowClearColor(0.53f,0.81f,0.92f,0.f);
 
