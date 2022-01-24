@@ -77,7 +77,11 @@ public class Crafter {
         this.sqLiteDiskHandler = new SQLiteDiskHandler();
         this.camera            = new Camera();
         this.guiLogic          = new GUILogic();
-
+        this.networking        = new Networking();
+        this.gameRenderer      = new GameRenderer();
+        this.mainMenuRenderer  = new MainMenuRenderer();
+        this.sceneHandler      = new SceneHandler();
+        this.settings          = new Settings();
 
 
         //engine linkages
@@ -107,6 +111,20 @@ public class Crafter {
         guiLogic.setSqLiteDiskHandler(this.sqLiteDiskHandler);
         guiLogic.setSceneHandler(this.sceneHandler);
 
+        //networking
+        networking.setChunk(this.chunk);
+
+        //game renderer
+        gameRenderer.setCamera(this.camera);
+        gameRenderer.setDelta(this.delta);
+        gameRenderer.setSettings(this.settings);
+        gameRenderer.setWindow(this.window);
+        gameRenderer.setPlayer(this.player);
+
+        //settings
+        settings.setChunk(this.chunk);
+        settings.setWindow(this.window);
+        settings.setDisk(this.disk);
     }
 
 
