@@ -3,6 +3,7 @@ package engine.compression;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import engine.disk.PrimitiveChunkObject;
 import game.chunk.ChunkData;
+import org.joml.Vector2i;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -15,14 +16,7 @@ public class Compression {
     private final ObjectMapper mapper = new ObjectMapper();
 
     public byte[] convertChunkToCompressedByteArray(ChunkData thisChunk) throws IOException {
-        PrimitiveChunkObject savingObject = new PrimitiveChunkObject();
-
-        savingObject.x = thisChunk.x;
-        savingObject.z = thisChunk.z;
-        savingObject.b = thisChunk.block;
-        savingObject.r = thisChunk.rotation;
-        savingObject.l = thisChunk.light;
-        savingObject.h = thisChunk.heightMap;
+        PrimitiveChunkObject savingObject = new PrimitiveChunkObject(new Vector2i(thisChunk.x, thisChunk.z), thisChunk.block, thisChunk.rotation, thisChunk.light, thisChunk.heightMap);
 
         String stringedChunk = mapper.writeValueAsString(savingObject);
 
@@ -94,19 +88,19 @@ public class Compression {
         }
 
         //triple safety
-        if (thisChunkLoaded.b == null){
+        if (thisChunkLoaded.block == null){
             return null;
         }
 
         //assign compressed variables to full variable names
         ChunkData abstractedChunk = new ChunkData();
 
-        abstractedChunk.x = thisChunkLoaded.x;
-        abstractedChunk.z = thisChunkLoaded.z;
-        abstractedChunk.block = thisChunkLoaded.b;
-        abstractedChunk.rotation = thisChunkLoaded.r;
-        abstractedChunk.light = thisChunkLoaded.l;
-        abstractedChunk.heightMap = thisChunkLoaded.h;
+        abstractedChunk.x = thisChunkLoaded.pos.x;
+        abstractedChunk.z = thisChunkLoaded.pos.y;
+        abstractedChunk.block = thisChunkLoaded.block;
+        abstractedChunk.rotation = thisChunkLoaded.rotation;
+        abstractedChunk.light = thisChunkLoaded.light;
+        abstractedChunk.heightMap = thisChunkLoaded.heightMap;
 
         return abstractedChunk;
     }
