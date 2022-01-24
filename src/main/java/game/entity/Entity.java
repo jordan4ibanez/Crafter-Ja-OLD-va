@@ -47,6 +47,10 @@ public abstract class Entity implements EntityInterface{
         this.oldFlooredPos = new Vector3i((int) floor(pos.x), (int) floor(pos.y), (int) floor(pos.z));
     }
 
+    public UUID getUuid(){
+        return this.uuid;
+    }
+
     public boolean isItem(){
         return this.item;
     }

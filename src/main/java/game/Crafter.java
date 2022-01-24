@@ -277,7 +277,7 @@ public class Crafter {
 
         //ray
         ray.setChunk(this.chunk);
-        
+
 
     }
 
