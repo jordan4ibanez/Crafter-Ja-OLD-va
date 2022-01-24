@@ -1,29 +1,24 @@
 package game.entity.mob;
 
-
+import engine.sound.SoundAPI;
+import engine.time.Delta;
+import game.chunk.Chunk;
+import game.crafting.InventoryLogic;
+import game.entity.Entity;
+import game.entity.EntityContainer;
+import game.entity.collision.Collision;
+import game.player.Player;
 import org.joml.Vector3d;
+import org.joml.Vector3f;
 import org.joml.Vector3i;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
+public class Mob extends Entity {
 
-import engine.sound.SoundAPI.playSound;
-import engine.time.Delta.getDelta;
-import game.chunk.Chunk.getLight;
-import game.entity.collision.MobCollision.mobSoftCollisionDetect;
-import game.entity.collision.MobCollision.mobSoftPlayerCollisionDetect;
-import game.entity.mob.MobDefinition.*;
-import game.entity.mob.MobObject.*;
+    public Mob(Chunk chunk, EntityContainer entityContainer, Vector3d pos, Vector3f inertia, boolean item, boolean mob, boolean particle) {
+        super(chunk, entityContainer, pos, inertia, item, mob, particle);
+    }
 
-//runs on main thread
-final public class Mob {
-
-
-    private final Deque<Integer> deletionQueue = new ArrayDeque<>();
-
-    private final Vector3i currentFlooredPos = new Vector3i();
-
-    public void mobsOnTick(){
+    public void onTick(){
 
         double delta = getDelta();
 
@@ -121,34 +116,23 @@ final public class Mob {
     }
 
 
-    public void punchMob(int thisMob){
+    @Override
+    public void onTick(Entity entity, Player player, Delta delta) {
 
-        float thisMobHurtTimer = getMobHurtTimer(thisMob);
-        byte thisMobHealth = getMobHealth(thisMob);
+    }
 
-        if (thisMobHurtTimer <= 0 && thisMobHealth > 0) {
-            thisMobHealth -= 1;
+    @Override
+    public void onTick(Entity entity, InventoryLogic inventoryLogic, Player player, Delta delta) {
 
-            //System.out.println("the mobs health is: " + thisMob.health);
+    }
 
-            Vector3d thisMobPos = getMobPos(thisMob);
+    @Override
+    public void onTick(Entity entity, SoundAPI soundAPI, InventoryLogic inventoryLogic, Player player, Delta delta) {
 
-            int thisMobDefinitionID = getMobID(thisMob);
+    }
 
-            playSound(getMobDefinitionHurtSound(thisMobDefinitionID),(float)thisMobPos.x, (float)thisMobPos.y, (float)thisMobPos.z, true);
-            //play this after in case ID changes
-            MobInterface thisInterface = getMobDefinitionInterface(thisMobDefinitionID);
-            if (thisInterface != null){
-                thisInterface.onPunch(thisMob);
-            }
+    @Override
+    public void onTick(Collision collision, Entity entity, SoundAPI soundAPI, InventoryLogic inventoryLogic, Player player, Delta delta) {
 
-            if (getIfMobOnGround(thisMob)) {
-                getMobInertia(thisMob).y = 7;
-            }
-
-            setMobHealth(thisMob, thisMobHealth);
-            setMobHurtAdder(thisMob, (byte) 15);
-            setMobHurtTimer(thisMob, 0.5f);
-        }
     }
 }

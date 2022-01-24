@@ -2,9 +2,11 @@ package game.entity.collision;
 
 import game.entity.Entity;
 import game.entity.EntityContainer;
-import it.unimi.dsi.fastutil.ints.IntSet;
+import game.player.Player;
 import org.joml.Vector2d;
 import org.joml.Vector3d;
+
+import java.util.List;
 
 //basically cylindrical magnetic 2d collision detection class
 public class MobCollision {
@@ -25,30 +27,29 @@ public class MobCollision {
     private final Vector2d workerVec2D2 = new Vector2d();
     private final Vector2d normalizedPos = new Vector2d();
 
-    public void mobSoftCollisionDetect(int thisMob, Vector3d thisMobPos, float thisMobHeight, float thisMobWidth){
+    public void mobSoftCollisionDetect(Entity thisEntity, Vector3d thisMobPos, float thisMobHeight, float thisMobWidth){
         //get this mob's info
         workerVec2D.set(thisMobPos.x, thisMobPos.z);
         double thisBottom  = thisMobPos.y;
         double thisTop     = thisMobHeight + thisMobPos.y;
 
-        IntSet mobs = getMobKeys();
+        List<Entity> test = entityContainer.getAll();
 
-        for (int otherMob : mobs){
+        for (Entity otherEntity : test){
 
-            //don't detect against self or dead mobs
-            if (otherMob == thisMob || getMobHealth(otherMob) <= 0){
+            if (!otherEntity.isMob() || otherEntity == thisEntity || otherEntity.getHealth() <= 0){
                 continue;
             }
 
             //get other mob's info
-            float otherWidth    = getMobDefinitionWidth(getMobID(otherMob));
-            Vector3d otherPos   = getMobPos(otherMob);
+            float otherWidth    = otherEntity.getWidth();
+            Vector3d otherPos   = otherEntity.getPos();
             workerVec2D2.set(otherPos.x, otherPos.z);
 
             //only continue if within 2D radius
             if (workerVec2D.distance(workerVec2D2) <= thisMobWidth + otherWidth) {
 
-                float otherHeight  = getMobDefinitionHeight(getMobID(otherMob));
+                float otherHeight  = otherEntity.getHeight();
                 double otherBottom = otherPos.y;
                 double otherTop = otherHeight + otherPos.y;
 
@@ -61,7 +62,7 @@ public class MobCollision {
                     normalizedPos.set(workerVec2D2).sub(workerVec2D).normalize().mul(0.05f);
 
                     if (normalizedPos.isFinite()) {
-                        getMobInertia(thisMob).add((float)normalizedPos.x,0,(float)normalizedPos.y);
+                        thisEntity.getInertia().add((float)normalizedPos.x,0,(float)normalizedPos.y);
                     }
                 }
             }
@@ -97,7 +98,7 @@ public class MobCollision {
 
                 if (normalizedPos.isFinite()) {
                     getMobInertia(thisMob).add((float)normalizedPos.x,0,(float)normalizedPos.y);
-                    addPlayerInertia((float) -normalizedPos.x, 0, (float) -normalizedPos.y);
+                    player.addInertia((float) -normalizedPos.x, 0, (float) -normalizedPos.y);
                 }
             }
         }

@@ -4,11 +4,6 @@ import org.joml.Math;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import engine.time.Delta.getDelta;
-import game.entity.mob.MobDefinition.getMobDefinitionBodyOffsets;
-import game.player.Player.getPlayerPosWithEyeHeight;
-import game.ray.LineOfSight.getLineOfSight;
-
 public class MobUtilityCode {
 
     private final Vector3d headPos = new Vector3d();
