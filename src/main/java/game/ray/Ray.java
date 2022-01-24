@@ -2,7 +2,6 @@ package game.ray;
 
 import game.blocks.BlockDefinitionContainer;
 import game.chunk.Chunk;
-import it.unimi.dsi.fastutil.ints.IntSet;
 import org.joml.Math;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
