@@ -1,95 +1,20 @@
 package game.entity.particle;
 
 import engine.graphics.Mesh;
+import game.entity.Entity;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 import java.util.*;
 
-public class Particle {
-    //this is an abstraction of particle objects
-    //they exist, but only implicitly
-    //this list is synced on the main thread
-    private final int initialSize = 10;
-    private int currentSize = 10;
+public class Particle extends Entity {
+    private final Mesh mesh;
 
-    private boolean[]  exists             = new boolean[initialSize];
-    private Vector3d[] position           = new Vector3d[initialSize];
-    private Vector3i[] oldFlooredPosition = new Vector3i[initialSize];
-    private Vector3f[] inertia            = new Vector3f[initialSize];
-    private Mesh[]      mesh              = new Mesh[initialSize];
-    private byte[]     light              = new byte[initialSize];
-    private float[]    timer              = new float[initialSize];
-    private float[]    lightUpdateTimer   = new float[initialSize];
+    public Particle(Vector3d pos, Vector3f inertia, byte blockID){
+        super(4,4,4,4,4,4);
 
-    private int getFreeSlot(){
-        for (int i = 0; i < currentSize; i++){
-            if (!exists[i]){
-                return i;
-            }
-        }
-
-        //inlined container growth
-        return growContainer();
-    }
-
-    private int growContainer(){
-        //System.out.println("particle table is growing to: " + (currentSize + 10));
-        //ints are only created if arrays need to expand
-        //can return current size because it is +1 index of the old size
-        int returningSize = currentSize;
-        currentSize += 10;
-
-        //new arrays are only created if arrays need to expand
-        boolean[]  newExists             = new boolean[currentSize];
-        Vector3d[] newPosition           = new Vector3d[currentSize];
-        Vector3i[] newOldFlooredPosition = new Vector3i[currentSize];
-        Vector3f[] newInertia            = new Vector3f[currentSize];
-        Mesh[]      newMesh              = new Mesh[currentSize];
-        byte[]     newLight              = new byte[currentSize];
-        float[]    newTimer              = new float[currentSize];
-        float[]    newLightUpdateTimer   = new float[currentSize];
-
-        //clone data
-        System.arraycopy(exists, 0, newExists, 0, exists.length);
-        for (int i = 0; i < position.length; i++){
-            newPosition[i] = new Vector3d(position[i]);
-        }
-        for (int i = 0; i < oldFlooredPosition.length; i++){
-            newOldFlooredPosition[i] = new Vector3i(oldFlooredPosition[i]);
-        }
-        for (int i = 0; i < inertia.length; i++){
-            newInertia[i] = new Vector3f(inertia[i]);
-        }
-        System.arraycopy(mesh, 0, newMesh, 0, mesh.length);
-        System.arraycopy(light, 0, newLight, 0, light.length);
-        System.arraycopy(timer, 0, newTimer, 0, timer.length);
-        System.arraycopy(lightUpdateTimer, 0, newLightUpdateTimer, 0, lightUpdateTimer.length);
-
-        //set data
-        exists = newExists;
-        position = newPosition;
-        oldFlooredPosition = newOldFlooredPosition;
-        inertia = newInertia;
-        mesh = newMesh;
-        light = newLight;
-        timer = newTimer;
-        lightUpdateTimer = newLightUpdateTimer;
-
-        return returningSize;
-    }
-
-    public void createParticle(double posX, double posY, double posZ, float inertiaX, float inertiaY, float inertiaZ, byte blockID){
-        int thisID = getFreeSlot();
-        exists[thisID] = true;
-        position[thisID] = new Vector3d(posX, posY, posZ);
-        oldFlooredPosition[thisID] = new Vector3i(0,-10,0);
-        inertia[thisID] = new Vector3f(inertiaX,inertiaY,inertiaZ);
         mesh[thisID] = createParticleMesh(blockID);
-        light[thisID] = (byte) 15; //this should probably check automagically
-        timer[thisID] = (float)Math.random()*2f;
-        lightUpdateTimer[thisID] = 0f;
     }
 
     public void cleanParticleMemory(){
