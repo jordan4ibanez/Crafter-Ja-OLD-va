@@ -104,7 +104,7 @@ public class Camera {
         rotation.add(offset);
     }
 
-    //mutable - be careful with this
+
     public Vector3f getCameraRotationVector(){
         float xzLen = Math.cos(Math.toRadians(rotation.x + 180f));
         rotationVector.z = xzLen * Math.cos(Math.toRadians(rotation.y));
@@ -112,16 +112,24 @@ public class Camera {
         rotationVector.x = xzLen * Math.sin(Math.toRadians(-rotation.y));
         return rotationVector;
     }
-    //immutable
+
+    public Vector3f getInvertedCameraRotationVector(){
+        float xzLen = Math.cos(Math.toRadians(rotation.x + 180f));
+        rotationVector.z = (xzLen * Math.cos(Math.toRadians(rotation.y))) * -1;
+        rotationVector.y = (Math.sin(Math.toRadians(rotation.x + 180f))) * -1;
+        rotationVector.x = (xzLen * Math.sin(Math.toRadians(-rotation.y))) * -1;
+        return rotationVector;
+    }
+
     public float getCameraRotationVectorX(){
         float xzLen = Math.cos(Math.toRadians(rotation.x + 180f));
         return xzLen * Math.sin(Math.toRadians(-rotation.y));
     }
-    //immutable
+
     public float getCameraRotationVectorY(){
         return Math.sin(Math.toRadians(rotation.x + 180f));
     }
-    //immutable
+
     public float getCameraRotationVectorZ(){
         float xzLen = Math.cos(Math.toRadians(rotation.x + 180f));
         return xzLen * Math.cos(Math.toRadians(rotation.y));
