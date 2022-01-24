@@ -69,7 +69,7 @@ public class MobCollision {
         }
     }
 
-    public void mobSoftPlayerCollisionDetect(int thisMob, Vector3d thisMobPos, float thisMobHeight, float thisMobWidth){
+    public void mobSoftPlayerCollisionDetect(Entity thisMob, Vector3d thisMobPos, float thisMobHeight, float thisMobWidth, Player player){
         //get this mob's info
         workerVec2D.set(thisMobPos.x, thisMobPos.z);
         double thisBottom  = thisMobPos.y;
@@ -77,14 +77,14 @@ public class MobCollision {
 
 
         //get player's info
-        float otherWidth    = getPlayerWidth();
-        Vector3d otherPos   = getPlayerPos();
+        float otherWidth    = player.getWidth();
+        Vector3d otherPos   = player.getPlayerPos();
         workerVec2D2.set(otherPos.x, otherPos.z);
 
         //only continue if within 2D radius
         if (workerVec2D.distance(workerVec2D2) <= thisMobWidth + otherWidth) {
 
-            float otherHeight = getPlayerHeight();
+            float otherHeight = player.getHeight();
             double otherBottom = otherPos.y;
             double otherTop = otherHeight + otherPos.y;
 
@@ -97,8 +97,8 @@ public class MobCollision {
                 normalizedPos.set(workerVec2D).sub(workerVec2D2).normalize().mul(0.05f);
 
                 if (normalizedPos.isFinite()) {
-                    getMobInertia(thisMob).add((float)normalizedPos.x,0,(float)normalizedPos.y);
-                    player.addInertia((float) -normalizedPos.x, 0, (float) -normalizedPos.y);
+                    thisMob.getInertia().add((float)normalizedPos.x,0,(float)normalizedPos.y);
+                    player.getInertia().add((float) -normalizedPos.x, 0, (float) -normalizedPos.y);
                 }
             }
         }
