@@ -10,6 +10,8 @@ import game.clouds.CloudMesh.buildCloud3DMesh;
 
 public class Cloud {
 
+    private final CloudMesh cloudMesh = new CloudMesh(this);
+
     //this holds the data from when the clouds are generated overhead
     private final boolean[][] cloudData = new boolean[16][16];
 

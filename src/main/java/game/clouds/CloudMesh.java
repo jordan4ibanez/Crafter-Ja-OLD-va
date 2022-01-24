@@ -5,12 +5,14 @@ import engine.graphics.Texture;
 import engine.highPerformanceContainers.HyperFloatArray;
 import engine.highPerformanceContainers.HyperIntArray;
 
-import game.clouds.Cloud.getCloudScale;
-
 public class CloudMesh {
 
-    private final byte atlasSizeX = 3;
-    private final byte atlasSizeY = 1;
+    private final Cloud cloud;
+
+    public CloudMesh(Cloud cloud){
+        this.cloud = cloud;
+    }
+
 
 
     public Mesh buildCloud3DMesh(){
@@ -22,8 +24,8 @@ public class CloudMesh {
         float[] textureWorker;
 
 
-        float height = 0.2f * getCloudScale();
-        float width = getCloudScale();
+        float height = 0.2f * cloud.getCloudScale();
+        float width = cloud.getCloudScale();
 
         int indicesCount = 0;
 
@@ -142,7 +144,7 @@ public class CloudMesh {
         float[] light = new float[12];
 
 
-        float width = getCloudScale();
+        float width = cloud.getCloudScale();
 
         positions[0] = (width);
         positions[1] = (0);
@@ -186,11 +188,13 @@ public class CloudMesh {
 
     private float[] calculateTexture(int x){
         float[] texturePoints = new float[4];
-        texturePoints[0] = (float)x/(float)atlasSizeX;     //min x (-)
-        texturePoints[1] = (float)(x+1)/(float)atlasSizeX; //max x (+)
+        byte atlasSizeX = 3;
+        texturePoints[0] = (float)x/(float) atlasSizeX;     //min x (-)
+        texturePoints[1] = (float)(x+1)/(float) atlasSizeX; //max x (+)
 
-        texturePoints[2] = (float) 0 /(float)atlasSizeY;     //min y (-)
-        texturePoints[3] = (float)(1)/(float)atlasSizeY; //max y (+)
+        byte atlasSizeY = 1;
+        texturePoints[2] = (float) 0 /(float) atlasSizeY;     //min y (-)
+        texturePoints[3] = (float)(1)/(float) atlasSizeY; //max y (+)
         return texturePoints;
     }
 }
