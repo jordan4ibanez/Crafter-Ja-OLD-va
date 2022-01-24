@@ -229,11 +229,11 @@ final public class Collision {
     private boolean sneakCollideYNegative(int blockPosX, int blockPosY, int blockPosZ, byte rot, float width, float height, byte blockID){
         for (float[] blockBox : blockDefinitionContainer.getShape(blockID, rot)) {
             
-            setAABBEntity(clonedPos.x, clonedPos.y, clonedPos.z, width, height);
-            
-            setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
+            collisionObject.setAABBEntity(clonedPos.x, clonedPos.y, clonedPos.z, width, height);
 
-            if (intersectsAABB()) {
+            collisionObject.setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
+
+            if (collisionObject.intersectsAABB()) {
                 return true;
             }
         }
@@ -260,11 +260,11 @@ final public class Collision {
                     for (byte z = -1; z <= 1; z++) {
                         cachedPos.set(fPos.x + x,fPos.y,fPos.z + z);
 
-                        byte cachedBlock = getBlock(cachedPos);
+                        byte cachedBlock = chunk.getBlock(cachedPos);
 
-                        byte rot = getBlockRotation(cachedPos);
+                        byte rot = chunk.getBlockRotation(cachedPos);
 
-                        if (cachedBlock > 0 && isBlockWalkable(cachedBlock)) {
+                        if (cachedBlock > 0 && blockDefinitionContainer.getWalkable(cachedBlock)) {
                             onGround = collideYNegative(cachedPos.x, cachedPos.y, cachedPos.z, rot, pos, inertia, width, height, onGround, cachedBlock);
                         }
                     }
@@ -276,11 +276,11 @@ final public class Collision {
                     for (byte z = -1; z <= 1; z++) {
                         cachedPos.set(fPos.x + x,(int)Math.floor(pos.y + height),fPos.z + z);
 
-                        byte cachedBlock = getBlock(cachedPos);
+                        byte cachedBlock = chunk.getBlock(cachedPos);
 
-                        byte rot = getBlockRotation(cachedPos);
+                        byte rot = chunk.getBlockRotation(cachedPos);
 
-                        if (cachedBlock > 0 && isBlockWalkable(cachedBlock)) {
+                        if (cachedBlock > 0 && blockDefinitionContainer.getWalkable(cachedBlock)) {
                             collideYPositive(cachedPos.x, cachedPos.y, cachedPos.z, rot, pos, inertia, width, height, cachedBlock);
                         }
                     }
@@ -307,13 +307,13 @@ final public class Collision {
                     cachedPos.set(fPos.x + x,fPos.y + y,fPos.z + z);
 
                     //get block ID
-                    byte cachedBlock = getBlock(cachedPos);
+                    byte cachedBlock = chunk.getBlock(cachedPos);
 
                     //get rotation
-                    byte rot = getBlockRotation(cachedPos);
+                    byte rot = chunk.getBlockRotation(cachedPos);
 
                     //never collide with air (block ID 0)
-                    if (cachedBlock > 0 && isBlockWalkable(cachedBlock)) {
+                    if (cachedBlock > 0 && blockDefinitionContainer.getWalkable(cachedBlock)) {
                         collideX(cachedPos.x, cachedPos.y, cachedPos.z, rot, pos, inertia, width, height, cachedBlock);
                     }
                 }
@@ -335,13 +335,13 @@ final public class Collision {
                     cachedPos.set(fPos.x + x,fPos.y + y,fPos.z + z);
 
                     //get block ID
-                    byte cachedBlock = getBlock(cachedPos);
+                    byte cachedBlock = chunk.getBlock(cachedPos);
 
                     //get rotation
-                    byte rot = getBlockRotation(cachedPos);
+                    byte rot = chunk.getBlockRotation(cachedPos);
 
                     //never collide with air (block ID 0)
-                    if (cachedBlock > 0 && isBlockWalkable(cachedBlock)) {
+                    if (cachedBlock > 0 && blockDefinitionContainer.getWalkable(cachedBlock)) {
                         collideZ(cachedPos.x, cachedPos.y, cachedPos.z, rot, pos, inertia, width, height, cachedBlock);
                     }
                 }
@@ -355,13 +355,13 @@ final public class Collision {
                     cachedPos.set(fPos.x + x,fPos.y + y,fPos.z + z);
 
                     //get block ID
-                    byte cachedBlock = getBlock(cachedPos);
+                    byte cachedBlock = chunk.getBlock(cachedPos);
 
                     //get rotation
-                    byte rot = getBlockRotation(cachedPos);
+                    byte rot = chunk.getBlockRotation(cachedPos);
 
                     //never collide with air (block ID 0)
-                    if (cachedBlock > 0 && isBlockLiquid(cachedBlock)){
+                    if (cachedBlock > 0 && blockDefinitionContainer.getIfLiquid(cachedBlock)){
                         detectIfInWater(cachedPos.x, cachedPos.y, cachedPos.z, rot, pos, width, height, cachedBlock);
                     }
                 }
@@ -374,14 +374,14 @@ final public class Collision {
     //a simple way to check if an object is in the water, only done on x and z passes so you can't stand
     //next to water and get slowed down
     private void detectIfInWater(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, float width, float height, byte blockID){
-        for (float[] blockBox : getBlockShape(blockID, rot)) {
-            
-            setAABBEntity(pos.x, pos.y, pos.z, width, height);
+        for (float[] blockBox : blockDefinitionContainer.getShape(blockID, rot)) {
 
-            setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
+            collisionObject.setAABBEntity(pos.x, pos.y, pos.z, width, height);
+
+            collisionObject.setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
             
-            if (intersectsAABB()) {
-                float localViscosity = getBlockViscosity(blockID);
+            if (collisionObject.intersectsAABB()) {
+                float localViscosity = blockDefinitionContainer.getViscosity(blockID);
                 if (localViscosity > inWater){
                     inWater = localViscosity;
                 }
@@ -390,13 +390,13 @@ final public class Collision {
     }
 
     private boolean collideYNegative(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, float width, float height, boolean onGround, byte blockID){
-        for (float[] blockBox : getBlockShape(blockID, rot)) {
-            
-            setAABBEntity(pos.x, pos.y, pos.z, width, height);
+        for (float[] blockBox : blockDefinitionContainer.getShape(blockID, rot)) {
 
-            setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
+            collisionObject.setAABBEntity(pos.x, pos.y, pos.z, width, height);
+
+            collisionObject.setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
             
-            if (intersectsAABB()) {
+            if (collisionObject.intersectsAABB()) {
                 pos.y = blockBox[4] + (double)blockPosY + 0.0000000001d;
                 inertia.y = 0;
                 onGround = true;
@@ -407,13 +407,13 @@ final public class Collision {
     }
 
     private void collideYPositive(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, float width, float height, byte blockID){
-        for (float[] blockBox : getBlockShape(blockID, rot)) {
-            
-            setAABBEntity(pos.x, pos.y, pos.z, width, height);
+        for (float[] blockBox : blockDefinitionContainer.getShape(blockID, rot)) {
 
-            setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
+            collisionObject.setAABBEntity(pos.x, pos.y, pos.z, width, height);
 
-            if (intersectsAABB()) {
+            collisionObject.setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
+
+            if (collisionObject.intersectsAABB()) {
                 pos.y = blockBox[1] + (double)blockPosY - height - 0.0000000001d;
                 inertia.y = 0;
             }
@@ -426,19 +426,19 @@ final public class Collision {
                 
         
         //run through X collisions
-        for (float[] blockBox : getBlockShape(blockID, rot)) {
-            
-            setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
+        for (float[] blockBox : blockDefinitionContainer.getShape(blockID, rot)) {
+
+            collisionObject.setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
             
             double blockXCenter = ((blockBox[0] + blockBox[3])/2d);
             
             //collide X negative
             if (blockPosX + blockXCenter <= pos.x) {
+
+                collisionObject.setAABBEntity(pos.x, pos.y, pos.z, width, height);
                 
-                setAABBEntity(pos.x, pos.y, pos.z, width, height);
-                
-                if (intersectsAABB()) {
-                    if (isSteppable(blockID) && inertia.y == 0) {
+                if (collisionObject.intersectsAABB()) {
+                    if (blockDefinitionContainer.getSteppable(blockID) && inertia.y == 0) {
                         pos.y = blockBox[4] + (double)blockPosY;
                     } else {
                         pos.x = blockBox[3] + (double)blockPosX + width + 0.0000000001d;
@@ -449,11 +449,11 @@ final public class Collision {
             
             //collide X positive
             if (blockPosX + blockXCenter >= pos.x) {
+
+                collisionObject.setAABBEntity(pos.x, pos.y, pos.z, width, height);
                 
-                setAABBEntity(pos.x, pos.y, pos.z, width, height);
-                
-                if (intersectsAABB()) {
-                    if (isSteppable(blockID) && inertia.y == 0) {
+                if (collisionObject.intersectsAABB()) {
+                    if (blockDefinitionContainer.getSteppable(blockID) && inertia.y == 0) {
                         pos.y = blockBox[4] + (double)blockPosY;
                     } else {
                         pos.x = blockBox[0] + (double)blockPosX - width - 0.0000000001d;
@@ -464,22 +464,22 @@ final public class Collision {
         }
 
         //correction for the sides of stairs
-        if (isSteppable(blockID) && pos.y - oldPos.y > 0.51d) {
+        if (blockDefinitionContainer.getSteppable(blockID) && pos.y - oldPos.y > 0.51d) {
 
             pos.y = oldPos.y;
 
-            for (float[] blockBox : getBlockShape(blockID, rot)) {
+            for (float[] blockBox : blockDefinitionContainer.getShape(blockID, rot)) {
 
-                setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
+                collisionObject.setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
                 
                 double blockXCenter = ((blockBox[0] + blockBox[3])/2d);
 
                 //collide X negative
                 if (blockPosX + blockXCenter <= pos.x) {
+
+                    collisionObject.setAABBEntity(pos.x, pos.y, pos.z, width, height);
                     
-                    setAABBEntity(pos.x, pos.y, pos.z, width, height);
-                    
-                    if (intersectsAABB()) {
+                    if (collisionObject.intersectsAABB()) {
                         pos.x = blockBox[3] + (double)blockPosX + width + 0.0000000001d;
                         inertia.x = 0f;
                     }
@@ -487,10 +487,10 @@ final public class Collision {
 
                 //collide X positive
                 if (blockPosX + blockXCenter >= pos.x) {
+
+                    collisionObject.setAABBEntity(pos.x, pos.y, pos.z, width, height);
                     
-                    setAABBEntity(pos.x, pos.y, pos.z, width, height);
-                    
-                    if (intersectsAABB()) {
+                    if (collisionObject.intersectsAABB()) {
                         pos.x = blockBox[0] + (double)blockPosX - width - 0.0000000001d;
                         inertia.x = 0f;
                     }
@@ -505,19 +505,19 @@ final public class Collision {
     private void collideZ(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, float width, float height, byte blockID){
 
         //run through Z collisions
-        for (float[] blockBox : getBlockShape(blockID, rot)) {
-            
-            setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
+        for (float[] blockBox : blockDefinitionContainer.getShape(blockID, rot)) {
+
+            collisionObject.setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
 
             double blockZCenter = ((blockBox[2] + blockBox[5])/2d);
 
             //collide Z negative
             if (blockPosZ + blockZCenter <= pos.z) {
+
+                collisionObject.setAABBEntity(pos.x, pos.y, pos.z, width, height);
                 
-                setAABBEntity(pos.x, pos.y, pos.z, width, height);
-                
-                if (intersectsAABB()) {
-                    if (isSteppable(blockID) && inertia.y == 0) {
+                if (collisionObject.intersectsAABB()) {
+                    if (blockDefinitionContainer.getSteppable(blockID) && inertia.y == 0) {
                         pos.y = blockBox[4] + (double)blockPosY;
                     }else {
                         pos.z = blockBox[5] + (double)blockPosZ + width + 0.0000000001d;
@@ -528,11 +528,11 @@ final public class Collision {
 
             //collide Z positive
             if (blockPosZ + blockZCenter >= pos.z) {
+
+                collisionObject.setAABBEntity(pos.x, pos.y, pos.z, width, height);
                 
-                setAABBEntity(pos.x, pos.y, pos.z, width, height);
-                
-                if (intersectsAABB()) {
-                    if (isSteppable(blockID) && inertia.y == 0) {
+                if (collisionObject.intersectsAABB()) {
+                    if (blockDefinitionContainer.getSteppable(blockID) && inertia.y == 0) {
                         pos.y = blockBox[4] + (double)blockPosY;
                     } else {
                         pos.z = blockBox[2] + (double)blockPosZ - width - 0.0000000001d;
@@ -548,18 +548,18 @@ final public class Collision {
             pos.y = oldPos.y;
 
 
-            for (float[] blockBox : getBlockShape(blockID, rot)) {
-                
-                setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
+            for (float[] blockBox : blockDefinitionContainer.getShape(blockID, rot)) {
+
+                collisionObject.setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
                 
                 double blockZCenter = ((blockBox[2] + blockBox[5])/2d);
 
                 //collide Z negative
                 if (blockPosZ + blockZCenter <= pos.z) {
+
+                    collisionObject.setAABBEntity(pos.x, pos.y, pos.z, width, height);
                     
-                    setAABBEntity(pos.x, pos.y, pos.z, width, height);
-                    
-                    if (intersectsAABB()) {
+                    if (collisionObject.intersectsAABB()) {
                         pos.z = blockBox[5] + (double)blockPosZ + width + 0.0000000001d;
                         inertia.z = 0f;
                     }
@@ -567,10 +567,10 @@ final public class Collision {
 
                 //collide Z positive
                 if (blockPosZ + blockZCenter >= pos.z) {
+
+                    collisionObject.setAABBEntity(pos.x, pos.y, pos.z, width, height);
                     
-                    setAABBEntity(pos.x, pos.y, pos.z, width, height);
-                    
-                    if (intersectsAABB()) {
+                    if (collisionObject.intersectsAABB()) {
                         pos.z = blockBox[2] + (double)blockPosZ - width - 0.0000000001d;
                         inertia.z = 0f;
                     }
@@ -593,13 +593,13 @@ final public class Collision {
 
     //precise collision prediction when placing
     public boolean wouldCollidePlacing(Vector3d pos, float width, float height, int blockPosX, int blockPosY, int blockPosZ, byte blockID, byte rotation){
+
+        collisionObject.setAABBEntity(pos.x, pos.y, pos.z, width, height);
         
-        setAABBEntity(pos.x, pos.y, pos.z, width, height);
-        
-        for (float[] blockBox : getBlockShape(blockID, rotation)) {
-            setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
+        for (float[] blockBox : blockDefinitionContainer.getShape(blockID, rotation)) {
+            collisionObject.setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
             
-            if (intersectsAABB()) {
+            if (collisionObject.intersectsAABB()) {
                 return true;
             }
         }
