@@ -4,10 +4,6 @@ import engine.FastNoise;
 import engine.graphics.Mesh;
 import org.joml.Vector2i;
 
-import engine.time.Delta.getDelta;
-import game.clouds.CloudMesh.buildCloud2DMesh;
-import game.clouds.CloudMesh.buildCloud3DMesh;
-
 public class Cloud {
 
     private final CloudMesh cloudMesh = new CloudMesh(this);
