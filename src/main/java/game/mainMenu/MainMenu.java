@@ -25,16 +25,16 @@ import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 public class MainMenu {
 
     //assets and credits are objects
-    private final Crafter crafter;
-    private final Window window;
+    private String versionName;
+    private Window window;
     private final MainMenuAssets mainMenuAssets = new MainMenuAssets();
     private final Credits credits = new Credits();
-    private final Settings settings;
-    private final Disk disk;
-    private final Mouse mouse;
-    private final GUILogic guiLogic;
-    private final SceneHandler sceneHandler;
-    private final Player player;
+    private Settings settings;
+    private Disk disk;
+    private Mouse mouse;
+    private GUILogic guiLogic;
+    private SceneHandler sceneHandler;
+    private Player player;
     private final TextHandling textHandling = new TextHandling();
 
     private final byte[][] titleBlocks;
@@ -68,7 +68,7 @@ public class MainMenu {
 
     private boolean serverConnected = false;
 
-    public void setMenuPage(byte page){
+    public void setMenuPage(byte page) {
         menuPage = page;
         System.out.println("menu page is now " + menuPage);
     }
@@ -83,47 +83,79 @@ public class MainMenu {
     //7 could not connect to server
     private byte menuPage = 0;
 
-    private final GUIObject[] mainMenuGUI;
+    private GUIObject[] mainMenuGUI;
 
-    private final GUIObject[] mainMenuSettingsMenuGUI;
+    private GUIObject[] mainMenuSettingsMenuGUI;
 
-    private final GUIObject[] controlsMenuGUI;
+    private GUIObject[] controlsMenuGUI;
 
-    private final GUIObject[] worldSelectionGUI;
+    private GUIObject[] worldSelectionGUI;
 
     private final GUIObject[] multiPlayerGUI = new GUIObject[]{
-            new GUIObject("Name:" , true, new Vector2d(0, 40)),
+            new GUIObject("Name:", true, new Vector2d(0, 40)),
             new GUIObject(new Vector2d(0, 30), 10, 1),
 
-            new GUIObject("IP Address:" , true, new Vector2d(0, 10)),
+            new GUIObject("IP Address:", true, new Vector2d(0, 10)),
             new GUIObject(new Vector2d(0, 0), 10, 1),
 
-            new GUIObject("CONNECT" , new Vector2d(0, -20), 10,1),
+            new GUIObject("CONNECT", new Vector2d(0, -20), 10, 1),
 
-            new GUIObject("BACK" , new Vector2d(0, -40), 10,1),
+            new GUIObject("BACK", new Vector2d(0, -40), 10, 1),
     };
 
     private final GUIObject[] multiPlayerLoadingGUI = new GUIObject[]{
-            new GUIObject("CONNECTING TO SERVER..." , true, new Vector2d(0, 5)),
-            new GUIObject("BACK" , new Vector2d(0, -5), 10,1),
+            new GUIObject("CONNECTING TO SERVER...", true, new Vector2d(0, 5)),
+            new GUIObject("BACK", new Vector2d(0, -5), 10, 1),
     };
 
     private final GUIObject[] multiplayerFailureGUI = new GUIObject[]{
-            new GUIObject("COULD NOT CONNECT TO SERVER" , true, new Vector2d(0, 5)),
-            new GUIObject("BACK" , new Vector2d(0, -5), 10,1),
+            new GUIObject("COULD NOT CONNECT TO SERVER", true, new Vector2d(0, 5)),
+            new GUIObject("BACK", new Vector2d(0, -5), 10, 1),
     };
 
-    public MainMenu(Crafter crafter, Settings settings, Disk disk, Mouse mouse, GUILogic guiLogic, Window window, SceneHandler sceneHandler, Player player) {
+    public void setSettings(Settings settings) {
+        if (this.settings == null) {
+            this.settings = settings;
+        }
+    }
+    public void setDisk(Disk disk) {
+        if (this.disk == null) {
+            this.disk = disk;
+        }
+    }
+    public void setMouse(Mouse mouse) {
+        if (this.mouse == null) {
+            this.mouse = mouse;
+        }
+    }
+    public void setGuiLogic(GUILogic guiLogic) {
+        if (this.guiLogic == null) {
+            this.guiLogic = guiLogic;
+        }
+    }
+    public void setWindow(Window window) {
+        if (this.window == null) {
+            this.window = window;
+        }
+    }
+    public void setSceneHandler(SceneHandler sceneHandler) {
+        if (this.sceneHandler == null) {
+            this.sceneHandler = sceneHandler;
+        }
+    }
+    public void setPlayer(Player player) {
+        if (this.player == null) {
+            this.player = player;
+        }
+    }
 
-        this.crafter = crafter;
-        this.settings = settings;
-        this.disk = disk;
-        this.mouse = mouse;
-        this.guiLogic = guiLogic;
-        this.window = window;
-        this.sceneHandler = sceneHandler;
-        this.player = player;
+    public void setVersionName(String versionName){
+        if (this.versionName == null){
+            this.versionName = versionName;
+        }
+    }
 
+    public MainMenu() {
         //seed the random generator
         random.setSeed(new Date().getTime());
 
@@ -138,11 +170,11 @@ public class MainMenu {
             };
 
             worldTitleBlocks = new byte[][]{
-                    {1,0,0,0,1,0,0,1,1,0,0,1,1,0,0,1,0,0,0,1,1,0,0,0,1,1,1},
-                    {1,0,0,0,1,0,1,0,0,1,0,1,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0},
-                    {1,0,1,0,1,0,1,0,0,1,0,1,1,0,0,1,0,0,0,1,0,1,0,0,1,1,0},
-                    {1,1,0,1,1,0,1,0,0,1,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1},
-                    {1,0,0,0,1,0,0,1,1,0,0,1,0,1,0,1,1,1,0,1,1,0,0,1,1,1,0},
+                    {1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1},
+                    {1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0},
+                    {1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0},
+                    {1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1},
+                    {1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0},
             };
 
         } else {
@@ -155,38 +187,40 @@ public class MainMenu {
             };
 
             worldTitleBlocks = new byte[][]{
-                    {1,0,0,0,1,0,1,1,0,0,0,1,1,0,0,1,0,0,0,1,1,0,0,0,1,1,1},
-                    {1,0,0,0,1,0,1,0,1,0,1,0,0,1,0,1,0,0,0,1,0,1,0,1,0,0,0},
-                    {1,0,1,0,1,0,1,1,0,0,1,0,0,1,0,1,0,0,0,1,0,1,0,0,1,1,0},
-                    {1,1,0,1,1,0,1,0,1,0,1,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0,1},
-                    {1,0,0,0,1,0,1,0,1,0,0,1,1,0,0,1,1,1,0,1,1,0,0,1,1,1,0},
+                    {1, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1},
+                    {1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0},
+                    {1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 0},
+                    {1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1},
+                    {1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0},
             };
         }
 
         titleOffsets = new double[5][27];
 
         //set initial random float variables
-        for (int x = 0; x < 5; x++){
+        for (int x = 0; x < 5; x++) {
             //assume equal lengths
-            for (int y = 0; y < 27; y++){
-                if (titleBlocks[x][y] == 1){
-                    titleOffsets[x][y] = blockOffsetInitial + Math.random()*15d;
+            for (int y = 0; y < 27; y++) {
+                if (titleBlocks[x][y] == 1) {
+                    titleOffsets[x][y] = blockOffsetInitial + Math.random() * 15d;
                 }
             }
         }
 
         worldTitleOffsets = new double[5][27];
 
-        for (int x = 0; x < 5; x++){
+        for (int x = 0; x < 5; x++) {
             //assume equal lengths
-            for (int y = 0; y < 27; y++){
-                if (worldTitleBlocks[x][y] == 1){
-                    worldTitleOffsets[x][y] = blockOffsetInitial + Math.random()*15d;
+            for (int y = 0; y < 27; y++) {
+                if (worldTitleBlocks[x][y] == 1) {
+                    worldTitleOffsets[x][y] = blockOffsetInitial + Math.random() * 15d;
                 }
             }
         }
 
         selectTitleScreenText();
+    }
+    public void initializeGUI(){
 
         //titleMusic = playMusic("main_menu");
         //creditsMusic = playMusic("credits");
@@ -952,7 +986,7 @@ public class MainMenu {
         switch (titleScreenText) {
             case "Look at the window title!" -> window.updateTitle("Got you!");
             case "Jump scare free!" -> window.updateTitle("BOO!");
-            default -> window.updateTitle(crafter.getVersionName());
+            default -> window.updateTitle(this.versionName);
         }
 
         titleScreenTextLength = (byte) titleScreenText.length();

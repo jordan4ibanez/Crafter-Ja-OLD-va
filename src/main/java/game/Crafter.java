@@ -75,6 +75,7 @@ public class Crafter {
     private final ChunkUpdateHandler chunkUpdateHandler;
     private final Cloud cloud;
     private final InventoryLogic inventoryLogic;
+    private final MainMenu mainMenu;
 
 
     public Crafter(){
@@ -109,6 +110,7 @@ public class Crafter {
         this.chunkUpdateHandler = new ChunkUpdateHandler();
         this.cloud              = new Cloud();
         this.inventoryLogic     = new InventoryLogic();
+        this.mainMenu           = new MainMenu();
 
 
         //engine linkages
@@ -209,6 +211,17 @@ public class Crafter {
         inventoryLogic.setMouse(this.mouse);
         inventoryLogic.setWindow(this.window);
         inventoryLogic.setControls(this.controls);
+
+        //main menu
+        mainMenu.setSettings(this.settings);
+        mainMenu.setDisk(this.disk);
+        mainMenu.setMouse(this.mouse);
+        mainMenu.setGuiLogic(this.guiLogic);
+        mainMenu.setWindow(this.window);
+        mainMenu.setSceneHandler(this.sceneHandler);
+        mainMenu.setPlayer(this.player);
+        mainMenu.setVersionName(this.versionName);
+        mainMenu.initializeGUI();
 
     }
 

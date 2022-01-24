@@ -4,12 +4,7 @@ import engine.graphics.Mesh;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-
 import java.util.Arrays;
-
-import game.chunk.Chunk.getLight;
-import game.chunk.Chunk.placeBlock;
-import game.entity.collision.Collision.applyInertia;
 
 public class FallingEntity {
     private final int initialSize = 10;
