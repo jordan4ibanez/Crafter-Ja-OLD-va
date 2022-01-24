@@ -74,6 +74,7 @@ public class Crafter {
     private final Chunk chunk;
     private final ChunkUpdateHandler chunkUpdateHandler;
     private final Cloud cloud;
+    private final InventoryLogic inventoryLogic;
 
 
     public Crafter(){
@@ -107,6 +108,7 @@ public class Crafter {
         this.chunk              = new Chunk();
         this.chunkUpdateHandler = new ChunkUpdateHandler();
         this.cloud              = new Cloud();
+        this.inventoryLogic     = new InventoryLogic();
 
 
         //engine linkages
@@ -201,6 +203,12 @@ public class Crafter {
 
         //cloud
         cloud.setDelta(this.delta);
+
+        //inventory logic
+        inventoryLogic.setPlayer(this.player);
+        inventoryLogic.setMouse(this.mouse);
+        inventoryLogic.setWindow(this.window);
+        inventoryLogic.setControls(this.controls);
 
     }
 

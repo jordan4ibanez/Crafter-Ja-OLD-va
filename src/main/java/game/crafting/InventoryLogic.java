@@ -10,11 +10,36 @@ import org.joml.Vector3f;
 
 public class InventoryLogic {
 
-    private final Player player;
-    private final Mouse mouse;
-    private final Window window;
-    private final CraftRecipes craftRecipes;
-    private final Controls controls;
+    private Player player;
+    private Mouse mouse;
+    private Window window;
+    private Controls controls;
+    private CraftRecipes craftRecipes;
+
+    public void setPlayer(Player player){
+        if (this.player == null){
+            this.player = player;
+            this.craftRecipes = new CraftRecipes(player);
+        }
+    }
+
+    public void setMouse(Mouse mouse){
+        if (this.mouse == null){
+            this.mouse = mouse;
+        }
+    }
+    public void setWindow(Window window){
+        if (this.window == null){
+            this.window = window;
+        }
+    }
+
+    public void setControls(Controls controls){
+        if (this.controls == null){
+            this.controls = controls;
+        }
+    }
+
     private final Inventory inventory = new Inventory();
 
     private String oldSelection;
@@ -29,12 +54,7 @@ public class InventoryLogic {
 
 
 
-    public InventoryLogic(Player player, Mouse mouse, Window window, Controls controls){
-        this.player = player;
-        this.mouse = mouse;
-        this.window = window;
-        this.craftRecipes = new CraftRecipes(player);
-        this.controls = controls;
+    public InventoryLogic(){
     }
 
     private final InventoryObject[] inventoryArray = {
