@@ -6,15 +6,6 @@ import org.joml.Vector2f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import engine.FancyMath.randomDirFloat;
-import engine.time.Delta.getDelta;
-import game.blocks.BlockDefinition.getIfLiquid;
-import game.chunk.Chunk.getBlock;
-import game.entity.collision.Collision.applyInertia;
-import game.entity.item.ItemEntity.throwItem;
-import game.entity.mob.MobDefinition.*;
-import game.entity.mob.MobUtilityCode.doHeadCode;
-import game.entity.mob.MobUtilityCode.mobSmoothRotation;
 
 public class Sheep {
     private final float accelerationMultiplier  = 0.04f;
