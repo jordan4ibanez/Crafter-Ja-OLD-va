@@ -92,7 +92,7 @@ public class Crafter {
         this.memorySweeper     = new MemorySweeper();
         this.mouse             = new Mouse();
         this.utils             = new Utils();
-        this.window            = new Window();
+        this.window            = new Window(this.versionName, this.settings.getSettingsVsync());
 
 
         //engine linkages
