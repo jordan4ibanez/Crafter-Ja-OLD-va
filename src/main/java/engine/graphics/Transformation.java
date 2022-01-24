@@ -1,5 +1,6 @@
 package engine.graphics;
 
+import engine.Window;
 import org.joml.Math;
 import org.joml.Matrix4d;
 import org.joml.Vector3d;
@@ -9,11 +10,12 @@ import static org.joml.Math.toRadians;
 
 //so much math
 public class Transformation {
-
+    private final Window window;
     private final Camera camera;
 
-    public Transformation(Camera camera){
+    public Transformation(Camera camera, Window window){
         this.camera = camera;
+        this.window = window;
     }
 
     //the master projection matrix, this is only modified by getProjectionMatrix
@@ -48,18 +50,18 @@ public class Transformation {
         //right-handed coordinate system
         //first do the rotation so the camera rotates over it's position
         //then do the translation
-        viewMatrix.rotation(toRadians(getCameraRotationX()), 1, 0 ,0)
-                .rotate(toRadians(getCameraRotationY()), 0 , 1, 0)
-                .translate(-getCameraPositionX(), -getCameraPositionY(), -getCameraPositionZ());
+        viewMatrix.rotation(toRadians(camera.getCameraRotation().x), 1, 0 ,0)
+                .rotate(toRadians(camera.getCameraRotation().y), 0 , 1, 0)
+                .translate(-camera.getCameraPosition().x, -camera.getCameraPosition().y, -camera.getCameraPosition().z);
     }
 
     public void updateCelestialMatrix(double inputTime) {
         //keep these bois on the stack
-        double x = (Math.sin(inputTime * 2f * Math.PI) * 5d) + getCameraPositionX();
-        double y = (Math.cos(inputTime * 2f * Math.PI) * 5d) + getCameraPositionY();
+        double x = (Math.sin(inputTime * 2f * Math.PI) * 5d) + camera.getCameraPosition().x;
+        double y = (Math.cos(inputTime * 2f * Math.PI) * 5d) + camera.getCameraPosition().y;
 
         modelMatrix.set(viewMatrix)
-                .translate(x, y, getCameraPositionZ()).
+                .translate(x, y, camera.getCameraPosition().z).
                 rotateY(toRadians(90)).
                 rotateZ(0).
                 rotateX(toRadians((inputTime + 0.25d) * 360)).
@@ -67,11 +69,11 @@ public class Transformation {
     }
 
     //THIS IS USED BY OPENAL - SOUND MANAGER
-    public void updateOpenALSoundMatrix(double positionX, double positionY, double positionZ, float rotationX, float rotationY) {
+    public void updateOpenALSoundMatrix(Vector3d cameraPos, Vector3f cameraRot) {
         // First do the rotation so camera rotates over its position
-        openALMatrix.rotationX(toRadians(rotationX))
-                .rotateY(toRadians(rotationY))
-                .translate(-positionX, -positionY, -positionZ);
+        openALMatrix.rotationX(toRadians(cameraRot.x))
+                .rotateY(toRadians(cameraRot.y))
+                .translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
     }
 
     public Matrix4d getOpenALMatrix(){
@@ -175,7 +177,7 @@ public class Transformation {
     //ortholinear
 
     public void resetOrthoProjectionMatrix() {
-        orthoMatrix.setOrtho(-getWindowSizeX()/2f, getWindowSizeX()/2f, -getWindowSizeY()/2f, getWindowSizeY()/2f, -1000f, 1000f);
+        orthoMatrix.setOrtho(-window.getWidth()/2f, window.getWidth()/2f, -window.getHeight()/2f, window.getHeight()/2f, -1000f, 1000f);
     }
 
     public void updateOrthoModelMatrix(double posX, double posY, double posZ, float rotX, float rotY, float rotZ, double scaleX, double scaleY, double scaleZ) {

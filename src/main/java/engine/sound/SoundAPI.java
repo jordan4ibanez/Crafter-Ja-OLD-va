@@ -1,10 +1,33 @@
 package engine.sound;
 
+import engine.Window;
+import engine.graphics.Camera;
 import org.joml.Math;
 
 import static org.lwjgl.openal.AL10.AL_PITCH;
 
 public class SoundAPI {
+
+    private SoundManager soundManager;
+    private Camera camera;
+    private Window window;
+
+    public SoundAPI(){
+
+    }
+
+    public void setCamera(Camera camera){
+        if (this.camera == null){
+            this.camera = camera;
+        }
+    }
+    public void setWindow(Window window){
+        if (this.window == null){
+            this.window = window;
+            this.soundManager = new SoundManager(this.camera, this.window);
+        }
+    }
+
 
     public void playSound(String name, float posX, float posY, float posZ, boolean randomPitch) {
         SoundBuffer soundBuffer = null;
@@ -24,7 +47,7 @@ public class SoundAPI {
             thisSource.setProperty(AL_PITCH, 0.75f + (float)(Math.random()/2f));
         }
 
-        playSoundSource(soundBuffer, thisSource);
+        soundManager.playSoundSource(soundBuffer, thisSource);
     }
 
     //overload for ease of use
@@ -49,7 +72,7 @@ public class SoundAPI {
             thisSource.setProperty(AL_PITCH, 0.75f + (float)(Math.random()/2f));
         }
 
-        playSoundSource(soundBuffer, thisSource);
+        soundManager.playSoundSource(soundBuffer, thisSource);
     }
 
 
@@ -67,7 +90,7 @@ public class SoundAPI {
         assert soundBuffer != null;
         thisSource.setBuffer(soundBuffer.getBufferId());
 
-        playSoundSource(soundBuffer, thisSource);
+        soundManager.playSoundSource(soundBuffer, thisSource);
 
         return thisSource;
     }
@@ -84,7 +107,7 @@ public class SoundAPI {
         soundBuffer.setLock(true);
         SoundSource thisSource = new SoundSource(false, true);
         thisSource.setBuffer(soundBuffer.getBufferId());
-        playSoundSource(soundBuffer, thisSource);
+        soundManager.playSoundSource(soundBuffer, thisSource);
         return thisSource;
     }
 
@@ -103,6 +126,6 @@ public class SoundAPI {
         thisSource.setBuffer(soundBuffer.getBufferId());
         thisSource.setProperty(AL_PITCH, 0.75f + (float)(Math.random()/2f));
 
-        playSoundSource(soundBuffer, thisSource);
+        soundManager.playSoundSource(soundBuffer, thisSource);
     }
 }

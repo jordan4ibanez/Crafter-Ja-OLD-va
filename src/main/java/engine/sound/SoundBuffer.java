@@ -14,6 +14,8 @@ import static org.lwjgl.stb.STBVorbis.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class SoundBuffer {
+
+    private final Utils utils = new Utils();
     public final int bufferId;
 
     private ShortBuffer pcm = null;
@@ -50,7 +52,7 @@ public class SoundBuffer {
 
     private ShortBuffer readVorbis(String resource, int bufferSize, STBVorbisInfo info) throws Exception{
         try(MemoryStack stack = MemoryStack.stackPush()) {
-            ByteBuffer vorbis = Utils.ioResourceToByteBuffer(resource, bufferSize);
+            ByteBuffer vorbis = utils.ioResourceToByteBuffer(resource, bufferSize);
             IntBuffer error = stack.mallocInt(1);
             long decoder = stb_vorbis_open_memory(vorbis, error, null);
 

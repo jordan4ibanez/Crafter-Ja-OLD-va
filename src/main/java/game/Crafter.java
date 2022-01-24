@@ -82,6 +82,7 @@ public class Crafter {
         this.mainMenuRenderer  = new MainMenuRenderer();
         this.sceneHandler      = new SceneHandler();
         this.settings          = new Settings();
+        this.soundAPI          = new SoundAPI();
 
 
         //engine linkages
@@ -125,6 +126,10 @@ public class Crafter {
         settings.setChunk(this.chunk);
         settings.setWindow(this.window);
         settings.setDisk(this.disk);
+
+        //sound API
+        soundAPI.setCamera(this.camera);
+        soundAPI.setWindow(this.window);
     }
 
 

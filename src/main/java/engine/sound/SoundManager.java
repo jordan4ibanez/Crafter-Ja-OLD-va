@@ -1,5 +1,8 @@
 package engine.sound;
 
+import engine.Window;
+import engine.graphics.Camera;
+import engine.graphics.Transformation;
 import org.joml.Vector3d;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.AL11;
@@ -9,14 +12,16 @@ import org.lwjgl.openal.ALCCapabilities;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
-import engine.graphics.Camera.*;
-import engine.graphics.Transformation.*;
-import engine.sound.SoundListener.*;
-import org.lwjgl.openal.AL10.alDistanceModel;
-import org.lwjgl.openal.ALC10.*;
-import org.lwjgl.system.MemoryUtil.NULL;
+import static org.lwjgl.openal.AL10.alDistanceModel;
+import static org.lwjgl.openal.ALC10.*;
+import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class SoundManager {
+    private final SoundListener soundListener;
+    private final Window window;
+    private final Transformation transformation;
+    private final Camera camera;
+
     private long device;
     private long context;
     private int currentIndex = 0;
@@ -28,7 +33,11 @@ public class SoundManager {
     private final Vector3d at = new Vector3d();
     private final Vector3d up = new Vector3d();
 
-    public void initSoundManager() {
+    public SoundManager(Camera camera, Window window) {
+        this.camera = camera;
+        this.window = window;
+        this.transformation = new Transformation(camera, window);
+
         device = alcOpenDevice((ByteBuffer) null);
 
         if(device == NULL){
@@ -49,7 +58,7 @@ public class SoundManager {
 
         setAttenuationModel(AL11.AL_LINEAR_DISTANCE);
 
-        createSoundListener();
+        soundListener = new SoundListener();
     }
 
     public void playSoundSource(SoundBuffer soundBuffer, SoundSource soundSource) {
@@ -86,13 +95,12 @@ public class SoundManager {
     }
 
     public void updateListenerPosition() {
-
         // Update camera matrix with camera data
-        updateOpenALSoundMatrix(getCameraPositionX(),getCameraPositionY(),getCameraPositionZ(), getCameraRotationX(), getCameraRotationY());
-        setSoundPosition(getCameraPositionX(),getCameraPositionY(),getCameraPositionZ());
-        getOpenALMatrix().positiveZ(at).negate();
-        getOpenALMatrix().positiveY(up);
-        setSoundOrientation(at.x, at.y, at.z, up.x, up.y, up.z);
+        transformation.updateOpenALSoundMatrix(camera.getCameraPosition(), camera.getCameraRotation());
+        soundListener.setSoundPosition(camera.getCameraPosition());
+        transformation.getOpenALMatrix().positiveZ(at).negate();
+        transformation.getOpenALMatrix().positiveY(up);
+        soundListener.setSoundOrientation(at.x, at.y, at.z, up.x, up.y, up.z);
     }
 
     public void setAttenuationModel(int model) {

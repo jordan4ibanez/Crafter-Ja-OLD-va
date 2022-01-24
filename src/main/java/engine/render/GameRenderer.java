@@ -32,7 +32,6 @@ public class GameRenderer {
     public void setCamera(Camera camera){
         if (this.camera == null){
             this.camera = camera;
-            this.transformation = new Transformation(this.camera);
         }
     }
     public void setChunk(Chunk chunk){
@@ -43,6 +42,7 @@ public class GameRenderer {
     public void setWindow(Window window){
         if (this.window == null){
             this.window = window;
+            this.transformation = new Transformation(this.camera, this.window);
         }
     }
     public void setDelta(Delta delta){

@@ -1,9 +1,13 @@
 package engine.sound;
 
+import org.joml.Vector3d;
+
+import static org.lwjgl.openal.AL10.*;
+
 final public class SoundListener {
 
     //0,0,0 is initial position
-    public void createSoundListener(){
+    public SoundListener(){
         alListener3f(AL_POSITION, 0,0,0);
         alListener3f(AL_VELOCITY, 0,0,0);
     }
@@ -13,8 +17,8 @@ final public class SoundListener {
     }
 
     //auto casted, sound imprecision is less noticeable
-    public void setSoundPosition(double positionX, double positionY, double positionZ){
-        alListener3f(AL_POSITION, (float)positionX,(float)positionY,(float)positionZ);
+    public void setSoundPosition(Vector3d position){
+        alListener3f(AL_POSITION, (float)position.x,(float)position.y,(float)position.z);
     }
 
     public void setSoundOrientation(double atX, double atY, double atZ, double upX, double upY, double upZ){
