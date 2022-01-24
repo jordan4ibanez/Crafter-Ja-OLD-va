@@ -83,6 +83,9 @@ public class Crafter {
         this.sceneHandler      = new SceneHandler();
         this.settings          = new Settings();
         this.soundAPI          = new SoundAPI();
+        this.delta             = new Delta();
+        this.timeOfDay         = new TimeOfDay();
+        this.timer             = new Timer();
 
 
         //engine linkages
@@ -130,6 +133,16 @@ public class Crafter {
         //sound API
         soundAPI.setCamera(this.camera);
         soundAPI.setWindow(this.window);
+
+        //time of day
+        timeOfDay.setWindow(this.window);
+        timeOfDay.setLight(this.light);
+
+        //timer
+        timer.setWindow(this.window);
+        timer.setVersionName(this.versionName);
+
+
     }
 
 

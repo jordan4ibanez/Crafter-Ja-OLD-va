@@ -5,8 +5,8 @@ import game.light.Light;
 
 public class TimeOfDay {
 
-    private final Window window;
-    private final Light light;
+    private Window window;
+    private Light light;
 
     private final double dayCompletion = 86_400d;
     //3600 per hour, this is messed up maybe?
@@ -14,10 +14,19 @@ public class TimeOfDay {
 
     private double timeSpeed = 72d; //following Minetest wiki - 72 times faster (following time_speed in minetest.conf)
 
+    public void setWindow(Window window){
+        if (this.window == null){
+            this.window = window;
+        }
+    }
 
-    public TimeOfDay(Window window, Light light){
-        this.window = window;
-        this.light = light;
+    public void setLight(Light light){
+        if (this.light == null){
+            this.light = light;
+        }
+    }
+
+    public TimeOfDay(){
     }
 
     public void tickUpTimeOfDay(Delta delta){
