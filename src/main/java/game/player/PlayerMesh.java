@@ -1,23 +1,24 @@
 package game.player;
 
 import engine.graphics.Mesh;
+import engine.time.Delta;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-import engine.time.Delta.getDelta;
-import game.entity.mob.MobMeshBuilder.calculateMobTexture;
-import game.entity.mob.MobMeshBuilder.createMobMesh;
-import game.player.Player.getPlayerInertiaX;
-import game.player.Player.getPlayerInertiaZ;
-
 public class PlayerMesh {
+
+    private Delta delta;
+
+    public void setDelta(Delta delta){
+        if (this.delta == null){
+            this.delta = delta;
+        }
+    }
 
     //this is auto constructed
     private final Mesh[] bodyMeshes = createMesh();
 
     private float animationTimer = 0f;
-
-    final private float maxWalkSpeed = 2.f;
 
     private final float yOffsetCorrection = 0.5f;
 
@@ -43,10 +44,11 @@ public class PlayerMesh {
     private final Vector2f inertiaWorker = new Vector2f();
     public void applyPlayerBodyAnimation(){
 
-        double delta = getDelta();
+        double delta = this.delta.getDelta();
 
         inertiaWorker.set(getPlayerInertiaX(), getPlayerInertiaZ());
 
+        float maxWalkSpeed = 2.f;
         animationTimer += delta * (inertiaWorker.length() / maxWalkSpeed);
 
         if (animationTimer >= 1f) {
@@ -57,7 +59,7 @@ public class PlayerMesh {
         bodyRotations[3].set((float) java.lang.Math.toDegrees(java.lang.Math.sin(animationTimer * java.lang.Math.PI * -2f)), 0, 0);
         bodyRotations[4].set((float) java.lang.Math.toDegrees(java.lang.Math.sin(animationTimer * java.lang.Math.PI * -2f)), 0, 0);
         bodyRotations[5].set((float) java.lang.Math.toDegrees(java.lang.Math.sin(animationTimer * Math.PI * 2f)), 0, 0);
-    };
+    }
 
     public Vector3f[] getPlayerBodyRotations(){
         return bodyRotations;
