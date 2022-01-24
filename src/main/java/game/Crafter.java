@@ -1,14 +1,21 @@
 package game;
 
-import engine.Mouse;
-import engine.Window;
+import engine.*;
+import engine.compression.Compression;
 import engine.debug.RuntimeInfo;
 import engine.disk.Disk;
 import engine.disk.SQLiteDiskHandler;
 import engine.graphics.Camera;
 import engine.graphics.Transformation;
 import engine.gui.GUI;
+import engine.gui.GUILogic;
+import engine.network.Networking;
+import engine.render.GameRenderer;
+import engine.render.MainMenuRenderer;
+import engine.scene.Scene;
+import engine.scene.SceneHandler;
 import engine.settings.Settings;
+import engine.sound.SoundAPI;
 import engine.time.Delta;
 import engine.time.TimeOfDay;
 import engine.time.Timer;
@@ -16,10 +23,13 @@ import game.chunk.BiomeGenerator;
 import game.chunk.Chunk;
 import game.chunk.ChunkUpdateHandler;
 import game.chunk.ChunkMeshGenerator;
+import game.crafting.InventoryLogic;
 import game.light.Light;
 import game.mainMenu.MainMenu;
 import game.player.Player;
 import game.ray.Ray;
+
+import java.util.Set;
 
 public class Crafter {
 
@@ -29,88 +39,41 @@ public class Crafter {
     }
 
     private final String versionName = "Crafter 0.08a";
-    private final Delta delta;
-    private final Window window;
-    private final Mouse mouse;
-    private final Timer timer;
-    private final Light light;
+
+    //engine components
+    private final Compression compression;
     private final RuntimeInfo runtimeInfo;
     private final Disk disk;
-    private final Camera camera;
-    private final MainMenu mainMenu;
-    private final Transformation transformation;
-    private final GUI gui;
-    private final Settings settings;
-    private final Player player;
-    private final Chunk chunk;
-    private final BiomeGenerator biomeGenerator;
     private final SQLiteDiskHandler sqLiteDiskHandler;
-    private final ChunkUpdateHandler chunkUpdateHandler;
-    private final ChunkMeshGenerator chunkMeshGenerator;
+    private final Camera camera;
+    private final GUILogic guiLogic;
+    private final Networking networking;
+    private final GameRenderer gameRenderer;
+    private final MainMenuRenderer mainMenuRenderer;
+    private final SceneHandler sceneHandler;
+    private final Settings settings;
+    private final SoundAPI soundAPI;
+    private final Delta delta;
     private final TimeOfDay timeOfDay;
-    private final Ray ray;
-
+    private final Timer timer;
+    private final Controls controls;
+    private final FancyMath fancyMath;
+    private final FastNoise fastNoise;
+    private final MemorySweeper memorySweeper;
+    private final Utils utils;
+    private final Window window;
+    //game components
+    private final ;
+    private final ;
+    private final ;
 
     public Crafter(){
-        //spaghetti starts here
 
-        this.delta = new Delta();
-        this.window = new Window(this.versionName, true, delta); //vsync is on by default - save cpu resources I guess
-        this.mouse = new Mouse(window);
-        this.timer = new Timer(versionName, window);
-        this.runtimeInfo = new RuntimeInfo();
-        this.disk = new Disk();
-        this.mainMenu = new MainMenu(this);
-        this.camera = new Camera();
-        this.transformation = new Transformation(camera);
-        this.gui = new GUI();
-        this.settings = new Settings(disk, window);
 
-        this.player = new Player(delta);
-
-        this.chunk = new Chunk(settings, delta, player); //chunk now needs 2 more objects to function, called later
-
-        settings.setChunk(this.chunk);
-
-        this.biomeGenerator = new BiomeGenerator(window, chunk);
-        new Thread(this.biomeGenerator).start();
-        this.sqLiteDiskHandler = new SQLiteDiskHandler(chunk, biomeGenerator);
-        this.chunkUpdateHandler = new ChunkUpdateHandler(chunk, delta);
-
-        this.chunk.setSqLiteDiskHandler(sqLiteDiskHandler);
-
-        this.chunkMeshGenerator = new ChunkMeshGenerator(window,chunkUpdateHandler, chunk);
-        new Thread(this.chunkMeshGenerator).start();
-        this.light = new Light(chunk, chunkMeshGenerator, window);
-        this.chunk.setChunkUpdateHandler(this.chunkUpdateHandler);
-        this.timeOfDay = new TimeOfDay(window, light);
-
-        this.chunk.setLight(light);
-        this.chunk.setChunkMeshGenerator(chunkMeshGenerator);
-
-        this.ray = new Ray(chunk);
-
-        this.player.setChunk(chunk);
-        this.player.setRay(ray);
-
-        this.camera.setMouse(mouse);
-        this.camera.setPlayer(player);
-        this.camera.setRay(ray);
 
 
     }
 
-    public String getVersionName(){
-        return this.versionName;
-    }
-
-    public Window getWindow(){
-        return this.window;
-    }
-
-    public MainMenu getMainMenu(){
-        return this.mainMenu;
-    }
 
 
     //core game engine elements
@@ -163,7 +126,7 @@ public class Crafter {
     }
 
     private void cleanup(){
-        chunk.cleanChunkDataMemory();
+        //chunk.cleanChunkDataMemory();
         //cleanupSoundManager();
         //cleanupRenderer();
     }

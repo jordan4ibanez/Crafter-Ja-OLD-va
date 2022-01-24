@@ -15,6 +15,7 @@ public class InventoryLogic {
     private final Window window;
     private final CraftRecipes craftRecipes;
     private final Controls controls;
+    private final Inventory inventory = new Inventory();
 
     private String oldSelection;
 
@@ -26,7 +27,7 @@ public class InventoryLogic {
     private boolean rightMouseButtonPushed = false;
     private boolean rightMouseButtonWasPushed = false;
 
-    private final Inventory inventory = new Inventory();
+
 
     public InventoryLogic(Player player, Mouse mouse, Window window, Controls controls){
         this.player = player;
