@@ -18,7 +18,7 @@ public class ChunkUpdateHandler {
     private final Texture textureAtlas = new Texture("textures/textureAtlas.png");
     private float chunkUpdateTimer = 0;
 
-    public ChunkUpdateHandler(Chunk chunk, Delta delta){
+    public ChunkUpdateHandler(){
 
     }
 
