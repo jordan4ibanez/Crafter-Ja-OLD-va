@@ -12,9 +12,6 @@ import java.util.List;
 
 public class GUI {
 
-    private final MeshCreator2D meshCreator2D = new MeshCreator2D();
-    private final TextHandling textHandling = new TextHandling();
-
     //textures
     private final Texture worldSelectionTexture;
     private final Texture playerTexture;
@@ -53,6 +50,7 @@ public class GUI {
 
     public GUI(String versionName){
         //2D mesh creations
+        MeshCreator2D meshCreator2D = new MeshCreator2D();
         hotBarMesh = meshCreator2D.create2DMesh(0.5f,0.06043956043f, "textures/hotbar.png");
         inventoryMesh = meshCreator2D.create2DMesh(0.5f,0.46335697399f,  "textures/inventory.png");
         inventoryBackdropMesh = meshCreator2D.create2DMesh(0.5f,0.46335697399f,  "textures/inventory_backdrop.png");
@@ -75,6 +73,7 @@ public class GUI {
         moon = meshCreator2D.create2DMesh(0.5f, 0.5f, "textures/moon.png");
 
         //2D text creation
+        TextHandling textHandling = new TextHandling();
         versionInfoText = textHandling.createTextWithShadow(versionName, 1,1,1);
 
 
