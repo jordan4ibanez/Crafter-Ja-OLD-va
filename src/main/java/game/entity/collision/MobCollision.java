@@ -1,11 +1,25 @@
 package game.entity.collision;
 
+import game.entity.Entity;
+import game.entity.EntityContainer;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import org.joml.Vector2d;
 import org.joml.Vector3d;
 
 //basically cylindrical magnetic 2d collision detection class
 public class MobCollision {
+
+    private EntityContainer entityContainer;
+
+    public MobCollision(){
+
+    }
+
+    public void setEntityContainer(EntityContainer entityContainer){
+        if (this.entityContainer == null){
+            this.entityContainer = entityContainer;
+        }
+    }
 
     private final Vector2d workerVec2D = new Vector2d();
     private final Vector2d workerVec2D2 = new Vector2d();

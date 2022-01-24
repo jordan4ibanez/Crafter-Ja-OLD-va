@@ -25,6 +25,7 @@ import game.clouds.Cloud;
 import game.crafting.InventoryLogic;
 import game.entity.EntityContainer;
 import game.entity.collision.Collision;
+import game.entity.collision.MobCollision;
 import game.entity.collision.ParticleCollision;
 import game.entity.item.ItemDefinitionContainer;
 import game.light.Light;
@@ -75,6 +76,7 @@ public class Crafter {
     private final InventoryLogic inventoryLogic;
     private final EntityContainer entityContainer;
     private final Collision collision;
+    private final MobCollision mobCollision;
     private final ParticleCollision particleCollision;
     private final ItemDefinitionContainer itemDefinitionContainer;
     private final MainMenu mainMenu;
@@ -85,45 +87,46 @@ public class Crafter {
 
     public Crafter(){
         //engine initializers
-        this.compression         = new Compression();
-        this.runtimeInfo         = new RuntimeInfo();
-        this.disk                = new Disk();
-        this.sqLiteDiskHandler   = new SQLiteDiskHandler();
-        this.camera              = new Camera();
-        this.gui                 = new GUI(this.versionName);
-        this.guiLogic            = new GUILogic();
-        this.networking          = new Networking();
-        this.gameRenderer        = new GameRenderer();
-        this.mainMenuRenderer    = new MainMenuRenderer();
-        this.sceneHandler        = new SceneHandler();
-        this.settings            = new Settings();
-        this.soundAPI            = new SoundAPI();
-        this.delta               = new Delta();
-        this.timeOfDay           = new TimeOfDay();
-        this.timer               = new Timer();
-        this.controls            = new Controls();
-        this.fancyMath           = new FancyMath();
-        this.fastNoise           = new FastNoise();
-        this.memorySweeper       = new MemorySweeper();
-        this.mouse               = new Mouse();
-        this.utils               = new Utils();
-        this.window              = new Window(this.versionName, this.settings.getSettingsVsync());
+        this.compression             = new Compression();
+        this.runtimeInfo             = new RuntimeInfo();
+        this.disk                    = new Disk();
+        this.sqLiteDiskHandler       = new SQLiteDiskHandler();
+        this.camera                  = new Camera();
+        this.gui                     = new GUI(this.versionName);
+        this.guiLogic                = new GUILogic();
+        this.networking              = new Networking();
+        this.gameRenderer            = new GameRenderer();
+        this.mainMenuRenderer        = new MainMenuRenderer();
+        this.sceneHandler            = new SceneHandler();
+        this.settings                = new Settings();
+        this.soundAPI                = new SoundAPI();
+        this.delta                   = new Delta();
+        this.timeOfDay               = new TimeOfDay();
+        this.timer                   = new Timer();
+        this.controls                = new Controls();
+        this.fancyMath               = new FancyMath();
+        this.fastNoise               = new FastNoise();
+        this.memorySweeper           = new MemorySweeper();
+        this.mouse                   = new Mouse();
+        this.utils                   = new Utils();
+        this.window                  = new Window(this.versionName, this.settings.getSettingsVsync());
 
         //game initializers
-        this.chat                = new Chat();
-        this.biomeGenerator      = new BiomeGenerator();
-        this.chunk               = new Chunk();
-        this.chunkUpdateHandler  = new ChunkUpdateHandler();
-        this.cloud               = new Cloud();
-        this.inventoryLogic      = new InventoryLogic();
-        this.entityContainer     = new EntityContainer();
-        this.collision           = new Collision();
-        this.particleCollision   = new ParticleCollision();
+        this.chat                    = new Chat();
+        this.biomeGenerator          = new BiomeGenerator();
+        this.chunk                   = new Chunk();
+        this.chunkUpdateHandler      = new ChunkUpdateHandler();
+        this.cloud                   = new Cloud();
+        this.inventoryLogic          = new InventoryLogic();
+        this.entityContainer         = new EntityContainer();
+        this.collision               = new Collision();
+        this.mobCollision            = new MobCollision();
+        this.particleCollision       = new ParticleCollision();
         this.itemDefinitionContainer = new ItemDefinitionContainer();
-        this.mainMenu            = new MainMenu();
-        this.light               = new Light();
-        this.player              = new Player();
-        this.ray                 = new Ray();
+        this.mainMenu                = new MainMenu();
+        this.light                   = new Light();
+        this.player                  = new Player();
+        this.ray                     = new Ray();
 
 
 
@@ -230,6 +233,9 @@ public class Crafter {
         collision.setDelta(this.delta);
         collision.setChunk(this.chunk);
         collision.setPlayer(this.player);
+
+        //mob collision
+        mobCollision.setEntityContainer(this.entityContainer);
 
         //particle collision
         particleCollision.setDelta(this.delta);
