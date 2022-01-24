@@ -5,6 +5,7 @@ import engine.time.Delta;
 import game.chunk.Chunk;
 import game.crafting.InventoryLogic;
 import game.entity.collision.Collision;
+import game.entity.mob.Mob;
 import game.player.Player;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
@@ -114,6 +115,16 @@ public abstract class Entity implements EntityInterface{
 
         oldFlooredPos.set(flooredPos);
     };
+
+    public abstract float getWidth();
+
+    public abstract float getHeight();
+
+    public abstract int getHealth();
+
+    public abstract int getHurtAdder();
+
+    public abstract void hurt(int damage);
 
     public abstract void onTick(Entity entity, Player player, Delta delta);
 
