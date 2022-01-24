@@ -4,6 +4,7 @@ package engine;
 public class MemorySweeper {
     public static void cleanMemory(){
         //System.out.println("sweeping memory!");
+        /*
         cleanItemMemory();
         cleanChunkDataMemory();
         cleanChatMemory();
@@ -12,5 +13,6 @@ public class MemorySweeper {
         cleanFallingEntities();
         cleanParticleMemory();
         cleanOtherPLayerMemory();
+         */
     }
 }

@@ -86,6 +86,13 @@ public class Crafter {
         this.delta             = new Delta();
         this.timeOfDay         = new TimeOfDay();
         this.timer             = new Timer();
+        this.controls          = new Controls();
+        this.fancyMath         = new FancyMath();
+        this.fastNoise         = new FastNoise();
+        this.memorySweeper     = new MemorySweeper();
+        this.mouse             = new Mouse();
+        this.utils             = new Utils();
+        this.window            = new Window();
 
 
         //engine linkages
@@ -142,6 +149,20 @@ public class Crafter {
         timer.setWindow(this.window);
         timer.setVersionName(this.versionName);
 
+        //controls
+        controls.setPlayer(this.player);
+        controls.setCamera(this.camera);
+        controls.setGuiLogic(this.guiLogic);
+        controls.setSettings(this.settings);
+        controls.setWindow(this.window);
+        controls.setInventoryLogic(this.invetoryLogic);
+        controls.setMouse(this.mouse);
+
+        //mouse
+        mouse.setWindow(this.window);
+
+        //window
+        window.setDelta(this.delta);
 
     }
 

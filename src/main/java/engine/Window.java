@@ -22,7 +22,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window {
 
-    private final Delta delta;
+    private Delta delta;
 
     private String title;
     private int width;
@@ -36,8 +36,13 @@ public class Window {
     private boolean fullScreen = false;
     private final AtomicBoolean shouldClose;
 
-    public Window(String title, boolean vSync, Delta delta){
-        this.delta = delta;
+    public void setDelta(Delta delta){
+        if (this.delta == null){
+            this.delta = delta;
+        }
+    }
+
+    public Window(String title, boolean vSync){
         Toolkit tk = Toolkit.getDefaultToolkit();
         Dimension d = tk.getScreenSize();
 

@@ -8,13 +8,18 @@ import static org.lwjgl.glfw.GLFW.*;
 
 final public class Mouse {
 
-    private final Window window;
+    private Window window;
 
-    public Mouse(Window window){
-        this.window = window;
+    public Mouse(){
         pos = new Vector2d(0);
         oldPos = new Vector2d(-1);
         displVec = new Vector2f(0);
+    }
+
+    public void setWindow(Window window){
+        if (this.window == null){
+            this.window = window;
+        }
     }
 
     private final Vector2d oldPos;

@@ -10,13 +10,50 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class Controls {
 
-    private final Player player;
-    private final Camera camera;
-    private final GUILogic guiLogic;
-    private final Settings settings;
-    private final Window window;
-    private final InventoryLogic inventoryLogic;
-    private final Mouse mouse;
+    private Player player;
+    private Camera camera;
+    private GUILogic guiLogic;
+    private Settings settings;
+    private Window window;
+    private InventoryLogic inventoryLogic;
+    private Mouse mouse;
+
+    public void setPlayer(Player player){
+        if (this.player == null){
+            this.player = player;
+        }
+    }
+    public void setCamera(Camera camera){
+        if (this.camera == null){
+            this.camera = camera;
+        }
+    }
+    public void setGuiLogic(GUILogic guiLogic){
+        if (this.guiLogic == null){
+            this.guiLogic = guiLogic;
+        }
+    }
+    public void setSettings(Settings settings){
+        if (this.settings == null){
+            this.settings = settings;
+        }
+    }
+    public void setWindow(Window window){
+        if (this.window == null){
+            this.window = window;
+        }
+    }
+    public void setInventoryLogic(InventoryLogic inventoryLogic){
+        if (this.inventoryLogic == null){
+            this.inventoryLogic = inventoryLogic;
+        }
+    }
+    public void setMouse(Mouse mouse){
+        if (this.mouse == null){
+            this.mouse = mouse;
+        }
+    }
+
 
     private boolean drop        = false;
     private boolean inventory   = false;
@@ -33,14 +70,8 @@ public class Controls {
     private boolean sneak       = false;
     private boolean jump        = false;
 
-    public Controls(Player player, Camera camera, GUILogic guiLogic, Settings settings, Window window, InventoryLogic inventoryLogic, Mouse mouse){
-        this.player = player;
-        this.camera = camera;
-        this.guiLogic = guiLogic;
-        this.settings = settings;
-        this.window = window;
-        this.inventoryLogic = inventoryLogic;
-        this.mouse = mouse;
+    public Controls(){
+
     }
 
     public void gameInput() {
