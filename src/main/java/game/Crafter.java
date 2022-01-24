@@ -30,6 +30,8 @@ import game.crafting.Inventory;
 import game.crafting.InventoryLogic;
 import game.entity.EntityContainer;
 import game.entity.collision.Collision;
+import game.entity.item.ItemDefinition;
+import game.entity.item.ItemDefinitionContainer;
 import game.light.Light;
 import game.mainMenu.MainMenu;
 import game.player.Player;
@@ -80,6 +82,7 @@ public class Crafter {
     private final InventoryLogic inventoryLogic;
     private final EntityContainer entityContainer;
     private final Collision collision;
+    private final ItemDefinitionContainer itemDefinitionContainer;
     private final MainMenu mainMenu;
     private final Light light;
     private final Player player;
@@ -121,6 +124,7 @@ public class Crafter {
         this.inventoryLogic      = new InventoryLogic();
         this.entityContainer     = new EntityContainer();
         this.collision           = new Collision();
+        this.itemDefinitionContainer = new ItemDefinitionContainer();
         this.mainMenu            = new MainMenu();
         this.light               = new Light();
         this.player              = new Player();
@@ -232,6 +236,12 @@ public class Crafter {
         collision.setChunk(this.chunk);
         collision.setPlayer(this.player);
 
+        //item definition container
+        itemDefinitionContainer.setChunk(this.chunk);
+        itemDefinitionContainer.setPlayer(this.player);
+        itemDefinitionContainer.setSoundAPI(this.soundAPI);
+        itemDefinitionContainer.setInventoryLogic(this.inventoryLogic);
+        
         //main menu
         mainMenu.setSettings(this.settings);
         mainMenu.setDisk(this.disk);
