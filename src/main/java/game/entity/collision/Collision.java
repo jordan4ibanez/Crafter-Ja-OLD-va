@@ -1,9 +1,42 @@
 package game.entity.collision;
 
+import engine.time.Delta;
+import game.blocks.BlockDefinitionContainer;
+import game.chunk.Chunk;
+import game.player.Player;
 import org.joml.Math;
 import org.joml.*;
 
 final public class Collision {
+
+    private final BlockDefinitionContainer blockDefinitionContainer = new BlockDefinitionContainer();
+    private final CollisionObject collisionObject = new CollisionObject();
+
+    private Delta delta;
+    private Chunk chunk;
+    private Player player;
+
+    public void setDelta(Delta delta){
+        if (this.delta == null){
+            this.delta = delta;
+        }
+    }
+    public void setChunk(Chunk chunk){
+        if (this.chunk == null){
+            this.chunk = chunk;
+        }
+    }
+    public void setPlayer(Player player){
+        if (this.player == null){
+            this.player = player;
+        }
+    }
+
+    public Collision(){
+    }
+
+
+
     private float inWater = 0;
     private final Vector3d clonedPos = new Vector3d();
     private final Vector3i cachedPos = new Vector3i();
@@ -14,7 +47,7 @@ final public class Collision {
 
     //this probably definitely absolutely should not take isPlayer as a value
     public boolean applyInertia(Vector3d pos, Vector3f inertia, boolean onGround, float width, float height, boolean gravity, boolean sneaking, boolean applyCollision, boolean airFriction, boolean isPlayer){
-        double delta = getDelta();
+        double delta = this.delta.getDelta();
 
         double adjustedDelta;
 
@@ -65,7 +98,7 @@ final public class Collision {
                     onGroundLock = true;
                 }
 
-                if (sneaking && !getIfPlayerIsJumping()) {
+                if (sneaking && !player.getIfPlayerIsJumping()) {
                     int axisFallingOff = sneakCollisionDetect(pos, inertia, width, height);
 
                     if (axisFallingOff == 1) {
@@ -101,7 +134,7 @@ final public class Collision {
             if (gravity) {
                 if (inWater > 0.f) {
                     if (isPlayer) {
-                        setPlayerInWater(true);
+                        player.setPlayerInWater(true);
                     }
 
                     //water resistance
@@ -113,7 +146,7 @@ final public class Collision {
                     }
                 } else {
                     if (isPlayer) {
-                        setPlayerInWater(false);
+                        player.setPlayerInWater(false);
                     }
                     //regular gravity
                     inertia.y -= 30f * adjustedDelta;
@@ -147,10 +180,10 @@ final public class Collision {
 
                 cachedPos.set(fPos.x + x, fPos.y,fPos.z + z);
 
-                byte cachedBlock = getBlock(cachedPos);
-                byte rot = getBlockRotation(cachedPos);
+                byte cachedBlock = chunk.getBlock(cachedPos);
+                byte rot = chunk.getBlockRotation(cachedPos);
 
-                if (!onGround && cachedBlock > 0 && isBlockWalkable(cachedBlock)) {
+                if (!onGround && cachedBlock > 0 && blockDefinitionContainer.getWalkable(cachedBlock)) {
                     onGround = sneakCollideYNegative(cachedPos.x, fPos.y, cachedPos.z, rot, width, height, cachedBlock);
                 }
             }
@@ -177,10 +210,10 @@ final public class Collision {
 
                 cachedPos.set(fPos.x + x,fPos.y, fPos.z + z);
 
-                byte cachedBlock = getBlock(cachedPos);
-                byte rot = getBlockRotation(cachedPos);
+                byte cachedBlock = chunk.getBlock(cachedPos);
+                byte rot = chunk.getBlockRotation(cachedPos);
 
-                if (!onGround && cachedBlock > 0 && isBlockWalkable(cachedBlock)) {
+                if (!onGround && cachedBlock > 0 && blockDefinitionContainer.getWalkable(cachedBlock)) {
                     onGround = sneakCollideYNegative(cachedPos.x, cachedPos.y, cachedPos.z, rot, width, height, cachedBlock);
                 }
             }
@@ -194,7 +227,7 @@ final public class Collision {
     }
 
     private boolean sneakCollideYNegative(int blockPosX, int blockPosY, int blockPosZ, byte rot, float width, float height, byte blockID){
-        for (float[] blockBox : getBlockShape(blockID, rot)) {
+        for (float[] blockBox : blockDefinitionContainer.getShape(blockID, rot)) {
             
             setAABBEntity(clonedPos.x, clonedPos.y, clonedPos.z, width, height);
             
