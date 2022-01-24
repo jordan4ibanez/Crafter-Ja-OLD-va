@@ -10,109 +10,95 @@ import game.entity.collision.Collision;
 import game.player.Player;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
-import org.joml.Vector3i;
 
 public class Mob extends Entity {
 
-    public Mob(Chunk chunk, EntityContainer entityContainer, Vector3d pos, Vector3f inertia, boolean item, boolean mob, boolean particle) {
-        super(chunk, entityContainer, pos, inertia, item, mob, particle);
+    private float hurtTimer = 0f;
+    private float deathRotation = 0f;
+    private float deathTimer = 0f;
+    private final float width;
+    private final float height;
+    private int health;
+    private int hurtAdder = 0;
+
+    public Mob(Chunk chunk, EntityContainer entityContainer, Vector3d pos, Vector3f inertia, float width, float height, int health) {
+        super(chunk, entityContainer, pos, inertia, false, true, false);
+        this.height = height;
+        this.width = width;
+        this.health = health;
     }
 
-    public void onTick(){
+    public int getHurtAdder(){
+        return hurtAdder;
+    }
 
-        double delta = getDelta();
+    public int getHealth(){
+        return health;
+    }
 
-        //mob table key is int
-        for (int thisMob : getMobKeys()){
+    public float getWidth(){
+        return width;
+    }
 
-            //this is the mob definition ID
-            int thisMobDefinitionID = getMobID(thisMob);
+    public float getHeight(){
+        return height;
+    }
 
-            //these are object pointers
-            Vector3d thisMobPos = getMobPos(thisMob);
-            Vector3i thisMobOldFlooredPos = getMobOldFlooredPos(thisMob);
+    public void onTick(Delta delta, Player player){
 
-            //these are immutable primitives - they need to be set after they are modified
-            float thisMobHurtTimer = getMobHurtTimer(thisMob);
-            float thisMobLightTimer = getMobLightTimer(thisMob);
-            float thisMobDeathRotation = getMobDeathRotation(thisMob);
-            float thisMobWidth = getMobDefinitionWidth(thisMobDefinitionID);
-            float thisMobHeight = getMobDefinitionHeight(thisMobDefinitionID);
-            byte thisMobHealth = getMobHealth(thisMob);
-            float thisMobDeathTimer = 0;
+        super.onTick(this, delta, player);
+        double dtime = delta.getDelta();
 
-            thisMobLightTimer += delta;
+        /*
+        if (getMobHealth(thisMob) > 0) {
+            mobSoftPlayerCollisionDetect(thisMob, thisMobPos, thisMobHeight, thisMobWidth);
+            mobSoftCollisionDetect(thisMob, thisMobPos, thisMobHeight, thisMobWidth);
+        }
+         */
 
-            //only collision detect if alive
-            if (getMobHealth(thisMob) > 0) {
-                mobSoftPlayerCollisionDetect(thisMob, thisMobPos, thisMobHeight, thisMobWidth);
-                mobSoftCollisionDetect(thisMob, thisMobPos, thisMobHeight, thisMobWidth);
-            }
-
-            //interface consumes object - no need for re-assignment to vars
-            //only do it during alive state
-            if (thisMobHealth > 0) {
-                getMobDefinitionInterface(thisMobDefinitionID).onTick(thisMob);
-            }
-
-            if (thisMobPos.y < 0){
-                deletionQueue.add(thisMob);
-                continue;
-            }
-
-            //mob is now dead
-            if (thisMobHealth <= 0){
-                //mob dying animation
-                if (thisMobDeathRotation < 90) {
-                    //System.out.println(thisMobDeathRotation);
-                    thisMobDeathRotation += delta * 300f;
-                    if (thisMobDeathRotation >= 90) {
-                        thisMobDeathRotation = 90;
-                        setMobDeathTimer(thisMob, 0.0001f);
-                    }
-                    setMobDeathRotation(thisMob, thisMobDeathRotation);
-                //mob will now sit there for a second
-                } else {
-                    thisMobDeathTimer = getMobDeathTimer(thisMob);
-                    thisMobDeathTimer += delta;
-                    setMobDeathTimer(thisMob, thisMobDeathTimer);
-                }
-            }
-
-            currentFlooredPos.set((int)Math.floor(thisMobPos.x), (int)Math.floor(thisMobPos.y), (int)Math.floor(thisMobPos.z));
-
-            //poll local light every quarter second
-            if (thisMobLightTimer >= 0.25f || !currentFlooredPos.equals(thisMobOldFlooredPos)){
-                setMobLight(thisMob, getLight(currentFlooredPos.x, currentFlooredPos.y, currentFlooredPos.z));
-                thisMobLightTimer = 0f;
-            }
-
-            if (thisMobHealth <= 0 && thisMobDeathTimer >= 0.5f && thisMobDeathRotation == 90){
-                getMobDefinitionInterface(thisMobDefinitionID).onDeath(thisMob);
-                deletionQueue.add(thisMob);
-            }
-
-            //count down hurt timer
-            if(thisMobHurtTimer > 0f && thisMobHealth > 0){ //don't reset when dead
-                thisMobHurtTimer -= delta;
-                if (thisMobHurtTimer <= 0){
-                    thisMobHurtTimer = 0;
-                    setMobHurtAdder(thisMob, (byte) 0);
-                }
-
-                setMobHurtTimer(thisMob, thisMobHurtTimer);
-            }
-
-            setMobLightTimer(thisMob, thisMobLightTimer);
-            setMobOldFlooredPos(thisMob, currentFlooredPos.x, currentFlooredPos.y, currentFlooredPos.z);
-            setMobOldPos(thisMob, thisMobPos.x, thisMobPos.y, thisMobPos.z);
+        //fallen out of world
+        if (this.getPos().y < 0){
+            this.delete();
+            return;
         }
 
-        while (!deletionQueue.isEmpty()){
-            int thisMobGlobalID = deletionQueue.pop();
-            //System.out.println("mob " + thisMobGlobalID + " was deleted!");
-            deleteMob(thisMobGlobalID);
+        //mob is now dead
+        if (health <= 0){
+            //mob dying animation
+            if (deathRotation < 90) {
+                //System.out.println(thisMobDeathRotation);
+                deathRotation += dtime * 300f;
+                if (deathRotation >= 90) {
+                    deathRotation = 90;
+                }
+            //mob will now sit there for a second
+            } else {
+                deathTimer += dtime;
+            }
         }
+
+        if (health <= 0 && deathTimer >= 0.5f){
+            this.delete();
+            return;
+        }
+
+        //count down hurt timer
+        if(hurtTimer > 0f && health > 0){
+            hurtTimer -= dtime;
+            if (hurtTimer <= 0){
+                hurtTimer = 0;
+
+                hurtAdder = 0;
+            }
+        }
+    }
+
+
+    @Override
+    public void hurt(int damage){
+        this.health -= damage;
+        this.hurtAdder = 15;
+        this.hurtTimer = 0.5f;
     }
 
 
