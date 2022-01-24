@@ -6,60 +6,10 @@ import org.joml.Vector3i;
 
 import java.util.HashMap;
 
-import static engine.sound.SoundAPI.playSound;
-import static game.chunk.Chunk.*;
-import static game.chunk.Chunk.placeBlock;
-import static game.crafting.InventoryObject.removeItemFromInventory;
-import static game.player.Player.getCurrentInventorySelection;
-import static game.player.Player.getPlayerDir;
-
 public class ItemDefinitionContainer {
+
+
     private final HashMap<String, ItemDefinition> definitions = new HashMap<>();
-
-    public Mesh getMesh(String name){
-        return definitions.get(name).getMesh();
-    }
-
-    public ItemModifier getModifier(String name){
-        return definitions.get(name).getModifier();
-    }
-
-    public boolean isItem(String name){
-        return definitions.get(name).isItem();
-    }
-
-    public float getStoneMiningLevel(String name){
-        return definitions.get(name).getStoneMiningLevel();
-    }
-
-    public float getDirtMiningLevel(String name){
-        return definitions.get(name).getDirtMiningLevel();
-    }
-
-    public float getWoodMiningLevel(String name){
-        return definitions.get(name).getWoodMiningLevel();
-    }
-
-    public float getLeafMiningLevel(String name){
-        return definitions.get(name).getLeafMiningLevel();
-    }
-
-    public int blockID(String name){
-        return definitions.get(name).blockID();
-    }
-
-    public boolean isRightClickable(String name){
-        return definitions.get(name).isRightClickable();
-    }
-
-    public boolean isOnPlaced(String name){
-        return definitions.get(name).isOnPlaced();
-    }
-
-    public boolean isTool(String name){
-        return definitions.get(name).isTool();
-    }
-
 
     public ItemDefinitionContainer(){
         final String[] materials = new String[]{
@@ -143,5 +93,49 @@ public class ItemDefinitionContainer {
         };
 
         definitions.put( "torchItem", new ItemDefinition("torchItem", "textures/torch.png", torchPlace));
+    }
+
+    public Mesh getMesh(String name){
+        return definitions.get(name).getMesh();
+    }
+
+    public ItemModifier getModifier(String name){
+        return definitions.get(name).getModifier();
+    }
+
+    public boolean isItem(String name){
+        return definitions.get(name).isItem();
+    }
+
+    public float getStoneMiningLevel(String name){
+        return definitions.get(name).getStoneMiningLevel();
+    }
+
+    public float getDirtMiningLevel(String name){
+        return definitions.get(name).getDirtMiningLevel();
+    }
+
+    public float getWoodMiningLevel(String name){
+        return definitions.get(name).getWoodMiningLevel();
+    }
+
+    public float getLeafMiningLevel(String name){
+        return definitions.get(name).getLeafMiningLevel();
+    }
+
+    public int blockID(String name){
+        return definitions.get(name).blockID();
+    }
+
+    public boolean isRightClickable(String name){
+        return definitions.get(name).isRightClickable();
+    }
+
+    public boolean isOnPlaced(String name){
+        return definitions.get(name).isOnPlaced();
+    }
+
+    public boolean isTool(String name){
+        return definitions.get(name).isTool();
     }
 }
