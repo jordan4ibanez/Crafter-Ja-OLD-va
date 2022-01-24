@@ -1,11 +1,16 @@
 package engine.time;
 
 import engine.Window;
+import engine.graphics.Mesh;
+import engine.gui.TextHandling;
 
 public class Timer {
 
+    private final TextHandling textHandling = new TextHandling();
+
     private Window window;
     private String versionName;
+    private Mesh fpsMesh;
 
     public void setWindow(Window window){
         if (this.window == null){
@@ -39,9 +44,18 @@ public class Timer {
         if (elapsedTime >= 1_000_000_000) {
             window.updateTitle(versionName + " | FPS: " + framesPerSecond);
             //dumpHeapSize();
-            //buildFPSMesh();
+            buildFPSMesh(framesPerSecond);
             framesPerSecond = 0;
             elapsedTime = 0;
         }
+    }
+
+    public void buildFPSMesh(int framesPerSecond) {
+        fpsMesh.cleanUp(false);
+        fpsMesh = textHandling.createTextWithShadow("FPS: " + framesPerSecond, 1f, 1f, 1f);
+    }
+
+    public Mesh getFpsMesh(){
+        return this.fpsMesh;
     }
 }
