@@ -85,12 +85,12 @@ public class Networking {
         } catch (IOException e) {
             //e.printStackTrace(); <-spam
             client.stop();
-            setServerConnected(false);
-            setConnectionFailure();
+            //setServerConnected(false);
+            //setConnectionFailure();
             return;
         }
 
-        client.sendTCP(new NetworkHandshake(getPlayerName()));
+        //client.sendTCP(new NetworkHandshake(getPlayerName()));
 
         //client event listener
         client.addListener(new Listener() {
@@ -99,6 +99,7 @@ public class Networking {
 
                 //handshake receival
                 if (object instanceof NetworkHandshake encodedName) {
+                    /*
                     if (encodedName.name != null && encodedName.name.equals(getPlayerName())){
                         setServerConnected(true);
                         //sendServerUpdatedInventory();
@@ -109,28 +110,29 @@ public class Networking {
                         System.out.println("REJECTED FROM SERVER!");
                         setMenuPage((byte) 7);
                     }
+                     */
                     //received chunk data
                 } else if (object instanceof PlayerPosObject encodedPlayer) {
-                    updateOtherPlayer(encodedPlayer);
+                    //updateOtherPlayer(encodedPlayer);
                 } else if (object instanceof  BlockBreakUpdate blockBreakUpdate){
-                    digBlock(blockBreakUpdate.pos.x, blockBreakUpdate.pos.y, blockBreakUpdate.pos.z);
+                    //digBlock(blockBreakUpdate.pos.x, blockBreakUpdate.pos.y, blockBreakUpdate.pos.z);
                 } else if (object instanceof ItemSendingObject itemSendingObject){
                     //addItemToQueueToBeUpdated(itemSendingObject);
                 } else if (object instanceof ItemPickupNotification itemPickupNotification){
-                    addItemToCollectionQueue(itemPickupNotification.name);
+                    //addItemToCollectionQueue(itemPickupNotification.name);
                 } else if (object instanceof ItemDeletionSender itemDeletionSender){
-                    deleteItem(itemDeletionSender.ID);
+                    //deleteItem(itemDeletionSender.ID);
                 } else if (object instanceof BlockPlaceUpdate blockPlaceUpdate){
                     Vector3i c = blockPlaceUpdate.pos;
-                    placeBlock(c.x,c.y, c.z, blockPlaceUpdate.ID, blockPlaceUpdate.rot);
+                    //placeBlock(c.x,c.y, c.z, blockPlaceUpdate.ID, blockPlaceUpdate.rot);
                 } else if (object instanceof NetworkMovePositionDemand networkMovePositionDemand){
-                    setPlayerPos(networkMovePositionDemand.newPos);
+                    //setPlayerPos(networkMovePositionDemand.newPos);
                 } else if (object instanceof NetChunk netChunk){
                     decodeNetChunk(netChunk);
                 } else if (object instanceof ChatMessage message){
-                    addToChatMessageBuffer(message.message);
+                    //addToChatMessageBuffer(message.message);
                 } else if (object instanceof TimeSend timeSend){
-                    setTimeOfDay(timeSend.time);
+                    //setTimeOfDay(timeSend.time);
                 }
 
             }
@@ -152,8 +154,9 @@ public class Networking {
         //decode compressed network packet
         ChunkData chunkData;
 
+        /*
         try {
-            chunkData = decompressByteArrayToChunkObject(netChunk.b);
+            //chunkData = decompressByteArrayToChunkObject(netChunk.b);
         } catch (IOException e){
             //System.out.println(e);
             //silent return
@@ -164,8 +167,8 @@ public class Networking {
         if (chunkData == null){
             return;
         }
-
-        chunk.addNewChunk(new PrimitiveChunkObject(new Vector2i(chunkData.x,chunkData.z),chunkData.block,chunkData.rotation,chunkData.light,chunkData.heightMap));
+         */
+        //chunk.addNewChunk(new PrimitiveChunkObject(new Vector2i(chunkData.x,chunkData.z),chunkData.block,chunkData.rotation,chunkData.light,chunkData.heightMap));
     }
 
     public void sendOutNetworkBlockBreak(int x, int y, int z){
@@ -180,10 +183,10 @@ public class Networking {
     //send position data to server
     public void sendPositionData() {
         PlayerPosObject myPosition = new PlayerPosObject();
-        myPosition.pos = getPlayerPos();
-        myPosition.name = getPlayerName();
-        myPosition.cameraRot = new Vector3f(getCameraRotation());
-        client.sendTCP(myPosition);
+        //myPosition.pos = getPlayerPos();
+        //myPosition.name = getPlayerName();
+        //myPosition.cameraRot = new Vector3f(getCameraRotation());
+        //client.sendTCP(myPosition);
     }
 
     /*
