@@ -38,7 +38,7 @@ public class Particle extends Entity {
         double dtime = delta.getDelta();
 
 
-        collision.applyParticleInertia(this.getPos(), this.getInertia(), true,true);
+        collision.applyInertia(this.getPos(), this.getInertia(), true,true);
 
         float timer = (float) (this.getTimer() + dtime);
 

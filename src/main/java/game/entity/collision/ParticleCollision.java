@@ -14,7 +14,7 @@ public class ParticleCollision {
     private final Vector3d oldPos = new Vector3d();
     private final Vector3i fPos = new Vector3i();
 
-    public boolean applyParticleInertia(Vector3d pos, Vector3f inertia, boolean gravity, boolean applyCollision){
+    public boolean applyInertia(Vector3d pos, Vector3f inertia, boolean gravity, boolean applyCollision){
 
         double delta = getDelta();
 
