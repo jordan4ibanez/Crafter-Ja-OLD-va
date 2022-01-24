@@ -13,10 +13,16 @@ import java.text.StringCharacterIterator;
 
 public class Disk {
 
-    private final SQLiteDiskHandler sqLiteDiskHandler;
+    private SQLiteDiskHandler sqLiteDiskHandler;
 
-    public Disk(SQLiteDiskHandler sqLiteDiskHandler){
-        this.sqLiteDiskHandler = sqLiteDiskHandler;
+    public Disk(){
+
+    }
+
+    public void setSqLiteDiskHandler(SQLiteDiskHandler sqLiteDiskHandler){
+        if (this.sqLiteDiskHandler == null){
+            this.sqLiteDiskHandler = sqLiteDiskHandler;
+        }
     }
 
     private byte currentActiveWorld = 1; //failsafe

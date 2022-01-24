@@ -3,6 +3,7 @@ package engine.disk;
 import game.chunk.BiomeGenerator;
 import game.chunk.Chunk;
 import game.crafting.Inventory;
+import game.crafting.InventoryLogic;
 import game.player.Player;
 import org.joml.Vector2i;
 
@@ -10,23 +11,39 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class SQLiteDiskHandler {
     private final SQLiteDiskAccessThread sqLiteDiskAccessThread;
-    private final BiomeGenerator biomeGenerator;
-    private final Chunk chunk;
-    private final Player player;
-    private final Inventory inventory;
+    private BiomeGenerator biomeGenerator;
+    private Chunk chunk;
+    private Player player;
+    private InventoryLogic inventoryLogic;
 
     private boolean hasPolledLoadingPlayer = false;
     private final ConcurrentLinkedDeque<PlayerDataObject> playerData = new ConcurrentLinkedDeque<>();
     private final ConcurrentLinkedDeque<PrimitiveChunkObject> loadingChunkData = new ConcurrentLinkedDeque<>();
     private final ConcurrentLinkedDeque<Vector2i> generatingChunks = new ConcurrentLinkedDeque<>();
 
-    public SQLiteDiskHandler(Chunk chunk, BiomeGenerator biomeGenerator, Player player, Inventory inventory){
-        this.chunk = chunk;
-        //threads directly share pointers with each other
+    public SQLiteDiskHandler(){
         this.sqLiteDiskAccessThread = new SQLiteDiskAccessThread(this);
-        this.biomeGenerator = biomeGenerator;
-        this.player = player;
-        this.inventory = inventory;
+    }
+
+    public void setBiomeGenerator(BiomeGenerator biomeGenerator){
+        if (this.biomeGenerator == null){
+            this.biomeGenerator = biomeGenerator;
+        }
+    }
+    public void setChunk(Chunk chunk){
+        if (this.chunk == null){
+            this.chunk = chunk;
+        }
+    }
+    public void setPlayer(Player player){
+        if (this.player == null){
+            this.player = player;
+        }
+    }
+    public void setInventoryLogic(InventoryLogic inventoryLogic){
+        if (this.inventoryLogic == null){
+            this.inventoryLogic = inventoryLogic;
+        }
     }
 
     //this mirrors the object's call
@@ -77,7 +94,7 @@ public class SQLiteDiskHandler {
         //set inventory
         for (int y = 0; y < player.inventory.length; y++){
             for (int x = 0; x < player.inventory[0].length; x++){
-                inventory.getMain().setItem(x, y, player.inventory[y][x], player.count[y][x]);
+                inventoryLogic.getInventory().getMain().setItem(x, y, player.inventory[y][x], player.count[y][x]);
                 //setInventoryItem("main", x, y, "dirt", 10);
             }
         }
@@ -90,7 +107,7 @@ public class SQLiteDiskHandler {
     }
 
     public void savePlayerData(String name){
-        this.sqLiteDiskAccessThread.addPlayerToSave(name, inventory.getMain().getInventoryAsArray(), inventory.getMain().getCountAsArray(), player.getPlayerPos(), (byte) player.getPlayerHealth());
+        this.sqLiteDiskAccessThread.addPlayerToSave(name, inventoryLogic.getInventory().getMain().getInventoryAsArray(), inventoryLogic.getInventory().getMain().getCountAsArray(), player.getPlayerPos(), (byte) player.getPlayerHealth());
     }
 
     public void loadChunk(Vector2i key){

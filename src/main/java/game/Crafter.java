@@ -4,6 +4,7 @@ import engine.*;
 import engine.compression.Compression;
 import engine.debug.RuntimeInfo;
 import engine.disk.Disk;
+import engine.disk.SQLiteDiskAccessThread;
 import engine.disk.SQLiteDiskHandler;
 import engine.graphics.Camera;
 import engine.graphics.Transformation;
@@ -19,10 +20,12 @@ import engine.sound.SoundAPI;
 import engine.time.Delta;
 import engine.time.TimeOfDay;
 import engine.time.Timer;
+import game.chat.Chat;
 import game.chunk.BiomeGenerator;
 import game.chunk.Chunk;
 import game.chunk.ChunkUpdateHandler;
 import game.chunk.ChunkMeshGenerator;
+import game.crafting.Inventory;
 import game.crafting.InventoryLogic;
 import game.light.Light;
 import game.mainMenu.MainMenu;
@@ -60,17 +63,49 @@ public class Crafter {
     private final FancyMath fancyMath;
     private final FastNoise fastNoise;
     private final MemorySweeper memorySweeper;
+    private final Mouse mouse;
     private final Utils utils;
     private final Window window;
+
     //game components
-    private final ;
-    private final ;
-    private final ;
 
     public Crafter(){
+        //engine initializers
+        this.compression       = new Compression();
+        this.runtimeInfo       = new RuntimeInfo();
+        this.disk              = new Disk();
+        this.sqLiteDiskHandler = new SQLiteDiskHandler();
+        this.camera            = new Camera();
+        this.guiLogic          = new GUILogic();
 
 
 
+        //engine linkages
+
+        //disk
+        disk.setSqLiteDiskHandler(this.sqLiteDiskHandler);
+
+        //SQLiteDiskHandler
+        sqLiteDiskHandler.setBiomeGenerator(this.biomeGenerator);
+        sqLiteDiskHandler.setChunk(this.chunk);
+        sqLiteDiskHandler.setPlayer(this.player);
+        sqLiteDiskHandler.setInventoryLogic(this.inventoryLogic);
+
+        //camera
+        camera.setMouse(this.mouse);
+        camera.setPlayer(this.player);
+        camera.setRay(this.ray);
+
+        //gui logic
+        guiLogic.setSettings(this.settings);
+        guiLogic.setMouse(this.mouse);
+        guiLogic.setWindow(this.window);
+        guiLogic.setChat(this.chat);
+        guiLogic.setPlayer(this.player);
+        guiLogic.setDelta(this.delta);
+        guiLogic.setMainMenu(this.mainMenu);
+        guiLogic.setSqLiteDiskHandler(this.sqLiteDiskHandler);
+        guiLogic.setSceneHandler(this.sceneHandler);
 
     }
 

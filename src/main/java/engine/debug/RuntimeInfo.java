@@ -12,6 +12,10 @@ public class RuntimeInfo {
     private int currentAmountOfThreads = 0;
     private int cpuHealth = 100;
 
+    public RuntimeInfo(){
+
+    }
+
     public Mesh[] getRuntimeInfoText(){
         return runtimeInfoText;
     }

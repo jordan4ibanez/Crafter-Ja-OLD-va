@@ -1,5 +1,6 @@
 package engine.gui;
 
+import com.sun.tools.javac.Main;
 import engine.Mouse;
 import engine.Window;
 import engine.disk.SQLiteDiskHandler;
@@ -15,15 +16,61 @@ import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
 
 public class GUILogic {
 
-    private final Settings settings;
-    private final Mouse mouse;
-    private final Window window;
-    private final Chat chat;
-    private final Player player;
-    private final Delta delta;
-    private final MainMenu mainMenu;
-    private final SQLiteDiskHandler sqLiteDiskHandler;
-    private final SceneHandler sceneHandler;
+    private Settings settings;
+    private Mouse mouse;
+    private Window window;
+    private Chat chat;
+    private Player player;
+    private Delta delta;
+    private MainMenu mainMenu;
+    private SQLiteDiskHandler sqLiteDiskHandler;
+    private SceneHandler sceneHandler;
+
+    public void setSettings(Settings settings){
+        if (this.settings == null){
+            this.settings = settings;
+        }
+    }
+    public void setMouse(Mouse mouse){
+        if (this.mouse == null){
+            this.mouse = mouse;
+        }
+    }
+    public void setWindow(Window window){
+        if (this.window == null){
+            this.window = window;
+        }
+    }
+    public void setChat(Chat chat){
+        if (this.chat == null){
+            this.chat = chat;
+        }
+    }
+    public void setPlayer(Player player){
+        if (this.player == null){
+            this.player = player;
+        }
+    }
+    public void setDelta(Delta delta){
+        if (this.delta == null){
+            this.delta = delta;
+        }
+    }
+    public void setMainMenu(MainMenu mainMenu){
+        if (this.mainMenu == null){
+            this.mainMenu = mainMenu;
+        }
+    }
+    public void setSqLiteDiskHandler(SQLiteDiskHandler sqLiteDiskHandler){
+        if (this.sqLiteDiskHandler == null){
+            this.sqLiteDiskHandler = sqLiteDiskHandler;
+        }
+    }
+    public void setSceneHandler(SceneHandler sceneHandler){
+        if (this.sceneHandler == null){
+            this.sceneHandler = sceneHandler;
+        }
+    }
 
 
     private boolean paused = false;
@@ -53,16 +100,7 @@ public class GUILogic {
 
     private final GUIObject[] controlsMenuGUI;
 
-    public GUILogic(Settings settings, Mouse mouse, Window window, Chat chat, Player player, Delta delta, MainMenu mainMenu, SQLiteDiskHandler sqLiteDiskHandler, SceneHandler sceneHandler){
-        this.settings = settings;
-        this.mouse = mouse;
-        this.window = window;
-        this.chat = chat;
-        this.player = player;
-        this.delta = delta;
-        this.mainMenu = mainMenu;
-        this.sqLiteDiskHandler = sqLiteDiskHandler;
-        this.sceneHandler = sceneHandler;
+    public GUILogic(){
 
         gamePauseMenuGUI = new GUIObject[]{
                 new GUIObject("CONTINUE" , new Vector2d(0, 30), 10, 1),
