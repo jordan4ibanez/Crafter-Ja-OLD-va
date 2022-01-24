@@ -230,6 +230,8 @@ public class Crafter {
         light.setChunkMeshGenerator(this.chunk.getChunkMeshGenerator());
         light.setWindow(this.window);
 
+        new Thread(this.light).start(); //send light off on it's own thread
+
     }
 
 
