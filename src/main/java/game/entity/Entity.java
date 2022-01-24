@@ -3,10 +3,14 @@ package game.entity;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
+import java.util.UUID;
+
 public class Entity implements EntityInterface{
 
+    //master pointer
     private final EntityContainer entityContainer;
 
+    private final UUID uuid = UUID.randomUUID();
     private final Vector3d pos = new Vector3d();
     private final Vector3f inertia = new Vector3f();
 
@@ -18,8 +22,13 @@ public class Entity implements EntityInterface{
         this.inertia.set(inertia);
     }
 
+    public Vector3d getPos(){
+        return this.pos;
+    }
 
-
+    public Vector3f getInertia(){
+        return this.inertia;
+    }
 
     public void delete(){
         entityContainer.remove(this);
@@ -28,7 +37,7 @@ public class Entity implements EntityInterface{
 
     public void sayHi(){
         System.out.println("hi there");
-        this.sayBye();
+        this.sayBye(this);
     }
 
 
