@@ -4,10 +4,6 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 import org.joml.Vector2d;
 import org.joml.Vector3d;
 
-import game.entity.mob.MobDefinition.*;
-import game.entity.mob.MobObject.*;
-import game.player.Player.*;
-
 //basically cylindrical magnetic 2d collision detection class
 public class MobCollision {
 

@@ -4,16 +4,13 @@ import engine.*;
 import engine.compression.Compression;
 import engine.debug.RuntimeInfo;
 import engine.disk.Disk;
-import engine.disk.SQLiteDiskAccessThread;
 import engine.disk.SQLiteDiskHandler;
 import engine.graphics.Camera;
-import engine.graphics.Transformation;
 import engine.gui.GUI;
 import engine.gui.GUILogic;
 import engine.network.Networking;
 import engine.render.GameRenderer;
 import engine.render.MainMenuRenderer;
-import engine.scene.Scene;
 import engine.scene.SceneHandler;
 import engine.settings.Settings;
 import engine.sound.SoundAPI;
@@ -24,23 +21,15 @@ import game.chat.Chat;
 import game.chunk.BiomeGenerator;
 import game.chunk.Chunk;
 import game.chunk.ChunkUpdateHandler;
-import game.chunk.ChunkMeshGenerator;
 import game.clouds.Cloud;
-import game.crafting.Inventory;
 import game.crafting.InventoryLogic;
 import game.entity.EntityContainer;
 import game.entity.collision.Collision;
-import game.entity.item.ItemDefinition;
 import game.entity.item.ItemDefinitionContainer;
-import game.entity.item.ItemEntity;
 import game.light.Light;
 import game.mainMenu.MainMenu;
 import game.player.Player;
 import game.ray.Ray;
-import org.joml.Vector3d;
-import org.joml.Vector3f;
-
-import java.util.Set;
 
 public class Crafter {
 
