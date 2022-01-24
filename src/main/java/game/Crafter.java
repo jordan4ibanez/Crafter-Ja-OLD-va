@@ -25,6 +25,7 @@ import game.chunk.BiomeGenerator;
 import game.chunk.Chunk;
 import game.chunk.ChunkUpdateHandler;
 import game.chunk.ChunkMeshGenerator;
+import game.clouds.Cloud;
 import game.crafting.Inventory;
 import game.crafting.InventoryLogic;
 import game.light.Light;
@@ -72,6 +73,7 @@ public class Crafter {
     private final BiomeGenerator biomeGenerator;
     private final Chunk chunk;
     private final ChunkUpdateHandler chunkUpdateHandler;
+    private final Cloud cloud;
 
 
     public Crafter(){
@@ -104,6 +106,8 @@ public class Crafter {
         this.biomeGenerator     = new BiomeGenerator();
         this.chunk              = new Chunk();
         this.chunkUpdateHandler = new ChunkUpdateHandler();
+        this.cloud              = new Cloud();
+
 
         //engine linkages
         {
@@ -195,7 +199,8 @@ public class Crafter {
         chunkUpdateHandler.setDelta(this.delta);
         chunkUpdateHandler.setChunk(this.chunk);
 
-
+        //cloud
+        cloud.setDelta(this.delta);
 
     }
 
