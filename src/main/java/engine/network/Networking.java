@@ -20,11 +20,16 @@ public class Networking {
 
     private final Client client;
 
-    private final Chunk chunk;
+    private Chunk chunk;
 
-    public Networking(Chunk chunk){
+    public Networking(){
         this.client = new Client(50_000,50_000);
-        this.chunk = chunk;
+    }
+
+    public void setChunk(Chunk chunk){
+        if (this.chunk == null) {
+            this.chunk = chunk;
+        }
     }
 
     public void setPort(int newPort){
