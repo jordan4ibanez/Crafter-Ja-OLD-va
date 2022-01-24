@@ -28,6 +28,7 @@ public class SQLiteDiskHandler {
     public void setBiomeGenerator(BiomeGenerator biomeGenerator){
         if (this.biomeGenerator == null){
             this.biomeGenerator = biomeGenerator;
+            new Thread(biomeGenerator).start();
         }
     }
     public void setChunk(Chunk chunk){

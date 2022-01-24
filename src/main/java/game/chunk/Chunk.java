@@ -19,20 +19,36 @@ import java.util.HashMap;
 public class Chunk {
     private SQLiteDiskHandler sqLiteDiskHandler;
     private ChunkUpdateHandler chunkUpdateHandler;
-    private final Player player;
+
+    private Player player;
     private final BlockDefinitionContainer blockDefinitionContainer = new BlockDefinitionContainer();
     private Light light;
     private ChunkMeshGenerator chunkMeshGenerator;
 
-    private final Settings settings;
-    private final Delta delta;
+    private Settings settings;
+    private Delta delta;
     private float saveTimer = 0f;
     private final HashMap<Vector2i, ChunkObject> map = new HashMap<>();
 
-    public Chunk(Settings settings, Delta delta, Player player){
-        this.delta = delta;
-        this.settings = settings;
-        this.player = player;
+    public Chunk(){
+    }
+
+    public void setDelta(Delta delta){
+        if (this.delta == null){
+            this.delta = delta;
+        }
+    }
+
+    public void setPlayer(Player player){
+        if (this.player == null){
+            this.player = player;
+        }
+    }
+
+    public void setSettings(Settings settings){
+        if (this.settings == null){
+            this.settings = settings;
+        }
     }
 
     public void setSqLiteDiskHandler(SQLiteDiskHandler sqLiteDiskHandler){

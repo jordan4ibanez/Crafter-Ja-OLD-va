@@ -9,8 +9,8 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class ChunkUpdateHandler {
-    private final Chunk chunk;
-    private final Delta delta;
+    private Chunk chunk;
+    private Delta delta;
 
     private final ConcurrentLinkedDeque<Vector3i> generationQueue = new ConcurrentLinkedDeque<>();
     private final ConcurrentLinkedDeque<ChunkMeshData> dataQueue = new ConcurrentLinkedDeque<>();
@@ -19,8 +19,18 @@ public class ChunkUpdateHandler {
     private float chunkUpdateTimer = 0;
 
     public ChunkUpdateHandler(Chunk chunk, Delta delta){
-        this.chunk = chunk;
-        this.delta = delta;
+
+    }
+
+    public void setChunk(Chunk chunk){
+        if (this.chunk == null) {
+            this.chunk = chunk;
+        }
+    }
+    public void setDelta(Delta delta){
+        if (this.delta == null){
+            this.delta = delta;
+        }
     }
 
     public void chunkUpdate( int x, int z , int y){

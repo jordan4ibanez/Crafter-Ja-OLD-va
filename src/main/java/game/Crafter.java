@@ -68,101 +68,134 @@ public class Crafter {
     private final Window window;
 
     //game components
+    private final Chat chat;
+    private final BiomeGenerator biomeGenerator;
+    private final Chunk chunk;
+    private final ChunkUpdateHandler chunkUpdateHandler;
+
 
     public Crafter(){
         //engine initializers
-        this.compression       = new Compression();
-        this.runtimeInfo       = new RuntimeInfo();
-        this.disk              = new Disk();
-        this.sqLiteDiskHandler = new SQLiteDiskHandler();
-        this.camera            = new Camera();
-        this.guiLogic          = new GUILogic();
-        this.networking        = new Networking();
-        this.gameRenderer      = new GameRenderer();
-        this.mainMenuRenderer  = new MainMenuRenderer();
-        this.sceneHandler      = new SceneHandler();
-        this.settings          = new Settings();
-        this.soundAPI          = new SoundAPI();
-        this.delta             = new Delta();
-        this.timeOfDay         = new TimeOfDay();
-        this.timer             = new Timer();
-        this.controls          = new Controls();
-        this.fancyMath         = new FancyMath();
-        this.fastNoise         = new FastNoise();
-        this.memorySweeper     = new MemorySweeper();
-        this.mouse             = new Mouse();
-        this.utils             = new Utils();
-        this.window            = new Window(this.versionName, this.settings.getSettingsVsync());
+        this.compression         = new Compression();
+        this.runtimeInfo         = new RuntimeInfo();
+        this.disk                = new Disk();
+        this.sqLiteDiskHandler   = new SQLiteDiskHandler();
+        this.camera              = new Camera();
+        this.guiLogic            = new GUILogic();
+        this.networking          = new Networking();
+        this.gameRenderer        = new GameRenderer();
+        this.mainMenuRenderer    = new MainMenuRenderer();
+        this.sceneHandler        = new SceneHandler();
+        this.settings            = new Settings();
+        this.soundAPI            = new SoundAPI();
+        this.delta               = new Delta();
+        this.timeOfDay           = new TimeOfDay();
+        this.timer               = new Timer();
+        this.controls            = new Controls();
+        this.fancyMath           = new FancyMath();
+        this.fastNoise           = new FastNoise();
+        this.memorySweeper       = new MemorySweeper();
+        this.mouse               = new Mouse();
+        this.utils               = new Utils();
+        this.window              = new Window(this.versionName, this.settings.getSettingsVsync());
 
+        //game initializers
+        this.chat               = new Chat();
+        this.biomeGenerator     = new BiomeGenerator();
+        this.chunk              = new Chunk();
+        this.chunkUpdateHandler = new ChunkUpdateHandler();
 
         //engine linkages
+        {
+            //disk
+            disk.setSqLiteDiskHandler(this.sqLiteDiskHandler);
 
-        //disk
-        disk.setSqLiteDiskHandler(this.sqLiteDiskHandler);
+            //SQLiteDiskHandler
+            sqLiteDiskHandler.setBiomeGenerator(this.biomeGenerator);
+            sqLiteDiskHandler.setChunk(this.chunk);
+            sqLiteDiskHandler.setPlayer(this.player);
+            sqLiteDiskHandler.setInventoryLogic(this.inventoryLogic);
 
-        //SQLiteDiskHandler
-        sqLiteDiskHandler.setBiomeGenerator(this.biomeGenerator);
-        sqLiteDiskHandler.setChunk(this.chunk);
-        sqLiteDiskHandler.setPlayer(this.player);
-        sqLiteDiskHandler.setInventoryLogic(this.inventoryLogic);
+            //camera
+            camera.setMouse(this.mouse);
+            camera.setPlayer(this.player);
+            camera.setRay(this.ray);
 
-        //camera
-        camera.setMouse(this.mouse);
-        camera.setPlayer(this.player);
-        camera.setRay(this.ray);
+            //gui logic
+            guiLogic.setSettings(this.settings);
+            guiLogic.setMouse(this.mouse);
+            guiLogic.setWindow(this.window);
+            guiLogic.setChat(this.chat);
+            guiLogic.setPlayer(this.player);
+            guiLogic.setDelta(this.delta);
+            guiLogic.setMainMenu(this.mainMenu);
+            guiLogic.setSqLiteDiskHandler(this.sqLiteDiskHandler);
+            guiLogic.setSceneHandler(this.sceneHandler);
 
-        //gui logic
-        guiLogic.setSettings(this.settings);
-        guiLogic.setMouse(this.mouse);
-        guiLogic.setWindow(this.window);
-        guiLogic.setChat(this.chat);
-        guiLogic.setPlayer(this.player);
-        guiLogic.setDelta(this.delta);
-        guiLogic.setMainMenu(this.mainMenu);
-        guiLogic.setSqLiteDiskHandler(this.sqLiteDiskHandler);
-        guiLogic.setSceneHandler(this.sceneHandler);
+            //networking
+            networking.setChunk(this.chunk);
 
-        //networking
-        networking.setChunk(this.chunk);
+            //game renderer
+            gameRenderer.setCamera(this.camera);
+            gameRenderer.setDelta(this.delta);
+            gameRenderer.setSettings(this.settings);
+            gameRenderer.setWindow(this.window);
+            gameRenderer.setPlayer(this.player);
 
-        //game renderer
-        gameRenderer.setCamera(this.camera);
-        gameRenderer.setDelta(this.delta);
-        gameRenderer.setSettings(this.settings);
-        gameRenderer.setWindow(this.window);
-        gameRenderer.setPlayer(this.player);
+            //settings
+            settings.setChunk(this.chunk);
+            settings.setWindow(this.window);
+            settings.setDisk(this.disk);
 
-        //settings
-        settings.setChunk(this.chunk);
-        settings.setWindow(this.window);
-        settings.setDisk(this.disk);
+            //sound API
+            soundAPI.setCamera(this.camera);
+            soundAPI.setWindow(this.window);
 
-        //sound API
-        soundAPI.setCamera(this.camera);
-        soundAPI.setWindow(this.window);
+            //time of day
+            timeOfDay.setWindow(this.window);
+            timeOfDay.setLight(this.light);
 
-        //time of day
-        timeOfDay.setWindow(this.window);
-        timeOfDay.setLight(this.light);
+            //timer
+            timer.setWindow(this.window);
+            timer.setVersionName(this.versionName);
 
-        //timer
-        timer.setWindow(this.window);
-        timer.setVersionName(this.versionName);
+            //controls
+            controls.setPlayer(this.player);
+            controls.setCamera(this.camera);
+            controls.setGuiLogic(this.guiLogic);
+            controls.setSettings(this.settings);
+            controls.setWindow(this.window);
+            controls.setInventoryLogic(this.invetoryLogic);
+            controls.setMouse(this.mouse);
 
-        //controls
-        controls.setPlayer(this.player);
-        controls.setCamera(this.camera);
-        controls.setGuiLogic(this.guiLogic);
-        controls.setSettings(this.settings);
-        controls.setWindow(this.window);
-        controls.setInventoryLogic(this.invetoryLogic);
-        controls.setMouse(this.mouse);
+            //mouse
+            mouse.setWindow(this.window);
 
-        //mouse
-        mouse.setWindow(this.window);
+            //window
+            window.setDelta(this.delta);
+        }
+        //game linkages
 
-        //window
-        window.setDelta(this.delta);
+        //chat
+        chat.setPlayer(this.player);
+        chat.setDelta(this.delta);
+
+        //biome generator
+        biomeGenerator.setWindow(this.window);
+        biomeGenerator.setChunk(this.chunk);
+
+        //chunk
+        chunk.setDelta(this.delta);
+        chunk.setSettings(this.settings);
+        chunk.setPlayer(this.player);
+        chunk.setSqLiteDiskHandler(this.sqLiteDiskHandler);
+        chunk.setChunkUpdateHandler(this.chunkUpdateHandler);
+
+        //chunk update handler
+        chunkUpdateHandler.setDelta(this.delta);
+        chunkUpdateHandler.setChunk(this.chunk);
+
+
 
     }
 

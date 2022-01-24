@@ -9,12 +9,22 @@ import java.util.concurrent.ConcurrentHashMap;
 
 final public class Chat {
 
-    private final Player player;
-    private final Delta delta;
+    private Player player;
+    private Delta delta;
 
-    public Chat(Player player, Delta delta){
-        this.player = player;
-        this.delta  = delta;
+    public void setPlayer(Player player){
+        if (this.player == null){
+            this.player = player;
+        }
+    }
+
+    public void setDelta(Delta delta){
+        if (this.delta == null){
+            this.delta = delta;
+        }
+    }
+
+    public Chat(){
     }
 
     private int ID = 0; //linear ID count
