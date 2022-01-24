@@ -104,13 +104,13 @@ public class Crafter {
         this.window              = new Window(this.versionName, this.settings.getSettingsVsync());
 
         //game initializers
-        this.chat               = new Chat();
-        this.biomeGenerator     = new BiomeGenerator();
-        this.chunk              = new Chunk();
-        this.chunkUpdateHandler = new ChunkUpdateHandler();
-        this.cloud              = new Cloud();
-        this.inventoryLogic     = new InventoryLogic();
-        this.mainMenu           = new MainMenu();
+        this.chat                = new Chat();
+        this.biomeGenerator      = new BiomeGenerator();
+        this.chunk               = new Chunk();
+        this.chunkUpdateHandler  = new ChunkUpdateHandler();
+        this.cloud               = new Cloud();
+        this.inventoryLogic      = new InventoryLogic();
+        this.mainMenu            = new MainMenu();
 
 
         //engine linkages
