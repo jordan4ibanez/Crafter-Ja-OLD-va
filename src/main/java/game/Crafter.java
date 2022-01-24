@@ -28,6 +28,7 @@ import game.chunk.ChunkMeshGenerator;
 import game.clouds.Cloud;
 import game.crafting.Inventory;
 import game.crafting.InventoryLogic;
+import game.entity.EntityContainer;
 import game.entity.collision.Collision;
 import game.light.Light;
 import game.mainMenu.MainMenu;
@@ -77,6 +78,7 @@ public class Crafter {
     private final ChunkUpdateHandler chunkUpdateHandler;
     private final Cloud cloud;
     private final InventoryLogic inventoryLogic;
+    private final EntityContainer entityContainer;
     private final Collision collision;
     private final MainMenu mainMenu;
     private final Light light;
@@ -117,6 +119,7 @@ public class Crafter {
         this.chunkUpdateHandler  = new ChunkUpdateHandler();
         this.cloud               = new Cloud();
         this.inventoryLogic      = new InventoryLogic();
+        this.entityContainer     = new EntityContainer();
         this.collision           = new Collision();
         this.mainMenu            = new MainMenu();
         this.light               = new Light();
