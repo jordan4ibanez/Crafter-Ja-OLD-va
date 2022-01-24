@@ -1,13 +1,35 @@
 package game.entity.collision;
 
 import engine.time.Delta;
+import game.blocks.BlockDefinitionContainer;
+import game.chunk.Chunk;
 import org.joml.Math;
 import org.joml.*;
 
 
 public class ParticleCollision {
 
+    private final BlockDefinitionContainer blockDefinitionContainer = new BlockDefinitionContainer();
+    private final CollisionObject collisionObject = new CollisionObject();
     private Delta delta;
+    private Chunk chunk;
+
+    public ParticleCollision(){
+
+    }
+
+    public void setDelta(Delta delta){
+        if (this.delta == null){
+            this.delta = delta;
+        }
+    }
+
+    public void setChunk(Chunk chunk){
+        if (this.chunk == null){
+            this.chunk = chunk;
+        }
+    }
+
 
     private double adjustedDelta;
 
@@ -16,7 +38,7 @@ public class ParticleCollision {
 
     public boolean applyInertia(Vector3d pos, Vector3f inertia, boolean gravity, boolean applyCollision){
 
-        double delta = getDelta();
+        double delta = this.delta.getDelta();
 
         int loops = 1;
 
@@ -84,16 +106,16 @@ public class ParticleCollision {
 
         switch (inertiaToDir(inertia.y)) {
             case -1 -> {
-                byte cachedBlock = getBlock(fPos);
-                byte rot = getBlockRotation(fPos);
-                if (cachedBlock > 0 && isBlockWalkable(cachedBlock)) {
+                byte cachedBlock = chunk.getBlock(fPos);
+                byte rot = chunk.getBlockRotation(fPos);
+                if (cachedBlock > 0 && blockDefinitionContainer.getWalkable(cachedBlock)) {
                     onGround = collideYNegative(fPos.x, fPos.y, fPos.z, rot, pos, inertia, cachedBlock);
                 }
             }
             case 1 -> {
-                byte cachedBlock = getBlock(fPos);
-                byte rot = getBlockRotation(fPos);
-                if (cachedBlock > 0 && isBlockWalkable(cachedBlock)) {
+                byte cachedBlock = chunk.getBlock(fPos);
+                byte rot = chunk.getBlockRotation(fPos);
+                if (cachedBlock > 0 && blockDefinitionContainer.getWalkable(cachedBlock)) {
                     collideYPositive(fPos.x, fPos.y, fPos.z, rot, pos, inertia, cachedBlock);
                 }
             }
@@ -107,16 +129,16 @@ public class ParticleCollision {
 
         switch (inertiaToDir(inertia.x)) {
             case 1 -> {
-                byte cachedBlock = getBlock(fPos);
-                byte rot = getBlockRotation(fPos);
-                if (cachedBlock > 0 && isBlockWalkable(cachedBlock)) {
+                byte cachedBlock = chunk.getBlock(fPos);
+                byte rot = chunk.getBlockRotation(fPos);
+                if (cachedBlock > 0 && blockDefinitionContainer.getWalkable(cachedBlock)) {
                     collideXPositive(fPos.x, fPos.y, fPos.z, rot, pos, inertia, cachedBlock);
                 }
             }
             case -1 -> {
-                byte cachedBlock = getBlock(fPos);
-                byte rot = getBlockRotation(fPos);
-                if (cachedBlock > 0 && isBlockWalkable(cachedBlock)) {
+                byte cachedBlock = chunk.getBlock(fPos);
+                byte rot = chunk.getBlockRotation(fPos);
+                if (cachedBlock > 0 && blockDefinitionContainer.getWalkable(cachedBlock)) {
                     collideXNegative(fPos.x, fPos.y, fPos.z, rot, pos, inertia, cachedBlock);
                 }
             }
@@ -130,16 +152,16 @@ public class ParticleCollision {
 
         switch (inertiaToDir(inertia.z)) {
             case 1 -> {
-                byte cachedBlock = getBlock(fPos);
-                byte rot = getBlockRotation(fPos);
-                if (cachedBlock > 0 && isBlockWalkable(cachedBlock)) {
+                byte cachedBlock = chunk.getBlock(fPos);
+                byte rot = chunk.getBlockRotation(fPos);
+                if (cachedBlock > 0 && blockDefinitionContainer.getWalkable(cachedBlock)) {
                     collideZPositive(fPos.x, fPos.y, fPos.z, rot, pos, inertia, cachedBlock);
                 }
             }
             case -1 -> {
-                byte cachedBlock = getBlock(fPos);
-                byte rot = getBlockRotation(fPos);
-                if (cachedBlock > 0 && isBlockWalkable(cachedBlock)) {
+                byte cachedBlock = chunk.getBlock(fPos);
+                byte rot = chunk.getBlockRotation(fPos);
+                if (cachedBlock > 0 && blockDefinitionContainer.getWalkable(cachedBlock)) {
                     collideZNegative(fPos.x, fPos.y, fPos.z, rot, pos, inertia, cachedBlock);
                 }
             }
@@ -150,9 +172,9 @@ public class ParticleCollision {
 
    
     private void collideYPositive(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
-        for (float[] blockBox : getBlockShape(blockID, rot)) {
-            setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
-            if (pointIsWithinBlock(pos.x, pos.y, pos.z)) {
+        for (float[] blockBox : blockDefinitionContainer.getShape(blockID, rot)) {
+            collisionObject.setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
+            if (collisionObject.pointIsWithinBlock(pos.x, pos.y, pos.z)) {
                 pos.y = blockBox[1] + blockPosY - 0.00001d;
                 inertia.y = 0;
             }
@@ -161,9 +183,9 @@ public class ParticleCollision {
     
     private boolean collideYNegative(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
         boolean onGround = false;
-        for (float[] blockBox : getBlockShape(blockID, rot)) {
-            setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
-            if (pointIsWithinBlock(pos.x, pos.y, pos.z)) {
+        for (float[] blockBox : blockDefinitionContainer.getShape(blockID, rot)) {
+            collisionObject.setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
+            if (collisionObject.pointIsWithinBlock(pos.x, pos.y, pos.z)) {
                 onGround = true;
                 pos.y = blockBox[4] + blockPosY + 0.00001d;
                 inertia.y = 0;
@@ -173,9 +195,9 @@ public class ParticleCollision {
     }
 
     private void collideXPositive(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
-        for (float[] blockBox : getBlockShape(blockID, rot)) {
-            setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
-            if (pointIsWithinBlock(pos.x, pos.y, pos.z)) {
+        for (float[] blockBox : blockDefinitionContainer.getShape(blockID, rot)) {
+            collisionObject.setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
+            if (collisionObject.pointIsWithinBlock(pos.x, pos.y, pos.z)) {
                 pos.x = blockBox[0] + blockPosX - 0.00001d;
                 inertia.x = 0;
             }
@@ -183,9 +205,9 @@ public class ParticleCollision {
     }
 
     private void collideXNegative(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
-        for (float[] blockBox : getBlockShape(blockID, rot)) {
-            setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
-            if (pointIsWithinBlock(pos.x, pos.y, pos.z)) {
+        for (float[] blockBox : blockDefinitionContainer.getShape(blockID, rot)) {
+            collisionObject.setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
+            if (collisionObject.pointIsWithinBlock(pos.x, pos.y, pos.z)) {
                 pos.x = blockBox[3] + blockPosX + 0.00001d;
                 inertia.x = 0;
             }
@@ -194,9 +216,9 @@ public class ParticleCollision {
 
 
     private void collideZPositive(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
-        for (float[] blockBox : getBlockShape(blockID, rot)) {
-            setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
-            if (pointIsWithinBlock(pos.x, pos.y, pos.z)) {
+        for (float[] blockBox : blockDefinitionContainer.getShape(blockID, rot)) {
+            collisionObject.setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
+            if (collisionObject.pointIsWithinBlock(pos.x, pos.y, pos.z)) {
                 pos.z = blockBox[2] + blockPosZ - 0.00001d;
                 inertia.z = 0;
             }
@@ -204,9 +226,9 @@ public class ParticleCollision {
     }
 
     private void collideZNegative(int blockPosX, int blockPosY, int blockPosZ, byte rot, Vector3d pos, Vector3f inertia, byte blockID){
-        for (float[] blockBox : getBlockShape(blockID, rot)) {
-            setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
-            if (pointIsWithinBlock(pos.x, pos.y, pos.z)) {
+        for (float[] blockBox : blockDefinitionContainer.getShape(blockID, rot)) {
+            collisionObject.setAABBBlock(blockBox, blockPosX, blockPosY, blockPosZ);
+            if (collisionObject.pointIsWithinBlock(pos.x, pos.y, pos.z)) {
                 pos.z = blockBox[5] + blockPosZ + 0.00001d;
                 inertia.z = 0;
             }

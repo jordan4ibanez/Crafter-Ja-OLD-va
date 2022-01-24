@@ -25,6 +25,7 @@ import game.clouds.Cloud;
 import game.crafting.InventoryLogic;
 import game.entity.EntityContainer;
 import game.entity.collision.Collision;
+import game.entity.collision.ParticleCollision;
 import game.entity.item.ItemDefinitionContainer;
 import game.light.Light;
 import game.mainMenu.MainMenu;
@@ -74,6 +75,7 @@ public class Crafter {
     private final InventoryLogic inventoryLogic;
     private final EntityContainer entityContainer;
     private final Collision collision;
+    private final ParticleCollision particleCollision;
     private final ItemDefinitionContainer itemDefinitionContainer;
     private final MainMenu mainMenu;
     private final Light light;
@@ -116,6 +118,7 @@ public class Crafter {
         this.inventoryLogic      = new InventoryLogic();
         this.entityContainer     = new EntityContainer();
         this.collision           = new Collision();
+        this.particleCollision   = new ParticleCollision();
         this.itemDefinitionContainer = new ItemDefinitionContainer();
         this.mainMenu            = new MainMenu();
         this.light               = new Light();
@@ -227,6 +230,10 @@ public class Crafter {
         collision.setDelta(this.delta);
         collision.setChunk(this.chunk);
         collision.setPlayer(this.player);
+
+        //particle collision
+        particleCollision.setDelta(this.delta);
+        particleCollision.setChunk(this.chunk);
 
         //item definition container
         itemDefinitionContainer.setChunk(this.chunk);
