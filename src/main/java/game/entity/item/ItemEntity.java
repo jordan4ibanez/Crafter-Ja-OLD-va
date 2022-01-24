@@ -26,7 +26,7 @@ public class ItemEntity extends Entity {
 
 
     public ItemEntity(Chunk chunk, EntityContainer entityContainer, Vector3d pos, Vector3f inertia, String itemName, int stack) {
-        super(chunk, entityContainer, pos, inertia, true, false);
+        super(chunk, entityContainer, pos, inertia, true, false, false);
         this.itemName = itemName;
         this.stack = stack;
     }

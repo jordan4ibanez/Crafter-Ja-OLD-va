@@ -1,7 +1,17 @@
 package game.entity.particle;
 
 import engine.graphics.Mesh;
+import engine.graphics.Texture;
+import engine.sound.SoundAPI;
+import engine.time.Delta;
+import game.blocks.BlockDefinitionContainer;
+import game.chunk.Chunk;
+import game.crafting.InventoryLogic;
 import game.entity.Entity;
+import game.entity.EntityContainer;
+import game.entity.collision.Collision;
+import game.entity.collision.ParticleCollision;
+import game.player.Player;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
@@ -9,127 +19,44 @@ import org.joml.Vector3i;
 import java.util.*;
 
 public class Particle extends Entity {
+
     private final Mesh mesh;
 
-    public Particle(Vector3d pos, Vector3f inertia, byte blockID){
-        super(4,4,4,4,4,4);
+    public Particle(Texture textureAtlas, BlockDefinitionContainer blockDefinitionContainer, Chunk chunk, EntityContainer entityContainer, Vector3d pos, Vector3f inertia, int blockID){
+        super(chunk,entityContainer,pos,inertia,false,false,true);
 
-        mesh[thisID] = createParticleMesh(blockID);
+        mesh = createParticleMesh(blockDefinitionContainer, blockID, textureAtlas);
     }
 
-    public void cleanParticleMemory(){
-        //System.out.println("particles are now shrinking to: " + initialSize);
-        //reset value
-        currentSize = initialSize;
-
-        //clean up OpenGL memory
-        for (Mesh thisMesh : mesh){
-            if (thisMesh != null) {
-                thisMesh.cleanUp(false);
-            }
-        }
-
-        //clear memory for GC
-        Arrays.fill(exists, false);
-        Arrays.fill(position, null);
-        Arrays.fill(oldFlooredPosition, null);
-        Arrays.fill(inertia, null);
-        Arrays.fill(mesh, null);
-        Arrays.fill(light, (byte) 0);
-        Arrays.fill(timer, 0);
-        Arrays.fill(lightUpdateTimer, 0);
-
-        //reset memory
-        exists             = new boolean[initialSize];
-        position           = new Vector3d[initialSize];
-        oldFlooredPosition = new Vector3i[initialSize];
-        inertia            = new Vector3f[initialSize];
-        mesh               = new Mesh[initialSize];
-        light              = new byte[initialSize];
-        timer              = new float[initialSize];
-        lightUpdateTimer   = new float[initialSize];
-    }
 
     private final Vector3i currentFlooredPos = new Vector3i();
 
     private final Deque<Integer> deletionQueue = new ArrayDeque<>();
 
-    public void particlesOnStep(){
+    public void onTick(BlockDefinitionContainer blockDefinitionContainer, ParticleCollision collision, Delta delta){
 
-        double delta = getDelta();
+        double dtime = delta.getDelta();
 
-        int currentID = 0;
 
-        for (boolean particleExists : exists){
-            if (!particleExists){
-                currentID++;
-                continue;
-            }
-            applyParticleInertia(position[currentID], inertia[currentID], true,true);
+        collision.applyParticleInertia(this.getPos(), this.getInertia(), true,true);
 
-            float newTimer = (float) (timer[currentID] + delta);
-            timer[currentID] = newTimer;
+        float timer = (float) (this.getTimer() + dtime);
 
-            currentFlooredPos.set((int)Math.floor(position[currentID].x), (int)Math.floor(position[currentID].y), (int)Math.floor(position[currentID].z));
+        this.setTimer(timer);
 
-            //poll local light every quarter second
-            if (lightUpdateTimer[currentID] >= 0.25f || !currentFlooredPos.equals(oldFlooredPosition[currentID])){
-
-                light[currentID] = getLight(currentFlooredPos.x, currentFlooredPos.y, currentFlooredPos.z);
-
-                lightUpdateTimer[currentID] = 0f;
-            }
-
-            if (newTimer > 1f){
-                deletionQueue.add(currentID);
-            }
-
-            oldFlooredPosition[currentID].set(currentFlooredPos.x,currentFlooredPos.y,currentFlooredPos.z);
-            currentID++;
+        if (timer > 1f){
+            this.delete();
         }
 
-        while (!deletionQueue.isEmpty()) {
-
-            int key = deletionQueue.pop();
-
-            //this must delete the pointers in the C and OpenGL stack
-            mesh[key].cleanUp(false);
-
-            exists[key] = false;
-            position[key] = null;
-            oldFlooredPosition[key] = null;
-            inertia[key] = null;
-            mesh[key] = null;
-            light[key] = 0;
-            timer[key] = 0;
-            lightUpdateTimer[key] = 0;
-        }
 
     }
 
-    public boolean[] getParticleExistence(){
-        return exists;
+
+    public Mesh getMesh(){
+        return mesh;
     }
 
-    public byte getParticleLight(int key){
-        return light[key];
-    }
-
-    public double getParticlePosX(int key){
-        return position[key].x;
-    }
-    public double getParticlePosY(int key){
-        return position[key].y;
-    }
-    public double getParticlePosZ(int key){
-        return position[key].z;
-    }
-
-    public Mesh getParticleMesh(int key){
-        return mesh[key];
-    }
-
-    private Mesh createParticleMesh(byte blockID) {
+    private Mesh createParticleMesh(BlockDefinitionContainer blockDefinitionContainer, int blockID, Texture textureAtlas) {
 
         final float textureScale = (float)Math.ceil(Math.random() * 3f);
         final float pixelScale = (float)(int)textureScale / 25f;
@@ -178,12 +105,12 @@ public class Particle extends Entity {
         final int selection = (int)Math.floor(Math.random()*6f);
 
         float[] texturePoints = switch (selection) {
-            case 1 -> getBackTexturePoints(blockID, (byte) 0);
-            case 2 -> getRightTexturePoints(blockID, (byte) 0);
-            case 3 -> getLeftTexturePoints(blockID, (byte) 0);
-            case 4 -> getTopTexturePoints(blockID);
-            case 5 -> getBottomTexturePoints(blockID);
-            default -> getFrontTexturePoints(blockID, (byte) 0);
+            case 1 -> blockDefinitionContainer.getBackTexturePoints(blockID, (byte) 0);
+            case 2 -> blockDefinitionContainer.getRightTexturePoints(blockID, (byte) 0);
+            case 3 -> blockDefinitionContainer.getLeftTexturePoints(blockID, (byte) 0);
+            case 4 -> blockDefinitionContainer.getTopTexturePoints(blockID);
+            case 5 -> blockDefinitionContainer.getBottomTexturePoints(blockID);
+            default -> blockDefinitionContainer.getFrontTexturePoints(blockID, (byte) 0);
         };
 
 
@@ -197,6 +124,26 @@ public class Particle extends Entity {
         textureCoord[6] = (texturePoints[0] + pixelXMax);//1
         textureCoord[7] = (texturePoints[2] + pixelYMax);//3
 
-        return new Mesh(positions, light, indices, textureCoord, getTextureAtlas());
+        return new Mesh(positions, light, indices, textureCoord, textureAtlas);
+    }
+
+    @Override
+    public void onTick(Entity entity, Player player, Delta delta) {
+
+    }
+
+    @Override
+    public void onTick(Entity entity, InventoryLogic inventoryLogic, Player player, Delta delta) {
+
+    }
+
+    @Override
+    public void onTick(Entity entity, SoundAPI soundAPI, InventoryLogic inventoryLogic, Player player, Delta delta) {
+
+    }
+
+    @Override
+    public void onTick(Collision collision, Entity entity, SoundAPI soundAPI, InventoryLogic inventoryLogic, Player player, Delta delta) {
+
     }
 }

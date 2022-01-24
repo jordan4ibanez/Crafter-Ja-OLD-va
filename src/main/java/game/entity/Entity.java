@@ -26,13 +26,14 @@ public abstract class Entity implements EntityInterface{
     private float timer = 0;
     private final boolean item;
     private final boolean mob;
+    private final boolean particle;
     private byte light = 15;
     private float lightUpdateTimer = 0f;
     private final Vector3i flooredPos;
     private final Vector3i oldFlooredPos;
 
 
-    public Entity(Chunk chunk, EntityContainer entityContainer, Vector3d pos, Vector3f inertia, boolean item, boolean mob){
+    public Entity(Chunk chunk, EntityContainer entityContainer, Vector3d pos, Vector3f inertia, boolean item, boolean mob, boolean particle){
         this.chunk = chunk;
         this.entityContainer = entityContainer;
         this.entityContainer.add(this);
@@ -42,6 +43,7 @@ public abstract class Entity implements EntityInterface{
 
         this.item = item;
         this.mob = mob;
+        this.particle = particle;
 
         this.flooredPos = new Vector3i((int) floor(pos.x), (int) floor(pos.y), (int) floor(pos.z));
         this.oldFlooredPos = new Vector3i((int) floor(pos.x), (int) floor(pos.y), (int) floor(pos.z));
