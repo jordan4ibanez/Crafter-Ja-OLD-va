@@ -1,15 +1,47 @@
 package game.entity.item;
 
 import engine.graphics.Mesh;
+import engine.sound.SoundAPI;
 import game.blocks.BlockDefinitionContainer;
+import game.chunk.Chunk;
+import game.crafting.InventoryLogic;
+import game.player.Player;
 import org.joml.Vector3i;
 
 import java.util.HashMap;
 
 public class ItemDefinitionContainer {
 
-
     private final HashMap<String, ItemDefinition> definitions = new HashMap<>();
+
+    private Chunk chunk;
+    private Player player;
+    private SoundAPI soundAPI;
+    private InventoryLogic inventoryLogic;
+
+    public void setChunk(Chunk chunk) {
+        if (this.chunk == null) {
+            this.chunk = chunk;
+        }
+    }
+
+    public void setPlayer(Player player){
+        if (this.player == null) {
+            this.player = player;
+        }
+    }
+
+    public void setSoundAPI(SoundAPI soundAPI){
+        if (this.soundAPI == null){
+            this.soundAPI = soundAPI;
+        }
+    }
+
+    public void setInventoryLogic(InventoryLogic inventoryLogic){
+        if (this.inventoryLogic == null){
+            this.inventoryLogic = inventoryLogic;
+        }
+    }
 
     public ItemDefinitionContainer(){
         final String[] materials = new String[]{
@@ -46,13 +78,13 @@ public class ItemDefinitionContainer {
         ItemModifier test = new ItemModifier() {
             @Override
             public void onPlace(Vector3i pos, Vector3i above, BlockDefinitionContainer definitionContainer) {
-                if (definitionContainer.getWalkable(getBlock(pos.x, pos.y - 1, pos.z))) {
-                    byte rot = getPlayerDir();
-                    setBlock(pos.x, pos.y + 1, pos.z, (byte) 23, rot);
-                    setBlock(pos.x, pos.y, pos.z, (byte) 24, rot);
-                    playSound("wood_1");
+                if (definitionContainer.getWalkable(chunk.getBlock(new Vector3i(pos.x, pos.y - 1, pos.z)))) {
+                    byte rot = player.getPlayerDir();
+                    chunk.setBlock(new Vector3i(pos.x, pos.y + 1, pos.z), (byte) 23, rot);
+                    chunk.setBlock(new Vector3i(pos.x, pos.y, pos.z), (byte) 24, rot);
+                    soundAPI.playSound("wood_1");
 
-                    removeItemFromInventory("main", getCurrentInventorySelection(), 0);
+                    inventoryLogic.getInventory().getMain().removeItem(player.getCurrentInventorySelection(), 0);
                 }
             }
         };
@@ -72,19 +104,19 @@ public class ItemDefinitionContainer {
 
 
                 if (pointingX > 0) {
-                    placeBlock(above.x, above.y, above.z, (byte) 29, (byte) 0);
+                    chunk.placeBlock(new Vector3i(above.x, above.y, above.z), (byte) 29, (byte) 0);
                     System.out.println("torch: 0");
                 } else if (pointingX < 0) {
-                    placeBlock(above.x, above.y, above.z, (byte) 29, (byte) 1);
+                    chunk.placeBlock(new Vector3i(above.x, above.y, above.z), (byte) 29, (byte) 1);
                     System.out.println("torch: 1");
                 } else if (pointingZ > 0) {
-                    placeBlock(above.x, above.y, above.z, (byte) 29, (byte) 2);
+                    chunk.placeBlock(new Vector3i(above.x, above.y, above.z), (byte) 29, (byte) 2);
                     System.out.println("torch: 2");
                 } else if (pointingZ < 0) {
-                    placeBlock(above.x, above.y, above.z, (byte) 29, (byte) 3);
+                    chunk.placeBlock(new Vector3i(above.x, above.y, above.z), (byte) 29, (byte) 3);
                     System.out.println("torch: 3");
                 } else if (pointingY < 0) {
-                    placeBlock(above.x, above.y, above.z, (byte) 29, (byte) 4);
+                    chunk.placeBlock(new Vector3i(above.x, above.y, above.z), (byte) 29, (byte) 4);
                     System.out.println("torch: 4");
                 }
 
