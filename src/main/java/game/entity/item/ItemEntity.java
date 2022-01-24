@@ -1,15 +1,19 @@
 package game.entity.item;
 
+import engine.sound.SoundAPI;
 import engine.time.Delta;
 import game.chunk.Chunk;
+import game.crafting.InventoryLogic;
 import game.entity.Entity;
 import game.entity.EntityContainer;
+import game.entity.collision.Collision;
+import game.player.Player;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 public class ItemEntity extends Entity {
 
-    final private Vector3d normalizedPos = new Vector3d();
+    final private Vector3f normalizedPos = new Vector3f();
 
     private final String itemName;
     private int stack;
@@ -18,7 +22,6 @@ public class ItemEntity extends Entity {
     private boolean floatUp = true;
     private boolean collecting = false;
     private float collectionTimer = 0f;
-    private boolean deletionOkay = false;
     private float rotation = 0f;
 
 
@@ -26,6 +29,14 @@ public class ItemEntity extends Entity {
         super(chunk, entityContainer, pos, inertia, true, false);
         this.itemName = itemName;
         this.stack = stack;
+    }
+
+    public void setStack(int stack){
+        this.stack = stack;
+    }
+
+    public int getStack(){
+        return stack;
     }
 
     public float getHover(){
@@ -41,11 +52,23 @@ public class ItemEntity extends Entity {
     }
 
 
+    @Override
+    public void onTick(Entity entity, Player player, Delta delta) {
+
+    }
 
     @Override
-    public void onTick(Entity entity, Delta delta) {
+    public void onTick(Entity entity, InventoryLogic inventoryLogic, Player player, Delta delta) {
 
-        super.onTick(entity);
+    }
+
+    @Override
+    public void onTick(Entity entity, SoundAPI soundAPI, InventoryLogic inventoryLogic, Player player, Delta delta) {
+        
+    }
+
+    @Override
+    public void onTick(Collision collision, Entity entity, SoundAPI soundAPI, InventoryLogic inventoryLogic, Player player, Delta delta) {
 
         double dtime = delta.getDelta();
 
@@ -78,86 +101,64 @@ public class ItemEntity extends Entity {
         if (timer > 3f){
             if (this.getPos().distance(player.getPlayerPosWithCollectionHeight()) < 3f){
                 if (!thisCollecting){
-                    if (addToInventory("main", name.get(thisKey))) {
-                        playSound("pickup");
+                    if (inventoryLogic.getInventory().getMain().addItem(this.itemName)) {
+                        soundAPI.playSound("pickup");
                         thisCollecting = true;
-                        collectionTimer.put(thisKey,0.1f);
+                        collectionTimer = 0.1f;
                     }
                     //an extreme edge case so a completely full inventory does not
                     //hammer the player's RAM
                     else {
-                        timer.put(thisKey, 2);
+                        collectionTimer = 2;
                     }
                 }
                 //do not do else-if here, can go straight to this logic
                 if (thisCollecting) {
-                    normalizedPos.set(getPlayerPosWithCollectionHeight().sub(currentPos).normalize().mul(15f));
-                    inertia.get(thisKey).set((float)normalizedPos.x,(float)normalizedPos.y,(float)normalizedPos.z);
+                    this.setInertia(normalizedPos.set(player.getPlayerPosWithCollectionHeight().sub(this.getPos()).normalize().mul(15f)));
                 }
             }
 
-            if (currentPos.distance(getPlayerPosWithCollectionHeight()) < 0.2f || deletionOkay.get(thisKey)){
-                deletionQueue.add(thisKey);
+            if (this.getPos().distance(player.getPlayerPosWithCollectionHeight()) < 0.2f){
+                this.delete();
+                return;
             }
         }
 
         if (thisCollecting != oldCollecting){
-            collecting.put(thisKey,thisCollecting);
+            collecting = true;
         }
 
         float itemCollisionWidth = 0.2f;
         if (thisCollecting) {
-            applyInertia(pos.get(thisKey), inertia.get(thisKey), false, itemCollisionWidth, itemCollisionWidth, false, false, false, false, false);
+            collision.applyInertia(this.getPos(), this.getInertia(), false, itemCollisionWidth, itemCollisionWidth, false, false, false, false, false);
         } else {
-            applyInertia(pos.get(thisKey), inertia.get(thisKey), false, itemCollisionWidth, itemCollisionWidth, true, false, true, false, false);
+            collision.applyInertia(this.getPos(), this.getInertia(), false, itemCollisionWidth, itemCollisionWidth, true, false, true, false, false);
         }
 
-        float thisRotation = rotation.get(thisKey);
 
-        thisRotation += dtime * 50;
+        rotation += dtime * 50;
 
-        if (thisRotation > 360f) {
-            thisRotation -= 360f;
+        if (rotation > 360f) {
+            rotation -= 360f;
         }
 
-        boolean thisFloatUp = floatUp.get(thisKey);
-        boolean oldFloatUp = thisFloatUp;
 
-        float thisHover = hover.get(thisKey);
 
-        if (thisFloatUp){
-            thisHover += dtime / 10;
-            if (thisHover >= 0.5f){
-                thisFloatUp = false;
+        if (floatUp){
+            hover += dtime / 10;
+            if (hover >= 0.5f){
+                floatUp = false;
             }
         } else {
-            thisHover -= dtime / 10;
-            if (thisHover <= 0.0f){
-                thisFloatUp = true;
+            hover -= dtime / 10;
+            if (hover <= 0.0f){
+                floatUp = true;
             }
         }
 
-        if (thisFloatUp != oldFloatUp){
-            floatUp.put(thisKey, thisFloatUp);
-        }
-
-        hover.put(thisKey,thisHover);
-
-        rotation.put(thisKey,thisRotation);
-
-        if (currentPos.y < 0){
-            deletionQueue.add(thisKey);
+        //fallen out of the world
+        if (this.getPos().y < 0){
+            this.delete();
         }
     }
-
-
-
-
-
-    public void popItemsAddingQueue(){
-        if (addToInventory("main", newItem)) {
-            playSound("pickup");
-        }
-    }
-
 }

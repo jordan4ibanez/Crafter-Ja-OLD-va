@@ -1,11 +1,14 @@
 package game.entity;
 
+import engine.time.Delta;
+import game.player.Player;
+
 public interface EntityInterface {
     default void onSpawn(Entity entity){
         System.out.println("Welp I'm here now!");
     }
 
-    default void onTick(Entity entity){
+    default void onTick(Entity entity, Delta delta, Player player){
         System.out.println("tick tock!");
     }
 
