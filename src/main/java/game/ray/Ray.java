@@ -10,11 +10,16 @@ import org.joml.Vector3i;
 
 public class Ray {
 
-    private final Chunk chunk;
+    private Chunk chunk;
     private final BlockDefinitionContainer blockDefinitionContainer = new BlockDefinitionContainer();
 
-    public Ray(Chunk chunk){
-        this.chunk = chunk;
+    public void setChunk(Chunk chunk){
+        if (this.chunk == null){
+            this.chunk = chunk;
+        }
+    }
+
+    public Ray(){
     }
 
     //this is now stack/cache happy as can be
@@ -218,5 +223,36 @@ public class Ray {
         }
 
         return cameraWorker.set(realNewPosX, realNewPosY, realNewPosZ);
+    }
+
+    public boolean lineOfSight(Vector3d pos1, Vector3d pos2){
+        final Vector3d newPos   = new Vector3d();
+        final Vector3d lastPos  = new Vector3d();
+        final Vector3d cachePos = new Vector3d();
+        final Vector3f dir = new Vector3f();
+        dir.set(pos2.x - pos1.x, pos2.y-pos1.y, pos2.z - pos1.z).normalize();
+
+        //this does not have to be perfect, can afford float imprecision
+        for(float step = 0f; step <= pos1.distance(pos2) ; step += 0.01f) {
+
+            cachePos.x = dir.x * step;
+            cachePos.y = dir.y * step;
+            cachePos.z = dir.z * step;
+
+            newPos.x = Math.floor(pos1.x + cachePos.x);
+            newPos.y = Math.floor(pos1.y + cachePos.y);
+            newPos.z = Math.floor(pos1.z + cachePos.z);
+
+            //stop wasting cpu resources
+            if (!newPos.equals(lastPos)) {
+                byte foundBlock = chunk.getBlock(new Vector3i((int) newPos.x, (int) newPos.y, (int) newPos.z));
+                if (foundBlock > 0 && blockDefinitionContainer.getWalkable(foundBlock)) {
+                    return false;
+                }
+            }
+            lastPos.set(newPos);
+        }
+
+        return true;
     }
 }
