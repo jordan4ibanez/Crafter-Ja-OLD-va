@@ -78,6 +78,7 @@ public class Crafter {
     private final MainMenu mainMenu;
     private final Light light;
     private final Player player;
+    private final Ray ray;
 
 
     public Crafter(){
@@ -115,6 +116,7 @@ public class Crafter {
         this.mainMenu            = new MainMenu();
         this.light               = new Light();
         this.player              = new Player();
+        this.ray                 = new Ray();
 
 
 
@@ -178,7 +180,7 @@ public class Crafter {
             controls.setGuiLogic(this.guiLogic);
             controls.setSettings(this.settings);
             controls.setWindow(this.window);
-            controls.setInventoryLogic(this.invetoryLogic);
+            controls.setInventoryLogic(this.inventoryLogic);
             controls.setMouse(this.mouse);
 
             //mouse
@@ -240,6 +242,9 @@ public class Crafter {
         player.setChunk(this.chunk);
         player.setRay(this.ray);
         player.initialize(this.inventoryLogic.getInventory(), this.camera);
+
+        //ray
+        ray.setChunk(this.chunk);
 
 
     }
