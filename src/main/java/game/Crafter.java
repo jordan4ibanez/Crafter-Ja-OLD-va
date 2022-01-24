@@ -76,6 +76,7 @@ public class Crafter {
     private final Cloud cloud;
     private final InventoryLogic inventoryLogic;
     private final MainMenu mainMenu;
+    private final Light light;
 
 
     public Crafter(){
@@ -111,6 +112,7 @@ public class Crafter {
         this.cloud               = new Cloud();
         this.inventoryLogic      = new InventoryLogic();
         this.mainMenu            = new MainMenu();
+        this.light               = new Light();
 
 
         //engine linkages
@@ -222,6 +224,11 @@ public class Crafter {
         mainMenu.setPlayer(this.player);
         mainMenu.setVersionName(this.versionName);
         mainMenu.initializeGUI();
+
+        //light
+        light.setChunk(this.chunk);
+        light.setChunkMeshGenerator(this.chunk.getChunkMeshGenerator());
+        light.setWindow(this.window);
 
     }
 

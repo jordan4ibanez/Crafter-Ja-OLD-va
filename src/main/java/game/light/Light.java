@@ -11,19 +11,32 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class Light implements Runnable {
 
-    private final Chunk chunk;
-    private final ChunkMeshGenerator chunkMeshGenerator;
-    private final Window window;
+    private Chunk chunk;
+    private ChunkMeshGenerator chunkMeshGenerator;
+    private Window window;
+
+    public void setChunk(Chunk chunk){
+        if (this.chunk == null){
+            this.chunk = chunk;
+        }
+    }
+    public void setChunkMeshGenerator(ChunkMeshGenerator chunkMeshGenerator){
+        if (this.chunkMeshGenerator == null){
+            this.chunkMeshGenerator = chunkMeshGenerator;
+        }
+    }
+    public void setWindow(Window window){
+        if (this.window == null){
+            this.window = window;
+        }
+    }
 
     //thread safe containers for light updates
     private final ConcurrentLinkedDeque<Vector3i> lightQueue = new ConcurrentLinkedDeque<>();
     private final ConcurrentLinkedDeque<Vector3i> torchQueue = new ConcurrentLinkedDeque<>();
 
     //point internal pointer to reference call, only one object shall exist
-    public Light(Chunk chunk, ChunkMeshGenerator chunkMeshGenerator, Window window){
-        this.chunk = chunk;
-        this.chunkMeshGenerator = chunkMeshGenerator;
-        this.window = window;
+    public Light(){
     }
 
     //external call to internal object

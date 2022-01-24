@@ -33,6 +33,10 @@ public class Chunk {
     public Chunk(){
     }
 
+    public ChunkMeshGenerator getChunkMeshGenerator(){
+        return this.chunkMeshGenerator;
+    }
+
     public void setDelta(Delta delta){
         if (this.delta == null){
             this.delta = delta;
