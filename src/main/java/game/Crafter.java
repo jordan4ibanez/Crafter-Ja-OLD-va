@@ -77,6 +77,7 @@ public class Crafter {
     private final InventoryLogic inventoryLogic;
     private final MainMenu mainMenu;
     private final Light light;
+    private final Player player;
 
 
     public Crafter(){
@@ -113,6 +114,8 @@ public class Crafter {
         this.inventoryLogic      = new InventoryLogic();
         this.mainMenu            = new MainMenu();
         this.light               = new Light();
+        this.player              = new Player();
+
 
 
         //engine linkages
@@ -231,6 +234,13 @@ public class Crafter {
         light.setWindow(this.window);
 
         new Thread(this.light).start(); //send light off on it's own thread
+
+        //player
+        player.setDelta(this.delta);
+        player.setChunk(this.chunk);
+        player.setRay(this.ray);
+        player.initialize(this.inventoryLogic.getInventory(), this.camera);
+
 
     }
 

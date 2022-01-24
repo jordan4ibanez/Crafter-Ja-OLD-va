@@ -14,19 +14,17 @@ public class Player {
 
     BlockDefinitionContainer blockDefinitionContainer = new BlockDefinitionContainer();
 
-    private final Delta delta;
+    private Delta delta;
     private Chunk chunk;
     private Ray ray;
-    private final WieldHand wieldHand;
-    private final ViewBobbing viewBobbing;
+    private WieldHand wieldHand;
+    private ViewBobbing viewBobbing;
 
-
-    public Player(Delta delta, Inventory inventory, Camera camera){
-        this.delta = delta;
-        this.wieldHand = new WieldHand(this,delta,inventory,camera);
-        this.viewBobbing = new ViewBobbing(this, delta);
+    public void setDelta(Delta delta){
+        if (this.delta == null){
+            this.delta = delta;
+        }
     }
-
     public void setChunk(Chunk chunk){
         if (this.chunk == null){
             this.wieldHand.setChunk(chunk);
@@ -39,6 +37,19 @@ public class Player {
             this.ray = ray;
         }
     }
+
+    public void initialize(Inventory inventory, Camera camera) {
+        this.wieldHand = new WieldHand(this, delta, inventory, camera);
+        this.viewBobbing = new ViewBobbing(this, delta);
+    }
+
+
+
+
+    public Player(){
+
+    }
+
 
     private boolean atCraftingBench;
     private boolean inventoryOpen;
