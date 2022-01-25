@@ -21,6 +21,8 @@ public class Mob extends Entity {
     private float deathRotation = 0f;
     private float deathTimer = 0f;
 
+    private float animationTimer = 0f;
+
     private int health;
     private int hurtAdder = 0;
 
@@ -59,6 +61,14 @@ public class Mob extends Entity {
         this.health = health;
 
         rotation = (float) (Math.toDegrees(Math.PI * Math.random() * randomDir()));
+    }
+
+    public float getAnimationTimer(){
+        return animationTimer;
+    }
+
+    public void setAnimationTimer(float animationTimer){
+        this.animationTimer = animationTimer;
     }
 
     public float getRotation(){
