@@ -202,6 +202,7 @@ public class SceneHandler {
 
 
     private void mainMenuLoop() {
+        window.pollWindowClose();
         camera.setCameraPosition(new Vector3d(0,-8,0));
         camera.setCameraRotation(new Vector3f(0,0,0));
         window.windowUpdate();
@@ -213,6 +214,7 @@ public class SceneHandler {
 
     //main game loop
     private void gameLoop() {
+        window.pollWindowClose();
         disk.poll();
         delta.calculateDelta();
         //indexLight();

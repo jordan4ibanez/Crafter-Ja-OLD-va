@@ -203,6 +203,12 @@ public class Window {
         return this.shouldClose.get();
     }
 
+    public void pollWindowClose(){
+        if(glfwWindowShouldClose(windowHandle)){
+            this.shouldClose.set(true);
+        }
+    }
+
     public String getTitle(){
         return title;
     }
