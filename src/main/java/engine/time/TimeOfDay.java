@@ -183,7 +183,7 @@ public class TimeOfDay {
             { 0,   0,   0   } // night begins
     };
 
-    private byte currentDayStage = calculateCurrentDayStage();
+    private byte currentDayStage = 0;
     private float currentDayTimeGoal = dayStageGoal[currentDayStage];
     private final byte maxStage = 20;
     private byte oldStageLight = 0;
