@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import engine.settings.SettingsObject;
 import game.chunk.BiomeGenerator;
 import game.chunk.Chunk;
-import game.crafting.Inventory;
 import game.crafting.InventoryLogic;
 import game.player.Player;
 import org.joml.Vector2i;
@@ -26,7 +25,7 @@ public class SQLiteDiskHandler {
     private InventoryLogic inventoryLogic;
 
     private boolean hasPolledLoadingPlayer = false;
-    private final ConcurrentLinkedDeque<PlayerDataObject> playerData = new ConcurrentLinkedDeque<>();
+    private final ConcurrentLinkedDeque<PlayerData> playerData = new ConcurrentLinkedDeque<>();
     private final ConcurrentLinkedDeque<PrimitiveChunkObject> loadingChunkData = new ConcurrentLinkedDeque<>();
     private final ConcurrentLinkedDeque<Vector2i> generatingChunks = new ConcurrentLinkedDeque<>();
 
@@ -73,7 +72,7 @@ public class SQLiteDiskHandler {
         this.hasPolledLoadingPlayer = false;
     }
 
-    public void sendPlayerData(PlayerDataObject player){
+    public void sendPlayerData(PlayerData player){
         playerData.add(player);
     }
 
@@ -99,7 +98,7 @@ public class SQLiteDiskHandler {
             return;
         }
 
-        PlayerDataObject player = playerData.pop();
+        PlayerData player = playerData.pop();
 
         //set inventory
         for (int y = 0; y < player.inventory.length; y++){
