@@ -37,12 +37,12 @@ public class MainMenu {
     private Player player;
     private final TextHandling textHandling = new TextHandling();
 
-    private final byte[][] titleBlocks;
-    private final double[][] titleOffsets;
+    private byte[][] titleBlocks;
+    private double[][] titleOffsets;
     private boolean haltBlockFlyIn = false;
 
-    private final byte[][] worldTitleBlocks;
-    private final double[][] worldTitleOffsets;
+    private byte[][] worldTitleBlocks;
+    private double[][] worldTitleOffsets;
     private boolean haltWorldBlockFlyIn = false;
 
 
@@ -160,6 +160,50 @@ public class MainMenu {
     }
 
     public MainMenu() {
+
+    }
+    public void initializeGUI(){
+
+        //titleMusic = playMusic("main_menu");
+        //creditsMusic = playMusic("credits");
+        //creditsMusic.stop();
+
+        mainMenuGUI = new GUIObject[]{
+                new GUIObject("SINGLEPLAYER" , new Vector2d(0, 10), 10, 1),
+                new GUIObject("MULTIPLAYER" , new Vector2d(0, -3), 10,1),
+                new GUIObject("SETTINGS" , new Vector2d(0, -16), 10,1),
+                new GUIObject("CREDITS" , new Vector2d(0, -29), 10,1),
+                new GUIObject("QUIT" , new Vector2d(0, -42), 10,1),
+        };
+
+        mainMenuSettingsMenuGUI = new GUIObject[]{
+                new GUIObject("CONTROLS" ,             new Vector2d(0, 35), 12, 1),
+                new GUIObject("VSYNC: " + boolToString(settings.getSettingsVsync()),            new Vector2d(0, 21), 12, 1),
+                new GUIObject("GRAPHICS MODE: " + graphicsThing(settings.getGraphicsMode()) , new Vector2d(0, 7), 12,1),
+                new GUIObject("RENDER DISTANCE: " + settings.getRenderDistance(),   new Vector2d(0, -7), 12,1),
+                new GUIObject("BACK" ,                  new Vector2d(0, -35), 12,1),
+        };
+
+        controlsMenuGUI = new GUIObject[]{
+                new GUIObject("FORWARD: " + quickConvertKeyCode(settings.getKeyForward()) ,     new Vector2d(-35, 30), 6, 1),
+                new GUIObject("BACK: " + quickConvertKeyCode(settings.getKeyBack()),            new Vector2d(35, 30), 6, 1),
+                new GUIObject("LEFT: " + quickConvertKeyCode(settings.getKeyLeft()),            new Vector2d(-35, 15), 6, 1),
+                new GUIObject("RIGHT: " + quickConvertKeyCode(settings.getKeyRight()),          new Vector2d(35, 15), 6, 1),
+                new GUIObject("SNEAK: " + quickConvertKeyCode(settings.getKeySneak()),          new Vector2d(-35, 0), 6, 1),
+                new GUIObject("DROP: " + quickConvertKeyCode(settings.getKeyDrop()),            new Vector2d(35, 0), 6, 1),
+                new GUIObject("JUMP: " + quickConvertKeyCode(settings.getKeyJump()),            new Vector2d(-35, -15), 6, 1),
+                new GUIObject("INVENTORY: " + quickConvertKeyCode(settings.getKeyInventory()) , new Vector2d(35, -15), 6, 1),
+                new GUIObject("BACK" , new Vector2d(0, -30), 5, 1),
+        };
+
+        worldSelectionGUI = new GUIObject[]{
+                new GUIObject("WORLD 1" + disk.worldSize((byte)1) , new Vector2d(0, 10), 10, 1),
+                new GUIObject("WORLD 2" + disk.worldSize((byte)2) , new Vector2d(0, -3), 10,1),
+                new GUIObject("WORLD 3" + disk.worldSize((byte)3) , new Vector2d(0, -16), 10,1),
+                new GUIObject("WORLD 4" + disk.worldSize((byte)4) , new Vector2d(0, -29), 10,1),
+                new GUIObject("BACK" , new Vector2d(0, -42), 10,1),
+        };
+
         //seed the random generator
         random.setSeed(new Date().getTime());
 
@@ -223,48 +267,6 @@ public class MainMenu {
         }
 
         selectTitleScreenText();
-    }
-    public void initializeGUI(){
-
-        //titleMusic = playMusic("main_menu");
-        //creditsMusic = playMusic("credits");
-        //creditsMusic.stop();
-
-        mainMenuGUI = new GUIObject[]{
-                new GUIObject("SINGLEPLAYER" , new Vector2d(0, 10), 10, 1),
-                new GUIObject("MULTIPLAYER" , new Vector2d(0, -3), 10,1),
-                new GUIObject("SETTINGS" , new Vector2d(0, -16), 10,1),
-                new GUIObject("CREDITS" , new Vector2d(0, -29), 10,1),
-                new GUIObject("QUIT" , new Vector2d(0, -42), 10,1),
-        };
-
-        mainMenuSettingsMenuGUI = new GUIObject[]{
-                new GUIObject("CONTROLS" ,             new Vector2d(0, 35), 12, 1),
-                new GUIObject("VSYNC: " + boolToString(settings.getSettingsVsync()),            new Vector2d(0, 21), 12, 1),
-                new GUIObject("GRAPHICS MODE: " + graphicsThing(settings.getGraphicsMode()) , new Vector2d(0, 7), 12,1),
-                new GUIObject("RENDER DISTANCE: " + settings.getRenderDistance(),   new Vector2d(0, -7), 12,1),
-                new GUIObject("BACK" ,                  new Vector2d(0, -35), 12,1),
-        };
-
-        controlsMenuGUI = new GUIObject[]{
-                new GUIObject("FORWARD: " + quickConvertKeyCode(settings.getKeyForward()) ,     new Vector2d(-35, 30), 6, 1),
-                new GUIObject("BACK: " + quickConvertKeyCode(settings.getKeyBack()),            new Vector2d(35, 30), 6, 1),
-                new GUIObject("LEFT: " + quickConvertKeyCode(settings.getKeyLeft()),            new Vector2d(-35, 15), 6, 1),
-                new GUIObject("RIGHT: " + quickConvertKeyCode(settings.getKeyRight()),          new Vector2d(35, 15), 6, 1),
-                new GUIObject("SNEAK: " + quickConvertKeyCode(settings.getKeySneak()),          new Vector2d(-35, 0), 6, 1),
-                new GUIObject("DROP: " + quickConvertKeyCode(settings.getKeyDrop()),            new Vector2d(35, 0), 6, 1),
-                new GUIObject("JUMP: " + quickConvertKeyCode(settings.getKeyJump()),            new Vector2d(-35, -15), 6, 1),
-                new GUIObject("INVENTORY: " + quickConvertKeyCode(settings.getKeyInventory()) , new Vector2d(35, -15), 6, 1),
-                new GUIObject("BACK" , new Vector2d(0, -30), 5, 1),
-        };
-
-        worldSelectionGUI = new GUIObject[]{
-                new GUIObject("WORLD 1" + disk.worldSize((byte)1) , new Vector2d(0, 10), 10, 1),
-                new GUIObject("WORLD 2" + disk.worldSize((byte)2) , new Vector2d(0, -3), 10,1),
-                new GUIObject("WORLD 3" + disk.worldSize((byte)3) , new Vector2d(0, -16), 10,1),
-                new GUIObject("WORLD 4" + disk.worldSize((byte)4) , new Vector2d(0, -29), 10,1),
-                new GUIObject("BACK" , new Vector2d(0, -42), 10,1),
-        };
     }
 
     public byte getMainMenuPage(){
