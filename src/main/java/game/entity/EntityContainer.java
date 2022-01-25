@@ -19,4 +19,8 @@ public class EntityContainer {
         return entities;
     }
 
+    public void onTick(){
+
+    }
+
 }
