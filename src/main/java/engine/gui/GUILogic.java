@@ -1,6 +1,5 @@
 package engine.gui;
 
-import com.sun.tools.javac.Main;
 import engine.Mouse;
 import engine.Window;
 import engine.disk.SQLiteDiskHandler;
