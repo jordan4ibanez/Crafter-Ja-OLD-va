@@ -1,28 +1,30 @@
 package game.entity.mob;
 
+import engine.time.Delta;
+
 //this is an Object which holds methods, amazing
 public interface MobInterface {
     //what a mob does each tick
-    default void onTick(int thisMob){
+    default void onTick(Mob thisMob, Delta delta){
 
     }
     //what happens when a mob is spawned
-    default void onSpawn(){
+    default void onSpawn(Mob mob, Delta delta){
 
     }
 
     //what the mob does when right clicked
-    default void onRightClick(int thisMob){
+    default void onRightClick(Mob thisMob, Delta delta){
 
     }
 
     //what happens when the mob dies
-    default void onDeath(int thisMob){
+    default void onDeath(Mob thisMob, Delta delta){
 
     }
 
     //what the mob does when punched
-    default void onPunch(int thisMob){
+    default void onPunch(Mob thisMob, Delta delta){
 
     }
 }
