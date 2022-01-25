@@ -39,7 +39,6 @@ public class Player {
     }
     public void setChunk(Chunk chunk){
         if (this.chunk == null){
-            this.wieldHand.setChunk(chunk);
             this.chunk = chunk;
         }
     }
@@ -83,6 +82,7 @@ public class Player {
     public void initialize(Inventory inventory, Camera camera) {
         this.wieldHand = new WieldHand(this, delta, inventory, camera);
         this.viewBobbing = new ViewBobbing(this, delta);
+        this.wieldHand.setChunk(chunk);
     }
 
 
