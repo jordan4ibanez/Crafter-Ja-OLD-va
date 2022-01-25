@@ -312,6 +312,12 @@ public class Crafter {
 
         //finally, pass literally everything to the scene handler
 
+        sceneHandler.passObjects(window, mainMenu, mouse, chunk, memorySweeper, inventoryLogic,guiLogic,cloud,player,camera,delta,controls,sqLiteDiskHandler,timeOfDay,timer
+        ,mobSpawning,mobMeshBuilder,entityContainer,chunkUpdateHandler,soundAPI,gameRenderer,mainMenuRenderer);
+
+        //then the game starts
+        sceneHandler.handleSceneLogic();
+
     }
 
 
