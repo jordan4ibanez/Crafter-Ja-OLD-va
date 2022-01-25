@@ -3,6 +3,7 @@ package engine.sound;
 import engine.Window;
 import engine.graphics.Camera;
 import org.joml.Math;
+import org.joml.Vector3d;
 
 import static org.lwjgl.openal.AL10.AL_PITCH;
 
@@ -28,6 +29,9 @@ public class SoundAPI {
         }
     }
 
+    public void updateListenerPos(){
+        this.soundManager.updateListenerPosition();
+    }
 
     public void playSound(String name, float posX, float posY, float posZ, boolean randomPitch) {
         SoundBuffer soundBuffer = null;
