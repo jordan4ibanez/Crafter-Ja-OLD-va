@@ -6,7 +6,7 @@ import org.joml.Vector2f;
 import static org.lwjgl.glfw.GLFW.*;
 
 
-final public class Mouse {
+public class Mouse {
 
     private Window window;
 
@@ -19,6 +19,19 @@ final public class Mouse {
     public void setWindow(Window window){
         if (this.window == null){
             this.window = window;
+            glfwSetCursorPosCallback(window.getWindowHandle(), (windowHandle, xPos, yPos) -> {
+                this.pos.x = xPos;
+                this.pos.y = yPos;
+            });
+
+            glfwSetCursorEnterCallback(window.getWindowHandle(), (windowHandle, entered) -> inWindow = entered);
+
+            glfwSetMouseButtonCallback(window.getWindowHandle(), (windowHandle, button, action, mode) -> {
+                leftButtonPressed = button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS;
+                rightButtonPressed = button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS;
+            });
+
+            glfwSetScrollCallback(window.getWindowHandle(), (windowHandle, xOffset, yOffset) -> scroll = (float)yOffset);
         }
     }
 
@@ -44,23 +57,6 @@ final public class Mouse {
         pos.set(window.getWidth() / 2f, window.getHeight() / 2f);
 
         oldPos.set(pos);
-    }
-
-    public void initMouseInput(){
-
-        glfwSetCursorPosCallback(window.getWindowHandle(), (windowHandle, xPos, yPos) -> {
-            this.pos.x = xPos;
-            this.pos.y = yPos;
-        });
-
-        glfwSetCursorEnterCallback(window.getWindowHandle(), (windowHandle, entered) -> inWindow = entered);
-
-        glfwSetMouseButtonCallback(window.getWindowHandle(), (windowHandle, button, action, mode) -> {
-            leftButtonPressed = button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS;
-            rightButtonPressed = button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS;
-        });
-
-        glfwSetScrollCallback(window.getWindowHandle(), (windowHandle, xOffset, yOffset) -> scroll = (float)yOffset);
     }
 
     public Vector2f getDisplVec(){
