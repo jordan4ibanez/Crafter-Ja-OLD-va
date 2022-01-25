@@ -233,6 +233,7 @@ public class Crafter {
         chunk.setSqLiteDiskHandler(this.disk);
         chunk.setChunkUpdateHandler(this.chunkUpdateHandler);
         chunk.setChunkMeshGenerator(this.chunkMeshGenerator);
+        chunk.setLight(this.light);
 
         //chunk mesh generator
         chunkMeshGenerator.setWindow(this.window);

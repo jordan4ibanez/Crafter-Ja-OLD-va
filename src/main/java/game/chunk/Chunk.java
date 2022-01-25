@@ -483,7 +483,13 @@ public class Chunk {
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
 
-        byte[] lightData = map.get(new Vector2i(chunkX, chunkZ)).getLight();
+        ChunkObject chunk = map.get(new Vector2i(chunkX, chunkZ));
+
+        if (chunk == null){
+            return 0;
+        }
+
+        byte[] lightData = chunk.getLight();
 
         if (lightData == null){
             return 0;
