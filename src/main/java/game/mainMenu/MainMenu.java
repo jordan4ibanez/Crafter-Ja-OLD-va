@@ -9,6 +9,7 @@ import engine.gui.GUIObject;
 import engine.gui.TextHandling;
 import engine.scene.SceneHandler;
 import engine.settings.Settings;
+import engine.sound.SoundAPI;
 import engine.time.Delta;
 import game.player.Player;
 import org.joml.Vector2d;
@@ -35,6 +36,7 @@ public class MainMenu {
     private SceneHandler sceneHandler;
     private Player player;
     private final TextHandling textHandling = new TextHandling();
+    private SoundAPI soundAPI;
 
     private byte[][] titleBlocks;
     private double[][] titleOffsets;
@@ -155,6 +157,12 @@ public class MainMenu {
     public void setVersionName(String versionName){
         if (this.versionName == null){
             this.versionName = versionName;
+        }
+    }
+
+    public void setSoundAPI(SoundAPI soundAPI){
+        if (this.soundAPI == null){
+            this.soundAPI = soundAPI;
         }
     }
 
@@ -381,7 +389,7 @@ public class MainMenu {
 
             if (mouse.isLeftButtonPressed() && selection >= 0 && !mouseButtonPushed && !mouseButtonWasPushed) {
                 mouseButtonPushed = true;
-                //playSound("button");
+                soundAPI.playSound("button");
 
                 if (selection == 0) {
                     resetMainMenu();
@@ -424,7 +432,7 @@ public class MainMenu {
             //5 - back
 
             if (selection >= 0 && mouse.isLeftButtonPressed() && !mouseButtonPushed && !mouseButtonWasPushed) {
-                //playSound("button");
+                soundAPI.playSound("button");
                 mouseButtonPushed = true;
 
                 switch (selection) {
@@ -539,7 +547,7 @@ public class MainMenu {
 
             if (lockedOnButtonInput < 0 && !pollingButtonInputs && selection >= 0 && mouse.isLeftButtonPressed() && !mouseButtonPushed && !mouseButtonWasPushed) {
 
-                //playSound("button");
+                soundAPI.playSound("button");
 
                 switch (selection) {
                     case 0 -> {
@@ -597,7 +605,7 @@ public class MainMenu {
 
 
             if (mouse.isLeftButtonPressed() && selection >= 0 && !mouseButtonPushed && !mouseButtonWasPushed) {
-                //playSound("button");
+                soundAPI.playSound("button");
                 mouseButtonPushed = true;
 
                 if (selection < 4) {
@@ -695,7 +703,7 @@ public class MainMenu {
 
 
             if (mouse.isLeftButtonPressed() && selection >= 0 && !mouseButtonPushed && !mouseButtonWasPushed) {
-                //playSound("button");
+                soundAPI.playSound("button");
                 mouseButtonPushed = true;
 
                 //literally split the text into 2
@@ -735,7 +743,7 @@ public class MainMenu {
             byte selection = guiLogic.doGUIMouseCollisionDetection(multiPlayerLoadingGUI);
 
             if (mouse.isLeftButtonPressed() && selection >= 0 && !mouseButtonPushed && !mouseButtonWasPushed) {
-                //playSound("button");
+                soundAPI.playSound("button");
                 mouseButtonPushed = true;
 
                 if (selection == 1){
@@ -751,7 +759,7 @@ public class MainMenu {
             byte selection = guiLogic.doGUIMouseCollisionDetection(multiplayerFailureGUI);
 
             if (mouse.isLeftButtonPressed() && selection >= 0 && !mouseButtonPushed && !mouseButtonWasPushed) {
-                //playSound("button");
+                soundAPI.playSound("button");
                 mouseButtonPushed = true;
 
                 if (selection == 1){
@@ -968,7 +976,7 @@ public class MainMenu {
 
     public void easterEgg(){
         if (date.equals("01/08")) {
-            //playSound("easter_egg_1");
+            soundAPI.playSound("easter_egg_1");
         }
     }
 
@@ -1221,6 +1229,7 @@ public class MainMenu {
             "The only winning move is not to play!",
             "How about a nice game of chess?",
             "Open gate, walk through gate, close gate!",
-            "Everything's an object!"
+            "Everything's an object!",
+            "Too many objects!"
     };
 }

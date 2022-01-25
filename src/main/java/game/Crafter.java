@@ -280,6 +280,7 @@ public class Crafter {
         mainMenu.setSceneHandler(this.sceneHandler);
         mainMenu.setPlayer(this.player);
         mainMenu.setVersionName(this.versionName);
+        mainMenu.setSoundAPI(this.soundAPI);
         mainMenu.initializeGUI();
 
         //light
