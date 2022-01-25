@@ -28,6 +28,35 @@ public class GUILogic {
     public void setSettings(Settings settings){
         if (this.settings == null){
             this.settings = settings;
+            gamePauseMenuGUI = new GUIObject[]{
+                    new GUIObject("CONTINUE" , new Vector2d(0, 30), 10, 1),
+                    new GUIObject("SETTINGS" , new Vector2d(0, 10), 10,1),
+                    new GUIObject("QUIT TO MAIN MENU" , new Vector2d(0, -10), 10,1),
+                    new GUIObject("QUIT GAME" , new Vector2d(0, -30), 10,1),
+            };
+
+            gameSettingsMenuGUI = new GUIObject[]{
+                    new GUIObject("CONTROLS" ,             new Vector2d(0, 35), 12, 1),
+                    new GUIObject("VSYNC: " + boolToString(settings.getSettingsVsync()),            new Vector2d(0, 21), 12, 1),
+                    new GUIObject("GRAPHICS MODE: " + graphicsThing(settings.getGraphicsMode()) , new Vector2d(0, 7), 12,1),
+                    new GUIObject("RENDER DISTANCE: " + settings.getRenderDistance(),   new Vector2d(0, -7), 12,1),
+                    //new GUIObject("CHUNK LOADING: " + convertChunkLoadText(settings.getSettingsChunkLoad()), new Vector2d(0, -21), 12,1),
+                    new GUIObject("BACK" ,                  new Vector2d(0, -35), 12,1),
+            };
+
+            controlsMenuGUI = new GUIObject[]{
+                    new GUIObject("FORWARD: " + quickConvertKeyCode(settings.getKeyForward()) , new Vector2d(-35, 30), 6, 1),
+                    new GUIObject("BACK: " + quickConvertKeyCode(settings.getKeyBack()), new Vector2d(35, 30), 6, 1),
+                    new GUIObject("LEFT: " + quickConvertKeyCode(settings.getKeyLeft()), new Vector2d(-35, 15), 6, 1),
+                    new GUIObject("RIGHT: " + quickConvertKeyCode(settings.getKeyRight()), new Vector2d(35, 15), 6, 1),
+
+                    new GUIObject("SNEAK: " + quickConvertKeyCode(settings.getKeySneak()), new Vector2d(-35, 0), 6, 1),
+                    new GUIObject("DROP: " + quickConvertKeyCode(settings.getKeyDrop()), new Vector2d(35, 0), 6, 1),
+                    new GUIObject("JUMP: " + quickConvertKeyCode(settings.getKeyJump()), new Vector2d(-35, -15), 6, 1),
+                    new GUIObject("INVENTORY: " + quickConvertKeyCode(settings.getKeyInventory()) , new Vector2d(35, -15), 6, 1),
+
+                    new GUIObject("BACK" , new Vector2d(0, -30), 5, 1),
+            };
         }
     }
     public void setMouse(Mouse mouse){
@@ -93,43 +122,14 @@ public class GUILogic {
     //2 buttons settings
     private byte menuPage = 0;
 
-    private final GUIObject[] gamePauseMenuGUI;
+    private GUIObject[] gamePauseMenuGUI;
 
-    private final GUIObject[] gameSettingsMenuGUI;
+    private GUIObject[] gameSettingsMenuGUI;
 
-    private final GUIObject[] controlsMenuGUI;
+    private GUIObject[] controlsMenuGUI;
 
     public GUILogic(){
 
-        gamePauseMenuGUI = new GUIObject[]{
-                new GUIObject("CONTINUE" , new Vector2d(0, 30), 10, 1),
-                new GUIObject("SETTINGS" , new Vector2d(0, 10), 10,1),
-                new GUIObject("QUIT TO MAIN MENU" , new Vector2d(0, -10), 10,1),
-                new GUIObject("QUIT GAME" , new Vector2d(0, -30), 10,1),
-        };
-
-        gameSettingsMenuGUI = new GUIObject[]{
-                new GUIObject("CONTROLS" ,             new Vector2d(0, 35), 12, 1),
-                new GUIObject("VSYNC: " + boolToString(settings.getSettingsVsync()),            new Vector2d(0, 21), 12, 1),
-                new GUIObject("GRAPHICS MODE: " + graphicsThing(settings.getGraphicsMode()) , new Vector2d(0, 7), 12,1),
-                new GUIObject("RENDER DISTANCE: " + settings.getRenderDistance(),   new Vector2d(0, -7), 12,1),
-                //new GUIObject("CHUNK LOADING: " + convertChunkLoadText(settings.getSettingsChunkLoad()), new Vector2d(0, -21), 12,1),
-                new GUIObject("BACK" ,                  new Vector2d(0, -35), 12,1),
-        };
-
-        controlsMenuGUI = new GUIObject[]{
-                new GUIObject("FORWARD: " + quickConvertKeyCode(settings.getKeyForward()) , new Vector2d(-35, 30), 6, 1),
-                new GUIObject("BACK: " + quickConvertKeyCode(settings.getKeyBack()), new Vector2d(35, 30), 6, 1),
-                new GUIObject("LEFT: " + quickConvertKeyCode(settings.getKeyLeft()), new Vector2d(-35, 15), 6, 1),
-                new GUIObject("RIGHT: " + quickConvertKeyCode(settings.getKeyRight()), new Vector2d(35, 15), 6, 1),
-
-                new GUIObject("SNEAK: " + quickConvertKeyCode(settings.getKeySneak()), new Vector2d(-35, 0), 6, 1),
-                new GUIObject("DROP: " + quickConvertKeyCode(settings.getKeyDrop()), new Vector2d(35, 0), 6, 1),
-                new GUIObject("JUMP: " + quickConvertKeyCode(settings.getKeyJump()), new Vector2d(-35, -15), 6, 1),
-                new GUIObject("INVENTORY: " + quickConvertKeyCode(settings.getKeyInventory()) , new Vector2d(35, -15), 6, 1),
-
-                new GUIObject("BACK" , new Vector2d(0, -30), 5, 1),
-        };
     }
 
     public void sendAndFlushChatMessage(){
