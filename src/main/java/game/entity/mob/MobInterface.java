@@ -1,11 +1,13 @@
 package game.entity.mob;
 
 import engine.time.Delta;
+import game.chunk.Chunk;
+import game.entity.collision.Collision;
 
 //this is an Object which holds methods, amazing
 public interface MobInterface {
     //what a mob does each tick
-    default void onTick(Mob thisMob, Delta delta){
+    default void onTick(Chunk chunk, Collision collision, Mob thisMob, Delta delta){
 
     }
     //what happens when a mob is spawned
