@@ -186,7 +186,7 @@ public class Player {
     }
 
     public void startDiggingAnimation(){
-        System.out.println("flarp");
+        //System.out.println("flarp");
     }
 
     public void addPlayerInertia(float x, float y, float z){

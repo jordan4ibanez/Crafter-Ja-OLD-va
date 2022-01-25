@@ -14,7 +14,7 @@ import org.joml.Vector3i;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Chunk {
     private Disk disk;
@@ -28,7 +28,7 @@ public class Chunk {
     private Settings settings;
     private Delta delta;
     private float saveTimer = 0f;
-    private final HashMap<Vector2i, ChunkObject> map = new HashMap<>();
+    private final ConcurrentHashMap<Vector2i, ChunkObject> map = new ConcurrentHashMap<>();
 
     public Chunk(){
     }
