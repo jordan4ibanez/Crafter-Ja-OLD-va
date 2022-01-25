@@ -135,7 +135,7 @@ public class SceneHandler {
 
     }
 
-    public void handleSceneLogic() throws Exception {
+    public void handleSceneLogic() {
 
         //move the camera into position for the main menu
         if (currentScene == 0){
@@ -203,7 +203,7 @@ public class SceneHandler {
     }
 
 
-    private void mainMenuLoop() throws IOException {
+    private void mainMenuLoop() {
         camera.setCameraPosition(new Vector3d(0,-8,0));
         camera.setCameraRotation(new Vector3f(0,0,0));
         window.windowUpdate();
@@ -214,7 +214,7 @@ public class SceneHandler {
     }
 
     //main game loop
-    private void gameLoop() throws Exception {
+    private void gameLoop() {
         sqLiteDiskHandler.poll();
         delta.calculateDelta();
         //indexLight();
