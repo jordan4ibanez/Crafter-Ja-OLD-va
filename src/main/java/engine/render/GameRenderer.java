@@ -144,9 +144,9 @@ public class GameRenderer {
         //create uniform for light value
         entityShaderProgram.createUniform("light");
 
-        window.setWindowClearColor(0.53f,0.81f,0.92f,0.f);
+        //window.setWindowClearColor(0.53f,0.81f,0.92f,0.f);
 
-        window.updateScale();
+        //window.updateScale();
     }
 
     public float getzNear(){
