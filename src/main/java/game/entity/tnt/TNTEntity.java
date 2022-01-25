@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 public class TNTEntity {
 
+    /*
     private final float tntSize = 0.5f;
     private final int MAX_ID_AMOUNT = 126_000;
     private int totalTNT = 0;
@@ -295,4 +296,5 @@ public class TNTEntity {
     //public void cleanTNTUp(){
         //mesh.cleanUp(false);
     //}
+     */
 }
