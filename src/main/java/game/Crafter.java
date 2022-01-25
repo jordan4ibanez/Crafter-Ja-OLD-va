@@ -20,6 +20,7 @@ import engine.time.Timer;
 import game.chat.Chat;
 import game.chunk.BiomeGenerator;
 import game.chunk.Chunk;
+import game.chunk.ChunkMeshGenerator;
 import game.chunk.ChunkUpdateHandler;
 import game.clouds.Cloud;
 import game.crafting.InventoryLogic;
@@ -28,6 +29,8 @@ import game.entity.collision.Collision;
 import game.entity.collision.MobCollision;
 import game.entity.collision.ParticleCollision;
 import game.entity.item.ItemDefinitionContainer;
+import game.entity.mob.MobMeshBuilder;
+import game.entity.mob.MobSpawning;
 import game.light.Light;
 import game.mainMenu.MainMenu;
 import game.player.Player;
@@ -37,7 +40,6 @@ public class Crafter {
 
     public void main(String[] args) {
         Crafter crafter = new Crafter();
-        crafter.runGame();
     }
 
     private final String versionName = "Crafter 0.08a";
@@ -71,6 +73,7 @@ public class Crafter {
     private final Chat chat;
     private final BiomeGenerator biomeGenerator;
     private final Chunk chunk;
+    private final ChunkMeshGenerator chunkMeshGenerator;
     private final ChunkUpdateHandler chunkUpdateHandler;
     private final Cloud cloud;
     private final InventoryLogic inventoryLogic;
@@ -78,6 +81,8 @@ public class Crafter {
     private final Collision collision;
     private final MobCollision mobCollision;
     private final ParticleCollision particleCollision;
+    private final MobMeshBuilder mobMeshBuilder;
+    private final MobSpawning mobSpawning;
     private final ItemDefinitionContainer itemDefinitionContainer;
     private final MainMenu mainMenu;
     private final Light light;
@@ -115,6 +120,7 @@ public class Crafter {
         this.chat                    = new Chat();
         this.biomeGenerator          = new BiomeGenerator();
         this.chunk                   = new Chunk();
+        this.chunkMeshGenerator      = new ChunkMeshGenerator();
         this.chunkUpdateHandler      = new ChunkUpdateHandler();
         this.cloud                   = new Cloud();
         this.inventoryLogic          = new InventoryLogic();
@@ -122,6 +128,8 @@ public class Crafter {
         this.collision               = new Collision();
         this.mobCollision            = new MobCollision();
         this.particleCollision       = new ParticleCollision();
+        this.mobMeshBuilder          = new MobMeshBuilder();
+        this.mobSpawning             = new MobSpawning();
         this.itemDefinitionContainer = new ItemDefinitionContainer();
         this.mainMenu                = new MainMenu();
         this.light                   = new Light();
@@ -215,6 +223,13 @@ public class Crafter {
         chunk.setPlayer(this.player);
         chunk.setSqLiteDiskHandler(this.sqLiteDiskHandler);
         chunk.setChunkUpdateHandler(this.chunkUpdateHandler);
+        chunk.setChunkMeshGenerator(this.chunkMeshGenerator);
+
+        //chunk mesh generator
+        chunkMeshGenerator.setWindow(this.window);
+        chunkMeshGenerator.setChunkUpdateHandler(this.chunkUpdateHandler);
+        chunkMeshGenerator.setChunk(this.chunk);
+        new Thread(chunkMeshGenerator).start(); //send it on it's way
 
         //chunk update handler
         chunkUpdateHandler.setDelta(this.delta);
@@ -260,7 +275,7 @@ public class Crafter {
 
         //light
         light.setChunk(this.chunk);
-        light.setChunkMeshGenerator(this.chunk.getChunkMeshGenerator());
+        light.setChunkMeshGenerator(this.chunkMeshGenerator);
         light.setWindow(this.window);
 
         new Thread(this.light).start(); //send light off on it's own thread
@@ -281,14 +296,16 @@ public class Crafter {
         ray.setChunk(this.chunk);
 
 
+        //finally, pass literally everything to the scene handler
+
     }
 
 
-
+    /*
     //core game engine elements
     //load everything
-    public void runGame(){
-        try{
+    //public void runGame(){
+        //try{
             //loadSettings();
 
             //initWindow(versionName, getSettingsVsync());
@@ -339,4 +356,5 @@ public class Crafter {
         //cleanupSoundManager();
         //cleanupRenderer();
     }
+     */
 }

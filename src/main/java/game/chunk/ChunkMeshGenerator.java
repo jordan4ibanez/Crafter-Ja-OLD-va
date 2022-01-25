@@ -11,17 +11,34 @@ import org.joml.Vector3i;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class ChunkMeshGenerator implements Runnable{
-    private final Window window;
-    private final ChunkUpdateHandler chunkUpdateHandler;
-    private final BlockDefinitionContainer blockDefinitionContainer;
-    private final Chunk chunk;
 
-    public ChunkMeshGenerator(Window window, ChunkUpdateHandler chunkUpdateHandler, Chunk chunk){
-        this.window = window;
-        this.chunkUpdateHandler = chunkUpdateHandler;
-        this.chunk = chunk;
-        this.blockDefinitionContainer = new BlockDefinitionContainer();
+    private final BlockDefinitionContainer blockDefinitionContainer = new BlockDefinitionContainer();
+
+    private Window window;
+    private ChunkUpdateHandler chunkUpdateHandler;
+    private Chunk chunk;
+
+    public ChunkMeshGenerator(){
     }
+
+    public void setWindow(Window window){
+        if (this.window == null){
+            this.window = window;
+        }
+    }
+
+    public void setChunkUpdateHandler(ChunkUpdateHandler chunkUpdateHandler){
+        if (this.chunkUpdateHandler == null){
+            this.chunkUpdateHandler = chunkUpdateHandler;
+        }
+    }
+
+    public void setChunk(Chunk chunk){
+        if (this.chunk == null) {
+            this.chunk = chunk;
+        }
+    }
+
 
     //all data held on this thread
 
