@@ -170,4 +170,8 @@ public class ItemDefinitionContainer {
     public boolean isTool(String name){
         return definitions.get(name).isTool();
     }
+
+    public boolean isBlock(String name){
+        return definitions.get(name).isBlock();
+    }
 }
