@@ -5,38 +5,34 @@ import org.joml.Vector3f;
 
 
 final public class MobDefinition {
-    private final int numberOfMobDefinitions = 9;
-    private int count = 0;
 
-    private final Mesh[][] bodyMeshes = new Mesh[numberOfMobDefinitions][0];
-    private final MobInterface[] mobInterface = new MobInterface[numberOfMobDefinitions];
-    private final String[] mobName = new String[numberOfMobDefinitions];
-    private final Vector3f[][] bodyOffsets = new Vector3f[numberOfMobDefinitions][0];
-    private final Vector3f[][] bodyRotations = new Vector3f[numberOfMobDefinitions][0];
-    private final float[] height = new float[numberOfMobDefinitions];
-    private final float[] width = new float[numberOfMobDefinitions];
-    private final String[] hurtSound = new String[numberOfMobDefinitions];
-    private final byte[] baseHealth = new byte[numberOfMobDefinitions];
-    private final boolean[] backFaceCulling = new boolean[numberOfMobDefinitions];
-
-
-    public void registerMob(String name, String newHurtSound, boolean newBackFaceCulling, byte newBaseHealth, Mesh[] newBodyMeshes,Vector3f[] newBodyOffsets,Vector3f[] newBodyRotations, float newHeight, float newWidth, MobInterface newMobInterface){
-        bodyMeshes[count] = newBodyMeshes;
-        mobInterface[count] = newMobInterface;
-        mobName[count] = name;
-        bodyOffsets[count] = newBodyOffsets;
-        bodyRotations[count] = newBodyRotations;
-        height[count] = newHeight;
-        width[count] = newWidth;
-        hurtSound[count] = newHurtSound;
-        baseHealth[count] = newBaseHealth;
-        backFaceCulling[count] = newBackFaceCulling;
-
-        count++;
+    private final Mesh[] bodyMeshes;
+    private final MobInterface mobInterface;
+    private final String mobName;
+    private final Vector3f[] bodyOffsets;
+    private final Vector3f[] bodyRotations;
+    private final float height;
+    private final float width;
+    private final String hurtSound;
+    private final byte baseHealth;
+    private final boolean backFaceCulling;
+    
+    public MobDefinition(String name, String newHurtSound, boolean newBackFaceCulling, byte newBaseHealth, Mesh[] newBodyMeshes,Vector3f[] newBodyOffsets,Vector3f[] newBodyRotations, float newHeight, float newWidth, MobInterface newMobInterface){
+        bodyMeshes = newBodyMeshes;
+        mobInterface = newMobInterface;
+        mobName = name;
+        bodyOffsets = newBodyOffsets;
+        bodyRotations = newBodyRotations;
+        height = newHeight;
+        width = newWidth;
+        hurtSound = newHurtSound;
+        baseHealth = newBaseHealth;
+        backFaceCulling = newBackFaceCulling;
     }
 
     //entry point
     //todo: make this not a confusing linkage
+    /*
     public void registerMobs(){
         Human.registerHumanMob();
         Pig.registerPigMob();
@@ -47,36 +43,37 @@ final public class MobDefinition {
         Chicken.registerChickenMob();
         Cow.registerCowMob();
     }
+     */
 
-    public Mesh[] getMobDefinitionBodyMeshes(int ID){
-        return bodyMeshes[ID];
+    public Mesh[] getBodyMeshes(){
+        return bodyMeshes;
     }
-    public MobInterface getMobDefinitionInterface(int ID){
-        return mobInterface[ID];
+    public MobInterface getInterface(){
+        return mobInterface;
     }
-    public String getMobDefinitionName(int ID){
-        return mobName[ID];
+    public String getMobDefinitionName(){
+        return mobName;
     }
-    public Vector3f[] getMobDefinitionBodyOffsets(int ID){
-        return bodyOffsets[ID];
+    public Vector3f[] getBodyOffsets(){
+        return bodyOffsets;
     }
-    public Vector3f[] getMobDefinitionBodyRotations(int ID){
-        return bodyRotations[ID];
+    public Vector3f[] getBodyRotations(){
+        return bodyRotations;
     }
-    public float getMobDefinitionHeight(int ID){
-        return height[ID];
+    public float getHeight(){
+        return height;
     }
-    public float getMobDefinitionWidth(int ID){
-        return width[ID];
+    public float getWidth(){
+        return width;
     }
-    public String getMobDefinitionHurtSound(int ID){
-        return hurtSound[ID];
+    public String getHurtSound(){
+        return hurtSound;
     }
-    public byte getMobDefinitionBaseHealth(int ID){
-        return baseHealth[ID];
+    public byte getBaseHealth(){
+        return baseHealth;
     }
-    public boolean getMobBackFaceCulling(int ID){
-        return backFaceCulling[ID];
+    public boolean getBackFaceCulling(){
+        return backFaceCulling;
     }
 
 }
