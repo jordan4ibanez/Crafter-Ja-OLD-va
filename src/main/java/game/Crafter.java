@@ -3,7 +3,7 @@ package game;
 import engine.*;
 import engine.compression.Compression;
 import engine.debug.RuntimeInfo;
-import engine.disk.SQLiteDiskHandler;
+import engine.disk.Disk;
 import engine.graphics.Camera;
 import engine.gui.GUI;
 import engine.gui.GUILogic;
@@ -48,7 +48,7 @@ public class Crafter {
     private final Compression compression;
     private final RuntimeInfo runtimeInfo;
     private final Disk disk;
-    private final SQLiteDiskHandler sqLiteDiskHandler;
+    private final Disk disk;
     private final Camera camera;
     private final GUI gui;
     private final GUILogic guiLogic;
@@ -96,7 +96,7 @@ public class Crafter {
         this.compression             = new Compression();
         this.runtimeInfo             = new RuntimeInfo();
         this.disk                    = new Disk();
-        this.sqLiteDiskHandler       = new SQLiteDiskHandler();
+        this.disk = new Disk();
         this.camera                  = new Camera();
         this.gui                     = new GUI(this.versionName);
         this.guiLogic                = new GUILogic();
@@ -144,13 +144,13 @@ public class Crafter {
             window.setDelta(this.delta);
 
             //disk
-            disk.setSqLiteDiskHandler(this.sqLiteDiskHandler);
+            disk.setSqLiteDiskHandler(this.disk);
 
             //SQLiteDiskHandler
-            sqLiteDiskHandler.setBiomeGenerator(this.biomeGenerator);
-            sqLiteDiskHandler.setChunk(this.chunk);
-            sqLiteDiskHandler.setPlayer(this.player);
-            sqLiteDiskHandler.setInventoryLogic(this.inventoryLogic);
+            disk.setBiomeGenerator(this.biomeGenerator);
+            disk.setChunk(this.chunk);
+            disk.setPlayer(this.player);
+            disk.setInventoryLogic(this.inventoryLogic);
 
             //camera
             camera.setMouse(this.mouse);
@@ -164,7 +164,7 @@ public class Crafter {
             guiLogic.setPlayer(this.player);
             guiLogic.setDelta(this.delta);
             guiLogic.setMainMenu(this.mainMenu);
-            guiLogic.setSqLiteDiskHandler(this.sqLiteDiskHandler);
+            guiLogic.setSqLiteDiskHandler(this.disk);
             guiLogic.setSceneHandler(this.sceneHandler);
 
             //networking
@@ -233,7 +233,7 @@ public class Crafter {
         chunk.setDelta(this.delta);
         chunk.setSettings(this.settings);
         chunk.setPlayer(this.player);
-        chunk.setSqLiteDiskHandler(this.sqLiteDiskHandler);
+        chunk.setSqLiteDiskHandler(this.disk);
         chunk.setChunkUpdateHandler(this.chunkUpdateHandler);
         chunk.setChunkMeshGenerator(this.chunkMeshGenerator);
 
@@ -311,7 +311,7 @@ public class Crafter {
 
         //finally, pass literally everything to the scene handler
 
-        sceneHandler.passObjects(window, mainMenu, mouse, chunk, memorySweeper, inventoryLogic,guiLogic,cloud,player,camera,delta,controls,sqLiteDiskHandler,timeOfDay,timer
+        sceneHandler.passObjects(window, mainMenu, mouse, chunk, memorySweeper, inventoryLogic,guiLogic,cloud,player,camera,delta,controls, disk,timeOfDay,timer
         ,mobSpawning,mobMeshBuilder,entityContainer,chunkUpdateHandler,soundAPI,gameRenderer,mainMenuRenderer);
 
         //then the game starts

@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SQLiteDiskAccessThread implements Runnable {
-    private final SQLiteDiskHandler sqLiteDiskHandler;
+    private final Disk disk;
 
     private Connection connection;
     private DatabaseMetaData meta;
@@ -19,8 +19,8 @@ public class SQLiteDiskAccessThread implements Runnable {
     private final AtomicBoolean running = new AtomicBoolean(false);
 
     //external pointer to other thread's object held internal
-    public SQLiteDiskAccessThread(SQLiteDiskHandler sqLiteDiskHandler){
-        this.sqLiteDiskHandler = sqLiteDiskHandler;
+    public SQLiteDiskAccessThread(Disk disk){
+        this.disk = disk;
     }
 
     public void createWorldDataBase(String worldName){
@@ -249,12 +249,12 @@ public class SQLiteDiskAccessThread implements Runnable {
                 Vector3d playerPos = deserializeVector3d(resultTest.getString("POS"));
                 byte playerHealth = Byte.parseByte(resultTest.getString("HEALTH"));
 
-                sqLiteDiskHandler.sendPlayerData(new PlayerData("singleplayer", loadedInventory, loadedCount, playerPos, playerHealth));
+                disk.sendPlayerData(new PlayerData("singleplayer", loadedInventory, loadedCount, playerPos, playerHealth));
 
             //send main thread a blank player
             } else {
                 //players just kind of drop from the sky ¯\_(ツ)_/¯
-                sqLiteDiskHandler.sendPlayerData(new PlayerData("singleplayer", new String[4][9], new int[4][9], new Vector3d(0,100,0), (byte) 20));
+                disk.sendPlayerData(new PlayerData("singleplayer", new String[4][9], new int[4][9], new Vector3d(0,100,0), (byte) 20));
             }
 
             //did not find player
@@ -351,7 +351,7 @@ public class SQLiteDiskAccessThread implements Runnable {
                 //System.out.println("LOADING CHUNK FROM DATABASE!");
 
                 //automatically set the chunk in memory
-                sqLiteDiskHandler.setChunk(new PrimitiveChunkObject(new Vector2i(x, z),
+                disk.setChunk(new PrimitiveChunkObject(new Vector2i(x, z),
                         byteDeserialize(resultTest.getString("BLOCK")),
                         byteDeserialize(resultTest.getString("ROTATION")),
                         byteDeserialize(resultTest.getString("LIGHT")),
@@ -362,7 +362,7 @@ public class SQLiteDiskAccessThread implements Runnable {
             //did not find a chunk - create a new one
             else {
                 //System.out.println("generate chunk here");
-                sqLiteDiskHandler.addChunkToBiomeGenerator(new Vector2i(x, z));
+                disk.addChunkToBiomeGenerator(new Vector2i(x, z));
             }
 
             statement.close();

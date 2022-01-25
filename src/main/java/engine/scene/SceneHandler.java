@@ -4,7 +4,7 @@ import engine.Controls;
 import engine.MemorySweeper;
 import engine.Mouse;
 import engine.Window;
-import engine.disk.SQLiteDiskHandler;
+import engine.disk.Disk;
 import engine.graphics.Camera;
 import engine.gui.GUILogic;
 import engine.render.GameRenderer;
@@ -25,8 +25,6 @@ import game.player.Player;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-import java.io.IOException;
-
 public class SceneHandler {
     //0 main menu
     //1 gameplay
@@ -45,7 +43,7 @@ public class SceneHandler {
     private Camera camera;
     private Delta delta;
     private Controls controls;
-    private SQLiteDiskHandler sqLiteDiskHandler;
+    private Disk disk;
     private TimeOfDay timeOfDay;
     private Timer timer;
     private MobSpawning mobSpawning;
@@ -57,7 +55,7 @@ public class SceneHandler {
     private MainMenuRenderer mainMenuRenderer;
 
     public void passObjects(Window window, MainMenu mainMenu, Mouse mouse, Chunk chunk, MemorySweeper memorySweeper, InventoryLogic inventoryLogic, GUILogic guiLogic,
-                            Cloud cloud, Player player, Camera camera, Delta delta, Controls controls,SQLiteDiskHandler sqLiteDiskHandler, TimeOfDay timeOfDay,
+                            Cloud cloud, Player player, Camera camera, Delta delta, Controls controls, Disk disk, TimeOfDay timeOfDay,
                             Timer timer, MobSpawning mobSpawning, MobMeshBuilder mobMeshBuilder, EntityContainer entityContainer, ChunkUpdateHandler chunkUpdateHandler,
                             SoundAPI soundAPI, GameRenderer gameRenderer, MainMenuRenderer mainMenuRenderer){
         this.window = window;
@@ -72,7 +70,7 @@ public class SceneHandler {
         this.camera = camera;
         this.delta = delta;
         this.controls = controls;
-        this.sqLiteDiskHandler = sqLiteDiskHandler;
+        this.disk = disk;
         this.timeOfDay = timeOfDay;
         this.timer = timer;
         this.mobSpawning = mobSpawning;
@@ -215,7 +213,7 @@ public class SceneHandler {
 
     //main game loop
     private void gameLoop() {
-        sqLiteDiskHandler.poll();
+        disk.poll();
         delta.calculateDelta();
         //indexLight();
         mouse.mouseInput();

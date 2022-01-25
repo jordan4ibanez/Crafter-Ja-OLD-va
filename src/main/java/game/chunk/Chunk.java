@@ -1,7 +1,7 @@
 package game.chunk;
 
 import engine.disk.PrimitiveChunkObject;
-import engine.disk.SQLiteDiskHandler;
+import engine.disk.Disk;
 import engine.graphics.Mesh;
 import engine.settings.Settings;
 import engine.time.Delta;
@@ -17,7 +17,7 @@ import java.util.Deque;
 import java.util.HashMap;
 
 public class Chunk {
-    private SQLiteDiskHandler sqLiteDiskHandler;
+    private Disk disk;
     private ChunkUpdateHandler chunkUpdateHandler;
 
     private Player player;
@@ -51,9 +51,9 @@ public class Chunk {
         }
     }
 
-    public void setSqLiteDiskHandler(SQLiteDiskHandler sqLiteDiskHandler){
-        if (this.sqLiteDiskHandler == null) {
-            this.sqLiteDiskHandler = sqLiteDiskHandler;
+    public void setSqLiteDiskHandler(Disk disk){
+        if (this.disk == null) {
+            this.disk = disk;
         }
     }
 
@@ -185,7 +185,7 @@ public class Chunk {
         if (this.saveTimer >= 16f){
             for (ChunkObject chunk : map.values()){
                 if (chunk.getSaveToDisk()) {
-                    sqLiteDiskHandler.saveChunk(chunk.getPos(),chunk.getBlock().clone(), chunk.getRotation().clone(), chunk.getLight().clone(), chunk.getHeightMap().clone());
+                    disk.saveChunk(chunk.getPos(),chunk.getBlock().clone(), chunk.getRotation().clone(), chunk.getLight().clone(), chunk.getHeightMap().clone());
                     chunk.setSaveToDisk(false);
                 }
             }
@@ -205,7 +205,7 @@ public class Chunk {
 
     public void globalFinalChunkSaveToDisk(){
         for (ChunkObject chunk : map.values()){
-            sqLiteDiskHandler.saveChunk(chunk.getPos(),chunk.getBlock().clone(), chunk.getRotation().clone(), chunk.getLight().clone(), chunk.getHeightMap().clone());
+            disk.saveChunk(chunk.getPos(),chunk.getBlock().clone(), chunk.getRotation().clone(), chunk.getLight().clone(), chunk.getHeightMap().clone());
             chunk.setSaveToDisk(false);
         }
         map.clear();
@@ -712,7 +712,7 @@ public class Chunk {
                     }
                 }
 
-                sqLiteDiskHandler.saveChunk(map.get(key).getPos(),map.get(key).getBlock().clone(), map.get(key).getRotation().clone(), map.get(key).getLight().clone(), map.get(key).getHeightMap().clone());
+                disk.saveChunk(map.get(key).getPos(),map.get(key).getBlock().clone(), map.get(key).getRotation().clone(), map.get(key).getLight().clone(), map.get(key).getHeightMap().clone());
 
                 map.remove(key);
             }
@@ -750,7 +750,7 @@ public class Chunk {
     //then it either deserializes it or it tells the chunk mesh generator thread
     //to create a new one if it doesn't exist
     public void genBiome(int chunkX, int chunkZ) {
-        sqLiteDiskHandler.loadChunk(new Vector2i(chunkX,chunkZ));
+        disk.loadChunk(new Vector2i(chunkX,chunkZ));
     }
 
     public void cleanChunkDataMemory(){

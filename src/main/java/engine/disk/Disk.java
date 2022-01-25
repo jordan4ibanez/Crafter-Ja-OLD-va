@@ -17,8 +17,10 @@ import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
-public class SQLiteDiskHandler {
+public class Disk {
+
     private final SQLiteDiskAccessThread sqLiteDiskAccessThread;
+
     private BiomeGenerator biomeGenerator;
     private Chunk chunk;
     private Player player;
@@ -29,7 +31,8 @@ public class SQLiteDiskHandler {
     private final ConcurrentLinkedDeque<PrimitiveChunkObject> loadingChunkData = new ConcurrentLinkedDeque<>();
     private final ConcurrentLinkedDeque<Vector2i> generatingChunks = new ConcurrentLinkedDeque<>();
 
-    public SQLiteDiskHandler(){
+
+    public Disk(){
         this.sqLiteDiskAccessThread = new SQLiteDiskAccessThread(this);
     }
 

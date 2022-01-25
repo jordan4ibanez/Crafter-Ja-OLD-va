@@ -2,7 +2,7 @@ package engine.gui;
 
 import engine.Mouse;
 import engine.Window;
-import engine.disk.SQLiteDiskHandler;
+import engine.disk.Disk;
 import engine.scene.SceneHandler;
 import engine.settings.Settings;
 import engine.time.Delta;
@@ -22,7 +22,7 @@ public class GUILogic {
     private Player player;
     private Delta delta;
     private MainMenu mainMenu;
-    private SQLiteDiskHandler sqLiteDiskHandler;
+    private Disk disk;
     private SceneHandler sceneHandler;
 
     public void setSettings(Settings settings){
@@ -89,9 +89,9 @@ public class GUILogic {
             this.mainMenu = mainMenu;
         }
     }
-    public void setSqLiteDiskHandler(SQLiteDiskHandler sqLiteDiskHandler){
-        if (this.sqLiteDiskHandler == null){
-            this.sqLiteDiskHandler = sqLiteDiskHandler;
+    public void setSqLiteDiskHandler(Disk disk){
+        if (this.disk == null){
+            this.disk = disk;
         }
     }
     public void setSceneHandler(SceneHandler sceneHandler){
@@ -278,14 +278,14 @@ public class GUILogic {
                     } else if (selection == 1) {
                         menuPage = 1;
                     } else if (selection == 2) {
-                        sqLiteDiskHandler.closeWorldDataBase();
+                        disk.closeWorldDataBase();
                         mainMenu.resetMainMenuPage();
                         mainMenu.resetMainMenu();
                         sceneHandler.setScene((byte) 0);
                         //disconnectClient();
                         setPaused(false);
                     } else if (selection == 3) {
-                        sqLiteDiskHandler.closeWorldDataBase();
+                        disk.closeWorldDataBase();
                         //disconnectClient();
                         glfwSetWindowShouldClose(window.getWindowHandle(), true);
                     }
