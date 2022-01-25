@@ -11,8 +11,9 @@ import game.player.Player;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-public class ItemEntity extends Entity {
+public class ItemEntity {
 
+    /*
     final private Vector3f normalizedPos = new Vector3f();
 
     private final String itemName;
@@ -185,4 +186,6 @@ public class ItemEntity extends Entity {
             this.delete();
         }
     }
+
+     */
 }
