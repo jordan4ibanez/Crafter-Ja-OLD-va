@@ -13,26 +13,17 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class BiomeGenerator implements Runnable {
 
-    private Window window;
-    private Chunk chunk;
+    private final Window window;
+    private final Chunk chunk;
     private final ConcurrentLinkedDeque<Vector2i> queue = new ConcurrentLinkedDeque<>();
 
-    public void setWindow(Window window){
-        if (this.window == null){
-            this.window = window;
-        }
-    }
-
-    public void setChunk(Chunk chunk){
-        if (this.chunk == null){
-            this.chunk = chunk;
-        }
-    }
 
     private int seed = 532_444_432;
     private final FastNoise noise = new FastNoise();
 
-    public BiomeGenerator(){
+    public BiomeGenerator(Window window, Chunk chunk){
+        this.window = window;
+        this.chunk = chunk;
     }
 
     @Override
