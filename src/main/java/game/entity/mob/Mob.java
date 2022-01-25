@@ -5,6 +5,7 @@ import game.chunk.Chunk;
 import game.entity.Entity;
 import game.entity.EntityContainer;
 import game.player.Player;
+import game.ray.Ray;
 import org.joml.Math;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
@@ -115,7 +116,7 @@ public abstract class Mob extends Entity {
     }
 
 
-    public void onTick(Chunk chunk, Delta delta, Player player){
+    public void onTick(Chunk chunk, Delta delta, Player player, Ray ray){
         super.onTick(chunk, delta);
         double dtime = delta.getDelta();
 
@@ -162,8 +163,8 @@ public abstract class Mob extends Entity {
             }
         }
 
-        mobSmoothRotation(this, delta);
-        doHeadCode(this);
+        mobSmoothRotation(delta);
+        doHeadCode(player, ray);
     }
 
 
@@ -178,10 +179,10 @@ public abstract class Mob extends Entity {
     private final Vector3d headTurn = new Vector3d();
     private final Vector3d adjustedHeadPos = new Vector3d();
 
-    public void doHeadCode(Mob mob){
+    public void doHeadCode(Player player, Ray ray){
 
         //this is a pointer object
-        Vector3d thisMobPos = mob.getPos();
+        Vector3d thisMobPos = getPos();
 
         //yet another pointer object
         Vector3f[] thisMobBodyOffsets = getBodyOffsets();
@@ -200,14 +201,14 @@ public abstract class Mob extends Entity {
         headPos.add(adjustedHeadPos);
 
         //check if the mob can actual "see" the player
-        if (!getLineOfSight(headPos, getPlayerPosWithEyeHeight())){
+        if (!ray.lineOfSight(headPos, player.getPlayerPosWithEyeHeight())){
             return;
         }
 
         //this is debug code for creating a new mob
         //createParticle(headPos.x, headPos.y, headPos.z, 0.f,0.f,0.f, (byte) 7); //debug
 
-        headTurn.set(getPlayerPosWithEyeHeight()).sub(headPos);
+        headTurn.set(player.getPlayerPosWithEyeHeight()).sub(headPos);
         //headTurn.normalize();
 
         float headYaw = (float) Math.toDegrees(Math.atan2(headTurn.z, headTurn.x)) + 90 - thisMobSmoothRotation;
@@ -232,11 +233,11 @@ public abstract class Mob extends Entity {
 
 
     //todo: shortest distance
-    public void mobSmoothRotation(Mob mob, Delta delta){
+    public void mobSmoothRotation(Delta delta){
         double dtime = delta.getDelta();
 
-        float thisMobRotation = mob.getRotation(mob);
-        float thisMobSmoothRotation = MobObject.getMobSmoothRotation(mob);
+        float thisMobRotation = getRotation();
+        float thisMobSmoothRotation = getRotation();
 
         float diff = thisMobRotation - thisMobSmoothRotation;
 
@@ -279,7 +280,7 @@ public abstract class Mob extends Entity {
             }
         }
 
-        MobObject.setMobSmoothRotation(mob, thisMobSmoothRotation);
+        setSmoothRotation(thisMobSmoothRotation);
     }
 
     private float randomDir(){
