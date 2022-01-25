@@ -9,7 +9,13 @@ import org.joml.Math;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
+import java.util.Random;
+
 public class Mob extends Entity {
+
+    private final Random random = new Random();
+    private final int[] dirArray = new int[]{-1,1};
+
     private final String name;
     private float hurtTimer = 0f;
     private float deathRotation = 0f;
@@ -18,13 +24,45 @@ public class Mob extends Entity {
     private int health;
     private int hurtAdder = 0;
 
-    private final MobInterface mobInterface;
+    private float rotation;
 
-    public Mob(EntityContainer entityContainer, String name, MobInterface mobInterface, Vector3d pos, Vector3f inertia, float width, float height, int health) {
+    private final MobInterface mobInterface = new MobInterface() {
+        @Override
+        public void onTick(Mob thisMob, Delta delta) {
+            MobInterface.super.onTick(thisMob, delta);
+        }
+
+        @Override
+        public void onSpawn(Mob mob, Delta delta) {
+            MobInterface.super.onSpawn(mob, delta);
+        }
+
+        @Override
+        public void onRightClick(Mob thisMob, Delta delta) {
+            MobInterface.super.onRightClick(thisMob, delta);
+        }
+
+        @Override
+        public void onDeath(Mob thisMob, Delta delta) {
+            MobInterface.super.onDeath(thisMob, delta);
+        }
+
+        @Override
+        public void onPunch(Mob thisMob, Delta delta) {
+            MobInterface.super.onPunch(thisMob, delta);
+        }
+    };
+
+    public Mob(EntityContainer entityContainer, String name, Vector3d pos, Vector3f inertia, float width, float height, int health) {
         super(entityContainer, pos, inertia, width, height, false, true, false);
-        this.mobInterface = mobInterface;
         this.name = name;
         this.health = health;
+
+        rotation = (float) (Math.toDegrees(Math.PI * Math.random() * randomDir()));
+    }
+
+    public float getRotation(){
+        return rotation;
     }
 
     public MobInterface getMobInterface(){
@@ -209,5 +247,9 @@ public class Mob extends Entity {
         }
 
         MobObject.setMobSmoothRotation(mob, thisMobSmoothRotation);
+    }
+
+    private float randomDir(){
+        return dirArray[random.nextInt(2)];
     }
 }
