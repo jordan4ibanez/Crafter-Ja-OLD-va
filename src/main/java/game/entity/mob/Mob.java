@@ -1,12 +1,9 @@
 package game.entity.mob;
 
-import engine.sound.SoundAPI;
 import engine.time.Delta;
 import game.chunk.Chunk;
-import game.crafting.InventoryLogic;
 import game.entity.Entity;
 import game.entity.EntityContainer;
-import game.entity.collision.Collision;
 import game.player.Player;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
@@ -16,15 +13,12 @@ public class Mob extends Entity {
     private float hurtTimer = 0f;
     private float deathRotation = 0f;
     private float deathTimer = 0f;
-    private final float width;
-    private final float height;
+
     private int health;
     private int hurtAdder = 0;
 
-    public Mob(Chunk chunk, EntityContainer entityContainer, Vector3d pos, Vector3f inertia, float width, float height, int health) {
-        super(chunk, entityContainer, pos, inertia, false, true, false);
-        this.height = height;
-        this.width = width;
+    public Mob(EntityContainer entityContainer, Vector3d pos, Vector3f inertia, float width, float height, int health) {
+        super(entityContainer, pos, inertia, width, height, false, true, false);
         this.health = health;
     }
 
@@ -36,17 +30,9 @@ public class Mob extends Entity {
         return health;
     }
 
-    public float getWidth(){
-        return width;
-    }
 
-    public float getHeight(){
-        return height;
-    }
-
-    public void onTick(Delta delta, Player player){
-
-        super.onTick(this, delta, player);
+    public void onTick(Chunk chunk, Delta delta, Player player){
+        super.onTick(chunk, delta);
         double dtime = delta.getDelta();
 
         /*
@@ -91,34 +77,15 @@ public class Mob extends Entity {
                 hurtAdder = 0;
             }
         }
+
+        mobSmoothRotation(thisMob);
+        doHeadCode(thisMob);
     }
 
 
-    @Override
     public void hurt(int damage){
         this.health -= damage;
         this.hurtAdder = 15;
         this.hurtTimer = 0.5f;
-    }
-
-
-    @Override
-    public void onTick(Entity entity, Player player, Delta delta) {
-
-    }
-
-    @Override
-    public void onTick(Entity entity, InventoryLogic inventoryLogic, Player player, Delta delta) {
-
-    }
-
-    @Override
-    public void onTick(Entity entity, SoundAPI soundAPI, InventoryLogic inventoryLogic, Player player, Delta delta) {
-
-    }
-
-    @Override
-    public void onTick(Collision collision, Entity entity, SoundAPI soundAPI, InventoryLogic inventoryLogic, Player player, Delta delta) {
-
     }
 }
