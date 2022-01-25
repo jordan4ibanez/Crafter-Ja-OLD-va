@@ -153,6 +153,25 @@ public class Exploder extends Mob{
         mesh = createMesh(mobMeshBuilder);
     }
 
+    @Override
+    public MobInterface getMobInterface(){
+        return mobInterface;
+    }
+
+    @Override
+    public Vector3f[] getBodyOffsets() {
+        return bodyOffsets;
+    }
+
+    @Override
+    public Vector3f[] getBodyRotations() {
+        return bodyRotations;
+    }
+
+    public Mesh[] getMesh() {
+        return mesh;
+    }
+
     private Mesh[] createMesh(MobMeshBuilder mobMeshBuilder){
         final float modelScale = 0.325f; //lazy way to fix
 
