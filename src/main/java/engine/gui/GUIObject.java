@@ -4,8 +4,6 @@ import engine.graphics.Mesh;
 import org.joml.Vector2d;
 import org.joml.Vector2f;
 
-import static engine.gui.TextHandling.*;
-
 public class GUIObject {
     /*
     types:
