@@ -189,6 +189,12 @@ public class Window {
         return glfwGetKey(windowHandle, keyCode) == GLFW_PRESS;
     }
 
+
+    public void close(){
+        this.shouldClose.set(true);
+        glfwSetWindowShouldClose(this.windowHandle, true);
+    }
+
     public boolean shouldClose(){
         return this.shouldClose.get();
     }
