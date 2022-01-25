@@ -14,6 +14,7 @@ public class GUIObject {
     2 - just text
      */
 
+    private final TextHandling textHandling = new TextHandling();
     public byte type;
     public Mesh textMesh;
     public Vector2d pos;
@@ -25,11 +26,11 @@ public class GUIObject {
 
     //initializer for button (auto scaled width)
     public GUIObject(String text, Vector2d pos){
-        this.textMesh = createTextCentered(text, 1,1,1);
+        this.textMesh = textHandling.createTextCentered(text, 1,1,1);
         float totalLengthReal = 0;
         //pre-poll the actual length
         for (char letter : text.toCharArray()) {
-            float[] thisCharacterArray = translateCharToArray(letter);
+            float[] thisCharacterArray = textHandling.translateCharToArray(letter);
             totalLengthReal += thisCharacterArray[4] + 0.1f;
         }
         this.buttonScale.x = (totalLengthReal/2f) * 2.1f;
@@ -41,7 +42,7 @@ public class GUIObject {
 
     //initializer for button with fixed width
     public GUIObject(String text, Vector2d pos, float width){
-        this.textMesh = createTextCenteredWithShadow(text, 1,1,1);
+        this.textMesh = textHandling.createTextCenteredWithShadow(text, 1,1,1);
         this.buttonScale.x = width * 2.1f;
         this.buttonScale.y = 1.6f;
         this.pos = pos;
@@ -51,7 +52,7 @@ public class GUIObject {
 
     //initializer for generic text object
     public GUIObject(String text, boolean isJustText, Vector2d pos){
-        this.textMesh = createTextCenteredWithShadow(text, 1,1,1);
+        this.textMesh = textHandling.createTextCenteredWithShadow(text, 1,1,1);
         this.pos = pos;
         this.type = 2;
         this.selected = false;
@@ -59,7 +60,7 @@ public class GUIObject {
 
     //initializer for button with fixed width and height
     public GUIObject(String text, Vector2d pos, float width, float height){
-        this.textMesh = createTextCenteredWithShadow(text, 1,1,1);
+        this.textMesh = textHandling.createTextCenteredWithShadow(text, 1,1,1);
         this.buttonScale.x = width * 2.1f;
         this.buttonScale.y = height * 2.1f;
         this.pos = pos;
@@ -70,7 +71,7 @@ public class GUIObject {
     //initializer for text input box
     public GUIObject(Vector2d pos, float width, float height){
         this.inputText = "";
-        this.textMesh = createText(this.inputText, 1,1,1);
+        this.textMesh = textHandling.createText(this.inputText, 1,1,1);
         this.buttonScale.x = width * 2.1f;
         this.buttonScale.y = height * 2.1f;
         this.pos = pos;
@@ -84,7 +85,7 @@ public class GUIObject {
     //initializer for text input box with preset text
     public GUIObject(Vector2d pos, float width, float height, String existingText){
         this.inputText = existingText;
-        this.textMesh = createText(this.inputText, 1,1,1);
+        this.textMesh = textHandling.createText(this.inputText, 1,1,1);
         this.buttonScale.x = width * 2.1f;
         this.buttonScale.y = height * 2.1f;
         this.pos = pos;
@@ -96,7 +97,7 @@ public class GUIObject {
     //updater for text input box
     public void updateInputBoxText(String text){
         this.textMesh.cleanUp(false);
-        this.textMesh = createText(text, 1,1,1);
+        this.textMesh = textHandling.createText(text, 1,1,1);
     }
 
     public String getInputText(){
@@ -106,22 +107,22 @@ public class GUIObject {
     //update statically scaled button text
     public void updateTextCenteredFixed(String text){
         this.textMesh.cleanUp(false);
-        this.textMesh = createTextCenteredWithShadow(text, 1,1,1);
+        this.textMesh = textHandling.createTextCenteredWithShadow(text, 1,1,1);
     }
 
     public void updateTextStandard(String text){
         this.textMesh.cleanUp(false);
-        this.textMesh = createTextWithShadow(text, 1,1,1);
+        this.textMesh = textHandling.createTextWithShadow(text, 1,1,1);
     }
 
     //updating dynamically scaled button text
     public void updateTextDynamic(String text){
         this.textMesh.cleanUp(false);
-        this.textMesh = createTextCentered(text, 1,1,1);
+        this.textMesh = textHandling.createTextCentered(text, 1,1,1);
         float totalLengthReal = 0;
         //pre-poll the actual length
         for (char letter : text.toCharArray()) {
-            float[] thisCharacterArray = translateCharToArray(letter);
+            float[] thisCharacterArray = textHandling.translateCharToArray(letter);
             totalLengthReal += thisCharacterArray[4] + 0.1f;
         }
         this.buttonScale.x = (totalLengthReal/2f) * 2.1f;
