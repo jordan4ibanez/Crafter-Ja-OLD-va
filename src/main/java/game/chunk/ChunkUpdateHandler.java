@@ -19,6 +19,8 @@ public class ChunkUpdateHandler {
     private final Texture textureAtlas = new Texture("textures/textureAtlas.png");
     private float chunkUpdateTimer = 0;
 
+    private final Random random = new Random();
+
     public ChunkUpdateHandler(){
 
     }
@@ -45,7 +47,11 @@ public class ChunkUpdateHandler {
         }
     }
 
-    private final Random random = new Random();
+    //chunk mesh generator handling
+
+    public void addToChunkMeshQueue(ChunkMeshData chunkMeshData){
+        dataQueue.add(chunkMeshData);
+    }
 
     public void chunkUpdater() {
         if (generationQueue.isEmpty()){
@@ -80,13 +86,6 @@ public class ChunkUpdateHandler {
             //can attempt to remove null, so it's okay
             generationQueue.remove(key);
         }
-    }
-
-
-    //chunk mesh generator handling
-
-    public void addToChunkMeshQueue(ChunkMeshData chunkMeshData){
-        dataQueue.add(chunkMeshData);
     }
 
 
