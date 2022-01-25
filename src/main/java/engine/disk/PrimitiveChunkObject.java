@@ -8,4 +8,12 @@ public class PrimitiveChunkObject {
     public byte[] rotation;
     public byte[] light;
     public byte[] heightMap;
+
+    public PrimitiveChunkObject(Vector2i pos, byte[] block, byte[] rotation, byte[] light, byte[] heightMap){
+        this.pos = pos;
+        this.block = block;
+        this.rotation = rotation;
+        this.light = light;
+        this.heightMap = heightMap;
+    }
 }
