@@ -230,6 +230,8 @@ public class SceneHandler {
 
         chunkUpdateHandler.popChunkMeshQueue(); //this actually transmits the data from the other threads into main thread
 
+        chunkUpdateHandler.chunkUpdater();
+
         soundAPI.updateListenerPos();
 
         //chunkUpdater();
