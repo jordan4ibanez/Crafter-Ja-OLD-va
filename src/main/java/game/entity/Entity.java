@@ -68,6 +68,10 @@ public abstract class Entity {
         oldFlooredPos.set(flooredPos);
     }
 
+    public byte getLight() {
+        return light;
+    }
+
     public float getWidth(){
         return width;
     }
