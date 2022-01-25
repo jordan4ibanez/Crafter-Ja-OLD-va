@@ -51,6 +51,23 @@ public abstract class Entity {
         this.oldFlooredPos.set((int) floor(pos.x), (int) floor(pos.y), (int) floor(pos.z));
     }
 
+    public void onTick(Chunk chunk, Delta delta) {
+
+        lightUpdateTimer += delta.getDelta();
+
+        flooredPos.set((int) floor(getPos().x), (int) floor(getPos().y), (int) floor(getPos().z));
+
+        //poll local light every quarter second
+        if (lightUpdateTimer >= 0.25f || !flooredPos.equals(oldFlooredPos)){
+
+            light = chunk.getLight(flooredPos.x, flooredPos.y, flooredPos.z);
+
+            lightUpdateTimer = 0f;
+        }
+
+        oldFlooredPos.set(flooredPos);
+    }
+
     public float getWidth(){
         return width;
     }
@@ -101,22 +118,5 @@ public abstract class Entity {
 
     public void setInertia(Vector3f inertia){
         this.inertia.set(inertia);
-    }
-
-    public void onTick(Chunk chunk, Delta delta) {
-
-        lightUpdateTimer += delta.getDelta();
-
-        flooredPos.set((int) floor(getPos().x), (int) floor(getPos().y), (int) floor(getPos().z));
-
-        //poll local light every quarter second
-        if (lightUpdateTimer >= 0.25f || !flooredPos.equals(oldFlooredPos)){
-
-            light = chunk.getLight(flooredPos.x, flooredPos.y, flooredPos.z);
-
-            lightUpdateTimer = 0f;
-        }
-
-        oldFlooredPos.set(flooredPos);
     }
 }
