@@ -4,6 +4,7 @@ import engine.time.Delta;
 import game.chunk.Chunk;
 import game.entity.Entity;
 import game.entity.EntityContainer;
+import game.entity.collision.Collision;
 import game.player.Player;
 import game.ray.Ray;
 import org.joml.Math;
@@ -28,6 +29,7 @@ public abstract class Mob extends Entity {
     private float smoothRotation = 0f;
 
     private boolean standing = false;
+    private boolean onGround = false;
 
     private int health;
     private int hurtAdder = 0;
@@ -40,8 +42,8 @@ public abstract class Mob extends Entity {
 
     private final MobInterface mobInterface = new MobInterface() {
         @Override
-        public void onTick(Mob thisMob, Delta delta) {
-            MobInterface.super.onTick(thisMob, delta);
+        public void onTick(Chunk chunk, Collision collision, Mob thisMob, Delta delta) {
+            MobInterface.super.onTick(chunk, collision, thisMob, delta);
         }
 
         @Override
@@ -83,6 +85,18 @@ public abstract class Mob extends Entity {
 
     public float getRotation(){
         return rotation;
+    }
+
+    public void setRotation(float rotation){
+        this.rotation = rotation;
+    }
+
+    public boolean isOnGround(){
+        return onGround;
+    }
+
+    public void setOnGround(boolean onGround){
+        this.onGround = onGround;
     }
 
     public MobInterface getMobInterface(){
@@ -292,7 +306,7 @@ public abstract class Mob extends Entity {
         setSmoothRotation(thisMobSmoothRotation);
     }
 
-    private float randomDir(){
+    public float randomDir(){
         return dirArray[random.nextInt(2)];
     }
 }
