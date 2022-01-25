@@ -1,34 +1,36 @@
 package game.entity;
 
-import engine.time.Delta;
-import game.player.Player;
-
 public interface EntityInterface {
-    default void onSpawn(Entity entity){
+
+    default void onSpawn(){
         System.out.println("Welp I'm here now!");
     }
 
-    default void onTick(Entity entity, Delta delta, Player player){
+    default void onTick(){
         System.out.println("tick tock!");
     }
 
-    default void hurt(Entity entity, int damage){
+    default void hurt(int damage){
         System.out.println("That hurt " + damage + " amount!");
     }
 
-    default void onHeal(Entity entity){
+    default void onHeal(){
         System.out.println("I'm feeling a bit better!");
     }
 
-    default void onHurt(Entity entity){
+    default void onHurt(){
         System.out.println("Ouch!");
     }
 
-    default void onDeath(Entity entity){
+    default void onDeath(){
         System.out.println("Oof I am le dead!");
     }
 
-    default void sayBye(Entity entity){
+    default void sayHi(){
+        System.out.println("hello hello hello hello");
+    }
+
+    default void sayBye(){
         System.out.println("Welp see you later!");
     }
 }
