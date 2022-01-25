@@ -115,6 +115,12 @@ public class BlockDefinitionContainer {
 
     public BlockDefinitionContainer() {
 
+        //normal
+        //slab
+        float[][] normalShape = new float[][]{
+                {0f,0f,0f,1f,1f,1f}
+        };
+
         //stair
         float[][] stairShape = new float[][]{
                 {0f,0f,0f,1f,0.5f,1f},
@@ -156,7 +162,7 @@ public class BlockDefinitionContainer {
                 new byte[]{-1,-1}, //left
                 new byte[]{-1,-1}, //top
                 new byte[]{-1,-1},  //bottom
-                null,
+                normalShape,
                 (byte) 0,
                 false,
                 false,
@@ -187,7 +193,7 @@ public class BlockDefinitionContainer {
                 new byte[]{0,0}, //left
                 new byte[]{0,0}, //top
                 new byte[]{0,0},  //bottom
-                null,
+                normalShape,
                 (byte) 1,
                 true,
                 false,
@@ -218,7 +224,7 @@ public class BlockDefinitionContainer {
                 new byte[]{5,0}, //left
                 new byte[]{4,0}, //top
                 new byte[]{0,0},  //bottom
-                null,
+                normalShape,
                 (byte) 1,
                 true,
                 false,
@@ -249,7 +255,7 @@ public class BlockDefinitionContainer {
                 new byte[]{1,0}, //left
                 new byte[]{1,0}, //top
                 new byte[]{1,0},  //bottom
-                null,
+                normalShape,
                 (byte) 1,
                 true,
                 false,
@@ -280,7 +286,7 @@ public class BlockDefinitionContainer {
                 new byte[]{2,0}, //left
                 new byte[]{2,0}, //top
                 new byte[]{2,0},  //bottom
-                null,
+                normalShape,
                 (byte) 1,
                 true,
                 false,
@@ -311,7 +317,7 @@ public class BlockDefinitionContainer {
                 new byte[]{6,0}, //left
                 new byte[]{6,0}, //top
                 new byte[]{6,0},  //bottom
-                null,
+                normalShape,
                 (byte) 1,
                 true,
                 false,
@@ -351,7 +357,7 @@ public class BlockDefinitionContainer {
                 new byte[]{7,0}, //left
                 new byte[]{8,0}, //top
                 new byte[]{9,0},  //bottom
-                null,
+                normalShape,
                 (byte) 1,
                 true,
                 false,
@@ -382,7 +388,7 @@ public class BlockDefinitionContainer {
                 new byte[]{10,0}, //left
                 new byte[]{10,0}, //top
                 new byte[]{10,0},  //bottom
-                null,
+                normalShape,
                 (byte) 8, //liquid source
                 false,
                 false,
@@ -413,7 +419,7 @@ public class BlockDefinitionContainer {
                 new byte[]{11,0}, //left
                 new byte[]{11,0}, //top
                 new byte[]{11,0},  //bottom
-                null,
+                normalShape,
                 (byte) 1,
                 true,
                 false,
@@ -444,7 +450,7 @@ public class BlockDefinitionContainer {
                 new byte[]{12,0}, //left
                 new byte[]{12,0}, //top
                 new byte[]{12,0},  //bottom
-                null,
+                normalShape,
                 (byte) 1,
                 true,
                 false,
@@ -475,7 +481,7 @@ public class BlockDefinitionContainer {
                 new byte[]{13,0}, //left
                 new byte[]{13,0}, //top
                 new byte[]{13,0},  //bottom
-                null,
+                normalShape,
                 (byte) 1,
                 true,
                 false,
@@ -506,7 +512,7 @@ public class BlockDefinitionContainer {
                 new byte[]{14,0}, //left
                 new byte[]{14,0}, //top
                 new byte[]{14,0},  //bottom
-                null,
+                normalShape,
                 (byte)1,
                 true,
                 false,
@@ -537,7 +543,7 @@ public class BlockDefinitionContainer {
                 new byte[]{15,0}, //left
                 new byte[]{15,0}, //top
                 new byte[]{15,0},  //bottom
-                null,
+                normalShape,
                 (byte) 1,
                 true,
                 false,
@@ -568,7 +574,7 @@ public class BlockDefinitionContainer {
                 new byte[]{16,0}, //left
                 new byte[]{16,0}, //top
                 new byte[]{16,0},  //bottom
-                null,
+                normalShape,
                 (byte) 1,
                 true,
                 false,
@@ -599,7 +605,7 @@ public class BlockDefinitionContainer {
                 new byte[]{17,0}, //left
                 new byte[]{17,0}, //top
                 new byte[]{17,0},  //bottom
-                null,
+                normalShape,
                 (byte) 1,
                 true,
                 false,
@@ -630,7 +636,7 @@ public class BlockDefinitionContainer {
                 new byte[]{18,0}, //left
                 new byte[]{18,0}, //top
                 new byte[]{18,0},  //bottom
-                null,
+                normalShape,
                 (byte) 1,
                 true,
                 false,
@@ -693,7 +699,7 @@ public class BlockDefinitionContainer {
                 new byte[]{19,0}, //left
                 new byte[]{20,0}, //top
                 new byte[]{20,0},  //bottom
-                null,
+                normalShape,
                 (byte) 1,
                 true,
                 false,
@@ -724,7 +730,7 @@ public class BlockDefinitionContainer {
                 new byte[]{19,0}, //left
                 new byte[]{20,0}, //top
                 new byte[]{20,0},  //bottom
-                null,
+                normalShape,
                 (byte) 1,
                 true,
                 false,
@@ -755,7 +761,7 @@ public class BlockDefinitionContainer {
                 new byte[]{19,0}, //left
                 new byte[]{20,0}, //top
                 new byte[]{20,0},  //bottom
-                null,
+                normalShape,
                 (byte) 1,
                 true,
                 false,
@@ -798,7 +804,7 @@ public class BlockDefinitionContainer {
                 new byte[]{23,0}, //left
                 new byte[]{23,0}, //top
                 new byte[]{23,0},  //bottom
-                null,
+                normalShape,
                 (byte) 1,
                 true,
                 false,
@@ -1028,7 +1034,7 @@ public class BlockDefinitionContainer {
                 new byte[]{26,0}, //left
                 new byte[]{27,0}, //top
                 new byte[]{27,0},  //bottom
-                null,
+                normalShape,
                 (byte) 1,
                 true,
                 false,
@@ -1059,7 +1065,7 @@ public class BlockDefinitionContainer {
                 new byte[]{28,0}, //left
                 new byte[]{28,0}, //top
                 new byte[]{28,0},  //bottom
-                null,
+                normalShape,
                 (byte) 4, //allfaces
                 true,
                 false,
@@ -1090,7 +1096,7 @@ public class BlockDefinitionContainer {
                 new byte[]{29,0}, //left
                 new byte[]{29,0}, //top
                 new byte[]{29,0},  //bottom
-                null,
+                normalShape,
                 (byte) 1, //regular
                 true,
                 false,
@@ -1129,7 +1135,7 @@ public class BlockDefinitionContainer {
                 new byte[]{31,0}, //left
                 new byte[]{30,0}, //top
                 new byte[]{31,0},  //bottom
-                null,
+                normalShape,
                 (byte) 1, //regular
                 true,
                 false,
@@ -1173,7 +1179,7 @@ public class BlockDefinitionContainer {
                 new byte[]{0,1}, //left
                 new byte[]{0,1}, //top
                 new byte[]{0,1},  //bottom
-                null,
+                normalShape,
                 (byte) 7, //torch like
                 false,
                 false,
@@ -1371,7 +1377,7 @@ public class BlockDefinitionContainer {
                 new byte[]{1,1}, //left
                 new byte[]{1,1}, //top
                 new byte[]{1,1},  //bottom
-                null,
+                normalShape,
                 (byte) 1,
                 true,
                 false,
