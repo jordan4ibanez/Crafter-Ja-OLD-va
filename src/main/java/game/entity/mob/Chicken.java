@@ -8,6 +8,8 @@ import game.entity.collision.Collision;
 import org.joml.*;
 import org.joml.Math;
 
+import static org.joml.Math.floor;
+
 public class Chicken extends Mob {
 
     private final Vector2f workerVector2f = new Vector2f();
@@ -116,7 +118,7 @@ public class Chicken extends Mob {
                     double x = Math.sin(-bodyYaw);
                     double z = Math.cos(bodyYaw);
 
-                    if (chunk.getBlock(new Vector3i((int) Math.floor(x + thisMobPos.x), (int) Math.floor(thisMobPos.y), (int) Math.floor(z + thisMobPos.z))) > 0) {
+                    if (chunk.getBlock(new Vector3i((int) floor(x + thisMobPos.x), (int) floor(thisMobPos.y), (int) floor(z + thisMobPos.z))) > 0) {
                         thisMobInertia.y += 8.75f;
                     }
                 }

@@ -9,6 +9,8 @@ import game.entity.collision.Collision;
 import org.joml.*;
 import org.joml.Math;
 
+import static org.joml.Math.floor;
+
 public class Cow extends Mob {
 
     BlockDefinitionContainer blockDefinitionContainer = new BlockDefinitionContainer();
@@ -115,7 +117,7 @@ public class Cow extends Mob {
 
             if (thisMobHealth > 0) {
                 //check if swimming
-                byte block = chunk.getBlock(new Vector3i((int) Math.floor(thisMobPos.x), (int) Math.floor(thisMobPos.y), (int) Math.floor(thisMobPos.z)));
+                byte block = chunk.getBlock(new Vector3i((int) floor(thisMobPos.x), (int) floor(thisMobPos.y), (int) floor(thisMobPos.z)));
                 if (block > -1 && blockDefinitionContainer.getIfLiquid(block)) {
                     thisMobInertia.y += 100f * dtime;
                 }
@@ -125,7 +127,7 @@ public class Cow extends Mob {
                     double x = Math.sin(-yaw);
                     double z = Math.cos(yaw);
 
-                    if (chunk.getBlock(new Vector3i((int) Math.floor(x + thisMobPos.x), (int) Math.floor(thisMobPos.y), (int) Math.floor(z + thisMobPos.z))) > 0) {
+                    if (chunk.getBlock(new Vector3i((int) floor(x + thisMobPos.x), (int) floor(thisMobPos.y), (int) floor(z + thisMobPos.z))) > 0) {
                         thisMobInertia.y += 8.75f;
                     }
                 }
