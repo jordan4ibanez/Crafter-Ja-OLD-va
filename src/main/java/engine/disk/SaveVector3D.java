@@ -1,3 +1,7 @@
 package engine.disk;
 
-public record SaveVector3D(double x, double y, double z) {}
+public class SaveVector3D{
+    public double x;
+    public double y;
+    public double z;
+}
