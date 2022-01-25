@@ -161,6 +161,7 @@ public class Crafter {
             guiLogic.setMainMenu(this.mainMenu);
             guiLogic.setSqLiteDiskHandler(this.disk);
             guiLogic.setSceneHandler(this.sceneHandler);
+            guiLogic.setSoundAPI(this.soundAPI);
 
             //networking
             networking.setChunk(this.chunk);

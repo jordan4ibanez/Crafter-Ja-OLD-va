@@ -5,6 +5,7 @@ import engine.Window;
 import engine.disk.Disk;
 import engine.scene.SceneHandler;
 import engine.settings.Settings;
+import engine.sound.SoundAPI;
 import engine.time.Delta;
 import game.chat.Chat;
 import game.mainMenu.MainMenu;
@@ -24,6 +25,7 @@ public class GUILogic {
     private MainMenu mainMenu;
     private Disk disk;
     private SceneHandler sceneHandler;
+    private SoundAPI soundAPI;
 
     public void setSettings(Settings settings){
         if (this.settings == null){
@@ -97,6 +99,12 @@ public class GUILogic {
     public void setSceneHandler(SceneHandler sceneHandler){
         if (this.sceneHandler == null){
             this.sceneHandler = sceneHandler;
+        }
+    }
+
+    public void setSoundAPI(SoundAPI soundAPI){
+        if (this.soundAPI == null){
+            this.soundAPI = soundAPI;
         }
     }
 
@@ -269,7 +277,7 @@ public class GUILogic {
                 //2 quit
 
                 if (selection >= 0 && mouse.isLeftButtonPressed() && !mouseButtonPushed && !mouseButtonWasPushed) {
-                    //playSound("button");
+                    soundAPI.playSound("button");
                     mouseButtonPushed = true;
 
                     if (selection == 0) {
@@ -304,7 +312,7 @@ public class GUILogic {
                 //5 - back
 
                 if (selection >= 0 && mouse.isLeftButtonPressed() && !mouseButtonPushed && !mouseButtonWasPushed) {
-                    //playSound("button");
+                    soundAPI.playSound("button");
 
                     mouseButtonPushed = true;
 
@@ -434,7 +442,7 @@ public class GUILogic {
 
                 if (lockedOnButtonInput < 0 && !pollingButtonInputs && selection >= 0 && mouse.isLeftButtonPressed() && !mouseButtonPushed && !mouseButtonWasPushed) {
 
-                    //playSound("button");
+                    soundAPI.playSound("button");
 
                     switch (selection) {
                         case 0 -> {
