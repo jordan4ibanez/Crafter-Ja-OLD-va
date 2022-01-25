@@ -6,9 +6,10 @@ import org.joml.Vector3f;
 
 final public class MobDefinition {
 
+
     private final Mesh[] bodyMeshes;
     private final MobInterface mobInterface;
-    private final String mobName;
+    private final String name;
     private final Vector3f[] bodyOffsets;
     private final Vector3f[] bodyRotations;
     private final float height;
@@ -16,18 +17,18 @@ final public class MobDefinition {
     private final String hurtSound;
     private final byte baseHealth;
     private final boolean backFaceCulling;
-    
-    public MobDefinition(String name, String newHurtSound, boolean newBackFaceCulling, byte newBaseHealth, Mesh[] newBodyMeshes,Vector3f[] newBodyOffsets,Vector3f[] newBodyRotations, float newHeight, float newWidth, MobInterface newMobInterface){
-        bodyMeshes = newBodyMeshes;
-        mobInterface = newMobInterface;
-        mobName = name;
-        bodyOffsets = newBodyOffsets;
-        bodyRotations = newBodyRotations;
-        height = newHeight;
-        width = newWidth;
-        hurtSound = newHurtSound;
-        baseHealth = newBaseHealth;
-        backFaceCulling = newBackFaceCulling;
+
+    public MobDefinition(String name, String hurtSound, boolean backFaceCulling, byte baseHealth, Mesh[] bodyMeshes,Vector3f[] bodyOffsets, Vector3f[] bodyRotations, float height, float width, MobInterface mobInterface){
+        this.bodyMeshes = bodyMeshes;
+        this.mobInterface = mobInterface;
+        this.name = name;
+        this.bodyOffsets = bodyOffsets;
+        this.bodyRotations = bodyRotations;
+        this.height = height;
+        this.width = width;
+        this.hurtSound = hurtSound;
+        this.baseHealth = baseHealth;
+        this.backFaceCulling = backFaceCulling;
     }
 
     //entry point
@@ -52,7 +53,7 @@ final public class MobDefinition {
         return mobInterface;
     }
     public String getMobDefinitionName(){
-        return mobName;
+        return name;
     }
     public Vector3f[] getBodyOffsets(){
         return bodyOffsets;
