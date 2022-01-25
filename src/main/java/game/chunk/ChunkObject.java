@@ -1,5 +1,6 @@
 package game.chunk;
 
+import engine.disk.PrimitiveChunkObject;
 import engine.graphics.Mesh;
 import org.joml.Vector2i;
 import org.joml.Vector3i;
@@ -20,8 +21,20 @@ public class ChunkObject {
     private boolean saveToDisk = false;
     private float hover        = -128;
 
-    public ChunkObject(Vector2i pos){
+    public ChunkObject(Vector2i pos, byte[] block, byte[] rotation, byte[] light, byte[] heightMap){
         this.pos.set(pos);
+        System.arraycopy(block, 0, this.block, 0, block.length);
+        System.arraycopy(rotation, 0, this.rotation, 0, rotation.length);
+        System.arraycopy(light, 0, this.light, 0, light.length);
+        System.arraycopy(heightMap, 0, this.heightMap, 0, heightMap.length);
+    }
+
+    public ChunkObject(PrimitiveChunkObject primitiveChunkObject){
+        this.pos.set(primitiveChunkObject.pos);
+        System.arraycopy(primitiveChunkObject.block, 0, this.block, 0, primitiveChunkObject.block.length);
+        System.arraycopy(primitiveChunkObject.rotation, 0, this.rotation, 0, primitiveChunkObject.rotation.length);
+        System.arraycopy(primitiveChunkObject.light, 0, this.light, 0, primitiveChunkObject.light.length);
+        System.arraycopy(primitiveChunkObject.heightMap, 0, this.heightMap, 0, primitiveChunkObject.heightMap.length);
     }
 
     public Vector2i getPos(){
