@@ -7,6 +7,7 @@ import org.joml.Vector3f;
 import java.util.Arrays;
 
 public class FallingEntity {
+    /*
     private final int initialSize = 10;
     private int currentSize = 10;
 
@@ -157,4 +158,5 @@ public class FallingEntity {
     public byte getFallingEntityLight(int index){
         return light[index];
     }
+     */
 }
