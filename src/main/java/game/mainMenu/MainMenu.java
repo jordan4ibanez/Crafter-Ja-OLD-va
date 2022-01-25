@@ -2,7 +2,6 @@ package game.mainMenu;
 
 import engine.Mouse;
 import engine.Window;
-import engine.disk.Disk;
 import engine.graphics.Mesh;
 import engine.gui.GUILogic;
 import engine.gui.GUIObject;
@@ -10,7 +9,6 @@ import engine.gui.TextHandling;
 import engine.scene.SceneHandler;
 import engine.settings.Settings;
 import engine.time.Delta;
-import game.Crafter;
 import game.player.Player;
 import org.joml.Vector2d;
 

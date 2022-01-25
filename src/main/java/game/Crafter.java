@@ -3,7 +3,6 @@ package game;
 import engine.*;
 import engine.compression.Compression;
 import engine.debug.RuntimeInfo;
-import engine.disk.Disk;
 import engine.disk.SQLiteDiskHandler;
 import engine.graphics.Camera;
 import engine.gui.GUI;
