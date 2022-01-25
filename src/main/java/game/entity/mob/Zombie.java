@@ -130,12 +130,12 @@ public class Zombie extends Mob{
         }
     };
 
-    public Zombie(MobMeshBuilder mobMeshBuilder, EntityContainer entityContainer, Vector3d pos, Vector3f inertia, float width, float height, int health) {
-        super(entityContainer, "zombie", pos, inertia, width, height, health);
+    public Zombie(MobMeshBuilder mobMeshBuilder, EntityContainer entityContainer, Vector3d pos, Vector3f inertia) {
+        super(entityContainer, "zombie", pos, inertia,1.9f, 0.25f, 7);
 
         mesh = createMesh(mobMeshBuilder);
     }
-    
+
     @Override
     public MobInterface getMobInterface(){
         return mobInterface;

@@ -147,8 +147,8 @@ public class Exploder extends Mob{
         }
     };
 
-    public Exploder(MobMeshBuilder mobMeshBuilder, EntityContainer entityContainer, Vector3d pos, Vector3f inertia, float width, float height, int health) {
-        super(entityContainer, "exploder", pos, inertia, width, height, health);
+    public Exploder(MobMeshBuilder mobMeshBuilder, EntityContainer entityContainer, Vector3d pos, Vector3f inertia) {
+        super(entityContainer, "exploder", pos, inertia, 1.9f, 0.25f, 7);
 
         mesh = createMesh(mobMeshBuilder);
     }

@@ -156,8 +156,8 @@ public class Sheep extends Mob{
         }
     };
 
-    public Sheep(MobMeshBuilder mobMeshBuilder, EntityContainer entityContainer, String name, Vector3d pos, Vector3f inertia, float width, float height, int health) {
-        super(entityContainer, name, pos, inertia, width, height, health);
+    public Sheep(MobMeshBuilder mobMeshBuilder, EntityContainer entityContainer, String name, Vector3d pos, Vector3f inertia) {
+        super(entityContainer, name, pos, inertia, 0.9f, 0.45f, 6);
 
         mesh = createMesh(mobMeshBuilder);
     }

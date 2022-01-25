@@ -138,8 +138,8 @@ public class Cow extends Mob {
         }
     };
 
-    public Cow(MobMeshBuilder mobMeshBuilder, EntityContainer entityContainer, Vector3d pos, Vector3f inertia, float width, float height, int health) {
-        super(entityContainer, "cow", pos, inertia, width, height, health);
+    public Cow(MobMeshBuilder mobMeshBuilder, EntityContainer entityContainer, Vector3d pos, Vector3f inertia) {
+        super(entityContainer, "cow", pos, inertia, 1.5f, 0.45f, 6);
         this.mesh = createMesh(mobMeshBuilder);
     }
 

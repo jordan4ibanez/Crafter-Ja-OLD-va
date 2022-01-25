@@ -133,8 +133,8 @@ public class Skeleton extends Mob {
     };
 
 
-    public Skeleton(MobMeshBuilder mobMeshBuilder, EntityContainer entityContainer, String name, Vector3d pos, Vector3f inertia, float width, float height, int health) {
-        super(entityContainer, "skeleton", pos, inertia, width, height, health);
+    public Skeleton(MobMeshBuilder mobMeshBuilder, EntityContainer entityContainer, String name, Vector3d pos, Vector3f inertia) {
+        super(entityContainer, "skeleton", pos, inertia, 1.9f, 0.25f, 7);
 
         mesh = createMesh(mobMeshBuilder);
     }

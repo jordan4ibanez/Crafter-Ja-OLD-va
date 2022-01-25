@@ -133,8 +133,8 @@ public class Pig extends Mob {
         }
     };
 
-    public Pig(MobMeshBuilder mobMeshBuilder, EntityContainer entityContainer, Vector3d pos, Vector3f inertia, float width, float height, int health) {
-        super(entityContainer, "pig", pos, inertia, width, height, health);
+    public Pig(MobMeshBuilder mobMeshBuilder, EntityContainer entityContainer, Vector3d pos, Vector3f inertia) {
+        super(entityContainer, "pig", pos, inertia, 0.9f, 0.45f, 6);
 
         mesh = createMesh(mobMeshBuilder);
     }

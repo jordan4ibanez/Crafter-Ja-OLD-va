@@ -126,8 +126,8 @@ public class Human extends Mob{
         }
     };
 
-    public Human(MobMeshBuilder mobMeshBuilder, EntityContainer entityContainer, Vector3d pos, Vector3f inertia, float width, float height, int health) {
-        super(entityContainer, "human", pos, inertia, width, height, health);
+    public Human(MobMeshBuilder mobMeshBuilder, EntityContainer entityContainer, Vector3d pos, Vector3f inertia) {
+        super(entityContainer, "human", pos, inertia,1.9f, 0.25f, 7);
 
         mesh = createMesh(mobMeshBuilder);
     }
