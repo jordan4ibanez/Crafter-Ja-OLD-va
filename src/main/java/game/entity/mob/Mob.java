@@ -91,8 +91,8 @@ public class Mob extends Entity {
             }
         }
 
-        mobSmoothRotation(thisMob);
-        doHeadCode(thisMob);
+        mobSmoothRotation(this, delta);
+        doHeadCode(this);
     }
 
 
