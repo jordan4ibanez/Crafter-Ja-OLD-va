@@ -39,7 +39,7 @@ public class BiomeGenerator implements Runnable {
                     e.printStackTrace();
                 }
             } //else {
-            //System.out.println("I'm awake");
+                //System.out.println("I'm awake");
             //}
         }
     }
@@ -80,6 +80,7 @@ public class BiomeGenerator implements Runnable {
         int noiseMultiplier = 50;
         byte waterHeight = 50;
         double heightAdder = 70;
+
         for (generationX = 0; generationX < 16; generationX++) {
             for (generationZ = 0; generationZ < 16; generationZ++) {
                 boolean gennedSand = false;
