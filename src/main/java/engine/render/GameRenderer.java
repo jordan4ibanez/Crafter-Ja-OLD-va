@@ -44,6 +44,7 @@ public class GameRenderer {
             this.camera = camera;
         }
     }
+
     public void setChunk(Chunk chunk){
         if (this.chunk == null){
             this.chunk = chunk;

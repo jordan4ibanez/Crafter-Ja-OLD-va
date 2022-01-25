@@ -270,7 +270,11 @@ public class Chunk {
         int blockX = (int)(pos.x - (16d*chunkX));
         int blockZ = (int)(pos.z - (16d*chunkZ));
         // THIS CREATES A NEW OBJECT IN MEMORY!
-        byte[] blockData = map.get(new Vector2i(chunkX, chunkZ)).getHeightMap();
+        ChunkObject chunk = map.get(new Vector2i(chunkX, chunkZ));
+        if (chunk == null){
+            return -1;
+        }
+        byte[] blockData = chunk.getHeightMap();
         if (blockData == null){
             return -1;
         }

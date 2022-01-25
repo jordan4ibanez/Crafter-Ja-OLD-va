@@ -167,6 +167,7 @@ public class Crafter {
             networking.setChunk(this.chunk);
 
             //game renderer
+            gameRenderer.setChunk(this.chunk);
             gameRenderer.setCamera(this.camera);
             gameRenderer.setDelta(this.delta);
             gameRenderer.setWindow(this.window);
