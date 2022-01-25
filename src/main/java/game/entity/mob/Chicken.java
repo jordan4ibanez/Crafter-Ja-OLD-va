@@ -127,8 +127,8 @@ public class Chicken extends Mob {
         }
     };
 
-    public Chicken(MobMeshBuilder mobMeshBuilder, EntityContainer entityContainer, String name, Vector3d pos, Vector3f inertia, float width, float height, int health) {
-        super(entityContainer, name, pos, inertia,  width, height, health);
+    public Chicken(MobMeshBuilder mobMeshBuilder, EntityContainer entityContainer, Vector3d pos, Vector3f inertia, float width, float height, int health) {
+        super(entityContainer, "chicken", pos, inertia,  width, height, health);
 
         mesh = createMesh(mobMeshBuilder);
     }
