@@ -11,6 +11,8 @@ import org.joml.Vector3f;
 
 import java.util.Random;
 
+import static org.joml.Math.toRadians;
+
 public abstract class Mob extends Entity {
 
     private final Random random = new Random();
@@ -187,9 +189,9 @@ public abstract class Mob extends Entity {
         //look another pointer object
         Vector3f[] thisMobBodyRotations = getBodyRotations();
 
-        float thisMobSmoothRotation = getSmoothRotation(thisMob);
+        float thisMobSmoothRotation = getSmoothRotation();
 
-        float smoothToRad = Math.toRadians(thisMobSmoothRotation + 90f);
+        float smoothToRad = toRadians(thisMobSmoothRotation + 90f);
 
         //silly head turning
         headPos.set(thisMobPos.x, thisMobPos.y, thisMobPos.z);
