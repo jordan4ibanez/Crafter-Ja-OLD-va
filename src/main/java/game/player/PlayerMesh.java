@@ -7,6 +7,7 @@ import org.joml.Vector3f;
 
 public class PlayerMesh {
 
+    /*
     private Delta delta;
 
     public void setDelta(Delta delta){
@@ -185,4 +186,6 @@ public class PlayerMesh {
 
         return createMobMesh(modelPieceArray,modelTextureArray, "textures/player.png");
     }
+
+     */
 }
