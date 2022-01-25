@@ -11,7 +11,7 @@ import org.joml.Vector3f;
 
 import java.util.Random;
 
-public class Mob extends Entity {
+public abstract class Mob extends Entity {
 
     private final Random random = new Random();
     private final int[] dirArray = new int[]{-1,1};
@@ -27,6 +27,10 @@ public class Mob extends Entity {
     private int hurtAdder = 0;
 
     private float rotation;
+
+    private final Vector3f[] bodyOffsets = new Vector3f[]{};
+
+    private final Vector3f[] bodyRotations = new Vector3f[]{};
 
     private final MobInterface mobInterface = new MobInterface() {
         @Override
@@ -77,6 +81,14 @@ public class Mob extends Entity {
 
     public MobInterface getMobInterface(){
         return mobInterface;
+    }
+
+    public Vector3f[] getBodyOffsets(){
+        return bodyOffsets;
+    }
+
+    public Vector3f[] getBodyRotations(){
+        return bodyRotations;
     }
 
     public String getName(){
@@ -161,12 +173,12 @@ public class Mob extends Entity {
         Vector3d thisMobPos = mob.getPos();
 
         //yet another pointer object
-        Vector3f[] thisMobBodyOffsets = mob.getBodyOffsets();
+        Vector3f[] thisMobBodyOffsets = getBodyOffsets();
 
         //look another pointer object
-        Vector3f[] thisMobBodyRotations = MobObject.getMobBodyRotations(thisMob);
+        Vector3f[] thisMobBodyRotations = getBodyRotations();
 
-        float thisMobSmoothRotation = MobObject.getMobSmoothRotation(thisMob);
+        float thisMobSmoothRotation = getSmoothRotation(thisMob);
 
         float smoothToRad = Math.toRadians(thisMobSmoothRotation + 90f);
 
