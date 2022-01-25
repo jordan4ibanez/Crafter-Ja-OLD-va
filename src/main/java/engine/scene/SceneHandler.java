@@ -7,6 +7,8 @@ import engine.Window;
 import engine.disk.SQLiteDiskHandler;
 import engine.graphics.Camera;
 import engine.gui.GUILogic;
+import engine.render.GameRenderer;
+import engine.render.MainMenuRenderer;
 import engine.sound.SoundAPI;
 import engine.time.Delta;
 import engine.time.TimeOfDay;
@@ -51,11 +53,13 @@ public class SceneHandler {
     private EntityContainer entityContainer;
     private ChunkUpdateHandler chunkUpdateHandler;
     private SoundAPI soundAPI;
+    private GameRenderer gameRenderer;
+    private MainMenuRenderer mainMenuRenderer;
 
     public void passObjects(Window window, MainMenu mainMenu, Mouse mouse, Chunk chunk, MemorySweeper memorySweeper, InventoryLogic inventoryLogic, GUILogic guiLogic,
                             Cloud cloud, Player player, Camera camera, Delta delta, Controls controls,SQLiteDiskHandler sqLiteDiskHandler, TimeOfDay timeOfDay,
                             Timer timer, MobSpawning mobSpawning, MobMeshBuilder mobMeshBuilder, EntityContainer entityContainer, ChunkUpdateHandler chunkUpdateHandler,
-                            SoundAPI soundAPI){
+                            SoundAPI soundAPI, GameRenderer gameRenderer, MainMenuRenderer mainMenuRenderer){
         this.window = window;
         this.mainMenu = mainMenu;
         this.mouse = mouse;
@@ -76,6 +80,8 @@ public class SceneHandler {
         this.entityContainer = entityContainer;
         this.chunkUpdateHandler = chunkUpdateHandler;
         this.soundAPI = soundAPI;
+        this.gameRenderer = gameRenderer;
+        this.mainMenuRenderer = mainMenuRenderer;
     }
 
     private byte currentScene = 0;
@@ -204,7 +210,7 @@ public class SceneHandler {
         delta.calculateDelta();
         controls.mainMenuInput();
         mainMenu.doMainMenuLogic(this.delta);
-        renderMainMenu();
+        mainMenuRenderer.renderMainMenu();
     }
 
     //main game loop
@@ -236,7 +242,7 @@ public class SceneHandler {
 
         camera.updateCamera();
 
-        renderGame();
+        gameRenderer.renderGame();
 
         window.windowUpdate();
 
