@@ -119,8 +119,8 @@ public class Crafter {
 
         //game initializers
         this.chat                    = new Chat();
-        this.biomeGenerator          = new BiomeGenerator();
         this.chunk                   = new Chunk();
+        this.biomeGenerator          = new BiomeGenerator(this.window, this.chunk);
         this.chunkMeshGenerator      = new ChunkMeshGenerator();
         this.chunkUpdateHandler      = new ChunkUpdateHandler();
         this.cloud                   = new Cloud();
@@ -159,7 +159,6 @@ public class Crafter {
             camera.setRay(this.ray);
 
             //gui logic
-            guiLogic.setSettings(this.settings);
             guiLogic.setMouse(this.mouse);
             guiLogic.setWindow(this.window);
             guiLogic.setChat(this.chat);
@@ -175,7 +174,6 @@ public class Crafter {
             //game renderer
             gameRenderer.setCamera(this.camera);
             gameRenderer.setDelta(this.delta);
-            gameRenderer.setSettings(this.settings);
             gameRenderer.setWindow(this.window);
             gameRenderer.setPlayer(this.player);
             gameRenderer.setGui(this.gui);
@@ -211,13 +209,17 @@ public class Crafter {
             controls.setPlayer(this.player);
             controls.setCamera(this.camera);
             controls.setGuiLogic(this.guiLogic);
-            controls.setSettings(this.settings);
             controls.setWindow(this.window);
             controls.setInventoryLogic(this.inventoryLogic);
             controls.setMouse(this.mouse);
 
             //mouse
             mouse.setWindow(this.window);
+
+            //set settings after settings is initialized
+            gameRenderer.setSettings(this.settings);
+            guiLogic.setSettings(this.settings);
+            controls.setSettings(this.settings);
         }
         //game linkages
 
@@ -226,8 +228,7 @@ public class Crafter {
         chat.setDelta(this.delta);
 
         //biome generator
-        biomeGenerator.setWindow(this.window);
-        biomeGenerator.setChunk(this.chunk);
+
 
         //chunk
         chunk.setDelta(this.delta);
@@ -241,7 +242,7 @@ public class Crafter {
         chunkMeshGenerator.setWindow(this.window);
         chunkMeshGenerator.setChunkUpdateHandler(this.chunkUpdateHandler);
         chunkMeshGenerator.setChunk(this.chunk);
-        new Thread(chunkMeshGenerator).start(); //send it on it's way
+        //new Thread(chunkMeshGenerator).start(); //send it on it's way
 
         //chunk update handler
         chunkUpdateHandler.setDelta(this.delta);
