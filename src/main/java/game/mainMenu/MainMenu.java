@@ -83,6 +83,10 @@ public class MainMenu {
     //7 could not connect to server
     private byte menuPage = 0;
 
+    public Credits getCredits(){
+        return this.credits;
+    }
+
     private GUIObject[] mainMenuGUI;
 
     private GUIObject[] mainMenuSettingsMenuGUI;
