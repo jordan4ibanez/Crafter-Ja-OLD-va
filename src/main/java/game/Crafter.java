@@ -234,6 +234,7 @@ public class Crafter {
         //chunk update handler
         chunkUpdateHandler.setDelta(this.delta);
         chunkUpdateHandler.setChunk(this.chunk);
+        chunkUpdateHandler.setChunkMeshGenerator(this.chunkMeshGenerator);
 
         //cloud
         cloud.setDelta(this.delta);

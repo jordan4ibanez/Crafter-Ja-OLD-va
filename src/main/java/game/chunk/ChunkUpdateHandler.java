@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 public class ChunkUpdateHandler {
     private Chunk chunk;
     private Delta delta;
+    private ChunkMeshGenerator chunkMeshGenerator;
 
     private final ConcurrentLinkedDeque<Vector3i> generationQueue = new ConcurrentLinkedDeque<>();
     private final ConcurrentLinkedDeque<ChunkMeshData> dataQueue = new ConcurrentLinkedDeque<>();
@@ -30,6 +31,11 @@ public class ChunkUpdateHandler {
     public void setDelta(Delta delta){
         if (this.delta == null){
             this.delta = delta;
+        }
+    }
+    public void setChunkMeshGenerator(ChunkMeshGenerator chunkMeshGenerator){
+        if (this.chunkMeshGenerator == null){
+            this.chunkMeshGenerator = chunkMeshGenerator;
         }
     }
 
@@ -65,9 +71,11 @@ public class ChunkUpdateHandler {
             //sometimes it is null
             /*
             if (this.chunk.chunkStackContainsBlock(key.x, key.z, key.y)) {
-                generateChunkMesh(key.x, key.z, key.y);
+
             }
              */
+
+            chunkMeshGenerator.generateChunkMesh(key.x, key.z, key.y);
 
             //can attempt to remove null, so it's okay
             generationQueue.remove(key);
