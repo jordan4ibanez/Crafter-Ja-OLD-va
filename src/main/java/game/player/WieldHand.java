@@ -4,11 +4,12 @@ import engine.graphics.Camera;
 import engine.time.Delta;
 import game.chunk.Chunk;
 import game.crafting.Inventory;
+import game.entity.item.ItemDefinitionContainer;
 import org.joml.*;
 import org.joml.Math;
 
 public class WieldHand {
-
+    ItemDefinitionContainer itemDefinitionContainer = new ItemDefinitionContainer();
     private final Player player;
     private Chunk chunk;
     private final Delta delta;
@@ -113,7 +114,7 @@ public class WieldHand {
             wieldHandAnimationRot.lerp(wieldRotationEmptyEnd, (float) Math.sin(diggingAnimation * Math.PI));
         }
         //block
-        else if (itemIsBlock(inventory.getMain().getItem(player.getPlayerInventorySelection(),0))) {
+        else if (itemDefinitionContainer.isBlock(inventory.getMain().getItem(player.getPlayerInventorySelection(),0))) {
             //set position
             wieldHandAnimationPos.set((float) (-5f * Math.sin(java.lang.Math.pow(diggingAnimation, 0.8f) * Math.PI)) + wieldHandAnimationPosBlock.x, (float) (2f * Math.sin(diggingAnimation * 2f * Math.PI)) + wieldHandAnimationPosBlock.y, wieldHandAnimationPosBlock.z);
             //set rotation
@@ -122,7 +123,7 @@ public class WieldHand {
             wieldHandAnimationRot.lerp(wieldRotationBlockEnd, (float) Math.sin(diggingAnimation * Math.PI));
 
             //item/tool
-        } else if (getIfItem(inventory.getMain().getItem(player.getPlayerInventorySelection(),0))){
+        } else if (itemDefinitionContainer.isItem(inventory.getMain().getItem(player.getPlayerInventorySelection(),0))){
             //set position
             wieldHandAnimationPos.set((float) (-6f * Math.sin(java.lang.Math.pow(diggingAnimation, 0.8f) * Math.PI)) + wieldHandAnimationPosItem.x, (float) (4f * Math.sin(diggingAnimation * 2f * Math.PI)) + wieldHandAnimationPosItem.y, wieldHandAnimationPosItem.z);
             //set rotation
