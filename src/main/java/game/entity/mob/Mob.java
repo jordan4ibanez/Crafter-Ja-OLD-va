@@ -22,6 +22,7 @@ public abstract class Mob extends Entity {
     private float deathTimer = 0f;
 
     private float animationTimer = 0f;
+    private float smoothRotation = 0f;
 
     private int health;
     private int hurtAdder = 0;
@@ -89,6 +90,14 @@ public abstract class Mob extends Entity {
 
     public Vector3f[] getBodyRotations(){
         return bodyRotations;
+    }
+
+    public float getSmoothRotation(){
+        return smoothRotation;
+    }
+
+    public void setSmoothRotation(float smoothRotation){
+        this.smoothRotation = smoothRotation;
     }
 
     public String getName(){
