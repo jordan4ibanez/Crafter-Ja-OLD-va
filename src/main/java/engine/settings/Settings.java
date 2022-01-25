@@ -89,7 +89,7 @@ public class Settings {
     }
 
     public boolean getSettingsVsync(){
-        return this.settingsObject.vSync;
+        return settingsObject.vSync;
     }
 
     public void setGraphicsMode(boolean newGraphicsMode){
