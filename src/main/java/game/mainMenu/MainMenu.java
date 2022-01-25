@@ -21,8 +21,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Random;
 
-import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
-
 public class MainMenu {
 
     //assets and credits are objects
@@ -417,7 +415,7 @@ public class MainMenu {
                 }
 
                 if (selection == 4) {
-                    glfwSetWindowShouldClose(window.getWindowHandle(), true);
+                    window.close();
                 }
 
             } else if (!mouse.isLeftButtonPressed()) {

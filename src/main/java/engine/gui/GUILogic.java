@@ -12,8 +12,6 @@ import game.mainMenu.MainMenu;
 import game.player.Player;
 import org.joml.Vector2d;
 
-import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
-
 public class GUILogic {
 
     private Settings settings;
@@ -295,7 +293,7 @@ public class GUILogic {
                     } else if (selection == 3) {
                         disk.closeWorldDataBase();
                         //disconnectClient();
-                        glfwSetWindowShouldClose(window.getWindowHandle(), true);
+                        window.close();
                     }
                 } else if (!mouse.isLeftButtonPressed()) {
                     mouseButtonPushed = false;
