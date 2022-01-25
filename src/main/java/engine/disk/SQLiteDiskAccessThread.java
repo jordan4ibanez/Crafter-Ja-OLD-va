@@ -362,7 +362,7 @@ public class SQLiteDiskAccessThread implements Runnable {
             //did not find a chunk - create a new one
             else {
                 //System.out.println("generate chunk here");
-                addChunkToBiomeGeneration(x, z);
+                sqLiteDiskHandler.addChunkToBiomeGenerator(new Vector2i(x, z));
             }
 
             statement.close();
