@@ -10,10 +10,25 @@ import org.joml.Vector3f;
 
 public class Chicken extends Mob {
 
-    private final float accelerationMultiplier  = 0.03f;
-    private final float maxWalkSpeed = 2.f;
-    private final float movementAcceleration = 900.f;
     private final Vector2f workerVector2f = new Vector2f();
+
+    private final Vector3f[] bodyOffsets = new Vector3f[]{
+            new Vector3f(0,0.925f - 0.1f,-0.2815f),
+            new Vector3f(0,0.8f - 0.1f,0),
+            new Vector3f(-0.2185f,0.8f - 0.1f,0),
+            new Vector3f(0.2185f,0.8f - 0.1f,0),
+            new Vector3f(-0.09f,0.425f - 0.1f,-0.015f),
+            new Vector3f(0.09f,0.425f - 0.1f,-0.015f),
+    };
+
+    private final Vector3f[] bodyRotations = new Vector3f[]{
+            new Vector3f(0,0,0),
+            new Vector3f(0,0,0),
+            new Vector3f(0,0,0),
+            new Vector3f(0,0,0),
+            new Vector3f(0,0,0),
+            new Vector3f(0,0,0),
+    };
 
     private final Mesh[] mesh = createMesh();
 
@@ -23,8 +38,6 @@ public class Chicken extends Mob {
 
             double dtime = delta.getDelta();
 
-            //primitive
-            int thisMobDefinitionID = MobObject.getMobID(thisMob);
             float thisMobTimer = MobObject.getMobTimer(thisMob);
             float thisMobAnimationTimer = MobObject.getMobAnimationTimer(thisMob);
             float thisMobRotation = MobObject.getMobRotation(thisMob);
@@ -66,11 +79,14 @@ public class Chicken extends Mob {
 
             float bodyYaw = Math.toRadians(thisMobRotation) + (float) Math.PI;
 
+            float accelerationMultiplier = 0.03f;
+            float movementAcceleration = 900.f;
             thisMobInertia.x +=  (Math.sin(-bodyYaw) * accelerationMultiplier) * movementAcceleration * dtime;
             thisMobInertia.z +=  (Math.cos(bodyYaw)  * accelerationMultiplier) * movementAcceleration * dtime;
 
             workerVector2f.set(thisMobInertia.x, thisMobInertia.z);
 
+            float maxWalkSpeed = 2.f;
             float maxSpeed = maxWalkSpeed;
 
             if (thisMobHealth <= 0){
@@ -121,28 +137,25 @@ public class Chicken extends Mob {
         }
     };
 
-    private final float yOffsetCorrection = -0.1f;
-
-    private final Vector3f[] bodyOffsets = new Vector3f[]{
-            new Vector3f(0,0.925f + yOffsetCorrection,-0.2815f),
-            new Vector3f(0,0.8f + yOffsetCorrection,0),
-            new Vector3f(-0.2185f,0.8f + yOffsetCorrection,0),
-            new Vector3f(0.2185f,0.8f + yOffsetCorrection,0),
-            new Vector3f(-0.09f,0.425f + yOffsetCorrection,-0.015f),
-            new Vector3f(0.09f,0.425f + yOffsetCorrection,-0.015f),
-    };
-
-    private final Vector3f[] bodyRotations = new Vector3f[]{
-            new Vector3f(0,0,0),
-            new Vector3f(0,0,0),
-            new Vector3f(0,0,0),
-            new Vector3f(0,0,0),
-            new Vector3f(0,0,0),
-            new Vector3f(0,0,0),
-    };
-
     public Chicken(EntityContainer entityContainer, String name, Vector3d pos, Vector3f inertia, float width, float height, int health) {
-        super(entityContainer, name, pos, inertia, width, height, health);
+        super(entityContainer, name, pos, inertia,  width, height, health);
+    }
+
+    @Override
+    public MobInterface getMobInterface(){
+        return mobInterface;
+    }
+
+    public Vector3f[] getBodyOffsets() {
+        return bodyOffsets;
+    }
+
+    public Mesh[] getMesh() {
+        return mesh;
+    }
+
+    public Vector3f[] getBodyRotations() {
+        return bodyRotations;
     }
 
     //public void registerChickenMob(){
