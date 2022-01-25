@@ -2,6 +2,7 @@ package game.entity.collision;
 
 import game.entity.Entity;
 import game.entity.EntityContainer;
+import game.entity.mob.Mob;
 import game.player.Player;
 import org.joml.Vector2d;
 import org.joml.Vector3d;
@@ -27,6 +28,7 @@ public class MobCollision {
     private final Vector2d workerVec2D2 = new Vector2d();
     private final Vector2d normalizedPos = new Vector2d();
 
+    /*
     public void mobSoftCollisionDetect(Entity thisEntity, Vector3d thisMobPos, float thisMobHeight, float thisMobWidth){
         //get this mob's info
         workerVec2D.set(thisMobPos.x, thisMobPos.z);
@@ -35,7 +37,7 @@ public class MobCollision {
 
         List<Entity> test = entityContainer.getAll();
 
-        for (Entity otherEntity : test){
+        for (Mob otherEntity : test){
 
             if (!otherEntity.isMob() || otherEntity == thisEntity || otherEntity.getHealth() <= 0){
                 continue;
@@ -68,7 +70,7 @@ public class MobCollision {
             }
         }
     }
-
+     */
     public void mobSoftPlayerCollisionDetect(Entity thisMob, Vector3d thisMobPos, float thisMobHeight, float thisMobWidth, Player player){
         //get this mob's info
         workerVec2D.set(thisMobPos.x, thisMobPos.z);
