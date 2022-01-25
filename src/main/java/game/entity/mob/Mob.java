@@ -9,7 +9,7 @@ import org.joml.Vector3d;
 import org.joml.Vector3f;
 
 public class Mob extends Entity {
-
+    private final String name;
     private float hurtTimer = 0f;
     private float deathRotation = 0f;
     private float deathTimer = 0f;
@@ -17,9 +17,14 @@ public class Mob extends Entity {
     private int health;
     private int hurtAdder = 0;
 
-    public Mob(EntityContainer entityContainer, Vector3d pos, Vector3f inertia, float width, float height, int health) {
+    public Mob(EntityContainer entityContainer, String name, Vector3d pos, Vector3f inertia, float width, float height, int health) {
         super(entityContainer, pos, inertia, width, height, false, true, false);
+        this.name = name;
         this.health = health;
+    }
+
+    public String getName(){
+        return name;
     }
 
     public int getHurtAdder(){
