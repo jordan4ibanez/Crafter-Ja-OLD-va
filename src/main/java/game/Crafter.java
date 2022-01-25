@@ -38,13 +38,14 @@ import game.ray.Ray;
 
 public class Crafter {
 
-    public void main(String[] args) {
+    public static void main(String[] args) {
         Crafter crafter = new Crafter();
     }
 
     private final String versionName = "Crafter 0.08a";
 
     //engine components
+    private final Window window;
     private final Compression compression;
     private final RuntimeInfo runtimeInfo;
     private final Disk disk;
@@ -67,7 +68,6 @@ public class Crafter {
     private final MemorySweeper memorySweeper;
     private final Mouse mouse;
     private final Utils utils;
-    private final Window window;
 
     //game components
     private final Chat chat;
@@ -92,6 +92,8 @@ public class Crafter {
 
     public Crafter(){
         //engine initializers
+        this.window                  = new Window(this.versionName, true);
+
         this.compression             = new Compression();
         this.runtimeInfo             = new RuntimeInfo();
         this.disk                    = new Disk();
@@ -114,7 +116,6 @@ public class Crafter {
         this.memorySweeper           = new MemorySweeper();
         this.mouse                   = new Mouse();
         this.utils                   = new Utils();
-        this.window                  = new Window(this.versionName, this.settings.getSettingsVsync());
 
         //game initializers
         this.chat                    = new Chat();
@@ -140,6 +141,9 @@ public class Crafter {
 
         //engine linkages
         {
+            //window
+            window.setDelta(this.delta);
+
             //disk
             disk.setSqLiteDiskHandler(this.sqLiteDiskHandler);
 
@@ -174,6 +178,17 @@ public class Crafter {
             gameRenderer.setSettings(this.settings);
             gameRenderer.setWindow(this.window);
             gameRenderer.setPlayer(this.player);
+            gameRenderer.setGui(this.gui);
+            gameRenderer.setTimeOfDay(this.timeOfDay);
+            gameRenderer.setCloud(this.cloud);
+            gameRenderer.setLight(this.light);
+
+            //main menu renderer
+            mainMenuRenderer.setWindow(this.window);
+            mainMenuRenderer.setCamera(this.camera);
+            mainMenuRenderer.setMainMenu(this.mainMenu);
+            mainMenuRenderer.setGui(this.gui);
+            mainMenuRenderer.setDelta(this.delta);
 
             //settings
             settings.setChunk(this.chunk);
@@ -203,9 +218,6 @@ public class Crafter {
 
             //mouse
             mouse.setWindow(this.window);
-
-            //window
-            window.setDelta(this.delta);
         }
         //game linkages
 
