@@ -162,6 +162,26 @@ public class Sheep extends Mob{
         mesh = createMesh(mobMeshBuilder);
     }
 
+    @Override
+    public MobInterface getMobInterface(){
+        return woolInterface;
+    }
+
+    @Override
+    public Vector3f[] getBodyOffsets() {
+        return bodyOffsets;
+    }
+
+    @Override
+    public Vector3f[] getBodyRotations() {
+        return bodyRotations;
+    }
+
+    public Mesh[] getMesh() {
+        return mesh;
+    }
+
+
     //public void registerSheepMob(){
         //registerMob("sheep_wool", "sheep_1",true, (byte) 6, createWoolMesh(), bodyOffsets, bodyRotations,0.9f, 0.45f, woolInterface);
         //registerMob("sheep_shaved", "sheep_2",true, (byte) 6, createShavedMesh(), bodyOffsets, bodyRotations,0.9f, 0.45f, shavedInterface);
