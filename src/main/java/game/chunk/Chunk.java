@@ -174,7 +174,8 @@ public class Chunk {
     public void addNewChunk(PrimitiveChunkObject primitiveChunkObject){
         ChunkObject gottenChunk = map.get(primitiveChunkObject.pos);
         if (gottenChunk == null){
-            map.put(new Vector2i(primitiveChunkObject.pos), new ChunkObject(new Vector2i(primitiveChunkObject.pos)));
+            System.out.println("I AM PUTTING LE CHUNK IN LE MAP BOI");
+            map.put(new Vector2i(primitiveChunkObject.pos), new ChunkObject(primitiveChunkObject));
             //send to chunk object generator
         }
     }
@@ -274,7 +275,7 @@ public class Chunk {
         if (chunk == null){
             return -1;
         }
-        byte[] blockData = chunk.getHeightMap();
+        byte[] blockData = chunk.getBlock();
         if (blockData == null){
             return -1;
         }
