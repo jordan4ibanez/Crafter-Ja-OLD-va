@@ -2,7 +2,7 @@ package engine;
 
 
 public class MemorySweeper {
-    public static void cleanMemory(){
+    public void cleanMemory(){
         //System.out.println("sweeping memory!");
         /*
         cleanItemMemory();
