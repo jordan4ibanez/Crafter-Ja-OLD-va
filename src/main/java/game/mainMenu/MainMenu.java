@@ -10,6 +10,7 @@ import engine.gui.TextHandling;
 import engine.scene.SceneHandler;
 import engine.settings.Settings;
 import engine.sound.SoundAPI;
+import engine.sound.SoundSource;
 import engine.time.Delta;
 import game.player.Player;
 import org.joml.Vector2d;
@@ -56,8 +57,8 @@ public class MainMenu {
 
     private float creditsScroll = -6f;
 
-    //private final SoundSource titleMusic;
-    //private final SoundSource creditsMusic;
+    private SoundSource titleMusic;
+    private SoundSource creditsMusic;
 
     private final Random random = new Random();
     private boolean mouseButtonPushed = false;
@@ -167,13 +168,15 @@ public class MainMenu {
     }
 
     public MainMenu() {
-
+        //titleMusic = soundAPI.playMusic("main_menu");
+        //creditsMusic = soundAPI.playMusic("credits");
+        //creditsMusic.stop();
     }
     public void initializeGUI(){
 
-        //titleMusic = playMusic("main_menu");
-        //creditsMusic = playMusic("credits");
-        //creditsMusic.stop();
+        titleMusic = soundAPI.playMusic("main_menu");
+        creditsMusic = soundAPI.playMusic("credits");
+        creditsMusic.stop();
 
         mainMenuGUI = new GUIObject[]{
                 new GUIObject("SINGLEPLAYER" , new Vector2d(0, 10), 10, 1),
@@ -407,9 +410,9 @@ public class MainMenu {
                 }
 
                 if (selection == 3){
-                    //titleMusic.stop();
+                    titleMusic.stop();
                     menuPage = 4;
-                    //creditsMusic.play();
+                    creditsMusic.play();
                     resetMainMenu();
                 }
 
@@ -480,7 +483,6 @@ public class MainMenu {
             //7 - inventory
             //8 - back
 
-            //todo: fix duplicating keys
             if (lockedOnButtonInput >= 0 && pollingButtonInputs) {
                 int dumpedKey = window.getDumpedKey();
                 //poll data stream of key inputs
@@ -611,7 +613,7 @@ public class MainMenu {
                 if (selection < 4) {
                     byte selectedWorld = (byte) (selection + 1); //base 1 counting
                     disk.setCurrentActiveWorld(selectedWorld);
-                    //titleMusic.stop();
+                    titleMusic.stop();
                     mouse.toggleMouseLock();
                     //generateRandomInventory();
                     sceneHandler.setScene((byte) 1);
@@ -626,8 +628,8 @@ public class MainMenu {
         } else if (menuPage == 4){
             makeCreditsScroll(delta);
             if (window.getDumpedKey() > -1){
-                //creditsMusic.stop();
-                //titleMusic.play();
+                creditsMusic.stop();
+                titleMusic.play();
                 menuPage = 0;
                 creditsScroll = -6f;
             }
