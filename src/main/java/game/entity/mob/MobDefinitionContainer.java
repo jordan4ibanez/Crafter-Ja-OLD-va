@@ -8,4 +8,8 @@ public class MobDefinitionContainer {
     public void add(MobDefinition mobDefinition){
         definition.put(mobDefinition.getName(), mobDefinition);
     }
+
+    public MobDefinition get(String name){
+        return definition.get(name);
+    }
 }
