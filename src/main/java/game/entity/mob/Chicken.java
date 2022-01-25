@@ -1,22 +1,27 @@
 package game.entity.mob;
 
 import engine.graphics.Mesh;
+import engine.time.Delta;
+import game.entity.EntityContainer;
 import org.joml.Math;
 import org.joml.Vector2f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 
-public class Chicken {
+public class Chicken extends Mob {
+
     private final float accelerationMultiplier  = 0.03f;
     private final float maxWalkSpeed = 2.f;
     private final float movementAcceleration = 900.f;
     private final Vector2f workerVector2f = new Vector2f();
 
+    private final Mesh[] mesh = createMesh();
+
     private final MobInterface mobInterface = new MobInterface() {
         @Override
-        public void onTick(int thisMob) {
+        public void onTick(Mob mob, Delta delta) {
 
-            double delta = getDelta();
+            double dtime = delta.getDelta();
 
             //primitive
             int thisMobDefinitionID = MobObject.getMobID(thisMob);
@@ -31,7 +36,7 @@ public class Chicken {
             Vector3f[] thisMobBodyRotations = MobObject.getMobBodyRotations(thisMob);
             Vector3f thisMobInertia = MobObject.getMobInertia(thisMob);
 
-            thisMobTimer += delta;
+            thisMobTimer += dtime;
 
             //debugging for animation timer
             /*
@@ -61,8 +66,8 @@ public class Chicken {
 
             float bodyYaw = Math.toRadians(thisMobRotation) + (float) Math.PI;
 
-            thisMobInertia.x +=  (Math.sin(-bodyYaw) * accelerationMultiplier) * movementAcceleration * delta;
-            thisMobInertia.z +=  (Math.cos(bodyYaw)  * accelerationMultiplier) * movementAcceleration * delta;
+            thisMobInertia.x +=  (Math.sin(-bodyYaw) * accelerationMultiplier) * movementAcceleration * dtime;
+            thisMobInertia.z +=  (Math.cos(bodyYaw)  * accelerationMultiplier) * movementAcceleration * dtime;
 
             workerVector2f.set(thisMobInertia.x, thisMobInertia.z);
 
@@ -112,8 +117,7 @@ public class Chicken {
             MobObject.setMobAnimationTimer(thisMob, thisMobAnimationTimer);
             MobObject.setMobTimer(thisMob, thisMobTimer);
 
-            mobSmoothRotation(thisMob);
-            doHeadCode(thisMob);
+
         }
     };
 
@@ -137,9 +141,13 @@ public class Chicken {
             new Vector3f(0,0,0),
     };
 
-    public void registerChickenMob(){
-        registerMob("chicken", "hurt",false, (byte) 7, createMesh(), bodyOffsets, bodyRotations,1f, 0.35f, mobInterface);
+    public Chicken(EntityContainer entityContainer, String name, Vector3d pos, Vector3f inertia, float width, float height, int health) {
+        super(entityContainer, name, pos, inertia, width, height, health);
     }
+
+    //public void registerChickenMob(){
+        //registerMob("chicken", "hurt",false, (byte) 7, createMesh(), bodyOffsets, bodyRotations,1f, 0.35f, mobInterface);
+    //}
 
 
     private Mesh[] createMesh(){
