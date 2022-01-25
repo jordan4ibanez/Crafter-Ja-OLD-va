@@ -51,7 +51,9 @@ public class Timer {
     }
 
     public void buildFPSMesh(int framesPerSecond) {
-        fpsMesh.cleanUp(false);
+        if (fpsMesh != null) {
+            fpsMesh.cleanUp(false);
+        }
         fpsMesh = textHandling.createTextWithShadow("FPS: " + framesPerSecond, 1f, 1f, 1f);
     }
 
