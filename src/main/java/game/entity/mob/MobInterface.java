@@ -13,7 +13,7 @@ public interface MobInterface {
 
     }
 
-    //what the mob does when right clicked
+    //what the mob does when right-clicked
     default void onRightClick(Mob thisMob, Delta delta){
 
     }
