@@ -27,6 +27,8 @@ public abstract class Mob extends Entity {
     private float animationTimer = 0f;
     private float smoothRotation = 0f;
 
+    private boolean standing = false;
+
     private int health;
     private int hurtAdder = 0;
 
@@ -115,6 +117,13 @@ public abstract class Mob extends Entity {
         return health;
     }
 
+    public boolean getIfStanding(){
+        return standing;
+    }
+
+    public void setStanding(boolean standing){
+        this.standing = standing;
+    }
 
     public void onTick(Chunk chunk, Delta delta, Player player, Ray ray){
         super.onTick(chunk, delta);
