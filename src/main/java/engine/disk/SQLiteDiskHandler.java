@@ -136,17 +136,7 @@ public class SQLiteDiskHandler {
         this.generatingChunks.add(new Vector2i(pos));
     }
 
-    private SQLiteDiskHandler sqLiteDiskHandler;
 
-    public Disk(){
-
-    }
-
-    public void setSqLiteDiskHandler(SQLiteDiskHandler sqLiteDiskHandler){
-        if (this.sqLiteDiskHandler == null){
-            this.sqLiteDiskHandler = sqLiteDiskHandler;
-        }
-    }
 
     private byte currentActiveWorld = 1; //failsafe
 
