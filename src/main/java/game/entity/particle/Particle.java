@@ -22,16 +22,17 @@ public class Particle extends Entity {
 
     private final Mesh mesh;
 
-    public Particle(Texture textureAtlas, BlockDefinitionContainer blockDefinitionContainer, Chunk chunk, EntityContainer entityContainer, Vector3d pos, Vector3f inertia, int blockID){
-        super(chunk,entityContainer,pos,inertia,false,false,true);
-
-        mesh = createParticleMesh(blockDefinitionContainer, blockID, textureAtlas);
-    }
-
 
     private final Vector3i currentFlooredPos = new Vector3i();
 
     private final Deque<Integer> deletionQueue = new ArrayDeque<>();
+
+    public Particle(EntityContainer entityContainer, Vector3d pos, Vector3f inertia, float width, float height, boolean item, boolean mob, boolean particle) {
+        super(entityContainer, pos, inertia, width, height, item, mob, particle);
+
+        BlockDefinitionContainer blockDefinitionContainer = new BlockDefinitionContainer();
+        mesh = createParticleMesh(blockDefinitionContainer, 5, new Texture("textures/textureAtlas.png"));
+    }
 
     public void onTick(BlockDefinitionContainer blockDefinitionContainer, ParticleCollision collision, Delta delta){
 
@@ -127,6 +128,7 @@ public class Particle extends Entity {
         return new Mesh(positions, light, indices, textureCoord, textureAtlas);
     }
 
+    /*
     @Override
     public void onTick(Entity entity, Player player, Delta delta) {
 
@@ -146,4 +148,6 @@ public class Particle extends Entity {
     public void onTick(Collision collision, Entity entity, SoundAPI soundAPI, InventoryLogic inventoryLogic, Player player, Delta delta) {
 
     }
+
+     */
 }
