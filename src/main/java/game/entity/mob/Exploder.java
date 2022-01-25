@@ -12,8 +12,6 @@ import game.chunk.Chunk.getBlock;
 import game.entity.collision.Collision.applyInertia;
 import game.entity.mob.MobMeshBuilder.calculateMobTexture;
 import game.entity.mob.MobMeshBuilder.createMobMesh;
-import game.entity.mob.MobUtilityCode.doHeadCode;
-import game.entity.mob.MobUtilityCode.mobSmoothRotation;
 import game.entity.tnt.Explosion.boom;
 
 public class Exploder {

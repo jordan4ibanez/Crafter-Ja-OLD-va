@@ -11,10 +11,6 @@ import engine.time.Delta.getDelta;
 import game.blocks.BlockDefinition.getIfLiquid;
 import game.chunk.Chunk.getBlock;
 import game.entity.collision.Collision.applyInertia;
-import game.entity.mob.MobDefinition.*;
-import game.entity.mob.MobObject.*;
-import game.entity.mob.MobUtilityCode.doHeadCode;
-import game.entity.mob.MobUtilityCode.mobSmoothRotation;
 
 public class Pig {
     private final float accelerationMultiplier  = 0.04f;
