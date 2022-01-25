@@ -52,7 +52,7 @@ final public class MobDefinition {
     public MobInterface getInterface(){
         return mobInterface;
     }
-    public String getMobDefinitionName(){
+    public String getName(){
         return name;
     }
     public Vector3f[] getBodyOffsets(){
