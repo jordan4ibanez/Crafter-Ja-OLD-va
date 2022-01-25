@@ -156,7 +156,8 @@ public class Disk {
         updateSaveQueueCurrentActiveWorld(newWorld);
         createAlphaWorldFolder();
         //eh no where to really put this so just gonna stick it here
-        sqLiteDiskHandler.connectWorldDataBase("world" + currentActiveWorld);
+
+        connectWorldDataBase("world" + currentActiveWorld);
         System.out.println("CURRENT WORLD IS: " + newWorld);
     }
 
