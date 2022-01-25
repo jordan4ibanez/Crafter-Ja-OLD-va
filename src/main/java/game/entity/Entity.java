@@ -15,6 +15,7 @@ public abstract class Entity {
     private final EntityContainer entityContainer;
 
     private final Vector3d pos = new Vector3d();
+    private final Vector3d oldPos = new Vector3d();
     private final Vector3i flooredPos = new Vector3i();
     private final Vector3i oldFlooredPos = new Vector3i();
 
@@ -67,7 +68,6 @@ public abstract class Entity {
 
         oldFlooredPos.set(flooredPos);
     }
-
     public byte getLight() {
         return light;
     }
@@ -122,5 +122,13 @@ public abstract class Entity {
 
     public void setInertia(Vector3f inertia){
         this.inertia.set(inertia);
+    }
+
+    public Vector3d getOldPos() {
+        return oldPos;
+    }
+
+    public void setOldPos(Vector3d pos){
+        oldPos.set(pos);
     }
 }
