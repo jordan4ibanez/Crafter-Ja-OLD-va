@@ -683,11 +683,6 @@ public class GUI {
         indices.pack(indicesCount, 1 + indicesCount, 2 + indicesCount, indicesCount, 2 + indicesCount, 3 + indicesCount);
         textureCoord.pack(1f, textureMin, 0f, textureMin, 0f, textureMax, 1f, textureMax);
 
-        positions.clear();
-        light.clear();
-        indices.clear();
-        textureCoord.clear();
-
         return new Mesh(positions.values(), light.values(), indices.values(), textureCoord.values(), miningCrack);
     }
 
