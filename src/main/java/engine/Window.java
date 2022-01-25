@@ -131,6 +131,16 @@ public class Window {
         //hide cursor
         glfwSetInputMode(getWindowHandle(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
+
+        setIcon();
+
+        //set window state
+        this.shouldClose = new AtomicBoolean(false);
+
+        this.updateScale();
+    }
+
+    private void setIcon(){
         //load icon todo: needs to be it's own class
         MemoryStack stack = MemoryStack.stackPush();
         IntBuffer w = stack.mallocInt(1);
@@ -146,17 +156,11 @@ public class Window {
         GLFWImage.Buffer images = GLFWImage.malloc(1);
         images.put(0, image);
 
-
         //set icon
         glfwSetWindowIcon(windowHandle, images);
 
         //free memory
         stbi_image_free(buf);
-
-        //set window state
-        this.shouldClose = new AtomicBoolean(false);
-
-        this.updateScale();
     }
 
 
