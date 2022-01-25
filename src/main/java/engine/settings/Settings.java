@@ -1,6 +1,7 @@
 package engine.settings;
 
 import engine.Window;
+import engine.disk.Disk;
 import game.chunk.Chunk;
 
 import static org.lwjgl.glfw.GLFW.*;

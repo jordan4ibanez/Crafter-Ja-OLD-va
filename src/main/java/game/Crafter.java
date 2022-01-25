@@ -48,7 +48,6 @@ public class Crafter {
     private final Compression compression;
     private final RuntimeInfo runtimeInfo;
     private final Disk disk;
-    private final Disk disk;
     private final Camera camera;
     private final GUI gui;
     private final GUILogic guiLogic;
@@ -96,7 +95,6 @@ public class Crafter {
         this.compression             = new Compression();
         this.runtimeInfo             = new RuntimeInfo();
         this.disk                    = new Disk();
-        this.disk = new Disk();
         this.camera                  = new Camera();
         this.gui                     = new GUI(this.versionName);
         this.guiLogic                = new GUILogic();
@@ -142,9 +140,6 @@ public class Crafter {
         {
             //window
             window.setDelta(this.delta);
-
-            //disk
-            disk.setSqLiteDiskHandler(this.disk);
 
             //SQLiteDiskHandler
             disk.setBiomeGenerator(this.biomeGenerator);

@@ -2,6 +2,7 @@ package game.mainMenu;
 
 import engine.Mouse;
 import engine.Window;
+import engine.disk.Disk;
 import engine.graphics.Mesh;
 import engine.gui.GUILogic;
 import engine.gui.GUIObject;
