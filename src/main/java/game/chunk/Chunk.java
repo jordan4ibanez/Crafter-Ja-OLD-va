@@ -17,6 +17,7 @@ import java.util.Deque;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static java.lang.Math.hypot;
+import static org.joml.Math.max;
 
 public class Chunk {
     private Disk disk;
@@ -118,7 +119,7 @@ public class Chunk {
 
     private double getChunkDistanceFromPlayer(int x, int z){
         Vector2i currentChunk = player.getPlayerCurrentChunk();
-        return Math.max(getDistance(0, currentChunk.y, 0, z), getDistance(currentChunk.x, 0, x, 0));
+        return max(getDistance(0, currentChunk.y, 0, z), getDistance(currentChunk.x, 0, x, 0));
     }
 
     public void setChunkNormalMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
