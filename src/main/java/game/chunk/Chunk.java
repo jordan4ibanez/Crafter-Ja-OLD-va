@@ -353,8 +353,6 @@ public class Chunk {
             return;
         }
 
-        byte oldBlock = blockData[posToIndex(blockX, pos.y, blockZ)];
-
         blockData[posToIndex(blockX, pos.y, blockZ)] = 0;
         rotationData[posToIndex(blockX, pos.y, blockZ)] = 0;
         if (heightMapData[posToIndex2D(blockX,blockZ)] == pos.y){
