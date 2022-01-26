@@ -90,7 +90,6 @@ public class ChunkUpdateHandler {
 
 
     public void popChunkMeshQueue(){
-
         if (dataQueue.isEmpty()){
             return;
         }
@@ -110,7 +109,7 @@ public class ChunkUpdateHandler {
                 return;
             }
 
-            //System.out.println("ChunkMesh Setting QueueSize: " + queue.size());
+            System.out.println("ChunkMesh Setting QueueSize: " + dataQueue.size());
 
             ChunkMeshData newChunkMeshData = dataQueue.pop();
 
