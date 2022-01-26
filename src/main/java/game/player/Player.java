@@ -86,7 +86,9 @@ public class Player {
     }
 
 
-
+    public WieldHand getWieldHand(){
+        return wieldHand;
+    }
 
     public Player(){
 
@@ -186,7 +188,7 @@ public class Player {
     }
 
     public void startDiggingAnimation(){
-        //System.out.println("flarp");
+        wieldHand.startDiggingAnimation();
     }
 
     public void addPlayerInertia(float x, float y, float z){
