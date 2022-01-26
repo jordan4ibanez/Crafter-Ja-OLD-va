@@ -73,14 +73,14 @@ public class ChunkMeshGenerator implements Runnable{
             if (pollQueue()) {
                 try {
                     //thread needs to sleep quicker to avoid lag
-                    //System.out.println("sleeping");
+                    System.out.println("sleeping");
                     Thread.sleep(30);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            } //else {
-                //System.out.println("I'M AWAKE!");
-            //}
+            } else {
+                System.out.println("I'M AWAKE!");
+            }
         }
     }
 
@@ -117,9 +117,11 @@ public class ChunkMeshGenerator implements Runnable{
 
         Vector2i key2D = new Vector2i(key.x, key.z);
 
-        byte[] blockData    = chunk.getBlockData(key2D);
-        byte[] rotationData = chunk.getRotationData(key2D);
-        byte[] lightData    = chunk.getLightData(key2D);
+        ChunkObject thisChunk = chunk.getChunk(key2D);
+
+        byte[] blockData = thisChunk.getBlock();
+        byte[] rotationData = thisChunk.getRotation();
+        byte[] lightData = thisChunk.getLight();
 
         //don't bother if the chunk doesn't exist
         if (blockData == null || rotationData == null || lightData == null) {
@@ -131,16 +133,52 @@ public class ChunkMeshGenerator implements Runnable{
         final int chunkZ = key.z;
         final int yHeight = key.y;
 
-        //neighbor chunks
-        byte[] chunkNeighborXPlusBlockData  = chunk.getBlockData(new Vector2i(key.x + 1, key.z));
-        byte[] chunkNeighborXMinusBlockData = chunk.getBlockData(new Vector2i(key.x - 1, key.z));
-        byte[] chunkNeighborZPlusBlockData  = chunk.getBlockData(new Vector2i(key.x, key.z + 1));
-        byte[] chunkNeighborZMinusBlockData = chunk.getBlockData(new Vector2i(key.x, key.z - 1));
 
-        byte[] chunkNeighborXPlusLightData  = chunk.getLightData(new Vector2i(key.x + 1, key.z));
-        byte[] chunkNeighborXMinusLightData = chunk.getLightData(new Vector2i(key.x - 1, key.z));
-        byte[] chunkNeighborZPlusLightData  = chunk.getLightData(new Vector2i(key.x, key.z + 1));
-        byte[] chunkNeighborZMinusLightData = chunk.getLightData(new Vector2i(key.x, key.z - 1));
+        //neighbor chunks
+
+        ChunkObject chunkNeighborXPlus = chunk.getChunk(new Vector2i(key.x + 1, key.z));
+        ChunkObject chunkNeighborXMinus = chunk.getChunk(new Vector2i(key.x - 1, key.z));
+        ChunkObject chunkNeighborZPlus = chunk.getChunk(new Vector2i(key.x, key.z + 1));
+        ChunkObject chunkNeighborZMinus = chunk.getChunk(new Vector2i(key.x, key.z - 1));
+
+        //neighbor data
+
+        byte[] chunkNeighborXPlusBlockData = null;
+        byte[] chunkNeighborXPlusLightData = null;
+
+        if (chunkNeighborXPlus != null){
+            chunkNeighborXPlusBlockData = chunkNeighborXPlus.getBlock().clone();
+            chunkNeighborXPlusLightData = chunkNeighborXPlus.getLight().clone();
+        }
+
+        byte[] chunkNeighborXMinusBlockData = null;
+        byte[] chunkNeighborXMinusLightData = null;
+
+        if (chunkNeighborXMinus != null) {
+            chunkNeighborXMinusBlockData = chunkNeighborXMinus.getBlock().clone();
+            chunkNeighborXMinusLightData = chunkNeighborXMinus.getLight().clone();
+        }
+
+        byte[] chunkNeighborZPlusBlockData = null;
+        byte[] chunkNeighborZPlusLightData = null;
+
+        if (chunkNeighborZPlus != null) {
+            chunkNeighborZPlusBlockData = chunkNeighborZPlus.getBlock().clone();
+            chunkNeighborZPlusLightData = chunkNeighborZPlus.getLight().clone();
+        }
+
+        byte[] chunkNeighborZMinusBlockData = null;
+        byte[] chunkNeighborZMinusLightData = null;
+
+        if (chunkNeighborZMinus != null) {
+            chunkNeighborZMinusBlockData = chunkNeighborZMinus.getBlock().clone();
+            chunkNeighborZMinusLightData = chunkNeighborZMinus.getLight().clone();
+        }
+
+
+
+
+
 
         int indicesCount = 0;
 
@@ -202,20 +240,20 @@ public class ChunkMeshGenerator implements Runnable{
 
         if (positions.size() > 0) {
             //pass data to container object
-            newChunkData.positionsArray    = positions.values();
-            newChunkData.lightArray        = light.values();
-            newChunkData.indicesArray      = indices.values();
-            newChunkData.textureCoordArray = textureCoord.values();
+            newChunkData.positionsArray    = positions.values().clone();
+            newChunkData.lightArray        = light.values().clone();
+            newChunkData.indicesArray      = indices.values().clone();
+            newChunkData.textureCoordArray = textureCoord.values().clone();
         } else {
             //inform the container object that this chunk is null for this part of it
             newChunkData.normalMeshIsNull = true;
         }
 
         if (liquidPositions.size() > 0){
-            newChunkData.liquidPositionsArray    = liquidPositions.values();
-            newChunkData.liquidLightArray        = liquidLight.values();
-            newChunkData.liquidIndicesArray      = liquidIndices.values();
-            newChunkData.liquidTextureCoordArray = liquidTextureCoord.values();
+            newChunkData.liquidPositionsArray    = liquidPositions.values().clone();
+            newChunkData.liquidLightArray        = liquidLight.values().clone();
+            newChunkData.liquidIndicesArray      = liquidIndices.values().clone();
+            newChunkData.liquidTextureCoordArray = liquidTextureCoord.values().clone();
         } else {
             //inform the container object that this chunk is null for this part of it
             newChunkData.liquidMeshIsNull = true;
@@ -223,10 +261,10 @@ public class ChunkMeshGenerator implements Runnable{
 
         if (allFacesPositions.size() > 0) {
             //pass data to container object
-            newChunkData.allFacesPositionsArray = allFacesPositions.values();
-            newChunkData.allFacesLightArray = allFacesLight.values();
-            newChunkData.allFacesIndicesArray = allFacesIndices.values();
-            newChunkData.allFacesTextureCoordArray = allFacesTextureCoord.values();
+            newChunkData.allFacesPositionsArray = allFacesPositions.values().clone();
+            newChunkData.allFacesLightArray = allFacesLight.values().clone();
+            newChunkData.allFacesIndicesArray = allFacesIndices.values().clone();
+            newChunkData.allFacesTextureCoordArray = allFacesTextureCoord.values().clone();
         } else {
             //inform the container object that this chunk is null for this part of it
             newChunkData.allFacesMeshIsNull = true;
