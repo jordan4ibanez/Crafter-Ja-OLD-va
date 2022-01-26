@@ -79,32 +79,10 @@ public class Chunk {
         return map.values();
     }
 
-    public byte[] getBlockData(Vector2i key){
-        return map.get(key).getBlock();
-    }
-    public byte[] getRotationData(Vector2i key){
-        return map.get(key).getRotation();
-    }
-    public byte[] getLightData(Vector2i key){
-        return map.get(key).getLight();
-    }
-    public byte[] getHeightMapData(Vector2i key){
-        return map.get(key).getHeightMap();
+    public ChunkObject getChunk(Vector2i pos){
+        return map.get(pos);
     }
 
-    public Mesh[] getNormalMeshArray(Vector2i key){
-        return map.get(key).getNormalMeshArray();
-    }
-    public Mesh[] getLiquidMeshArray(Vector2i key){
-        return map.get(key).getLiquidMeshArray();
-    }
-    public Mesh[] getAllFaceMeshArray(Vector2i key){
-        return map.get(key).getAllFaceMeshArray();
-    }
-
-    public float getChunkHover(Vector2i key){
-        return map.get(key).getHover();
-    }
 
     public void doChunksHoveringUpThing(Delta delta){
         for (ChunkObject thisChunk : map.values()){
