@@ -109,21 +109,7 @@ public class Chunk {
             }
         }
     }
-
-    /*
-    public void initialChunkPayloadMultiplayer(){
-        //create the initial map in memory
-        int chunkRenderDistance = settings.getRenderDistance();
-        Vector3i currentChunk = getPlayerCurrentChunk();
-        for (int x = -chunkRenderDistance + currentChunk.x; x < chunkRenderDistance + currentChunk.x; x++){
-            for (int z = -chunkRenderDistance + currentChunk.z; z< chunkRenderDistance + currentChunk.z; z++){
-                if (getChunkDistanceFromPlayer(x,z) <= chunkRenderDistance){
-                    sendOutChunkRequest(new ChunkRequest(x,z, getPlayerName()));
-                }
-            }
-        }
-    }
-     */
+    
 
     private double getChunkDistanceFromPlayer(int x, int z){
         Vector2i currentChunk = player.getPlayerCurrentChunk();
