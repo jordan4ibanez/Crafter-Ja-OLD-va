@@ -411,13 +411,6 @@ public class Chunk {
 
         map.get(key).setSaveToDisk(true);
 
-        /*
-        if (!getIfMultiplayer()) {
-            // THIS CREATES A NEW OBJECT IN MEMORY!
-            onPlaceCall(ID, x, y, z);
-        }
-         */
-
         chunkMeshGenerator.instantGeneration(chunkX,chunkZ,yPillar);
         instantUpdateNeighbor(chunkX, chunkZ,blockX,pos.y,blockZ);//instant update
     }
