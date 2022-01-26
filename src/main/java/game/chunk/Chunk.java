@@ -109,7 +109,7 @@ public class Chunk {
             }
         }
     }
-    
+
 
     private double getChunkDistanceFromPlayer(int x, int z){
         Vector2i currentChunk = player.getPlayerCurrentChunk();
@@ -174,41 +174,7 @@ public class Chunk {
         }
         map.clear();
     }
-
-    public boolean chunkStackContainsBlock(int chunkX, int chunkZ, int yHeight){
-        byte[] blockData = map.get(new Vector2i(chunkX, chunkZ)).getBlock();
-        if (blockData == null){
-            return false;
-        }
-        for (int x = 0; x < 16; x++){
-            for (int z = 0; z < 16; z++){
-                for (int y = yHeight * 16; y < (yHeight + 1) * 16; y++){
-                    if (blockData[posToIndex(x,y,z)] != 0){
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
-
-
-    public int getHeightMap(Vector2i pos){
-        int chunkX = (int)Math.floor(pos.x/16d);
-        int chunkZ = (int)Math.floor(pos.y/16d);
-        int blockX = (int)(pos.x - (16d*chunkX));
-        int blockZ = (int)(pos.y - (16d*chunkZ));
-
-        byte[] heightMapData = map.get(new Vector2i(chunkX, chunkZ)).getHeightMap();
-
-        if (heightMapData == null){
-            return 555;
-        }
-
-        return heightMapData[posToIndex2D(blockX,blockZ)];
-    }
-
+    
     public boolean underSunLight(Vector3i pos){
         if (pos.y > 127 || pos.y < 0){
             return false;
