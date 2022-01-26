@@ -268,8 +268,14 @@ public class Chunk {
         int chunkZ = (int)Math.floor(pos.z/16d);
         int blockX = (int)(pos.x - (16d*chunkX));
         int blockZ = (int)(pos.z - (16d*chunkZ));
-        // THIS CREATES A NEW OBJECT IN MEMORY!
-        byte[] rotationData = map.get(new Vector2i(chunkX, chunkZ)).getRotation();
+
+        ChunkObject chunk = map.get(new Vector2i(chunkX, chunkZ));
+
+        if (chunk == null){
+            return 0;
+        }
+
+        byte[] rotationData = chunk.getRotation();
         if (rotationData == null){
             return 0;
         }
