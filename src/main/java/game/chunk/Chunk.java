@@ -174,7 +174,7 @@ public class Chunk {
         }
         map.clear();
     }
-    
+
     public boolean underSunLight(Vector3i pos){
         if (pos.y > 127 || pos.y < 0){
             return false;
@@ -285,8 +285,14 @@ public class Chunk {
         int chunkZ = (int)Math.floor(pos.z/16d);
         int blockX = (int)(pos.x - (16d*chunkX));
         int blockZ = (int)(pos.z - (16d*chunkZ));
-        // THIS CREATES A NEW OBJECT IN MEMORY!
-        byte[] lightData = map.get(new Vector2i(chunkX, chunkZ)).getLight();
+
+        ChunkObject chunk = map.get(new Vector2i(chunkX, chunkZ));
+
+        if (chunk == null){
+            return;
+        }
+
+        byte[] lightData = chunk.getLight();
         if (lightData == null){
             return;
         }
@@ -304,8 +310,14 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
-        // THIS CREATES A NEW OBJECT IN MEMORY!
-        byte[] lightData = map.get(new Vector2i(chunkX, chunkZ)).getLight();
+
+        ChunkObject chunk = map.get(new Vector2i(chunkX, chunkZ));
+
+        if (chunk == null){
+            return;
+        }
+
+        byte[] lightData = chunk.getLight();
         if (lightData == null){
             return;
         }
@@ -354,12 +366,6 @@ public class Chunk {
         map.get(key).setSaveToDisk(true);
 
         lightData[posToIndex(blockX, pos.y, blockZ)] = setByteNaturalLight(lightData[posToIndex(blockX, pos.y, blockZ)], light.getImmediateLight(pos.x,pos.y,pos.z));
-
-        /*
-        if (!getIfMultiplayer()) {
-            onDigCall(oldBlock, x, y, z);
-        }
-         */
 
         chunkMeshGenerator.instantGeneration(chunkX,chunkZ,yPillar);
         instantUpdateNeighbor(chunkX, chunkZ,blockX,pos.y,blockZ);//instant update
