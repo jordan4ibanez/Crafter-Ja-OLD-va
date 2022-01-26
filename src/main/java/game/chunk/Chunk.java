@@ -17,7 +17,7 @@ import java.util.Deque;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static java.lang.Math.hypot;
-import static org.joml.Math.max;
+import static java.lang.Math.max;
 
 public class Chunk {
     private Disk disk;
