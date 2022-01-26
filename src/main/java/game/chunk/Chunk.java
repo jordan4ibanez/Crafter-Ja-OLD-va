@@ -123,15 +123,36 @@ public class Chunk {
     }
 
     public void setChunkNormalMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
-        map.get(new Vector2i(chunkX, chunkZ)).replaceOrSetNormalMesh(yHeight, newMesh);
+        ChunkObject chunk = map.get(new Vector2i(chunkX, chunkZ));
+
+        if (chunk == null){
+            newMesh.cleanUp(false);
+            return;
+        }
+
+        chunk.replaceOrSetNormalMesh(yHeight, newMesh);
     }
 
     public void setChunkLiquidMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
-        map.get(new Vector2i(chunkX, chunkZ)).replaceOrSetLiquidMesh(yHeight, newMesh);
+        ChunkObject chunk = map.get(new Vector2i(chunkX, chunkZ));
+
+        if (chunk == null){
+            newMesh.cleanUp(false);
+            return;
+        }
+
+        chunk.replaceOrSetLiquidMesh(yHeight, newMesh);
     }
 
     public void setChunkAllFacesMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
-        map.get(new Vector2i(chunkX, chunkZ)).replaceOrSetAllFaceMesh(yHeight,newMesh);
+        ChunkObject chunk = map.get(new Vector2i(chunkX, chunkZ));
+
+        if (chunk == null){
+            newMesh.cleanUp(false);
+            return;
+        }
+
+        chunk.replaceOrSetAllFaceMesh(yHeight,newMesh);
     }
 
     public boolean chunkExists(Vector2i pos){
