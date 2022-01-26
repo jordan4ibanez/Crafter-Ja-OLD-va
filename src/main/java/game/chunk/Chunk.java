@@ -587,16 +587,10 @@ public class Chunk {
         //scan map for out of range chunks
         for (ChunkObject chunk : map.values()){
             if (getChunkDistanceFromPlayer(chunk.getPos().x,chunk.getPos().y) > chunkRenderDistance){
-                addChunkToDeletionQueue(chunk.getPos().x,chunk.getPos().y);
+                deletionQueue.add(chunk.getPos());
             }
         }
     }
-
-
-    private void addChunkToDeletionQueue(int chunkX, int chunkZ) {
-        deletionQueue.add(new Vector2i(chunkX, chunkZ));
-    }
-
 
 
     public void processOldChunks() {
