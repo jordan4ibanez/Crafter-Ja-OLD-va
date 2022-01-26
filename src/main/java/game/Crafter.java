@@ -239,7 +239,7 @@ public class Crafter {
         chunkMeshGenerator.setWindow(this.window);
         chunkMeshGenerator.setChunkUpdateHandler(this.chunkUpdateHandler);
         chunkMeshGenerator.setChunk(this.chunk);
-        //new Thread(chunkMeshGenerator).start(); //send it on it's way
+        new Thread(chunkMeshGenerator).start(); //send it on it's way
 
         //chunk update handler
         chunkUpdateHandler.setDelta(this.delta);
