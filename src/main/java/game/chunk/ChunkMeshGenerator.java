@@ -73,14 +73,14 @@ public class ChunkMeshGenerator implements Runnable{
             if (pollQueue()) {
                 try {
                     //thread needs to sleep quicker to avoid lag
-                    System.out.println("sleeping");
+                    //System.out.println("sleeping");
                     Thread.sleep(30);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            } else {
-                System.out.println("I'M AWAKE!");
-            }
+            } //else {
+                //System.out.println("I'M AWAKE!");
+            //}
         }
     }
 
@@ -118,6 +118,10 @@ public class ChunkMeshGenerator implements Runnable{
         Vector2i key2D = new Vector2i(key.x, key.z);
 
         ChunkObject thisChunk = chunk.getChunk(key2D);
+
+        if (thisChunk == null){
+            return false;
+        }
 
         byte[] blockData = thisChunk.getBlock();
         byte[] rotationData = thisChunk.getRotation();
