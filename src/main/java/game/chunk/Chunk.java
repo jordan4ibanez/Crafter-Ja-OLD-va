@@ -118,7 +118,7 @@ public class Chunk {
 
     private double getChunkDistanceFromPlayer(int x, int z){
         Vector2i currentChunk = player.getPlayerCurrentChunk();
-        return Math.max(getDistance(0,0,currentChunk.y, 0, 0, z), getDistance(currentChunk.x,0,0, x, 0, 0));
+        return Math.max(getDistance(0, currentChunk.y, 0, z), getDistance(currentChunk.x, 0, x, 0));
     }
 
     public void setChunkNormalMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
@@ -723,8 +723,8 @@ public class Chunk {
         return (z * 16) + x;
     }
 
-    private double getDistance(double x1, double y1, double z1, double x2, double y2, double z2){
-        return hypot((x1 - x2), hypot((y1 - y2),(z1 - z2)));
+    private double getDistance(double x1, double z1, double x2, double z2){
+        return hypot((x1 - x2), hypot(0,(z1 - z2)));
     }
 
     private byte getByteTorchLight(byte input){
