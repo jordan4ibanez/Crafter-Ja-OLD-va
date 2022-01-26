@@ -14,6 +14,7 @@ import engine.time.TimeOfDay;
 import game.chunk.Chunk;
 import game.chunk.ChunkObject;
 import game.clouds.Cloud;
+import game.crafting.InventoryLogic;
 import game.light.Light;
 import game.player.Player;
 import org.joml.*;
@@ -38,6 +39,7 @@ public class GameRenderer {
     private GUI gui;
     private Cloud cloud;
     private Light light;
+    private InventoryLogic inventoryLogic;
 
     public void setCamera(Camera camera){
         if (this.camera == null){
@@ -90,6 +92,11 @@ public class GameRenderer {
     public void setLight(Light light){
         if (this.light == null){
             this.light = light;
+        }
+    }
+    public void setInventoryLogic(InventoryLogic inventoryLogic){
+        if (this.inventoryLogic == null){
+            this.inventoryLogic = inventoryLogic;
         }
     }
 
@@ -696,40 +703,39 @@ public class GameRenderer {
 
         //draw wield hand or item
 
-        /*
-        if (getCameraPerspective() == 0) {
+        if (camera.getCameraPerspective() == 0) {
             entityShaderProgram.bind();
 
-            entityShaderProgram.setUniform("projectionMatrix", getProjectionMatrix());
-            entityShaderProgram.setLightUniform("light", getPlayerLightLevel());
+            entityShaderProgram.setUniform("projectionMatrix", transformation.getProjectionMatrix());
+            entityShaderProgram.setLightUniform("light", player.getPlayerLightLevel());
 
             //wield hand
-            if (getItemInInventory("main", getPlayerInventorySelection(),0) == null){
-                setWieldHandMatrix(
-                        getCameraPositionX(),getCameraPositionY(), getCameraPositionZ(),
-                        getWieldHandAnimationPosX(), getWieldHandAnimationPosY(), getWieldHandAnimationPosZ(),
-                        getCameraRotationX(),getCameraRotationY(), getCameraRotationZ(),
-                        getWieldHandAnimationRotX(),getWieldHandAnimationRotY(),getWieldHandAnimationRotZ(),
+            if (inventoryLogic.getInventory().getMain().getItem(player.getPlayerInventorySelection(),0) == null){
+                transformation.setWieldHandMatrix(
+                        camera.getCameraPosition().x,camera.getCameraPosition().y, camera.getCameraPosition().z,
+                        player.getWieldHand().getWieldHandAnimationPosX(), player.getWieldHand().getWieldHandAnimationPosY(), player.getWieldHand().getWieldHandAnimationPosZ(),
+                        camera.getCameraRotation().x,camera.getCameraRotation().y, camera.getCameraRotation().z,
+                        player.getWieldHand().getWieldHandAnimationRot().x,player.getWieldHand().getWieldHandAnimationRot().y,player.getWieldHand().getWieldHandAnimationRot().z,
                         0.35d,0.35d,0.35d,
                         0.05d,0.05d,0.05d);
-                entityShaderProgram.setUniform("modelViewMatrix", getModelMatrix());
+                entityShaderProgram.setUniform("modelViewMatrix", transformation.getModelMatrix());
                 getWieldHandMesh().render();
             //block/item
-            } else if (getWieldInventory() != null){
-                setWieldHandMatrix(
-                        getCameraPositionX(), getCameraPositionY(), getCameraPositionZ(),
-                        getWieldHandAnimationPosX(), getWieldHandAnimationPosY(), getWieldHandAnimationPosZ(),
-                        getCameraRotationX(), getCameraRotationY(), getCameraRotationZ(),
-                        getWieldHandAnimationRotX(), getWieldHandAnimationRotY(), getWieldHandAnimationRotZ(),
+            } else if (inventoryLogic.getInventory().getMain().getItem(player.getPlayerInventorySelection(),0) != null){
+                transformation.setWieldHandMatrix(
+                        camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z,
+                        player.getWieldHand().getWieldHandAnimationPosX(), player.getWieldHand().getWieldHandAnimationPosY(), player.getWieldHand().getWieldHandAnimationPosZ(),
+                        camera.getCameraRotation().x, camera.getCameraRotation().y, camera.getCameraRotation().z,
+                        player.getWieldHand().getWieldHandAnimationRot().x, player.getWieldHand().getWieldHandAnimationRot().y, player.getWieldHand().getWieldHandAnimationRot().z,
                         1d, 1d, 1d,
                         0.05d,0.05d,0.05d);
                 entityShaderProgram.setUniform("modelViewMatrix", getModelMatrix());
-                getItemMesh(getWieldInventory()).render();
+                inventoryLogic.getWieldInventory().render();
             }
 
             entityShaderProgram.unbind();
         }
-         */
+
         //finished with 3d
 
 
