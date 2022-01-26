@@ -739,7 +739,7 @@ public class Chunk {
         return -1;
     }
 
-    //todo: this needs a new name
+    //fixme: this needs a new name
     //this dispatches to the SQLite thread, checks if it exists in the data base
     //then it either deserializes it or it tells the chunk mesh generator thread
     //to create a new one if it doesn't exist
