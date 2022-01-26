@@ -9,7 +9,7 @@ import org.joml.*;
 import org.joml.Math;
 
 public class WieldHand {
-    ItemDefinitionContainer itemDefinitionContainer = new ItemDefinitionContainer();
+    private ItemDefinitionContainer itemDefinitionContainer;
     private final Player player;
     private Chunk chunk;
     private final Delta delta;
@@ -26,6 +26,12 @@ public class WieldHand {
     public void setChunk(Chunk chunk){
         if (this.chunk == null){
             this.chunk = chunk;
+        }
+    }
+
+    public void setItemDefinitionContainer(ItemDefinitionContainer itemDefinitionContainer){
+        if (this.itemDefinitionContainer == null){
+            this.itemDefinitionContainer = itemDefinitionContainer;
         }
     }
 
