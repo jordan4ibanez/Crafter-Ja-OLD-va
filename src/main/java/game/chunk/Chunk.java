@@ -30,6 +30,9 @@ public class Chunk {
     private float saveTimer = 0f;
     private final ConcurrentHashMap<Vector2i, ChunkObject> map = new ConcurrentHashMap<>();
 
+    private final Deque<Vector2i> deletionQueue = new ArrayDeque<>();
+    private float chunkDeletionTimer = 0f;
+
     public Chunk(){
     }
 
@@ -593,13 +596,11 @@ public class Chunk {
         }
     }
 
-    private final Deque<Vector2i> deletionQueue = new ArrayDeque<>();
 
     private void addChunkToDeletionQueue(int chunkX, int chunkZ) {
         deletionQueue.add(new Vector2i(chunkX, chunkZ));
     }
 
-    private float chunkDeletionTimer = 0f;
 
 
     public void processOldChunks() {
