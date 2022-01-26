@@ -11,7 +11,6 @@ import game.player.Player;
 import org.joml.Vector2i;
 import org.joml.Vector3i;
 
-import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -610,27 +609,27 @@ public class Chunk {
             if (!deletionQueue.isEmpty()) {
                 Vector2i key = deletionQueue.pop();
 
+                ChunkObject chunk = map.get(key);
+
+                if (chunk == null){
+                    continue;
+                }
 
                 //clean up mesh data
-                Mesh[] normalMeshData = map.get(key).getNormalMeshArray();
 
-                for (Mesh meshData : normalMeshData){
+                for (Mesh meshData : chunk.getNormalMeshArray()){
                     if (meshData != null) {
                         meshData.cleanUp(false);
                     }
                 }
 
-                Mesh[] liquidMeshData = map.get(key).getLiquidMeshArray();
-
-                for (Mesh meshData : liquidMeshData){
+                for (Mesh meshData : chunk.getLiquidMeshArray()){
                     if (meshData != null) {
                         meshData.cleanUp(false);
                     }
                 }
 
-                Mesh[] allFacesMeshData = map.get(key).getAllFaceMeshArray();
-
-                for (Mesh meshData : allFacesMeshData){
+                for (Mesh meshData : chunk.getAllFaceMeshArray()){
                     if (meshData != null) {
                         meshData.cleanUp(false);
                     }
@@ -650,8 +649,13 @@ public class Chunk {
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
 
-        // THIS CREATES A NEW OBJECT IN MEMORY!
-        byte[] blockData = map.get(new Vector2i(chunkX, chunkZ)).getBlock();
+        ChunkObject chunk = map.get(new Vector2i(chunkX, chunkZ));
+
+        if (chunk == null){
+            return -1;
+        }
+
+        byte[] blockData = chunk.getBlock();
 
         if (blockData == null){
             return -1;
