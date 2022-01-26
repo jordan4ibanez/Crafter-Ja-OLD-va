@@ -105,9 +105,6 @@ public class Chunk {
             for (int z = -chunkRenderDistance + currentChunk.y; z< chunkRenderDistance + currentChunk.y; z++){
                 if (getChunkDistanceFromPlayer(x,z) <= chunkRenderDistance){
                     genBiome(x,z);
-                    for (int y = 0; y < 8; y++){
-                        this.chunkUpdateHandler.chunkUpdate(x,z,y);
-                    }
                 }
             }
         }
@@ -152,9 +149,11 @@ public class Chunk {
     public void addNewChunk(PrimitiveChunkObject primitiveChunkObject){
         ChunkObject gottenChunk = map.get(primitiveChunkObject.pos);
         if (gottenChunk == null){
-            System.out.println("I AM PUTTING LE CHUNK IN LE MAP BOI");
             map.put(new Vector2i(primitiveChunkObject.pos), new ChunkObject(primitiveChunkObject));
             //send to chunk object generator
+            for (int y = 0; y < 8; y++){
+                this.chunkUpdateHandler.chunkUpdate(primitiveChunkObject.pos.x,primitiveChunkObject.pos.y,y);
+            }
         }
     }
 
