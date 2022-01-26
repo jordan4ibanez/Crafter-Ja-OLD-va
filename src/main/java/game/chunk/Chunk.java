@@ -14,6 +14,7 @@ import org.joml.Vector3i;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static java.lang.Math.hypot;
@@ -33,7 +34,7 @@ public class Chunk {
     private float saveTimer = 0f;
     private final ConcurrentHashMap<Vector2i, ChunkObject> map = new ConcurrentHashMap<>();
 
-    private final Deque<Vector2i> deletionQueue = new ArrayDeque<>();
+    private final Deque<Vector2i> deletionQueue = new LinkedList<>();
     private float chunkDeletionTimer = 0f;
 
     public Chunk(){
@@ -591,7 +592,6 @@ public class Chunk {
             }
         }
     }
-
 
     public void processOldChunks() {
 
