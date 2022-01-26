@@ -176,6 +176,7 @@ public class Crafter {
             gameRenderer.setTimeOfDay(this.timeOfDay);
             gameRenderer.setCloud(this.cloud);
             gameRenderer.setLight(this.light);
+            gameRenderer.setInventoryLogic(this.inventoryLogic);
 
             //main menu renderer
             mainMenuRenderer.setWindow(this.window);
@@ -302,7 +303,7 @@ public class Crafter {
         player.setInventoryLogic(this.inventoryLogic);
         player.setCloud(this.cloud);
         player.setGuiLogic(this.guiLogic);
-        player.initialize(this.inventoryLogic.getInventory(), this.camera);
+        player.initialize(this.inventoryLogic.getInventory(), this.camera, this.itemDefinitionContainer);
 
         //ray
         ray.setChunk(this.chunk);

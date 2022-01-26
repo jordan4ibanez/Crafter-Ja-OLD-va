@@ -10,6 +10,7 @@ import game.clouds.Cloud;
 import game.crafting.Inventory;
 import game.crafting.InventoryLogic;
 import game.entity.collision.Collision;
+import game.entity.item.ItemDefinitionContainer;
 import game.ray.Ray;
 import org.joml.*;
 
@@ -79,10 +80,11 @@ public class Player {
         }
     }
 
-    public void initialize(Inventory inventory, Camera camera) {
+    public void initialize(Inventory inventory, Camera camera, ItemDefinitionContainer itemDefinitionContainer) {
         this.wieldHand = new WieldHand(this, delta, inventory, camera);
         this.viewBobbing = new ViewBobbing(this, delta);
         this.wieldHand.setChunk(chunk);
+        this.wieldHand.setItemDefinitionContainer(itemDefinitionContainer);
     }
 
 
