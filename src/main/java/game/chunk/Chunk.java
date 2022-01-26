@@ -16,6 +16,8 @@ import java.util.Collection;
 import java.util.Deque;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static java.lang.Math.hypot;
+
 public class Chunk {
     private Disk disk;
     private ChunkUpdateHandler chunkUpdateHandler;
@@ -722,7 +724,7 @@ public class Chunk {
     }
 
     private double getDistance(double x1, double y1, double z1, double x2, double y2, double z2){
-        return Math.hypot((x1 - x2), Math.hypot((y1 - y2),(z1 - z2)));
+        return hypot((x1 - x2), hypot((y1 - y2),(z1 - z2)));
     }
 
     private byte getByteTorchLight(byte input){
