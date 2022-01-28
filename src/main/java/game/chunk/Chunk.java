@@ -110,7 +110,7 @@ public class Chunk {
         for (int x = -chunkRenderDistance + currentChunk.x; x < chunkRenderDistance + currentChunk.x; x++){
             for (int z = -chunkRenderDistance + currentChunk.y; z< chunkRenderDistance + currentChunk.y; z++){
                 if (getChunkDistanceFromPlayer(x,z) <= chunkRenderDistance){
-                    genBiome(x,z);
+                    loadChunk(x,z);
                 }
             }
         }
@@ -593,7 +593,7 @@ public class Chunk {
                 if (getChunkDistanceFromPlayer(x,z) <= chunkRenderDistance){
                     // THIS CREATES A NEW OBJECT IN MEMORY!
                     if (map.get(new Vector2i(x,z)) == null){
-                        genBiome(x,z);
+                        loadChunk(x,z);
                         for (int y = 0; y < 8; y++) {
                             this.chunkUpdateHandler.chunkUpdate(x, z, y);
                         }
@@ -696,7 +696,7 @@ public class Chunk {
     //this dispatches to the SQLite thread, checks if it exists in the data base
     //then it either deserializes it or it tells the chunk mesh generator thread
     //to create a new one if it doesn't exist
-    public void genBiome(int chunkX, int chunkZ) {
+    public void loadChunk(int chunkX, int chunkZ) {
         disk.loadChunk(new Vector2i(chunkX,chunkZ));
     }
 
