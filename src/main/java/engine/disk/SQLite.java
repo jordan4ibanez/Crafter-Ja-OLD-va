@@ -7,7 +7,7 @@ import java.sql.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class SQLiteDiskAccessThread implements Runnable {
+public class SQLite implements Runnable {
     private final Disk disk;
 
     private Connection connection;
@@ -19,7 +19,7 @@ public class SQLiteDiskAccessThread implements Runnable {
     private final AtomicBoolean running = new AtomicBoolean(false);
 
     //external pointer to other thread's object held internal
-    public SQLiteDiskAccessThread(Disk disk){
+    public SQLite(Disk disk){
         this.disk = disk;
     }
 
