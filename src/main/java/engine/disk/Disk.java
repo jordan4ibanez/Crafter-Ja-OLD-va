@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class Disk {
 
-    private final SQLiteDiskAccessThread sqLiteDiskAccessThread;
+    private final SQLite sqLite;
 
     private BiomeGenerator biomeGenerator;
     private Chunk chunk;
@@ -33,7 +33,7 @@ public class Disk {
 
 
     public Disk(){
-        this.sqLiteDiskAccessThread = new SQLiteDiskAccessThread(this);
+        this.sqLite = new SQLite(this);
     }
 
     public void setBiomeGenerator(BiomeGenerator biomeGenerator){
@@ -61,9 +61,9 @@ public class Disk {
     //this mirrors the object's call
     public void connectWorldDataBase(String worldName){
         //this is needed to create the WORLD table
-        this.sqLiteDiskAccessThread.createWorldDataBase(worldName);
-        this.sqLiteDiskAccessThread.addPlayerToLoad("singleplayer");
-        this.sqLiteDiskAccessThread.start();
+        this.sqLite.createWorldDataBase(worldName);
+        this.sqLite.addPlayerToLoad("singleplayer");
+        this.sqLite.start();
     }
 
     //closes the world's database, kills the thread, removes the object pointer
@@ -71,7 +71,7 @@ public class Disk {
         //dump it all in to SQLite thread boi
         this.chunk.globalFinalChunkSaveToDisk();
         this.savePlayerData("singleplayer");
-        this.sqLiteDiskAccessThread.stop();
+        this.sqLite.stop();
         this.hasPolledLoadingPlayer = false;
     }
 
@@ -119,15 +119,15 @@ public class Disk {
     }
 
     public void savePlayerData(String name){
-        this.sqLiteDiskAccessThread.addPlayerToSave(name, inventoryLogic.getInventory().getMain().getInventoryAsArray(), inventoryLogic.getInventory().getMain().getCountAsArray(), player.getPlayerPos(), (byte) player.getPlayerHealth());
+        this.sqLite.addPlayerToSave(name, inventoryLogic.getInventory().getMain().getInventoryAsArray(), inventoryLogic.getInventory().getMain().getCountAsArray(), player.getPlayerPos(), (byte) player.getPlayerHealth());
     }
 
     public void loadChunk(Vector2i key){
-        this.sqLiteDiskAccessThread.addLoadChunk(key);
+        this.sqLite.addLoadChunk(key);
     }
 
     public void saveChunk(Vector2i pos, byte[] blockData, byte[] rotationData, byte[] lightData, byte[] heightMap){
-        this.sqLiteDiskAccessThread.addSaveChunk(pos, blockData,rotationData,lightData,heightMap);
+        this.sqLite.addSaveChunk(pos, blockData,rotationData,lightData,heightMap);
     }
 
     public void setChunk(PrimitiveChunkObject primitiveChunkObject){
