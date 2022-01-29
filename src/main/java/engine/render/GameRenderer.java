@@ -744,7 +744,7 @@ public class GameRenderer {
         }
 
         //finished with 3d
-        
+
         glEnable(GL_BLEND);
 
         //BEGIN HUD 2D
