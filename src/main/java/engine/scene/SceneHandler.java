@@ -205,7 +205,7 @@ public class SceneHandler {
         window.pollWindowClose();
         camera.setCameraPosition(new Vector3d(0,-8,0));
         camera.setCameraRotation(new Vector3f(0,0,0));
-        window.windowUpdate();
+        window.update();
         delta.calculateDelta();
         controls.mainMenuInput();
         mainMenu.doMainMenuLogic(this.delta);
@@ -246,7 +246,7 @@ public class SceneHandler {
 
         gameRenderer.renderGame();
 
-        window.windowUpdate();
+        window.update();
     }
 
     private void gameUpdate(){

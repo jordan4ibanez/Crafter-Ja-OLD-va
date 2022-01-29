@@ -262,7 +262,7 @@ public class Window {
         glfwSetWindowTitle(handle, newTitle);
     }
 
-    public void windowUpdate(){
+    public void update(){
         glfwSwapBuffers(handle);
         glfwPollEvents();
     }
