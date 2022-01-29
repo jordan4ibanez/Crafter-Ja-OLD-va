@@ -494,14 +494,10 @@ public class Chunk {
         int blockZ = (int)(z - (16d*chunkZ));
 
         ChunkObject chunkObject = getChunk(chunkX, chunkZ);
-
-        byte[] lightData = chunkObject.getLight();
-
-        if (lightData == null){
+        if (chunkObject == null) {
             return 0;
         }
-
-        return getByteNaturalLight(lightData[posToIndex(blockX, y, blockZ)]);
+        return getByteNaturalLight(chunkObject.getLight()[posToIndex(blockX, y, blockZ)]);
     }
 
     public byte getTorchLight(int x,int y,int z){
