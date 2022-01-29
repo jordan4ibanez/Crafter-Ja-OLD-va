@@ -15,6 +15,7 @@ import game.chunk.Chunk;
 import game.chunk.ChunkObject;
 import game.clouds.Cloud;
 import game.crafting.InventoryLogic;
+import game.item.ItemDefinitionContainer;
 import game.light.Light;
 import game.player.Player;
 import org.joml.*;
@@ -40,6 +41,7 @@ public class GameRenderer {
     private Cloud cloud;
     private Light light;
     private InventoryLogic inventoryLogic;
+    private ItemDefinitionContainer itemDefinitionContainer;
 
     public void setCamera(Camera camera){
         if (this.camera == null){
@@ -97,6 +99,11 @@ public class GameRenderer {
     public void setInventoryLogic(InventoryLogic inventoryLogic){
         if (this.inventoryLogic == null){
             this.inventoryLogic = inventoryLogic;
+        }
+    }
+    public void setItemDefinitionContainer(ItemDefinitionContainer itemDefinitionContainer){
+        if (this.itemDefinitionContainer == null){
+            this.itemDefinitionContainer = itemDefinitionContainer;
         }
     }
 
@@ -730,15 +737,14 @@ public class GameRenderer {
                         1d, 1d, 1d,
                         0.05d,0.05d,0.05d);
                 entityShaderProgram.setUniform("modelViewMatrix", transformation.getModelMatrix());
-                //inventoryLogic.getWieldInventory().render();
+                itemDefinitionContainer.getMesh(inventoryLogic.getInventory().getWieldInventory()).render();
             }
 
             entityShaderProgram.unbind();
         }
 
         //finished with 3d
-
-
+        
         glEnable(GL_BLEND);
 
         //BEGIN HUD 2D
