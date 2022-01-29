@@ -209,7 +209,7 @@ public class WieldHand {
             }
         }
 
-        float yDiff = (float)(player.getOldRealPos().y - player.getPlayerPos().y) * 10f;
+        float yDiff = (float)(player.getOldPos().y - player.getPos().y) * 10f;
 
         handInertia.y += yDiff;
 
