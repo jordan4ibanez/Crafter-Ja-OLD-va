@@ -27,7 +27,7 @@ import game.entity.EntityContainer;
 import game.entity.collision.Collision;
 import game.entity.collision.MobCollision;
 import game.entity.collision.ParticleCollision;
-import game.entity.itemEntity.ItemDefinitionContainer;
+import game.item.ItemDefinitionContainer;
 import game.entity.mob.MobMeshBuilder;
 import game.entity.mob.MobSpawning;
 import game.light.Light;

@@ -10,7 +10,7 @@ import game.clouds.Cloud;
 import game.crafting.Inventory;
 import game.crafting.InventoryLogic;
 import game.entity.collision.Collision;
-import game.entity.itemEntity.ItemDefinitionContainer;
+import game.item.ItemDefinitionContainer;
 import game.ray.Ray;
 import org.joml.*;
 
