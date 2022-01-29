@@ -174,7 +174,7 @@ public class Window {
 
 
 
-    public void setWindowClearColor(float r, float g, float b, float alpha){
+    public void setClearColor(float r, float g, float b, float alpha){
         glClearColor(r, g, b, alpha);
         currentClearColor.set(r,g,b);
         clearColorGoal.set(r,g,b);

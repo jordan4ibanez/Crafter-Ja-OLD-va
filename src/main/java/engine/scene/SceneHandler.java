@@ -89,7 +89,7 @@ public class SceneHandler {
         //move the camera into position for the main menu
         if (newScene == 0){
 
-            window.setWindowClearColor(0,0,0,1);
+            window.setClearColor(0,0,0,1);
             mainMenu.selectTitleScreenText();
             if (mouse.isLocked()){
                 mouse.toggleMouseLock();
@@ -109,7 +109,7 @@ public class SceneHandler {
 
         //gameplay
         if (newScene == 1){
-            window.setWindowClearColor(0.53f,0.81f,0.92f,0.f);
+            window.setClearColor(0.53f,0.81f,0.92f,0.f);
             guiLogic.calculateHealthBarElements(); //todo move this into a loader for player file things
             chunk.initialChunkPayload();
             //generateRandomInventory();
@@ -120,7 +120,7 @@ public class SceneHandler {
 
         //multiplayer
         if (newScene == 3){
-            window.setWindowClearColor(0.53f,0.81f,0.92f,0.f);
+            window.setClearColor(0.53f,0.81f,0.92f,0.f);
             guiLogic.calculateHealthBarElements(); //todo move this into a network thing or something
             if (!mouse.isLocked()){
                 mouse.toggleMouseLock();
