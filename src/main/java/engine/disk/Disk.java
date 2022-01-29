@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import engine.settings.SettingsObject;
 import game.chunk.BiomeGenerator;
 import game.chunk.Chunk;
+import game.chunk.ChunkObject;
 import game.crafting.InventoryLogic;
 import game.player.Player;
 import org.joml.Vector2i;
@@ -128,6 +129,10 @@ public class Disk {
 
     public void saveChunk(Vector2i pos, byte[] blockData, byte[] rotationData, byte[] lightData, byte[] heightMap){
         this.sqLite.addSaveChunk(pos, blockData,rotationData,lightData,heightMap);
+    }
+
+    public void saveChunk(ChunkObject chunk){
+        this.sqLite.addSaveChunk(chunk.getPos(), chunk.getBlock(),chunk.getRotation(),chunk.getLight(),chunk.getHeightMap());
     }
 
     public void setChunk(PrimitiveChunkObject primitiveChunkObject){
