@@ -71,7 +71,7 @@ public class WieldHand {
     private boolean handSetUp = false;
 
     private float oldYaw = 0;
-    
+
     private boolean soundTrigger = true;
 
     public void testPlayerDiggingAnimation(){

@@ -8,6 +8,7 @@ import org.joml.Vector3f;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class OtherPlayers {
+    /*
 
     private final ConcurrentLinkedDeque<PlayerPosObject> playerUpdates = new ConcurrentLinkedDeque<>();
 
@@ -57,4 +58,5 @@ public class OtherPlayers {
             updatingPlayer.camRot = thisPlayerObject.cameraRot;
         }
     }
+     */
 }
