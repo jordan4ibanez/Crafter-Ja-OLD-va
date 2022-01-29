@@ -1,4 +1,4 @@
-package game.entity.item;
+package game.entity.itemEntity;
 
 import game.blocks.BlockDefinitionContainer;
 import org.joml.Vector3i;

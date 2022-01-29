@@ -4,7 +4,7 @@ import engine.graphics.Camera;
 import engine.time.Delta;
 import game.chunk.Chunk;
 import game.crafting.Inventory;
-import game.entity.item.ItemDefinitionContainer;
+import game.entity.itemEntity.ItemDefinitionContainer;
 import org.joml.*;
 import org.joml.Math;
 

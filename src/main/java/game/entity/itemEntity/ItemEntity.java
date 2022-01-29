@@ -1,15 +1,4 @@
-package game.entity.item;
-
-import engine.sound.SoundAPI;
-import engine.time.Delta;
-import game.chunk.Chunk;
-import game.crafting.InventoryLogic;
-import game.entity.Entity;
-import game.entity.EntityContainer;
-import game.entity.collision.Collision;
-import game.player.Player;
-import org.joml.Vector3d;
-import org.joml.Vector3f;
+package game.entity.itemEntity;
 
 public class ItemEntity {
 
