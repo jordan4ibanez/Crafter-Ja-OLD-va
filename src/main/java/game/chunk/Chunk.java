@@ -123,7 +123,6 @@ public class Chunk {
     }
 
     private ChunkObject deleteMesh(Mesh mesh){
-        System.out.println("I'M DELETING THE CHUNK MESH!!");
         if (mesh == null){
             return null;
         }
@@ -137,7 +136,7 @@ public class Chunk {
                 .findFirst()
                 .ifPresentOrElse(
                         chunkObject -> chunkObject.replaceOrSetNormalMesh(yHeight, newMesh),
-                        null
+                        this::nothing
                 );
     }
 
