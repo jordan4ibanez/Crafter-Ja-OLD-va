@@ -30,6 +30,7 @@ public class Player {
     private Chunk chunk;
     private Ray ray;
     private WieldHand wieldHand;
+    private Movement movement;
     private ViewBobbing viewBobbing;
     private Cloud cloud;
 
@@ -85,6 +86,7 @@ public class Player {
         this.viewBobbing = new ViewBobbing(this, delta);
         this.wieldHand.setChunk(chunk);
         this.wieldHand.setItemDefinitionContainer(itemDefinitionContainer);
+        this.movement = new Movement();
     }
 
 
@@ -96,24 +98,19 @@ public class Player {
 
     }
 
+    private final Vector3d posWithEyeHeightViewBobbing = new Vector3d();
+
 
     private boolean atCraftingBench;
+
     private boolean inventoryOpen;
+
     private float runningFOVAdder = 0f;
+
     private int health = 20;
-    private final float collectionHeight        = 0.7f;
-    private final float eyeHeight               = 1.5f;
-    private final Vector3d pos = new Vector3d(0,0,0);
-    private final Vector3d posWithEyeHeight = new Vector3d().set(pos.x,pos.y + eyeHeight,pos.z);
-    private final Vector3d posWithCollectionHeight = new Vector3d(pos.x, pos.y + collectionHeight, pos.z);
-    private final Vector3d posWithEyeHeightViewBobbing = new Vector3d().set(posWithEyeHeight.x, posWithEyeHeight.y, posWithEyeHeight.z);
+
     private final Vector3i newFlooredPos = new Vector3i();
-    private final Vector3f inertia              = new Vector3f(0,0,0);
-    private final Vector3f inertiaBuffer = new Vector3f(0,0,0);
-    private final float height                  = 1.9f;
-    private final float width                   = 0.3f;
-    private boolean onGround              =  false;
-    private boolean wasOnGround           = false;
+
     private boolean mining                = false;
     private boolean placing               = false;
     private float placeTimer              = 0;
@@ -123,22 +120,16 @@ public class Player {
     private final Vector3i oldWorldSelectionPos = new Vector3i();
     private final Vector3i worldSelectionPos    = new Vector3i();
     private float sneakOffset = 0;
-    private boolean playerIsJumping = false;
     private final Vector3d particlePos = new Vector3d(worldSelectionPos);
     private final Vector3f particleInertia = new Vector3f();
     private boolean cameraSubmerged = false;
 
     //this is like this because working with x and z is easier than x and y
-    private final Vector2i currentChunk = new Vector2i((int)Math.floor(pos.x / 16f),(int)Math.floor(pos.z / 16f));
-
-    private int oldY = 0;
-    private boolean sneaking              = false;
-    private boolean running               = false;
+    private final Vector2i currentChunk = new Vector2i();
 
     private float lightCheckTimer = 0f;
     private byte lightLevel = 0;
     private final Vector3i oldFlooredPos = new Vector3i(0,0,0);
-    private final Vector3d oldRealPos = new Vector3d(0,0,0);
 
     //block hardness
     private float stoneHardness = 0f;
@@ -152,12 +143,6 @@ public class Player {
     private float woodMiningLevel = 1f;
     private float leafMiningLevel = 1f;
 
-    //water stuff
-    private boolean inWater = false;
-    private boolean wasInWater = false;
-    private float wasInWaterTimer = 0f;
-    private boolean waterLockout = false;
-
     //digging stuff
     private float diggingProgress = 0f;
     private byte diggingFrame = -1;
@@ -168,9 +153,7 @@ public class Player {
     private final Vector2f inertiaWorker = new Vector2f();
     private float healthTimer = 0;
 
-    public Vector3d getOldRealPos(){
-        return oldRealPos;
-    }
+
 
 
     public String getName(){
@@ -193,18 +176,10 @@ public class Player {
         wieldHand.startDiggingAnimation();
     }
 
-    public void addPlayerInertia(float x, float y, float z){
-        inertia.add(x,y,z);
-    }
-
     public float getHurtCameraRotation(){
         return (float) 0;
     }
 
-
-    public boolean getIfPlayerIsJumping(){
-        return(playerIsJumping);
-    }
 
     public Vector2i getPlayerCurrentChunk(){
         return currentChunk;
@@ -315,42 +290,16 @@ public class Player {
         return cameraSubmerged;
     }
 
-
-
-    public float getHeight(){
-        return height;
-    }
-    public float getWidth(){
-        return width;
-    }
-
     public boolean getPlayerPlacing() {
         return placing;
-    }
-
-    public Vector3d getPlayerPos() {
-        return pos;
-    }
-
-    public Vector3d getPlayerPosWithEyeHeight(){
-        return posWithEyeHeight;
-    }
-
-    public Vector3d getPlayerPosWithViewBobbing(){
-        return posWithEyeHeightViewBobbing;
     }
 
     public Vector3f getPlayerViewBobbing(){
         return viewBobbing.getPlayerViewBobbing();
     }
 
-    //this is mutable, be careful with this
-    public Vector3d getPlayerPosWithCollectionHeight(){
-        return posWithCollectionHeight;
-    }
-
     private void applyCameraViewBobbingOffset(){
-        posWithEyeHeightViewBobbing.set(posWithEyeHeight.x, posWithEyeHeight.y,posWithEyeHeight.z);
+        posWithEyeHeightViewBobbing.set(movement.getPosEyeHeight());
 
         if (camera.getCameraPerspective() == 0) {
             float cameraRotationY = camera.getCameraRotation().y;
@@ -375,121 +324,41 @@ public class Player {
         }
     }
 
-
-    public void setPos(Vector3d newPos) {
-        pos.set(newPos.x,newPos.y, newPos.z);
+    public void addInertia(Vector3f inertia){
+        movement.addInertia(inertia);
     }
 
-    public Vector3f getInertia(){
-        return inertia;
+    public float getWidth(){
+        return movement.getWidth();
     }
 
-    public void setInertia(Vector3f inertia){
-        this.inertia.set(inertia);
+    public float getHeight(){
+        return movement.getHeight();
     }
 
-    public void setPlayerRunning(boolean isRunning){
-        if (!sneaking && isRunning) {
-            running = isRunning;
-        }
-        else {
-            running = false;
-        }
+    public Vector3d getOldPos(){
+        return movement.getOldPos();
     }
 
-
-    public void setPlayerInWater(boolean theTruth){
-        inWater = theTruth;
-        if (theTruth && playerIsJumping){
-            playerIsJumping = false; //reset jumping mechanic
-        }
+    public Vector3d getPos(){
+        return movement.getPos();
     }
 
-    public void setPlayerInertiaBuffer(){
+    public void setPos(Vector3d pos){
+        movement.setPos(pos);
+    }
 
-        double delta = this.delta.getDelta();
+    public Vector3d getPlayerPosWithEyeHeight(){
+        return movement.getPosEyeHeight();
+    }
 
-        float accelerationMultiplier = 0.07f;
-        float movementAcceleration = 1000.f;
-
-        if (controls.getForward()){
-            float yaw = (float)Math.toRadians(camera.getCameraRotation().y) + (float)Math.PI;
-            inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementAcceleration * delta;
-            inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementAcceleration * delta;
-        }
-        if (controls.getBackward()){
-            //no mod needed
-            float yaw = (float)Math.toRadians(camera.getCameraRotation().y);
-            inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementAcceleration * delta;
-            inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementAcceleration * delta;
-        }
-
-        if (controls.getRight()){
-            float yaw = (float)Math.toRadians(camera.getCameraRotation().y) - (float)(Math.PI /2);
-            inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementAcceleration * delta;
-            inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementAcceleration * delta;
-        }
-
-        if (controls.getLeft()){
-            float yaw = (float)Math.toRadians(camera.getCameraRotation().y) + (float)(Math.PI /2);
-            inertia.x += (float)(Math.sin(-yaw) * accelerationMultiplier) * movementAcceleration * delta;
-            inertia.z += (float)(Math.cos(yaw)  * accelerationMultiplier) * movementAcceleration * delta;
-        }
-
-        if (!inWater && controls.getJump() && isPlayerOnGround()){
-            inertia.y += 8.75f; //do not get delta for this
-            playerIsJumping = true;
-        //the player comes to equilibrium with the water's surface
-        // if this is not implemented like this
-        } else if (controls.getJump() && inWater && !waterLockout){
-            wasInWater = true;
-            if(inertia.y <= 4.f){
-                inertia.y += 100.f * delta;
-            }
-        }
-        if (wasInWater && !inWater){
-            wasInWaterTimer = 0.2f;
-        }
+    public Vector3d getPlayerPosWithViewBobbing(){
+        return posWithEyeHeightViewBobbing;
     }
 
 
-    private void applyPlayerInertiaBuffer(){
-        setPlayerInertiaBuffer();
-
-        inertia.x += inertiaBuffer.x;
-        inertia.y += inertiaBuffer.y;
-        inertia.z += inertiaBuffer.z;
-
-        //max speed todo: make this call from a player object's maxSpeed!
-        inertiaWorker.set(inertia.x, inertia.z);
-
-        float maxSpeed;
-
-        if (sneaking) {
-            maxSpeed = 1.f;
-        } else if (running) {
-            maxSpeed = 6.f;
-        } else {
-            maxSpeed = 4.f;
-        }
-
-        //speed limit the player's movement
-        if(inertiaWorker.isFinite() && inertiaWorker.length() > maxSpeed){
-            inertiaWorker.normalize().mul(maxSpeed);
-            inertia.x = inertiaWorker.x;
-            inertia.z = inertiaWorker.y;
-        }
-
-        //reset buffer
-        inertiaBuffer.x = 0f;
-        inertiaBuffer.y = 0f;
-        inertiaBuffer.z = 0f;
-    }
-
-
-
-    public Boolean isPlayerOnGround(){
-        return onGround;
+    public Boolean isOnGround(){
+        return movement.getOnGround();
     }
 
 
@@ -511,7 +380,12 @@ public class Player {
 
         double delta = this.delta.getDelta();
 
+        movement.onTick(chunk, camera, controls, this, this.delta, collision);
+
         wieldHand.onTick();
+
+
+        updateWorldChunkLoader();
 
         //camera underwater effect trigger
         byte cameraCheckBlock = chunk.getBlock(new Vector3i((int)floor(camera.getCameraPosition().x),(int)floor(camera.getCameraPosition().y - 0.02d), (int)floor(camera.getCameraPosition().z)));
@@ -520,19 +394,7 @@ public class Player {
 
         //the player comes to equilibrium with the water's surface
         //if this is not implemented like this
-        if (wasInWaterTimer > 0.f){
-            //System.out.println(wasInWaterTimer);
-            waterLockout = true;
-            wasInWaterTimer -= delta;
-            if (wasInWaterTimer <= 0){
-                //System.out.println("turned off lockout");
-                waterLockout = false;
-            }
-        }
 
-        if (playerIsJumping && isPlayerOnGround()){
-            playerIsJumping = false;
-        }
 
         float camRot = camera.getCameraRotation().y + 180f;
 
@@ -629,43 +491,6 @@ public class Player {
             }
         }
 
-        //values for application of inertia
-        applyPlayerInertiaBuffer();
-
-
-        //stop players from falling forever
-        //this only applies their inertia if they are within a loaded chunk, IE
-        //if the server doesn't load up something in time, they freeze in place
-        if (chunk.chunkExists(currentChunk)) {
-            onGround = collision.applyInertia(pos, inertia, true, width, height, true, sneaking, true, true, true);
-        }
-
-        //apply the eyeHeight offset to the eyeHeight position
-        posWithEyeHeight.set(pos.x, pos.y + eyeHeight, pos.z);
-
-        //apply the collection height offset to the collection position
-        posWithCollectionHeight.set(pos.x, pos.y + collectionHeight, pos.z);
-
-
-        //play sound when player lands on the ground
-        if (onGround && !wasOnGround){
-            //playSound("dirt_" + (int)(Math.ceil(Math.random()*3)));
-        }
-
-
-        //fall damage
-        if (onGround){
-
-            int currentY = (int)Math.floor(pos.y);
-
-            if (currentY < oldY){
-                if (oldY - currentY > 6){
-                    hurtPlayer(oldY - currentY - 6);
-                }
-            }
-            oldY = currentY;
-        }
-
         //apply player's body animation
         //applyPlayerBodyAnimation();
 
@@ -687,7 +512,7 @@ public class Player {
 
 
         //sneaking offset
-        if (sneaking){
+        if (movement.getSneaking()){
             if (sneakOffset > -100.f) {
                 sneakOffset -= delta * 1000f;
                 if (sneakOffset <= -100.f){
@@ -883,14 +708,12 @@ public class Player {
         //this.inventoryLogic.getInventory().updateWieldInventory(lightLevel);
 
         oldFlooredPos.set(newFlooredPos);
-        oldRealPos.set(pos);
-        wasOnGround = onGround;
         oldInventorySelection = currentInventorySelection;
     }
 
-    public void updateWorldChunkLoader(){
-        int newChunkX = (int)Math.floor(pos.x / 16f);
-        int newChunkZ = (int)Math.floor(pos.z / 16f);
+    private void updateWorldChunkLoader(){
+        int newChunkX = (int)floor(movement.getPos().x / 16f);
+        int newChunkZ = (int)floor(movement.getPos().z / 16f);
 
         if (newChunkX != currentChunk.x || newChunkZ != currentChunk.y) {
             currentChunk.x = newChunkX;
@@ -900,21 +723,6 @@ public class Player {
         }
     }
 
-    /*
-    public void updateMultiplayerWorldChunkLoader(){
-        int newChunkX = (int)Math.floor(pos.x / 16f);
-        int newChunkZ = (int)Math.floor(pos.z / 16f);
-
-        if (newChunkX != currentChunk.x || newChunkZ != currentChunk.z) {
-            currentChunk.x = newChunkX;
-            currentChunk.y = newChunkZ;
-            //chunk.requestNewChunks();
-            cloud.setCloudPos(newChunkX,newChunkZ);
-        }
-    }
-     */
-
-
     public void changeScrollSelection(int i){
         currentInventorySelection += i;
         if (currentInventorySelection < 0) {
@@ -923,13 +731,6 @@ public class Player {
         if (currentInventorySelection > 8) {
             currentInventorySelection = 0;
         }
-
-        //send out data if playing in multiplayer
-        /*
-        if (getIfMultiplayer()){
-            sendInventorySlot(currentInventorySelection);
-        }
-         */
     }
 
 
@@ -940,7 +741,7 @@ public class Player {
     private void calculateRunningFOV(){
         double delta = this.delta.getDelta();
 
-        if (playerIsMoving() && running){
+        if (playerIsMoving() && movement.getRunning()){
             if (runningFOVAdder < 0.3f){
                 runningFOVAdder += delta;
 
@@ -991,8 +792,8 @@ public class Player {
         }
     }
 
-    public boolean isPlayerRunning(){
-        return (running);
+    public boolean isRunning(){
+        return movement.getRunning();
     }
 
     public void setPlayerHealth(int newHealth){
@@ -1005,5 +806,13 @@ public class Player {
         //playSound("hurt", true);
         //calculateHealthBarElements();
         //doHurtRotation = true;
+    }
+
+    public boolean isJumping() {
+        return movement.getJumping();
+    }
+
+    public void setInWater(boolean inWater) {
+        movement.setInWater(inWater);
     }
 }
