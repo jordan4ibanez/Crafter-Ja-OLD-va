@@ -179,7 +179,6 @@ public class Chunk {
         System.out.println(Arrays.deepToString(map.toArray()));
         //send to chunk object generator
         IntStream.range(0, 8).forEach(y -> chunkUpdateHandler.chunkUpdate(primitiveChunkObject.pos.x,primitiveChunkObject.pos.y,y));
-
     }
 
     public void addNewChunk(PrimitiveChunkObject primitiveChunkObject){
@@ -519,7 +518,7 @@ public class Chunk {
         if (chunkObject == null){
             return 0;
         }
-        
+
         byte[] lightData = chunkObject.getLight();
 
         if (lightData == null){
@@ -601,27 +600,9 @@ public class Chunk {
                         .filter(y -> getChunkDistanceFromPlayer(x,y) <= chunkRenderDistance)
                         .forEach(y -> loadChunk(x, y))
                 );
-
-        /*
-        //scan for not-generated/loaded chunks
-        for (int x = -chunkRenderDistance + currentChunk.x; x < chunkRenderDistance + currentChunk.x; x++){
-            for (int z = -chunkRenderDistance + currentChunk.y; z< chunkRenderDistance + currentChunk.y; z++){
-                if (getChunkDistanceFromPlayer(x,z) <= chunkRenderDistance){
-                    // THIS CREATES A NEW OBJECT IN MEMORY!
-                    if (map.get(new Vector2i(x,z)) == null){
-                        loadChunk(x,z);
-                        for (int y = 0; y < 8; y++) {
-                            this.chunkUpdateHandler.chunkUpdate(x, z, y);
-                        }
-                        fullNeighborUpdate(x, z);
-                    }
-                }
-            }
-        }
-         */
-
         //scan map for out of range chunks
-        map.stream().filter(chunk -> getChunkDistanceFromPlayer(chunk.getPos().x,chunk.getPos().y) > chunkRenderDistance)
+        map.stream()
+                .filter(chunk -> getChunkDistanceFromPlayer(chunk.getPos().x,chunk.getPos().y) > chunkRenderDistance)
                 .forEach(this::deleteChunk);
     }
 
@@ -671,6 +652,7 @@ public class Chunk {
     //to create a new one if it doesn't exist
     public void loadChunk(int chunkX, int chunkZ) {
         disk.loadChunk(new Vector2i(chunkX,chunkZ));
+        fullNeighborUpdate(chunkX, chunkZ);
     }
 
     private void cleanUpMesh(Mesh mesh){
