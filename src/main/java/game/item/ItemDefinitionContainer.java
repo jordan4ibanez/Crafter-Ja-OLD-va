@@ -2,6 +2,7 @@ package game.item;
 
 import engine.graphics.Mesh;
 import engine.sound.SoundAPI;
+import game.blocks.BlockDefinition;
 import game.blocks.BlockDefinitionContainer;
 import game.chunk.Chunk;
 import game.crafting.InventoryLogic;
@@ -125,6 +126,12 @@ public class ItemDefinitionContainer {
         };
 
         definitions.put( "torchItem", new ItemDefinition("torchItem", "textures/torch.png", torchPlace));
+
+        BlockDefinitionContainer blockDefinitionContainer = new BlockDefinitionContainer();
+
+        for (BlockDefinition blockDefinition : blockDefinitionContainer.getDefinitions()){
+            definitions.put(blockDefinition.getBlockName(), new ItemDefinition(blockDefinition));
+        }
     }
 
     public Mesh getMesh(String name){
