@@ -11,13 +11,14 @@ import game.player.Player;
 import org.joml.Vector2i;
 import org.joml.Vector3i;
 
-import java.util.Collection;
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.stream.IntStream;
 
 import static java.lang.Math.hypot;
 import static java.lang.Math.max;
+import static java.util.Objects.requireNonNull;
+import static org.joml.Math.floor;
 
 public class Chunk {
     private Disk disk;
@@ -31,10 +32,7 @@ public class Chunk {
     private Settings settings;
     private Delta delta;
     private float saveTimer = 0f;
-    private final ConcurrentHashMap<Vector2i, ChunkObject> map = new ConcurrentHashMap<>();
-
-    private final Deque<Vector2i> deletionQueue = new LinkedList<>();
-    private float chunkDeletionTimer = 0f;
+    private final ConcurrentLinkedQueue<ChunkObject> map = new ConcurrentLinkedQueue<>();
 
     public Chunk(){
     }
@@ -82,38 +80,40 @@ public class Chunk {
     }
 
     public Collection<ChunkObject> getAllChunks(){
-        return map.values();
+        return map;
     }
 
-    public ChunkObject getChunk(Vector2i pos){
-        return map.get(pos);
+    public ChunkObject getChunk(Vector2i newPos){
+        return map.stream()
+                .filter(chunkObject -> newPos.equals(chunkObject.getPos()))
+                .findFirst()
+                .orElse(null);
     }
 
-
-    public void doChunksHoveringUpThing(Delta delta){
-        for (ChunkObject thisChunk : map.values()){
-            float thisHover = thisChunk.getHover();
-            if (thisHover < 0f){
-                thisHover += (float)delta.getDelta() * 50f;
-                if (thisHover >= 0f){
-                    thisHover = 0f;
-                }
-                thisChunk.setHover(thisHover);
+    public float hover(float thisHover){
+        if (thisHover < 0f){
+            thisHover += (float)delta.getDelta() * 50f;
+            if (thisHover >= 0f){
+                thisHover = 0f;
             }
         }
+        return thisHover;
+    }
+
+    public void doChunksHoveringUpThing(){
+        map.forEach(chunkObject -> chunkObject.setHover(hover(chunkObject.getHover())));
     }
 
     public void initialChunkPayload(){
         //create the initial map in memory
         int chunkRenderDistance = settings.getRenderDistance();
         Vector2i currentChunk = player.getPlayerCurrentChunk();
-        for (int x = -chunkRenderDistance + currentChunk.x; x < chunkRenderDistance + currentChunk.x; x++){
-            for (int z = -chunkRenderDistance + currentChunk.y; z< chunkRenderDistance + currentChunk.y; z++){
-                if (getChunkDistanceFromPlayer(x,z) <= chunkRenderDistance){
-                    loadChunk(x,z);
-                }
-            }
-        }
+        IntStream.range(-chunkRenderDistance + currentChunk.x, chunkRenderDistance + currentChunk.x)
+                .forEach(x -> IntStream
+                        .range(-chunkRenderDistance + currentChunk.y, chunkRenderDistance + currentChunk.y)
+                        .filter(y -> getChunkDistanceFromPlayer(x,y) <= chunkRenderDistance)
+                        .forEach(y -> loadChunk(x, y))
+                );
     }
 
 
@@ -122,83 +122,104 @@ public class Chunk {
         return max(getDistance(0, currentChunk.y, 0, z), getDistance(currentChunk.x, 0, x, 0));
     }
 
-    public void setChunkNormalMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
-        ChunkObject chunk = map.get(new Vector2i(chunkX, chunkZ));
-
-        if (chunk == null){
-            newMesh.cleanUp(false);
-            return;
+    private ChunkObject deleteMesh(Mesh mesh){
+        System.out.println("I'M DELETING THE CHUNK MESH!!");
+        if (mesh == null){
+            return null;
         }
+        mesh.cleanUp(false);
+        return null;
+    }
 
-        chunk.replaceOrSetNormalMesh(yHeight, newMesh);
+    public void setChunkNormalMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
+        map.stream()
+                .filter(chunkObject -> chunkObject.getPos().equals(chunkX, chunkZ))
+                .findFirst()
+                .ifPresentOrElse(
+                        chunkObject -> chunkObject.replaceOrSetNormalMesh(yHeight, newMesh),
+                        null
+                );
     }
 
     public void setChunkLiquidMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
-        ChunkObject chunk = map.get(new Vector2i(chunkX, chunkZ));
-
-        if (chunk == null){
-            newMesh.cleanUp(false);
-            return;
-        }
-
-        chunk.replaceOrSetLiquidMesh(yHeight, newMesh);
+        map.stream()
+                .filter(chunkObject -> chunkObject.getPos().equals(chunkX, chunkZ))
+                .findFirst()
+                .ifPresentOrElse(
+                        chunkObject -> chunkObject.replaceOrSetLiquidMesh(yHeight, newMesh),
+                        null
+                );
     }
 
     public void setChunkAllFacesMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
-        ChunkObject chunk = map.get(new Vector2i(chunkX, chunkZ));
+        map.stream()
+                .filter(chunkObject -> chunkObject.getPos().equals(chunkX, chunkZ))
+                .findFirst()
+                .ifPresentOrElse(
+                        chunkObject -> chunkObject.replaceOrSetAllFaceMesh(yHeight, newMesh),
+                        null
+                );
+    }
 
-        if (chunk == null){
-            newMesh.cleanUp(false);
-            return;
-        }
-
-        chunk.replaceOrSetAllFaceMesh(yHeight,newMesh);
+    private ChunkObject getChunk(int x, int z){
+        return map.stream()
+                .filter(chunk -> chunk.getPos().equals(x, z))
+                .findFirst()
+                .orElse(null);
     }
 
     public boolean chunkExists(Vector2i pos){
-        return map.get(pos) != null;
+        return map.stream()
+                .anyMatch(chunkObject -> chunkObject.getPos().equals(pos));
+    }
+
+    private void nothing(){}
+
+    private void internalChunkAdd(PrimitiveChunkObject primitiveChunkObject){
+        map.add(new ChunkObject(primitiveChunkObject));
+        System.out.println(Arrays.deepToString(map.toArray()));
+        //send to chunk object generator
+        IntStream.range(0, 8).forEach(y -> chunkUpdateHandler.chunkUpdate(primitiveChunkObject.pos.x,primitiveChunkObject.pos.y,y));
+
     }
 
     public void addNewChunk(PrimitiveChunkObject primitiveChunkObject){
-        ChunkObject gottenChunk = map.get(primitiveChunkObject.pos);
-        if (gottenChunk == null){
-            map.put(new Vector2i(primitiveChunkObject.pos), new ChunkObject(primitiveChunkObject));
-            //send to chunk object generator
-            for (int y = 0; y < 8; y++){
-                this.chunkUpdateHandler.chunkUpdate(primitiveChunkObject.pos.x,primitiveChunkObject.pos.y,y);
-            }
-        }
+        map.stream()
+                .filter(chunkObject -> chunkObject.getPos().equals(primitiveChunkObject.pos))
+                .findFirst()
+                .ifPresentOrElse(
+                        chunkObject -> nothing(),
+                        () -> internalChunkAdd(primitiveChunkObject)
+                );
+    }
+
+    private void chunkSaver(ChunkObject chunkObject){
+        disk.saveChunk(chunkObject);
+        chunkObject.setSaveToDisk(false);
     }
 
     public void globalChunkSaveToDisk(){
         this.saveTimer += this.delta.getDelta();
         //save interval is 16 seconds
-        if (this.saveTimer >= 16f){
-            for (ChunkObject chunk : map.values()){
-                if (chunk.getSaveToDisk()) {
-                    disk.saveChunk(chunk.getPos(),chunk.getBlock().clone(), chunk.getRotation().clone(), chunk.getLight().clone(), chunk.getHeightMap().clone());
-                    chunk.setSaveToDisk(false);
-                }
-            }
-            saveTimer = 0f;
+        if (saveTimer < 16){
+            return;
         }
+        map.stream()
+                .filter(ChunkObject::getSaveToDisk)
+                .forEach(this::chunkSaver);
+        saveTimer = 0f;
     }
 
+    private void floodLight(Vector2i pos){
+        IntStream.range(0,8).forEach(y ->chunkUpdateHandler.chunkUpdate(pos.x, pos.y, y));
+    }
     //this re-generates chunk meshes with the light level
     public void floodChunksWithNewLight(){
-        for (ChunkObject thisChunk : map.values()){
-            for (int y = 0; y < 8; y++) {
-                Vector2i pos = thisChunk.getPos();
-                this.chunkUpdateHandler.chunkUpdate(pos.x, pos.y, y);
-            }
-        }
+        map.forEach(chunkObject -> floodLight(chunkObject.getPos()));
     }
 
     public void globalFinalChunkSaveToDisk(){
-        for (ChunkObject chunk : map.values()){
-            disk.saveChunk(chunk.getPos(),chunk.getBlock().clone(), chunk.getRotation().clone(), chunk.getLight().clone(), chunk.getHeightMap().clone());
-            chunk.setSaveToDisk(false);
-        }
+        map.forEach(this::chunkSaver);
         map.clear();
     }
 
@@ -206,39 +227,38 @@ public class Chunk {
         if (pos.y > 127 || pos.y < 0){
             return false;
         }
-        int chunkX = (int)Math.floor(pos.x/16d);
-        int chunkZ = (int)Math.floor(pos.z/16d);
+        int chunkX = (int)floor(pos.x/16d);
+        int chunkZ = (int)floor(pos.z/16d);
         int blockX = (int)(pos.x - (16d*chunkX));
         int blockZ = (int)(pos.z - (16d*chunkZ));
-        byte[] heightMapData = map.get(new Vector2i(chunkX, chunkZ)).getHeightMap();
-        if (heightMapData == null){
-            return false;
-        }
-        return heightMapData[posToIndex2D(blockX,blockZ)] < pos.y + 1;
+
+        return requireNonNull(map.stream()
+                .filter(chunkObject -> chunkObject.getPos().equals(chunkX, chunkZ))
+                .findFirst()
+                .orElse(null))
+                .getHeightMap()[posToIndex2D(blockX,blockZ)] < pos.y + 1;
     }
 
-    //overloaded block getter
     public byte getBlock(Vector3i pos){
         if (pos.y > 127 || pos.y < 0){
             return -1;
         }
-        int chunkX = (int)Math.floor(pos.x/16d);
-        int chunkZ = (int)Math.floor(pos.z/16d);
+        int chunkX = (int)floor(pos.x/16d);
+        int chunkZ = (int)floor(pos.z/16d);
         int blockX = (int)(pos.x - (16d*chunkX));
         int blockZ = (int)(pos.z - (16d*chunkZ));
-        // THIS CREATES A NEW OBJECT IN MEMORY!
-        ChunkObject chunk = map.get(new Vector2i(chunkX, chunkZ));
+
+        ChunkObject chunk = map.stream()
+                .filter(chunkObject -> chunkObject.getPos().equals(chunkX, chunkZ))
+                .findFirst()
+                .orElse(null);
         if (chunk == null){
             return -1;
         }
-        byte[] blockData = chunk.getBlock();
-        if (blockData == null){
-            return -1;
-        }
-        return blockData[posToIndex(blockX, pos.y, blockZ)];
+
+        return chunk.getBlock()[posToIndex(blockX, pos.y, blockZ)];
     }
 
-    //overloaded getter for rotation
     public byte getBlockRotation(Vector3i pos){
         if (pos.y > 127 || pos.y < 0){
             return -1;
@@ -248,17 +268,11 @@ public class Chunk {
         int blockX = (int)(pos.x - (16d*chunkX));
         int blockZ = (int)(pos.z - (16d*chunkZ));
 
-        ChunkObject chunk = map.get(new Vector2i(chunkX, chunkZ));
-
-        if (chunk == null){
-            return 0;
-        }
-
-        byte[] rotationData = chunk.getRotation();
-        if (rotationData == null){
-            return 0;
-        }
-        return rotationData[posToIndex(blockX, pos.y, blockZ)];
+        return requireNonNull(map.stream()
+                .filter(chunkObject -> chunkObject.getPos().equals(chunkX, chunkZ))
+                .findFirst()
+                .orElse(null))
+                .getRotation()[posToIndex(blockX, pos.y, blockZ)];
     }
 
     public void setBlock(Vector3i pos, byte newBlock, byte rot){
@@ -271,34 +285,32 @@ public class Chunk {
         int blockX = (int)(pos.x - (16d*chunkX));
         int blockZ = (int)(pos.z - (16d*chunkZ));
 
-        Vector2i key = new Vector2i(chunkX, chunkZ);
+        int iPos = posToIndex(blockX,pos.y, blockZ);
 
-        byte[] blockData = map.get(key).getBlock();
-        byte[] rotationData = map.get(key).getRotation();
-        byte[] heightMapData = map.get(key).getHeightMap();
+        ChunkObject chunkObject = getChunk(chunkX,chunkZ);
 
-        if (blockData == null || rotationData == null){
+        if (chunkObject == null){
             return;
         }
 
-        blockData[posToIndex(blockX,pos.y, blockZ)] = newBlock;
-        rotationData[posToIndex(blockX,pos.y, blockZ)] = rot;
+        chunkObject.getBlock()[iPos] = newBlock;
+        chunkObject.getRotation()[iPos] = rot;
 
-        if (newBlock == 0){
-            if (heightMapData[posToIndex2D(blockX,blockZ)] ==  pos.y){
-                for (int yCheck = heightMapData[posToIndex2D(blockX,blockZ)]; yCheck > 0; yCheck--){
-                    if (blockData[posToIndex(blockX, yCheck, blockZ)] != 0){
-                        heightMapData[posToIndex2D(blockX,blockZ)] = (byte) yCheck;
-                        break;
-                    }
-                }
+        byte[] heightMapData = chunkObject.getHeightMap();
+        byte[] blockData = chunkObject.getBlock();
+
+        if (newBlock == 0) {
+            if (heightMapData[posToIndex2D(blockX, blockZ)] == pos.y) {
+                heightMapData[posToIndex2D(blockX, blockZ)] = (byte) IntStream.range(heightMapData[posToIndex2D(blockX, blockZ)], 0)
+                        .filter(y -> blockData[posToIndex(blockX, y, blockZ)] != 0)
+                        .findFirst().getAsInt();
             }
         } else {
-            if (heightMapData[posToIndex2D(blockX,blockZ)] < pos.y){
-                heightMapData[posToIndex2D(blockX,blockZ)] = (byte) pos.y;
+            if (heightMapData[posToIndex2D(blockX, blockZ)] < pos.y) {
+                heightMapData[posToIndex2D(blockX, blockZ)] = (byte) pos.y;
             }
         }
-        map.get(key).setSaveToDisk(true);
+        chunkObject.setSaveToDisk(true);
         this.chunkUpdateHandler.chunkUpdate(chunkX,chunkZ,yPillar);
         updateNeighbor(chunkX, chunkZ,blockX,pos.y,blockZ);
     }
@@ -313,13 +325,13 @@ public class Chunk {
         int blockX = (int)(pos.x - (16d*chunkX));
         int blockZ = (int)(pos.z - (16d*chunkZ));
 
-        ChunkObject chunk = map.get(new Vector2i(chunkX, chunkZ));
+        ChunkObject chunkObject = getChunk(chunkX,chunkZ);
 
-        if (chunk == null){
+        if (chunkObject == null){
             return;
         }
 
-        byte[] lightData = chunk.getLight();
+        byte[] lightData = chunkObject.getLight();
         if (lightData == null){
             return;
         }
@@ -338,13 +350,13 @@ public class Chunk {
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
 
-        ChunkObject chunk = map.get(new Vector2i(chunkX, chunkZ));
+        ChunkObject chunkObject = getChunk(chunkX,chunkZ);
 
-        if (chunk == null){
+        if (chunkObject == null){
             return;
         }
 
-        byte[] lightData = chunk.getLight();
+        byte[] lightData = chunkObject.getLight();
         if (lightData == null){
             return;
         }
@@ -363,32 +375,32 @@ public class Chunk {
         int chunkZ = (int)Math.floor(pos.z/16d);
         int blockX = (int)(pos.x - (16d*chunkX));
         int blockZ = (int)(pos.z - (16d*chunkZ));
-        Vector2i key = new Vector2i(chunkX, chunkZ);
 
-        byte[] blockData = map.get(key).getBlock();
-        byte[] rotationData = map.get(key).getRotation();
-        byte[] heightMapData = map.get(key).getHeightMap();
-        byte[] lightData = map.get(key).getLight();
+        ChunkObject chunkObject = getChunk(chunkX,chunkZ);
 
-        if (blockData == null || rotationData == null || heightMapData == null){
+        if (chunkObject == null){
             return;
         }
 
+        byte[] blockData = chunkObject.getBlock();
+        byte[] rotationData = chunkObject.getRotation();
+        byte[] heightMapData = chunkObject.getHeightMap();
+        byte[] lightData = chunkObject.getLight();
+
         blockData[posToIndex(blockX, pos.y, blockZ)] = 0;
         rotationData[posToIndex(blockX, pos.y, blockZ)] = 0;
-        if (heightMapData[posToIndex2D(blockX,blockZ)] == pos.y){
-            for (int yCheck = heightMapData[posToIndex2D(blockX,blockZ)]; yCheck > 0; yCheck--){
-                if (blockData[posToIndex(blockX, yCheck, blockZ)] != 0){
-                    heightMapData[posToIndex2D(blockX,blockZ)] = (byte) yCheck;
-                    break;
-                }
-            }
+
+        if (heightMapData[posToIndex2D(blockX, blockZ)] == pos.y) {
+            heightMapData[posToIndex2D(blockX, blockZ)] = (byte) IntStream.range(heightMapData[posToIndex2D(blockX, blockZ)], 0)
+                    .filter(y -> blockData[posToIndex(blockX, y, blockZ)] != 0)
+                    .findFirst().getAsInt();
         }
+
 
         light.lightFloodFill(pos.x, pos.y, pos.z);
         light.torchFloodFill(pos.x, pos.y, pos.z);
 
-        map.get(key).setSaveToDisk(true);
+        chunkObject.setSaveToDisk(true);
 
         lightData[posToIndex(blockX, pos.y, blockZ)] = setByteNaturalLight(lightData[posToIndex(blockX, pos.y, blockZ)], light.getImmediateLight(pos.x,pos.y,pos.z));
 
@@ -406,15 +418,15 @@ public class Chunk {
         int blockX = (pos.x - (16*chunkX));
         int blockZ = (pos.z - (16*chunkZ));
 
-        Vector2i key = new Vector2i(chunkX, chunkZ);
+        ChunkObject chunkObject = getChunk(chunkX,chunkZ);
 
-        byte[] blockData = map.get(key).getBlock();
-        byte[] rotationData = map.get(key).getRotation();
-        byte[] heightMapData = map.get(key).getHeightMap();
-
-        if (blockData == null || rotationData == null || heightMapData == null){
+        if (chunkObject == null){
             return;
         }
+
+        byte[] blockData = chunkObject.getBlock();
+        byte[] rotationData = chunkObject.getRotation();
+        byte[] heightMapData = chunkObject.getHeightMap();
 
         blockData[posToIndex(blockX, pos.y, blockZ)] = ID;
         rotationData[posToIndex(blockX, pos.y, blockZ)] =  rot;
@@ -428,7 +440,7 @@ public class Chunk {
         light.lightFloodFill(pos.x, pos.y, pos.z);
         light.torchFloodFill(pos.x, pos.y, pos.z);
 
-        map.get(key).setSaveToDisk(true);
+        chunkObject.setSaveToDisk(true);
 
         chunkMeshGenerator.instantGeneration(chunkX,chunkZ,yPillar);
         instantUpdateNeighbor(chunkX, chunkZ,blockX,pos.y,blockZ);//instant update
@@ -443,13 +455,13 @@ public class Chunk {
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
 
-        ChunkObject chunk = map.get(new Vector2i(chunkX, chunkZ));
+        ChunkObject chunkObject = getChunk(chunkX,chunkZ);
 
-        if (chunk == null){
+        if (chunkObject == null){
             return 0;
         }
 
-        byte[] lightData = chunk.getLight();
+        byte[] lightData = chunkObject.getLight();
 
         if (lightData == null){
             return 0;
@@ -483,7 +495,9 @@ public class Chunk {
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
 
-        byte[] lightData = map.get(new Vector2i(chunkX,chunkZ)).getLight();
+        ChunkObject chunkObject = getChunk(chunkX, chunkZ);
+
+        byte[] lightData = chunkObject.getLight();
 
         if (lightData == null){
             return 0;
@@ -500,8 +514,14 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
+
+        ChunkObject chunkObject = getChunk(chunkX, chunkZ);
+
+        if (chunkObject == null){
+            return 0;
+        }
         
-        byte[] lightData = map.get(new Vector2i(chunkX,chunkZ)).getLight();
+        byte[] lightData = chunkObject.getLight();
 
         if (lightData == null){
             return 0;
@@ -556,30 +576,18 @@ public class Chunk {
         }
     }
 
-    private void fullNeighborUpdate(int chunkX, int chunkZ){
-
-        if (map.get(new Vector2i(chunkX + 1, chunkZ)) != null){
-            for (int y = 0; y < 8; y++){
-                this.chunkUpdateHandler.chunkUpdate(chunkX+1, chunkZ, y);
-            }
+    public void fullNeighborUpdate(int chunkX, int chunkZ){
+        if (getChunk(chunkX + 1, chunkZ) != null){
+            IntStream.range(0,8).forEach(y->this.chunkUpdateHandler.chunkUpdate(chunkX+1, chunkZ, y));
         }
-
-        if (map.get(new Vector2i(chunkX-1, chunkZ)) != null){
-            for (int y = 0; y < 8; y++){
-                this.chunkUpdateHandler.chunkUpdate(chunkX-1, chunkZ, y);
-            }
+        if (getChunk(chunkX-1, chunkZ) != null){
+            IntStream.range(0,8).forEach(y->this.chunkUpdateHandler.chunkUpdate(chunkX-1, chunkZ, y));
         }
-
-        if (map.get(new Vector2i(chunkX, chunkZ+1)) != null){
-            for (int y = 0; y < 8; y++){
-                this.chunkUpdateHandler.chunkUpdate(chunkX, chunkZ+1, y);
-            }
+        if (getChunk(chunkX, chunkZ+1) != null){
+            IntStream.range(0,8).forEach(y->this.chunkUpdateHandler.chunkUpdate(chunkX, chunkZ+1, y));
         }
-
-        if (map.get(new Vector2i(chunkX, chunkZ-1)) != null){
-            for (int y = 0; y < 8; y++){
-                this.chunkUpdateHandler.chunkUpdate(chunkX, chunkZ-1, y);
-            }
+        if (getChunk(chunkX, chunkZ-1) != null){
+            IntStream.range(0,8).forEach(y->this.chunkUpdateHandler.chunkUpdate(chunkX, chunkZ-1, y));
         }
     }
 
@@ -587,6 +595,15 @@ public class Chunk {
         //create the initial map in memory
         int chunkRenderDistance = settings.getRenderDistance();
         Vector2i currentChunk = player.getPlayerCurrentChunk();
+
+        IntStream.range(-chunkRenderDistance + currentChunk.x, chunkRenderDistance + currentChunk.x)
+                .forEach(x -> IntStream
+                        .range(-chunkRenderDistance + currentChunk.y, chunkRenderDistance + currentChunk.y)
+                        .filter(y -> getChunkDistanceFromPlayer(x,y) <= chunkRenderDistance)
+                        .forEach(y -> loadChunk(x, y))
+                );
+
+        /*
         //scan for not-generated/loaded chunks
         for (int x = -chunkRenderDistance + currentChunk.x; x < chunkRenderDistance + currentChunk.x; x++){
             for (int z = -chunkRenderDistance + currentChunk.y; z< chunkRenderDistance + currentChunk.y; z++){
@@ -602,63 +619,21 @@ public class Chunk {
                 }
             }
         }
+         */
 
         //scan map for out of range chunks
-        for (ChunkObject chunk : map.values()){
-            if (getChunkDistanceFromPlayer(chunk.getPos().x,chunk.getPos().y) > chunkRenderDistance){
-                deletionQueue.add(chunk.getPos());
-            }
-        }
+        map.stream().filter(chunk -> getChunkDistanceFromPlayer(chunk.getPos().x,chunk.getPos().y) > chunkRenderDistance)
+                .forEach(this::deleteChunk);
     }
 
-    public void processOldChunks() {
-
-        chunkDeletionTimer += delta.getDelta();
-
-        int updateAmount = 0;
-
-        //goalTimerArray[getSettingsChunkLoad()];
-        float goalTimer = 0.0001f;
-        if (chunkDeletionTimer >= goalTimer){
-            updateAmount = (int)(Math.ceil(chunkDeletionTimer / goalTimer));
-            chunkDeletionTimer = 0;
+    public void deleteChunk(ChunkObject chunk){
+        if (chunk == null){
+            return;
         }
-
-        for (int i = 0; i < updateAmount; i++) {
-            if (!deletionQueue.isEmpty()) {
-                Vector2i key = deletionQueue.pop();
-
-                ChunkObject chunk = map.get(key);
-
-                if (chunk == null){
-                    continue;
-                }
-
-                //clean up mesh data
-
-                for (Mesh meshData : chunk.getNormalMeshArray()){
-                    if (meshData != null) {
-                        meshData.cleanUp(false);
-                    }
-                }
-
-                for (Mesh meshData : chunk.getLiquidMeshArray()){
-                    if (meshData != null) {
-                        meshData.cleanUp(false);
-                    }
-                }
-
-                for (Mesh meshData : chunk.getAllFaceMeshArray()){
-                    if (meshData != null) {
-                        meshData.cleanUp(false);
-                    }
-                }
-
-                disk.saveChunk(map.get(key).getPos(),map.get(key).getBlock().clone(), map.get(key).getRotation().clone(), map.get(key).getLight().clone(), map.get(key).getHeightMap().clone());
-
-                map.remove(key);
-            }
-        }
+        //clean up mesh data
+        deleteChunkMesh(chunk);
+        disk.saveChunk(chunk.getPos(),chunk.getBlock().clone(), chunk.getRotation().clone(), chunk.getLight().clone(), chunk.getHeightMap().clone());
+        map.remove(chunk);
     }
 
     //returns -1 if fails
@@ -668,7 +643,7 @@ public class Chunk {
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
 
-        ChunkObject chunk = map.get(new Vector2i(chunkX, chunkZ));
+        ChunkObject chunk = getChunk(chunkX, chunkZ);
 
         if (chunk == null){
             return -1;
@@ -692,32 +667,40 @@ public class Chunk {
         return -1;
     }
 
-    //fixme: this needs a new name
-    //this dispatches to the SQLite thread, checks if it exists in the data base
+    //this dispatches to the SQLite thread, checks if it exists in the database
     //then it either deserializes it or it tells the chunk mesh generator thread
     //to create a new one if it doesn't exist
     public void loadChunk(int chunkX, int chunkZ) {
         disk.loadChunk(new Vector2i(chunkX,chunkZ));
     }
 
-    public void cleanChunkDataMemory(){
-        for (ChunkObject chunk : map.values()) {
-            for (Mesh mesh : chunk.getNormalMeshArray()) {
-                if (mesh != null) {
-                    mesh.cleanUp(false);
-                }
-            }
-            for (Mesh mesh : chunk.getLiquidMeshArray()) {
-                if (mesh != null) {
-                    mesh.cleanUp(false);
-                }
-            }
-            for (Mesh mesh : chunk.getAllFaceMeshArray()) {
-                if (mesh != null) {
-                    mesh.cleanUp(false);
-                }
-            }
+    private void cleanUpMesh(Mesh mesh){
+        if (mesh == null){
+            return;
         }
+        mesh.cleanUp(false);
+    }
+
+    private void deleteChunkMesh(ChunkObject chunk){
+        Arrays.stream(chunk.getNormalMeshArray())
+                .sequential()
+                .forEach(
+                        this::cleanUpMesh
+                );
+        Arrays.stream(chunk.getLiquidMeshArray())
+                .sequential()
+                .forEach(
+                        this::cleanUpMesh
+                );
+        Arrays.stream(chunk.getAllFaceMeshArray())
+                .sequential()
+                .forEach(
+                        this::cleanUpMesh
+                );
+    }
+
+    public void cleanChunkDataMemory(){
+        map.forEach(this::deleteChunkMesh);
         map.clear();
     }
 
