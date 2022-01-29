@@ -322,17 +322,11 @@ public class Chunk {
         int chunkZ = (int)Math.floor(pos.z/16d);
         int blockX = (int)(pos.x - (16d*chunkX));
         int blockZ = (int)(pos.z - (16d*chunkZ));
-
         ChunkObject chunkObject = getChunk(chunkX,chunkZ);
-
         if (chunkObject == null){
             return;
         }
-
         byte[] lightData = chunkObject.getLight();
-        if (lightData == null){
-            return;
-        }
         lightData[posToIndex(blockX, pos.y, blockZ)] = setByteNaturalLight(lightData[posToIndex(blockX, pos.y, blockZ)],newLight);
         this.chunkUpdateHandler.chunkUpdate(chunkX,chunkZ,yPillar);
         updateNeighbor(chunkX, chunkZ,blockX,pos.y,blockZ);
