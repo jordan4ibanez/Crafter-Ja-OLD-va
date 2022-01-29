@@ -98,7 +98,7 @@ final public class Collision {
                     onGroundLock = true;
                 }
 
-                if (sneaking && !player.getIfPlayerIsJumping()) {
+                if (sneaking && !player.isJumping()) {
                     int axisFallingOff = sneakCollisionDetect(pos, inertia, width, height);
 
                     if (axisFallingOff == 1) {
@@ -134,7 +134,7 @@ final public class Collision {
             if (gravity) {
                 if (inWater > 0.f) {
                     if (isPlayer) {
-                        player.setPlayerInWater(true);
+                        player.setInWater(true);
                     }
 
                     //water resistance
@@ -146,7 +146,7 @@ final public class Collision {
                     }
                 } else {
                     if (isPlayer) {
-                        player.setPlayerInWater(false);
+                        player.setInWater(false);
                     }
                     //regular gravity
                     inertia.y -= 30f * adjustedDelta;
