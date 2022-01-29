@@ -347,17 +347,11 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
-
         ChunkObject chunkObject = getChunk(chunkX,chunkZ);
-
         if (chunkObject == null){
             return;
         }
-
         byte[] lightData = chunkObject.getLight();
-        if (lightData == null){
-            return;
-        }
         lightData[posToIndex(blockX, y, blockZ)] = setByteTorchLight(lightData[posToIndex(blockX, y, blockZ)], newLight);
         this.chunkUpdateHandler.chunkUpdate(chunkX,chunkZ,yPillar);
         updateNeighbor(chunkX, chunkZ,blockX,y,blockZ);
@@ -492,7 +486,6 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
-
         ChunkObject chunkObject = getChunk(chunkX, chunkZ);
         if (chunkObject == null) {
             return 0;
