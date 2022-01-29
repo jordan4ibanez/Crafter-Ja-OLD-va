@@ -48,7 +48,6 @@ public class ChunkUpdateHandler {
     }
 
     //chunk mesh generator handling
-
     public void addToChunkMeshQueue(ChunkMeshData chunkMeshData){
         dataQueue.add(chunkMeshData);
     }
@@ -109,7 +108,7 @@ public class ChunkUpdateHandler {
                 return;
             }
 
-            System.out.println("ChunkMesh Setting QueueSize: " + dataQueue.size());
+            //System.out.println("ChunkMesh Setting QueueSize: " + dataQueue.size());
 
             ChunkMeshData newChunkMeshData = dataQueue.pop();
 
