@@ -101,7 +101,7 @@ public class Window {
         if (vSync){
             //enable v-sync
             glfwSwapInterval(1);
-        }else {
+        } else {
             glfwSwapInterval(0);
         }
 
@@ -172,8 +172,6 @@ public class Window {
         return handle;
     }
 
-
-
     public void setClearColor(float r, float g, float b, float alpha){
         glClearColor(r, g, b, alpha);
         currentClearColor.set(r,g,b);
@@ -193,14 +191,13 @@ public class Window {
         return glfwGetKey(handle, keyCode) == GLFW_PRESS;
     }
 
-
     public void close(){
-        this.shouldClose.set(true);
+        shouldClose.set(true);
         glfwSetWindowShouldClose(this.handle, true);
     }
 
     public boolean shouldClose(){
-        return this.shouldClose.get();
+        return shouldClose.get();
     }
 
     public void pollWindowClose(){
