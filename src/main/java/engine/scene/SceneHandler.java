@@ -226,8 +226,6 @@ public class SceneHandler {
 
         mobSpawning.runSpawningAlgorithm(this.player,this.chunk,this.delta,this.mobMeshBuilder,this.entityContainer);
 
-        player.updateWorldChunkLoader();
-
         chunkUpdateHandler.popChunkMeshQueue(); //this actually transmits the data from the other threads into main thread
 
         chunkUpdateHandler.chunkUpdater();
