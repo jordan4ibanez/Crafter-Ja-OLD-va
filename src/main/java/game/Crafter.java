@@ -317,6 +317,9 @@ public class Crafter {
         //then the game starts
         sceneHandler.handleSceneLogic();
 
+        //then the game ends
+        System.out.println("i'm outta here");
+        window.close();
     }
 
 
