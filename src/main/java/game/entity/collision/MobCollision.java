@@ -6,6 +6,7 @@ import game.entity.mob.Mob;
 import game.player.Player;
 import org.joml.Vector2d;
 import org.joml.Vector3d;
+import org.joml.Vector3f;
 
 import java.util.List;
 
@@ -80,7 +81,7 @@ public class MobCollision {
 
         //get player's info
         float otherWidth    = player.getWidth();
-        Vector3d otherPos   = player.getPlayerPos();
+        Vector3d otherPos   = player.getPos();
         workerVec2D2.set(otherPos.x, otherPos.z);
 
         //only continue if within 2D radius
@@ -100,7 +101,7 @@ public class MobCollision {
 
                 if (normalizedPos.isFinite()) {
                     thisMob.getInertia().add((float)normalizedPos.x,0,(float)normalizedPos.y);
-                    player.getInertia().add((float) -normalizedPos.x, 0, (float) -normalizedPos.y);
+                    player.addInertia(new Vector3f((float) -normalizedPos.x, 0, (float) -normalizedPos.y));
                 }
             }
         }
