@@ -22,7 +22,7 @@ public class GUIObject {
     public char pointer;
     public float pointerTimer;
 
-    //initializer for button (auto scaled width)
+    //initializer for button (auto-scaled width)
     public GUIObject(String text, Vector2d pos){
         this.textMesh = textHandling.createTextCentered(text, 1,1,1);
         float totalLengthReal = 0;
