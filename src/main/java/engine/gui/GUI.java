@@ -5,7 +5,6 @@ import engine.graphics.Texture;
 import engine.highPerformanceContainers.HyperFloatArray;
 import engine.highPerformanceContainers.HyperIntArray;
 import org.joml.Vector3f;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
