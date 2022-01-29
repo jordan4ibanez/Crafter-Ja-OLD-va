@@ -28,7 +28,7 @@ public class Window {
     private int width;
     private int height;
     private float scale;
-    private final long windowHandle;
+    private final long handle;
     private boolean vSync;
     private int dumpedKey = -1;
     private final Vector3f currentClearColor = new Vector3f();
@@ -72,13 +72,13 @@ public class Window {
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); //allow auto driver optimizations
 
         // create the window
-        windowHandle = glfwCreateWindow(width, height, title, NULL, NULL);
-        if (windowHandle == NULL){
+        handle = glfwCreateWindow(width, height, title, NULL, NULL);
+        if (handle == NULL){
             throw new RuntimeException("Failed to create the GLFW window!");
         }
 
         // setup resize callback
-        glfwSetFramebufferSizeCallback(windowHandle, (thisWindow, thisWidth, thisHeight) -> {
+        glfwSetFramebufferSizeCallback(handle, (thisWindow, thisWidth, thisHeight) -> {
             width = thisWidth;
             height = thisHeight;
             updateScale();
@@ -86,7 +86,7 @@ public class Window {
         });
 
         // set up a key callback. it will be called every time a key is pressed, repeated or released.
-        glfwSetKeyCallback(windowHandle, (window, key, scancode, action, mods) -> {
+        glfwSetKeyCallback(handle, (window, key, scancode, action, mods) -> {
             //data stream of key inputs
             if (action == GLFW_PRESS){
                 dumpedKey = key;
@@ -96,7 +96,7 @@ public class Window {
         });
 
         // make the OpenGL context current
-        glfwMakeContextCurrent(windowHandle);
+        glfwMakeContextCurrent(handle);
 
         if (vSync){
             //enable v-sync
@@ -106,10 +106,10 @@ public class Window {
         }
 
         //center window
-        glfwSetWindowPos(windowHandle, (d.width - width) / 2, (d.height - height) / 2);
+        glfwSetWindowPos(handle, (d.width - width) / 2, (d.height - height) / 2);
 
         //make the window visible
-        glfwShowWindow(windowHandle);
+        glfwShowWindow(handle);
 
         GL.createCapabilities();
 
@@ -157,7 +157,7 @@ public class Window {
         images.put(0, image);
 
         //set icon
-        glfwSetWindowIcon(windowHandle, images);
+        glfwSetWindowIcon(handle, images);
 
         //free memory
         stbi_image_free(buf);
@@ -169,7 +169,7 @@ public class Window {
     }
 
     public long getHandle(){
-        return windowHandle;
+        return handle;
     }
 
 
@@ -190,13 +190,13 @@ public class Window {
     }
 
     public boolean isKeyPressed(int keyCode){
-        return glfwGetKey(windowHandle, keyCode) == GLFW_PRESS;
+        return glfwGetKey(handle, keyCode) == GLFW_PRESS;
     }
 
 
     public void close(){
         this.shouldClose.set(true);
-        glfwSetWindowShouldClose(this.windowHandle, true);
+        glfwSetWindowShouldClose(this.handle, true);
     }
 
     public boolean shouldClose(){
@@ -204,7 +204,7 @@ public class Window {
     }
 
     public void pollWindowClose(){
-        if(glfwWindowShouldClose(windowHandle)){
+        if(glfwWindowShouldClose(handle)){
             this.shouldClose.set(true);
         }
     }
@@ -221,12 +221,12 @@ public class Window {
         Toolkit tk = Toolkit.getDefaultToolkit();
         Dimension d = tk.getScreenSize();
         if (!fullScreen) {
-            glfwSetWindowMonitor(windowHandle, glfwGetPrimaryMonitor(), d.width / 2, d.height / 2, d.width, d.height, Objects.requireNonNull(glfwGetVideoMode(glfwGetPrimaryMonitor())).refreshRate());
+            glfwSetWindowMonitor(handle, glfwGetPrimaryMonitor(), d.width / 2, d.height / 2, d.width, d.height, Objects.requireNonNull(glfwGetVideoMode(glfwGetPrimaryMonitor())).refreshRate());
             width = d.width;
             height = d.height;
         }
         else {
-            glfwSetWindowMonitor(windowHandle, NULL, d.width / 4, d.height / 4,d.width / 2, d.height / 2, Objects.requireNonNull(glfwGetVideoMode(glfwGetPrimaryMonitor())).refreshRate());
+            glfwSetWindowMonitor(handle, NULL, d.width / 4, d.height / 4,d.width / 2, d.height / 2, Objects.requireNonNull(glfwGetVideoMode(glfwGetPrimaryMonitor())).refreshRate());
             width = d.width / 2;
             height = d.height / 2;
         }
@@ -259,11 +259,11 @@ public class Window {
 
     public void updateTitle(String newTitle){
         this.title = newTitle;
-        glfwSetWindowTitle(windowHandle, newTitle);
+        glfwSetWindowTitle(handle, newTitle);
     }
 
     public void windowUpdate(){
-        glfwSwapBuffers(windowHandle);
+        glfwSwapBuffers(handle);
         glfwPollEvents();
     }
 
