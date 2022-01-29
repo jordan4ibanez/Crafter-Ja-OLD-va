@@ -120,7 +120,7 @@ public class Disk {
     }
 
     public void savePlayerData(String name){
-        this.sqLite.addPlayerToSave(name, inventoryLogic.getInventory().getMain().getInventoryAsArray(), inventoryLogic.getInventory().getMain().getCountAsArray(), player.getPlayerPos(), (byte) player.getPlayerHealth());
+        this.sqLite.addPlayerToSave(name, inventoryLogic.getInventory().getMain().getInventoryAsArray(), inventoryLogic.getInventory().getMain().getCountAsArray(), player.getPos(), (byte) player.getPlayerHealth());
     }
 
     public void loadChunk(Vector2i key){
