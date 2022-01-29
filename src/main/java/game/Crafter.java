@@ -177,6 +177,7 @@ public class Crafter {
             gameRenderer.setCloud(this.cloud);
             gameRenderer.setLight(this.light);
             gameRenderer.setInventoryLogic(this.inventoryLogic);
+            gameRenderer.setItemDefinitionContainer(this.itemDefinitionContainer);
 
             //main menu renderer
             mainMenuRenderer.setWindow(this.window);
