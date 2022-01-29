@@ -5,7 +5,7 @@ import engine.graphics.Mesh;
 import org.joml.Vector2i;
 import org.joml.Vector3i;
 
-public class ChunkObject {
+public class ChunkObject{
 
     private final Vector2i pos     = new Vector2i();
 
