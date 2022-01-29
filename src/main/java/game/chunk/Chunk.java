@@ -116,18 +116,9 @@ public class Chunk {
                 );
     }
 
-
     private double getChunkDistanceFromPlayer(int x, int z){
         Vector2i currentChunk = player.getPlayerCurrentChunk();
         return max(getDistance(0, currentChunk.y, 0, z), getDistance(currentChunk.x, 0, x, 0));
-    }
-
-    private ChunkObject deleteMesh(Mesh mesh){
-        if (mesh == null){
-            return null;
-        }
-        mesh.cleanUp(false);
-        return null;
     }
 
     public void setChunkNormalMesh(int chunkX, int chunkZ, int yHeight, Mesh newMesh){
