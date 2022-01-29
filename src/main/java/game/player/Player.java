@@ -511,6 +511,8 @@ public class Player {
 
         double delta = this.delta.getDelta();
 
+        wieldHand.onTick();
+
         //camera underwater effect trigger
         byte cameraCheckBlock = chunk.getBlock(new Vector3i((int)floor(camera.getCameraPosition().x),(int)floor(camera.getCameraPosition().y - 0.02d), (int)floor(camera.getCameraPosition().z)));
 
