@@ -2,6 +2,7 @@ package game.item;
 
 import engine.graphics.Mesh;
 import engine.graphics.Texture;
+import game.blocks.BlockDefinition;
 import game.blocks.BlockDefinitionContainer;
 
 import javax.imageio.ImageIO;
@@ -34,20 +35,20 @@ public class ItemDefinition {
     private final float leafMiningLevel;
 
     //block item
-    public ItemDefinition(String name, int blockID, BlockDefinitionContainer blockDefinitionContainer){
-        this.name = name;
-        this.blockID = 0;
+    public ItemDefinition(BlockDefinition blockDefinition){
+        this.name = blockDefinition.getBlockName();
+        this.blockID = blockDefinition.getID();
         this.isItem = false;
         this.isBlock = true;
         this.itemModifier = null;
-        this.isRightClickable = blockDefinitionContainer.isRightClickable(blockID);
-        this.isOnPlaced = blockDefinitionContainer.isOnPlaced(blockID);
+        this.isRightClickable = blockDefinition.getRightClickable();
+        this.isOnPlaced = blockDefinition.getIsOnPlaced();
         this.isTool = false;
         this.stoneMiningLevel = 0f;
         this.dirtMiningLevel = 0f;
         this.woodMiningLevel = 0f;
         this.leafMiningLevel = 0f;
-        this.mesh = createItemBlockMesh(blockID, blockDefinitionContainer);
+        this.mesh = createItemBlockMesh(blockDefinition);
     }
 
     //craft item
@@ -148,7 +149,7 @@ public class ItemDefinition {
     }
 
     //internal
-    private Mesh createItemBlockMesh(int blockID, BlockDefinitionContainer blockDefinitionContainer) {
+    private Mesh createItemBlockMesh(BlockDefinition blockDefinition) {
         int indicesCount = 0;
 
         List<Float> positions     = new ArrayList<>();
@@ -162,7 +163,7 @@ public class ItemDefinition {
 
 
 
-        for (float[] thisBlockBox : blockDefinitionContainer.getShape(blockID, (byte) 0)) {
+        for (float[] thisBlockBox : blockDefinition.getBlockShape((byte) 0)) {
             //front
             positions.add((thisBlockBox[3] - 0.5f) * itemSize);
             positions.add((thisBlockBox[4] - 0.5f) * itemSize + (itemSize/2));
@@ -193,7 +194,7 @@ public class ItemDefinition {
             indices.add(3 + indicesCount);
             indicesCount += 4;
 
-            float[] textureFront = blockDefinitionContainer.getFrontTexturePoints(blockID, (byte) 0);
+            float[] textureFront = blockDefinition.getFrontTexturePoints((byte) 0);
 
             //front
             textureCoord.add(textureFront[1] - ((1- thisBlockBox[3])/32f)); //x positive
@@ -239,7 +240,7 @@ public class ItemDefinition {
             indices.add(3 + indicesCount);
             indicesCount += 4;
 
-            float[] textureBack = blockDefinitionContainer.getBackTexturePoints(blockID,(byte) 0);
+            float[] textureBack = blockDefinition.getBackTexturePoints((byte) 0);
 
             //back
             textureCoord.add(textureBack[1] - ((1- thisBlockBox[0])/32f));
@@ -288,7 +289,7 @@ public class ItemDefinition {
 
 
 
-            float[] textureRight = blockDefinitionContainer.getRightTexturePoints(blockID,(byte) 0);
+            float[] textureRight = blockDefinition.getRightTexturePoints((byte) 0);
             //right
             textureCoord.add(textureRight[1] - ((1- thisBlockBox[2])/32f));
             textureCoord.add(textureRight[2] + ((1- thisBlockBox[4])/32f));
@@ -333,7 +334,7 @@ public class ItemDefinition {
             indices.add(3 + indicesCount);
             indicesCount += 4;
 
-            float[] textureLeft = blockDefinitionContainer.getLeftTexturePoints(blockID,(byte) 0);
+            float[] textureLeft = blockDefinition.getLeftTexturePoints((byte) 0);
             //left
             textureCoord.add(textureLeft[1] - ((1- thisBlockBox[5])/32f));
             textureCoord.add(textureLeft[2] + ((1- thisBlockBox[4])/32f));
@@ -385,7 +386,7 @@ public class ItemDefinition {
             // 0, 1,  2, 3
             //-x,+x, -y,+y
 
-            float[] textureTop = blockDefinitionContainer.getTopTexturePoints(blockID);
+            float[] textureTop = blockDefinition.getTopTexturePoints();
             //top
             textureCoord.add(textureTop[1] - ((1- thisBlockBox[5])/32f));
             textureCoord.add(textureTop[2] + ((1- thisBlockBox[0])/32f));
@@ -437,7 +438,7 @@ public class ItemDefinition {
             // 0, 1,  2, 3
             //-x,+x, -y,+y
 
-            float[] textureBottom = blockDefinitionContainer.getBottomTexturePoints(blockID);
+            float[] textureBottom = blockDefinition.getBottomTexturePoints();
             //bottom
             textureCoord.add(textureBottom[1] - ((1- thisBlockBox[5])/32f));
             textureCoord.add(textureBottom[2] + ((1- thisBlockBox[0])/32f));
