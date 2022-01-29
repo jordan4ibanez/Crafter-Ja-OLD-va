@@ -130,7 +130,10 @@ public class ItemDefinitionContainer {
         BlockDefinitionContainer blockDefinitionContainer = new BlockDefinitionContainer();
 
         for (BlockDefinition blockDefinition : blockDefinitionContainer.getDefinitions()){
-            definitions.put(blockDefinition.getBlockName(), new ItemDefinition(blockDefinition));
+            if (!blockDefinition.getBlockName().equals("air")) {
+                //System.out.println("created ITEM for BLOCK: " + blockDefinition.getBlockName());
+                definitions.put(blockDefinition.getBlockName(), new ItemDefinition(blockDefinition));
+            }
         }
     }
 
