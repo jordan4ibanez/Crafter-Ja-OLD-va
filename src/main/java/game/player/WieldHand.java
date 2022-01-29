@@ -8,6 +8,8 @@ import game.item.ItemDefinitionContainer;
 import org.joml.*;
 import org.joml.Math;
 
+import static java.lang.Math.PI;
+
 public class WieldHand {
     private ItemDefinitionContainer itemDefinitionContainer;
     private final Player player;
@@ -69,8 +71,6 @@ public class WieldHand {
     private boolean handSetUp = false;
 
     private float oldYaw = 0;
-
-    private final float doublePi = (float)Math.PI * 2f;
 
     public void resetWieldHandSetupTrigger(){
         handSetUp = false;
@@ -168,6 +168,11 @@ public class WieldHand {
     }
 
 
+    public void onTick(){
+        testPlayerDiggingAnimation();
+        updatePlayerHandInertia();
+    }
+
     public void updatePlayerHandInertia(){
 
         double delta = this.delta.getDelta();
@@ -177,6 +182,7 @@ public class WieldHand {
         float diff = yaw - oldYaw;
 
         //correct for radians overflow
+        float doublePi = (float) PI * 2f;
         if (diff > Math.PI){
             diff -= doublePi;
         } else if (diff < -Math.PI){
