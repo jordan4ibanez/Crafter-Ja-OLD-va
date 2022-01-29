@@ -512,20 +512,11 @@ public class Chunk {
         int chunkZ = (int)Math.floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
-
         ChunkObject chunkObject = getChunk(chunkX, chunkZ);
-
         if (chunkObject == null){
             return 0;
         }
-
-        byte[] lightData = chunkObject.getLight();
-
-        if (lightData == null){
-            return 0;
-        }
-
-        return getByteTorchLight(lightData[posToIndex(blockX, y, blockZ)]);
+        return getByteTorchLight(chunkObject.getLight()[posToIndex(blockX, y, blockZ)]);
     }
 
     private void instantUpdateNeighbor(int chunkX, int chunkZ, int x, int y, int z){
