@@ -719,7 +719,7 @@ public class GameRenderer {
                         0.35d,0.35d,0.35d,
                         0.05d,0.05d,0.05d);
                 entityShaderProgram.setUniform("modelViewMatrix", transformation.getModelMatrix());
-                getWieldHandMesh().render();
+                //getWieldHandMesh().render();
             //block/item
             } else if (inventoryLogic.getInventory().getMain().getItem(player.getPlayerInventorySelection(),0) != null){
                 transformation.setWieldHandMatrix(
@@ -729,8 +729,8 @@ public class GameRenderer {
                         player.getWieldHand().getWieldHandAnimationRot().x, player.getWieldHand().getWieldHandAnimationRot().y, player.getWieldHand().getWieldHandAnimationRot().z,
                         1d, 1d, 1d,
                         0.05d,0.05d,0.05d);
-                entityShaderProgram.setUniform("modelViewMatrix", getModelMatrix());
-                inventoryLogic.getWieldInventory().render();
+                //entityShaderProgram.setUniform("modelViewMatrix", getModelMatrix());
+                //inventoryLogic.getWieldInventory().render();
             }
 
             entityShaderProgram.unbind();
