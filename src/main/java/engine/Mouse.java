@@ -19,19 +19,19 @@ public class Mouse {
     public void setWindow(Window window){
         if (this.window == null){
             this.window = window;
-            glfwSetCursorPosCallback(window.getWindowHandle(), (windowHandle, xPos, yPos) -> {
+            glfwSetCursorPosCallback(window.getHandle(), (windowHandle, xPos, yPos) -> {
                 this.pos.x = xPos;
                 this.pos.y = yPos;
             });
 
-            glfwSetCursorEnterCallback(window.getWindowHandle(), (windowHandle, entered) -> inWindow = entered);
+            glfwSetCursorEnterCallback(window.getHandle(), (windowHandle, entered) -> inWindow = entered);
 
-            glfwSetMouseButtonCallback(window.getWindowHandle(), (windowHandle, button, action, mode) -> {
+            glfwSetMouseButtonCallback(window.getHandle(), (windowHandle, button, action, mode) -> {
                 leftButtonPressed = button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS;
                 rightButtonPressed = button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS;
             });
 
-            glfwSetScrollCallback(window.getWindowHandle(), (windowHandle, xOffset, yOffset) -> scroll = (float)yOffset);
+            glfwSetScrollCallback(window.getHandle(), (windowHandle, xOffset, yOffset) -> scroll = (float)yOffset);
         }
     }
 
@@ -47,12 +47,12 @@ public class Mouse {
     private float   scroll      = 0;
 
     public void resetMousePosVector(){
-        glfwSetCursorPos(window.getWindowHandle(),window.getWidth() / 2f,window.getHeight() / 2f );
+        glfwSetCursorPos(window.getHandle(),window.getWidth() / 2f,window.getHeight() / 2f );
 
         double[] testx = new double[1];
         double[] testy = new double[1];
 
-        glfwGetCursorPos(window.getWindowHandle(), testx, testy);
+        glfwGetCursorPos(window.getHandle(), testx, testy);
 
         pos.set(window.getWidth() / 2f, window.getHeight() / 2f);
 
@@ -68,13 +68,13 @@ public class Mouse {
 
     public void mouseInput(){
 
-        glfwGetCursorPos(window.getWindowHandle(), testX, testY);
+        glfwGetCursorPos(window.getHandle(), testX, testY);
 
         pos.set(testX[0], testY[0]);
 
         if (locked) {
             displVec.set(0);
-            glfwSetCursorPos(window.getWindowHandle(), window.getWidth() / 2d, window.getHeight() / 2d);
+            glfwSetCursorPos(window.getHandle(), window.getWidth() / 2d, window.getHeight() / 2d);
             if (oldPos.x > 0 && oldPos.y > 0 && inWindow) {
                 double deltaX = pos.x - window.getWidth() / 2f;
                 double deltaY = pos.y - window.getHeight() / 2f;
@@ -107,9 +107,9 @@ public class Mouse {
 
     public void setLocked(boolean lock){
         if(!lock) {
-            glfwSetInputMode(window.getWindowHandle(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            glfwSetInputMode(window.getHandle(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         } else{
-            glfwSetInputMode(window.getWindowHandle(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            glfwSetInputMode(window.getHandle(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         }
         locked = lock;
         resetMousePosVector();
@@ -140,9 +140,9 @@ public class Mouse {
     public void toggleMouseLock(){
         locked = !locked;
         if(!isLocked()) {
-            glfwSetInputMode(window.getWindowHandle(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            glfwSetInputMode(window.getHandle(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         } else{
-            glfwSetInputMode(window.getWindowHandle(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            glfwSetInputMode(window.getHandle(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         }
         resetMousePosVector();
     }

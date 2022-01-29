@@ -129,7 +129,7 @@ public class Window {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         //hide cursor
-        glfwSetInputMode(getWindowHandle(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        glfwSetInputMode(getHandle(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 
         setIcon();
@@ -168,7 +168,7 @@ public class Window {
         return dumpedKey;
     }
 
-    public long getWindowHandle(){
+    public long getHandle(){
         return windowHandle;
     }
 
