@@ -9,6 +9,10 @@ public class BlockDefinitionContainer {
 
     private final ArrayList<BlockDefinition> definitions = new ArrayList<>();
 
+    public ArrayList<BlockDefinition> getDefinitions(){
+        return this.definitions;
+    }
+
     public float getStoneHardness(int ID){
         return definitions.get(ID).getStoneHardness();
     }
