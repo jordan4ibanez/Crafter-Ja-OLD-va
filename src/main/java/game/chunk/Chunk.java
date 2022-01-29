@@ -146,7 +146,7 @@ public class Chunk {
                 .findFirst()
                 .ifPresentOrElse(
                         chunkObject -> chunkObject.replaceOrSetLiquidMesh(yHeight, newMesh),
-                        null
+                        this::nothing
                 );
     }
 
@@ -156,7 +156,7 @@ public class Chunk {
                 .findFirst()
                 .ifPresentOrElse(
                         chunkObject -> chunkObject.replaceOrSetAllFaceMesh(yHeight, newMesh),
-                        null
+                        this::nothing
                 );
     }
 
