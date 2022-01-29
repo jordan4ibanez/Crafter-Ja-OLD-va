@@ -27,7 +27,7 @@ public class ViewBobbing {
 
         //System.out.println(viewBobbingAddition);
 
-        if (player.isPlayerRunning()){
+        if (player.isRunning()){
             viewBobbingAddition = delta * 290f;
         }
 
