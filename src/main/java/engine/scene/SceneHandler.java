@@ -247,12 +247,10 @@ public class SceneHandler {
         gameRenderer.renderGame();
 
         window.windowUpdate();
-
-        chunk.processOldChunks();
     }
 
     private void gameUpdate(){
-        chunk.doChunksHoveringUpThing(this.delta);
+        chunk.doChunksHoveringUpThing();
         //player.testPlayerDiggingAnimation();
         player.playerOnTick();
         //itemsOnTick();
