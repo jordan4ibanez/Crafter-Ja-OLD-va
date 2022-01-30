@@ -43,7 +43,6 @@ public class Player {
             this.chunk = chunk;
         }
     }
-
     public void setRay(Ray ray) {
         if (this.ray == null) {
             this.ray = ray;
@@ -79,7 +78,6 @@ public class Player {
             this.guiLogic = guiLogic;
         }
     }
-
     public void initialize(Inventory inventory, Camera camera, ItemDefinitionContainer itemDefinitionContainer) {
         this.wieldHand = new WieldHand(this, delta, inventory, camera);
         this.viewBobbing = new ViewBobbing(this, delta);
@@ -87,7 +85,6 @@ public class Player {
         this.wieldHand.setItemDefinitionContainer(itemDefinitionContainer);
         this.movement = new Movement();
     }
-
 
     public WieldHand getWieldHand(){
         return wieldHand;
@@ -148,12 +145,8 @@ public class Player {
     private boolean hasDug = false;
     private float particleBufferTimer = 0f;
     private byte currentRotDir = 0;
-
-    private final Vector2f inertiaWorker = new Vector2f();
+    
     private float healthTimer = 0;
-
-
-
 
     public String getName(){
         return name;
