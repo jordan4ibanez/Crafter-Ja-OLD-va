@@ -634,25 +634,25 @@ public class Player {
         if (camera.getCameraPerspective() < 2) {
             System.out.println("a raycast is occuring");
             if (mining && hasDug) {
-                ray.playerRayCast(posWithEyeHeightViewBobbing, camera.getCameraRotationVector(), reach, true, false, true);
+                ray.playerRayCast(this,posWithEyeHeightViewBobbing, camera.getCameraRotationVector(), reach, true, false, true);
             } else if (mining) {
-                ray.playerRayCast(posWithEyeHeightViewBobbing, camera.getCameraRotationVector(), reach, true, false, false);
+                ray.playerRayCast(this,posWithEyeHeightViewBobbing, camera.getCameraRotationVector(), reach, true, false, false);
             } else if (placing && placeTimer <= 0) {
-                ray.playerRayCast(posWithEyeHeightViewBobbing, camera.getCameraRotationVector(), reach, false, true, false);
+                ray.playerRayCast(this,posWithEyeHeightViewBobbing, camera.getCameraRotationVector(), reach, false, true, false);
                 placeTimer = 0.25f; // every quarter second you can place
             } else {
-                ray.playerRayCast(posWithEyeHeightViewBobbing, camera.getCameraRotationVector(), reach, false, false, false);
+                ray.playerRayCast(this,posWithEyeHeightViewBobbing, camera.getCameraRotationVector(), reach, false, false, false);
             }
         } else {
             if (mining && hasDug) {
-                ray.playerRayCast(posWithEyeHeightViewBobbing, camera.getInvertedCameraRotationVector(), reach, true, false, true);
+                ray.playerRayCast(this,posWithEyeHeightViewBobbing, camera.getInvertedCameraRotationVector(), reach, true, false, true);
             } else if (mining) {
-                ray.playerRayCast(posWithEyeHeightViewBobbing, camera.getInvertedCameraRotationVector(), reach, true, false, false);
+                ray.playerRayCast(this,posWithEyeHeightViewBobbing, camera.getInvertedCameraRotationVector(), reach, true, false, false);
             } else if (placing && placeTimer <= 0) {
-                ray.playerRayCast(posWithEyeHeightViewBobbing, camera.getInvertedCameraRotationVector(), reach, false, true, false);
+                ray.playerRayCast(this,posWithEyeHeightViewBobbing, camera.getInvertedCameraRotationVector(), reach, false, true, false);
                 placeTimer = 0.25f; // every quarter second you can place
             } else {
-                ray.playerRayCast(posWithEyeHeightViewBobbing, camera.getInvertedCameraRotationVector(), reach, false, false, false);
+                ray.playerRayCast(this,posWithEyeHeightViewBobbing, camera.getInvertedCameraRotationVector(), reach, false, false, false);
             }
         }
 

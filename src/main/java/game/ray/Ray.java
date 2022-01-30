@@ -2,6 +2,7 @@ package game.ray;
 
 import game.blocks.BlockDefinitionContainer;
 import game.chunk.Chunk;
+import game.player.Player;
 import org.joml.Math;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
@@ -22,7 +23,7 @@ public class Ray {
     }
 
     //this is now stack/cache happy as can be
-    public void playerRayCast(Vector3d pos, Vector3f dir, float length, boolean mining, boolean placing, boolean hasMined) {
+    public void playerRayCast(Player player, Vector3d pos, Vector3f dir, float length, boolean mining, boolean placing, boolean hasMined) {
 
         int finalPosX = 0;
         int finalPosY = 0;
@@ -126,7 +127,7 @@ public class Ray {
             //setPlayerWorldSelectionPos(null);
         } else if (foundBlock > 0) {
             if (mining && hasMined) {
-                //destroyBlock(finalPosX, finalPosY, finalPosZ);
+                destroyBlock(new Vector3i(finalPosX, finalPosY, finalPosZ));
             } else if (placing) {
 
                 /*
@@ -148,10 +149,10 @@ public class Ray {
                 }
                 */
             } else {
-                //setPlayerWorldSelectionPos(finalPosX, finalPosY, finalPosZ);
+                player.setPlayerWorldSelectionPos(new Vector3i(finalPosX, finalPosY, finalPosZ));
             }
         } else {
-            //setPlayerWorldSelectionPos(null);
+            player.setPlayerWorldSelectionPos(null);
         }
     }
 
