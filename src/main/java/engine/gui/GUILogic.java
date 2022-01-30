@@ -541,7 +541,7 @@ public class GUILogic {
         return selected;
     }
 
-    
+
     private boolean baseOdd = true;
 
     public void makeHeartsJiggle(){
