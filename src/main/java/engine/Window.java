@@ -1,5 +1,6 @@
 package engine;
 
+import engine.disk.Disk;
 import engine.time.Delta;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -23,7 +24,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 public class Window {
 
     private Delta delta;
-
+    private Disk disk;
     private String title;
     private int width;
     private int height;
@@ -39,6 +40,11 @@ public class Window {
     public void setDelta(Delta delta){
         if (this.delta == null){
             this.delta = delta;
+        }
+    }
+    public void setDisk(Disk disk){
+        if (this.disk == null){
+            this.disk = disk;
         }
     }
 
@@ -193,6 +199,7 @@ public class Window {
 
     public void close(){
         shouldClose.set(true);
+        disk.closeWorldDataBase();
         glfwSetWindowShouldClose(this.handle, true);
     }
 

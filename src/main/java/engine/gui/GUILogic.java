@@ -291,7 +291,6 @@ public class GUILogic {
                         //disconnectClient();
                         setPaused(false);
                     } else if (selection == 3) {
-                        disk.closeWorldDataBase();
                         //disconnectClient();
                         window.close();
                     }

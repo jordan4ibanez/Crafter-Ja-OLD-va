@@ -140,6 +140,7 @@ public class Crafter {
         {
             //window
             window.setDelta(this.delta);
+            window.setDisk(this.disk);
 
             //SQLiteDiskHandler
             disk.setBiomeGenerator(this.biomeGenerator);

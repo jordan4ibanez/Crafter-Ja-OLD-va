@@ -416,6 +416,7 @@ public class MainMenu {
 
                 if (selection == 4) {
                     window.close();
+                    return;
                 }
 
             } else if (!mouse.isLeftButtonPressed()) {
