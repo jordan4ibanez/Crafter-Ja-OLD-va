@@ -167,7 +167,7 @@ public class Chunk {
 
     private void internalChunkAdd(PrimitiveChunkObject primitiveChunkObject){
         map.add(new ChunkObject(primitiveChunkObject));
-        System.out.println(Arrays.deepToString(map.toArray()));
+        //System.out.println(Arrays.deepToString(map.toArray()));
         //send to chunk object generator
         IntStream.range(0, 8).forEach(y -> chunkUpdateHandler.chunkUpdate(primitiveChunkObject.pos.x,primitiveChunkObject.pos.y,y));
     }
