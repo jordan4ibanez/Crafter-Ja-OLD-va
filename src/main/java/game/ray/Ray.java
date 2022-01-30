@@ -44,7 +44,7 @@ public class Ray {
         int oldFlooredPosY = 0;
         int oldFlooredPosZ = 0;
 
-        for(double step = 0d; step <= length ; step += 0.001d) {
+        for(double step = 0d; step <= length ; step += 0.01d) {
 
             double cachedPosX = dir.x * step;
             double cachedPosY = dir.y * step;
@@ -196,7 +196,7 @@ public class Ray {
         int oldFlooredPosY = 0;
         int oldFlooredPosZ = 0;
 
-        for(double step = 0d; step <= length ; step += 0.001d) {
+        for(double step = 0d; step <= length ; step += 0.01d) {
 
             double cachePosX = dir.x * step;
             double cachePosY = dir.y * step;
