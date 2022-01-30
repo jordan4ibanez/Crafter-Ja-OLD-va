@@ -1,5 +1,6 @@
 package engine.render;
 
+import engine.Mouse;
 import engine.Utils;
 import engine.Window;
 import engine.graphics.Camera;
@@ -7,14 +8,18 @@ import engine.graphics.Mesh;
 import engine.graphics.ShaderProgram;
 import engine.graphics.Transformation;
 import engine.gui.GUI;
+import engine.gui.GUILogic;
 import engine.gui.GUIObject;
+import engine.gui.TextHandling;
 import engine.settings.Settings;
 import engine.time.Delta;
 import engine.time.TimeOfDay;
+import engine.time.Timer;
 import game.chunk.Chunk;
 import game.chunk.ChunkObject;
 import game.clouds.Cloud;
 import game.crafting.InventoryLogic;
+import game.crafting.InventoryObject;
 import game.item.ItemDefinitionContainer;
 import game.light.Light;
 import game.player.Player;
@@ -24,6 +29,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 
+import static org.joml.Math.max;
 import static org.joml.Math.toRadians;
 import static org.lwjgl.opengl.GL11C.*;
 
@@ -37,11 +43,15 @@ public class GameRenderer {
     private Player player;
     private Transformation transformation;
     private TimeOfDay timeOfDay;
-    private GUI gui;
     private Cloud cloud;
     private Light light;
     private InventoryLogic inventoryLogic;
     private ItemDefinitionContainer itemDefinitionContainer;
+    private GUILogic guiLogic;
+    private GUI gui;
+    private Mouse mouse;
+    private Timer timer;
+    private final TextHandling textHandling = new TextHandling();
 
     public void setCamera(Camera camera){
         if (this.camera == null){
@@ -81,7 +91,12 @@ public class GameRenderer {
             this.timeOfDay = timeOfDay;
         }
     }
-    public void setGui(GUI gui){
+    public void setGuiLogic(GUILogic guiLogic){
+        if (this.guiLogic == null){
+            this.guiLogic = guiLogic;
+        }
+    }
+    public void setGUI(GUI gui){
         if (this.gui == null){
             this.gui = gui;
         }
@@ -104,6 +119,16 @@ public class GameRenderer {
     public void setItemDefinitionContainer(ItemDefinitionContainer itemDefinitionContainer){
         if (this.itemDefinitionContainer == null){
             this.itemDefinitionContainer = itemDefinitionContainer;
+        }
+    }
+    public void setMouse(Mouse mouse){
+        if (this.mouse == null){
+            this.mouse = mouse;
+        }
+    }
+    public void setTimer(Timer timer){
+        if (this.timer == null){
+            this.timer = timer;
         }
     }
 
@@ -778,84 +803,82 @@ public class GameRenderer {
 
         glClear(GL_DEPTH_BUFFER_BIT);
 
-    }
-        /*
-        if (!isPaused()) {
+        if (!guiLogic.isPaused()) {
 
-            if (isPlayerInventoryOpen()) {
+            if (player.isInventoryOpen()) {
 
                 //inventory backdrop
                 {
-                    updateOrthoModelMatrix(0, 0, 0, 0, 0, 0, windowScale, windowScale, windowScale);
-                    hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
-                    getInventoryBackdropMesh().render();
+                    transformation.updateOrthoModelMatrix(0, 0, 0, 0, 0, 0, window.getScale(), window.getScale(), window.getScale());
+                    hudShaderProgram.setUniform("modelViewMatrix", transformation.getOrthoModelMatrix());
+                    gui.getInventoryBackdropMesh().render();
                 }
 
                 glClear(GL_DEPTH_BUFFER_BIT);
 
                 //player inside box
                 {
-                    updateOrthoModelMatrix(-(windowScale / 3.75d), (windowScale / 2.8d), 0, getPlayerHudRotationX(),getPlayerHudRotationY(),getPlayerHudRotationZ(), (windowScale / 18d), (windowScale / 18d), (windowScale / 18d));
-                    hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
-                    getPlayerMesh().render();
+                    transformation.updateOrthoModelMatrix(-(window.getScale() / 3.75d), (window.getScale() / 2.8d), 0, inventoryLogic.getPlayerHudRotation().x,inventoryLogic.getPlayerHudRotation().y,inventoryLogic.getPlayerHudRotation().z, (window.getScale() / 18d), (window.getScale() / 18d), (window.getScale() / 18d));
+                    hudShaderProgram.setUniform("modelViewMatrix", transformation.getOrthoModelMatrix());
+                    gui.getPlayerMesh().render();
                 }
 
                 glClear(GL_DEPTH_BUFFER_BIT);
 
                 //inventory foreground
                 {
-                    updateOrthoModelMatrix(0, 0, 0, 0, 0, 0, windowScale, windowScale, windowScale);
-                    hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
-                    getInventoryMesh().render();
+                    transformation.updateOrthoModelMatrix(0, 0, 0, 0, 0, 0, window.getScale(), window.getScale(), window.getScale());
+                    hudShaderProgram.setUniform("modelViewMatrix", transformation.getOrthoModelMatrix());
+                    gui.getInventoryMesh().render();
                 }
 
 
                 glClear(GL_DEPTH_BUFFER_BIT);
 
-                renderInventoryGUI("main");
+                renderInventoryGUI(inventoryLogic.getInventory().getMain());
 
-                if (isAtCraftingBench()){
-                    renderInventoryGUI("bigCraft");
+                if (player.isAtCraftingBench()){
+                    renderInventoryGUI(inventoryLogic.getInventory().getBigCraft());
                 } else {
-                    renderInventoryGUI("smallCraft");
+                    renderInventoryGUI(inventoryLogic.getInventory().getSmallCraft());
                 }
 
 
-                renderInventoryGUI("output");
-                renderInventoryGUI("armor");
+                renderInventoryGUI(inventoryLogic.getInventory().getOutput());
+                renderInventoryGUI(inventoryLogic.getInventory().getArmor());
 
 
 
                 //render mouse item
-                if (getMouseInventory() != null) {
+                if (inventoryLogic.getInventory().getMouseInventory() != null) {
                     glClear(GL_DEPTH_BUFFER_BIT);
 
-                    if (getIfItem(getMouseInventory())) {
-                        updateOrthoModelMatrix( getMousePosCenteredX(),  getMousePosCenteredY() - (windowScale / 27d), 0, 0, 0, 0, windowScale / 5d, windowScale / 5d, windowScale / 5d);
+                    if (itemDefinitionContainer.isItem(inventoryLogic.getInventory().getMouseInventory())) {
+                        transformation.updateOrthoModelMatrix( mouse.getMousePosCenteredX(),  mouse.getMousePosCenteredY() - (window.getScale() / 27d), 0, 0, 0, 0, window.getScale() / 5d, window.getScale() / 5d, window.getScale() / 5d);
                     } else {
-                        updateOrthoModelMatrix( getMousePosCenteredX(), getMousePosCenteredY() - (windowScale / 55d), 0, 45, 45, 0, windowScale / 8d, windowScale / 8d, windowScale / 8d);
+                        transformation.updateOrthoModelMatrix( mouse.getMousePosCenteredX(), mouse.getMousePosCenteredY() - (window.getScale() / 55d), 0, 45, 45, 0, window.getScale() / 8d, window.getScale() / 8d, window.getScale() / 8d);
                     }
 
-                    hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
+                    hudShaderProgram.setUniform("modelViewMatrix", transformation.getOrthoModelMatrix());
 
-                    getItemMesh(getMouseInventory()).render();
+                    itemDefinitionContainer.getMesh(inventoryLogic.getInventory().getMouseInventory()).render();
 
                     glClear(GL_DEPTH_BUFFER_BIT);
 
                     //stack numbers
-                    if(getMouseInventoryCount() > 1) {
+                    if(inventoryLogic.getInventory().getMouseCount() > 1) {
                         glClear(GL_DEPTH_BUFFER_BIT);
-                        updateOrthoModelMatrix( getMousePosCenteredX() + (windowScale/47d),  getMousePosCenteredY() - (windowScale / 35f), 0, 0, 0, 0, windowScale / 48, windowScale / 48, windowScale / 48);
-                        hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
-                        Mesh workerMesh = createTextCenteredWithShadow(Integer.toString(getMouseInventoryCount()), 1f, 1f, 1f);
+                        transformation.updateOrthoModelMatrix( mouse.getMousePosCenteredX() + (window.getScale()/47d),  mouse.getMousePosCenteredY() - (window.getScale() / 35f), 0, 0, 0, 0, window.getScale() / 48, window.getScale() / 48, window.getScale() / 48);
+                        hudShaderProgram.setUniform("modelViewMatrix", transformation.getOrthoModelMatrix());
+                        Mesh workerMesh = textHandling.createTextCenteredWithShadow(Integer.toString(inventoryLogic.getInventory().getMouseCount()), 1f, 1f, 1f);
                         workerMesh.render();
                         workerMesh.cleanUp(false);
                     }
                 }
             } else {
-
                 //health bar
                 {
+                    /*
                     //everybody likes to jiggle...right?
                     byte[] healthArray = getHealthHudArray();
                     float[] healthJiggleArray = getHealthHudFloatArray();
@@ -882,23 +905,24 @@ public class GameRenderer {
                             default -> getHeartShadowHudMesh().render();
                         }
                     }
+                     */
                 }
                 glClear(GL_DEPTH_BUFFER_BIT);
 
                 //hotbar
                 {
-                    updateOrthoModelMatrix(0,  (-windowSizeY / 2d) + (windowScale / 16.5d), 0, 0, 0, 0, (windowScale), (windowScale), (windowScale));
-                    hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
-                    getHotBarMesh().render();
+                    transformation.updateOrthoModelMatrix(0,  (-window.getWidth() / 2d) + (window.getScale() / 16.5d), 0, 0, 0, 0, (window.getScale()), (window.getScale()), (window.getScale()));
+                    hudShaderProgram.setUniform("modelViewMatrix", transformation.getOrthoModelMatrix());
+                    gui.getHotBarMesh().render();
                 }
 
                 glClear(GL_DEPTH_BUFFER_BIT);
 
                 //selection bar (in the hotbar)
                 {
-                    updateOrthoModelMatrix((getPlayerInventorySelection() - 4) * (windowScale / 9.1d),  (-windowSizeY / 2f) + ((windowScale / 8.25f) / 2f), 0, 0, 0, 0, windowScale / 8.25f, windowScale / 8.25f, windowScale / 8.25f);
-                    hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
-                    getHotBarSelectionMesh().render();
+                    transformation.updateOrthoModelMatrix((player.getPlayerInventorySelection() - 4) * (window.getScale() / 9.1d),  (-window.getWidth() / 2f) + ((window.getScale() / 8.25f) / 2f), 0, 0, 0, 0, window.getScale() / 8.25f, window.getScale() / 8.25f, window.getScale() / 8.25f);
+                    hudShaderProgram.setUniform("modelViewMatrix", transformation.getOrthoModelMatrix());
+                    gui.getHotBarSelectionMesh().render();
                 }
 
                 //THESE GO LAST!
@@ -907,11 +931,12 @@ public class GameRenderer {
 
                 //version info
                 {
-                    updateOrthoModelMatrix(-windowSizeX / 2d, (windowSizeY / 2.1d), 0, 0, 0, 0, windowScale / 30d, windowScale / 30d, windowScale / 30d);
-                    hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
-                    getVersionInfoText().render();
+                    transformation.updateOrthoModelMatrix(-window.getWidth() / 2d, (window.getHeight() / 2.1d), 0, 0, 0, 0, window.getScale() / 30d, window.getScale() / 30d, window.getScale() / 30d);
+                    hudShaderProgram.setUniform("modelViewMatrix", transformation.getOrthoModelMatrix());
+                    gui.getVersionInfoText().render();
                 }
 
+                /*
                 if(getDebugInfo()) {
 
                     //x info
@@ -969,45 +994,46 @@ public class GameRenderer {
                         hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
                         getFPSMesh().render();
                     }
-                } else {
+                }
+                else {
+                 */
                     //only show FPS
                     {
                         glClear(GL_DEPTH_BUFFER_BIT);
-                        updateOrthoModelMatrix((-windowSizeX / 2d), (windowSizeY / 2.3d), 0, 0, 0, 0, windowScale / 30d, windowScale / 30d, windowScale / 30d);
-                        hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
-                        getFPSMesh().render();
+                        transformation.updateOrthoModelMatrix((-window.getWidth() / 2d), (window.getHeight() / 2.3d), 0, 0, 0, 0, window.getScale() / 30d, window.getScale() / 30d, window.getScale() / 30d);
+                        hudShaderProgram.setUniform("modelViewMatrix", transformation.getOrthoModelMatrix());
+                        timer.getFpsMesh().render();
                     }
-                }
+                //}
 
                 //render items in hotbar
                 for (byte x = 1; x <= 9; x++) {
 
-                    String thisItem = getItemInInventory("main", x - 1, 0);
+                    String thisItem = inventoryLogic.getInventory().getMain().getItem(x - 1, 0);
 
                     if (thisItem != null) {
 
                         glClear(GL_DEPTH_BUFFER_BIT);
 
-                        if (getIfItem(thisItem)) {
-                            updateOrthoModelMatrix(((x - 5d) * (windowScale / 9.1d)), (-windowSizeY / 2d) + (windowScale / 48d), 0, 0, 0, 0, windowScale / 5d, windowScale / 5d, windowScale / 5d);
+                        if (itemDefinitionContainer.isItem(thisItem)) {
+                            transformation.updateOrthoModelMatrix(((x - 5d) * (window.getScale() / 9.1d)), (-window.getHeight() / 2d) + (window.getScale() / 48d), 0, 0, 0, 0, window.getScale() / 5d, window.getScale() / 5d, window.getScale() / 5d);
                         } else {
-                            updateOrthoModelMatrix(((x - 5d) * (windowScale / 9.1d)), (-windowSizeY / 2d) + (windowScale / 24d), 0, 45, 45, 0, windowScale / 8.01d, windowScale / 8.01d, windowScale / 8.01d);
+                            transformation.updateOrthoModelMatrix(((x - 5d) * (window.getScale() / 9.1d)), (-window.getHeight() / 2d) + (window.getScale() / 24d), 0, 45, 45, 0, window.getScale() / 8.01d, window.getScale() / 8.01d, window.getScale() / 8.01d);
                         }
-                        hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
-                        getItemMesh(thisItem).render();
-
+                        hudShaderProgram.setUniform("modelViewMatrix", transformation.getOrthoModelMatrix());
+                        itemDefinitionContainer.getMesh(thisItem).render();
 
                         glClear(GL_DEPTH_BUFFER_BIT);
 
                         //render hotbar counts if greater than 1
 
-                        int count = getInventoryCount("main", x - 1 , 0);
+                        int count = inventoryLogic.getInventory().getMain().getCount(x - 1 , 0);
 
                         if (count > 1) {
-                            updateOrthoModelMatrix(((x - 4.8d) * (windowScale / 9.1d)),  (-windowSizeY / 2d) + (windowScale / 32d), 0, 0, 0, 0, windowScale / 48, windowScale / 48, windowScale / 48);
-                            hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
-                            //
-                            Mesh workerMesh = createTextCenteredWithShadow(Integer.toString(count), 1f, 1f, 1f);
+                            transformation.updateOrthoModelMatrix(((x - 4.8d) * (window.getScale() / 9.1d)),  (-window.getHeight() / 2d) + (window.getScale() / 32d), 0, 0, 0, 0, window.getScale() / 48, window.getScale() / 48, window.getScale() / 48);
+                            hudShaderProgram.setUniform("modelViewMatrix", transformation.getOrthoModelMatrix());
+
+                            Mesh workerMesh = textHandling.createTextCenteredWithShadow(Integer.toString(count), 1f, 1f, 1f);
                             workerMesh.render();
                             workerMesh.cleanUp(false);
                         }
@@ -1017,9 +1043,9 @@ public class GameRenderer {
         } else {
             //render inventory base
             {
-                updateOrthoModelMatrix(0, 0, 0, 0, 0, 0, windowSizeX, windowSizeY, windowScale);
-                hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
-                getMenuBgMesh().render();
+                transformation.updateOrthoModelMatrix(0, 0, 0, 0, 0, 0, window.getWidth(), window.getHeight(), window.getScale());
+                hudShaderProgram.setUniform("modelViewMatrix", transformation.getOrthoModelMatrix());
+                gui.getMenuBgMesh().render();
             }
 
             glClear(GL_DEPTH_BUFFER_BIT);
@@ -1028,6 +1054,7 @@ public class GameRenderer {
         }
 
         //render chat bar
+        /*
         if (isChatOpen()){
 
             //render background
@@ -1042,6 +1069,7 @@ public class GameRenderer {
             hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
             getCurrentMessageMesh().render();
         }
+
 
 
         //render chat messages
@@ -1066,40 +1094,41 @@ public class GameRenderer {
                 i++;
             }
         }
+        */
         hudShaderProgram.unbind();
     }
 
 
-    private void renderInventoryGUI(String inventoryName){
+    private void renderInventoryGUI(InventoryObject inventoryObject){
 
-        double startingPointX = getInventoryPosX(inventoryName);
-        double startingPointY = getInventoryPosY(inventoryName);
+        double startingPointX = inventoryObject.getPos().x;
+        double startingPointY = inventoryObject.getPos().y;
 
         //this is the size of the actual slots
         //it also makes the default spacing of (0)
         //they bunch up right next to each other with 0
-        double scale = windowScale/10.5d;
-        double blockScale = windowScale / 8d;
-        double itemScale = windowScale / 5d;
-        double textScale = windowScale / 48;
+        double scale = window.getScale()/10.5d;
+        double blockScale = window.getScale() / 8d;
+        double itemScale = window.getScale() / 5d;
+        double textScale = window.getScale() / 48;
 
         //this is the spacing between the slots
-        double spacing = windowScale / 75d;
+        double spacing = window.getScale() / 75d;
 
-        int sizeX = getInventorySizeX(inventoryName);
-        int sizeY = getInventorySizeY(inventoryName);
+        int sizeX = inventoryObject.getSize().x;
+        int sizeY = inventoryObject.getSize().y;
 
         double inventoryHalfSizeX = sizeX/2d;
         double inventoryHalfSizeY = sizeY/2d;
 
-        int selectionX = getInventorySelectionX(inventoryName);
-        int selectionY = getInventorySelectionY(inventoryName);
+        int selectionX = inventoryObject.getSelection().x;
+        int selectionY = inventoryObject.getSelection().y;
 
-        String[][] thisInventory = getInventoryAsArray(inventoryName);
-        int[][] thisCount = getInventoryCountAsArray(inventoryName);
+        String[][] thisInventory = inventoryObject.getInventoryAsArray();
+        int[][] thisCount = inventoryObject.getCountAsArray();
 
         double yProgram;
-        if (inventoryName.equals("main")) {
+        if (inventoryObject.getName().equals("main")) {
             for (byte x = 0; x < sizeX; x++) {
                 for (byte y = 0; y < sizeY; y++) {
 
@@ -1115,13 +1144,13 @@ public class GameRenderer {
                     //background of the slot
                     glClear(GL_DEPTH_BUFFER_BIT);
 
-                    updateOrthoModelMatrix((x + 0.5d - inventoryHalfSizeX + startingPointX) * (scale + spacing), ((y * -1d) - 0.5d + startingPointY + inventoryHalfSizeY + yProgram) * (scale + spacing), 0, 0, 0, 0, scale, scale, scale);
-                    hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
+                    transformation.updateOrthoModelMatrix((x + 0.5d - inventoryHalfSizeX + startingPointX) * (scale + spacing), ((y * -1d) - 0.5d + startingPointY + inventoryHalfSizeY + yProgram) * (scale + spacing), 0, 0, 0, 0, scale, scale, scale);
+                    hudShaderProgram.setUniform("modelViewMatrix", transformation.getOrthoModelMatrix());
 
                     if (selectionX == x && selectionY == y){
-                        getInventorySlotSelectedMesh().render();
+                        gui.getInventorySlotSelectedMesh().render();
                     } else {
-                        getInventorySlotMesh().render();
+                        gui.getInventorySlotMesh().render();
                     }
 
                     String thisItem = thisInventory[y][x];
@@ -1131,23 +1160,23 @@ public class GameRenderer {
 
                         //render item
                         glClear(GL_DEPTH_BUFFER_BIT);
-                        if (getIfItem(thisItem)) {
-                            updateOrthoModelMatrix((x + 0.5d - inventoryHalfSizeX + startingPointX) * (scale + spacing), ((y * -1d) - 0.5d + startingPointY + inventoryHalfSizeY + yProgram) * (scale + spacing) - (blockScale / 3.25d), 0, 0, 0, 0, itemScale, itemScale, itemScale);
+                        if (itemDefinitionContainer.isItem(thisItem)) {
+                            transformation.updateOrthoModelMatrix((x + 0.5d - inventoryHalfSizeX + startingPointX) * (scale + spacing), ((y * -1d) - 0.5d + startingPointY + inventoryHalfSizeY + yProgram) * (scale + spacing) - (blockScale / 3.25d), 0, 0, 0, 0, itemScale, itemScale, itemScale);
                         } else {
-                            updateOrthoModelMatrix((x + 0.5d - inventoryHalfSizeX + startingPointX) * (scale + spacing), ((y * -1d) - 0.5d + startingPointY + inventoryHalfSizeY + yProgram) * (scale + spacing) - (blockScale / 7d), 0, 45, 45, 0, blockScale, blockScale, blockScale);
+                            transformation.updateOrthoModelMatrix((x + 0.5d - inventoryHalfSizeX + startingPointX) * (scale + spacing), ((y * -1d) - 0.5d + startingPointY + inventoryHalfSizeY + yProgram) * (scale + spacing) - (blockScale / 7d), 0, 45, 45, 0, blockScale, blockScale, blockScale);
                         }
-                        hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
-                        getItemMesh(thisItem).render();
+                        hudShaderProgram.setUniform("modelViewMatrix", transformation.getOrthoModelMatrix());
+                        itemDefinitionContainer.getMesh(thisItem).render();
 
                         int count = thisCount[y][x];
 
                         //render item stack number
                         if (count > 1) {
                             glClear(GL_DEPTH_BUFFER_BIT);
-                            updateOrthoModelMatrix((x + 0.7d - inventoryHalfSizeX + startingPointX) * (scale + spacing), ((y * -1d) - 0.6d + startingPointY + inventoryHalfSizeY + yProgram) * (scale + spacing) - (blockScale / 7d), 0, 0, 0, 0, textScale, textScale, textScale);
-                            hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
+                            transformation.updateOrthoModelMatrix((x + 0.7d - inventoryHalfSizeX + startingPointX) * (scale + spacing), ((y * -1d) - 0.6d + startingPointY + inventoryHalfSizeY + yProgram) * (scale + spacing) - (blockScale / 7d), 0, 0, 0, 0, textScale, textScale, textScale);
+                            hudShaderProgram.setUniform("modelViewMatrix", transformation.getOrthoModelMatrix());
                             //this creates a new object in memory >:(
-                            Mesh itemStackLabel = createTextCenteredWithShadow(Integer.toString(count), 1, 1, 1);
+                            Mesh itemStackLabel = textHandling.createTextCenteredWithShadow(Integer.toString(count), 1, 1, 1);
                             itemStackLabel.render();
                             itemStackLabel.cleanUp(false);
                         }
@@ -1162,13 +1191,13 @@ public class GameRenderer {
                     //background of the slot
                     glClear(GL_DEPTH_BUFFER_BIT);
 
-                    updateOrthoModelMatrix((x + 0.5d - inventoryHalfSizeX + startingPointX) * (scale + spacing), ((y * -1d) - 0.5d + startingPointY + inventoryHalfSizeY) * (scale + spacing), 0, 0, 0, 0, scale, scale, scale);
-                    hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
+                    transformation.updateOrthoModelMatrix((x + 0.5d - inventoryHalfSizeX + startingPointX) * (scale + spacing), ((y * -1d) - 0.5d + startingPointY + inventoryHalfSizeY) * (scale + spacing), 0, 0, 0, 0, scale, scale, scale);
+                    hudShaderProgram.setUniform("modelViewMatrix", transformation.getOrthoModelMatrix());
 
                     if (selectionX == x && selectionY == y){
-                        getInventorySlotSelectedMesh().render();
+                        gui.getInventorySlotSelectedMesh().render();
                     } else {
-                        getInventorySlotMesh().render();
+                        gui.getInventorySlotMesh().render();
                     }
 
 
@@ -1179,23 +1208,23 @@ public class GameRenderer {
 
                         //render item
                         glClear(GL_DEPTH_BUFFER_BIT);
-                        if (getIfItem(thisItem)) {
-                            updateOrthoModelMatrix((x + 0.5d - inventoryHalfSizeX + startingPointX) * (scale + spacing), ((y * -1d) - 0.5d + startingPointY + inventoryHalfSizeY) * (scale + spacing) - (blockScale / 3.25d), 0, 0, 0, 0, itemScale, itemScale, itemScale);
+                        if (itemDefinitionContainer.isItem(thisItem)) {
+                            transformation.updateOrthoModelMatrix((x + 0.5d - inventoryHalfSizeX + startingPointX) * (scale + spacing), ((y * -1d) - 0.5d + startingPointY + inventoryHalfSizeY) * (scale + spacing) - (blockScale / 3.25d), 0, 0, 0, 0, itemScale, itemScale, itemScale);
                         } else {
-                            updateOrthoModelMatrix((x + 0.5d - inventoryHalfSizeX + startingPointX) * (scale + spacing), ((y * -1d) - 0.5d + startingPointY + inventoryHalfSizeY) * (scale + spacing) - (blockScale / 7d), 0, 45, 45, 0, blockScale, blockScale, blockScale);
+                            transformation.updateOrthoModelMatrix((x + 0.5d - inventoryHalfSizeX + startingPointX) * (scale + spacing), ((y * -1d) - 0.5d + startingPointY + inventoryHalfSizeY) * (scale + spacing) - (blockScale / 7d), 0, 45, 45, 0, blockScale, blockScale, blockScale);
                         }
-                        hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
-                        getItemMesh(thisItem).render();
+                        hudShaderProgram.setUniform("modelViewMatrix", transformation.getOrthoModelMatrix());
+                        itemDefinitionContainer.getMesh(thisItem).render();
 
                         int count = thisCount[y][x];
 
                         //render item stack number
                         if (count > 1) {
                             glClear(GL_DEPTH_BUFFER_BIT);
-                            updateOrthoModelMatrix((x + 0.7d - inventoryHalfSizeX + startingPointX) * (scale + spacing), ((y * -1d) - 0.6d + startingPointY + inventoryHalfSizeY) * (scale + spacing) - (blockScale / 7d), 0, 0, 0, 0, textScale, textScale, textScale);
-                            hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
+                            transformation.updateOrthoModelMatrix((x + 0.7d - inventoryHalfSizeX + startingPointX) * (scale + spacing), ((y * -1d) - 0.6d + startingPointY + inventoryHalfSizeY) * (scale + spacing) - (blockScale / 7d), 0, 0, 0, 0, textScale, textScale, textScale);
+                            hudShaderProgram.setUniform("modelViewMatrix", transformation.getOrthoModelMatrix());
                             //this creates a new object in memory >:(
-                            Mesh itemStackLabel = createTextCenteredWithShadow(Integer.toString(count), 1, 1, 1);
+                            Mesh itemStackLabel = textHandling.createTextCenteredWithShadow(Integer.toString(count), 1, 1, 1);
                             itemStackLabel.render();
                             itemStackLabel.cleanUp(false);
                         }
@@ -1207,25 +1236,25 @@ public class GameRenderer {
     }
 
     private void renderGameGUI(){
-        for (GUIObject thisButton : getGamePauseMenuGUI()) {
+        for (GUIObject thisButton : guiLogic.getGamePauseMenuGUI()) {
             
-            double xPos = thisButton.pos.x * (windowScale / 100d);
-            double yPos = thisButton.pos.y * (windowScale / 100d);
+            double xPos = thisButton.pos.x * (window.getScale() / 100d);
+            double yPos = thisButton.pos.y * (window.getScale() / 100d);
 
 
-            updateOrthoModelMatrix(xPos, yPos, 0, 0, 0, 0, windowScale / 20d, windowScale / 20d, windowScale / 20d);
-            hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
+            transformation.updateOrthoModelMatrix(xPos, yPos, 0, 0, 0, 0, window.getScale() / 20d, window.getScale() / 20d, window.getScale() / 20d);
+            hudShaderProgram.setUniform("modelViewMatrix", transformation.getOrthoModelMatrix());
             thisButton.textMesh.render();
 
             float xAdder = 20 / thisButton.buttonScale.x;
             float yAdder = 20 / thisButton.buttonScale.y;
 
-            updateOrthoModelMatrix(xPos, yPos, 0, 0, 0, 0, windowScale / xAdder, windowScale / yAdder, windowScale / 20d);
-            hudShaderProgram.setUniform("modelViewMatrix", getOrthoModelMatrix());
+            transformation.updateOrthoModelMatrix(xPos, yPos, 0, 0, 0, 0, window.getScale() / xAdder, window.getScale() / yAdder, window.getScale() / 20d);
+            hudShaderProgram.setUniform("modelViewMatrix", transformation.getOrthoModelMatrix());
             if (thisButton.selected){
-                getButtonSelectedMesh().render();
+                gui.getButtonSelectedMesh().render();
             } else {
-                getButtonMesh().render();
+                gui.getButtonMesh().render();
             }
         }
     }
@@ -1247,10 +1276,4 @@ public class GameRenderer {
             entityShaderProgram.cleanup();
         }
     }
-
-    private double getChunkDistanceFromPlayer(int x, int z){
-        Vector3i currentChunk = getPlayerCurrentChunk();
-        return max(getDistance(0,0,currentChunk.z, 0, 0, z), getDistance(currentChunk.x,0,0, x, 0, 0));
-    }
-   */
 }

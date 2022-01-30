@@ -173,12 +173,15 @@ public class Crafter {
             gameRenderer.setDelta(this.delta);
             gameRenderer.setWindow(this.window);
             gameRenderer.setPlayer(this.player);
-            gameRenderer.setGui(this.gui);
+            gameRenderer.setGuiLogic(this.guiLogic);
+            gameRenderer.setGUI(this.gui);
             gameRenderer.setTimeOfDay(this.timeOfDay);
             gameRenderer.setCloud(this.cloud);
             gameRenderer.setLight(this.light);
             gameRenderer.setInventoryLogic(this.inventoryLogic);
             gameRenderer.setItemDefinitionContainer(this.itemDefinitionContainer);
+            gameRenderer.setMouse(this.mouse);
+            gameRenderer.setTimer(this.timer);
 
             //main menu renderer
             mainMenuRenderer.setWindow(this.window);
