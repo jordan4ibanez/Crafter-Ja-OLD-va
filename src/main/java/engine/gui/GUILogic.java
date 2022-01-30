@@ -146,12 +146,9 @@ public class GUILogic {
 
 
     private String quickConvertKeyCode(int keyCode){
-        
-        System.out.println("keycode");
-        
+
         char code = (char)keyCode;
 
-        /*
         if (code ==  'Ŕ'){
             return "SHIFT";
         } else if (code == ' '){
@@ -159,7 +156,6 @@ public class GUILogic {
         } else if (code == 'Ř'){
             return "SHIFT";
         }
-        */
 
         return code + "";
     }
