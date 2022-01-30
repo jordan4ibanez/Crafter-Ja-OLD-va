@@ -196,28 +196,6 @@ public class GUILogic {
     }
 
 
-    private String convertChunkLoadText(byte input){
-        switch (input) {
-            case 0:
-                return "SNAIL";
-            case 1:
-                return "LAZY";
-            case 2:
-                return "NORMAL";
-            case 3:
-                return "SPEEDY";
-            case 4:
-                return "INSANE";
-            case 5:
-                return "FUTURE PC";
-            default:
-                break;
-        }
-
-        return "NULL";
-    }
-
-
     public void togglePauseMenu(){
         setPaused(!isPaused());
         if (!isPaused()){
@@ -340,18 +318,6 @@ public class GUILogic {
                             gameSettingsMenuGUI[3].updateTextCenteredFixed("RENDER DISTANCE: " + renderDistance);
                             settings.saveSettings();
                         }
-                        /*case 4 -> {
-                            //byte chunkLoad = settings.getSettingsChunkLoad();
-                            chunkLoad++;
-                            if (chunkLoad > 5) {
-                                chunkLoad = 0;
-                            }
-                            gameSettingsMenuGUI[4].updateTextCenteredFixed("CHUNK LOADING: " + convertChunkLoadText(chunkLoad));
-                            setSettingsChunkLoad(chunkLoad);
-                            saveSettings();
-                        }
-
-                         */
                         case 4 -> menuPage = 0;
                     }
                 } else if (!mouse.isLeftButtonPressed()) {
@@ -575,6 +541,7 @@ public class GUILogic {
         return selected;
     }
 
+    
     private boolean baseOdd = true;
 
     public void makeHeartsJiggle(){
