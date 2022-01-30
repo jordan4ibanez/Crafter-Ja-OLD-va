@@ -252,8 +252,8 @@ public class Chunk {
         if (pos.y > 127 || pos.y < 0){
             return -1;
         }
-        int chunkX = (int)Math.floor(pos.x/16d);
-        int chunkZ = (int)Math.floor(pos.z/16d);
+        int chunkX = (int)floor(pos.x/16d);
+        int chunkZ = (int)floor(pos.z/16d);
         int blockX = (int)(pos.x - (16d*chunkX));
         int blockZ = (int)(pos.z - (16d*chunkZ));
 
@@ -268,9 +268,9 @@ public class Chunk {
         if (pos.y > 127 || pos.y < 0){
             return;
         }
-        int yPillar = (int)Math.floor(pos.y/16d);
-        int chunkX = (int)Math.floor(pos.x/16d);
-        int chunkZ = (int)Math.floor(pos.z/16d);
+        int yPillar = (int)floor(pos.y/16d);
+        int chunkX = (int)floor(pos.x/16d);
+        int chunkZ = (int)floor(pos.z/16d);
         int blockX = (int)(pos.x - (16d*chunkX));
         int blockZ = (int)(pos.z - (16d*chunkZ));
 
@@ -308,9 +308,9 @@ public class Chunk {
         if (pos.y > 127 || pos.y < 0){
             return;
         }
-        int yPillar = (int)Math.floor(pos.y/16d);
-        int chunkX = (int)Math.floor(pos.x/16d);
-        int chunkZ = (int)Math.floor(pos.z/16d);
+        int yPillar = (int)floor(pos.y/16d);
+        int chunkX = (int)floor(pos.x/16d);
+        int chunkZ = (int)floor(pos.z/16d);
         int blockX = (int)(pos.x - (16d*chunkX));
         int blockZ = (int)(pos.z - (16d*chunkZ));
         ChunkObject chunkObject = getChunk(chunkX,chunkZ);
@@ -327,9 +327,9 @@ public class Chunk {
         if (y > 127 || y < 0){
             return;
         }
-        int yPillar = (int)Math.floor(y/16d);
-        int chunkX = (int)Math.floor(x/16d);
-        int chunkZ = (int)Math.floor(z/16d);
+        int yPillar = (int)floor(y/16d);
+        int chunkX = (int)floor(x/16d);
+        int chunkZ = (int)floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
         ChunkObject chunkObject = getChunk(chunkX,chunkZ);
@@ -347,9 +347,9 @@ public class Chunk {
         if (pos.y > 127 || pos.y < 0){
             return;
         }
-        int yPillar = (int)Math.floor(pos.y/16d);
-        int chunkX = (int)Math.floor(pos.x/16d);
-        int chunkZ = (int)Math.floor(pos.z/16d);
+        int yPillar = (int)floor(pos.y/16d);
+        int chunkX = (int)floor(pos.x/16d);
+        int chunkZ = (int)floor(pos.z/16d);
         int blockX = (int)(pos.x - (16d*chunkX));
         int blockZ = (int)(pos.z - (16d*chunkZ));
 
@@ -389,9 +389,9 @@ public class Chunk {
         if (pos.y > 127 || pos.y < 0){
             return;
         }
-        int yPillar = (int)Math.floor(pos.y/16d);
-        int chunkX = (int)Math.floor(pos.x/16d);
-        int chunkZ = (int)Math.floor(pos.z/16d);
+        int yPillar = (int)floor(pos.y/16d);
+        int chunkX = (int)floor(pos.x/16d);
+        int chunkZ = (int)floor(pos.z/16d);
         int blockX = (pos.x - (16*chunkX));
         int blockZ = (pos.z - (16*chunkZ));
 
@@ -427,8 +427,8 @@ public class Chunk {
         if (y > 127 || y < 0){
             return 0;
         }
-        int chunkX = (int)Math.floor(x/16d);
-        int chunkZ = (int)Math.floor(z/16d);
+        int chunkX = (int)floor(x/16d);
+        int chunkZ = (int)floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
 
@@ -467,8 +467,8 @@ public class Chunk {
         if (y > 127 || y < 0){
             return 0;
         }
-        int chunkX = (int)Math.floor(x/16d);
-        int chunkZ = (int)Math.floor(z/16d);
+        int chunkX = (int)floor(x/16d);
+        int chunkZ = (int)floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
         ChunkObject chunkObject = getChunk(chunkX, chunkZ);
@@ -482,8 +482,8 @@ public class Chunk {
         if (y > 127 || y < 0){
             return 0;
         }
-        int chunkX = (int)Math.floor(x/16d);
-        int chunkZ = (int)Math.floor(z/16d);
+        int chunkX = (int)floor(x/16d);
+        int chunkZ = (int)floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
         ChunkObject chunkObject = getChunk(chunkX, chunkZ);
@@ -497,7 +497,7 @@ public class Chunk {
         if (y > 127 || y < 0){
             return;
         }
-        int yPillar = (int)Math.floor(y/16d);
+        int yPillar = (int)floor(y/16d);
         switch (y) {
             case 112, 96, 80, 64, 48, 32, 16 -> chunkMeshGenerator.generateChunkMesh(chunkX, chunkZ, yPillar - 1);
             case 111, 95, 79, 63, 47, 31, 15 -> chunkMeshGenerator.generateChunkMesh(chunkX, chunkZ, yPillar + 1);
@@ -520,7 +520,7 @@ public class Chunk {
         if (y > 127 || y < 0){
             return;
         }
-        int yPillar = (int)Math.floor(y/16d);
+        int yPillar = (int)floor(y/16d);
         switch (y) {
             case 112, 96, 80, 64, 48, 32, 16 -> this.chunkUpdateHandler.chunkUpdate(chunkX, chunkZ, yPillar - 1);
             case 111, 95, 79, 63, 47, 31, 15 -> this.chunkUpdateHandler.chunkUpdate(chunkX, chunkZ, yPillar + 1);
@@ -583,8 +583,8 @@ public class Chunk {
 
     //returns -1 if fails
     public int getMobSpawnYPos(int x, int z){
-        int chunkX = (int)Math.floor(x/16d);
-        int chunkZ = (int)Math.floor(z/16d);
+        int chunkX = (int)floor(x/16d);
+        int chunkZ = (int)floor(z/16d);
         int blockX = (int)(x - (16d*chunkX));
         int blockZ = (int)(z - (16d*chunkZ));
 
