@@ -290,9 +290,11 @@ public class Chunk {
 
         if (newBlock == 0) {
             if (heightMapData[posToIndex2D(blockX, blockZ)] == pos.y) {
-                heightMapData[posToIndex2D(blockX, blockZ)] = (byte) IntStream.range(heightMapData[posToIndex2D(blockX, blockZ)], 0)
+                heightMapData[posToIndex2D(blockX, blockZ)] = (byte) IntStream.range(0, heightMapData[posToIndex2D(blockX, blockZ)])
+                        .map(i -> heightMapData[posToIndex2D(blockX, blockZ)] - i)
                         .filter(y -> blockData[posToIndex(blockX, y, blockZ)] != 0)
-                        .findFirst().getAsInt();
+                        .findFirst()
+                        .getAsInt();
             }
         } else {
             if (heightMapData[posToIndex2D(blockX, blockZ)] < pos.y) {
@@ -368,9 +370,11 @@ public class Chunk {
         rotationData[posToIndex(blockX, pos.y, blockZ)] = 0;
 
         if (heightMapData[posToIndex2D(blockX, blockZ)] == pos.y) {
-            heightMapData[posToIndex2D(blockX, blockZ)] = (byte) IntStream.range(heightMapData[posToIndex2D(blockX, blockZ)], 0)
+            heightMapData[posToIndex2D(blockX, blockZ)] = (byte) IntStream.rangeClosed(0, heightMapData[posToIndex2D(blockX, blockZ)])
+                    .map(i -> heightMapData[posToIndex2D(blockX, blockZ)] - i)
                     .filter(y -> blockData[posToIndex(blockX, y, blockZ)] != 0)
-                    .findFirst().getAsInt();
+                    .findFirst()
+                    .getAsInt();
         }
 
 

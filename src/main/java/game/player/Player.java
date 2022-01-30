@@ -632,7 +632,6 @@ public class Player {
 
         float reach = 3.575f;
         if (camera.getCameraPerspective() < 2) {
-            System.out.println("a raycast is occuring");
             if (mining && hasDug) {
                 ray.playerRayCast(this,posWithEyeHeightViewBobbing, camera.getCameraRotationVector(), reach, true, false, true);
             } else if (mining) {
