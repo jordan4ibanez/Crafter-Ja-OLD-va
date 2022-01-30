@@ -22,7 +22,7 @@ public class MobSpawning {
         float spawnGoal = 3f;
         if (spawnTimer >= spawnGoal){
             //CHANGE THIS TO CHECK FOR PLAYERS POSITION WHEN TRANSLATING TO MULTIPLAYER
-            trySpawn(player.getPlayerPos(), chunk, mobMeshBuilder, entityContainer);
+            trySpawn(player.getPos(), chunk, mobMeshBuilder, entityContainer);
             spawnTimer = 0;
         }
     }
@@ -30,6 +30,10 @@ public class MobSpawning {
 
     //this is a square distance, acceptable is 24-56 blocks away from the player
     private void trySpawn(Vector3d pos, Chunk chunk, MobMeshBuilder mobMeshBuilder, EntityContainer entityContainer){
+        //BLARF
+        if (true){
+            return;
+        }
         //a 2d calculation
         int x = (int)pos.x + randomInt(24,56);
         int z = (int)pos.z + randomInt(24,56);
