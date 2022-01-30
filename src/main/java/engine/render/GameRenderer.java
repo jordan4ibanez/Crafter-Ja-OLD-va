@@ -25,11 +25,9 @@ import game.light.Light;
 import game.player.Player;
 import org.joml.*;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 
-import static org.joml.Math.max;
 import static org.joml.Math.toRadians;
 import static org.lwjgl.opengl.GL11C.*;
 
