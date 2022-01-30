@@ -19,7 +19,6 @@ import java.lang.Math;
 import static org.joml.Math.floor;
 
 public class Player {
-
     BlockDefinitionContainer blockDefinitionContainer = new BlockDefinitionContainer();
     private GUILogic guiLogic;
     private InventoryLogic inventoryLogic;
