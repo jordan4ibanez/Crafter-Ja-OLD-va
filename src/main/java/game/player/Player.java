@@ -145,7 +145,7 @@ public class Player {
     private boolean hasDug = false;
     private float particleBufferTimer = 0f;
     private byte currentRotDir = 0;
-    
+
     private float healthTimer = 0;
 
     public String getName(){
@@ -214,7 +214,7 @@ public class Player {
         return lightLevel;
     }
 
-    public void setPlayerWorldSelectionPos(int x, int y, int z){
+    public void setWorldSelectionPos(int x, int y, int z){
         oldWorldSelectionPos.set(worldSelectionPos.x,worldSelectionPos.y,worldSelectionPos.z);
         worldSelectionPos.set(x,y,z);
 
@@ -282,7 +282,7 @@ public class Player {
         return cameraSubmerged;
     }
 
-    public boolean getPlayerPlacing() {
+    public boolean getPlacing() {
         return placing;
     }
 
@@ -525,11 +525,10 @@ public class Player {
             particleBufferTimer += delta;
             if (particleBufferTimer > 0.01f){
                 int randomDir = (int)Math.floor(Math.random()*6f);
-                int block;
                 byte miningBlock = chunk.getBlock(worldSelectionPos);
                 switch (randomDir) {
                     case 0 -> {
-                        block = chunk.getBlock(new Vector3i(worldSelectionPos.x + 1, worldSelectionPos.y, worldSelectionPos.z));
+                        byte block = chunk.getBlock(new Vector3i(worldSelectionPos.x + 1, worldSelectionPos.y, worldSelectionPos.z));
                         if (block == 0) {
                             particlePos.set(worldSelectionPos.x,worldSelectionPos.y,worldSelectionPos.z);
                             particlePos.x += 1.1f;
@@ -545,7 +544,7 @@ public class Player {
                         }
                     }
                     case 1 -> {
-                        block = chunk.getBlock(new Vector3i(worldSelectionPos.x - 1, worldSelectionPos.y, worldSelectionPos.z));
+                        byte block = chunk.getBlock(new Vector3i(worldSelectionPos.x - 1, worldSelectionPos.y, worldSelectionPos.z));
                         if (block == 0) {
                             particlePos.set(worldSelectionPos.x,worldSelectionPos.y,worldSelectionPos.z);
                             particlePos.x -= 0.1f;
@@ -561,7 +560,7 @@ public class Player {
                         }
                     }
                     case 2 -> {
-                        block = chunk.getBlock(new Vector3i(worldSelectionPos.x, worldSelectionPos.y + 1, worldSelectionPos.z));
+                        byte block = chunk.getBlock(new Vector3i(worldSelectionPos.x, worldSelectionPos.y + 1, worldSelectionPos.z));
                         if (block == 0) {
                             particlePos.set(worldSelectionPos.x,worldSelectionPos.y,worldSelectionPos.z);
                             particlePos.y += 1.1f;
@@ -577,7 +576,7 @@ public class Player {
                         }
                     }
                     case 3 -> {
-                        block = chunk.getBlock(new Vector3i(worldSelectionPos.x, worldSelectionPos.y - 1, worldSelectionPos.z));
+                        byte block = chunk.getBlock(new Vector3i(worldSelectionPos.x, worldSelectionPos.y - 1, worldSelectionPos.z));
                         if (block == 0) {
                             particlePos.set(worldSelectionPos.x,worldSelectionPos.y,worldSelectionPos.z);
                             particlePos.y -= 0.1f;
@@ -593,7 +592,7 @@ public class Player {
                         }
                     }
                     case 4 -> {
-                        block = chunk.getBlock(new Vector3i(worldSelectionPos.x, worldSelectionPos.y, worldSelectionPos.z + 1));
+                        byte block = chunk.getBlock(new Vector3i(worldSelectionPos.x, worldSelectionPos.y, worldSelectionPos.z + 1));
                         if (block == 0) {
                             particlePos.set(worldSelectionPos.x,worldSelectionPos.y,worldSelectionPos.z);
                             particlePos.z += 1.1f;
@@ -609,7 +608,7 @@ public class Player {
                         }
                     }
                     case 5 -> {
-                        block = chunk.getBlock(new Vector3i(worldSelectionPos.x, worldSelectionPos.y, worldSelectionPos.z - 1));
+                        byte block = chunk.getBlock(new Vector3i(worldSelectionPos.x, worldSelectionPos.y, worldSelectionPos.z - 1));
                         if (block == 0) {
                             particlePos.set(worldSelectionPos.x,worldSelectionPos.y,worldSelectionPos.z);
                             particlePos.z -= 0.1f;
@@ -633,6 +632,7 @@ public class Player {
 
         float reach = 3.575f;
         if (camera.getCameraPerspective() < 2) {
+            System.out.println("a raycast is occuring");
             if (mining && hasDug) {
                 ray.playerRayCast(posWithEyeHeightViewBobbing, camera.getCameraRotationVector(), reach, true, false, true);
             } else if (mining) {
