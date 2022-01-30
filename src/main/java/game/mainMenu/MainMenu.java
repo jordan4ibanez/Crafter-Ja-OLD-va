@@ -1231,6 +1231,7 @@ public class MainMenu {
             "How about a nice game of chess?",
             "Open gate, walk through gate, close gate!",
             "Everything's an object!",
-            "Too many objects!"
+            "Too many objects!",
+            "To Lua or not to Lua!"
     };
 }

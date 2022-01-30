@@ -305,8 +305,7 @@ public class GUILogic {
                 //1 - vsync
                 //2 - graphics render mode
                 //3 - render distance
-                //4 - lazy chunk loading
-                //5 - back
+                //4 - back
 
                 if (selection >= 0 && mouse.isLeftButtonPressed() && !mouseButtonPushed && !mouseButtonWasPushed) {
                     soundAPI.playSound("button");
